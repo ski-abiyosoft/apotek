@@ -1,0 +1,47 @@
+/* here you can put your own css to customize and override the theme */
+
+.title-unit{
+    background:black; 
+    color:yellow; 
+    font-weight:bold;
+    font-family: "Century Gothic,CenturyGothic,AppleGothic,sans-serif";
+    letter-spacing: 2px;
+    
+}
+.title-web{
+    background:#fdfddf;
+    color:#0a428a; 
+    font-weight:bold;
+    padding: 0px 10px 0px 10px;
+}
+
+.title-web small{
+    color:#0a428a; 
+    font-weight:bold;
+}
+
+.title-white{
+    color:white !important; 
+    font-weight:bold;
+}
+
+.control-labelh {
+    margin-top: 4px;
+    left: 4px !important;
+  }
+
+.form-horizontal .control-labelh,.form-horizontal .radio,.form-horizontal .checkbox,.form-horizontal .radio-inline,.form-horizontal 
+.checkbox-inline{
+    margin-top:0;
+    margin-bottom:0;
+    padding-top:15px;
+}
+
+.vertical-align-center2 {
+    /* display: table-cell; */
+    vertical-align: middle;
+}
+
+/* .form-bordered .control-labelh {
+    padding-top: 16px;
+} */
