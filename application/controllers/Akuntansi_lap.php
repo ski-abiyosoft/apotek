@@ -6,6 +6,7 @@ class Akuntansi_lap extends CI_Controller {
 	
 	// Inisiasi class
 	// coba lagi
+	// apaya
 	public function __construct()
 	{
 		parent::__construct();
