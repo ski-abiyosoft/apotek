@@ -892,7 +892,6 @@ class M_KartuStock extends CI_Model
 		// return $this->db->query($mutasi)->result();
 		return $mutasi2;
 	}
-
 	public function farmasistok($id)
 	{
 		$brg = $this->db->get_where('tbl_barangstock', ['id' => $id])->row_array();

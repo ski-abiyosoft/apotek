@@ -22,7 +22,7 @@ class PendaftaranVRS extends CI_Controller {
 		{
 			$cabang = $this->session->userdata('unit');
 			$data= [
-				'pasienrjtoday' => $this->db->query("SELECT * FROM tbl_regist WHERE tglmasuk = '".date("Y-m-d")."' AND kodepos != 'PUGD' AND koders = '".$this->session->userdata('unit')."' AND batal = 0")->num_rows(),
+				'pasienrjtoday' => $this->db->query('SELECT*from pasien_rajal where tglmasuk like "%'.date("Y-m-d").'%" and kodepos != "PUGD" and koders = "'.$cabang.'" AND batal = 0')->num_rows(),
 				
 				'pasienigdtoday' => $this->db->query('SELECT*from pasien_rajal where tglmasuk like "%'.date("Y-m-d").'%" and kodepos = "PUGD" and koders = "'.$cabang.'" group by id')->num_rows(),
 				
@@ -791,55 +791,62 @@ class PendaftaranVRS extends CI_Controller {
 		$batal                = 0;
 		$batalkarena          = '';
 		$diperiksa_perawat    = 0;
-
 		if($jenispasien == 'PAS1'){
-			$cust    = '';
-			$bpjs    = null;
+			$cust = '';
+			$bpjs = null;
 			$rujukan = null;
-			$sep     = null;
+			$sep = null;
 		} else {
-			$cust    = $penjamin;
-			$bpjs    = $nocard;
+			$cust = $penjamin;
+			$bpjs = $nocard;
 			$rujukan = $norujukan;
-			$sep     = $nosep;
+			$sep = $nosep;
 		}
-		// husain change
+		
 		$noreg = urut_transaksi('REGISTRASI', 16);
-		$dataregist = [
-			'username'   => $username,
-			'mjkn_token' => $mjkn_token,
-			'rekmed'     => $norm,
-			'noreg'      => $noreg,
-			'kodokter'   => $dokter,
-			'koderuang'  => $ruang,
-			'tujuan'     => $tujuan,
-			'kodepos'    => $poli,
-			'baru'       => $baru,
-			'antrino'    => $antrino,
-			'tglmasuk'   => $tanggal,
-			'jam'        => $jam,
-			'drpengirim' => $pengirim,
-			'jenispas'   => $jenispasien,
-			'cust_id'    => $cust,
-			'nobpjs'     => $bpjs,
-			'norujukan'  => $rujukan,
-			'nosep'      => $sep,
-			'koders'     => $cabang,
-		];
-		$this->db->insert('tbl_regist', $dataregist);
-		// husain add
-		$this->db->set('lastnoreg', $noreg);
-		if($nocard != '' || $nocard != null){
-			$this->db->set('nocard', $nocard);
+		
+		$cekdata=$this->db->query("SELECT*from tbl_pasien where rekmed='$norm'")->row();
+		if($cekdata->ada==1){
+			echo json_encode(['status' => 2, 'noreg' => $noreg, 'nm' => $cekdata->namapas]);
+			
+		}else{
+		
+			// husain change
+			$dataregist = [
+				'username' => $username,
+				'mjkn_token' => $mjkn_token,
+				'rekmed' => $norm,
+				'noreg' => $noreg,
+				'kodokter' => $dokter,
+				'koderuang' => $ruang,
+				'tujuan' => $tujuan,
+				'kodepos' => $poli,
+				'baru' => $baru,
+				'antrino' => $antrino,
+				'tglmasuk' => $tanggal,
+				'jam' => $jam,
+				'drpengirim' => $pengirim,
+				'jenispas' => $jenispasien,
+				'cust_id' => $cust,
+				'nobpjs' => $bpjs,
+				'norujukan' => $rujukan,
+				'nosep' => $sep,
+				'koders' => $cabang,
+			];
+			$this->db->insert('tbl_regist', $dataregist);
+			// husain add
+			$this->db->set('lastnoreg', $noreg);
+			if($nocard != '' || $nocard != null){
+				$this->db->set('nocard', $nocard);
+			}
+			$this->db->set('ada', 1);
+			$this->db->where('rekmed', $norm);
+			$this->db->update('tbl_pasien');
+			// end husain
+			history_log(0 ,'REGISTRASI_RAJAL' ,'SAVE' ,$noreg ,'-');
+			echo json_encode(['status' => 0, 'noreg' => $noreg]);
+			// end husain
 		}
-		$this->db->set('ada', 1);
-		$this->db->where('rekmed', $norm);
-		$this->db->update('tbl_pasien');
-		// end husain
-		history_log(0 ,'REGISTRASI_RAJAL' ,'ADD' ,$noreg ,'-');
-
-		echo json_encode(['status' => 0, 'noreg' => $noreg]);
-		// end husain
 	}
 	// end rawat jalan add and regist
 	public function edit_rawatjalan(){
@@ -1947,4 +1954,8 @@ class PendaftaranVRS extends CI_Controller {
 			echo json_encode($query->result());
 		}
 	}
+<<<<<<< HEAD
+=======
+
+>>>>>>> master
 }

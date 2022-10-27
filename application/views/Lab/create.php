@@ -989,7 +989,6 @@ $this->load->view('template/footer');
         <?php endif; ?>
         // billing_tindakan1
     });
-
     $(document).ready(function(){
         $('#tblnoreg').DataTable({
             "aLengthMenu": [

@@ -469,7 +469,6 @@ class Lab extends CI_Controller{
 										->where('kodeperiksa', $kodetindak)
 										->where('kodelab', $kodelab)
 										->get('tbl_dhasillabnew')->row();
-
 			if( $cek_thasillabnew ){
 			 	$this->M_lab->updateDhasillabnew(  $cek_thasillabnew->id, $payload );
 			}else{
@@ -520,7 +519,6 @@ class Lab extends CI_Controller{
 			'tgltransaksi' => date("Y-m-d H:i:s")
 		);
 
-
 		$this->db->insert('tbl_alkestransaksi', $data);
 		redirect('lab/getData/' . $this->input->post('id'));
 	}
@@ -565,7 +563,6 @@ class Lab extends CI_Controller{
 			'totalharga' => $this->input->post('totalharga', TRUE),
 			'gudang' => $this->input->post('gudang', TRUE),
 		);
-
 
 		$this->db->where('id',$this->input->post('id'));
 		$this->db->update('tbl_alkestransaksi', $data);

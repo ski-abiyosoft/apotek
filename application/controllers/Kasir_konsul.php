@@ -1140,6 +1140,14 @@ class Kasir_konsul extends CI_Controller
 														<td> &nbsp; </td>
 											</tr> 
 									</table>";
+			$dresep = $this->db->query("SELECT * from tbl_apohresep where noreg = '$noreg'")->row();
+			if ($dresep) {
+				$eresep = $dresep->orderno;
+				$param = $dresep->resepno;
+			} else {
+				$eresep = '';
+				$param = '';
+			}
 			$header = $this->db->query("SELECT * from tbl_apohresep where resepno = '$param'")->row();
 			$detil = $this->db->query("SELECT * from tbl_apodresep where resepno = '$param'")->row();
 			$posting = $this->db->query("SELECT * from tbl_apoposting  where resepno = '$param'")->row();

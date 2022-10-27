@@ -164,7 +164,6 @@ class Kasir_uangmuka extends CI_Controller {
 		echo json_encode($output);
 	}
 
-
 	public function ajax_edit($id)
 	{
 		$data = $this->M_kasirum->get_by_id($id);		
