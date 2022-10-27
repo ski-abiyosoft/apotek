@@ -35,6 +35,15 @@
     }
 </style>
 
+<style>
+    .loadingdr {display:none;position:fixed;width:100%;height:100%; top:0;left:0;right:0;bottom:0;background-color:rgba(255,255,255,0.8);z-index:999;display:none}
+    .loadingdr-text {position:absolute;top:50%;left:50%;font-size:50px;color:black;transform:translate(-50%,-50%);-ms-transform:translate(-50%,-50%)}
+</style>
+
+<div class="loadingdr">
+    <div class="loadingdr-text">Loading...</div>
+</div>
+
 <div class="row">
     <div class="col-md-12">
         <h3 class="page-title">
@@ -176,10 +185,40 @@
                         <div class="col-md-3">
                             <h3 style="color:green;font-weight:bold" align="left" id="doktertitle"><b>
                                 <?php
-                                    if(isset($data_pas->kodokter)){
-                                        $polipas        = isset($ttv->kodepos)? $ttv->kodepos : $data_pas->kodepos;
-                                        echo data_master("dokter", array("kodokter" => $data_pas->kodokter, "koders" => $this->session->userdata("unit"), "kopoli" => $polipas))->nadokter;
+                                    if(isset($ttv->kodokter)){
+                                        if($ttv->kodokter == "" || $ttv->kodokter == null){
+                                            $kodokter = $data_pas->kodokter;
+                                        } else {
+                                            $kodokter = $ttv->kodokter;
+                                        }
+                                    } else {
+                                        $kodokter = $data_pas->kodokter;
                                     }
+
+                                    // if($ttv->kodokter == "" || $ttv->kodokter == null){
+                                    //     $kodokter = $data_pas->kodokter;
+                                    // } else {
+                                    //     $kodokter = $ttv->kodokter;
+                                    // }
+
+                                    // if(isset($ttv->kodokter)){
+                                    //     $polipas        = $ttv->kodepos;
+                                    //     $kodokter       = $ttv->kodokter;
+                                    //     $unit           = $this->session->userdata("unit");
+                                    //     echo data_master("dokter", array("kodokter" => $kodokter, "koders" => $unit, "kopoli" => $polipas))->nadokter;
+                                    // } else {
+                                    //     $polipas        = $data_pas->kodepos;
+                                    //     $kodokter       = $data_pas->kodokter;
+                                    //     $unit           = $this->session->userdata("unit");
+                                    //     echo data_master("dokter", array("kodokter" => $kodokter, "koders" => $unit, "kopoli" => $polipas))->nadokter;
+                                    // }
+                                    
+                                    // if(isset($data_pas->kodokter)){
+                                        $polipas        = isset($ttv->kodepos)? $ttv->kodepos : $data_pas->kodepos;
+                                        // $kodokter       = isset($ttv->kodokter)? ($ttv->kodokter == "")? $data_pas->kodokter : $ttv->kodokter : $data_pas->kodokter;
+                                        $unit           = $this->session->userdata("unit");
+                                        echo data_master("dokter", array("kodokter" => $kodokter, "koders" => $unit, "kopoli" => $polipas))->nadokter;
+                                    // }
                                 ?>
                             </b></h3>
                         </div>
@@ -189,15 +228,23 @@
                                     <?php
                                         $polipas        = isset($ttv->kodepos)? $ttv->kodepos : $data_pas->kodepos;
                                         $unit           = $this->session->userdata("unit");
+
                                         $query_drpoli   = $this->db->query("SELECT * FROM dokter WHERE koders = '$unit' AND kopoli = '$polipas'")->result();
                                         foreach($query_drpoli as $drpval){
-                                            if(isset($ttv->kodokter)){
-                                                $dokterls   = $ttv->kodokter;
-                                            } else {
-                                                $dokterls   = $data_pas->kodokter;
-                                            }
+                                            // if(isset($ttv->kodokter)){
+                                            //     if($ttv->kodokter == ""){
+                                            //         $dokterls   = $data_pas->kodokter;
+                                            //     } else {
+                                            //         $dokterls   = $ttv->kodokter;
+                                            //     }
+                                            //     $dokterls   = $ttv->kodokter;
+                                            // } else {
+                                            //     $dokterls   = $data_pas->kodokter;
+                                            // }
 
-                                            if($drpval->kodokter == $dokterls){
+                                            // echo "<option>". $dokterls ."</option>";
+
+                                            if($drpval->kodokter == $kodokter){
                                                 echo "<option value='$drpval->kodokter' selected>". $drpval->nadokter ."</option>";
                                             } else {
                                                 echo "<option value='$drpval->kodokter'>". $drpval->nadokter ."</option>";
@@ -707,12 +754,12 @@
 
                                                                         <td>
                                                                             <select name="dokter[]" class="select2_el_dokter form-control" id="dokter1">
-                                                                                <option value="<?= $ttv->kodokter ?>" selected><?= data_master("tbl_dokter", array("kodokter" => $ttv->kodokter, "koders" => $this->session->userdata("unit")))->nadokter ?></option>
+                                                                                <option value="<?= $kodokter ?>" selected><?= data_master("dokter", array("kodokter" => $kodokter, "koders" => $this->session->userdata("unit"), "kopoli" => $polipas))->nadokter ?></option>
                                                                             </select>
                                                                         </td>
                                                                         <td>
                                                                             <select name="paramedis[]" class="select2_el_dokter form-control" id="paramedis1">
-                                                                                <option value="<?= $ttv->kodokter ?>" selected><?= data_master("tbl_dokter", array("kodokter" => $ttv->kodokter, "koders" => $this->session->userdata("unit")))->nadokter ?></option>
+                                                                                <option value="<?= $kodokter ?>" selected><?= data_master("dokter", array("kodokter" => $kodokter, "koders" => $this->session->userdata("unit"), "kopoli" => $polipas))->nadokter ?></option>
                                                                             </select>
                                                                         </td>
 
@@ -739,7 +786,7 @@
                                                                                         if(isset($bval->kodokter)){
                                                                                     ?>
                                                                                             <!-- echo "<option value='$bval->kodokter'>". data_master("tbl_dokter", array("kodokter" => $bval->kodokter, "koders" => $this->session->userdata("unit")))->nadokter ."</option>"; -->
-                                                                                            <option value="<?= $bval->kodokter ?>"><?= $bval->nadok ?></option>
+                                                                                            <option value="<?= $bval->kodokter ?>" selected><?= data_master("dokter", array("kodokter" => $bval->kodokter, "koders" => $this->session->userdata("unit"), "kopoli" => $polipas))->nadokter ?></option>
                                                                                             
                                                                                     <?php
                                                                                         }
@@ -752,7 +799,7 @@
                                                                                         if(isset($bval->kodokter)){
                                                                                     ?>
                                                                                         <!-- echo "<option value='$bval->kodokter'>". data_master("tbl_dokter", array("kodokter" => $bval->koperawat, "koders" => $this->session->userdata("unit")))->nadokter ."</option>"; -->
-                                                                                        <option value="<?= $bval->koperawat ?>"><?= $bval->naper ?></option>
+                                                                                        <option value="<?= $bval->koperawat ?>" selected><?= data_master("dokter", array("kodokter" => $bval->kodokter, "koders" => $this->session->userdata("unit"), "kopoli" => $polipas))->nadokter ?></option>
                                                                                     <?php
                                                                                         }
                                                                                     ?>
@@ -1984,8 +2031,8 @@
                                                                                 if($dhval->kodokter == "" || $dhval->kodokter == null){
                                                                                     echo "-";
                                                                                 } else {
-                                                                                    $dhdok  = data_master("tbl_dokter", array("kodokter" => $dhval->kodokter, "koders" => $dhval->koders))->nadokter;
-                                                                                    echo $dhdok;
+                                                                                    // $dhdok  = data_master("tbl_dokter", array("kodokter" => $dhval->kodokter, "koders" => $dhval->koders))->nadokter;
+                                                                                    echo data_master("dokter", array("kodokter" => $dhval->kodokter, "koders" => $dhval->koders, "kopoli" => $dhval->kodepos))->nadokter;
                                                                                 }                                                                                
                                                                             ?>
                                                                         </td>
@@ -2054,18 +2101,24 @@
         var data_post   = {
             kodokter: $(this).val(),
             noreg: '<?= $this->input->get("noreg") ?>',
+            kodepos: '<?= $polipas ?>'
         };
         $.ajax({
             url: "/poliklinik/plklnkdrpoli/",
             data: data_post,
             type: "POST",
             dataType: "JSON",
+            beforeSend: function(){
+                $(".loadingdr").attr("style", "display:block !important");
+            },
             success: function(data){
                 $("#doktertitle").html("<b>"+ data.dokter +"</b>");
+                $(".loadingdr").attr("style", "display:none !important");
                 window.location.reload();
             },
             error: function(){
                 $("#doktertitle").html("<b>Undefined</b>");
+                $(".loadingdr").attr("style", "display:none !important");
                 window.location.reload();
             }
         });
@@ -2671,8 +2724,8 @@
         "<td><button type='button' onclick='hapusBaris_tindakan("+idrowBill+")' class='btn red'><i class='fa fa-trash-o'></i> </button></td></td>"+
         "<td><select name='kode[]' id=kode"+idrowBill+" class='select2_el_poli_tindakan form-control input-largex' onchange='show_tindakan(this.value, "+idrowBill+")'> </select></td>"+
         "<td><input name='hrg[]' id=hrg"+idrowBill+" class='form-control rightJustified' readonly></td>"+
-        "<td><select name='dokter[]' id=dokter"+idrowBill+" type='text' class='form-control select2_el_dokter'><option value='<?= $data_pas->kodokter ?>' selected><?= data_master("dokter", array("kodokter" => $data_pas->kodokter, "koders" => $this->session->userdata("unit"), "kopoli" => $polipas))->nadokter ?></option></select></td>"+
-        "<td><select name='paramedis[]' id=paramedis"+idrowBill+" type='text' class='form-control select2_el_dokter'><option value='<?= $data_pas->kodokter ?>' selected><?= data_master("dokter", array("kodokter" => $data_pas->kodokter, "koders" => $this->session->userdata("unit"), "kopoli" => $polipas))->nadokter ?></option></select></td>"+
+        "<td><select name='dokter[]' id=dokter"+idrowBill+" type='text' class='form-control select2_el_dokter'><option value='<?= $kodokter ?>' selected><?= data_master("dokter", array("kodokter" => $kodokter, "koders" => $this->session->userdata("unit"), "kopoli" => $polipas))->nadokter ?></option></select></td>"+
+        "<td><select name='paramedis[]' id=paramedis"+idrowBill+" type='text' class='form-control select2_el_dokter'><option value='<?= $kodokter ?>' selected><?= data_master("dokter", array("kodokter" => $kodokter, "koders" => $this->session->userdata("unit"), "kopoli" => $polipas))->nadokter ?></option></select></td>"+
         "</tr>");
 
         initailizeSelect2_poli_tindakan(kodpos);
@@ -2789,7 +2842,7 @@
             '<input type="hidden" id="elabtin_tarifrs'+ param  + idrowElab +'" name="elabtin_tarifrs[]" value="">'+
             '<input type="hidden" id="elabtin_tarifdr'+ param  + idrowElab +'" name="elabtin_tarifdr[]" value="">'+
         '</td>'+
-        '<td><select type="text" class="form-control input-medium" name="elabtin_kode[]" id="elabtin_kode'+ param + idrowElab +'" data-live-search="true" data-width="100%" onkeypress="return tabE(this,event)" onchange="show_tindakan_elab(this.value, '+ param + idrowElab +')"><option value="">--- Pilih Tindakan ---</option><?php foreach($list_elab as $leval): ?><option value="<?= $leval->kodeid ?>"><?= $leval->text ?></opiton><?php endforeach; ?></select></td>'+
+        "<td><select type='text' class='form-control input-medium' name='elabtin_kode[]' id='elabtin_kode"+ param + idrowElab +"' data-live-search='true' data-width='100%' onkeypress='return tabE(this,event)' onchange='show_tindakan_elab(this.value, "+ param + idrowElab +")'><option value='>--- Pilih Tindakan ---</option><?php foreach($list_elab as $leval): ?><option value='<?= $leval->kodeid ?>'><?= $leval->text ?></opiton><?php endforeach; ?></select></td>"+
         '<td><input type="text" class="form-control" name="elabtin_harga[]" id="elabtin_harga'+ param + idrowElab +'" readonly></td>'+
         '<td><input type="text" class="form-control" name="elabtin_catatan[]" id="elabtin_catatan'+ param + idrowElab +'"></td>'+
         '</tr>');
@@ -2897,12 +2950,12 @@
                         '<td>'+
                             '<button type="button" class="btn red" onclick="hapusBarisElab('+ idrowElabOrder +'1)"><i class="fa fa-trash-o"></i></button>'+
                             '<input type="hidden" id="elabtin_orderno'+ idrowElabOrder +'1" name="elabtin_orderno[]" value="">'+
-                            '<input type="hidden" id="elabtin_tindakan'+idrowElabOrder+'1" name="elabtin_tindakan[]" value="">'+
+                            "<input type='hidden' id='elabtin_tindakan"+idrowElabOrder+"1' name='elabtin_tindakan[]' value='>"+
                             '<input type="hidden" id="elabtin_tarifrs'+idrowElabOrder+'1" name="elabtin_tarifrs[]" value="">'+
                             '<input type="hidden" id="elabtin_tarifdr'+idrowElabOrder+'1" name="elabtin_tarifdr[]" value="">'+
                         '</td>'+
                         '<td>'+
-                            '<select type="text" class="form-control selectpicker input-medium" name="elabtin_kode[]" id="elabtin_kode'+ idrowElabOrder +'1" data-live-search="true" data-width="100%" onkeypress="return tabE(this,event)" onchange="show_tindakan_elab(this.value, '+ idrowElabOrder +'1)"><option value="-">--- Pilih Tindakan ---</option><?php foreach($list_elab as $leval): ?><option value="<?= $leval->kodeid ?>"><?= $leval->text ?></opiton><?php endforeach; ?></select>'+
+                            "<select type='text' class='form-control selectpicker input-medium' name='elabtin_kode[]' id='elabtin_kode"+ idrowElabOrder +"1' data-live-search='true' data-width='100%' onkeypress='return tabE(this,event)' onchange='show_tindakan_elab(this.value, "+ idrowElabOrder +"1)'><option value=''>--- Pilih Tindakan ---</option><?php foreach($list_elab as $leval): ?><option value='<?= $leval->kodeid ?>'><?= $leval->text ?></opiton><?php endforeach; ?></select>"+
                         '</td>'+
                         '<td><input type="text" class="form-control" name="elabtin_harga[]" id="elabtin_harga'+ idrowElabOrder +'1" readonly></td>'+
                         '<td><input type="text" class="form-control" name="elabtin_catatan[]" id="elabtin_catatan'+ idrowElabOrder +'1"></td>'+
@@ -3428,10 +3481,14 @@
         
                 
         $.ajax({
-            <?php if($statuspu == "undone"){ echo 'url: "'. base_url() .'poliklinik/ajax_add_dokter/1"'; } else { echo 'url: "'. base_url() .'poliklinik/ajax_add_dokter/0"'; } ?>,
-            data: post_form,				
-            type:'POST',
-            dataType : "json",
+            <?php if($statuspu == "undone"){
+                echo 'url: "'. base_url() .'poliklinik/ajax_add_dokter/1"'; 
+            } else { 
+                echo 'url: "'. base_url() .'poliklinik/ajax_add_dokter/0"'; 
+            } ?>,
+            data        : post_form,
+            type        : 'POST',
+            dataType    : "json",
             success:function(data){ 
             // data1 = JSON.parse(data);
             // alert(data1.status);
@@ -3473,9 +3530,10 @@
     function save_elab(type){
         var post_form   = $("#frmelab").serialize();
         var dokter      = $("#selectdr").val();
+        var kodepos     = $("#poli_dok").val();
         
         $.ajax({
-            url: "/poliklinik/add_elab/<?= $this->input->get("noreg") ?>/<?= $this->input->get("rekmed") ?>/"+ dokter,
+            url: "/poliklinik/add_elab/<?= $this->input->get("noreg") ?>/<?= $this->input->get("rekmed") ?>/"+ dokter +"/"+ kodepos,
             data: post_form,
             type: "POST",
             dataType: "JSON",

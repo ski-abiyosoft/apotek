@@ -520,6 +520,7 @@ function myShow() {
                                 <div class="col-md-9">
                                     <select name="ulev" class="form-control">
                                         <option value="">--Pilih--</option>
+                                        <option value="0">Khusus</option>
                                         <option value="1">Owner</option>
                                         <option value="2">Supervisor</option>
                                         <option value="3">User</option>

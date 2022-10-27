@@ -444,6 +444,7 @@ class Farmasi_kartustock extends CI_Controller
 	{
 		$cek  = $this->session->userdata('level');
 		$cabang = $this->session->userdata('unit');
+		$avatar  = $this->session->userdata('avatar_cabang');
 		$barang = $this->input->get('barang');
 		$gudang = $this->input->get('gudang');
 		$dari = $this->input->get('tgl1');
@@ -468,7 +469,7 @@ class Farmasi_kartustock extends CI_Controller
                          <thead>
                               <tr>
                                    <td rowspan=\"6\" align=\"center\">
-                                        <img src=\"" . base_url() . "assets/img/logo.png\"  width=\"70\" height=\"70\" />
+                                        <img src=\"" . base_url() . "assets/img_user/$avatar\"  width=\"70\" height=\"70\" />
                                    </td>
                                    <td colspan=\"20\">
                                         <b>
@@ -585,11 +586,16 @@ class Farmasi_kartustock extends CI_Controller
 			$periode_awal    = $this->db->get_where('tbl_periode', ['koders' => $cabang])->row();
 			$_tgl1      = $periode_awal->apoperiode;
 			$_tgl2      = $dari;
+			$stok_awal = $this->M_KartuStock->stok_awal_farmasi($cabang, $barang, $gudang, $_tgl1, $_tgl2);
 			$coba       = $this->M_KartuStock->cekstok_farmasi($cabang, $barang, $gudang, $_tgl1, $_tgl2);
 			if ($coba) {
 				$_tanggalawal = $periode_awal->apoperiode;
-				$saldo = $coba->saldoawal;
-				$jam = $coba->jam;
+				$sald = 0;
+				foreach ($coba as $key => $value) {
+					$sald += $value->terima - $value->keluar;
+					$jam = $value->jam;
+				}
+				$saldo = $stok_awal->saldoawal + $sald;
 			} else {
 				$_tanggalawal    = $dari;
 				$saldo           = 0;

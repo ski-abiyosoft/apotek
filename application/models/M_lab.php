@@ -38,16 +38,20 @@ class M_lab extends CI_Model{
                 b.namapas AS namapas,
                 b.preposisi AS preposisi,
                 c.nadokter AS nadokter,
+                c.nadokter AS nadokter,
                 a.labonproses AS labonproses,
-                a.labok AS labok
+                a.labok AS labok,
+                d.kodepos AS poli
                 FROM tbl_orderperiksa AS a
                 LEFT JOIN tbl_pasien AS b ON a.rekmed = b.rekmed
-                JOIN tbl_dokter AS c ON a.kodokter = c.kodokter
-                WHERE a.lab = 1 
-                AND a.labok = 0 
+                LEFT JOIN tbl_rekammedisrs AS d ON d.noreg = a.noreg
+                LEFT JOIN tbl_dokter AS c ON a.kodokter = c.kodokter
+                WHERE a.lab = '1' 
+                AND a.labok = '0' 
                 AND a.tglorder BETWEEN '$date->start' AND '$date->end' 
                 AND a.koders = '$unit'
-                AND c.koders = '$unit'");
+                ORDER BY a.id DESC");
+                // AND c.koders = '$unit'
         } else {
             $query_res  = $this->db->query("SELECT 
                 a.koders AS koders,
@@ -64,14 +68,17 @@ class M_lab extends CI_Model{
                 b.preposisi AS preposisi,
                 c.nadokter AS nadokter,
                 a.labonproses AS labonproses,
-                a.labok AS labok
+                a.labok AS labok,
+                d.kodepos AS poli
                 FROM tbl_orderperiksa AS a
                 LEFT JOIN tbl_pasien AS b ON a.rekmed = b.rekmed
-                JOIN tbl_dokter AS c ON a.kodokter = c.kodokter
-                WHERE a.lab = 1 
-                AND a.labok = 0 
+                LEFT JOIN tbl_rekammedisrs AS d ON d.noreg = a.noreg
+                LEFT JOIN tbl_dokter AS c ON a.kodokter = c.kodokter
+                WHERE a.lab = '1' 
+                AND a.labok = '0' 
                 AND a.koders = '$unit'
-                AND c.koders = '$unit'");
+                ORDER BY a.id DESC");
+                // AND c.koders = '$unit'
         }
 
         return $query_res;
@@ -126,12 +133,12 @@ class M_lab extends CI_Model{
 
     }
 
-    // function noReg(){
-    //     $this->db->select('noreg,rekmed,tglmasuk,namapas,nadokter,namapost,namaruang');
-    //     // $this->db->order_by('noreg', $this->order);
-    //     $this->db->limit(10); 
-    //     return $this->db->get($this->pasien_daftar)->result();
-    // }
+    function noReg(){
+        $this->db->select('noreg,rekmed,tglmasuk,namapas,nadokter,namapost,namaruang');
+        // $this->db->order_by('noreg', $this->order);
+        $this->db->limit(10); 
+        return $this->db->get($this->pasien_daftar)->result();
+    }
 
     function dataDokter(){
         $unit   = $this->session->userdata("unit");
@@ -142,6 +149,11 @@ class M_lab extends CI_Model{
 
     function dataPetugas(){
         $petugas = $this->db->query("SELECT * FROM tbl_petugas WHERE kodepos = 'LABOR'")->result();
+
+        return $petugas;
+    }
+    function dataPetugasRad(){
+        $petugas = $this->db->query("SELECT * FROM tbl_petugas WHERE kodepos = 'RADIO'")->result();
 
         return $petugas;
     }

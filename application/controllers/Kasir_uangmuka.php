@@ -125,14 +125,26 @@ class Kasir_uangmuka extends CI_Controller {
 			// $row[] = $unit->semua;
 			$row[] = $sisa;
 						//saya mengganti line 120 semula $unit->id
-			if($sisa>0){					
-				$row[] = 
+			if($sisa>0){
+				
+				if($user_level==0){
+				
+					$row[] = 
+					'<a class="btn btn-sm btn-warning" href="'.base_url("kasir_uangmuka/cetak/?id=".$unit->nokwitansi."").'" target="_blank" title="Cetak" ><i class="glyphicon glyphicon-print"></i></a>';
+						
+				}else{
+					$row[] = 
 					'<a class="btn btn-sm btn-primary" href="'.base_url("kasir_uangmuka/edit/".$unit->nokwitansi."?level=".$user_level."").'" title="Edit" ><i class="glyphicon glyphicon-edit"></i> </a>
 					
-					<a class="btn btn-sm btn-warning" href="'.base_url("kasir_uangmuka/cetak/?id=".$unit->nokwitansi."").'" target="_blank" title="Cetak" ><i class="glyphicon glyphicon-print"></i></a>				   
+					<a class="btn btn-sm btn-warning" href="'.base_url("kasir_uangmuka/cetak/?id=".$unit->nokwitansi."").'" target="_blank" title="Cetak" ><i class="glyphicon glyphicon-print"></i></a>		
+
 					<a class="btn btn-sm btn-success" href="javascript:void(0)" title="Kirim Email" onclick="send_email('."'".$unit->id."'".",'".$email."'".')"><i class="glyphicon glyphicon-envelope"></i> </a>
+
 					<a class="btn btn-sm btn-success" href="javascript:void(0)" title="Kirim Whatsapp" onclick="send_wa('."'".$unit->id."'".",'".$hp."'".')"><i class="fa fa-whatsapp"></i> </a>
+
 					<a class="btn btn-sm btn-danger" href="javascript:void(0)" title="Batalkan" onclick="Batalkan('."'".$unit->nokwitansi."'".')"><i class="glyphicon glyphicon-remove"></i> </a>';
+				}
+
 				   
 			} else {
 			  $row[] = '';	
@@ -151,6 +163,7 @@ class Kasir_uangmuka extends CI_Controller {
 		//output to json format
 		echo json_encode($output);
 	}
+
 
 	public function ajax_edit($id)
 	{
@@ -413,6 +426,8 @@ class Kasir_uangmuka extends CI_Controller {
 		// 	);
 		// 	$insert = $this->db->insert('tbl_kartukredit', $data);
 		// }
+		
+		history_log(0 ,'UANG_MUKA' ,'ADD' ,$kwitansi ,'-');
 		echo json_encode(array("status" => TRUE,"nomor" => $kwitansi));
 	}
 	
@@ -473,6 +488,8 @@ class Kasir_uangmuka extends CI_Controller {
 			);
 			$insert = $this->db->insert('tbl_kartukredit', $data);
 		}
+		
+		history_log(0 ,'UANG_MUKA' ,'EDIT' ,$kwitansi ,'-');
 		echo json_encode(array("status" => TRUE,"nomor" => $kwitansi));
 	}
 
@@ -494,6 +511,8 @@ class Kasir_uangmuka extends CI_Controller {
 		} else {
 		  echo json_encode(array("status" => 0));	
 		}
+		
+		history_log(0 ,'UANG_MUKA' ,'BATAL' ,$id ,'-');
 	}
 	
 

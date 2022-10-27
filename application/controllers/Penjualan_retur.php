@@ -749,7 +749,7 @@ class Penjualan_retur extends CI_Controller
 								'username' => $userid,
 								'totalnet' => $total,
 								'alasan' => $alasan,
-								'jamreturjual' => date('h:i:s'),
+								'jamreturjual' => date('H:i:s'),
 								// str_replace(",","",$this->input->get('vtotal'))
 							];
 							$this->db->insert('tbl_apohreturjual', $data);
@@ -1013,7 +1013,7 @@ class Penjualan_retur extends CI_Controller
 							'rekmed'  => $rekmed,
 							'tglretur' => date('Y-m-d', strtotime($tanggal)),
 							'gudang' => $gudang,
-							'jamreturjual' => date('h:i:s'),
+							'jamreturjual' => date('H:i:s'),
 						);
 						if ($param == 1) {
 							$this->db->insert('tbl_apohreturjual', $datahreturjual);

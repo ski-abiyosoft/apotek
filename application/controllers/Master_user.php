@@ -18,7 +18,7 @@ class Master_user extends CI_Controller {
 		if(!empty($cek))
 		{
 			$this->load->helper('url');
-			$d['grup']     = $this->db->get("ms_modul_grup");
+			$d['grup']     = $this->db->query("SELECT*FROM ms_modul_grup order by nmgrup");
 			$d['uid']      = $this->db->get("tbl_namers");
 			$this->load->view('master/user/v_master_user',$d);
 		} else

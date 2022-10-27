@@ -917,28 +917,28 @@ function gethistori() {
 }
 
 function save() {
-    var nomor = $('[name="nomember"]').val();
-    var noidentitas = $('[name="noidentitas"]').val();
+    var nomor             = $('[name="nomember"]').val();
+    var noidentitas       = $('[name="noidentitas"]').val();
 
-    var ccabang = document.getElementById('cabang').value;
-    var cnomember = document.getElementById('nomember').value;
-    var cpreposition = document.getElementById('preposition').value;
-    var cnamapasien = document.getElementById('namapasien').value;
-    var cnoidentitas = document.getElementById('noidentitas').value;
-    var ctgllahir = document.getElementById('tgllahir').value;
-    var cpendidikan = document.getElementById('pendidikan').value;
-    var cpekerjaan = document.getElementById('pekerjaan').value;
-    var clupinfoklinik = document.getElementById('lupinfoklinik').value;
-    var clupinfopas = document.getElementById('lupinfopas').value;
-    var calamat1 = document.getElementById('alamat1').value;
-    var calamat2 = document.getElementById('alamat2').value;
-    var crt = document.getElementById('rt').value;
-    var crw = document.getElementById('rw').value;
-    var cprovinsi = document.getElementById('provinsi').value;
-    var ckelurahan = document.getElementById('kelurahan').value;
-    var chp = document.getElementById('hp').value;
-    var calasan = document.getElementById('alasan').value;
-    var cnocard = document.getElementById('nocard').value;
+    var ccabang           = document.getElementById('cabang').value;
+    var cnomember         = document.getElementById('nomember').value;
+    var cpreposition      = document.getElementById('preposition').value;
+    var cnamapasien       = document.getElementById('namapasien').value;
+    var cnoidentitas      = document.getElementById('noidentitas').value;
+    var ctgllahir         = document.getElementById('tgllahir').value;
+    var cpendidikan       = document.getElementById('pendidikan').value;
+    var cpekerjaan        = document.getElementById('pekerjaan').value;
+    var clupinfoklinik    = document.getElementById('lupinfoklinik').value;
+    var clupinfopas       = document.getElementById('lupinfopas').value;
+    var calamat1          = document.getElementById('alamat1').value;
+    var calamat2          = document.getElementById('alamat2').value;
+    var crt               = document.getElementById('rt').value;
+    var crw               = document.getElementById('rw').value;
+    var cprovinsi         = document.getElementById('provinsi').value;
+    var ckelurahan        = document.getElementById('kelurahan').value;
+    var chp               = document.getElementById('hp').value;
+    var calasan           = document.getElementById('alasan').value;
+    var cnocard           = document.getElementById('nocard').value;
 
     //-- TAMBAHAN PROTEKSI DIY --//
     if (ccabang == '') {

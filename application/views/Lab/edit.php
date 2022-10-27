@@ -13,7 +13,7 @@ function rupiah($angka)
 </style>
 
 <!-- Modal Billing Add -->
-<div class="modal fade" id="tesModal">
+<!-- <div class="modal fade" id="tesModal">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -92,10 +92,10 @@ function rupiah($angka)
             </form>
         </div>
     </div>
-</div>
+</div> -->
 
 <!-- Modal Billing Edit -->
-<div class="modal fade" id="tesModalEdit">
+<!-- <div class="modal fade" id="tesModalEdit">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -173,10 +173,10 @@ function rupiah($angka)
             </form>
         </div>
     </div>
-</div>
+</div> -->
 
 <!-- Bhp Modal Edit -->
-<div class="modal fade" id="bhpModalEdit">
+<!-- <div class="modal fade" id="bhpModalEdit"> -->
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -263,10 +263,10 @@ function rupiah($angka)
             </form>
         </div>
     </div>
-</div>
+<!-- </div> -->
 
 <!-- Bhp Modal Add -->
-<div class="modal fade" id="bhpModalAdd">
+<!-- <div class="modal fade" id="bhpModalAdd"> -->
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -352,7 +352,7 @@ function rupiah($angka)
             </form>
         </div>
     </div>
-</div>
+<!-- </div> -->
 
 <div class="container-fluid">
     <div class="row">
@@ -558,16 +558,18 @@ function rupiah($angka)
                 
                 <div>
                     <div class="mb-5">
-                        <ul class="nav nav-tabs" role="tablist">
-                            <li role="presentation" class="active"><a href="#home" aria-controls="home" role="tab" data-toggle="tab">Billing</a></li>
+                        
+                        <!-- <ul class="nav nav-tabs" role="tablist">
+                            <li role="presentation"><a href="#home" aria-controls="home" role="tab" data-toggle="tab">Billing</a></li>
                             <li role="presentation"><a href="#profile" aria-controls="profile" role="tab" data-toggle="tab">BHP</a></li>
-                            <li role="presentation"><a href="#messages" aria-controls="messages" role="tab" data-toggle="tab">Hasil</a></li>
-                            <!-- <li role="presentation"><a href="#settings" aria-controls="settings" role="tab"
-                                    data-toggle="tab">Hasil Text</a></li> -->
-                        </ul>
+                            <li role="presentation" class="active"><a href="#messages" aria-controls="messages" role="tab" data-toggle="tab">Hasil</a></li>
+                            <li role="presentation"><a href="#settings" aria-controls="settings" role="tab"
+                                    data-toggle="tab">Hasil Text</a></li>
+                        </ul> -->
+
                         <div class="tab-content">
                             <!-- Tba billing -->
-                            <div role="tabpanel" class="tab-pane active" id="home">
+                            <!-- <div role="tabpanel" class="tab-pane" id="home">
                                 <div class="col-md-8">
                                     <button class="btn btn-primary" type="button" style="margin-bottom: 10px;" data-toggle="modal" data-target="#tesModal"><i class="fa fa-plus" aria-hidden="true"></i> Tambah
                                         Billing</button>
@@ -613,16 +615,17 @@ function rupiah($angka)
                                             <?php } ?>
                                         </tbody>
                                         <tfoot>
-                                            <!-- <th colspan="6" style="text-align: right;">Total Billing</th>
+                                            <th colspan="6" style="text-align: right;">Total Billing</th>
                                             <?php $grand_total = $this->db->query("SELECT SUM(total_biaya) AS grand_total FROM tbl_dlab where nolaborat='$row->nolaborat'")->row();?>
-                                            <th><?= $grand_total->grand_total ?></th> -->
+                                            <th><?= $grand_total->grand_total ?></th>
                                         </tfoot>
 
                                     </table>
                                 </div>
-                            </div>
+                            </div> -->
+
                             <!-- Tab BHP -->
-                            <div role="tabpanel" class="tab-pane" id="profile">
+                            <!-- <div role="tabpanel" class="tab-pane" id="profile">
                                 <div class="col-md-8">
                                     <button class="btn btn-primary" type="button" style="margin-bottom: 10px;" data-toggle="modal" data-target="#bhpModalAdd"><i class="fa fa-plus" aria-hidden="true"></i> Tambah
                                         Bhp</button>
@@ -676,9 +679,10 @@ function rupiah($angka)
                                         </tbody>
                                     </table>
                                 </div>
-                            </div>
+                            </div> -->
+
                             <!-- Tab Hasil -->
-                            <div role="tabpanel" class="tab-pane" id="messages">
+                            <div role="tabpanel" class="tab-pane active" id="messages">
                                 <?php
                                 $unit = $this->session->userdata("unit");
                                 $dataHlab = $this->db->query("SELECT * from tbl_hlab where nolaborat='$row->nolaborat'")->row();
@@ -1055,7 +1059,6 @@ $this->load->view('template/footer');
         $('#bhpModalEdit #bhp-edit-lokasi-barang').val(gudang);
         $('#bhpModalEdit #bhp-edit-id').val(id);
         $('#bhpModalEdit #bhp-edit-id-pemeriksaan').val(id_pemeriksaan);
-
     });
 
     //when change nama_barang in bhp tab

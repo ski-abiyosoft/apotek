@@ -55,10 +55,16 @@
 								  <?php 
 								  //if($akses->uadd)
 								  {?>
-								    <a href="<?php echo base_url()?>kasir_konsul/entri_konsul" class="btn btn-success">
-									<i class="fa fa-plus"></i>
-                                    Biaya Konsultasi
-									</a>
+									<?php 
+									$cek =  $this->session->userdata('user_level'); 
+									if($cek==0){?> 
+									<?php }else{ ?>
+										<a href="<?php echo base_url()?>kasir_konsul/entri_konsul" class="btn btn-success">
+										<i class="fa fa-plus"></i>
+										Biaya Konsultasi
+										</a>
+									
+									<?php } ?>
 								  <?php } ?>	
 								  
 								</div>	

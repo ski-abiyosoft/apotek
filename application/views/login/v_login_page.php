@@ -114,7 +114,7 @@
 			<div class="form-group">
 				<label class="form-label visible-ie8 visible-ie9"></label>
 				<select class="form-control" type="text" name="cabang" id="cabang">
-					<option>- Pilih Cabang -</option>
+					<option value="">- Pilih Cabang -</option>
 					<?php
 					foreach($cabang as $ckey => $cval){
 						?>
@@ -141,7 +141,7 @@
 			</div>
 			<div class="form-actions" style="padding:0px 30px 5px 30px;">            
 				
-				<button type="submit" class="btn blue pull-right">
+				<button type="submit" class="btn blue pull-right" id="login">
 				<b>Login <i class="m-icon-swapright m-icon-white"></i></b>
 				</button>
 				<?php echo '<label class="label label-sm label-warning">' . $this->session->flashdata( "result_login" ) . '</label>';?>
@@ -287,84 +287,91 @@
 	<?php }?>
 	
 <SCRIPT type="text/javascript">
-    
-	var Login = function () {
-   
-	var handleLogin = function() {
-		$('.login-form').validate({
-	            errorElement: 'span', //default input error message container
-	            errorClass: 'help-block', // default input error message class
-	            focusInvalid: false, // do not focus the last invalid input
-	            rules: {
-	                username: {
-	                    required: true
-	                },
-	                password: {
-	                    required: true
-	                },
-	                remember: {
-	                    required: false
-	                }
-	            },
 
-	            messages: {
-	                username: {
-	                    required: "Nama Harus Diisi."
-	                },
-	                password: {
-	                    required: "Password Harus Diisi."
-	                }
-	            },
+    $("#login").on("click", function(){
+		var cabang	= $("#cabang").val();
 
-	            invalidHandler: function (event, validator) { //display error alert on form submit   
-	                $('.alert-danger', $('.login-form')).show();
-	            },
+		if(cabang == "" || cabang == null){
+			alert("Cabang harus dipilih");
+		} else {
+			var Login = function () {
+		
+			var handleLogin = function() {
+				$('.login-form').validate({
+						errorElement: 'span', //default input error message container
+						errorClass: 'help-block', // default input error message class
+						focusInvalid: false, // do not focus the last invalid input
+						rules: {
+							username: {
+								required: true
+							},
+							password: {
+								required: true
+							},
+							remember: {
+								required: false
+							}
+						},
 
-	            highlight: function (element) { // hightlight error inputs
-	                $(element)
-	                    .closest('.form-group').addClass('has-error'); // set error class to the control group
-	            },
+						messages: {
+							username: {
+								required: "Nama Harus Diisi."
+							},
+							password: {
+								required: "Password Harus Diisi."
+							}
+						},
 
-	            success: function (label) {
-	                label.closest('.form-group').removeClass('has-error');
-	                label.remove();
-	            },
+						invalidHandler: function (event, validator) { //display error alert on form submit   
+							$('.alert-danger', $('.login-form')).show();
+						},
 
-	            errorPlacement: function (error, element) {
-	                error.insertAfter(element.closest('.input-icon'));
-	            },
+						highlight: function (element) { // hightlight error inputs
+							$(element)
+								.closest('.form-group').addClass('has-error'); // set error class to the control group
+						},
 
-	            submitHandler: function (form) {
-	                form.submit();
-	            }
-	        });
+						success: function (label) {
+							label.closest('.form-group').removeClass('has-error');
+							label.remove();
+						},
 
-         $('.login-form input').keypress(function (e) {
-	            if (e.which == 13) {
-	                if ($('.login-form').validate().form()) {
-	                    $('.login-form').submit();
-	                }
-	                return false;
-	            }
-	        });
+						errorPlacement: function (error, element) {
+							error.insertAfter(element.closest('.input-icon'));
+						},
+
+						submitHandler: function (form) {
+							form.submit();
+						}
+					});
+
+				$('.login-form input').keypress(function (e) {
+						if (e.which == 13) {
+							if ($('.login-form').validate().form()) {
+								$('.login-form').submit();
+							}
+							return false;
+						}
+					});
+			}
+			return {
+				init: function () {
+					//handleLogin();
+					$.backstretch([
+						"<?php echo base_url();?>assets/img/bg/1.jpg",
+						"<?php echo base_url();?>assets/img/bg/2.jpg",
+						"<?php echo base_url();?>assets/img/bg/3.jpg",
+						"<?php echo base_url();?>assets/img/bg/4.jpg"
+						], {
+						fade: 1000,
+						duration: 8000
+					});
+				}
+
+			};
+			}();
 	}
-	 return {
-        init: function () {
-			//handleLogin();
-           	$.backstretch([
-		        "<?php echo base_url();?>assets/img/bg/1.jpg",
-		        "<?php echo base_url();?>assets/img/bg/2.jpg",
-		        "<?php echo base_url();?>assets/img/bg/3.jpg",
-		        "<?php echo base_url();?>assets/img/bg/4.jpg"
-		        ], {
-		          fade: 1000,
-		          duration: 8000
-		    });
-        }
-
-    };
-
-}();
+	});
 
 	
 	

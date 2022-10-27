@@ -14,6 +14,16 @@ class App extends CI_Controller
 		$qry = "SELECT koders FROM tbl_namers ORDER BY kodeurut";
 		$d['data'] = $this->db->query($qry)->result();
 
+		$this->load->library('user_agent');
+		
+		if (key_exists('username', $this->session->userdata())) {
+			if ($this->agent->is_referral()) {
+				redirect($this->agent->referrer());
+			}else {
+				redirect(base_url('/home'));
+			}
+		}
+		
 		$this->load->view('login/v_login_page', $d);
 	}
 	

@@ -452,7 +452,7 @@ class Farmasi_bapb extends CI_Controller
 					'userid'      => $userid,
 					'ppn'         => '',
 					'vatrp'       => 0,
-					'jamterima'   => date('h:i:s'),
+					'jamterima'   => date('H:i:s'),
 				);
 				$insert = $this->db->insert('tbl_baranghterima', $data);
 			}
@@ -608,7 +608,7 @@ class Farmasi_bapb extends CI_Controller
 		$faktur   = $this->input->post('nofaktur');
 		$terimano   = $this->input->get('terimano');
 		$tanggal  = date('Y-m-d');
-		$jam      = date('h:i:s');
+		$jam      = date('H:i:s');
 		$nomorpo  = $this->input->post('nomorpo');
 		if ($this->input->post('pembayaran') == 'CASH') {
 			$jenisbeli = 0;

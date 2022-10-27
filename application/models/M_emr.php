@@ -179,7 +179,7 @@ class M_emr extends CI_Model {
 			$info['item_tanggal']   = date('d-m-Y',strtotime($res1->tglperiksa));
 			$info['item_tanggal1']  = date('Y-m-d',strtotime($res1->tglperiksa));
 			$info['item_cabang']    = $res1->koders;
-			$info['item_dokter']    = $res1->kodokter;
+			$info['item_dokter']    = ($res1->kodokter == "")? "" : data_master("dokter", array("kodokter" => $res1->kodokter, "kopoli" => $res1->kodepos, "koders" => $res1->koders))->nadokter;
 			$result = $this->return_row_with_data($rowcount++,$info);
 		}
 		return $result;

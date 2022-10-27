@@ -366,6 +366,9 @@ class Inventory_tso extends CI_Controller
 						$this->db->query("insert into tbl_barangstock(koders, kodebarang, gudang, lasttr, sesuai, menyetujui) values('$cabang','$_kode','$gudang','$tanggal', '$_plusminus', '$yangsetuju')");
 					} else {
 						$this->db->query("insert into tbl_barangstock(koders, kodebarang, gudang, lasttr, sesuai, menyetujui) values('$cabang','$_kode','$gudang','$tanggal', '$_plusminus', '$yangsetuju')");
+						$this->db->set("apoperiode", date('Y-m-d'));
+						$this->db->where("koders", $this->session->userdata('unit'));
+						$this->db->update("tbl_periode");
 					}
 				}
 				$datad = array(

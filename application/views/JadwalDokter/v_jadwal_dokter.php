@@ -70,7 +70,14 @@
               </div>
             </div>
             <div class="col-md-3">
-              <button class="btn btn-primary" id="proses" type="button" onclick="saveas()" style="margin-top: 23.5px;">Proses</button>
+              <?php 
+              $cek =  $this->session->userdata('user_level'); 
+              if($cek==0){?> 
+              <?php }else{ ?>
+
+                <button class="btn btn-primary" id="proses" type="button" onclick="saveas()" style="margin-top: 23.5px;">Proses</button>
+
+              <?php } ?>
             </div>
           </div>
         </div>

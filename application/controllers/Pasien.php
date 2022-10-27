@@ -295,6 +295,8 @@ class Pasien extends CI_Controller {
 				'idtr' => $this->input->post('idpasien')
 			), $data
 		);
+		
+		history_log(0 ,'EDIT DATA PASIEN' ,'EDIT' ,$this->input->post('idpasien') ,'-');
 		echo json_encode(array("status" => TRUE));
 	}
 

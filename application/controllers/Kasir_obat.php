@@ -353,7 +353,9 @@ class Kasir_obat extends CI_Controller
 		if ($retur) {
 			$this->db->query("UPDATE tbl_apodreturjual SET terpakai = 1 WHERE returno = '$retur'");
 		}
-
+ 
+		
+		history_log(0 ,'KASIR_OBAT' ,'ADD' ,$kwitansi ,'-');
 		echo json_encode(array("status" => TRUE, "nomor" => $kwitansi, "total" => $totalnet));
 	}
 
@@ -422,13 +424,16 @@ class Kasir_obat extends CI_Controller
 
 	public function pembatalan($id)
 	{
-		$result = $this->db->query("delete from tbl_kasir where id = '$id'");
+		$cek    = $this->db->query("SELECT * from tbl_kasir where id = '$id'")->row();
+		$result = $this->db->query("DELETE from tbl_kasir where id = '$id'");
 
 		if ($result) {
 			echo json_encode(array("status" => 1));
 		} else {
 			echo json_encode(array("status" => 0));
 		}
+		
+		history_log(0 ,'KASIR_OBAT' ,'BATAL' ,$cek->nokwitansi ,'-');
 	}
 
 	private function _validate()
@@ -909,7 +914,12 @@ class Kasir_obat extends CI_Controller
 
 			$header   = $this->db->query($qheader)->row();
 			$posting     = $this->db->query($qposting)->row_array();
-			$detil       = $this->db->query($qdetil)->result();
+			$detilx       = $this->db->query($qdetil);
+			if($detilx->num_rows() > 0){
+				$detil = $detilx->result();
+			} else {
+				$detil = $this->db->query("SELECT d.*, d.qtyretur as qty, d.discountrp as discrp, (SELECT namabarang FROM tbl_barang WHERE kodebarang = d.kodebarang) as namabarang from tbl_apodreturjual d where d.returno = '$noresep'")->result();
+			}
 			$kartu       = $this->db->query($qkartu)->row();
 
 			$query_kartu_card	= $this->db->query("SELECT * FROM tbl_kartukredit WHERE nokwitansi = '$nokwitansi'")->result();

@@ -137,7 +137,7 @@ class Pembelian_retur extends CI_Controller
       'retur_date' => date('Y-m-d', strtotime($this->input->post('tanggal'))),
       'invoice_no' => '',
       'gudang'     => $gudang,
-      'jamretur'   => date('h:i:s'),
+      'jamretur'   => date('H:i:s'),
     );
     $this->db->insert('tbl_baranghreturbeli', $data);
     $hbapb  = $this->db->query("SELECT*FROM tbl_apoap where terima_no='$bapb_no'")->row();

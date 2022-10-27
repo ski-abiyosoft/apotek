@@ -52,14 +52,22 @@
 						<div class="portlet-body">
 							<div class="table-toolbar">
 								<div class="btn-group">
-								  <?php 
-								  //if($akses->uadd)
-								  {?>
-								    <a href="<?php echo base_url()?>kasir_uangmuka/entri" class="btn btn-success">
-									<i class="fa fa-plus"></i>
-                                    Transaksi Baru
-									</a>
-								  <?php } ?>	
+									<?php 
+									//if($akses->uadd)
+									{?>
+								    <?php 
+									$cek =  $this->session->userdata('user_level'); 
+									if($cek==0){?> 
+									<?php }else{ ?>
+
+										<a href="<?php echo base_url()?>kasir_uangmuka/entri" class="btn btn-success">
+											<i class="fa fa-plus"></i>
+										Transaksi Baru
+										</a>
+
+									<?php } ?>
+
+									<?php } ?>	
 								</div>	
 								
                                 <div class="btn-group pull-right">

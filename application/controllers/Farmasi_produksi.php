@@ -134,7 +134,7 @@ class Farmasi_produksi extends CI_Controller
 				'hpp'           => $hpp,
 				'keterangan'    => '',
 				'username'      => $uid,
-				'jamproduksi'   => date('h:i:s')
+				'jamproduksi'   => date('H:i:s')
 			);
 
 			if ($param == 1) {

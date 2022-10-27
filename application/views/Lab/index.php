@@ -297,15 +297,15 @@ $this->load->view('template/body');
                         </div>
 
                         <tr>
-                            <td> <button class="btn green btn-sm">Proses</button> </td>
+                            <td><button class="btn green btn-sm" type="button" onclick="window.open('/lab/addDataPemeriksaan/?elab&noelab=<?= $data->orderno ?>', 'blank')">Proses</button> </td>
                             <td><?= $data->orderno ?></td>
                             <td><?= substr($data->tglorder, 0, 10)  ?> <?= $data->jamorder ?></td>
                             <td><?= $data->rekmed ?></td>
                             <td><?= $data->namapas ?></td>
                             <?php $queryTindakan = $this->db->query("SELECT * FROM tbl_elab where notr='$data->orderno'")->result() ?>
                             <td><button type="button" class="btn btn-info btn-xs" data-toggle="modal" data-target="#<?= $data->orderno ?>">Detail Pemeriksaan</button></td>
-                            <td><?= $data->asal ?></td>
-                            <td><?= $data->nadokter ?></td>
+                            <td><?= data_master("tbl_namapos", array("kodepos" => $data->poli))->namapost ?></td>
+                            <td><?= data_master("dokter", array("kodokter" => $data->kodokter, "koders" => $data->koders, "kopoli" => $data->poli))->nadokter ?></td>
                         </tr>
                     <?php } ?>
                 </tbody>
@@ -411,7 +411,7 @@ $this->load->view('template/body');
                                             } else {
                                                 echo "<ul>";
                                                 foreach($query_detail as $qdval){
-                                                    echo "<li>". $qdval->kodetarif ." - ". $qdval->tindakan ."</li>";
+                                                    echo "<li>". $qdval->kodetarif ." - ". data_master("daftar_tarif_nonbedah", array("kodetarif" => $qdval->kodetarif, "kodepos" => "LABOR", "koders" => $this->session->userdata("unit")))->tindakan ."</li>";
                                                 }
                                                 echo "</ul>";
                                             }
@@ -428,16 +428,16 @@ $this->load->view('template/body');
 
                     <tr>
                         <td>
-                            <button type="button" class="btn blue btn-xs">Edit</button>
+                            <button type="button" class="btn blue btn-xs" onclick="window.open('/lab/addDataPemeriksaan/<?= $oval->nolaborat ?>', 'blank')">Edit</button>
                         </td>
                         <td></td>
                         <td><?= $oval->nolaborat ?></td>
-                        <td></td>
+                        <td><?= $oval->orderno ?></td>
                         <td><?= date("d/m/Y", strtotime($oval->tgllab)) ." ". $oval->jam ?></td>
                         <td><?= $oval->rekmed ?></td>
                         <td><?= $oval->namapas ?></td>
                         <td><button class="btn btn-info btn-xs" type="button" data-toggle="modal" data-target="#<?= $oval->nolaborat ?>">detail</button></td>
-                        <td><?= data_master("tbl_dokter", array("kodokter" => $oval->drpengirim))->nadokter ?></td>
+                        <td><?= data_master("dokter", array("kodokter" => $oval->drpengirim, "koders" => $this->session->userdata("unit")))->nadokter ?></td>
                     </tr>
                     <?php } ?>
                 </tbody>

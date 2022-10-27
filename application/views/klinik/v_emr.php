@@ -255,10 +255,10 @@ function getdetil( tgl ) {
         success: function(data)
         {		      
 		  
-		  $('#keluhanawal').val(data.subjective_s);
-		  $('#diagnosa').val(data.obyective_o);
-		  $('#pemeriksaan').val(data.assessment_a);
-		  $('#obat').val(data.plan_p);
+		  $('#keluhanawal').val(data.keluhanawal);
+		  $('#diagnosa').val(data.diagnosa);
+		  $('#pemeriksaan').val(data.pfisik);
+		  $('#obat').val(data.resep);
 		  $('#keterangan').val(data.anjuran);
 		  
 		}

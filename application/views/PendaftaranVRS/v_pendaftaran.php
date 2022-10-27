@@ -146,10 +146,17 @@
                                              <div class="tab-pane" id="tab2">
                                                   <div class="portlet-body">
                                                        <div class="table-toolbar">
-                                                            <div class="btn-group">
-                                                            <a href="<?php echo base_url()?>PendaftaranVRS/entri_rj" class="btn btn-success">
-                                                                 <i class="fa fa-plus"></i> Daftarkan Pasien
-                                                            </a>
+                                                            <div class="btn-group"> 
+                                                            <?php 
+                                                            $cek =  $this->session->userdata('user_level'); 
+                                                            if($cek==0){?> 
+                                                            <?php }else{ ?>
+
+                                                                 <a href="<?php echo base_url()?>PendaftaranVRS/entri_rj" class="btn btn-success">
+                                                                      <i class="fa fa-plus"></i> Daftarkan Pasien
+                                                                 </a>
+
+                                                            <?php } ?>
                                                             </div>
                                                             <div class="btn-group pull-right" id="filter">
                                                                  <button class="btn dropdown-toggle" data-toggle="dropdown">Data <i class="fa fa-angle-down"></i>

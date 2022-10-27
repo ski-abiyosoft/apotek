@@ -157,7 +157,7 @@ $this->load->view('template/body');
                             <!--form id="frmbayar" class="form-horizontal" method="post"-->
                             <div class="row">
 
-                                <div class="col-md-4">
+                                <div class="col-md-12">
                                     <div class="portlet ">
                                         <div class="portlet-title">
                                             <div class="caption">
@@ -361,7 +361,7 @@ $this->load->view('template/body');
 									</div> -->
                             </div>
                             <div class="row">
-                                <div class="col-md-6">
+                                <div class="col-md-12">
                                     <div class="portlet ">
                                         <div class="portlet-title">
                                             <div class="caption">
@@ -463,7 +463,7 @@ $this->load->view('template/body');
                                     </div>
                                 </div>
 
-                                <div class="col-md-6" id="histori_form">
+                                <div class="col-md-12" id="histori_form">
                                     <div class="portlet ">
                                         <div class="portlet-title">
                                             <div class="caption">

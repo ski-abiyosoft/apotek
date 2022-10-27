@@ -219,11 +219,14 @@ class Poliklinik extends CI_Controller {
 					'rekmed'  => $rekmed_per,
 					'koders'  => $cabang
 				));
+				
+				history_log(0 ,'POLI_PERIKSA_PERAWAT' ,'EDIT' ,$noreg_per ,'-');
 				echo json_encode(array("status" => "1","nomor" => $noreg_per));
 
 			}else{
 
 				$insert = $this->db->insert('tbl_rekammedisrs',$data);
+				history_log(0 ,'POLI_PERIKSA_PERAWAT' ,'ADD' ,$noreg_per ,'-');
 				echo json_encode(array("status" =>"2","nomor" => $noreg_per));
 			}
 
@@ -701,11 +704,14 @@ class Poliklinik extends CI_Controller {
 					'koders'  => $cabang
 				));
 
+				history_log(0 ,'POLI_DOKTER_SOAP_RESEP' ,'EDIT' ,$noreg_dok ,'-');
 				echo json_encode(array("status" => "0","nomor" => $noreg_dok));
 			} else {
+
 				$insert = $this->db->insert('tbl_rekammedisrs',$datarekmed);
 				$insert = $this->db->insert('tbl_hpoli',$datahpoli);
 
+				history_log(0 ,'POLI_DOKTER_SOAP_RESEP' ,'ADD' ,$noreg_dok ,'-');
 				echo json_encode(array("status" =>"1","nomor" => $noreg_dok));
 			}
 
@@ -807,7 +813,7 @@ class Poliklinik extends CI_Controller {
 		}
 	}
 
-	public function add_elab($noreg, $rekmed, $kodokter){
+	public function add_elab($noreg, $rekmed, $kodokter, $kodepos){
 		$unit		= $this->session->userdata("unit");
 		$orderno	= $this->input->post("elab_no");
 		$tanggal	= $this->input->post("elab_tanggal");
@@ -834,33 +840,40 @@ class Poliklinik extends CI_Controller {
 				"proses"	=> "proses",
 				"jamorder"	=> $jam[$okey],
 				"kodokter"	=> $kodokter,
+				"asal"		=> $kodepos,
 				"lab"		=> "1",
 				"labok"		=> "0",
 			);
 
 			// Insert Elab
-			$this->db->query("DELETE FROM tbl_elab WHERE notr = '$oval' AND noreg = '$noreg'");
+			if(!empty($elab_kode)){
+				$this->db->query("DELETE FROM tbl_elab WHERE notr = '$oval' AND noreg = '$noreg'");
 
-			foreach($elab_kode as $ekkey => $ekval){
-				if($elab_orderno[$ekkey] == $oval){
-					$data_elab			= array(
-						"notr"			=> $oval,
-						"noreg"			=> $noreg,
-						"kodetarif"		=> $elab_kode[$ekkey],
-						"tindakan"		=> $elab_tindakan[$ekkey],
-						"tarifrs"		=> $elab_tarifrs[$ekkey],
-						"tarifdr"		=> $elab_tarifdr[$ekkey],
-						"keterangan"	=> $elab_note[$ekkey]
-					);
+				foreach($elab_kode as $ekkey => $ekval){
+					if($elab_orderno[$ekkey] == $oval){
+						$data_elab			= array(
+							"notr"			=> $oval,
+							"noreg"			=> $noreg,
+							"kodetarif"		=> $elab_kode[$ekkey],
+							"tindakan"		=> $elab_tindakan[$ekkey],
+							"tarifrs"		=> $elab_tarifrs[$ekkey],
+							"tarifdr"		=> $elab_tarifdr[$ekkey],
+							"keterangan"	=> $elab_note[$ekkey]
+						);
 
-					$this->db->insert("tbl_elab", $data_elab);
+						$this->db->insert("tbl_elab", $data_elab);
+					}
 				}
 			}
 
 			if($check_order->num_rows() == 0){
+				
 				$query_order_elab	= $this->db->insert("tbl_orderperiksa", $data_op);
+				history_log(0 ,'POLI_DOKTER_LAB' ,'ADD' ,$oval ,'-');
+
 			} else {
 				$query_order_elab	= $this->db->update("tbl_orderperiksa", $data_op, array("koders" => $unit,"orderno" => $oval, "noreg" => $noreg));
+				history_log(0 ,'POLI_DOKTER_LAB' ,'EDIT' ,$oval ,'-');
 			}
 
 			if($query_order_elab){
@@ -1019,8 +1032,11 @@ class Poliklinik extends CI_Controller {
 
 			if($check_order->num_rows() == 0){
 				$query_order_erad	= $this->db->insert("tbl_orderperiksa", $data_op);
+				history_log(0 ,'POLI_DOKTER_RAD' ,'ADD' ,$oval ,'-');
+				
 			} else {
 				$query_order_erad	= $this->db->update("tbl_orderperiksa", $data_op, array("koders" => $unit,"orderno" => $oval, "noreg" => $noreg));
+				history_log(0 ,'POLI_DOKTER_RAD' ,'EDIT' ,$oval ,'-');
 			}
 
 			if($query_order_erad){
@@ -1051,6 +1067,8 @@ class Poliklinik extends CI_Controller {
 			$query_delete	= $this->db->query("DELETE FROM tbl_orderperiksa WHERE koders = '$unit' AND orderno = '$orderno' AND noreg = '$noreg'");
 			if($query_delete){
 				$this->db->query("DELETE FROM tbl_elab WHERE notr = '$orderno' AND noreg = '$noreg'");
+				
+				history_log(0 ,'POLI_DOKTER_LAB' ,'DELETE' ,$orderno ,'-');
 				echo json_encode(array("status" => "success", "orderno" => $orderno));
 			} else {
 				echo json_encode(array("status" => "failed", "orderno" => $orderno));
@@ -1087,6 +1105,8 @@ class Poliklinik extends CI_Controller {
 			$query_delete	= $this->db->query("DELETE FROM tbl_orderperiksa WHERE koders = '$unit' AND orderno = '$orderno' AND noreg = '$noreg'");
 			if($query_delete){
 				$this->db->query("DELETE FROM tbl_eradio WHERE notr = '$orderno' AND noreg = '$noreg'");
+				
+				history_log(0 ,'POLI_DOKTER_RAD' ,'DELETE' ,$orderno ,'-');
 				echo json_encode(array("status" => "success", "orderno" => $orderno));
 			} else {
 				echo json_encode(array("status" => "failed", "orderno" => $orderno));
@@ -1189,8 +1209,8 @@ class Poliklinik extends CI_Controller {
 		$kode = $this->input->get('kode');
 
 		$data = $this->db->query("SELECT *	from daftar_tarif_nonbedah
-		where daftar_tarif_nonbedah.koders='$unit'
-		and daftar_tarif_nonbedah.kodetarif ='$kode'")->row();
+		-- where daftar_tarif_nonbedah.koders='$unit'
+		where daftar_tarif_nonbedah.kodetarif ='$kode'")->row();
 		echo json_encode($data);
 	}
 
@@ -1286,8 +1306,9 @@ class Poliklinik extends CI_Controller {
 
 		$qpl_1	= $this->db->query("UPDATE tbl_regist SET kodokter = '$pl_kodokter' WHERE noreg = '$pl_noreg' AND koders = '$pl_cabang'");
 		$qpl_2	= $this->db->query("UPDATE tbl_rekammedisrs SET kodokter = '$pl_kodokter' WHERE noreg = '$pl_noreg' AND koders = '$pl_cabang'");
+		$qpl_3	= $this->db->query("UPDATE tbl_orderperiksa SET kodokter = '$pl_kodokter' WHERE noreg = '$pl_noreg' AND koders = '$pl_cabang'");
 
-		if(!$qpl_1 || !$qpl_2){
+		if(!$qpl_1 || !$qpl_2 || !$qpl_3){
 			echo json_encode(array(
 				"status"	=> 0,
 				"dokter"	=> "UNDEFINED",
@@ -1881,6 +1902,11 @@ class Poliklinik extends CI_Controller {
 						<td>Diagnosa/Keterangan Pemeriksaan</td>
 						<td colspan="2" align="center">'. $head->kota .', '. date("d-m-Y") .'<br />Dokter Pemeriksa,<br /><br /></td>
 					</tr>
+					<tr>
+						<td><b>'. $data->diagnosa .'</b></td>
+						<td colspan="2" align="center">
+						<br /><br /><br /><br /><br />('. data_master("dokter", array("kodokter" => $data->kodokter, "koders" => $param_unit, "kopoli" => $data->kodepos))->nadokter .')</td>
+					</tr>
 				</table>';
 				switch ($cek) {
 					case 0;
@@ -1999,6 +2025,11 @@ class Poliklinik extends CI_Controller {
 					<tr>
 						<td>Diagnosa/Keterangan Pemeriksaan</td>
 						<td colspan="2" align="center">'. $head->kota .', '. date("d-m-Y") .'<br />Dokter Pemeriksa,<br /><br /></td>
+					</tr>
+					<tr>
+						<td><b>'. $data->diagnosa .'</b></td>
+						<td colspan="2" align="center">
+						<br /><br /><br /><br /><br />('. data_master("dokter", array("kodokter" => $data->kodokter, "koders" => $param_unit, "kopoli" => $data->kodepos))->nadokter .')</td>
 					</tr>
 				</table>';
 				switch ($cek) {

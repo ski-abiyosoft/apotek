@@ -511,6 +511,7 @@ class Kasir_konsul extends CI_Controller
 		// }
 
 
+		history_log(0 ,'KASIR_KONSUL_TINDAKAN' ,'ADD' ,$noreg ,'-');
 		echo json_encode(array("status" => TRUE, "nomor" => $noreg));
 	}
 
@@ -873,6 +874,8 @@ class Kasir_konsul extends CI_Controller
 		$this->db->query("UPDATE tbl_vocd SET cabangpakai = '$cabang', tglpakai = '$tanggal', rekmedpakai = '$rekmed_voc', terpakai = '1' WHERE novoucher = '$vouchercode2'");
 		$this->db->query("UPDATE tbl_vocd SET cabangpakai = '$cabang', tglpakai = '$tanggal', rekmedpakai = '$rekmed_voc', terpakai = '1' WHERE novoucher = '$vouchercode3'");
 		
+		
+		history_log(0 ,'KASIR_KONSUL_PEMBAYARAN' ,'ADD' ,$kwitansi_kasir ,'-');
 		echo json_encode(["status" => 1, "nomor" => $kwitansi_kasir]);
 	}
 
@@ -898,12 +901,15 @@ class Kasir_konsul extends CI_Controller
 			'batalkarena' => $this->input->post('alasan'),
 		);
 
+		$cek    = $this->db->query("SELECT * from tbl_kasir where id = '$id'")->row();
 		$result = $this->db->query("DELETE from tbl_kasir where id = '$id'");
 		if ($result) {
 			echo json_encode(array("status" => 1));
 		} else {
 			echo json_encode(array("status" => 0));
 		}
+		
+		history_log(0 ,'KASIR_KONSUL' ,'BATAL' ,$cek->nokwitansi ,'-');
 	}
 
 	private function _validate()
@@ -938,6 +944,24 @@ class Kasir_konsul extends CI_Controller
 			$regist = $this->db->query("SELECT tbl_regist.*, tbl_pasien.namapas from tbl_regist inner join tbl_pasien on tbl_regist.rekmed=tbl_pasien.rekmed where noreg = '$noreg'")->row();
 			$kasir = $this->db->query("select * from tbl_kasir where nokwitansi = '$nokwitansi'")->row();
 			$detil = $this->db->query("select * from (select tbl_tarifh.tindakan as ket, (tbl_dpoli.tarifrs + tbl_dpoli.tarifdr + tbl_dpoli.paramedis + tbl_dpoli.obatpoli) as jumlah from tbl_dpoli inner join tbl_tarifh on tbl_dpoli.kodetarif=tbl_tarifh.kodetarif where noreg = '$noreg' union	all select 'Adm' as ket, tbl_kasir.adm as jumlah from tbl_kasir where nokwitansi = '$nokwitansi' union	all select 'Diskon Total' as ket, tbl_kasir.diskonrp*-1 as jumlah from tbl_kasir where nokwitansi = '$nokwitansi') kasir where jumlah<>0")->result();
+			$dresep = $this->db->query("SELECT * from tbl_apohresep where noreg = '$noreg'")->row();
+			if ($dresep) {
+				$eresep = $dresep->orderno;
+				$param = $dresep->resepno;
+			} else {
+				$eresep = '';
+				$param = '';
+			}
+			$totxx = 0;
+			foreach($detil as $d){
+				$totxx += $d->jumlah;
+			}
+			$apodresepxx = $this->db->query("SELECT * FROM tbl_apodresep WHERE resepno = '$param'")->result();
+			$abcxx=0;
+			foreach($apodresepxx as $ap){
+				$abcxx += $ap->totalrp;
+			}
+			$semuanya_ = $totxx + $abcxx;
 			if ($kasir->bayarcash == 0) {
 				$kembalianx = 0;
 			} else {
@@ -947,7 +971,9 @@ class Kasir_konsul extends CI_Controller
 			foreach ($detil as $key => $value) {
 				$xxx += $value->jumlah;
 			}
-			$terbilang = terbilang($xxx);$voucher = $this->db->query("select 'Voucher' as ket, (tbl_kasir.voucherrp1 + tbl_kasir.voucherrp2 + tbl_kasir.voucherrp3)*-1 as jumlah from tbl_kasir 
+			// $terbilang = terbilang($xxx);
+			$terbilang = terbilang($semuanya_);
+			$voucher = $this->db->query("select 'Voucher' as ket, (tbl_kasir.voucherrp1 + tbl_kasir.voucherrp2 + tbl_kasir.voucherrp3)*-1 as jumlah from tbl_kasir 
 			where nokwitansi = '$nokwitansi'")->result();
 			foreach ($voucher as $v) {
 				$vcr1 = 0 - (int)$v->jumlah;
@@ -1114,14 +1140,6 @@ class Kasir_konsul extends CI_Controller
 														<td> &nbsp; </td>
 											</tr> 
 									</table>";
-			$dresep = $this->db->query("SELECT * from tbl_apohresep where noreg = '$noreg'")->row();
-			if ($dresep) {
-				$eresep = $dresep->orderno;
-				$param = $dresep->resepno;
-			} else {
-				$eresep = '';
-				$param = '';
-			}
 			$header = $this->db->query("SELECT * from tbl_apohresep where resepno = '$param'")->row();
 			$detil = $this->db->query("SELECT * from tbl_apodresep where resepno = '$param'")->row();
 			$posting = $this->db->query("SELECT * from tbl_apoposting  where resepno = '$param'")->row();
@@ -1178,7 +1196,7 @@ class Kasir_konsul extends CI_Controller
 				$chari .= "<tr>
 												<td style=\"text-align:center; border-right: none; border-left: none; border-top: none; border-bottom: none;\">" . $no++ . "</td>
 												<td style=\"text-align:left; border-right: none; border-left: none; border-top: none; border-bottom: none;\">** $aporacik->namaracikan</td>
-												<td style=\"text-align:right; border-left: none; border-right: none; border-top: none; border-bottom: none;\">".number_format($aporacik->jumlahracik, 2)."</td>
+												<td style=\"text-align:right; border-left: none; border-right: none; border-top: none; border-bottom: none;\">".number_format($aporacik->jumlahracik, 0)."</td>
 												<td style=\"text-align:right; border-left: none; border-right: none; border-top: none; border-bottom: none;\">".number_format($aporacik->diskonrp, 2)."</td>
 												<td style=\"text-align:right; border-left: none; border-right: none; border-top: none; border-bottom: none;\">".number_format((!isset($abc) ? 0 : $abc), 2)."</td>
 										</tr></tbody>";
@@ -1213,7 +1231,7 @@ class Kasir_konsul extends CI_Controller
 						$chari .= "<tr>
 														<td style=\"text-align:center; border-right: none; border-left: none; border-top: none; border-bottom: none;\">" . $no++ . "</td>
 														<td style=\"text-align:left; border-right: none; border-left: none; border-top: none; border-bottom: none;\">** $apd->namabarang</td>
-														<td style=\"text-align:right; border-left: none; border-right: none; border-top: none; border-bottom: none;\">".number_format($apd->qty, 2)."</td>
+														<td style=\"text-align:right; border-left: none; border-right: none; border-top: none; border-bottom: none;\">".number_format($apd->qty, 0)."</td>
 														<td style=\"text-align:right; border-left: none; border-right: none; border-top: none; border-bottom: none;\">".number_format($apd->discrp, 2)."</td>
 														<td style=\"text-align:right; border-left: none; border-right: none; border-top: none; border-bottom: none;\">".number_format($apd->totalrp, 2)."</td>
 												</tr></tbody>";

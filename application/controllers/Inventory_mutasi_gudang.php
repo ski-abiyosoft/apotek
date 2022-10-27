@@ -117,7 +117,7 @@ class Inventory_mutasi_gudang extends CI_Controller
 				'keterangan' => $keterangan,
 				'diterima' => '',
 				'username' => $userid,
-				'jammove' => date('h:i:s')
+				'jammove' => date('H:i:s')
 			];
 			$this->db->insert('tbl_apohmove', $data);
 			echo json_encode(['status' => 1, 'nomorbukti' => $nomorbukti, 'keterangan' => $keterangan]);
