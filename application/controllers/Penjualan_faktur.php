@@ -1063,10 +1063,10 @@ class Penjualan_faktur extends CI_Controller{
 					'jamdresep'    => date('h-i-s'),
 				);
 
-
 				echo json_encode($datad, JSON_PRETTY_PRINT);
 				if ($_kodeo_1 != "") {
 					$this->db->insert('tbl_apodetresep', $datad);
+					$this->db->query("UPDATE tbl_barangstock SET keluar = keluar+$_qty_racik_1, saldoakhir = saldoakhir-$_qty_racik_1 WHERE kodebarang = '$_kodeo_1' AND koders = '$cabang'  AND gudang = '$gudang'");
 				}
 			}
 			// end detail harimas
@@ -1169,7 +1169,7 @@ class Penjualan_faktur extends CI_Controller{
 					$_qty = $row->qty;
 					$_kode = $row->kodebarang;
 
-					$this->db->query("UPDATE tbl_barangstock SET keluar = keluar-$_qty, saldoakhir = saldoakhir-$_qty WHERE kodebarang = '$_kode' AND koders = '$cabang' AND gudang = '$gudang'");
+					$this->db->query("UPDATE tbl_barangstock SET keluar = keluar+$_qty, saldoakhir = saldoakhir-$_qty WHERE kodebarang = '$_kode' AND koders = '$cabang'  AND gudang = '$gudang'");
 				}
 
 				$this->db->delete('tbl_apodresep', array('resepno' => $nobukti));

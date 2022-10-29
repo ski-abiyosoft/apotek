@@ -1954,8 +1954,4 @@ class PendaftaranVRS extends CI_Controller {
 			echo json_encode($query->result());
 		}
 	}
-<<<<<<< HEAD
-=======
-
->>>>>>> master
 }

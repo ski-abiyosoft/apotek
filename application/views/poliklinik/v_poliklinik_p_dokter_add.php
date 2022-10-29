@@ -333,6 +333,14 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="col-md-5">
+                            <div class="form-group">
+                                <label class="control-label col-md-4" style="color:green"><b>Umur </b></label>
+                                <div class="col-md-8">
+                                    <input type="text" class="form-control" id="umur" name="umur" value="" readonly>	
+                                </div>
+                            </div>
+                        </div>
                     </div>
         
                     <div class="row">

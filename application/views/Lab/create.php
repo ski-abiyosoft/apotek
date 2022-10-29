@@ -323,7 +323,7 @@
                     &nbsp;
                 </div>
                 <?php else: ?>
-                <input type="hidden" name="asal" value="<?= $data_header->asal ?>">
+                <input type="hidden" name="asal" value="<?= isset($data_header->asal)? $data_header->asal : ""  ?>">
                 <div class="portlet-body" style="padding:20px !important;border-radius:0px !important">
                     <div class="col-md-6">
                         <div class="form-group row">
@@ -405,7 +405,7 @@
                         <div class="form-group row">
                             <label for="orderno" class="col-sm-3 col-form-label">No Order</label>
                             <div class="col-sm-9">
-                                <input type="text" class="form-control" id="orderno" name="orderno" placeholder="" value="<?= $data_header->orderno ?>" required readonly>
+                                <input type="text" class="form-control" id="orderno" name="orderno" placeholder="" value="<?= isset($data_header->orderno)? $data_header->orderno : "" ?>" required readonly>
                             </div>
                         </div>
                         <div class="form-group row">
