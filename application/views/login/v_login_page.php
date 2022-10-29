@@ -87,8 +87,6 @@
 </style>
 <body class="login" onload="noBack();" onpageshow="if (event.persisted) noBack();" onunload="">
 
-
-
 <div class="logo">
 	<a href="<?php echo base_url();?>">
 		<img src="<?php echo base_url('assets/img/ski.png');?>" width="150" alt=""/>
@@ -97,7 +95,7 @@
 
 <div class="content">
 	<form id="frmlogin" class="login-form"  action="<?php echo base_url('app/auth');?>" method="post">
-		<h3 align="center" class="form-title" style="margin-top:-10px;"><b>Login </b></h3>
+		<h3 align="center" class="form-title" style="margin-top:-10px;"><b>Login</b></h3>
 		<h3 align="center" style="color:white;font-size: 15px;"><?php echo $this->M_global->tgln();?><span id="jam"></span><h3>
 		<!--div class="alert alert-danger alert-dismissable">
 			   <button type="button" class="close" data-dismiss="alert" aria-hidden="true"></button>

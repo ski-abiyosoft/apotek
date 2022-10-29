@@ -2076,7 +2076,7 @@ class M_global extends CI_Model
 		return $query->result();
 	}
 
-	function getfarmasibarang_alkes($str)
+	function getfarmasibarang_alkes($str, $gudang)
 	{
 
 		$unit = $this->session->userdata('unit');
@@ -2091,7 +2091,7 @@ class M_global extends CI_Model
 			$query = $this->db->query("SELECT kodebarang as id, concat(' [ ', kodebarang ,' ] ',' - ',' [ ', namabarang ,' ] ',' - ',' [ ', satuan1 ,' ] ',' - ',' [ ', salakhir ,' ] ',' - ',' [ ', hargabeli ,' ]',' - ',' [ ', hargajual ,' ]') as text FROM(
 			SELECT
 			kodebarang,namabarang,satuan1,hargabeli, hargajual,
-			IFNULL((select sum(saldoakhir)saldoakhir from tbl_barangstock b where koders='$unit' and b.kodebarang=a.kodebarang),0)salakhir
+			IFNULL((select sum(saldoakhir)saldoakhir from tbl_barangstock b where koders='$unit' and b.kodebarang=a.kodebarang and b.gudang = '$gudang'),0)salakhir
 			from tbl_barang a WHERE (kodebarang like '%$str%' or namabarang like '$str%') and icgroup='BR-4'
 			)c
 			order by kodebarang ");
@@ -2100,7 +2100,7 @@ class M_global extends CI_Model
 			$query = $this->db->query("SELECT kodebarang as id, concat('-- PILIH GUDANG DAHULU --') as text FROM(
 				SELECT
 				kodebarang,namabarang,satuan1,hargabeli,hargajual,
-				IFNULL((select sum(saldoakhir)saldoakhir from tbl_barangstock b where koders='$unit' and b.kodebarang=a.kodebarang),0)salakhir
+				IFNULL((select sum(saldoakhir)saldoakhir from tbl_barangstock b where koders='$unit' and b.kodebarang=a.kodebarang and b.gudang = '$gudang'),0)salakhir
 				from tbl_barang a where (kodebarang like '%$str%' or namabarang like '$str%') and icgroup='BR-4'
 				)c
 				order by kodebarang LIMIT 1");
@@ -2129,15 +2129,14 @@ class M_global extends CI_Model
 			// )c
 			// order by kodebarang $limm");
 
-			$query	= $this->db->query('SELECT a.kodebarang AS id, CONCAT("[ ", a.kodebarang ," ] - [ ", b.namabarang ," ] - [ ", b.satuan1 ," ] - [ ", FORMAT(a.saldoakhir, 0) ," ] - [ ", FORMAT(b.hargabeli, 0) ," ] - [ ", FORMAT(b.hargajual, 0) ," ]") AS text 
+			$query	= $this->db->query("SELECT a.kodebarang AS id, CONCAT('[ ', a.kodebarang ,' ] - [ ', b.namabarang ,' ] - [ ', b.satuan1 ,' ] - [ ', FORMAT(a.saldoakhir, 0) ,' ] - [ ', FORMAT(b.hargabeli, 0) ,' ] - [ ', FORMAT(b.hargajual, 0) ,' ]') AS text 
 			FROM tbl_barangstock AS a 
 			LEFT JOIN tbl_barang AS b ON b.kodebarang = a.kodebarang 
-			WHERE a.saldoakhir > 0 
-			AND a.koders = "'. $unit .'" 
-			AND a.gudang = "'. $gudang .'" 
-			AND (b.namabarang LIKE "%'. $str .'%" OR b.kodebarang LIKE "%'. $str .'%") 
+			WHERE a.koders ='$unit' 
+			AND a.gudang ='$gudang' 
+			AND (b.namabarang LIKE '%$str%' OR b.kodebarang LIKE '%$str%') 
 			AND b.namabarang IS NOT NULL 
-			GROUP BY b.kodebarang ASC '. $limm);
+			GROUP BY b.kodebarang ASC $limm ");
 
 			// $query	= $this->db->query('SELECT a.kodebarang AS id, CONCAT("[ ", a.kodebarang," ] - [ ", a.namabarang," ] - [", a.satuan1," ] - [ ", FORMAT(IFNULL((
 			// 	SELECT SUM(saldoakhir)

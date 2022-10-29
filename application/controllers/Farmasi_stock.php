@@ -80,7 +80,10 @@ class Farmasi_stock extends CI_Controller
 			$row[] = angka_rp($so_done, 0);
 			$row[] = $unit->gudang;
 
-			$row[] = '<a class="btn btn-sm btn-primary" href="javascript:void(0)" title="Show" onclick="show(' . "'" . $unit->id . "'" . ')"><i class="glyphicon glyphicon-eye-open"></i> </a>';
+			$row[] = '<div class="text-center">
+				<button class="btn btn-sm btn-primary" type="button" title="Show" onclick="show(' . "'" . $unit->id . "'" . ')"><i class="glyphicon glyphicon-eye-open"></i></button>
+				<button class="btn btn-sm btn-secondary" type="button" title="Valid" onclick="valid(' . "'" . $unit->id . "'" . ')"><i class="glyphicon glyphicon-refresh"></i> </button>
+			</div>';
 			$data[] = $row;
 		}
 
@@ -663,6 +666,33 @@ class Farmasi_stock extends CI_Controller
 		];
 		$this->db->update("tbl_barangstock", $data, ["id"=>$id]);
 		echo json_encode(['status' => 1]);
+	}
+
+	function valid_all($gudang){
+		$cabang = $this->session->userdata("unit");
+		$barangstok = $this->db->get_where("tbl_barangstock", ["koders" => $cabang, "gudang" => $gudang]);
+		$no = 1;
+		foreach($barangstok->result() as $bs){
+			$nox = $no++;
+			$saldo = 0;
+			$terima = 0;
+			$keluar = 0;
+			$cek = $this->M_KartuStock->farmasistok($bs->id);
+			foreach ($cek as $c) {
+				$terima += $c->terima;
+				$keluar += $c->keluar;
+				$saldo += $c->terima - $c->keluar;
+			}
+			$data = [
+				'terima' => $terima,
+				'keluar' => $keluar,
+				'saldoakhir' => $saldo,
+			];
+			$this->db->update("tbl_barangstock", $data, ["id" => $bs->id]);
+		}
+		// if($nox == $barangstok->num_rows()){
+			echo json_encode(['status' => 1,'no' => $nox]);
+		// }
 	}
 }
 

@@ -2,10 +2,6 @@
 
 class Farmasi_kartustock extends CI_Controller
 {
-
-
-
-
 	public function __construct()
 	{
 		parent::__construct();
@@ -444,7 +440,6 @@ class Farmasi_kartustock extends CI_Controller
 	{
 		$cek  = $this->session->userdata('level');
 		$cabang = $this->session->userdata('unit');
-		$avatar  = $this->session->userdata('avatar_cabang');
 		$barang = $this->input->get('barang');
 		$gudang = $this->input->get('gudang');
 		$dari = $this->input->get('tgl1');
@@ -465,141 +460,148 @@ class Farmasi_kartustock extends CI_Controller
 			$npwp      = $kop['npwp'];
 			$chari  = '';
 			$chari .= "
-                    <table style=\"border-collapse:collapse;font-family: Century Gothic; font-size:12px; color:#000;\" width=\"100%\"  border=\"0\" cellspacing=\"0\" cellpadding=\"0\">
-                         <thead>
-                              <tr>
-                                   <td rowspan=\"6\" align=\"center\">
-                                        <img src=\"" . base_url() . "assets/img_user/$avatar\"  width=\"70\" height=\"70\" />
-                                   </td>
-                                   <td colspan=\"20\">
-                                        <b>
-                                             <tr>
-                                                  <td style=\"font-size:10px;border-bottom: none;\"><b><br>$namars</b></td>
-                                             </tr>
-                                             <tr>
-                                                  <td style=\"font-size:9px;\">$alamat</td>
-                                             </tr>
-                                             <tr>
-                                                  <td style=\"font-size:9px;\">$alamat2</td>
-                                             </tr>
-                                             <tr>
-                                                  <td style=\"font-size:9px;\">Wa :$whatsapp    Telp :$phone </td>
-                                             </tr>
-                                             <tr>
-                                                  <td style=\"font-size:9px;\">No. NPWP : $npwp</td>
-                                             </tr>
-                                        </b>
-                                   </td>
-                              </tr>
-                         </table>";
+					<table style=\"border-collapse:collapse;font-family: Century Gothic; font-size:12px; color:#000;\" width=\"100%\"  border=\"0\" cellspacing=\"0\" cellpadding=\"0\">
+							<thead>
+								<tr>
+									<td rowspan=\"6\" align=\"center\">
+										<img src=\"" . base_url() . "assets/img/logo.png\"  width=\"70\" height=\"70\" />
+									</td>
+									<td colspan=\"20\">
+										<b>
+												<tr>
+													<td style=\"font-size:10px;border-bottom: none;\"><b><br>$namars</b></td>
+												</tr>
+												<tr>
+													<td style=\"font-size:9px;\">$alamat</td>
+												</tr>
+												<tr>
+													<td style=\"font-size:9px;\">$alamat2</td>
+												</tr>
+												<tr>
+													<td style=\"font-size:9px;\">Wa :$whatsapp    Telp :$phone </td>
+												</tr>
+												<tr>
+													<td style=\"font-size:9px;\">No. NPWP : $npwp</td>
+												</tr>
+										</b>
+									</td>
+								</tr>
+							</table>";
 			$chari .= "
-                              <table style=\"border-collapse:collapse;font-family: tahoma; font-size:12px\" width=\"100%\" align=\"center\" border=\"0\">
-                                   <tr>
-                                        <td> &nbsp; </td>
-                                   </tr> 
-                              </table>";
+								<table style=\"border-collapse:collapse;font-family: tahoma; font-size:12px\" width=\"100%\" align=\"center\" border=\"0\">
+									<tr>
+										<td> &nbsp; </td>
+									</tr> 
+								</table>";
 			$chari .= "
-                         <table style=\"border-collapse:collapse;font-family: Tahoma; font-size:11px\" width=\"100%\" align=\"center\" border=\"0\" cellspacing=\"1\" cellpadding=\"3\">
-                              <tr>
-                                   <td width=\"15%\" style=\"text-align:center; font-size:20px;\"><b>KARTU STOK CABANG $cabang ($datars->kota)</b></td>
-                              </tr>
-                              <tr>
-                                   <td width=\"15%\" style=\"text-align:center; font-size:11px;\">Dari tgl " . date("d-m-Y", strtotime($dari)) . " Sampai tgl " . date("d-m-Y", strtotime($sampai)) . "</td>
-                              </tr>
-                         </table>";
+							<table style=\"border-collapse:collapse;font-family: tahoma; font-size:2px\" width=\"100%\" align=\"center\" border=\"1\">     
+								<tr>
+									<td style=\"border-top: none;border-right: none;border-left: none;\"></td>
+								</tr> 
+							</table>";
 			$chari .= "
-                         <table style=\"border-collapse:collapse;font-family: tahoma; font-size:2px\" width=\"100%\" align=\"center\" border=\"1\">     
-                              <tr>
-                                   <td style=\"border-top: none;border-right: none;border-left: none;\"></td>
-                              </tr> 
-                         </table>";
+							<table style=\"border-collapse:collapse;font-family: tahoma; font-size:2px\" width=\"100%\" align=\"center\" border=\"1\">     
+								<tr>
+									<td style=\"border-top: none;border-right: none;border-left: none;\"></td>
+								</tr> 
+							</table>";
 			$chari .= "
-                         <table style=\"border-collapse:collapse;font-family: tahoma; font-size:2px\" width=\"100%\" align=\"center\" border=\"1\">     
-                              <tr>
-                                   <td style=\"border-top: none;border-right: none;border-left: none;\"></td>
-                              </tr> 
-                         </table>";
+							<table style=\"border-collapse:collapse;font-family: tahoma; font-size:12px\" width=\"100%\" align=\"center\" border=\"0\">
+								<tr>
+									<td> &nbsp; </td>
+								</tr> 
+							</table>";
 			$chari .= "
-                         <table style=\"border-collapse:collapse;font-family: tahoma; font-size:12px\" width=\"100%\" align=\"center\" border=\"0\">
-                              <tr>
-                                   <td> &nbsp; </td>
-                              </tr> 
-                         </table>";
+							<table style=\"border-collapse:collapse;font-family: Tahoma; font-size:11px\" width=\"100%\" align=\"center\" border=\"0\" cellspacing=\"1\" cellpadding=\"3\">
+								<tr>
+									<td width=\"15%\" style=\"text-align:center; font-size:20px;\"><b>KARTU STOK CABANG $cabang ($datars->kota)</b></td>
+								</tr>
+								<tr>
+									<td width=\"15%\" style=\"text-align:center; font-size:11px;\">Dari tgl " . date("d-m-Y", strtotime($dari)) . " Sampai tgl " . date("d-m-Y", strtotime($sampai)) . "</td>
+								</tr>
+							</table>";
 			$chari .= "
-                         <table style=\"border-collapse:collapse;font-family: tahoma; font-size:12px\" width=\"100%\" align=\"center\" border=\"0\">
-                              <tr>
-                                   <td> &nbsp; </td>
-                              </tr> 
-                         </table>";
+							<table style=\"border-collapse:collapse;font-family: tahoma; font-size:12px\" width=\"100%\" align=\"center\" border=\"0\">
+								<tr>
+									<td> &nbsp; </td>
+								</tr> 
+							</table>";
 			$chari .= "
-                         <table style=\"border-collapse:collapse;font-family: tahoma; font-size:14px\" width=\"100%\" align=\"center\" border=\"0\">
-                              <tr>
-                                   <td width=\"10%\">Cabang</td>
-                                   <td width=\"1%\"> : </td>
-                                   <td> $cabang ($datars->kota) </td>
-                              </tr> 
-                              <tr>
-                                   <td width=\"10%\">Gudang</td>
-                                   <td width=\"1%\"> : </td>
-                                   <td> $datagudang->keterangan </td>
-                              </tr> 
-                              <tr>
-                                   <td width=\"10%\">Kode Barang</td>
-                                   <td width=\"1%\"> : </td>
-                                   <td> $databarang->kodebarang </td>
-                              </tr> 
-                              <tr>
-                                   <td width=\"10%\">Nama Barang</td>
-                                   <td width=\"1%\"> : </td>
-                                   <td> $databarang->namabarang </td>
-                              </tr> 
-                         </table>";
+							<table style=\"border-collapse:collapse;font-family: tahoma; font-size:14px\" width=\"100%\" align=\"center\" border=\"0\">
+								<tr>
+									<td width=\"10%\">Cabang</td>
+									<td width=\"1%\"> : </td>
+									<td> $cabang ($datars->kota) </td>
+								</tr> 
+								<tr>
+									<td width=\"10%\">Gudang</td>
+									<td width=\"1%\"> : </td>
+									<td> $datagudang->keterangan </td>
+								</tr> 
+								<tr>
+									<td width=\"10%\">Kode Barang</td>
+									<td width=\"1%\"> : </td>
+									<td> $databarang->kodebarang </td>
+								</tr> 
+								<tr>
+									<td width=\"10%\">Nama Barang</td>
+									<td width=\"1%\"> : </td>
+									<td> $databarang->namabarang </td>
+								</tr> 
+							</table>";
 			$chari .= "
-                         <table style=\"border-collapse:collapse;font-family: tahoma; font-size:12px\" width=\"100%\" align=\"center\" border=\"0\">
-                              <tr>
-                                   <td> &nbsp; </td>
-                              </tr> 
-                         </table>";
+							<table style=\"border-collapse:collapse;font-family: tahoma; font-size:12px\" width=\"100%\" align=\"center\" border=\"0\">
+								<tr>
+									<td> &nbsp; </td>
+								</tr> 
+							</table>";
 			$chari .= "
-                         <table style=\"border-collapse:collapse;font-family: tahoma; font-size:12px\" width=\"100%\" align=\"center\" border=\"0\">
-                              <tr>
-                                   <td> &nbsp; </td>
-                              </tr> 
-                         </table>";
+							<table style=\"border-collapse:collapse;font-family: tahoma; font-size:12px\" width=\"100%\" align=\"center\" border=\"0\">
+								<tr>
+									<td> &nbsp; </td>
+								</tr> 
+							</table>";
 			$chari .= "
-                         <table style=\"border-collapse:collapse;font-family: tahoma; font-size:12px\" width=\"100%\" align=\"center\" border=\"1\">
-												 		<thead>
-                              <tr>
-                                   <th width=\"20%\">No. Bukti</th>
-                                   <th width=\"10%\">Tanggal</th>
-                                   <th width=\"10%\">Keterangan</th>
-                                   <th width=\"15%\">Rekanan</th>
-                                   <th width=\"10%\">Nilai Pembelian</th>
-                                   <th width=\"5%\">Terima</th>
-                                   <th width=\"5%\">Keluar</th>
-                                   <th width=\"5%\">Saldo Akhir</th>
-                                   <th width=\"10%\">Nilai Persediaan</th>
-                                   <th width=\"10%\">Total Nilai Persediaan</th>
-                              </tr> 
-														</thead>
-														<tbody>";
-			$periode_awal    = $this->db->get_where('tbl_periode', ['koders' => $cabang])->row();
-			$_tgl1      = $periode_awal->apoperiode;
-			$_tgl2      = $dari;
-			$stok_awal = $this->M_KartuStock->stok_awal_farmasi($cabang, $barang, $gudang, $_tgl1, $_tgl2);
-			$coba       = $this->M_KartuStock->cekstok_farmasi($cabang, $barang, $gudang, $_tgl1, $_tgl2);
-			if ($coba) {
-				$_tanggalawal = $periode_awal->apoperiode;
-				$sald = 0;
-				foreach ($coba as $key => $value) {
-					$sald += $value->terima - $value->keluar;
-					$jam = $value->jam;
-				}
-				$saldo = $stok_awal->saldoawal + $sald;
+							<table style=\"border-collapse:collapse;font-family: tahoma; font-size:12px\" width=\"100%\" align=\"center\" border=\"1\">
+								<tr>
+									<th width=\"20%\">No. Bukti</th>
+									<th width=\"10%\">Tanggal</th>
+									<th width=\"10%\">Keterangan</th>
+									<th width=\"15%\">Rekanan</th>
+									<th width=\"10%\">Nilai Pembelian</th>
+									<th width=\"5%\">Terima</th>
+									<th width=\"5%\">Keluar</th>
+									<th width=\"5%\">Saldo Akhir</th>
+									<th width=\"10%\">Nilai Persediaan</th>
+									<th width=\"10%\">Total Nilai Persediaan</th>
+								</tr> ";
+			$date1 = str_replace('-', '/', $dari);
+			$tomorrow = date('Y-m-d', strtotime($date1 . "-1 days"));
+			$coba       = $this->M_KartuStock->cekstok($cabang, $barang, $gudang, $dari);
+			$periode = $this->db->get_where("tbl_periode", ["koders" => $this->session->userdata("unit")])->row();
+			$dateperiode = date("Y-m-d", strtotime($periode->apoperiode));
+			$aposesuaix = $this->db->query("SELECT * FROM tbl_aposesuai WHERE koders = '".$this->session->userdata("unit")."' AND tglso = '$dateperiode' ORDER BY id DESC LIMIT 1")->result();
+			foreach($aposesuaix as $ax){
+				$aposesuai = $ax->sesuai;
+				$aposesuaii = $ax->hasilso;
+				$aposesuaiix = $ax->saldo;
+			}
+			if($dateperiode == $dari){
+				$_tanggalawal = $periode->apoperiode;
+				$saldo = $aposesuaiix;
 			} else {
-				$_tanggalawal    = $dari;
-				$saldo           = 0;
-				$jam          = date("H:i:s");
+				if ($coba) {
+					$_tanggalawal = $tomorrow;
+					$saldo = 0;
+					foreach($coba as $c){
+						$saldo += $c->terima - $c->keluar;
+						$jam = $c->jam;
+					}
+				} else {
+					$_tanggalawal    = $dari;
+					$saldo           = 0;
+					$jam          = date("H:i:s");
+				}
 			}
 			$chari .= "							<tr>
 																<td width=\"20%\">SALDO</td>
@@ -613,18 +615,16 @@ class Farmasi_kartustock extends CI_Controller
 																<td width=\"10%\" style=\"text-align:right;\">0</td>
 																<td width=\"10%\" style=\"text-align:right;\">0</td>
 															</tr>
-														</tbody>
-                         </table>";
-			$chari .= "
-                         <table style=\"border-collapse:collapse;font-family: tahoma; font-size:12px\" width=\"100%\" align=\"center\" border=\"0\">
-                              <tr>
-                                   <td> &nbsp; </td>
-                              </tr> 
-                         </table>";
-			$chari .= "
-                         <table style=\"border-collapse:collapse;font-family: tahoma; font-size:12px\" width=\"100%\" align=\"center\" border=\"1\">
-												 		<thead>";
-			$queryx = $this->M_KartuStock->tgl($cabang, $barang, $gudang, $dari, $sampai, $jam, $_tanggalawal);
+															<tr>
+																<td colspan=\"10\">&nbsp;</td>
+															</tr>";
+			$queryx = $this->M_KartuStock->tgl($cabang, $barang, $gudang, $dari, $sampai);
+			$no = 1;
+			$hgr = 0;
+			foreach ($queryx as $db) {
+				$rownya = $no++;
+				$hgr += $db->harga;
+			}
 			foreach ($queryx as $db) {
 				$nilai = $db->qty * $db->harga;
 				$saldo = $saldo + $db->terima - $db->keluar;
@@ -641,8 +641,7 @@ class Farmasi_kartustock extends CI_Controller
 																	<td width=\"10%\" style=\"text-align:right;\">" . number_format($db->totalhpp) . "</td>
 																</tr>";
 			}
-			$chari .= "						</thead>
-													</table>";
+			$chari .= "</table>";
 			$data['prev'] = $chari;
 			$judul = "KARTU STOK CABANG $datars->kota";
 			echo ("<title>$judul</title>");

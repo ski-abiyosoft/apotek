@@ -246,6 +246,7 @@ class Poliklinik extends CI_Controller {
 		$poli_dok     	= $this->input->post('poli_dok');
 		$gudang			= $this->input->post("gudang");
 		$orderno		= $this->input->post("noeresephide");
+		$gudang_bhp		= $this->input->post("gudang_bhp");
 
 		$data_pasien_d	= $this->db->query("SELECT * FROM pasien_rajal WHERE noreg = '$noreg_dok' AND koders = '$cabang'")->row();
 
@@ -429,30 +430,24 @@ class Poliklinik extends CI_Controller {
 					'harga'        => $_c_hrgalkes,
 					'totalharga'   => $_c_totalkes,
 					'tgltransaksi' => $tanggal,
+					'gudang'	   => $gudang_bhp,
 					'dibebankan'   => $c_bbn[$i],
 				);
 
-
 				if($c_kdalkes[$i]!=""){
+					// Lose Stock
+					$check_stock	= $this->db->query("SELECT * FROM tbl_barangstock WHERE kodebarang = '". $c_kdalkes[$i] ."' AND koders = '$cabang' AND gudang = '$gudang_bhp'");
 
-					// $qcek = $this->db->query("SELECT * FROM tbl_alkestransaksi WHERE notr = '$noreg_dok' /*and kodeobat = '$c_kdalkes[$i]'*/ and koders='$cabang'")->result_array();
-					// $cek = count($qcek);
+					if($check_stock->num_rows() == 0){
+						$this->db->query("INSERT INTO tbl_barangstock (koders,kodebarang,gudang,keluar,saldoakhir) 
+						VALUES ('$cabang', '". $c_kdalkes[$i] ."', '$gudang_bhp', '". $c_qtyalkes[$i] ."', '". $c_qtyalkes[$i] ."')");
+					} else {
+						$this->db->query("UPDATE tbl_barangstock SET keluar = keluar+". $c_qtyalkes[$i] .", saldoakhir = saldoakhir-". $c_qtyalkes[$i] ." WHERE kodebarang = '". $c_kdalkes[$i] ."' AND koders = '$cabang'  AND gudang = '$gudang_bhp'");
+					}
+
+					// $this->db->query("UPDATE tbl_barangstock SET keluar = keluar+". $c_qtyalkes[$i] .", saldoakhir = saldoakhir-". $c_qtyalkes[$i] ." WHERE kodebarang = '". $c_kdalkes[$i] ."' AND koders = '$cabang'  AND gudang = '$gudang_bhp'");
+
 					$insert_detil = $this->db->insert('tbl_alkestransaksi',$data_alkes);
-
-					// if ($cek > 0) {
-					// 	// $update = $this->db->update('tbl_alkestransaksi',$data_alkes,
-					// 	// array(
-					// 	// 	'noreg'   => $noreg_dok,
-					// 	// 	'koders'  => $cabang,
-					// 	// 	'kodetarif'  => $kodetarif[$i],
-					// 	// ));
-					// 	$delalk = $this->db->query("DELETE from tbl_alkestransaksi WHERE notr = '$noreg_dok' /*and kodeobat = '$c_kdalkes[$i]'*/ and koders='$cabang'");
-					// 	if($delalk){
-					// 		$insert_detil = $this->db->insert('tbl_alkestransaksi',$data_alkes);
-					// 	}
-					// }else{
-					// 	$insert_detil = $this->db->insert('tbl_alkestransaksi',$data_alkes);
-					// }
 				}
 
 			}
@@ -829,57 +824,60 @@ class Poliklinik extends CI_Controller {
 		$elab_note		= $this->input->post("elabtin_catatan");
 
 		foreach($orderno as $okey => $oval){
-			$check_order	= $this->db->query("SELECT * FROM tbl_orderperiksa WHERE koders = '$unit' AND orderno = '$oval' AND noreg = '$noreg'");
+			$check_laborat	= $this->db->query("SELECT * FROM tbl_hlab WHERE orderno = '$oval'")->num_rows();
 
-			$data_op		= array(
-				"koders"	=> $unit,
-				"orderno"	=> $oval,
-				"noreg"		=> $noreg,
-				"rekmed"	=> $rekmed,
-				"tglorder"	=> $tanggal[$okey],
-				"proses"	=> "proses",
-				"jamorder"	=> $jam[$okey],
-				"kodokter"	=> $kodokter,
-				"asal"		=> $kodepos,
-				"lab"		=> "1",
-				"labok"		=> "0",
-			);
+			if($check_laborat == 0){
+				$check_order	= $this->db->query("SELECT * FROM tbl_orderperiksa WHERE koders = '$unit' AND orderno = '$oval' AND noreg = '$noreg'");
 
-			// Insert Elab
-			if(!empty($elab_kode)){
-				$this->db->query("DELETE FROM tbl_elab WHERE notr = '$oval' AND noreg = '$noreg'");
+				$data_op		= array(
+					"koders"	=> $unit,
+					"orderno"	=> $oval,
+					"noreg"		=> $noreg,
+					"rekmed"	=> $rekmed,
+					"tglorder"	=> $tanggal[$okey],
+					"proses"	=> "proses",
+					"jamorder"	=> $jam[$okey],
+					"kodokter"	=> $kodokter,
+					"asal"		=> $kodepos,
+					"lab"		=> "1",
+					"labok"		=> "0",
+				);
 
-				foreach($elab_kode as $ekkey => $ekval){
-					if($elab_orderno[$ekkey] == $oval){
-						$data_elab			= array(
-							"notr"			=> $oval,
-							"noreg"			=> $noreg,
-							"kodetarif"		=> $elab_kode[$ekkey],
-							"tindakan"		=> $elab_tindakan[$ekkey],
-							"tarifrs"		=> $elab_tarifrs[$ekkey],
-							"tarifdr"		=> $elab_tarifdr[$ekkey],
-							"keterangan"	=> $elab_note[$ekkey]
-						);
+				// Insert Elab
+				if(!empty($elab_kode)){
+					$this->db->query("DELETE FROM tbl_elab WHERE notr = '$oval' AND noreg = '$noreg'");
 
-						$this->db->insert("tbl_elab", $data_elab);
+					foreach($elab_kode as $ekkey => $ekval){
+						if($elab_orderno[$ekkey] == $oval){
+							$data_elab			= array(
+								"notr"			=> $oval,
+								"noreg"			=> $noreg,
+								"kodetarif"		=> $elab_kode[$ekkey],
+								"tindakan"		=> $elab_tindakan[$ekkey],
+								"tarifrs"		=> $elab_tarifrs[$ekkey],
+								"tarifdr"		=> $elab_tarifdr[$ekkey],
+								"keterangan"	=> $elab_note[$ekkey]
+							);
+
+							$this->db->insert("tbl_elab", $data_elab);
+						}
 					}
 				}
-			}
 
-			if($check_order->num_rows() == 0){
-				
-				$query_order_elab	= $this->db->insert("tbl_orderperiksa", $data_op);
-				history_log(0 ,'POLI_DOKTER_LAB' ,'ADD' ,$oval ,'-');
+				if($check_order->num_rows() == 0){
+					$query_order_elab	= $this->db->insert("tbl_orderperiksa", $data_op);
+					history_log(0 ,'POLI_DOKTER_LAB' ,'ADD' ,$oval ,'-');
 
-			} else {
-				$query_order_elab	= $this->db->update("tbl_orderperiksa", $data_op, array("koders" => $unit,"orderno" => $oval, "noreg" => $noreg));
-				history_log(0 ,'POLI_DOKTER_LAB' ,'EDIT' ,$oval ,'-');
-			}
+				} else {
+					$query_order_elab	= $this->db->update("tbl_orderperiksa", $data_op, array("koders" => $unit,"orderno" => $oval, "noreg" => $noreg));
+					history_log(0 ,'POLI_DOKTER_LAB' ,'EDIT' ,$oval ,'-');
+				}
 
-			if($query_order_elab){
-				$status	= "success";
-			} else {
-				$status	= "failed";
+				if($query_order_elab){
+					$status	= "success";
+				} else {
+					$status	= "failed";
+				}
 			}
 		}
 
@@ -1716,7 +1714,7 @@ class Poliklinik extends CI_Controller {
 
 	// Cetak
 	
-	function cetak_odonto(){
+	public function cetak_odonto(){
 
 		// $cek    	  = '1';
 		$chari   	  = '';
@@ -1769,7 +1767,7 @@ class Poliklinik extends CI_Controller {
 		}
 	}
 
-	function cetak_suket($param_unit, $param_noreg, $param_rekmed, $param_type){
+	public function cetak_suket($param_unit, $param_noreg, $param_rekmed, $param_type){
 		$cek = '1';
 		$chari ='';
 		$check_suket	= $this->db->query("SELECT * FROM tbl_rekammedisrs WHERE koders = '$param_unit' AND noreg = '$param_noreg'");
@@ -2054,6 +2052,33 @@ class Poliklinik extends CI_Controller {
 			{
 				redirect("/poliklinik/pemeriksaan_dokter/?noreg=". $param_noreg ."&rekmed=". $param_rekmed);
 			}
+		}
+	}
+
+	public function return_bhp(){
+		$cabang		= $this->session->userdata("unit");
+		$kodebarang	= $this->input->post("kodebarang");
+		$gudang		= $this->input->post("gudang");
+		$qty		= $this->input->post("qty");
+		$noreg		= $this->input->post("noreg");
+
+		// Lose Stock
+		$check_stock	= $this->db->query("SELECT * FROM tbl_barangstock WHERE kodebarang = '". $kodebarang ."' AND koders = '$cabang' AND gudang = '$gudang'");
+
+		if($check_stock->num_rows() == 0){
+			$return_bhp	= $this->db->query("INSERT INTO tbl_barangstock (koders,kodebarang,gudang,keluar,saldoakhir) 
+			VALUES ('$cabang', '". $kodebarang ."', '$gudang', '". $qty ."', '". $qty ."')");
+		} else {
+			$return_bhp	= $this->db->query("UPDATE tbl_barangstock SET keluar = keluar-". $qty .", saldoakhir = saldoakhir+". $qty ." WHERE kodebarang = '". $kodebarang ."' AND koders = '$cabang'  AND gudang = '$gudang'");
+		}
+
+		// $this->db->query("UPDATE tbl_barangstock SET keluar = keluar+". $c_qtyalkes[$i] .", saldoakhir = saldoakhir-". $c_qtyalkes[$i] ." WHERE kodebarang = '". $c_kdalkes[$i] ."' AND koders = '$cabang'  AND gudang = '$gudang_bhp'");
+
+		if($return_bhp){
+			$this->db->delete("tbl_alkestransaksi", array("koders" => $cabang, "notr" => $noreg, "kodeobat" => $kodebarang));
+			echo json_encode(array("status" => true));
+		} else {
+			echo json_encode(array("status" => false));
 		}
 	}
 

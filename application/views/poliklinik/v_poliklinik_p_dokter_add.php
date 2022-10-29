@@ -1,7 +1,15 @@
 <?php 
     $this->load->view('template/header');
     $this->load->view('template/body');    
-    date_default_timezone_set("Asia/Jakarta");	
+    date_default_timezone_set("Asia/Jakarta");
+
+    if(!isset($_GET["noreg"]) && !isset($_GET["rekmed"])){
+        echo "<script>location.href='/poliklinik'</script>";
+    } else {
+        if($_GET["noreg"] == "" || $_GET["rekmed"] == ""){
+            echo "<script>location.href='/poliklinik'</script>";
+        }
+    }
 ?>
 
 <!-- <link href="<?php echo base_url('assets/bootstrap/css/bootstrap.min.css-')?>" rel="stylesheet"> -->
@@ -335,9 +343,23 @@
                         </div>
                         <div class="col-md-5">
                             <div class="form-group">
-                                <label class="control-label col-md-4" style="color:green"><b>Umur </b></label>
+                                <label class="control-label col-md-4" style="color:green"><b>Gudang BHP</b></label>
                                 <div class="col-md-8">
-                                    <input type="text" class="form-control" id="umur" name="umur" value="" readonly>	
+                                    <select type="text" class="form-control" id="gudang_bhp" name="gudang_bhp">
+                                        <option value="">- PILIH GUDANG -</option>
+                                        <?php
+                                            $unit       = $this->session->userdata("unit");
+                                            $list_depo  = $this->db->query("SELECT * FROM tbl_depo ORDER BY keterangan ASC")->result();
+                                            $get_gudang = $this->db->query("SELECT * FROM tbl_alkestransaksi WHERE notr = '". $_GET["noreg"] ."' GROUP BY notr AND koders = '$unit'")->row();
+                                            foreach($list_depo as $ld_val){
+                                                if($ld_val->depocode == $get_gudang->gudang){
+                                                    echo "<option value='$get_gudang->gudang' selected>". data_master("tbl_depo", array("depocode" => $get_gudang->gudang))->keterangan ."</option>";
+                                                } else {
+                                                    echo "<option value='$ld_val->depocode'>$ld_val->keterangan</option>";
+                                                }
+                                            }
+                                        ?>
+                                    </select>
                                 </div>
                             </div>
                         </div>
@@ -836,7 +858,8 @@
                                                             </table>
 
                                                             <table id="datatable_poli_alkes" class="table table-hoverx table-stripedx table-borderedx table-condensed table-scrollable" border="1">
-                                                                <h4 style="color:green" ><b>Bahan Habis Pakai Dan Alkes Di Ruang Praktek Yang Dipakai</b></h4>
+                                                                <!-- <h4 style="color:green" ><b>Bahan Habis Pakai Dan Alkes Di Ruang Praktek Yang Dipakai</b></h4> -->
+                                                                <h4 style="color:green" ><b>Barang Habis Pakai</b></h4>
                                                                 <thead class="page-breadcrumb breadcrumb">
                                                                     <th class="title-white" width="5%" style="text-align: center">Delete</th>
                                                                     <th class="title-white" width="15%" style="text-align: center">DI BEBANKAN
@@ -851,7 +874,7 @@
 
                                                                 <tbody id="poli_alkes_row">
                                                                     <?php if($statusalkes == "undone"): ?>
-                                                                    <tr id="alkes_tr1">
+                                                                    <!-- <tr id="alkes_tr1">
                                                                         <td width="2%"  align="center" >
                                                                             <button type='button' onclick="hapusBaris_alkes(1)" class='btn red'><i class='fa fa-trash-o'></i> </button> 
                                                                         </td>
@@ -876,7 +899,7 @@
                                                                         <td width="18%">
                                                                             <input name="totalkes[]" id="totalkes1" type="text" class="form-control rightJustified" readonly>
                                                                         </td>
-                                                                    </tr>
+                                                                    </tr> -->
                                                                     <?php else: $no3 = 1; foreach($detilalkes as $dakey => $daval):?>
                                                                     <tr id="alkes_tr<?= $no3 ?>">
                                                                         <td width="2%"  align="center" >
@@ -2142,9 +2165,14 @@
         console.log($("#testeresep").serialize());
         var gudangstart = $("#gudang").val();
         initailizeSelect2_farmasi_baranggud(''+gudangstart+'');
+
         <?php if($eresep == "undone"): ?>
         last_eresep();
         <?php endif; ?>
+        
+        var gudang_bhp  = $("#gudang_bhp").val();
+        select2_el_alkes(gudang_bhp);
+
         get_elab_order();
         get_emed_order();
         get_erad_order();
@@ -2742,22 +2770,35 @@
     }
 
     function tambah_alkes(){
-        var table   = $("#poli_alkes_row");
+        var gudang  = $("#gudang_bhp").val();
 
-        table.append("<tr id='alkes_tr"+ idrowAlkes +"'>"+
-        "<td><button type='button' onclick='hapusBaris_alkes("+idrowAlkes+")' class='btn red'><i class='fa fa-trash-o'></i> </button></td>"+
-        "<td><input name='bbn[]' id=bbn"+idrowAlkes+" type='checkbox' class='form-control' onclick='cekbbn(this.value,"+idrowAlkes+")'> <input name='bbn_hide[]' value='1' id='bbn_hide"+idrowAlkes+"' type='hidden' class='form-control'></td>"+
-        "<td><select name='kdalkes[]' id=kdalkes"+idrowAlkes+" class='select2_el_alkes form-control input-largex' onchange='show_alkes(this.value, "+idrowAlkes+")'> </select></td>"+
-        "<td><input name='satalkes[]' id=satalkes"+idrowAlkes+" type='text' class='form-control' readonly></td>"+
-        "<td><input name='qtyalkes[]' id=qtyalkes"+idrowAlkes+" type='number' class='form-control ' onkeyup='qty("+idrowAlkes+")'></td>"+
-        "<td><input name='hrgalkes[]' id=hrgalkes"+idrowAlkes+" type='text' class='form-control rightJustified' readonly></td>"+
-        "<td><input name='totalkes[]' id=totalkes"+idrowAlkes+" type='text' class='form-control rightJustified' readonly></td>"+
-        "</tr>");
+        if(gudang == ""){
+            swal({
+                title: 'BHP & ALKES',
+                html: "Gudang Harus Dipilih",
+                type: 'error',
+                confirmButtonText: 'OK',
+                confirmButtonColor: 'red'
+            })
+        } else {
+            var table   = $("#poli_alkes_row");
 
-        // initailizeSelect2_farmasi_barang();
-        
-        select2_el_alkes();
-        idrowAlkes++;
+            table.append("<tr id='alkes_tr"+ idrowAlkes +"'>"+
+            "<td><button type='button' onclick='hapusBaris_alkes("+idrowAlkes+")' class='btn red'><i class='fa fa-trash-o'></i> </button></td>"+
+            "<td><input name='bbn[]' id=bbn"+idrowAlkes+" type='checkbox' class='form-control' onclick='cekbbn(this.value,"+idrowAlkes+")'> <input name='bbn_hide[]' value='1' id='bbn_hide"+idrowAlkes+"' type='hidden' class='form-control'></td>"+
+            "<td><select name='kdalkes[]' id=kdalkes"+idrowAlkes+" class='select2_el_alkes form-control input-largex' onchange='show_alkes(this.value, "+idrowAlkes+")'> </select></td>"+
+            "<td><input name='satalkes[]' id=satalkes"+idrowAlkes+" type='text' class='form-control' readonly></td>"+
+            "<td><input name='qtyalkes[]' id=qtyalkes"+idrowAlkes+" type='number' class='form-control ' onkeyup='qty("+idrowAlkes+")'></td>"+
+            "<td><input name='hrgalkes[]' id=hrgalkes"+idrowAlkes+" type='text' class='form-control rightJustified' readonly></td>"+
+            "<td><input name='totalkes[]' id=totalkes"+idrowAlkes+" type='text' class='form-control rightJustified' readonly></td>"+
+            "</tr>");
+
+            // initailizeSelect2_farmasi_barang();
+            
+            var gudang_bhp  = $("#gudang_bhp").val();
+            select2_el_alkes(gudang_bhp);
+            idrowAlkes++;
+        }
     }
 
     function tambah_obatterapi(){
@@ -3324,7 +3365,63 @@
     }
 
     function hapusBaris_alkes(param){
-        $("#alkes_tr"+ param).remove();
+        <?php
+            $check_list = $this->db->query("SELECT * FROM tbl_alkestransaksi WHERE notr = '". $this->input->get("noreg") ."' AND koders = '". $this->session->userdata("unit") ."'")->num_rows();
+        ?>
+        <?php if($check_list == 0): ?>
+            $("#alkes_tr"+ param).remove();
+        <?php else: ?>
+            var kodebarang  = $("#kdalkes"+ param).val();
+            var gudbhp      = $("#gudang_bhp").val();
+            var qty         = $("#qtyalkes"+ param).val();
+
+            swal({
+                title: 'BHP & ALKES',
+                html: 'Apakah Anda yakin<br />Ingin menghapus ini ?',
+                type: 'question',
+                showCancelButton: true,
+                confirmButtonText: 'Hapus',
+                cancelButtonText: 'Batalkan',
+                confirmButtonColor: '#0d6efd',
+                cancelButtonColor: '#dc3545',
+            }).then(() => {
+                $.ajax({
+                    url: "/poliklinik/return_bhp",
+                    data: {qty: qty,noreg: '<?= $this->input->get("noreg") ?>', kodebarang: kodebarang, gudang: gudbhp},
+                    type: "POST",
+                    dataType: "JSON",
+                    success: function(data){
+                        if(data.status){
+                            swal({
+                                title: "BHP & ALKES",
+                                html: "Berhasil di hapus",
+                                type: "success",
+                                confirmButtonText: "OK" 
+                            }).then(() => {
+                                $("#alkes_tr"+ param).remove();
+                            });
+                        } else {
+                            swal({
+                                title: "BHP & ALKES",
+                                html: "Gagal di hapus",
+                                type: "error",
+                                confirmButtonText: "OK" 
+                            });
+                        }
+                    },
+                    error: function(jqXHR, textStatus, errorThrown){
+                        swal({
+                            title: "BHP & ALKES",
+                            html: "Gagal di hapus, kesalahan sistem",
+                            type: "error",
+                            confirmButtonText: "OK" 
+                        }).then(() => {
+                            location.reload();
+                        });
+                    }
+                });
+            });
+        <?php endif; ?>s
     }
 
     function hapusBaris_eresep(param){

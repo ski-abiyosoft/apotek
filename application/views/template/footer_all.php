@@ -798,7 +798,7 @@
       });
    }
 
-   function select2_el_alkes() {
+   function select2_el_alkes(gudang = "") {
       $(".select2_el_alkes").select2({
          allowClear: true,
          multiple: false,
@@ -811,7 +811,7 @@
             }
          },
          ajax: {
-            url: "<?php echo base_url(); ?>app/search_farmasi_barang_alkes",
+            url: "<?php echo base_url(); ?>app/search_farmasi_barang_alkes/"+ gudang,
             type: "post",
             dataType: 'json',
             delay: 250,

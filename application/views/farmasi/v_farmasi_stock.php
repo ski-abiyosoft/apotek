@@ -42,8 +42,9 @@ $this->load->view('template/body');
                 <div class="table-toolbar">
                     <table border="0" width="100%">
                             <tr>
-                                <td width="20%">
+                                <td width="50%">
                                 <button class="btn btn-success" onclick="location.reload()"><i class="glyphicon glyphicon-refresh"></i> Refresh</button>
+                                <button class="btn btn-secondary" onclick="valid_all()" id="valid_a"><i class="fa fa-retweet"></i> Valid Semua</button>
                                 </td>
                                 <td width="30%">
                                     &nbsp;
@@ -89,7 +90,7 @@ $this->load->view('template/body');
                             <th class="title-white" style="text-align: center">Satuan</th>
                             <th class="title-white" style="text-align: center">Saldo Akhir</th>
                             <th class="title-white" style="text-align: center">Gudang</th>
-                            <th class="title-white" style="text-align: center">Aksi</th>
+                            <th width="10%" class="title-white" style="text-align: center">Aksi</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -103,35 +104,23 @@ $this->load->view('template/body');
 </div>
 </div>
 
-<!-- <div class="modal fade" id="showmodal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Periode</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <form id="form-show" method="POST">
-                <div class="modal-body">
-                    <div class="form-group">
-                        <input type="hidden" id="id_show" name="id_show" class="form-control">
-                        <label for="dari">Dari</label>
-                        <input type="date" class="form-control" id="dari_show" name="dari_show" value="<?= date('Y-m-d'); ?>">
-                    </div>
-                    <div class="form-group">
-                        <label for="sampai">Sampai</label>
-                        <input type="date" class="form-control" id="sampai_show" name="sampai_show" value="<?= date('Y-m-d'); ?>">
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
-                    <button type="button" onclick="carishow()" class="btn btn-primary">Lihat</button>
-                </div>
-            </form>
-        </div>
+<div class="modal fade" id="loading" data-toggle="modal" role="dialog" aria-hidden="true">
+    <div class="modal-dialog vertical-align-center2" style="margin-top: 350px;">
+        <table align="center">
+            <tr>
+                <td>Loading...</td>
+            </tr>
+            <tr>
+                <td>&nbsp;</td>
+            </tr>
+            <tr align="center">
+                <td>
+                    <img id="search1" height="50px" width="50px" src="<?php echo base_url(); ?>assets/img/loadinghar2.gif" />
+                </td>
+            </tr>
+        </table>
     </div>
-</div> -->
+</div>
 
 <?php
 $this->load->view('template/footer_tb');
@@ -143,17 +132,6 @@ $this->load->view('template/v_report');
     function exp() {
         var gudang    = $('#gudang').val();
         var baseurl   = "<?php echo base_url() ?>";
-        // location.href = '<?= site_url('Farmasi_stock/export/?gudang=') ?>' + gudang;
-        // $.ajax({
-        //     url: '<?= site_url('Farmasi_stock/export/?gudang=') ?>' + gudang,
-        //     type: "GET",
-        //     dataType: "JSON",
-        //     success: function(data) {
-        //         console.log(data);
-        //     }
-        // });
-        // var param = '?dari=' + dari + '&sampai=' + sampai + '&da=' + da + '&depo=' + depo + '&laporan=' + laporan + '&keperluan=' + keperluan + '&pdf=2';
-
                     url = baseurl + 'Farmasi_stock/cetak/' + gudang+'/2';
                     window.open(url, '');
     }
@@ -164,6 +142,7 @@ $this->load->view('template/v_report');
 
     var cabang = "<?= $cabang; ?>";
     $(document).ready(function() {
+        $("#valid_a").hide();
 
         $('.print_laporan').on("click", function() {
             var gudang = document.getElementById('gudang').value;
@@ -366,6 +345,87 @@ $this->load->view('template/v_report');
         var gudang = $('#gudang').val();
         var cabang = "<?= $cabang; ?>";
         table.ajax.url("<?php echo base_url('farmasi_stock/ajax_list/?cabang=') ?>" + cabang + '&gudang=' + gudang).load();
+        $("#valid_a").show(200);
+    }
+
+    function valid(id) {
+        $.ajax({
+            url: "<?= site_url('Farmasi_stock/valid/') ?>" + id,
+            type: "POST",
+            dataType: "JSON",
+            success: function(data) {
+                if (data.status == 1) {
+                    swal({
+                        title: "VALID DATA",
+                        html: "Berhasil dilakukan",
+                        type: "success",
+                        confirmButtonText: "OK"
+                    }).then((value) => {
+                        location.href = "<?= base_url() ?>farmasi_stock";
+                    });
+                } else {
+                    swal({
+                        title: "VALID DATA",
+                        html: "Gagal dilakukan",
+                        type: "error",
+                        confirmButtonText: "OK"
+                    });
+                }
+            }
+        });
+    }
+
+    function valid_all() {
+        var gudang = $('#gudang').val();
+        swal({
+            title: 'VALID SEMUA',
+            html: "Yakin Ingin Memvalidkan gudang ini ?",
+            type: 'question',
+            showCancelButton: true,
+            confirmButtonClass: 'btn btn-success',
+            cancelButtonClass: 'btn btn-success',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Ya',
+            cancelButtonText: 'Tidak'
+        }).then(function() {
+            $('#loading').modal({
+                backdrop: 'static',
+                keyboard: false,
+                show: true
+            });
+            $.ajax({
+                url: "<?= site_url('Farmasi_stock/valid_all/') ?>" + gudang,
+                type: "POST",
+                dataType: "JSON",
+                success: function(data) {
+                    if (data.status == 1) {
+                        
+                        swal({
+                            title: "VALID DATA",
+                            html: "Berhasil dilakukan",
+                            type: "success",
+                            confirmButtonText: "OK"
+                        }).then((value) => {
+                            location.href = "<?= base_url() ?>farmasi_stock";
+                        });
+                        $('#loading').modal('hide');
+                    } else {
+                        
+                        swal({
+                            title: "VALID DATA",
+                            html: "Gagal dilakukan",
+                            type: "error",
+                            confirmButtonText: "OK"
+                        });
+                        $('#loading').modal({
+                            backdrop: 'static',
+                            keyboard: false,
+                            show: false
+                        });
+                    }
+                }
+            });
+        });
     }
 </script>
 

@@ -474,10 +474,24 @@ class App extends CI_Controller
 		echo json_encode($this->M_global->getfarmasibaranggud($q, $g));
 	}
 
-	function search_farmasi_barang_alkes()
+	function search_farmasi_barang_alkes($gudang = "")
 	{
-		$q = $this->input->post('searchTerm');
-		echo json_encode($this->M_global->getfarmasibarang_alkes($q));
+		if($gudang == ""){
+			$alkes_bhp 	= (object) [
+				"id"	=> 0,
+				"text"	=> "--- PILIH GUDANG DAHULU ---",
+			];
+
+			$query_alkes	= array(
+				$alkes_bhp
+			);
+
+			echo json_encode($query_alkes);
+		} else {
+			$q = $this->input->post('searchTerm');
+			echo json_encode($this->M_global->getfarmasibarang_alkes($q, $gudang));
+			// $query_tindakan_erad	= $this->db->query("SELECT CONCAT('[ ', kodetarif ,' ] - [ ', tindakan ,' ] - [ ', FORMAT(tarifrspoli + tarifdrpoli, 2, '.') ,' ]') AS text, kodetarif AS id FROM daftar_tarif_nonbedah WHERE kodepos = '$unit' AND koders = '$cabang'")->result();
+		}
 	}
 
 	function databarang()
