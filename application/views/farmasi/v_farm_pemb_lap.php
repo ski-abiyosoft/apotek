@@ -254,7 +254,7 @@ $this->load->view('template/v_report');
         var vendor = document.getElementById('vendor').value;
         $('.modal-title').text('CETAK LAPORAN PEMBELIAN BARANG');
         // console.log(tanggal1);
-        $("#simkeureport").html('<iframe src="<?php echo base_url(); ?>Pembelian_farmasi_laporan/cetak?idlap=' + idlap + '&cabang=' + cabang + '&tanggal1=' + tanggal1 + '&tanggal2=' + tanggal2 + '&vendor=' + vendor + '" frameborder="no" width="100%" height="520"></iframe>');
+        $("#simkeureport").html('<iframe src="<?php echo base_url(); ?>Pembelian_farmasi_laporan/cetak2?idlap=' + idlap + '&cabang=' + cabang + '&tanggal1=' + tanggal1 + '&tanggal2=' + tanggal2 + '&vendor=' + vendor + '&pdf=1' + '" frameborder="no" width="100%" height="520"></iframe>');
     });
 
     function exp() {
@@ -264,8 +264,7 @@ $this->load->view('template/v_report');
         var tanggal2 = $('#tanggal2').val();
         var vendor = document.getElementById('vendor').value;
         // console.log(idlap);
-        location.href = '<?= site_url('Pembelian_farmasi_laporan/excel/?idlap=') ?>' + idlap + '&cabang=' + cabang +
-            '&tgl1=' + tanggal1 + '&tgl2=' + tanggal2 + '&vendor=' + vendor;
+        location.href = "<?= site_url() ?>Pembelian_farmasi_laporan/cetak2?idlap="+' + idlap + '&cabang=' + cabang + '&tanggal1=' + tanggal1 + '&tanggal2=' + tanggal2 + '&vendor=' + vendor + '&pdf=1';
         // $.ajax({
         //     url: '<?= site_url('Pembelian_farmasi_laporan/excel?idlap=') ?>' + idlap + '&cabang=' + cabang +
         //         '&tgl1=' + tanggal1 + '&tgl2=' + tanggal2 + '&vendor=' + vendor,

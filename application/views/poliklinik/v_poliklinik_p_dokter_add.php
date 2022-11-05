@@ -190,7 +190,7 @@
                         <div class="col-md-6">
                             <h3 style="color:green" align="left"><b>EMR-RAWAT JALAN</b></h3>
                         </div>
-                        <div class="col-md-3">
+                        <div class="col-md-<?= $status_kasir == 0 ? "3" : "6" ?>">
                             <h3 style="color:green;font-weight:bold" align="left" id="doktertitle"><b>
                                 <?php
                                     if(isset($ttv->kodokter)){
@@ -230,6 +230,7 @@
                                 ?>
                             </b></h3>
                         </div>
+                        <?php if($status_kasir == 0): ?>
                         <div class="col-md-3">
                             <h3 style="color:green" align="left">
                                 <select type="text" class="selectpicker" class="form-control" id="selectdr" name="selectdr" style="margin-top:20px" data-live-search="true" data-width="100%" onkeypress="return tabE(this,event)">
@@ -262,6 +263,7 @@
                                 </select>
                             </h3>
                         </div>
+                        <?php endif; ?>
                     </div>
 
                     <div class="row">
@@ -788,8 +790,8 @@
                                                                             </select>
                                                                         </td>
                                                                         <td>
-                                                                            <select name="paramedis[]" class="select2_el_dokter form-control" id="paramedis1">
-                                                                                <option value="<?= $kodokter ?>" selected><?= data_master("dokter", array("kodokter" => $kodokter, "koders" => $this->session->userdata("unit"), "kopoli" => $polipas))->nadokter ?></option>
+                                                                            <select name="paramedis[]" class="select2_el_perawat form-control" id="paramedis1">
+                                                                                <!-- <option value="<?= $kodokter ?>" selected><?= data_master("dokter", array("kodokter" => $kodokter, "koders" => $this->session->userdata("unit"), "kopoli" => $polipas))->nadokter ?></option> -->
                                                                             </select>
                                                                         </td>
 
@@ -824,12 +826,12 @@
                                                                                 </select>
                                                                             </td>
                                                                             <td>
-                                                                                <select name="paramedis[]" id="paramedis<?= $no2 ?>" type="text" class="select2_el_dokter form-control">
+                                                                                <select name="paramedis[]" id="paramedis<?= $no2 ?>" type="text" class="select2_el_perawat form-control">
                                                                                     <?php
                                                                                         if(isset($bval->kodokter)){
                                                                                     ?>
                                                                                         <!-- echo "<option value='$bval->kodokter'>". data_master("tbl_dokter", array("kodokter" => $bval->koperawat, "koders" => $this->session->userdata("unit")))->nadokter ."</option>"; -->
-                                                                                        <option value="<?= $bval->koperawat ?>" selected><?= data_master("dokter", array("kodokter" => $bval->kodokter, "koders" => $this->session->userdata("unit"), "kopoli" => $polipas))->nadokter ?></option>
+                                                                                        <option value="<?= $bval->koperawat ?>" selected><?= data_master("perawat", array("kodokter" => $bval->kodokter, "koders" => $this->session->userdata("unit"), "kopoli" => $polipas))->nadokter ?></option>
                                                                                     <?php
                                                                                         }
                                                                                     ?>
@@ -958,7 +960,7 @@
                                                     <div class="row" style="margin-bottom:0px !important">
                                                         <div class="col-md-12" style="margin-bottom:0px !important">		
                                                             <div class="form-actions" style="margin-bottom:0px !important">
-                                                                <button id="btnsimpan" type="button" onclick="save()" class="btn blue"><i class="fa fa-save"></i><b> Simpan</b></button>
+                                                                <?php if($status_kasir == 0){ ?><button id="btnsimpan" type="button" onclick="save()" class="btn blue"><i class="fa fa-save"></i><b> Simpan</b></button><?php } ?>
                                                                 <div class="btn-group">
                                                                     <a class="btn red" onclick="back()" ><i class="fa fa-undo"></i><b> KEMBALI </b></a>
                                                                 </div>
@@ -1455,7 +1457,7 @@
                                                     <div class="row" style="margin-bottom:0px !important">
                                                         <div class="col-md-12" style="margin-bottom:0px !important">		
                                                             <div class="form-actions" style="margin-bottom:0px !important">
-                                                                <button id="btnsimpan" type="button" onclick="save()" class="btn blue"><i class="fa fa-save"></i><b> Simpan</b></button>
+                                                                <?php if($status_kasir == 0){ ?><button id="btnsimpan" type="button" onclick="save()" class="btn blue"><i class="fa fa-save"></i><b> Simpan</b></button><?php } ?>
                                                                 <div class="btn-group">
                                                                     <a class="btn red" onclick="back()" ><i class="fa fa-undo"></i><b> KEMBALI </b></a>
                                                                 </div>
@@ -1496,9 +1498,11 @@
                                                                                 <?php $noelab++; endforeach; endif; ?>
                                                                             </tbody>
                                                                         </table>
+                                                                        <?php if($status_kasir == 0){ ?>
                                                                         <div style="margin-top:15px">
                                                                             <button type="button" class="btn green" onclick="tambah_order_elab()"><i class="fa fa-plus fa-fw"></i>&nbsp; Order Baru</button>
                                                                         </div>
+                                                                        <?php } ?>
                                                                     </div>
 
                                                                     <div id="elab-form-area">
@@ -1571,7 +1575,7 @@
                                                                     <div class="row" style="margin-bottom:0px !important">
                                                                         <div class="col-md-12" style="margin-bottom:0px !important">		
                                                                             <div class="form-actions" style="margin-bottom:0px !important">
-                                                                                <button id="btnsimpanelab" type="button" onclick="save_elab()" class="btn blue"><i class="fa fa-save"></i><b> Simpan</b></button>
+                                                                                <?php if($status_kasir == 0){ ?><button id="btnsimpanelab" type="button" onclick="save_elab()" class="btn blue"><i class="fa fa-save"></i><b> Simpan</b></button><?php } ?>
                                                                                 <div class="btn-group">
                                                                                     <a class="btn red" onclick="back()" ><i class="fa fa-undo"></i><b> KEMBALI </b></a>
                                                                                 </div>
@@ -1662,9 +1666,11 @@
                                                                                 <?php $noemed++; endforeach; endif; ?>
                                                                             </tbody>
                                                                         </table>
+                                                                        <?php if($status_kasir == 0){ ?>
                                                                         <div style="margin-top:15px">
                                                                             <button type="button" class="btn green" onclick="tambah_order_emed()"><i class="fa fa-plus fa-fw"></i>&nbsp; Order Baru</button>
                                                                         </div>
+                                                                        <?php } ?>
                                                                     </div>
 
                                                                     <div id="emed-form-area">
@@ -1759,7 +1765,7 @@
                                                                     <div class="row" style="margin-bottom:0px !important">
                                                                         <div class="col-md-12" style="margin-bottom:0px !important">		
                                                                             <div class="form-actions" style="margin-bottom:0px !important">
-                                                                                <button id="btnsimpanemed" type="button" onclick="save_emed()" class="btn blue"><i class="fa fa-save"></i><b> Simpan</b></button>
+                                                                                <?php if($status_kasir == 0){ ?><button id="btnsimpanemed" type="button" onclick="save_emed()" class="btn blue"><i class="fa fa-save"></i><b> Simpan</b></button><?php } ?>
                                                                                 <div class="btn-group">
                                                                                     <a class="btn red" onclick="back()" ><i class="fa fa-undo"></i><b> KEMBALI </b></a>
                                                                                 </div>
@@ -1839,9 +1845,11 @@
                                                                                 <?php $noerad++; endforeach; endif; ?>
                                                                             </tbody>
                                                                         </table>
+                                                                        <?php if($status_kasir == 0){ ?>
                                                                         <div style="margin-top:15px">
                                                                             <button type="button" class="btn green" onclick="tambah_order_erad()"><i class="fa fa-plus fa-fw"></i>&nbsp; Order Baru</button>
                                                                         </div>
+                                                                        <?php } ?>
                                                                     </div>
 
                                                                     <div id="erad-form-area">
@@ -1911,7 +1919,7 @@
                                                                     <div class="row" style="margin-bottom:0px !important">
                                                                         <div class="col-md-12" style="margin-bottom:0px !important">		
                                                                             <div class="form-actions" style="margin-bottom:0px !important">
-                                                                                <button id="btnsimpanerad" type="button" onclick="save_erad()" class="btn blue"><i class="fa fa-save"></i><b> Simpan</b></button>
+                                                                                <?php if($status_kasir == 0){ ?><button id="btnsimpanerad" type="button" onclick="save_erad()" class="btn blue"><i class="fa fa-save"></i><b> Simpan</b></button><?php } ?>
                                                                                 <div class="btn-group">
                                                                                     <a class="btn red" onclick="back()" ><i class="fa fa-undo"></i><b> KEMBALI </b></a>
                                                                                 </div>
@@ -1980,6 +1988,7 @@
                                                                     <th>Dokter</th>
                                                                     <th>Keluhan Awal</th>
                                                                     <th>Pemeriksaan</th>
+                                                                    <th>Tindakan</th>
                                                                     <th>Diagnosa Masuk</th>
                                                                     <th>Diagnosa ICD</th>
                                                                     <th>Terapi</th>
@@ -2069,6 +2078,7 @@
                                                                         </td>
                                                                         <td><?= $dhval->keluhanawal ?></td>
                                                                         <td><?= $dhval->pfisik ?></td>
+                                                                        <td><?= $dhval->tindu ?></td>
                                                                         <td><?= $dhval->diagnosa ?></td>
                                                                         <td><button class="btn btn-primary btn-xs" type="button" data-toggle="modal" data-target="#detailDiagnosa<?= $dhval->id ?>">Detail</button></td>
                                                                         <td><?= $dhval->resep ?></td>
@@ -2177,6 +2187,11 @@
         get_emed_order();
         get_erad_order();
         initailizeSelect2_tarif_erad2();
+
+        //
+
+        initailizeSelect2_dokter('<?= $polipas ?>');
+        initailizeSelect2_perawat('<?= $polipas ?>');
     });
 
     <?php if($statusicd == "undone"): ?>
@@ -2761,11 +2776,13 @@
         "<td><select name='kode[]' id=kode"+idrowBill+" class='select2_el_poli_tindakan form-control input-largex' onchange='show_tindakan(this.value, "+idrowBill+")'> </select></td>"+
         "<td><input name='hrg[]' id=hrg"+idrowBill+" class='form-control rightJustified' readonly></td>"+
         "<td><select name='dokter[]' id=dokter"+idrowBill+" type='text' class='form-control select2_el_dokter'><option value='<?= $kodokter ?>' selected><?= data_master("dokter", array("kodokter" => $kodokter, "koders" => $this->session->userdata("unit"), "kopoli" => $polipas))->nadokter ?></option></select></td>"+
-        "<td><select name='paramedis[]' id=paramedis"+idrowBill+" type='text' class='form-control select2_el_dokter'><option value='<?= $kodokter ?>' selected><?= data_master("dokter", array("kodokter" => $kodokter, "koders" => $this->session->userdata("unit"), "kopoli" => $polipas))->nadokter ?></option></select></td>"+
+        // "<td><select name='paramedis[]' id=paramedis"+idrowBill+" type='text' class='form-control select2_el_perawat'><option value='<?= $kodokter ?>' selected><?= data_master("dokter", array("kodokter" => $kodokter, "koders" => $this->session->userdata("unit"), "kopoli" => $polipas))->nadokter ?></option></select></td>"+
+        "<td><select name='paramedis[]' id=paramedis"+idrowBill+" type='text' class='form-control select2_el_perawat'></select></td>"+
         "</tr>");
 
         initailizeSelect2_poli_tindakan(kodpos);
-        initailizeSelect2_dokter();
+        initailizeSelect2_dokter('<?= $polipas ?>');
+        initailizeSelect2_perawat('<?= $polipas ?>');
         idrowBill++;
     }
 
@@ -3421,7 +3438,7 @@
                     }
                 });
             });
-        <?php endif; ?>s
+        <?php endif; ?>
     }
 
     function hapusBaris_eresep(param){
@@ -4018,7 +4035,7 @@
                     });    
                     return;
                 }else{
-                    $('[name="sakitselama"]').val(data.jarak);
+                    $('[name="sakitselama"]').val(data.jarak+1);
                 }
             },
             error: function(){
@@ -4037,12 +4054,12 @@
     }
 
 </script>
-    <!-- Latest compiled and minified CSS -->
-    <link rel="stylesheet"
-        href="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/css/bootstrap-select.min.css">
+<!-- Latest compiled and minified CSS -->
+<link rel="stylesheet"
+href="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/css/bootstrap-select.min.css">
 
-    <!-- Latest compiled and minified JavaScript -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/js/bootstrap-select.min.js"></script>
+<!-- Latest compiled and minified JavaScript -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/js/bootstrap-select.min.js"></script>
 
-    <!-- (Optional) Latest compiled and minified JavaScript translation files -->
-    <!-- <script src="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/js/i18n/defaults-*.min.js"></script> -->
+<!-- (Optional) Latest compiled and minified JavaScript translation files -->
+<!-- <script src="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/js/i18n/defaults-*.min.js"></script> -->

@@ -124,10 +124,17 @@ tbody.scrollContent tr.alternateRow td {
             <div class="portlet-body">
                 <div class="table-toolbar">
                     <div class="btn-group">
+                    <?php 
+                    $cek =  $this->session->userdata('user_level'); 
+                    if($cek==0){?> 
+                    <?php }else{ ?>
+
                         <a href="<?php echo base_url()?>farmasi_pbb/entri" class="btn btn-success">
                         <i class="fa fa-plus"></i>
                         Data Baru
                         </a>
+
+                    <?php } ?>
                     
                     </div>	
                     <!--button class="btn btn-success" onclick="add_data()"><i class="glyphicon glyphicon-plus"></i> Data Baru</button-->
@@ -173,7 +180,13 @@ tbody.scrollContent tr.alternateRow td {
                             <td><?= $lval->username ?></td>
                             <td><?= $lval->mohonno ?></td>
                             <td><?= date("d/m/Y", strtotime($lval->tglmohon)) ?></td>
-                            <td><?= $gdari->keterangan ?></td>
+                            <td>
+                                <?php if($gdari) : ?>
+                                    <?= $gdari->keterangan ?>
+                                <?php else : ?>
+                                    <button class="btn btn-danger" disabled>GUDANG HILANG</button>
+                                <?php endif; ?>
+                            </td>
                             <td><?= $gke->keterangan ?></td>
                             <td><?= $lval->keterangan ?></td>
                             <td class="text-center">

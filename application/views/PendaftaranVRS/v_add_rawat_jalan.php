@@ -74,7 +74,7 @@
           <div class="form-group">
             <label class="col-md-3 control-label">Poliklinik <font color="red">*</font></label>
             <div class="col-md-9">
-              <select name="poliklinik1" id="poliklinik1" class="form-control select2_el_poli" onChange="update(); cekruang()"
+              <select name="poliklinik1" id="poliklinik1" class="form-control select2_el_poli" onchange="update(); cekruang()"
                 style="width:100%;">
                 <option value="">-- Pilih --</option>
                 <?php foreach($namapos as $pos): ?>

@@ -55,26 +55,44 @@
             </div>
             <div class="portlet-body">
                 <div class="table-toolbar">
-                    <div class="btn-group">
+                    <table border="0" width="100%">
+                            <tr>
+                                <td width="50%">
+                                    <button class="btn btn-success" onclick="add_bank()">
+                                        <i class="glyphicon glyphicon-plus"></i> Data Baru
+                                    </button>
+                                </td>
+                                <td width="23%">
 
+                                </td>
+                                <td width="13%">
+                                    <div class="btn-group pull-left">
+                                        <button class="btn dropdown-toggle" data-toggle="dropdown"><b>Cetak <i class="fa fa-angle-down"></i></b>
+                                        </button>
+                                        <ul class="dropdown-menu pull-center">
+                                            <li>
+                                                <a href="#report" class="btn btn-sm red print_laporan" data-toggle="modal" id="1">
+                                                    <i title=" CETAK PDF" class="fa fa-print"></i><b>PDF</b>&nbsp;&nbsp;</a>
+                                            </li>
+                                            <li>
+                                                <a class="btn btn-sm green print_laporan_e" >
+                                                <i title=" CETAK PDF" class="fa fa-download"></i><b>EXCEL</b>&nbsp;&nbsp;
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </div>
 
-                    </div>
-                    <button class="btn btn-success" onclick="add_bank()"><i class="glyphicon glyphicon-plus"></i> Data
-                        Baru</button>
-                    <div class="btn-group pull-right">
-                        <button class="btn dropdown-toggle" data-toggle="dropdown">Data <i class="fa fa-angle-down"></i>
-                        </button>
-                        <ul class="dropdown-menu pull-right">
-                            <li>
-                                <a href="#report" class="print_laporan" data-toggle="modal" id="1">Cetak</a>
-                            </li>
-                            <li>
-                                <a href="<?php echo base_url()?>master_poliexport">
-                                    Export
-                                </a>
-                            </li>
-                        </ul>
-                    </div>
+                                </td>
+                                <td width="14%">
+                                    <a class="btn blue"data-toggle="modal" href="#caribarang">
+                                        <i class="glyphicon glyphicon-search"></i>
+                                        <b>Search Data</b>
+                                    </a>
+                                </td>
+
+                            </table>
+                    
+                    
                 </div>
                 <table id="table" class="table table-striped- table-bordered-" cellspacing="0" width="100%">
                     <thead class="breadcrumb">
@@ -118,18 +136,18 @@ $(document).ready(function() {
 
         // Load data for the table's content from an Ajax source
         "ajax": {
-            "url": "<?php echo site_url('master_barang/ajax_list')?>",
+            "url": "<?php echo site_url('master_barang/ajax_list/?jenis=1')?>",
             "type": "POST"
         },
 
         "oLanguage": {
-            "sEmptyTable": "Tidak ada data",
-            "sInfoEmpty": "Tidak ada data",
-            "sInfoFiltered": " - Dipilih dari _MAX_ data",
-            "sSearch": "Pencarian Data : ",
-            "sInfo": " Jumlah _TOTAL_ Data (_START_ - _END_)",
-            "sLengthMenu": "_MENU_ Baris",
-            "sZeroRecords": "Tida ada data",
+            "sEmptyTable"   : "Tidak ada data",
+            "sInfoEmpty"    : "Tidak ada data",
+            "sInfoFiltered" : " - Dipilih dari _MAX_ data",
+            "sSearch"       : "Pencarian Data : ",
+            "sInfo"         : " Jumlah _TOTAL_ Data (_START_ - _END_)",
+            "sLengthMenu"   : "_MENU_ Baris",
+            "sZeroRecords"  : "Tida ada data",
             "oPaginate": {
                 "sPrevious": "Sebelumnya",
                 "sNext": "Berikutnya"
@@ -308,8 +326,19 @@ function save() {
     });
 }
 
-function delete_data(id) {
-    if (confirm('Yakin data Barang dengan kode ' + id + ' ini akan dihapus ?')) {
+function delete_data(id,kd,nm) {
+    // if (confirm('Yakin data Barang dengan kode <b>' + nm + '</b> ini akan dihapus ?')) {
+    swal({
+    title: 'DELETE DATA',
+    html: 'Yakin data Barang dengan kode <b>'+ kd +'</b> nama <b>' + nm +'</b>',
+    type: 'question',
+    showCancelButton: true,
+    confirmButtonClass: 'btn btn-success',
+    cancelButtonClass: 'btn btn-success',
+    cancelButtonColor: '#d33',
+    confirmButtonText: 'Ya, Delete',
+    cancelButtonText: 'Tidak'
+    }).then(function() {
         // ajax delete data to database
         $.ajax({
             url: "<?php echo site_url('master_barang/ajax_delete')?>/" + id,
@@ -317,15 +346,24 @@ function delete_data(id) {
             dataType: "JSON",
             success: function(data) {
                 //if success reload ajax table
-                $('#modal_form').modal('hide');
-                reload_table();
+                swal({
+                    title   : "DATA",
+                    html    : "<p> Berhasil Terhapus</p>",
+                    type    : "success",
+                    confirmButtonText: "OK" 
+                }).then((value) => {
+                    $('#modal_form').modal('hide');
+                    reload_table();
+                });	
             },
             error: function(jqXHR, textStatus, errorThrown) {
                 alert('Error deleting data');
             }
         });
 
-    }
+        
+    });
+    // }
 }
 </script>
 
@@ -335,8 +373,13 @@ $(document).ready(function() {
     $('.print_laporan').on("click", function() {
         $('.modal-title').text('MASTER');
         var no_daftar = this.id;
-        $("#simkeureport").html('<iframe src="<?php echo base_url();?>master_policetak/' + no_daftar +
-            '" frameborder="no" width="100%" height="420"></iframe>');
+        $("#simkeureport").html('<iframe src="<?php echo base_url();?>master_barang/cetak/1" frameborder="no" width="100%" height="420"></iframe>');
+    });
+
+    $('.print_laporan_e').on("click", function() {
+        $('.modal-title').text('MASTER');
+        var no_daftar = this.id;
+        $("#simkeureport").html('<iframe src="<?php echo base_url();?>master_barang/cetak/2" frameborder="no" width="100%" height="420"></iframe>');
     });
 });
 </script>
@@ -713,6 +756,46 @@ $(document).ready(function() {
     </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
 
+<div class="modal fade" id="caribarang" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-large">
+        <div class="modal-content">
+            <span id="nopilih">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                <h4 class="modal-title">Cari Barang</h4>											
+            </div>
+            <div class="modal-body">										 		  
+            <form action="#" class="form-horizontal">
+                <div class="form-group">
+                    <label class="col-md-3 control-label">Kode Barang</label>
+                    <div class="col-md-9">
+                    <input id="carikode" name="carikode" class="form-control" type="text"  />
+                    
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-md-3 control-label">Nama Barang</label>
+                    <div class="col-md-9">
+                    <input id="carinama" name="carinama" class="form-control" type="text"  />
+                    
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-md-3 control-label">Satuan</label>
+                    <div class="col-md-9">
+                    <input id="carisatuan" name="carisatuan" class="form-control" type="text" value="" />
+                    </div>
+                </div>			
+            </form>
+            </div>   
+            <div class="modal-footer">
+                <p align="center">
+                <button type="button" id="btnfilter" class="btn blue" onclick="filterdata()" data-dismiss="modal"><i class="glyphicon glyphicon-search"></i> <b>CARI<b></button>		</p>																				 			
+            </div>											
+        </div>									
+    </div>								
+</div>
+
 <script>
 initailizeSelect2_vendor();
 //initailizeSelect2_kasbank();
@@ -766,4 +849,12 @@ $("#ppn").on("change", function() {
         $("#hnappn").val(hna);
     }
 });
+
+function filterdata(){	
+	var kd = $("#carikode").val();
+	var nm = $("#carinama").val();
+	var sat = $("#carisatuan").val();
+	var str = "?kd="+kd+"&nm="+nm+"&sat="+sat;
+	table.ajax.url("<?= base_url();?>master_barang/ajax_list/"+str).load();	 
+}
 </script>

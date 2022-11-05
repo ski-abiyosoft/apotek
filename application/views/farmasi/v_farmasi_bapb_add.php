@@ -390,7 +390,7 @@ $this->load->view('template/body');
             <div class="wells">
 
 
-              <button type="button" onclick="savex()" style="margin-left:15px;" class="btn blue"><i class="fa fa-save"></i>
+              <button type="button" onclick="savex()" style="margin-left:15px;" id="btnsave" class="btn blue"><i class="fa fa-save"></i>
                 <b>Simpan </b></button>
 
               <div class="btn-group">
@@ -460,6 +460,8 @@ $this->load->view('template/footer');
 
 
 <script>
+  $("#btnsave").attr("disabled", true);
+  
   function cekmtr() {
     var tmateraix = $("#materai").val();
     var tmaterai = parseInt(tmateraix.replaceAll(',', ''));
@@ -785,6 +787,7 @@ $this->load->view('template/footer');
       type: "GET",
       dataType: "JSON",
       success: function(data) {
+        $("#btnsave").attr("disabled", false);
         // console.log(data);
         $('#sat' + vid).val(data.satuan1);
         $('#harga' + vid).val(formatCurrency1(data.hargabeli));
@@ -1496,6 +1499,7 @@ $this->load->view('template/footer');
         dataType: "JSON",
 
         success: function(data) {
+          $("#btnsave").attr("disabled", false);
           for (i = 0; i <= data.length - 1; i++) {
             hapus();
           }

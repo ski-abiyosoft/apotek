@@ -1,13 +1,13 @@
 <?php
 
 function tglsystem(){
-$tanggal = date('Y-m-d H:i:s');
-return $tanggal;
+	$tanggal = date('Y-m-d H:i:s');
+	return $tanggal;
 }
 
 function user_login(){
-$CI =& get_instance();
-return $CI->session->userdata('username');	
+	$CI =& get_instance();
+	return $CI->session->userdata('username');	
 }
 
 function hitung_umur($tanggal_lahir){
@@ -23,50 +23,50 @@ function hitung_umur($tanggal_lahir){
 }
 
 function pasien_rekmed_baru($nama){	
-$CI =& get_instance();	
-$kode_cabang = $CI->session->userdata('unit');	  
-$namadepan = substr($nama, 0,1);
-//   $dataurut = $CI->db->query("select urut as nomor from tbl_urutmr where mrkey='$namadepan'")->row();
-$dataurut = $CI->db->query("select urut as nomor from tbl_urutmr where koders = '$kode_cabang' AND mrkey='$namadepan'")->row();
+	$CI =& get_instance();	
+	$kode_cabang = $CI->session->userdata('unit');	  
+	$namadepan = substr($nama, 0,1);
+	//   $dataurut = $CI->db->query("select urut as nomor from tbl_urutmr where mrkey='$namadepan'")->row();
+	$dataurut = $CI->db->query("select urut as nomor from tbl_urutmr where koders = '$kode_cabang' AND mrkey='$namadepan'")->row();
 
-if($dataurut){
-	$nourut = $dataurut->nomor+1;
-	//   $CI->db->query("update tbl_urutmr set urut=urut+1 where mrkey='$namadepan'");
-	$CI->db->query("update tbl_urutmr set urut=urut+1 where koders='$kode_cabang' AND mrkey='$namadepan'");
-} else {
-	$nourut = 1;	
-	//   $CI->db->query("insert into tbl_urutmr(mrkey, urut) values('$namadepan', 1)");
-	$CI->db->query("insert into tbl_urutmr(koders, mrkey, urut) values('$kode_cabang','$namadepan', 1)");
-}
-			
-$rekmed = $kode_cabang.$namadepan.str_pad( $nourut, 6, '0', STR_PAD_LEFT );	
-return $rekmed;
+	if($dataurut){
+		$nourut = $dataurut->nomor+1;
+		//   $CI->db->query("update tbl_urutmr set urut=urut+1 where mrkey='$namadepan'");
+		$CI->db->query("update tbl_urutmr set urut=urut+1 where koders='$kode_cabang' AND mrkey='$namadepan'");
+	} else {
+		$nourut = 1;	
+		//   $CI->db->query("insert into tbl_urutmr(mrkey, urut) values('$namadepan', 1)");
+		$CI->db->query("insert into tbl_urutmr(koders, mrkey, urut) values('$kode_cabang','$namadepan', 1)");
+	}
+				
+	$rekmed = $kode_cabang.$namadepan.str_pad( $nourut, 6, '0', STR_PAD_LEFT );	
+	return $rekmed;
 }  
 
 function stok_farmasi($barang, $gudang){	
-$CI =& get_instance();	
-$kode_cabang = $CI->session->userdata('unit');	  
-$datastok = $CI->db->query("select * from tbl_barangstock where koders='$kode_cabang' and gudang='$gudang' and kodebarang='$barang'")->row();
-if($datastok){
-	$stok = $datastok->saldoakhir;	  
-} else {
-	$stok = 0;	  
-}
-			
-return $stok;
+	$CI =& get_instance();	
+	$kode_cabang = $CI->session->userdata('unit');	  
+	$datastok = $CI->db->query("select * from tbl_barangstock where koders='$kode_cabang' and gudang='$gudang' and kodebarang='$barang'")->row();
+	if($datastok){
+		$stok = $datastok->saldoakhir;	  
+	} else {
+		$stok = 0;	  
+	}
+				
+	return $stok;
 } 
 
 function stok_logistik($barang, $gudang){	
-$CI =& get_instance();	
-$kode_cabang = $CI->session->userdata('unit');	  
-$datastok = $CI->db->query("select * from tbl_apostocklog where koders='$kode_cabang' and gudang='$gudang' and kodebarang='$barang'")->row();
-if($datastok){
-	$stok = $datastok->saldoakhir;	  
-} else {
-	$stok = 0;	  
-}
-			
-return $stok;
+	$CI =& get_instance();	
+	$kode_cabang = $CI->session->userdata('unit');	  
+	$datastok = $CI->db->query("select * from tbl_apostocklog where koders='$kode_cabang' and gudang='$gudang' and kodebarang='$barang'")->row();
+	if($datastok){
+		$stok = $datastok->saldoakhir;	  
+	} else {
+		$stok = 0;	  
+	}
+				
+	return $stok;
 } 
 
 
@@ -87,33 +87,33 @@ function history_log($shipt='' ,$modul='' ,$aksi='' ,$trno='' ,$ket='')
 /* Rizki */
 /* Urut : Mengambil Last No urut Tapi Ketika Reload Akan Terinsert */
 function urut_transaksi( $trkode, $lebar){
-$CI =& get_instance();
-$kode_cabang = $CI->session->userdata('unit');
-$CI->db->query("UPDATE tbl_urutrs set nourut=nourut+1 where kode_urut='$trkode' and koders='$kode_cabang' ");
-$data_urut = $CI->db->query("SELECT * from tbl_urutrs where kode_urut='$trkode' and koders='$kode_cabang'")->row();
-$nomor_urut = $data_urut->nourut;
-$param1 = trim($data_urut->param1);
-$param2 = trim($data_urut->param2);
-$param3 = trim($data_urut->param3);
-	
-if($param1=='TH'){
-	$param1 = date('Y'); 
-} 
+	$CI =& get_instance();
+	$kode_cabang = $CI->session->userdata('unit');
+	$CI->db->query("UPDATE tbl_urutrs set nourut=nourut+1 where kode_urut='$trkode' and koders='$kode_cabang' ");
+	$data_urut = $CI->db->query("SELECT * from tbl_urutrs where kode_urut='$trkode' and koders='$kode_cabang'")->row();
+	$nomor_urut = $data_urut->nourut;
+	$param1 = trim($data_urut->param1);
+	$param2 = trim($data_urut->param2);
+	$param3 = trim($data_urut->param3);
+		
+	if($param1=='TH'){
+		$param1 = date('Y'); 
+	} 
 
-if($param2=='BL'){
-	$param2 = date('m'); 
-} elseif($param2=='TH'){	  
-	$param2 = date('Y');   
-} 
+	if($param2=='BL'){
+		$param2 = date('m'); 
+	} elseif($param2=='TH'){	  
+		$param2 = date('Y');   
+	} 
 
-if($param3=='BL'){
-	$param3 = date('m'); 
-} 
+	if($param3=='BL'){
+		$param3 = date('m'); 
+	} 
 
 
-$kode_transaksi1 = $kode_cabang.trim($param1).trim($param2).trim($param3);
-$kode_transaksi2 = $kode_transaksi1.str_pad( $nomor_urut, $lebar-strlen($kode_transaksi1), '0', STR_PAD_LEFT );
-return $kode_transaksi2;	
+	$kode_transaksi1 = $kode_cabang.trim($param1).trim($param2).trim($param3);
+	$kode_transaksi2 = $kode_transaksi1.str_pad( $nomor_urut, $lebar-strlen($kode_transaksi1), '0', STR_PAD_LEFT );
+	return $kode_transaksi2;	
 }
 
 function urut_transaksi_rs( $trkode,$status, $lebar){
@@ -196,30 +196,30 @@ function temp_urut_transaksi($curutkode, $ckoders, $clength){
 /* Recent Urut : Mengambil Recent No urut Tanpa Otomatis Insert Ketika Reload */
 function recent_urut_transaksi($curutkode, $ckoders, $clength){
 	$CI =& get_instance();
-$data_urut = $CI->db->query("SELECT * from tbl_urutrs where kode_urut='$curutkode' and koders='$ckoders'")->row();
-$nomor_urut = $data_urut->nourut;
-$param1 = trim($data_urut->param1);
-$param2 = trim($data_urut->param2);
-$param3 = trim($data_urut->param3);
+	$data_urut = $CI->db->query("SELECT * from tbl_urutrs where kode_urut='$curutkode' and koders='$ckoders'")->row();
+	$nomor_urut = $data_urut->nourut;
+	$param1 = trim($data_urut->param1);
+	$param2 = trim($data_urut->param2);
+	$param3 = trim($data_urut->param3);
 
-if($param1=='TH'){
-	$param1 = date('Y'); 
-} 
+	if($param1=='TH'){
+		$param1 = date('Y'); 
+	} 
 
-if($param2=='BL'){
-	$param2 = date('m'); 
-} elseif($param2=='TH'){	  
-	$param2 = date('Y');   
-} 
+	if($param2=='BL'){
+		$param2 = date('m'); 
+	} elseif($param2=='TH'){	  
+		$param2 = date('Y');   
+	} 
 
-if($param3=='BL'){
-	$param3 = date('m'); 
-} 
+	if($param3=='BL'){
+		$param3 = date('m'); 
+	} 
 
 
-$kode_transaksi1 = $ckoders.trim($param1).trim($param2).trim($param3);
-$kode_transaksi2 = $kode_transaksi1.str_pad( $nomor_urut, $clength-strlen($kode_transaksi1), '0', STR_PAD_LEFT );
-return $kode_transaksi2;
+	$kode_transaksi1 = $ckoders.trim($param1).trim($param2).trim($param3);
+	$kode_transaksi2 = $kode_transaksi1.str_pad( $nomor_urut, $clength-strlen($kode_transaksi1), '0', STR_PAD_LEFT );
+	return $kode_transaksi2;
 }
 
 function _rekamjurnal_header($cabang, $nobukti, $tanggal, $ketglobal, $userid, $tutup,$source){
@@ -258,11 +258,11 @@ function angka_rp( $rp, $digit ){
 }
 
 function tanggal( $tgl ){
-if($tgl=="" || $tgl=="1900-01-01 00:00:00"){
-	return "";  
-}	else {
-	return date('d-m-Y',strtotime($tgl));	
-}
+	if($tgl=="" || $tgl=="1900-01-01 00:00:00"){
+		return "";  
+	}	else {
+		return date('d-m-Y',strtotime($tgl));	
+	}
 }
 
 
@@ -288,10 +288,9 @@ function konversi ($x) {
 		return konversi($x / 1000000000) . " milyar" . konversi(fmod($x,1000000000));
 	elseif ($x < 1000000000000000)
 		return konversi($x / 1000000000000) . " trilyun" . konversi(fmod($x,1000000000000));
-	}
+}
 
-	function tkoma($x)
-	{
+function tkoma($x){
 
 	$x = stristr($x,'.');
 	if ($x>0)
@@ -314,9 +313,9 @@ function konversi ($x) {
 	{
 	return "";
 	}
-	}
+}
 
-	function terbilang($x){
+function terbilang($x){
 	$x = abs($x);	 
 	if($x<0){
 	$hasil = "minus ".trim(konversi($x));
@@ -331,7 +330,7 @@ function konversi ($x) {
 	$hasil = $hasil;
 	}
 	return '# '. $hasil.' Rupiah #';
-	}
+}
 
 	
 function send_wa_txt($mobile,$message){
@@ -389,36 +388,48 @@ function sequent_voucher($code){
 	return $final_code;
 }
 
-	function page_permission($password){
-		$CI =& get_instance();
-		$allowed_level	= array(1,2);
-		$user_level		= $CI->session->userdata("user_level");
-		$username		= $CI->session->userdata("uidlogin");
-		$pass_enc		= md5($password);
+function page_permission($password){
+	$CI =& get_instance();
+	$allowed_level	= array(1,2);
+	$user_level		= $CI->session->userdata("user_level");
+	$username		= $CI->session->userdata("uidlogin");
+	$pass_enc		= md5($password);
 
-		$query_user	= $CI->db->query("SELECT * FROM userlogin WHERE uidlogin = '$username' AND pwdlogin = '$pass_enc'")->row();
+	$query_user	= $CI->db->query("SELECT * FROM userlogin WHERE uidlogin = '$username' AND pwdlogin = '$pass_enc'")->row();
 
-		if($query_user){
-			if(in_array($user_level, $allowed_level) === true){
-				setcookie("page_permission", "set", time()+86400, "/");
-				return true;
-			} else {
-				return false;
-			}
+	if($query_user){
+		if(in_array($user_level, $allowed_level) === true){
+			setcookie("page_permission", "set", time()+86400, "/");
+			return true;
 		} else {
 			return false;
 		}
+	} else {
+		return false;
 	}
+}
 
-	/**
-	 * Fungsi untuk mengkonversi tanggal
-	 * 
-	 * @param string $date
-	 * @return string 
-	 */
-	function local_date (string $date): string
-	{
-		return strftime('%e %B %Y', strtotime($date));
+/**
+ * Fungsi untuk mengkonversi tanggal
+ * 
+ * @param string $date
+ * @return string 
+ */
+function local_date (string $date): string{
+	return strftime('%e %B %Y', strtotime($date));
+}
+
+/* UNIQUE FILE */
+function unique_file($path, $filename) {
+	$file_parts = explode(".", $filename);
+	$ext = array_pop($file_parts);
+	$name = implode(".", $file_parts);
+
+	$i = 1;
+	while (file_exists($path . $filename)) {
+		$filename = $name . '-' . ($i++) . '.' . $ext;
 	}
-		
+	return $filename;
+}
+
 ?>

@@ -92,8 +92,9 @@ if($datpas){
                                         <div class="col-md-9">
                                              <select id="dokter" name="dokter" class="form-control select2_el_dokter" data-placeholder="Pilih..." onkeypress="return tabE(this,event)" disabled>
                                                   <?php if ($header->kodokter) :
-                                                       $namadr = data_master('tbl_dokter', array('kodokter' => $header->kodokter, "koders" => $this->session->userdata("unit")))->nadokter; ?>
-                                                       <option value="<?= $header->kodokter; ?>"><?= $header->kodokter . ' | ' . $namadr; ?></option>
+                                                       $namadr   = data_master("dokter", array("kodokter" => $header->kodokter, "koders" => $this->session->userdata("unit"), "kopoli" => $datpas->kodepos))->nadokter
+                                                  ?>
+                                                       <option value="<?= $header->kodokter; ?>" selected><?= $header->kodokter . ' | ' . $namadr; ?></option>
                                                   <?php endif; ?>
                                              </select>
                                         </div>

@@ -1159,7 +1159,7 @@ date_default_timezone_set("Asia/Jakarta");
                                         <!-- <a class="btn yellow print_laporan" onclick="javascript:cekisiobat();"><i class="fa fa-print"></i> <b>CETAK KWITANSI OBAT</b></a> -->
                                         
                                         <!-- husain change -->
-                                        <a class="btn yellow print_laporan" onclick="javascript:cekpenjamin();"><i class="fa fa-print"></i> <b>CETAK DOKUMEN JAMINAN</b></a>
+                                        <a class="btn yellow print_laporan" id="btncetak2" onclick="javascript:cekpenjamin();"><i class="fa fa-print"></i> <b>CETAK DOKUMEN JAMINAN</b></a>
                                         <!-- end husain -->
 
                                         <a href="<?= base_url('kasir_konsul') ?>" class="btn btn red"><b><i class="fa fa-undo"></i>KEMBALI</b></a>
@@ -1206,6 +1206,7 @@ $this->load->view('template/footer_tb');
     $("#show_jaminan").hide();
     if(document.getElementById('j_umum').checked == true){
     $("#show_jaminan").hide();
+    $("#btncetak2").hide();
     }
     if(document.getElementById('j_jaminan').checked == true){
     $("#show_jaminan").show();
@@ -1818,6 +1819,9 @@ $this->load->view('template/footer_tb');
         //document.getElementById('btnsimpan').disabled=true;
         document.getElementById('tersimpan').value = "";
         getdataresep();
+        if (document.getElementById("j_jaminan").checked == false){
+            $("#btncetak2").attr('disabled', true);
+        }
 
     };
 

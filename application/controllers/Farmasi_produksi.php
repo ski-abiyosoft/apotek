@@ -88,164 +88,126 @@ class Farmasi_produksi extends CI_Controller
 	}
 
 	public function save($param)
-	{
-		$cek    = $this->session->userdata('level');
-		$unit   = $this->session->userdata('unit');
-		$uid    = $this->session->userdata("username");
+  {
+    $cek    = $this->session->userdata('level');
+    $unit   = $this->session->userdata('unit');
+    $uid    = $this->session->userdata("username");
 
-		if (!empty($cek)) {
-			$cabang        = $this->session->userdata('unit');
-			$userid        = $this->session->userdata('username');
+    if (!empty($cek)) {
+      $cabang        = $this->session->userdata('unit');
+      $userid        = $this->session->userdata('username');
 
-			$gudang_asal   = $this->input->post('gudang_asal');
-			$tanggal       = $this->input->post('tanggal');
-			$kodebarang    = $this->input->post('kodebarang');
-			$qtyjadi       = $this->input->post('qtyjadi');
-			$hna           = str_replace(',', '', $this->input->post('hna'));
-			$hpp           = str_replace(',', '', $this->input->post('hpp'));
-			$hargajualjadi = str_replace(',', '', $this->input->post('hargajualjadi'));
-			// $margin  = str_replace(',','',$this->input->post('margin'));			
+      $gudang_asal   = $this->input->post('gudang_asal');
+      $tanggal       = $this->input->post('tanggal');
+      $kodebarang    = $this->input->post('kodebarang');
+      $qtyjadi       = $this->input->post('qtyjadi');
+      $hna           = str_replace(',', '', $this->input->post('hna'));
+      $hpp           = str_replace(',', '', $this->input->post('hpp'));
+      $hargajualjadi = str_replace(',', '', $this->input->post('hargajualjadi'));
+      $kode          = $this->input->post('kode');
+      $qty           = $this->input->post('qty');
+      $sat           = $this->input->post('sat');
+      $harga         = $this->input->post('harga');
+      $total         = $this->input->post('total');
+      $note          = $this->input->post('note');
+      $expire        = $this->input->post('expire');
+      if ($param == 1) {
+        $nomorbukti = urut_transaksi('URUT_PRODUKSI', 19);
+      } else {
+        $nomorbukti = $this->input->post('nomorbukti');
+      }
+      if ($param == 2) {
+        // atur detail
+        $header = $this->db->get_where("tbl_apohproduksi", ['prdno' => $nomorbukti])->row();
+        $check_stock = $this->db->query("SELECT * FROM tbl_barangstock WHERE koders = '$header->koders' AND kodebarang = '$header->kodebarang' AND gudang = '$header->gudang'");
+        if ($check_stock->num_rows() < 1) {
+          $this->db->query("INSERT INTO tbl_barangstock (koders,kodebarang,gudang,terima,saldoakhir,lasttr) VALUES ('$header->koders','$header->kodebarang','$header->gudang','$header->qtyjadi','$header->qtyjadi','$tanggal')");
+        } else {
+          $cs = $check_stock->row();
+          $terimacs = (int)$cs->terima;
+          $saldoakhircs = (int)$cs->saldoakhir;
+          $terima_new = $terimacs - $header->qtyjadi;
+          $saldoakhircs_new = $saldoakhircs - $header->qtyjadi;
+          $this->db->query("UPDATE tbl_barangstock SET terima = $terima_new, saldoakhir = $saldoakhircs_new WHERE kodebarang = '$header->kodebarang' AND koders = '$header->koders' AND gudang = '$header->gudang'");
+        }
+        $this->db->where("prdno", $nomorbukti);
+        $this->db->delete("tbl_apohproduksi");
 
-			$kode          = $this->input->post('kode');
-			$qty           = $this->input->post('qty');
-			$sat           = $this->input->post('sat');
-			$harga         = $this->input->post('harga');
-			$total         = $this->input->post('total');
-			$note          = $this->input->post('note');
-			$expire        = $this->input->post('expire');
+        // atur detail
+        $detail = $this->db->get_where("tbl_apodproduksi", ['prdno' => $nomorbukti])->result();
+        foreach ($detail as $d) {
+          $check_stock2 = $this->db->query("SELECT * FROM tbl_barangstock WHERE koders = '$d->koders' AND kodebarang = '$d->kodebarang' AND gudang = '$header->gudang'");
+          if ($check_stock2->num_rows() < 1) {
+            $this->db->query("INSERT INTO tbl_barangstock (koders,kodebarang,gudang,terima,saldoakhir,lasttr) VALUES ('$d->koders','$d->kodebarang','$header->gudang','$d->qty','$d->qty','$tanggal')");
+          } else {
+            $cs2 = $check_stock2->row();
+            $keluar = (int)$cs2->keluar;
+            $saldoakhir = (int)$cs2->saldoakhir;
+            $keluar_new = $keluar - $d->qty;
+            $saldoakhir_new = $saldoakhir + $d->qty;
+            $this->db->query("UPDATE tbl_barangstock SET keluar = $keluar_new, saldoakhir = $saldoakhir_new WHERE kodebarang = '$d->kodebarang' AND koders = '$d->koders' AND gudang = '$header->gudang'");
+          }
+        }
+        $this->db->where("prdno", $nomorbukti);
+        $this->db->delete("tbl_apodproduksi");
+      }
 
-			if ($param == 1) {
-				$nomorbukti = urut_transaksi('URUT_PRODUKSI', 19);
-			} else {
-				$nomorbukti = $this->input->post('nomorbukti');
-			}
-
-			$jumdata  = count($kode);
-
-			$data_header = array(
-				'koders'        => $unit,
-				'prdno'         => $nomorbukti,
-				'tglproduksi'   => $tanggal,
-				'gudang'        => $gudang_asal,
-				'kodebarang'    => $kodebarang,
-				'qtyjadi'       => $qtyjadi,
-				'hna'           => $hna,
-				'hnappn'        => $hargajualjadi,
-				'hpp'           => $hpp,
-				'keterangan'    => '',
-				'username'      => $uid,
-				'jamproduksi'   => date('H:i:s')
-			);
-
-			if ($param == 1) {
-				$this->db->insert('tbl_apohproduksi', $data_header);
-
-				/* CHECK STOCK DAN HARGA PER CABANG */
-				$check_stock = $this->db->query("SELECT * FROM tbl_barangstock WHERE koders = '$cabang' AND kodebarang = '$kodebarang' AND gudang = '$gudang_asal'");
-				$check_harga_cabang = $this->db->query("SELECT * FROM tbl_barangcabang WHERE kodebarang = '$kodebarang' AND koders = '$unit'");
-
-				/* STOK, JIKA ADA = UPDATE dan JIKA TIDAK ADA = INSERT */
-				if ($check_stock->num_rows() == 0) {
-					$this->db->query("INSERT INTO tbl_barangstock (koders,kodebarang,gudang,terima,saldoakhir,lasttr) 
-					VALUES ('$unit','$kodebarang','$gudang_asal','$qtyjadi','$qtyjadi','$tanggal')");
-				} else {
-					$this->db->query("UPDATE tbl_barangstock SET terima = terima + $qtyjadi, saldoakhir = saldoakhir + $qtyjadi WHERE kodebarang = '$kodebarang' AND koders = '$cabang' AND gudang = '$gudang_asal'");
-				}
-
-				/* HARGA CABANG, JIKA ADA = UPDATE dan JIKA TIDAK ADA = INSERT */
-				if ($check_harga_cabang->num_rows() == 0) {
-					$this->db->query("INSERT INTO tbl_barangcabang (koders,kodebarang,margin,hargajual) 
-					VALUES ('$unit','$kodebarang','0','$hargajualjadi')");
-				} else {
-					$this->db->query("UPDATE tbl_barangcabang SET hargajual = $hargajualjadi, margin = 0 WHERE koders = '$unit' AND kodebarang = '$kodebarang'");
-				}
-				$this->db->query("UPDATE tbl_barang SET hargabeli = $hpp, hargabelippn = $hna, hargajual = $hargajualjadi, hpp = $hpp WHERE kodebarang = '$kodebarang'");
-
-				// $id_mutasi = $this->db->insert_id();
-				for ($i = 0; $i <= $jumdata - 1; $i++) {
-					$_kode   = $kode[$i];
-					$_qty    = $qty[$i];
-					$_harga  =  str_replace(',', '', $harga[$i]);
-					$_total  =  str_replace(',', '', $total[$i]);
-
-					$datad = array(
-						'koders'       => $unit,
-						'prdno'        => $nomorbukti,
-						'kodebarang'   => $_kode,
-						'satuan'       => $sat[$i],
-						'qty'          => $qty[$i],
-						'hpp'          => $_harga,
-						'harga'        => $_harga,
-						'totalharga'   => $_total,
-						'exp_date'     => date('Y-m-d', strtotime($expire[$i])),
-						'keterangan'   => $note[$i],
-
-					);
-
-					if ($_kode != "") {
-						$this->db->insert('tbl_apodproduksi', $datad);
-
-						$this->db->query("update tbl_barangstock set keluar=keluar+ $_qty, saldoakhir= saldoakhir - $_qty where kodebarang = '$_kode' and koders = '$cabang' and gudang = '$gudang_asal'");
-					}
-				}
-			} else {
-				$id_mutasi 	   = $this->input->post('nomorbukti');
-				$kode          = $this->input->post('kode');
-				$qty           = $this->input->post('qty');
-				$sat           = $this->input->post('sat');
-				$harga         = $this->input->post('harga');
-				$total         = $this->input->post('total');
-				$note          = $this->input->post('note');
-				$expire        = $this->input->post('expire');
-				$jumdata  = count($kode);
-				for ($i = 0; $i <= $jumdata - 1; $i++) {
-					$_kode   = $kode[$i];
-					$_qty    = $qty[$i];
-					$_harga  =  str_replace(',', '', $harga[$i]);
-					$_total  =  str_replace(',', '', $total[$i]);
-
-
-					$datad = array(
-						'koders'       => $unit,
-						'prdno'        => $nomorbukti,
-						'kodebarang'   => $_kode,
-						'satuan'       => $sat[$i],
-						'qty'          => $qty[$i],
-						'hpp'          => $_harga,
-						'harga'        => $_harga,
-						'totalharga'   => $_total,
-						'exp_date'     => date('Y-m-d', strtotime($expire[$i])),
-						'keterangan'   => $note[$i],
-
-					);
-					if ($_kode != "") {
-						$this->db->update('tbl_apodproduksi', $datad, array('prdno' => $id_mutasi, 'kodebarang' => $kode[$i]));
-					}
-				}
-
-				$this->db->update('tbl_apohproduksi', $data_header, array('prdno' => $id_mutasi));
-
-				$datamutasi = $this->db->get_where('tbl_apodproduksi', array('prdno' => $id_mutasi))->result();
-
-				foreach ($datamutasi as $row) {
-					$_qty = $row->qty;
-					$_kode = $row->kodebarang;
-
-					$this->db->query("UPDATE tbl_barangstock set keluar=keluar- $_qty, saldoakhir= saldoakhir+ $_qty where kodebarang = '$_kode' and koders = '$cabang' and gudang = '$gudang_asal'");
-				}
-
-				// $this->db->query("DELETE from tbl_apodproduksi where prdno = '$id_mutasi'");
-				// $this->db->query("UPDATE from tbl_apodproduksi where prdno = '$id_mutasi'");
-				$this->db->query("UPDATE tbl_barangstock set terima=terima+ $qtyjadi, saldoakhir= saldoakhir+ $qtyjadi where kodebarang = '$kodebarang' and koders = '$cabang' and gudang = '$gudang_asal'");
-			}
-
-			// $this->db->query("update tbl_barangstock set terima=terima+ $qtyjadi, saldoakhir= saldoakhir+ $qtyjadi where kodebarang = '$kodebarang'
-			//    and koders = '$cabang' and gudang = '$gudang_asal'");
-			echo $nomorbukti;
-		} else {
-			header('location:' . base_url());
-		}
-	}
+      $jumdata  = count($kode);
+      $data_header = array(
+        'koders'        => $unit,
+        'prdno'         => $nomorbukti,
+        'tglproduksi'   => $tanggal,
+        'gudang'        => $gudang_asal,
+        'kodebarang'    => $kodebarang,
+        'qtyjadi'       => $qtyjadi,
+        'hna'           => $hna,
+        'hnappn'        => $hargajualjadi,
+        'hpp'           => $hpp,
+        'keterangan'    => '',
+        'username'      => $uid,
+        'jamproduksi'   => date('H:i:s')
+      );
+      $this->db->insert('tbl_apohproduksi', $data_header);
+      $check_stock = $this->db->query("SELECT * FROM tbl_barangstock WHERE koders = '$cabang' AND kodebarang = '$kodebarang' AND gudang = '$gudang_asal'");
+      $check_harga_cabang = $this->db->query("SELECT * FROM tbl_barangcabang WHERE kodebarang = '$kodebarang' AND koders = '$unit'");
+      if ($check_stock->num_rows() < 1) {
+        $this->db->query("INSERT INTO tbl_barangstock (koders,kodebarang,gudang,terima,saldoakhir,lasttr) VALUES ('$unit','$kodebarang','$gudang_asal','$qtyjadi','$qtyjadi','$tanggal')");
+      } else {
+        $this->db->query("UPDATE tbl_barangstock SET terima = terima + $qtyjadi, saldoakhir = saldoakhir + $qtyjadi WHERE kodebarang = '$kodebarang' AND koders = '$cabang' AND gudang = '$gudang_asal'");
+      }
+      if ($check_harga_cabang->num_rows() == 0) {
+        $this->db->query("INSERT INTO tbl_barangcabang (koders,kodebarang,margin,hargajual) VALUES ('$unit','$kodebarang','0','$hargajualjadi')");
+      } else {
+        $this->db->query("UPDATE tbl_barangcabang SET hargajual = $hargajualjadi, margin = 0 WHERE koders = '$unit' AND kodebarang = '$kodebarang'");
+      }
+      $this->db->query("UPDATE tbl_barang SET hargabeli = $hpp, hargabelippn = $hna, hargajual = $hargajualjadi, hpp = $hpp WHERE kodebarang = '$kodebarang'");
+      for ($i = 0; $i <= $jumdata - 1; $i++) {
+        $_kode   = $kode[$i];
+        $_qty    = $qty[$i];
+        $_harga  =  str_replace(',', '', $harga[$i]);
+        $_total  =  str_replace(',', '', $total[$i]);
+        $datad = array(
+          'koders'       => $unit,
+          'prdno'        => $nomorbukti,
+          'kodebarang'   => $_kode,
+          'satuan'       => $sat[$i],
+          'qty'          => $qty[$i],
+          'hpp'          => $_harga,
+          'harga'        => $_harga,
+          'totalharga'   => $_total,
+          'exp_date'     => date('Y-m-d', strtotime($expire[$i])),
+          'keterangan'   => $note[$i],
+        );
+        if ($_kode != "") {
+          $this->db->insert('tbl_apodproduksi', $datad);
+          $this->db->query("update tbl_barangstock set keluar=keluar+ $_qty, saldoakhir= saldoakhir - $_qty where kodebarang = '$_kode' and koders = '$cabang' and gudang = '$gudang_asal'");
+        }
+      }
+      echo $nomorbukti;
+    } else {
+      header('location:' . base_url());
+    }
+  }
 
 	public function save2()
 	{

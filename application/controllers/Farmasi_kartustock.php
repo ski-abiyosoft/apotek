@@ -1,7 +1,11 @@
-<?php if (!defined('BASEPATH')) exit('No direct script access allowed');
+	<?php if (!defined('BASEPATH')) exit('No direct script access allowed');
 
-class Farmasi_kartustock extends CI_Controller
-{
+	class Farmasi_kartustock extends CI_Controller
+	{
+
+
+
+
 	public function __construct()
 	{
 		parent::__construct();
@@ -42,8 +46,8 @@ class Farmasi_kartustock extends CI_Controller
 		//$data  = explode("~",$x)
 
 		$query_data = $this->db->query("SELECT a.terima , a.keluar , a.saldoakhir, a.periodedate, a.koders, a.maksimumstock,
-		 b.hargabeli FROM tbl_apostocklog AS a JOIN tbl_logbarang AS b ON a.kodebarang = b.kodebarang 
-		 WHERE a.koders = '$unit' 
+			b.hargabeli FROM tbl_apostocklog AS a JOIN tbl_logbarang AS b ON a.kodebarang = b.kodebarang 
+			WHERE a.koders = '$unit' 
 		")->result();
 
 		$barang  = $this->input->get('barang');
@@ -68,9 +72,9 @@ class Farmasi_kartustock extends CI_Controller
 
 		$query_saldo =
 			"SELECT * from tbl_barangstock 
- 		where koders = '$cabang' and kodebarang='$barang' and gudang='$gudang' OR gudang = 'LOKAL'
+		where koders = '$cabang' and kodebarang='$barang' and gudang='$gudang' OR gudang = 'LOKAL'
 		--  AND tglso BETWEEN '$tgl1' AND '$tgl2'
- 		AND tglso >'$_tgl1' ";
+		AND tglso >'$_tgl1' ";
 
 
 
@@ -205,197 +209,6 @@ class Farmasi_kartustock extends CI_Controller
 				number_format(0, 0, '.', ','),
 				number_format(0, 0, '.', ',')
 			));
-			// $mutasi = 			   
-			// "SELECT * from 
-			//     (
-			// 		select
-			// 	tbl_baranghterima.terima_date as tanggal,
-			// 	tbl_baranghterima.koders,
-			// 	tbl_baranghterima.terima_no as nomor,
-			// 	tbl_baranghterima.gudang,
-			// 	tbl_barangdterima.kodebarang,
-			// 	tbl_barangdterima.qty_terima as terima,
-			// 	0 keluar,
-			// 	tbl_barangdterima.qty_terima as qty,
-			// 	tbl_barangdterima.price as harga,
-			// 	tbl_vendor.vendor_name as rekanan,
-			// 	'PEMBELIAN' as keterangan
-			// 	from tbl_baranghterima inner join
-			// 	tbl_barangdterima on tbl_baranghterima.terima_no=tbl_barangdterima.terima_no
-			// 	inner join tbl_vendor on tbl_baranghterima.vendor_id=tbl_vendor.vendor_id
-			// 	WHERE kodebarang = '$barang' AND tbl_baranghterima.koders = '$cabang'
-
-			// 	union all
-
-			// 	select  
-			// 	tbl_apohresep.tglresep as tanggal,
-			// 	tbl_apohresep.koders,
-			// 	tbl_apohresep.resepno as nomor,
-			// 	tbl_apohresep.gudang as gudang,
-			// 	tbl_apodresep.kodebarang,
-			// 	0 as terima,
-			// 	tbl_apodresep.qty as keluar,
-			// 	tbl_apodresep.qty as qty,
-			// 	tbl_apodresep.hpp as harga,
-			// 	(select namapas from tbl_pasien where rekmed = tbl_apohresep.rekmed) as rekanan,
-			// 	'PENJUALAN' as keterangan
-			// 	from tbl_apohresep inner join
-			// 	tbl_apodresep on tbl_apohresep.resepno=tbl_apodresep.resepno
-			// 	WHERE kodebarang = '$barang' AND tbl_apohresep.koders = '$cabang'
-
-			// 	union all
-
-			// 	select 
-			// 	tbl_baranghreturbeli.retur_date as tanggal,
-			// 	tbl_baranghreturbeli.koders,
-			// 	tbl_baranghreturbeli.retur_no as nomor,
-			// 	tbl_baranghreturbeli.gudang as gudang,
-			// 	tbl_barangdreturbeli.kodebarang,
-			// 	0 as terima,
-			// 	tbl_barangdreturbeli.qty_retur as keluar,
-			// 	tbl_barangdreturbeli.qty_retur as qty,
-			// 	tbl_barangdreturbeli.price as harga,
-			// 	tbl_baranghreturbeli.vendor_id as rekanan,
-			// 	'RETUR PEMBELIAN' as keterangan
-			// 	from tbl_baranghreturbeli inner join
-			// 	tbl_barangdreturbeli on tbl_baranghreturbeli.retur_no=tbl_barangdreturbeli.retur_no
-			// 	WHERE kodebarang = '$barang' AND tbl_baranghreturbeli.koders = '$cabang'
-
-			// 	union all
-
-			// 	select 
-			// 	tbl_apohmove.movedate as tanggal,
-			// 	tbl_apohmove.koders,
-			// 	tbl_apohmove.moveno as nomor,
-			// 	tbl_apohmove.dari as gudang,
-			// 	tbl_apodmove.kodebarang,
-			// 	0 as terima,
-			// 	tbl_apodmove.qtymove as keluar,				
-			// 	tbl_apodmove.qtymove as qty,
-			// 	tbl_apodmove.harga as harga,
-			// 	tbl_apohmove.mohonno as rekanan,
-			// 	'MUTASI' as keterangan
-			// 	from tbl_apohmove inner join
-			// 	tbl_apodmove on tbl_apohmove.moveno=tbl_apodmove.moveno
-			// 	WHERE kodebarang = '$barang' AND tbl_apohmove.koders = '$cabang'
-
-			// 	union all
-
-			// 	select 
-			// 	tbl_apohproduksi.tglproduksi as tanggal,
-			// 	tbl_apohproduksi.koders,
-			// 	tbl_apohproduksi.prdno as nomor,
-			// 	tbl_apohproduksi.gudang as gudang,
-			// 	tbl_apodproduksi.kodebarang,
-			// 	0 as terima,
-			// 	tbl_apodproduksi.qty as keluar,
-			// 	tbl_apodproduksi.qty as qty,
-			// 	tbl_apodproduksi.harga as harga,
-			// 	tbl_apohproduksi.gudang as rekanan,
-			// 	'PRODUKSI' as keterangan
-			// 	from tbl_apohproduksi inner join tbl_apodproduksi
-			// 	on tbl_apohproduksi.prdno=tbl_apodproduksi.prdno
-			// 	WHERE tbl_apohproduksi.kodebarang = '$barang' AND tbl_apohproduksi.koders = '$cabang'
-
-			// 	union all
-
-			// 	select 
-			// 	tbl_apohex.tgl_ed as tanggal,
-			// 	tbl_apohex.koders,
-			// 	tbl_apohex.ed_no as nomor,
-			// 	tbl_apohex.gudang as gudang,
-			// 	tbl_apodex.kodebarang,
-			// 	0 as terima,
-			// 	tbl_apodex.qty as keluar,
-			// 	tbl_apodex.qty as qty,
-			// 	tbl_apodex.hpp as harga,
-			// 	tbl_apohex.keterangan as rekanan,
-			// 	'BARANG EXPIRE' as keterangan
-			// 	from tbl_apohex inner join
-			// 	tbl_apodex on tbl_apohex.ed_no=tbl_apodex.ed_no
-			// 	WHERE kodebarang = '$barang' AND tbl_apohex.koders = '$cabang'
-
-			// 	union all
-
-			// 	select 
-			// 	tbl_apohmove.movedate as tanggal,
-			// 	tbl_apohmove.koders,
-			// 	tbl_apohmove.moveno as nomor,
-			// 	tbl_apohmove.ke as gudang,
-			// 	tbl_apodmove.kodebarang,
-			// 	tbl_apodmove.qtymove as terima,
-			// 	0 as keluar,
-			// 	tbl_apodmove.qtymove as qty,
-			// 	tbl_apodmove.harga as harga,
-			// 	tbl_apohmove.mohonno as rekanan,
-			// 	'MUTASI' as keterangan
-			// 	from tbl_apohmove inner join
-			// 	tbl_apodmove on tbl_apohmove.moveno=tbl_apodmove.moveno
-			// 	WHERE kodebarang = '$barang' AND tbl_apohmove.koders = '$cabang'
-
-			// 	union all
-
-			// 	select 
-			// 	tbl_apohreturjual.tglretur as tanggal,
-			// 	tbl_apohreturjual.koders,
-			// 	tbl_apohreturjual.returno as nomor,
-			// 	tbl_apohreturjual.gudang as gudang,
-			// 	tbl_apodreturjual.kodebarang,
-			// 	tbl_apodreturjual.qtyretur as terima,
-			// 	0 as keluar,
-			// 	tbl_apodreturjual.qtyretur as qty,
-			// 	tbl_apodreturjual.price as harga,
-			// 	tbl_apohreturjual.rekmed as rekanan,
-			// 	'RETUR JUAL' as keterangan
-			// 	from tbl_apohreturjual inner join
-			// 	tbl_apodreturjual on tbl_apohreturjual.returno=tbl_apodreturjual.returno
-			// 	WHERE kodebarang = '$barang' AND tbl_apohreturjual.koders = '$cabang'
-
-			// 	union all
-
-			// 	select 
-			// 	tbl_apohproduksi.tglproduksi as tanggal,
-			// 	tbl_apohproduksi.koders,
-			// 	tbl_apohproduksi.prdno as nomor,
-			// 	tbl_apohproduksi.gudang as gudang,
-			// 	tbl_apohproduksi.kodebarang,
-			// 	tbl_apohproduksi.qtyjadi as terima,
-			// 	0 as keluar,				
-			// 	tbl_apohproduksi.qtyjadi as qty,
-			// 	tbl_apohproduksi.hpp as harga,
-			// 	tbl_apohproduksi.gudang as rekanan,
-			// 	'PRODUKSI' as keterangan
-			// 	from tbl_apohproduksi
-			// 	WHERE kodebarang = '$barang' AND koders = '$cabang'
-
-			// 	-- new union racikan
-			// 	union all
-
-			// 	select
-			// 	tbl_apodetresep.exp_date as tanggal,
-			// 	tbl_apodetresep.koders,
-			// 	tbl_apodetresep.resepno as nomor,
-			// 	'' as gudang,
-			// 	tbl_apodetresep.kodebarang,
-			// 	0 as terima,
-			// 	tbl_apodetresep.qtyr as keluar,
-			// 	tbl_apodetresep.qty as qty,
-			// 	tbl_apodetresep.price as harga,
-			// 	'' as rekanan,
-			// 	'RACIKAN' as keterangan
-			// 	from tbl_apodetresep
-			// 	WHERE kodebarang = '$barang' AND koders = '$cabang'
-
-			// 	) mutasi
-			// -- 	where kodebarang = '01PONT' and
-			// --      koders = '$cabang' and
-			// --    gudang = 'FARMASI' or gudang = 'LOKAL' and
-			// --     tanggal between '2022-05-25' and '2022-05-25'
-			// --     ORDER BY tanggal ASC;
-			// 	where 
-			// 	-- gudang = '$gudang'
-			// 	tanggal BETWEEN '$_tgl1' AND '$_tgl2' ORDER BY tanggal ASC, keterangan, nomor";
-			// 	// ORDER BY tanggal, keterangan, nomor ASC";
 			$nourut = 1;
 			// $lap = $this->db->query($mutasi)->result();
 			$lap = $this->M_KartuStock->tampildata($cabang, $barang, $gudang, $_tgl1, $_tgl2);
@@ -440,6 +253,7 @@ class Farmasi_kartustock extends CI_Controller
 	{
 		$cek  = $this->session->userdata('level');
 		$cabang = $this->session->userdata('unit');
+		$avatar = $this->session->userdata('avatar_cabang');
 		$barang = $this->input->get('barang');
 		$gudang = $this->input->get('gudang');
 		$dari = $this->input->get('tgl1');
@@ -464,7 +278,7 @@ class Farmasi_kartustock extends CI_Controller
 							<thead>
 								<tr>
 									<td rowspan=\"6\" align=\"center\">
-										<img src=\"" . base_url() . "assets/img/logo.png\"  width=\"70\" height=\"70\" />
+										<img src=\"" . base_url() . "assets/img_user/$avatar\"  width=\"70\" height=\"70\" />
 									</td>
 									<td colspan=\"20\">
 										<b>
@@ -564,6 +378,7 @@ class Farmasi_kartustock extends CI_Controller
 			$chari .= "
 							<table style=\"border-collapse:collapse;font-family: tahoma; font-size:12px\" width=\"100%\" align=\"center\" border=\"1\">
 								<tr>
+									<th width=\"5%\">No</th>
 									<th width=\"20%\">No. Bukti</th>
 									<th width=\"10%\">Tanggal</th>
 									<th width=\"10%\">Keterangan</th>
@@ -578,57 +393,69 @@ class Farmasi_kartustock extends CI_Controller
 			$date1 = str_replace('-', '/', $dari);
 			$tomorrow = date('Y-m-d', strtotime($date1 . "-1 days"));
 			$coba       = $this->M_KartuStock->cekstok($cabang, $barang, $gudang, $dari);
+			$bs = $this->db->get_where("tbl_barangstock", ["koders"=>$cabang, "kodebarang"=>$barang, "gudang"=>$gudang])->row();
 			$periode = $this->db->get_where("tbl_periode", ["koders" => $this->session->userdata("unit")])->row();
 			$dateperiode = date("Y-m-d", strtotime($periode->apoperiode));
 			$aposesuaix = $this->db->query("SELECT * FROM tbl_aposesuai WHERE koders = '".$this->session->userdata("unit")."' AND tglso = '$dateperiode' ORDER BY id DESC LIMIT 1")->result();
-			foreach($aposesuaix as $ax){
-				$aposesuai = $ax->sesuai;
-				$aposesuaii = $ax->hasilso;
-				$aposesuaiix = $ax->saldo;
-			}
-			if($dateperiode == $dari){
-				$_tanggalawal = $periode->apoperiode;
-				$saldo = $aposesuaiix;
-			} else {
+			// foreach($aposesuaix as $ax){
+			// 	$aposesuai = $ax->sesuai;
+			// 	$aposesuaii = $ax->hasilso;
+			// 	$aposesuaiix = $ax->saldo;
+			// }
+			// if($dateperiode == $dari){
+			// 	$_tanggalawal = $periode->apoperiode;
+			// 	$saldo = $aposesuaiix;
+			// } else {
+				if($bs){
+					$saldo_awal = $bs->saldoawal;
+				} else {
+					$saldo_awal = 0;
+				}
 				if ($coba) {
 					$_tanggalawal = $tomorrow;
 					$saldo = 0;
 					foreach($coba as $c){
-						$saldo += $c->terima - $c->keluar;
+						$saldo2 = $saldo_awal + ($saldo += $c->terima - $c->keluar);
 						$jam = $c->jam;
 					}
 				} else {
 					$_tanggalawal    = $dari;
-					$saldo           = 0;
+					$saldo2           = 0;
 					$jam          = date("H:i:s");
 				}
-			}
+			// }
 			$chari .= "							<tr>
+																<td width=\"5%\">#</td>
 																<td width=\"20%\">SALDO</td>
 																<td width=\"10%\">" . date("d-m-Y", strtotime($_tanggalawal)) . "</td>
 																<td width=\"10%\">SALDO AWAL</td>
 																<td width=\"15%\">SALDO AWAL</td>
-																<td width=\"10%\"></td>
-																<td width=\"5%\" style=\"text-align:right;\">0</td>
-																<td width=\"5%\" style=\"text-align:right;\">0</td>
-																<td width=\"5%\" style=\"text-align:right;\">" . number_format($saldo) . "</td>
-																<td width=\"10%\" style=\"text-align:right;\">0</td>
-																<td width=\"10%\" style=\"text-align:right;\">0</td>
+																<td width=\"10%\" style=\"text-align:right;\">-</td>
+																<td width=\"5%\" style=\"text-align:right;\">-</td>
+																<td width=\"5%\" style=\"text-align:right;\">-</td>
+																<td width=\"5%\" style=\"text-align:right;\">" . number_format($saldo2) . "</td>
+																<td width=\"10%\" style=\"text-align:right;\">-</td>
+																<td width=\"10%\" style=\"text-align:right;\">-</td>
 															</tr>
 															<tr>
 																<td colspan=\"10\">&nbsp;</td>
 															</tr>";
-			$queryx = $this->M_KartuStock->tgl($cabang, $barang, $gudang, $dari, $sampai);
+			$date1 = str_replace('-', '/', $sampai);
+			$now = date('Y-m-d', strtotime($date1 . "+1 days"));
+			$queryx = $this->M_KartuStock->tgl($cabang, $barang, $gudang, $dari, $now);
 			$no = 1;
 			$hgr = 0;
 			foreach ($queryx as $db) {
 				$rownya = $no++;
 				$hgr += $db->harga;
 			}
+			$no = 1;
+			$saldoxx= 0;
 			foreach ($queryx as $db) {
 				$nilai = $db->qty * $db->harga;
-				$saldo = $saldo + $db->terima - $db->keluar;
+				$saldox = $saldo2 + ($saldoxx += $db->terima - $db->keluar);
 				$chari .= "							<tr>
+																	<td width=\"5%\">".$no++."</td>
 																	<td width=\"20%\">$db->nomor</td>
 																	<td width=\"10%\">" . date("d-m-Y", strtotime($db->tanggal)) . "</td>
 																	<td width=\"10%\">$db->keterangan</td>
@@ -636,7 +463,7 @@ class Farmasi_kartustock extends CI_Controller
 																	<td width=\"10%\" style=\"text-align:right;\">" . number_format($nilai) . "</td>
 																	<td width=\"5%\" style=\"text-align:right;\">" . number_format($db->terima) . "</td>
 																	<td width=\"5%\" style=\"text-align:right;\">" . number_format($db->keluar) . "</td>
-																	<td width=\"5%\" style=\"text-align:right;\">" . number_format($saldo) . "</td>
+																	<td width=\"5%\" style=\"text-align:right;\">" . number_format($saldox) . "</td>
 																	<td width=\"10%\" style=\"text-align:right;\">" . number_format($db->hpp) . "</td>
 																	<td width=\"10%\" style=\"text-align:right;\">" . number_format($db->totalhpp) . "</td>
 																</tr>";
@@ -667,7 +494,7 @@ class Farmasi_kartustock extends CI_Controller
 			header('location:' . base_url());
 		}
 	}
-}
+	}
 
-/* End of file akuntansi_jurnal.php */
-/* Location: ./application/controllers/akuntansi_jurnal.php */
+	/* End of file akuntansi_jurnal.php */
+	/* Location: ./application/controllers/akuntansi_jurnal.php */

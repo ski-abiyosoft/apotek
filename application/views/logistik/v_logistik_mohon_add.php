@@ -249,31 +249,31 @@ function showbarangname(str, id) {
         type: "POST",
         dataType: "JSON",
         success: function(data) {
-            console.log(data);
-            if(data.saldoakhir == null){
-                var saldo = '0,00';
-            } else {
-                var saldo = data.saldoakhir;
-            }
-            var saldo1 = Number(parseInt(saldo.replaceAll(',','')));
-            if(saldo1 < qty){
-                swal({
-                    title: "KUANTITAS",
-                    html: "Melebihi saldo akhir<br>Saldo akhir saat ini : "+formatCurrency1(saldo),
-                    type: "info",
-                    confirmButtonText: "OK"
-                }).then((value) => {
-                    $("#kode"+id).empty();
-                    $("#sat"+id).val('');
-                    $("#harga"+id).val('');
-                    $("#total"+id).val('');
-                    totalline(vid);
-                });
-            } else {
+            // console.log(data);
+            // if(data.saldoakhir == null){
+            //     var saldo = '0,00';
+            // } else {
+            //     var saldo = data.saldoakhir;
+            // }
+            // var saldo1 = Number(parseInt(saldo.replaceAll(',','')));
+            // if(saldo1 < qty){
+            //     swal({
+            //         title: "KUANTITAS",
+            //         html: "Melebihi saldo akhir<br>Saldo akhir saat ini : "+separateComma(saldo),
+            //         type: "info",
+            //         confirmButtonText: "OK"
+            //     }).then((value) => {
+            //         $("#kode"+id).empty();
+            //         $("#sat"+id).val('');
+            //         $("#harga"+id).val('');
+            //         $("#total"+id).val('');
+            //         totalline(vid);
+            //     });
+            // } else {
                 $('#sat' + vid).val(data.satuan1);
-                $('#harga' + vid).val(formatCurrency1(data.hargabelippn));
+                $('#harga' + vid).val(separateComma(Number(data.hargabelippn)));
                 totalline(vid);
-            }
+            // }
         }
     });
 }
@@ -393,7 +393,7 @@ function totalline(id) {
     var harga = Number(row.cells[3].children[0].value.replace(/[^0-9\.]+/g, ""));
     jumlah = row.cells[1].children[0].value * harga;
 
-    row.cells[4].children[0].value = formatCurrency1(jumlah);
+    row.cells[4].children[0].value = separateComma(jumlah);
     total();
 }
 

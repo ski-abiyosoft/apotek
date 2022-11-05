@@ -54,10 +54,18 @@
 
                         <div class="btn-group">
                             <?php if($akses->uadd==1){ ?>
-                            <a href="<?php echo base_url()?><?= $url.'/add'?>" class="btn btn-success">
-                                <i class="fa fa-plus"></i>
-                                <b>Transaksi Baru</b>
-                            </a>
+                                <?php 
+                                $cek =  $this->session->userdata('user_level'); 
+                                if($cek==0){?> 
+                                <?php }else{ ?>
+
+                                    <a href="<?php echo base_url()?><?= $url.'/add'?>" class="btn btn-success">
+                                        <i class="fa fa-plus"></i>
+                                        <b>Transaksi Baru</b>
+                                    </a>
+
+                                <?php } ?>
+                            
                             <?php } ?>
                         </div>
 

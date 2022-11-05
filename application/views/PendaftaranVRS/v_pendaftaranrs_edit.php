@@ -48,7 +48,7 @@
 					<div class="form-group">
 						<label class="col-md-3 control-label">Poliklinik <font color="red">*</font></label>
 						<div class="col-md-9">
-							<select class="form-control select2_el_poli" id="poliklinik1" name="poliklinik1">
+							<select class="form-control select2_el_poli" id="poliklinik1" name="poliklinik1" onchange="update(); cekruang()">
 							     <?php if($data->kodepos){ 
 								   	$vpoli = data_master('tbl_namapos', array('kodepos' => $data->kodepos));
 								?>
@@ -72,7 +72,7 @@
 					<div class="form-group">
 						<label class="col-md-3 control-label">Nama Dokter <font color="red">*</font></label>
 						<div class="col-md-9">
-							<select class="form-control select2me" id="dokter" name="dokter">
+							<select class="form-control select2_dokterx" id="dokter" name="dokter">
 								<?php if($data->kodokter){ 
 									$vdokter = data_master('tbl_dokter', array('kodokter' => $data->kodokter));
 								?>
@@ -736,6 +736,60 @@
 </div><!-- /.modal -->
 
 <script>
+	$(".select2_dokterx").select2();
+
+	function update() {
+  var select = document.getElementById('poliklinik1').value;
+  $.ajax({
+    url: "<?= site_url('PendaftaranVRS/get_dokter_rj');?>",
+    type: "POST",
+    data: ($('#frmpasien').serialize()),
+    dataType: "JSON",
+    success: function(data) {
+      var opt = data;
+      var nadokter = $("#dokter");
+      nadokter.empty();
+      $(opt).each(function() {
+        var option = $("<option/>");
+        option.html(this.nadokter);
+        option.val(this.kodokter);
+        nadokter.append(option);
+      });
+    }
+  });
+}
+
+function cekruang(){
+
+  var poliklinik = $("#poliklinik1").val();
+  
+    $.ajax({
+      url: "/PendaftaranVRS/cekruang/" + poliklinik,
+      type: "GET",
+      dataType: "JSON",
+      success: function(data) {
+        if (data.status == 0) {
+          
+          swal({
+            title: "Kesalahan",
+            html: "Cek Lagi",
+            type: "error",
+            confirmButtonText: "OK"
+          }).then((value) => {
+            return;
+          });
+
+        } else {
+          $("#ruang").empty();
+          $.each(data, function(key, value) {
+            $("#ruang").append("<option value='" + value.koderuang + "'>" + value.namaruang +
+              "</option>");
+          });
+        }
+      }
+    });
+
+}
 
 	// husain add
 	$("#rujukan1").hide();

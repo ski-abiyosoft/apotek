@@ -1700,19 +1700,33 @@ class M_global extends CI_Model
 		return $query->result();
 	}
 
-	function getdokter($str)
+	function getdokter($str, $poli)
 	{
-
-		$query = $this->db->query("SELECT kodokter as id, concat(kodokter,' | ',nadokter) as text from tbl_dokter where jenispegawai =1 and (kodokter like '%$str%' or nadokter like '$str%' or alamat like '$str%') order by nadokter");
+		$unit	= $this->session->userdata("unit");
+		$query	= $this->db->query("SELECT a.kodokter AS id, CONCAT(a.kodokter ,' - ', a.nadokter) AS text 
+		FROM dokter AS a 
+		WHERE a.koders = '$unit' 
+		AND a.kopoli = '$poli' 
+		AND (a.kodokter LIKE '%$str%' OR a.nadokter LIKE '%$str%') 
+		ORDER BY a.nadokter");
+		// $query = $this->db->query("SELECT kodokter as id, concat(kodokter,' | ',nadokter) as text from tbl_dokter where jenispegawai =1 and (kodokter like '%$str%' or nadokter like '$str%' or alamat like '$str%') order by nadokter");
 
 		return $query->result();
 	}
 
 
-	function getperawat($str)
+	function getperawat($str, $poli)
 	{
-		$cabang = $this->session->userdata('unit');
-		$query = $this->db->query("SELECT kodokter as id, concat(kodokter,' | ',nadokter) as text from tbl_dokter where koders='$cabang' and jenispegawai =2 and (kodokter like '%$str%' or nadokter like '$str%' or alamat like '$str%')");
+		$unit	= $this->session->userdata("unit");
+		$query	= $this->db->query("SELECT a.kodokter AS id, CONCAT(a.kodokter ,' - ', a.nadokter) AS text 
+		FROM perawat AS a 
+		WHERE a.koders = '$unit' 
+		AND a.kopoli = '$poli' 
+		AND (a.kodokter LIKE '%$str%' OR a.nadokter LIKE '%$str%') 
+		ORDER BY a.nadokter");
+		// $query = $this->db->qu
+		// $cabang = $this->session->userdata('unit');
+		// $query = $this->db->query("SELECT kodokter as id, concat(kodokter,' | ',nadokter) as text from tbl_dokter where koders='$cabang' and jenispegawai =2 and (kodokter like '%$str%' or nadokter like '$str%' or alamat like '$str%')");
 
 		return $query->result();
 	}

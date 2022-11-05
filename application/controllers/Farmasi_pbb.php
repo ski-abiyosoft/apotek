@@ -1,6 +1,6 @@
-<?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+	<?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
-class Farmasi_pbb extends CI_Controller {
+	class Farmasi_pbb extends CI_Controller {
 
 	public function __construct(){
 		parent::__construct();
@@ -82,50 +82,49 @@ class Farmasi_pbb extends CI_Controller {
 		$uid = $this->session->userdata("username");
 
 		if(!empty($cek)){
-			$userid   = $this->session->userdata('username');
-			$nomorbukti = $this->input->post('hidenomorbukti');		
-			$gudang_asal  = $this->input->post('gudang_asal');
-			$gudang_tujuan  = $this->input->post('gudang_tujuan');
-			$tanggal  = $this->input->post('tanggal');		
-			$ket	= $this->input->post('ket');
-			$kode  = $this->input->post('kode');
-			$qty   = $this->input->post('qty');
-		    $sat   = $this->input->post('sat');
-			$harga = str_replace(",", "", $this->input->post('harga'));
-			$total   = str_replace(",", "", $this->input->post('total'));
-			$note   = $this->input->post('note');
-			
-            $jumdata  = count($kode);
+			$userid        = $this->session->userdata('username');
+			$nomorbukti    = $this->input->post('hidenomorbukti');
+			$gudang_asal   = $this->input->post('gudang_asal');
+			$gudang_tujuan = $this->input->post('gudang_tujuan');
+			$tanggal       = $this->input->post('tanggal');
+			$ket           = $this->input->post('ket');
+			$kode          = $this->input->post('kode');
+			$qty           = $this->input->post('qty');
+			$sat           = $this->input->post('sat');
+			$harga         = str_replace(",", "", $this->input->post('harga'));
+			$total         = str_replace(",", "", $this->input->post('total'));
+			$note          = $this->input->post('note');
+			$jumdata       = count($kode);
 			
 			$data_header = array (
 				'koders' => $unit,
-			  	'mohonno' => $nomorbukti,
-			  	'tglmohon' => $tanggal,
-			  	'dari' => $gudang_asal,
-			  	'ke' => $gudang_tujuan,
-			  	'keterangan' => $this->input->post('ket'),	
-			  	'username' => $uid
+				'mohonno' => $nomorbukti,
+				'tglmohon' => $tanggal,
+				'dari' => $gudang_asal,
+				'ke' => $gudang_tujuan,
+				'keterangan' => $this->input->post('ket'),	
+				'username' => $uid
 			);
 			
-            if($param==1){	
-			   	$this->db->query("INSERT INTO tbl_apohmohon (koders,mohonno,tglmohon,dari,ke,keterangan,username) 
-			   	VALUES ('$unit','$nomorbukti','$tanggal','$gudang_asal','$gudang_tujuan','$ket','$uid')");
-			   	urut_transaksi("NO_MOHON", 16);
+			if($param==1){	
+				$this->db->query("INSERT INTO tbl_apohmohon (koders,mohonno,tglmohon,dari,ke,keterangan,username) 
+				VALUES ('$unit','$nomorbukti','$tanggal','$gudang_asal','$gudang_tujuan','$ket','$uid')");
+				urut_transaksi("NO_MOHON", 16);
 			} else {
-			   	$id_mutasi = $this->input->post('nomorbukti');	
-			   	$this->db->update('tbl_apohmohon',$data_header, array('mohonno' => $id_mutasi));	
-			   	$this->db->query("delete from tbl_apodmohon where mohonno = '$id_mutasi'");
+				$id_mutasi = $this->input->post('nomorbukti');	
+				$this->db->update('tbl_apohmohon',$data_header, array('mohonno' => $id_mutasi));	
+				$this->db->query("delete from tbl_apodmohon where mohonno = '$id_mutasi'");
 			}
-				  
+					
 			$nourut = 1;	
-            for($i=0;$i<=$jumdata-1;$i++){
+			for($i=0;$i<=$jumdata-1;$i++){
 				$_kode   = $kode[$i];
 				$_harga  =  str_replace(',','',$harga[$i]);
 				$_total  =  str_replace(',','',$total[$i]);
 				
-			    $datad = array(
+				$datad = array(
 					'koders' => $unit,
-			    	'mohonno' => $nomorbukti,
+					'mohonno' => $nomorbukti,
 					'kodebarang' => $_kode,
 					'satuan' => $sat[$i],
 					'qtymohon' => $qty[$i],
@@ -135,11 +134,11 @@ class Farmasi_pbb extends CI_Controller {
 				);
 				
 				if($_kode!=""){
-				  	if($param==1){	
-			        	$this->db->insert('tbl_apodmohon', $datad);
-				  	} else {
+					if($param==1){	
 						$this->db->insert('tbl_apodmohon', $datad);
-				  	}
+					} else {
+						$this->db->insert('tbl_apodmohon', $datad);
+					}
 				}
 			}
 			echo $nomorbukti;
@@ -147,37 +146,37 @@ class Farmasi_pbb extends CI_Controller {
 			header('location:'.base_url());
 		}
 	}
-	
+
 	public function ajax_delete($id){
 		$nobukti = $this->db->query("SELECT * FROM tbl_apohmohon WHERE id = '$id'")->row()->mohonno;
 		$this->db->query("delete from tbl_apohmohon where id = '$id'");
 		$this->db->query("delete from tbl_apodmohon where mohonno = '$nobukti'");
 		echo json_encode(array("status" => TRUE));
 	}
-	
+
 	public function entri(){
 		$cek = $this->session->userdata('level');		
 		$uid = $this->session->userdata('unit');		
 		if(!empty($cek)){				  
-		  $d['pic'] = $this->session->userdata('username');
-		  $this->load->view('farmasi/v_farmasi_pbb_add', $d);				
+			$d['pic'] = $this->session->userdata('username');
+			$this->load->view('farmasi/v_farmasi_pbb_add', $d);				
 		} else {
 			header('location:'.base_url());
 		}
 	}
-	
+
 	public function edit( $id ){
 		$cek = $this->session->userdata('level');		
 		$uid = $this->session->userdata('unit');
 		if(!empty($cek)){				  
-		  $d['pic'] = $this->session->userdata('username');
-		  $header   = $this->db->query("select * from tbl_apohmohon where id = '$id'");
-		  $nomohon  = $header->row()->mohonno;
-		  $detil    = $this->db->query("select * from tbl_apodmohon where mohonno = '$nomohon'");
-		  $d['jumdata']= $detil->num_rows();
-		  $d['header'] = $header->row();
-		  $d['detil']  = $detil->result();
-		  $this->load->view('farmasi/v_farmasi_pbb_edit', $d);				
+			$d['pic'] = $this->session->userdata('username');
+			$header   = $this->db->query("select * from tbl_apohmohon where id = '$id'");
+			$nomohon  = $header->row()->mohonno;
+			$detil    = $this->db->query("select * from tbl_apodmohon where mohonno = '$nomohon'");
+			$d['jumdata']= $detil->num_rows();
+			$d['header'] = $header->row();
+			$d['detil']  = $detil->result();
+			$this->load->view('farmasi/v_farmasi_pbb_edit', $d);				
 		} else {
 			header('location:'.base_url());
 		}
@@ -197,32 +196,32 @@ class Farmasi_pbb extends CI_Controller {
 			echo json_encode(array("status" => 0));
 		}
 	}
-	
+
 	public function cetak(){
 		$cek = $this->session->userdata('level');		
 		$unit= $this->session->userdata('unit');
-        $user= $this->session->userdata('username');		
+		$user= $this->session->userdata('username');		
 		if(!empty($cek)){				  		 
-            
-		    $unit= $this->session->userdata('unit');	 
+			
+			$unit= $this->session->userdata('unit');	 
 			$profile = data_master('tbl_namers', array('koders' => $unit));
-		    $nama_usaha=$profile->namars;
+			$nama_usaha=$profile->namars;
 			$alamat1  = $profile->alamat;
 			$alamat2  = $profile->kota;
 			
 			$param = $this->input->get('id');
-		  
-		    $queryh = "select * from tbl_apohmohon
+			
+			$queryh = "select * from tbl_apohmohon
 			where mohonno = '$param'";
 			
 			$queryd = "select tbl_apodmohon.*, tbl_barang.namabarang from tbl_apodmohon inner join 
 			tbl_barang on tbl_apodmohon.kodebarang=tbl_barang.kodebarang
 			where tbl_apodmohon.mohonno = '$param'";
 			
-		    $detil  = $this->db->query($queryd)->result();
+			$detil  = $this->db->query($queryd)->result();
 			$header = $this->db->query($queryh)->row();
 						
-		    $pdf=new simkeu_nota();
+			$pdf=new simkeu_nota();
 			$pdf->setID($nama_usaha,$alamat1,$alamat2);
 			$pdf->setjudul('');
 			$pdf->setsubjudul('');
@@ -290,19 +289,19 @@ class Farmasi_pbb extends CI_Controller {
 			$tot1 = 0;
 			$totalharga =0;
 			foreach($detil as $db){
-			  	$tot += $db->totalharga;
-				  $tot1 += $tot;
-			  	$pdf->FancyRow2(5,array(
-			  	$no,
-			  	$db->kodebarang, 
-			  	$db->namabarang,
-			  	$db->qtymohon,
-			  	$db->satuan,
-			  	number_format($db->harga,2,',','.'),
-			  	$db->keterangan,
-			  	number_format($db->totalharga),
+				$tot += $db->totalharga;
+					$tot1 += $tot;
+				$pdf->FancyRow2(5,array(
+				$no,
+				$db->kodebarang, 
+				$db->namabarang,
+				$db->qtymohon,
+				$db->satuan,
+				number_format($db->harga,2,',','.'),
+				$db->keterangan,
+				number_format($db->totalharga),
 			),$fc, $border, $align); 
-			  	$no++;
+				$no++;
 			}
 			
 			$pdf->SetWidths(array(165,25));
@@ -351,14 +350,14 @@ class Farmasi_pbb extends CI_Controller {
 			$pdf->FancyRow2(5,$judul, $fc,  $border, $align, $style, $size, $max);
 			
 			
-            $pdf->setTitle($param);
+			$pdf->setTitle($param);
 			$pdf->AliasNbPages();
 			$pdf->output($param.'.PDF','I');			
 		} else {
 			header('location:'.base_url());
 		}
 	}
-	
+
 	public function get_last_number($jenis_urut){
 		$unit = $this->session->userdata("unit");
 		echo json_encode(array(
@@ -400,4 +399,4 @@ class Farmasi_pbb extends CI_Controller {
 		}
 	}
 			
-}
+	}

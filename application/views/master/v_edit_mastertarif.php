@@ -389,18 +389,21 @@ $this->load->view('template/footer');
   }
 
   function totalline_barang(id) {
-    var table = document.getElementById('cost_bhp');
-    var row = table.rows[arr.indexOf(id) + 1];
-    var qty = Number(row.cells[1].children[0].value.replace(/[^0-9\.]+/g, ""));
-    var harga = Number(row.cells[3].children[0].value.replace(/[^0-9\.]+/g, ""));
-    var total = qty * harga;
-    row.cells[4].children[0].value = separateComma(total);
+    // var table = document.getElementById('cost_bhp');
+    // var row = table.rows[arr.indexOf(id) + 1];
+    // var qty = Number(row.cells[1].children[0].value.replace(/[^0-9\.]+/g, ""));
+    // var harga = Number(row.cells[3].children[0].value.replace(/[^0-9\.]+/g, ""));
+    // var total = qty * harga;
     var table = document.getElementById('cost_bhp');
     var rowCount = table.rows.length;
     var totalx = 0;
     for (var i = 1; i < rowCount; i++) {
       var row = table.rows[i];
-      var total1 = $("#jumlah" + i).val();
+      var qty = Number(row.cells[1].children[0].value.replace(/[^0-9\.]+/g, ""));
+      var harga = Number(row.cells[3].children[0].value.replace(/[^0-9\.]+/g, ""));
+      totall = qty * harga;
+      row.cells[4].children[0].value = separateComma(totall);
+      var total1 = row.cells[4].children[0].value;
       var total = Number(parseInt(total1.replaceAll(',', '')));
       totalx += total;
     }
@@ -409,17 +412,26 @@ $this->load->view('template/footer');
 
   function totallineTarif(id) {
     var table = document.getElementById('detail_tarif');
-    var row = table.rows[arr.indexOf(id) + 1];
-    var rs = Number(row.cells[2].children[0].value.replace(/[^0-9\.]+/g, ""));
-    var dr = Number(row.cells[3].children[0].value.replace(/[^0-9\.]+/g, ""));
-    var perawat = Number(row.cells[4].children[0].value.replace(/[^0-9\.]+/g, ""));
-    var bhp = Number(row.cells[5].children[0].value.replace(/[^0-9\.]+/g, ""));
-    var total = rs + dr + perawat + bhp;
-    row.cells[2].children[0].value = separateComma(rs);
-    row.cells[3].children[0].value = separateComma(dr);
-    row.cells[4].children[0].value = separateComma(perawat);
-    row.cells[5].children[0].value = separateComma(bhp);
-    row.cells[6].children[0].value = separateComma(total);
+    var rowCount = table.rows.length;
+    // var row = table.rows[arr.indexOf(id) + 1];
+    // var rs = Number(row.cells[2].children[0].value.replace(/[^0-9\.]+/g, ""));
+    // var dr = Number(row.cells[3].children[0].value.replace(/[^0-9\.]+/g, ""));
+    // var perawat = Number(row.cells[4].children[0].value.replace(/[^0-9\.]+/g, ""));
+    // var bhp = Number(row.cells[5].children[0].value.replace(/[^0-9\.]+/g, ""));
+    // var total = rs + dr + perawat + bhp;
+    for (var i = 1; i < rowCount; i++) {
+      var row = table.rows[i];
+      var rs = Number(row.cells[2].children[0].value.replace(/[^0-9\.]+/g, ""));
+      var dr = Number(row.cells[3].children[0].value.replace(/[^0-9\.]+/g, ""));
+      var perawat = Number(row.cells[4].children[0].value.replace(/[^0-9\.]+/g, ""));
+      var bhp = Number(row.cells[5].children[0].value.replace(/[^0-9\.]+/g, ""));
+      var total = rs + dr + perawat + bhp;
+      row.cells[2].children[0].value = separateComma(rs);
+      row.cells[3].children[0].value = separateComma(dr);
+      row.cells[4].children[0].value = separateComma(perawat);
+      row.cells[5].children[0].value = separateComma(bhp);
+      row.cells[6].children[0].value = separateComma(total);
+    }
   }
 </script>
 

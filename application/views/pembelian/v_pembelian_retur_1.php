@@ -49,10 +49,18 @@
         <div class="table-toolbar">
           <div class="btn-group">
             <?php if ($akses->uadd) : ?>
-              <a href="<?= base_url() ?>pembelian_retur/entri" class="btn btn-success">
+              <?php 
+              $cek =  $this->session->userdata('user_level'); 
+              if($cek==0){?> 
+              <?php }else{ ?>
+
+                <a href="<?= base_url() ?>pembelian_retur/entri" class="btn btn-success">
                 <i class="fa fa-plus"></i>
-                Transaksi Baru
-              </a>
+                  Transaksi Baru
+                </a>
+
+              <?php } ?>
+              
             <?php endif ?>
           </div>
 

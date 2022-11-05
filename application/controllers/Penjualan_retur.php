@@ -821,15 +821,23 @@ class Penjualan_retur extends CI_Controller
 						];
 						if ($kodebarang != '') {
 							$this->db->insert('tbl_apodreturjual', $data);
-							$barang = $this->db->query('select * from tbl_barangstock where koders = "' . $cabang . '" and gudang = "' . $gudang . '" and kodebarang ="' . $kodebarang . '"')->row();
-							$keluar_upd = (int)$barang->keluar + (int)$qty_new;
-							$saldoakhir_upd = (int)$barang->saldoakhir + (int)$qty_new;
-							$this->db->set('keluar', $keluar_upd);
-							$this->db->set('saldoakhir', $saldoakhir_upd);
-							$this->db->where('koders', $cabang);
-							$this->db->where('kodebarang', $kodebarang);
-							$this->db->where('gudang', $gudang);
-							$this->db->update('tbl_barangstock');
+							$stok = $this->db->query("select * from tbl_barangstock where kodebarang = '$kodebarang' and gudang = '$gudang' and koders = '$cabang'")->num_rows();
+							$date_now = date('Y-m-d H:i:s');
+							if($stok > 0){
+								$this->db->query("UPDATE tbl_barangstock set terima = terima+ $qty, saldoakhir = saldoakhir + $qty, lasttr = '$date_now' where kodebarang = '$kodebarang' and koders = '$cabang' and gudang = '$gudang'");
+							} else {
+								$datastock = array(
+									'koders'       => $cabang,
+									'kodebarang'   => $kodebarang,
+									'gudang'       => $gudang,
+									'saldoawal'    => 0,
+									'terima'       => $qty,
+									'keluar'       => 0,
+									'saldoakhir'   => $qty,
+									'lasttr'       => $date_now,
+								);
+								$this->db->insert('tbl_barangstock', $datastock);
+							}
 						}
 						echo json_encode(['nomor' => $this->input->get('nobukti'), 'status' => 1]);
 						// echo json_encode($data);
@@ -896,7 +904,7 @@ class Penjualan_retur extends CI_Controller
 					foreach ($apodereturjual as $row) {
 						$_qty  = $row->qtyretur;
 						$_kode = $row->kodebarang;
-						$this->db->query("UPDATE tbl_barangstock set keluar=keluar- $_qty, saldoakhir= saldoakhir+ $_qty where kodebarang = '$_kode' and koders = '$cabang' and gudang = '$gudang'");
+						$this->db->query("UPDATE tbl_barangstock set terima=terima- $_qty, saldoakhir= saldoakhir- $_qty where kodebarang = '$_kode' and koders = '$cabang' and gudang = '$gudang'");
 					}
 					$this->db->delete('tbl_apodreturjual', array('returno' => $nobukti));
 					echo json_encode(['nomor' => $nobukti]);
@@ -933,6 +941,24 @@ class Penjualan_retur extends CI_Controller
 						'totalrp'    => $jumlah,
 					];
 					$this->db->insert('tbl_apodreturjual', $data);
+
+					$stok = $this->db->query("select * from tbl_barangstock where kodebarang = '$kode' and gudang = '$gudang' and koders = '$cabang'")->num_rows();
+					$date_now = date('Y-m-d H:i:s');
+					if($stok > 0){
+						$this->db->query("UPDATE tbl_barangstock set terima = terima+ $qty, saldoakhir = saldoakhir + $qty, lasttr = '$date_now' where kodebarang = '$kode' and koders = '$cabang' and gudang = '$gudang'");
+					} else {
+						$datastock = array(
+							'koders'       => $cabang,
+							'kodebarang'   => $kode,
+							'gudang'       => $gudang,
+							'saldoawal'    => 0,
+							'terima'       => $qty,
+							'keluar'       => 0,
+							'saldoakhir'   => $qty,
+							'lasttr'       => $date_now,
+						);
+						$this->db->insert('tbl_barangstock', $datastock);
+					}
 					// echo json_encode($data);
 				}
 

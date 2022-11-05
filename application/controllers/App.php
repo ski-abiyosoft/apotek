@@ -390,16 +390,16 @@ class App extends CI_Controller
 		echo json_encode($this->M_global->getsearch_warnao($q));
 	}
 
-	function search_dokter()
+	function search_dokter($poli)
 	{
 		$q = $this->input->post('searchTerm');
-		echo json_encode($this->M_global->getdokter($q));
+		echo json_encode($this->M_global->getdokter($q, $poli));
 	}
 
-	function search_perawat()
+	function search_perawat($poli)
 	{
 		$q = $this->input->post('searchTerm');
-		echo json_encode($this->M_global->getperawat($q));
+		echo json_encode($this->M_global->getperawat($q, $poli));
 	}
 
 	function search_register()

@@ -46,18 +46,18 @@ $this->load->view('template/body');
                                 <button class="btn btn-success" onclick="location.reload()"><i class="glyphicon glyphicon-refresh"></i> Refresh</button>
                                 <button class="btn btn-secondary" onclick="valid_all()" id="valid_a"><i class="fa fa-retweet"></i> Valid Semua</button>
                                 </td>
-                                <td width="30%">
+                                <td width="23%">
                                     &nbsp;
                                 </td>
-                                <td width="40%">
-                                    <div class="btn-group pull-right" id="drp-down">
-                                        <button class="btn dropdown-toggle" data-toggle="dropdown"><b>Data</b> <i class="fa fa-angle-down"></i></button>
-                                        <ul class="dropdown-menu pull-right">
+                                <td width="27%">
+                                    <div class="btn-group " id="drp-down">
+                                        <button class="btn dropdown-toggle" data-toggle="dropdown"><b>Cetak</b> <i class="fa fa-angle-down"></i></button>
+                                        <ul class="dropdown-menu pull-center">
                                             <li>
-                                                <a class="btn btn-sm red print_laporan" id="cetak" href="#report" data-toggle="modal"><b>Cetak PDF</b></a>
+                                                <a class="btn btn-sm red print_laporan" id="cetak" href="#report" data-toggle="modal"><b>PDF</b></a>
                                             </li>
                                             <li>
-                                                <a class="btn btn-sm green " onclick="exp()" id="cetak" href="" data-toggle="modal"><b>Cetak Excel</b></a>
+                                                <a class="btn btn-sm green " onclick="exp()" id="cetak" href="" data-toggle="modal"><b>Excel</b></a>
                                             </li>
                                             <!-- <li>
                                                 <a onclick="exp()"> Export</a> -->
@@ -67,9 +67,6 @@ $this->load->view('template/body');
                                     </div>
                                 </td>
                                 
-                                <td width="10%">
-                                    &nbsp;
-                                </td>
                             </tr>
                         </table>
                     

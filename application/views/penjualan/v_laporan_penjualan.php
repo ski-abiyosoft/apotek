@@ -214,7 +214,7 @@ $('.select2_laporan').select2();
             var jenis = $('input[name="jenis"]:checked').val();
             var depo = document.getElementById('depo').value;
             var baseurl = "<?php echo base_url() ?>";
-            var urlnya = baseurl + 'Laporan_penjualan/cetak/?dari=' +dari + "&dari_jam="+dari_jam+ "&sampai_jam="+sampai_jam+'&sampai=' + sampai + '&jenis=' + jenis + '&depo=' + depo + '&laporan=' + laporan;
+            var urlnya = baseurl + 'Laporan_penjualan/cetak2/?dari=' +dari + "&dari_jam="+dari_jam+ "&sampai_jam="+sampai_jam+'&sampai=' + sampai + '&jenis=' + jenis + '&depo=' + depo + '&laporan=' + laporan+"&pdf=1";
             window.open(urlnya, '_blank');
         }
     }
@@ -225,8 +225,7 @@ function exp() {
     var jenis = $('input[name="jenis"]:checked').val();
     var depo = document.getElementById('depo').value;
     var laporan = document.getElementById('laporan').value;
-    location.href = '<?= site_url('Laporan_penjualan/excel/?dari=')?>' + dari + '&sampai=' + sampai +
-        '&jenis=' + jenis + '&depo=' + depo + '&laporan=' + laporan;
+    location.href = '<?= site_url('Laporan_penjualan/cetak2/?dari=')?>' +dari + "&dari_jam="+dari_jam+ "&sampai_jam="+sampai_jam+'&sampai=' + sampai + '&jenis=' + jenis + '&depo=' + depo + '&laporan=' + laporan+"&pdf=2";
 
 }
 </script>

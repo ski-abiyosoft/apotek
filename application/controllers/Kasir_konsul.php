@@ -181,7 +181,7 @@ class Kasir_konsul extends CI_Controller
 		$unit = $this->session->userdata('unit');
 		$kode = $this->input->get('noreg');
 		// $barang = $this->db->query("SELECT b.kodetarif, b.tindakan, a.*, d.nadokter FROM tbl_dpoli a LEFT JOIN daftar_tarif_nonbedah b ON a.koders=b.koders JOIN tbl_dokter d ON d.kodokter = a.kodokter AND a.kodetarif=b.kodetarif  WHERE noreg = '$kode' AND a.koders='$unit' GROUP BY b.kodetarif")->result();
-		$barang = $this->db->query("SELECT a.kodetarif, b.tindakan, a.kodokter, a.koperawat, (SELECT nadokter FROM tbl_dokter WHERE kodokter=a.koperawat limit 1) as naperawat, (SELECT nadokter FROM tbl_dokter WHERE kodokter=a.kodokter limit 1) as nadokter FROM tbl_dpoli a LEFT JOIN tbl_tarifh b ON a.kodetarif = b.kodetarif WHERE a.noreg = '$kode' AND a.koders='$unit'")->result();
+		$barang = $this->db->query("SELECT a.kodetarif, b.tindakan, a.kodokter, a.koperawat, (SELECT nadokter FROM tbl_dokter WHERE kodokter=a.koperawat AND koders = '$unit' limit 1) as naperawat, (SELECT nadokter FROM tbl_dokter WHERE kodokter=a.kodokter AND koders = '$unit' limit 1) as nadokter FROM tbl_dpoli a LEFT JOIN tbl_tarifh b ON a.kodetarif = b.kodetarif WHERE a.noreg = '$kode' AND a.koders='$unit'")->result();
 		echo json_encode($barang);
 	}
 
@@ -213,6 +213,8 @@ class Kasir_konsul extends CI_Controller
 
 	public function ajax_list($param)
 	{
+		
+		$user_level   = $this->session->userdata('user_level');
 		$dat   = explode("~", $param);
 		if ($dat[0] == 1) {
 			$bulan = date('m');
@@ -253,13 +255,24 @@ class Kasir_konsul extends CI_Controller
 				  //  <a class="btn btn-sm btn-warning" href="#" onclick="_urlcetak(' . "'" . $unit->nokwitansi . "'" . ",'" . $unit->noreg . "'" . ')" title="Cetak" ><i class="glyphicon glyphicon-print"></i></a>				   
 			{
 				// '<a class="btn btn-sm btn-primary" href="' . base_url("kasir_konsul/edit/" . $unit->id . "") . '" title="Edit" ><i class="glyphicon glyphicon-edit"></i> </a>
-				$row[] =
-				   '<a class="btn btn-sm btn-primary" href="' . base_url("kasir_konsul/edit/" . $unit->id . "") . '" title="Lihat" ><i class="glyphicon glyphicon-eye-open"></i> </a>
-					 <a class="btn btn-sm btn-success" href="javascript:void(0)" title="Kirim Email" onclick="send_email(' . "'" . $unit->id . "'" . ",'" . $email . "'" . ')"><i class="glyphicon glyphicon-envelope"></i> </a>
-				   <a class="btn btn-sm btn-success" href="javascript:void(0)" title="Kirim Whatsapp" onclick="send_wa(' . "'" . $unit->id . "'" . ",'" . $hp . "'" . ')"><i class="fa fa-whatsapp"></i> </a>
-				   <a class="btn btn-sm btn-danger" href="javascript:void(0)" title="Batalkan" onclick="Batalkan(' . "'" . $unit->id . "'" . ')"><i class="glyphicon glyphicon-remove"></i> </a>';
+				if($user_level==0){
+				
+					$row[] = 
+					'<a class="btn btn-sm btn-primary" href="' . base_url("kasir_konsul/edit/" . $unit->id . "") . '" title="Lihat" ><i class="glyphicon glyphicon-eye-open"></i> </a>';
+						
+				}else{
+					$row[] =
+					'<a class="btn btn-sm btn-primary" href="' . base_url("kasir_konsul/edit/" . $unit->id . "") . '" title="Lihat" ><i class="glyphicon glyphicon-eye-open"></i> </a>
+
+					<a class="btn btn-sm btn-success" href="javascript:void(0)" title="Kirim Email" onclick="send_email(' . "'" . $unit->id . "'" . ",'" . $email . "'" . ')"><i class="glyphicon glyphicon-envelope"></i> </a>
+
+					<a class="btn btn-sm btn-success" href="javascript:void(0)" title="Kirim Whatsapp" onclick="send_wa(' . "'" . $unit->id . "'" . ",'" . $hp . "'" . ')"><i class="fa fa-whatsapp"></i> </a>
+
+					<a class="btn btn-sm btn-danger" href="javascript:void(0)" title="Batalkan" onclick="Batalkan(' . "'" . $unit->id . "'" . ')"><i class="glyphicon glyphicon-remove"></i> </a>';
 
 				//<a class="btn btn-sm btn-danger" href="javascript:void(0)" title="Batalkan" onclick="Batalkan('."'".$unit->id."'".')"><i class="glyphicon glyphicon-remove"></i> </a>';
+				}
+				
 			}
 
 			$data[] = $row;
@@ -874,7 +887,6 @@ class Kasir_konsul extends CI_Controller
 		$this->db->query("UPDATE tbl_vocd SET cabangpakai = '$cabang', tglpakai = '$tanggal', rekmedpakai = '$rekmed_voc', terpakai = '1' WHERE novoucher = '$vouchercode2'");
 		$this->db->query("UPDATE tbl_vocd SET cabangpakai = '$cabang', tglpakai = '$tanggal', rekmedpakai = '$rekmed_voc', terpakai = '1' WHERE novoucher = '$vouchercode3'");
 		
-		
 		history_log(0 ,'KASIR_KONSUL_PEMBAYARAN' ,'ADD' ,$kwitansi_kasir ,'-');
 		echo json_encode(["status" => 1, "nomor" => $kwitansi_kasir]);
 	}
@@ -1140,14 +1152,6 @@ class Kasir_konsul extends CI_Controller
 														<td> &nbsp; </td>
 											</tr> 
 									</table>";
-			$dresep = $this->db->query("SELECT * from tbl_apohresep where noreg = '$noreg'")->row();
-			if ($dresep) {
-				$eresep = $dresep->orderno;
-				$param = $dresep->resepno;
-			} else {
-				$eresep = '';
-				$param = '';
-			}
 			$header = $this->db->query("SELECT * from tbl_apohresep where resepno = '$param'")->row();
 			$detil = $this->db->query("SELECT * from tbl_apodresep where resepno = '$param'")->row();
 			$posting = $this->db->query("SELECT * from tbl_apoposting  where resepno = '$param'")->row();

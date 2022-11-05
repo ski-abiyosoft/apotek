@@ -32,6 +32,7 @@ class Pembelian_retur extends CI_Controller
 
   public function data_list($param)
   {
+		$user_level   = $this->session->userdata('user_level');
     $dat = explode("~", $param);
     if ($dat[0] == 1) {
       $bulan  = $this->M_global->_periodebulan();
@@ -53,9 +54,22 @@ class Pembelian_retur extends CI_Controller
       $row[]  = $unit->terima_no;
       $row[]  = '<div style="text-align: center;">' . date("d-m-Y", strtotime($unit->retur_date)) . '</div>';
       $row[]  = $vendor->vendor_name;
-      $row[]  = '<div style="text-align: center;"><a class="btn btn-sm btn-primary" href="' . base_url("Pembelian_retur/edit/" . $unit->retur_no . "") . '" title="Edit" ><i class="glyphicon glyphicon-edit"></i></a>
-      <a class="btn btn-sm btn-warning" href="' . base_url("Pembelian_retur/cetak/?id=" . $unit->retur_no . "") . '" target="_blank" title="Cetak" ><i class="glyphicon glyphicon-print"></i></a>
-      <a class="btn btn-sm btn-danger" href="javascript:void(0)" title="Hapus" onclick="Batalkan(' . "'" . $unit->retur_no . "'" . ')"><i class="glyphicon glyphicon-remove"></i></a></div>';
+
+      if($user_level==0){
+				
+          $row[]  = 
+          '<div style="text-align: center;">
+          <a class="btn btn-sm btn-warning" href="' . base_url("Pembelian_retur/cetak/?id=" . $unit->retur_no . "") . '" target="_blank" title="Cetak" ><i class="glyphicon glyphicon-print"></i></a></div>';
+          
+      }else{
+        
+          $row[]  = 
+          '<div style="text-align: center;">
+          <a class="btn btn-sm btn-primary" href="' . base_url("Pembelian_retur/edit/" . $unit->retur_no . "") . '" title="Edit" ><i class="glyphicon glyphicon-edit"></i></a>
+          <a class="btn btn-sm btn-warning" href="' . base_url("Pembelian_retur/cetak/?id=" . $unit->retur_no . "") . '" target="_blank" title="Cetak" ><i class="glyphicon glyphicon-print"></i></a>
+          <a class="btn btn-sm btn-danger" href="javascript:void(0)" title="Hapus" onclick="Batalkan(' . "'" . $unit->retur_no . "'" . ')"><i class="glyphicon glyphicon-remove"></i></a></div>';
+      }
+      
       $data[] = $row;
     }
     $output = array(
@@ -203,21 +217,23 @@ class Pembelian_retur extends CI_Controller
       'taxrp'    => $taxrp,
     ];
     $this->db->insert('tbl_barangdreturbeli', $data);
-    $stok = $this->db->query("select * from tbl_barangstock where kodebarang = '$kode' and gudang = '$gudang' and koders = '$cabang'")->row_array();
-    $keluar = (int)$stok['keluar'] + (int)$qty;
-    $saldoakhir = (int)$stok['saldoakhir'] - (int)$qty;
-    $datax = [
-      'keluar' => $keluar,
-      // 'terima' => $terima,
-      'saldoakhir' => $saldoakhir,
-    ];
-    $wherex = [
-      'koders' => $cabang,
-      'gudang' => $gudang,
-      'kodebarang' => $kode
-    ];
-    $xxx = $this->db->update('tbl_barangstock', $datax, $wherex);
-    echo json_encode($xxx);
+    $stok = $this->db->query("select * from tbl_barangstock where kodebarang = '$kode' and gudang = '$gudang' and koders = '$cabang'")->num_rows();
+    $date_now = date('Y-m-d H:i:s');
+    if($stok > 0){
+      $this->db->query("UPDATE tbl_barangstock set keluar = keluar+ $qty, saldoakhir = saldoakhir - $qty, lasttr = '$date_now' where kodebarang = '$kode' and koders = '$cabang' and gudang = '$gudang'");
+    } else {
+      $datastock = array(
+        'koders'       => $cabang,
+        'kodebarang'   => $kode,
+        'gudang'       => $gudang,
+        'saldoawal'    => 0,
+        'terima'       => 0,
+        'keluar'       => $qty,
+        'saldoakhir'   => 0-$qty,
+        'lasttr'       => $date_now,
+      );
+      $this->db->insert('tbl_barangstock', $datastock);
+    }
   }
 
   public function update_one()
@@ -281,19 +297,23 @@ class Pembelian_retur extends CI_Controller
       'taxrp'    => $taxrp,
     ];
     $this->db->insert('tbl_barangdreturbeli', $data);
-    $stok = $this->db->query("select * from tbl_barangstock where kodebarang = '$kode' and gudang = '$gudang' and koders = '$cabang'")->row_array();
-    $keluar = (int)$stok['keluar'] + (int)$qty;
-    $saldoakhir = (int)$stok['saldoakhir'] - (int)$qty;
-    $datax = [
-      'keluar' => $keluar,
-      'saldoakhir' => $saldoakhir,
-    ];
-    $wherex = [
-      'koders' => $cabang,
-      'gudang' => $gudang,
-      'kodebarang' => $kode
-    ];
-    $xxx = $this->db->update('tbl_barangstock', $datax, $wherex);
+    $stok = $this->db->query("select * from tbl_barangstock where kodebarang = '$kode' and gudang = '$gudang' and koders = '$cabang'")->num_rows();
+    $date_now = date('Y-m-d H:i:s');
+    if($stok > 0){
+      $this->db->query("UPDATE tbl_barangstock set keluar = keluar+ $qty, saldoakhir = saldoakhir - $qty, lasttr = '$date_now' where kodebarang = '$kode' and koders = '$cabang' and gudang = '$gudang'");
+    } else {
+      $datastock = array(
+        'koders'       => $cabang,
+        'kodebarang'   => $kode,
+        'gudang'       => $gudang,
+        'saldoawal'    => 0,
+        'terima'       => 0,
+        'keluar'       => $qty,
+        'saldoakhir'   => 0-$qty,
+        'lasttr'       => $date_now,
+      );
+      $this->db->insert('tbl_barangstock', $datastock);
+    }
     echo json_encode($data);
   }
 
@@ -403,6 +423,7 @@ class Pembelian_retur extends CI_Controller
     $unit = $this->session->userdata('unit');
     if (!empty($cek)) {
       $unit = $this->session->userdata('unit');
+      $avatar = $this->session->userdata('avatar_cabang');
       $kop       = $this->M_cetak->kop($unit);
       $profile = data_master('tbl_namers', array('koders' => $unit));
       $namars    = $kop['namars'];
@@ -429,7 +450,7 @@ class Pembelian_retur extends CI_Controller
                          <thead>
                               <tr>
                                    <td rowspan=\"6\" align=\"center\">
-                                        <img src=\"" . base_url() . "assets/img/logo.png\"  width=\"70\" height=\"70\" />
+                                        <img src=\"" . base_url() . "assets/img_user/$avatar\"  width=\"70\" height=\"70\" />
                                    </td>
                                    <td colspan=\"20\">
                                         <b>

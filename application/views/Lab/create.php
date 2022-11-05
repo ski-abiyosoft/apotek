@@ -117,7 +117,7 @@
 
     <hr />
 
-<form id="frmlab">
+<form id="frmlab" enctype="multipart/form-data">
     <div class="row">
         <div class="col-md-12">
             <div class="portlet box blue">
@@ -273,13 +273,13 @@
                             </div>
                         </div>
                         <div class="form-group row">
-                            <label for="drperiksa" class="col-sm-3 col-form-label">Dokter Pengirim</label>
+                            <label for="drpengirim" class="col-sm-3 col-form-label">Dokter Pengirim</label>
                             <div class="col-sm-9">
-                                <select required  id="drperiksa" name="drperiksa" class="selectpicker" data-live-search="true" data-width="100%" onkeypress="return tabE(this,event)" >
+                                <select required  id="drpengirim" name="drpengirim" class="selectpicker" data-live-search="true" data-width="100%" onkeypress="return tabE(this,event)" >
                                     <option  value="" selected disabled>-- Pilih Data --</option>
                                     <?php
                                         $unit   = $this->session->userdata("unit");
-                                        $data_dokter    = $this->db->query("SELECT * FROM dokter WHERE koders = '$unit' AND kopoli = '$rekmed->kodepos'")->result();
+                                        $data_dokter    = $this->db->query("SELECT * FROM dokter WHERE koders = '$unit' AND kopoli = '$helab->asal' GROUP BY kodokter")->result();
                                         foreach($data_dokter as $value){
                                             if($value->kodokter == $rekmed->kodokter){
                                                 echo '<option value="'. $rekmed->kodokter .'" selected>'. data_master("dokter", array("kodokter" => $rekmed->kodokter, "koders" => $unit, "kopoli" => $rekmed->kodepos))->nadokter .'</option>';
@@ -293,9 +293,9 @@
                         </div>
 
                         <div class="form-group row">
-                            <label for="drpengirim" class="col-sm-3 col-form-label">Dokter Laborat</label>
+                            <label for="drperiksa" class="col-sm-3 col-form-label">Dokter Laborat</label>
                             <div class="col-sm-9">
-                                <select required id="drpengirim" name="drpengirim" class="selectpicker" data-live-search="true" data-width="100%" onkeypress="return tabE(this,event)" >
+                                <select required id="drperiksa" name="drperiksa" class="selectpicker" data-live-search="true" data-width="100%" onkeypress="return tabE(this,event)" >
                                     <option  value="" selected disabled>-- Pilih Data --</option>
                                     <?php
                                         foreach($dataDokter as $value){
@@ -304,7 +304,6 @@
                                     ?>
                                 </select>
                             </div>
-
                         </div>
                         <div class="form-group row">
                             <label for="inputEmail3" class="col-sm-3 col-form-label">Petugas Lab</label>
@@ -452,12 +451,7 @@
                                     <td style="width:45%">Dikirim Ke Faskes Lain</td>
                                 </tr>
                             </table>
-                            <!-- <div class="col-sm-3 " style="margin-top: -10px !important;">
-                                <input type="radio" required class="form-check-input" value="1" id="rujuk1" name="rujuk" placeholder=""> <label for="rujuk1" style="margin-left: 20px;">Lab Dalam</label>
-                            </div>
-                            <div class="col-sm-3" style="margin-top: -10px !important;">
-                                <input type="radio" required class="form-check-input" value="2" id="rujuk2" name="rujuk" placeholder=""> <label for="rujuk2" style="margin-left: 20px;">Dikirim Ke Faskes Lain</label>
-                            </div> -->
+                            
                         </div>
                         <div class="form-group row">
                             <label for="diagnosa" class="col-sm-3 col-form-label">Diagnosa</label>
@@ -466,14 +460,38 @@
                             </div>
                         </div>
                         <div class="form-group row">
-                            <label for="drperiksa" class="col-sm-3 col-form-label">Dokter Pengirim</label>
+                            <label for="drpengirim" class="col-sm-3 col-form-label">Dokter Pengirim</label>
                             <div class="col-sm-9">
-                                <select required  id="drperiksa" name="drperiksa" class="selectpicker" data-live-search="true" data-width="100%" onkeypress="return tabE(this,event)" >
+                                <select required  id="drpengirim" name="drpengirim" class="selectpicker" data-live-search="true" data-width="100%" onkeypress="return tabE(this,event)" >
                                     <option  value="" selected disabled>-- Pilih Data --</option>
                                     <?php
-                                        $unit   = $this->session->userdata("unit");
-                                        $data_dokter    = $this->db->query("SELECT * FROM dokter WHERE koders = '$unit' GROUP BY kodokter")->result();
+                                        $unit       = $this->session->userdata("unit");
+                                        $kopoli     = isset($data_header->asal)? "AND kopoli = '$data_header->asal'" : "";
+                                        $data_dokter    = $this->db->query("SELECT * FROM dokter WHERE koders = '$unit' $kopoli GROUP BY kodokter")->result();
+                                        
                                         foreach($data_dokter as $value){
+                                            if(isset($data_header->drpengirim)){
+                                                if($value->kodokter == $data_header->drpengirim){
+                                                    echo '<option value="'. $data_header->drpengirim .'" selected>'. data_master("dokter", array("kodokter" => $data_header->drpengirim, "koders" => $this->session->userdata("unit"), "kopoli" => $data_header->asal))->nadokter .'</option>';
+                                                } else {
+                                                    echo '<option value="'. $value->kodokter .'">'. $value->nadokter .'</option>';
+                                                }
+                                            } else {
+                                                echo '<option value="'. $value->kodokter .'">'. $value->nadokter .'</option>';
+                                            }
+                                        }
+                                    ?>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label for="drperiksa" class="col-sm-3 col-form-label">Dokter Laborat</label>
+                            <div class="col-sm-9">
+                                <select required id="drperiksa" name="drperiksa" class="selectpicker" data-live-search="true" data-width="100%" onkeypress="return tabE(this,event)" >
+                                    <option  value="" selected disabled>-- Pilih Data --</option>
+                                    <?php
+                                        foreach($dataDokter as $value){
                                             if(isset($data_header->drperiksa)){
                                                 if($value->kodokter == $data_header->drperiksa){
                                                     echo '<option value="'. $data_header->drperiksa .'" selected>'. data_master("dokter", array("kodokter" => $data_header->drperiksa, "koders" => $this->session->userdata("unit")))->nadokter .'</option>';
@@ -487,29 +505,6 @@
                                     ?>
                                 </select>
                             </div>
-                        </div>
-
-                        <div class="form-group row">
-                            <label for="drpengirim" class="col-sm-3 col-form-label">Dokter Laborat</label>
-                            <div class="col-sm-9">
-                                <select required id="drpengirim" name="drpengirim" class="selectpicker" data-live-search="true" data-width="100%" onkeypress="return tabE(this,event)" >
-                                    <option  value="" selected disabled>-- Pilih Data --</option>
-                                    <?php
-                                        foreach($dataDokter as $value){
-                                            if(isset($data_header->drpengirim)){
-                                                if($value->kodokter == $data_header->drpengirim){
-                                                    echo '<option value="'. $data_header->drpengirim .'" selected>'. data_master("dokter", array("kodokter" => $data_header->drperiksa, "koders" => $this->session->userdata("unit")))->nadokter .'</option>';
-                                                } else {
-                                                    echo '<option value="'. $value->kodokter .'">'. $value->nadokter .'</option>';
-                                                }
-                                            } else {
-                                                echo '<option value="'. $value->kodokter .'">'. $value->nadokter .'</option>';
-                                            }
-                                        }
-                                    ?>
-                                </select>
-                            </div>
-
                         </div>
                         <div class="form-group row">
                             <label for="inputEmail3" class="col-sm-3 col-form-label">Petugas Lab</label>
@@ -871,10 +866,54 @@
                                             </tbody>
                                         </table>
                                     </div>
+                                    <br />
+                                    <!-- Footer hasil -->
+                                    <div class="row">
+                                        <div class="col-sm-6">
+                                            <div class="form-group">
+                                                <label for="" class="form-label"><b>Catatan</b></label>
+                                                <textarea type="text" class="form-control" name="catatan" rows="4" style="resize:none"><?= isset($data_notes->catatan)? $data_notes->catatan : "" ?></textarea>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <div class="form-group">
+                                                <label for="" class="form-label"><b>File hasil dari faskes lain (bila pemeriksaan luar)</b></label>
+                                                <div class="table-responsive">
+                                                    <table class="table table-bordered" style="table-layout: fixed; width: 100%">
+                                                        <thead class="page-breadcrumb breadcrumb title-white">
+                                                            <tr>
+                                                                <th style="width:40%">Keterangan</th>
+                                                                <th style="width:40%">File</th>
+                                                                <th style="width:10%">Lihat</th>
+                                                                <th style="width:10%">Hapus</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody id="file_body">
+                                                            <?php
+                                                                $nofile = 1;
+
+                                                                foreach($data_file as $df_key => $df_val):
+                                                            ?>
+                                                                <tr id="file_row<?= $nofile ?>" style="word-wrap: break-word;">
+                                                                    <td><input type="hidden" name="file_key[]" value="<?= $nofile ?>">
+                                                                        <?= $df_val->keteranganfile ?>sssssssssssssssssssssssssssssssssssss
+                                                                    </td>
+                                                                    <td><?= substr($df_val->namafile, 0, 30) ."···.". pathinfo($df_val->namafile, PATHINFO_EXTENSION) ?></td>
+                                                                    <td><button type="button" class="btn btn-info btn-xs" onclick="window.open('<?= base_url() . $df_val->lokasifile . $df_val->namafile ?>', '_blank')"><i class="fa fa-eye"></i></button></td>
+                                                                    <td><button type="button" class="btn red btn-xs" onclick="hapusFile(<?= $nofile ?>)"><i class="fa fa-trash"></i></button></td>
+                                                                </tr>
+                                                            <?php $nofile++; endforeach; ?>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                                <button type="button" class="btn green" onclick="tambahFile()"><i class="fa fa-plus"></i>&nbsp; Tambah Berkas</button>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             <?php endif; ?>
                         </div>
-                        <div class="tab-pane" id="tab4">
+                        <!-- <div class="tab-pane" id="tab4">
                             <div class="portlet-body" style="padding:0px 10px 0px 10px !important">
                                 <h4 style="color:green"><b>HASIL</b></h4>
                                 <hr />
@@ -907,7 +946,7 @@
                                     </div>
                                 </div>
                                 <hr />
-                                <!-- <button type="button" class="btn green" id="proses_hasil">Proses hasil</button> -->
+                                <button type="button" class="btn green" id="proses_hasil">Proses hasil</button>
                                 <div class="table-responsive">
                                     <table class="table table-bordered" style="width:100%">
                                         <thead class="page-breadcrumb breadcrumb">
@@ -935,14 +974,15 @@
                                     </table>
                                 </div>
                             </div>
-                        </div>
+                        </div> -->
                     </div>
                 </div>
 
                 <div class="row">
                     <div class="col-sm-12">
                         <div class="form-actions" style="margin-top:0px !important;border-radius:0px !important">
-                            <button type="button" class="btn blue" id="savelab"><i class="fa fa-save"></i><b> Simpan</b></button>
+                            <button type="submit" class="btn blue" id="savelab"><i class="fa fa-save"></i><b> Simpan</b></button>
+                            <button type="button" class="btn yellow" <?= $status == "save" ? "disabled" : "" ?>><i class="fa fa-print"></i><b> Cetak</b></button>
                             <div class="btn-group">
                                 <a class="btn red" onclick="location.href='/lab/'" ><i class="fa fa-undo"></i><b> KEMBALI </b></a>
                             </div>
@@ -974,7 +1014,7 @@ $this->load->view('template/footer');
 
 <script>
     $(window).on("load", function(){
-        select2_el_alkes();
+        select2_el_alkes("LABOR");
         <?php if(isset($elab)): ?>
             spilldata('<?= $helab->noreg ?>');
             total_all();
@@ -989,6 +1029,7 @@ $this->load->view('template/footer');
         <?php endif; ?>
         // billing_tindakan1
     });
+
     $(document).ready(function(){
         $('#tblnoreg').DataTable({
             "aLengthMenu": [
@@ -1147,9 +1188,25 @@ $this->load->view('template/footer');
                 '<td><input type="text" class="form-control" name="bhp_gudang[]" id="bhp_gudang'+ idrowBHP +'" value="LABOR"></td>'+
             '</tr>');
 
-        select2_el_alkes();
+        select2_el_alkes("LABOR");
 
         idrowBHP++;
+    }
+
+    function tambahFile(){
+        var table       = $("#file_body");
+        var rowcount    = $("#file_body tr").length;
+
+        var idrowFile   = rowcount+1;
+
+        table.append('<tr id="file_row'+ idrowFile +'">'+
+                '<td><input type="hidden" name="file_key[]" value="'+ idrowFile +'"><input type="text" class="form-control" name="file_keterangan[]"></td>'+
+                '<td><input type="file" class="form-control" name="file[]" onchange="fileBerkas('+ idrowFile +')" id="file'+ idrowFile +'"></td>'+
+                '<td><button type="button" class="btn btn-info" disabled><i class="fa fa-eye"></i></button></td>'+
+                '<td><button type="button" class="btn red" onclick="hapusFile('+ idrowFile +')"><i class="fa fa-trash"></i></button></td>'+
+            '</tr>');
+
+            idrowFile++;
     }
 
     function hapusBilling(id){
@@ -1160,6 +1217,10 @@ $this->load->view('template/footer');
     function hapusBHP(id){
         $("#bhp_row"+ id).remove();
         total_all_bhp();
+    }
+
+    function hapusFile(id){
+        $("#file_row"+ id).remove();
     }
 
     function show_tindakan(str, id){
@@ -1322,186 +1383,105 @@ $this->load->view('template/footer');
         });
     }
 
-    $("#savelab").on("click", function(e){
-        e.preventDefault();
-
-        var post_form   = $("#frmlab").serialize();
-
-        console.log(post_form);
-
-        var noreg       = $("#noreg").val();
-        var rekmed      = $("#rekmed").val();
-        var namapas     = $("#namapas").val();
-        var tgllahir    = $("#tgllahir").val();
-        var umur        = $("#umur").val();
-        var jkel        = $("[name='jkel']").val();
-
-        if(noreg == "" || noreg == null){
-            error_alert("No Registrasi Masih Kosong");
-        } else 
-        if(rekmed == "" || rekmed == null){
-            error_alert("No Rekam Medis Masih Kosong");
-        } else 
-        if(namapas == "" || namapas == null){
-            error_alert("Nama Pasien Masih Kosong");
-        } else 
-        if(tgllahir == "" || tgllahir == null){
-            error_alert("Tanggal Lahir Masih Kosong");
-        } else 
-        if(umur == "" || umur == null){
-            error_alert("Umur Masih Kosong");
-        } else 
-        if(jkel == "" || jkel == null || jkel == 0){
-            error_alert("Jenis kelamin Masih Kosong");
-        } else {
-        
-
-            $.ajax({
-                url: "/lab/simpanDataPemeriksaan/<?= ($status != "save")? "update" : "save" ?>",
-                data: post_form,
-                type: "POST",
-                dataType: "JSON",
-                success: function(data){
-                    if(data.status == "success"){
-                        swal({
-                            title: "LABORATORIUM",
-                            html: "<p style='padding:0px 0px 5px 0px'>No Laboratorium :<br /><b>"+ data.nolab +"</b></p>Berhasil disimpan",
-                            type: "success",
-                            confirmButtonText: "Ok",
-                            confirmButtonColor: "green",
-                            allowOutsideClick: false
-                        }).then(() => {
-                            location.href='/lab/addDataPemeriksaan/'+ data.nolab;
-                        });
-                    } else 
-                    if(data.status == "failed"){
-                        swal({
-                            title: "LABORATORIUM",
-                            html: "gagal melakukan simpan",
-                            type: "error",
-                            confirmButtonText: "Tutup",
-                            confirmButtonColor: "red",
-                            allowOutsideClick: false
-                        }).then(() => {
-                            location.href='/lab/addDataPemeriksaan/';
-                        });
-                    }
-                },
-                error: function(jqXHR, textStatus, errorThrown){
-                    swal({
-                        title: "LABORATORIUM",
-                        html: "<p>gagal melakukan simpan</p>"+ textStatus,
-                        type: "error",
-                        confirmButtonText: "Tutup", 
-                        confirmButtonColor: "red"
-                    }).then(() => {
-                        location.reload();
-                    });
-                }
-            });
-
-        }
-    });
-</script>
-
-<script>
-    $('#hasil-btn-proses-hasil').on('click', getListPemeriksaan);
-
-    function getListPemeriksaan() {
-        let jenis_kelamin = $("[name='jkel']").val();
-        let nolaborat = $('#nolaborat').val();
-        let data = {
-            jenis_kelamin,
-            nolaborat
-        };
-        let request = getRequest("lab/get_pemeriksaan", "POST", data);
-
-        request.then((res) => {
-            console.log({
-                res
-            });
-            let data = res.data;
-            let results = '';
-
-            data.forEach(item => {
-                results += "<tr>"+
-                    "<td>"+ item.pemeriksaan +"</td>"+
-                    "<td>"+
-                        "<input type='text' name='hasilc[]' class='form-control' value='"+ item.hasilc +"'>"+
-                        "<input type='hidden' name='kodeperiksa[]' value='"+ item.kodeperiksa +"'>"+
-                        "<input type='hidden' name='kodelab[]' value='"+ item.kodelab +"'>"+
-                    "</td>"+
-                    "<td>"+ item.satuan +"</td>"+
-                    "<td>"+ item.normalc +"</td>"+
-                    "<td><input type='text' name='keterangan[]' class='form-control' value='"+ item.keterangan +"'></td>"+
-                "</tr>";
-            });
-
-            $('#hasil-list-pemeriksaan').html(results);
-
-        });
-    }
-
-    /**@
-     * 
-     */
-    async function getRequest(path = "", method = "GET", data = {}) {
-        let base_url = <?php echo "'" . site_url('/') . "'" ?>;
-        return await $.ajax({
-            url: base_url + path,
-            type: method,
-            dataType: "JSON",
-            data: data,
-            success: function(res) {
-                let data;
-                try {
-                    data = JSON.parse(res)
-                } catch (e) {
-                    data = res
-                }
-
-                return data;
-            }
-        });
-    }
-
-
-    function addBerkasHasil() {
-        let unique_id = randomInteger(1, 6000);
-        let input_berkas = `<tr id="berkas-` + unique_id + `">
-            <td><textarea class="form-control" name="keterangan_berkas-${unique_id}" type="text" resizable></textarea></td>
-            <td>
-                <input type="file" onchange="loadfile(event, ${unique_id})" name="file_berkas-${unique_id}">
-                <input type="hidden" name="old_file-${unique_id}">
-            </td>
-            <td><a target="__blank" id="view_berkas-${unique_id}">-</a></td>
-            <td><button type="button" class="btn btn-danger" onclick="hapusBerkas(` + unique_id + `)" ><i class="fa fa-trash"></i></button></td>
-        </tr>`
-        $('#berkas-hasil').append(input_berkas);
-    }
-
     function loadfile(event, id) {
         let element = $(`#view_berkas-${id}`);
         element.text('lihat file');
         element.attr('href', URL.createObjectURL(event.target.files[0]))
     }
 
-    function randomInteger(min, max) {
-        return Math.floor(Math.random() * (max - min + 1)) + min;
+    function fileBerkas(param){
+        var file    = $("#file"+param).val();
+        var fakepath1   = file.split("C:").join("");
+        var fakepath2   = fakepath1.split("fakepath").join("");
+        var fakepath3   = fakepath2.split("\\").join("");
+        var final_file  = fakepath3;
+        
+        $("#file_name"+param).val(final_file);
     }
 
-    function hapusBerkas(unique_id) {
-        $('#berkas-' + unique_id).remove();
-    }
+    $(document).ready(function(){
+        $("#frmlab").on("submit", function(e){
+            e.preventDefault();
 
-    function hapusBerkasAjax(id, no_laborat) {
-        let base_url = <?php echo "'" . site_url('/') . "'" ?>;
-        $.ajax({
-            type: 'post',
-            url : `${base_url}lab/hapuslabfile/${id}/${no_laborat}`,
-            success: function(result) {
-                window.location.reload();
+            // var post_form   = $(this).serialize();
+            var post_form  = new FormData(this);
+
+            var noreg       = $("#noreg").val();
+            var rekmed      = $("#rekmed").val();
+            var namapas     = $("#namapas").val();
+            var tgllahir    = $("#tgllahir").val();
+            var umur        = $("#umur").val();
+            var jkel        = $("[name='jkel']").val();
+
+            if(noreg == "" || noreg == null){
+                error_alert("No Registrasi Masih Kosong");
+            } else 
+            if(rekmed == "" || rekmed == null){
+                error_alert("No Rekam Medis Masih Kosong");
+            } else 
+            if(namapas == "" || namapas == null){
+                error_alert("Nama Pasien Masih Kosong");
+            } else 
+            if(tgllahir == "" || tgllahir == null){
+                error_alert("Tanggal Lahir Masih Kosong");
+            } else 
+            if(umur == "" || umur == null){
+                error_alert("Umur Masih Kosong");
+            } else 
+            if(jkel == "" || jkel == null || jkel == 0){
+                error_alert("Jenis kelamin Masih Kosong");
+            } else {
+            
+
+                $.ajax({
+                    url: "/lab/simpanDataPemeriksaan/<?= ($status != "save")? "update" : "save" ?>",
+                    data: post_form,
+                    type: "POST",
+                    dataType: "JSON",
+                        processData:false,
+                        contentType:false,
+                        cache:false,
+                        async:false,
+                    success: function(data){
+                        if(data.status == "success"){
+                            swal({
+                                title: "LABORATORIUM",
+                                html: "<p style='padding:0px 0px 5px 0px'>No Laboratorium :<br /><b>"+ data.nolab +"</b></p>Berhasil disimpan",
+                                type: "success",
+                                confirmButtonText: "Ok",
+                                confirmButtonColor: "green",
+                                allowOutsideClick: false
+                            }).then(() => {
+                                location.href='/lab/addDataPemeriksaan/'+ data.nolab;
+                            });
+                        } else 
+                        if(data.status == "failed"){
+                            swal({
+                                title: "LABORATORIUM",
+                                html: "gagal melakukan simpan",
+                                type: "error",
+                                confirmButtonText: "Tutup",
+                                confirmButtonColor: "red",
+                                allowOutsideClick: false
+                            }).then(() => {
+                                location.href='/lab/addDataPemeriksaan/';
+                            });
+                        }
+                    },
+                    error: function(jqXHR, textStatus, errorThrown){
+                        swal({
+                            title: "LABORATORIUM",
+                            html: "<p>gagal melakukan simpan</p>"+ textStatus,
+                            type: "error",
+                            confirmButtonText: "Tutup", 
+                            confirmButtonColor: "red"
+                        }).then(() => {
+                            location.reload();
+                        });
+                    }
+                });
+
             }
         });
-    }
+    });
 </script>

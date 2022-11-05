@@ -461,6 +461,7 @@ class Farmasi_stock extends CI_Controller
 	public function show(){
 		$cek    = $this->session->userdata('level');
 		$cabang = $this->session->userdata('unit');
+		$avatar = $this->session->userdata('avatar_cabang');
 		$id     = $this->input->get('id');
 		if (!empty($cek)) {
 			$kop           = $this->M_cetak->kop($cabang);
@@ -480,7 +481,7 @@ class Farmasi_stock extends CI_Controller
 							<thead>
 								<tr>
 									<td rowspan=\"6\" align=\"center\">
-										<img src=\"" . base_url() . "assets/img/logo.png\"  width=\"70\" height=\"70\" />
+										<img src=\"" . base_url() . "assets/img_user/$avatar\"  width=\"70\" height=\"70\" />
 									</td>
 									<td colspan=\"20\">
 										<b>
@@ -575,8 +576,8 @@ class Farmasi_stock extends CI_Controller
 								</tr> 
 							</table>";
 			$chari .= "<table style=\"border-collapse:collapse;font-family: tahoma; font-size:12px\" width=\"100%\" align=\"center\" border=\"1\">
-						<thead>
 							<tr>
+										<th width=\"5%\">No</th>
 										<th width=\"20%\">No.Bukti</th>
 										<th width=\"10%\">Tanggal</th>
 										<th width=\"10%\">Keterangan</th>
@@ -587,20 +588,19 @@ class Farmasi_stock extends CI_Controller
 										<th width=\"5%\">Saldo Akhir</th>
 										<th width=\"10%\">Nilai Persediaan</th>
 										<th width=\"10%\">Total Nilai Persediaan</th>
-							</tr> 
-						</thead>";
+							</tr>";
 			$query_saldo = "SELECT * from tbl_barangstock where id = '$id'";
 			$lap = $this->db->query($query_saldo)->row();
 			if ($lap) {
 				$_tanggalawal = $lap->lasttr;
-				$saldo = $lap->saldoawal;
+				$saldo1 = $lap->saldoawal;
 			} else {
 				$_tanggalawal = date("d-m-Y");
-				$saldo = 0;
+				$saldo1 = 0;
 			}
 			$chari .= "
-					<tbody>
 						<tr>
+						<td width=\"5%\">#</td>
 						<td width=\"20%\">SALDO</td>
 						<td width=\"10%\">" . date("d-m-Y", strtotime($_tanggalawal)) . "</td>
 						<td width=\"10%\">SALDO AWAL</td>
@@ -608,24 +608,21 @@ class Farmasi_stock extends CI_Controller
 						<td width=\"10%\"></td>
 						<td width=\"5%\" style=\"text-align:right;\">0</td>
 						<td width=\"5%\" style=\"text-align:right;\">0</td>
-						<td width=\"5%\" style=\"text-align:right;\">" . number_format($saldo) . "</td>
+						<td width=\"5%\" style=\"text-align:right;\">" . number_format($saldo1) . "</td>
 						<td width=\"10%\" style=\"text-align:right;\">0</td>
 						<td width=\"10%\" style=\"text-align:right;\">0</td>
 						</tr>
-					</tbody>
-				</table>";
-			$chari .= "<table style=\"border-collapse:collapse;font-family: tahoma; font-size:12px\" width=\"100%\" align=\"center\" border=\"0\">
-									<tr>
-										<td> &nbsp; </td>
-									</tr> 
-								</table>";
-			$chari .= "<table style=\"border-collapse:collapse;font-family: tahoma; font-size:12px\" width=\"100%\" align=\"center\" border=\"1\">";
+						<tr>
+							<td colspan=\"11\">&nbsp;</td>
+						</tr>";
 			$queryx = $this->M_KartuStock->farmasistok($id);
 			$saldo=0;
+			$no = 1;
 			foreach ($queryx as $db) {
 				$nilai = $db->qty * $db->harga;
-				$saldo += $db->terima - $db->keluar;
+				$saldo2 = $saldo1 + ($saldo += $db->terima - $db->keluar);
 				$chari .= "<tr>
+						<td width=\"5%\">".$no++."</td>
 						<td width=\"20%\">$db->nomor</td>
 						<td width=\"10%\">" . date("d-m-Y", strtotime($db->tanggal)) . "</td>
 						<td width=\"10%\">$db->keterangan</td>
@@ -633,7 +630,7 @@ class Farmasi_stock extends CI_Controller
 						<td width=\"10%\" style=\"text-align:right;\">" . number_format($nilai) . "</td>
 						<td width=\"5%\" style=\"text-align:right;\">" . number_format($db->terima) . "</td>
 						<td width=\"5%\" style=\"text-align:right;\">" . number_format($db->keluar) . "</td>
-						<td width=\"5%\" style=\"text-align:right;\">" . number_format($saldo) . "</td>
+						<td width=\"5%\" style=\"text-align:right;\">" . number_format($saldo2) . "</td>
 						<td width=\"10%\" style=\"text-align:right;\">" . number_format($db->hpp) . "</td>
 						<td width=\"10%\" style=\"text-align:right;\">" . number_format($db->totalhpp) . "</td>
 					</tr>";
@@ -650,6 +647,11 @@ class Farmasi_stock extends CI_Controller
 	}
 
 	function valid($id){
+		$barang = $this->db->get_where("tbl_barangstock", ["id"=>$id])->row();
+		$kodebarang = $barang->kodebarang;
+		$gudang = $barang->gudang;
+		$koders = $barang->koders;
+		$saldoawal = $barang->saldoawal;
 		$saldo=0;
 		$terima=0;
 		$keluar=0;
@@ -657,12 +659,12 @@ class Farmasi_stock extends CI_Controller
 		foreach($cek as $c){
 			$terima += $c->terima;
 			$keluar += $c->keluar;
-			$saldo += $c->terima - $c->keluar;
+			$saldonya = $saldoawal + ($saldo += $c->terima - $c->keluar);
 		}
 		$data = [
 			'terima' => $terima,
 			'keluar' => $keluar,
-			'saldoakhir' => $saldo,
+			'saldoakhir' => $saldonya,
 		];
 		$this->db->update("tbl_barangstock", $data, ["id"=>$id]);
 		echo json_encode(['status' => 1]);
@@ -673,6 +675,8 @@ class Farmasi_stock extends CI_Controller
 		$barangstok = $this->db->get_where("tbl_barangstock", ["koders" => $cabang, "gudang" => $gudang]);
 		$no = 1;
 		foreach($barangstok->result() as $bs){
+			$kodebarang = $bs->kodebarang;
+			$saldoawal = $bs->saldoawal;
 			$nox = $no++;
 			$saldo = 0;
 			$terima = 0;
@@ -681,12 +685,12 @@ class Farmasi_stock extends CI_Controller
 			foreach ($cek as $c) {
 				$terima += $c->terima;
 				$keluar += $c->keluar;
-				$saldo += $c->terima - $c->keluar;
+				$saldonya = $saldoawal + ($saldo += $c->terima - $c->keluar);
 			}
 			$data = [
 				'terima' => $terima,
 				'keluar' => $keluar,
-				'saldoakhir' => $saldo,
+				'saldoakhir' => $saldonya,
 			];
 			$this->db->update("tbl_barangstock", $data, ["id" => $bs->id]);
 		}

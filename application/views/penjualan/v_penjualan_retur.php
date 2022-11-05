@@ -74,10 +74,19 @@
 
                     <div class="btn-group">
                         <?php if($akses->uadd){?>
-                        <a href="<?php echo base_url()?>penjualan_retur/entri" class="btn btn-success">
-                            <i class="fa fa-plus"></i>
-                            <b>Transaksi Baru</b>
-                        </a>
+
+                            <?php 
+                            $cek =  $this->session->userdata('user_level'); 
+                            if($cek==0){?> 
+                            <?php }else{ ?>
+
+                                <a href="<?php echo base_url()?>penjualan_retur/entri" class="btn btn-success">
+                                    <i class="fa fa-plus"></i>
+                                    <b>Transaksi Baru</b>
+                                </a>
+
+                            <?php } ?>
+                        
                         <?php } ?>
                     </div>
 
@@ -129,7 +138,16 @@
                             <td style="text-align: center">
                                 <?php if ($row->posting=='0') : ?>
                                     <!-- <a type="button" class="btn btn-sm btn-primary editbuttondouble" href="<?php echo base_url()?>penjualan_retur/edit/<?php echo $row->returno;?>">edit</a> -->
-                                    <a type="button" class="btn btn-sm btn-primary" href="<?php echo base_url('penjualan_retur/edit/').$row->returno; ?>" style="display:flex;" title="Edit"><i class="glyphicon glyphicon-edit"></i></a>
+                                    <?php 
+                                    $cek =  $this->session->userdata('user_level'); 
+                                    if($cek==0){?> 
+                                        <a type="button" class="btn btn-sm btn-primary" title="Edit"><i class="glyphicon glyphicon-edit"></i></a>
+                                    <?php }else{ ?>
+
+                                        <a type="button" class="btn btn-sm btn-primary" href="<?php echo base_url('penjualan_retur/edit/').$row->returno; ?>" title="Edit"><i class="glyphicon glyphicon-edit"></i></a>
+
+                                    <?php } ?>
+
                                 <?php endif;?>
                             </td>
                             <td style="text-align: center">
@@ -140,7 +158,15 @@
                             </td>
                             <td style="text-align: center">
                                 <?php if ($row->posting=='0') : ?>
-                                    <a type="button" class="delete btn btn-sm btn-danger" href="javascript:"><i class="glyphicon glyphicon-trash"></i></a>
+
+                                    <?php 
+                                    $cek =  $this->session->userdata('user_level'); 
+                                    if($cek==0){?> 
+                                        <a type="button" class="btn btn-sm btn-danger" href="javascript:"><i class="glyphicon glyphicon-trash"></i></a>
+                                    <?php }else{ ?>
+                                        <a type="button" class="delete btn btn-sm btn-danger" href="javascript:"><i class="glyphicon glyphicon-trash"></i></a>
+                                    <?php } ?>
+                                    
                                 <?php endif;?>
                             </td>
                         </tr>

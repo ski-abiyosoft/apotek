@@ -60,12 +60,12 @@ class Permohonan_log extends CI_Controller
 			if ($status_mutasi == null) {
 				$row[] =
 					'<a class="btn btn-sm btn-primary" href="' . base_url("permohonan_log/edit/" . $item->id . "") . '" title="Edit" ><i class="glyphicon glyphicon-edit"></i> </a>
-				 <a class="btn btn-sm btn-danger" href="javascript:void(0)" title="Hapus" onclick="delete_data(' . "'" . $item->id . "'" . ')"><i class="glyphicon glyphicon-trash"></i></a>
-				 <a href="/permohonan_log/cetak/' . $item->mohonno . '" target="_blank" title="cetak"><button class="btn btn-warning btn-sm"><i class="fa fa-print"></i></button></a>';
+				 	<a class="btn btn-sm btn-danger" href="javascript:void(0)" title="Hapus" onclick="delete_data(' . "'" . $item->id . "'" . ')"><i class="glyphicon glyphicon-trash"></i></a>
+				 	<a href="/permohonan_log/cetak/' . $item->mohonno . '" target="_blank" title="cetak"><button class="btn btn-warning btn-sm"><i class="fa fa-print"></i></button></a>';
 			} else {
 				$row[] =
 					'<a class="btn btn-sm btn-primary" href="' . base_url("permohonan_log/edit/" . $item->id . "") . '" title="Edit" ><i class="glyphicon glyphicon-edit"></i> </a>
-				<a href="/permohonan_log/cetak/' . $item->mohonno . '" target="_blank" title="cetak"><button class="btn btn-warning btn-sm"><i class="fa fa-print"></i></button></a>';
+					<a href="/permohonan_log/cetak/' . $item->mohonno . '" target="_blank" title="cetak"><button class="btn btn-warning btn-sm"><i class="fa fa-print"></i></button></a>';
 			}
 			$data[] = $row;
 		}
@@ -76,7 +76,6 @@ class Permohonan_log extends CI_Controller
 			"recordsFiltered" => $this->M_logistik_mohon->count_filtered($dat[0], $bulan, $tahun),
 			"data" => $data,
 		);
-		//output to json format
 		echo json_encode($output);
 	}
 
@@ -92,14 +91,14 @@ class Permohonan_log extends CI_Controller
 		$kode = $this->input->get('str');
 		$gudang = $this->input->get('gudang_asal');
 		// $data = $this->M_global->_data_barang_log( $kode);
-		// $data = $this->db->query('select a.*, b.* from tbl_apostocklog a join tbl_logbarang b on a.kodebarang=b.kodebarang where a.koders = "'.$cabang.'" and b.kodebarang = "'.$kode.'" and a.gudang = "'.$gudang.'"')->row_array();
+		// $data = $this->db->query('select a.*, b.* from tbl_apostocklog a join tbl_logbarang b on a.kodebarang=b.kodebarang where a.koders = "'.$cabang.'" and b.kodebarang = "'.$kode.'" and a.gudang = "'.$gudang.'"')->row();
 		$data = $this->db->query("SELECT a.*, (SELECT saldoakhir from tbl_apostocklog where koders = '$cabang' and gudang = '$gudang' and kodebarang = a.kodebarang) as saldoakhir FROM tbl_logbarang a WHERE kodebarang = '$kode'")->row();
 		// $data = $this->db->query("SELECT * FROM tbl_logbarang WHERE kodebarang = '$kode'")->row();
-		if ($data->saldoakhir < 1) {
-			echo json_encode(['status' => 1]);
-		} else {
+		// if ($data->saldoakhir < 1) {
+		// 	echo json_encode(['status' => 1]);
+		// } else {
 			echo json_encode($data);
-		}
+		// }
 	}
 
 	public function save($param)
@@ -122,7 +121,6 @@ class Permohonan_log extends CI_Controller
 			$harga = $this->input->post('harga');
 			$total   = $this->input->post('total');
 			$note   = $this->input->post('note');
-
 
 			$jumdata  = count($kode);
 

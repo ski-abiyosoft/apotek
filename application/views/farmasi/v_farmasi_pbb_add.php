@@ -49,22 +49,22 @@ $this->load->view('template/body');
           <div class="row">
             <div class="col-md-6">
               <div class="form-group">
-                <label class="col-md-3 control-label">Tanggal</label>
+                <label class="col-md-4 control-label">Tanggal <small style="color:red">*</small></label>
                 <div class="col-md-4">
                   <input id="tanggal" name="tanggal" class="form-control" type="date"
                     value="<?php echo date('Y-m-d'); ?>" />
                 </div>
               </div>
               <div class="form-group">
-                <label class="col-md-3 control-label">Gudang Asal</label>
-                <div class="col-md-9">
+                <label class="col-md-4 control-label">Gudang Asal <small style="color:red">*</small></label>
+                <div class="col-md-8">
                   <select id="gudang_asal" name="gudang_asal" class="form-control select2_el_farmasi_depo"
                     data-placeholder="Pilih..." onkeypress="return tabE(this,event)"></select>
                 </div>
               </div>
               <div class="form-group">
-                <label class="col-md-3 control-label">Gudang Tujuan</label>
-                <div class="col-md-9">
+                <label class="col-md-4 control-label">Gudang Tujuan <small style="color:red">*</small></label>
+                <div class="col-md-8">
                   <select id="gudang_tujuan" name="gudang_tujuan" class="form-control select2_el_farmasi_depo"
                     data-placeholder="Pilih..." onchange="getgudang()" onkeypress="return tabE(this,event)"></select>
                 </div>
@@ -81,7 +81,7 @@ $this->load->view('template/body');
                 </div>
               </div>
               <div class="form-group">
-                <label class="col-md-3 control-label">Keterangan</label>
+                <label class="col-md-3 control-label">Keterangan <small style="color:red">*</small></label>
                 <div class="col-md-9">
                   <input type="text" class="form-control" name="ket">
                 </div>
@@ -106,14 +106,11 @@ $this->load->view('template/body');
             </thead>
             <tbody>
               <tr>
-                <td><select name="kode[]" id="kode1" class="select2_el_farmasi_baranggud form-control"
-                    onchange="getbarang(1); total_1(1)"></select></td>
-                <td><input name="qty[]" id="qty1" type="text" class="form-control" value="1" min="1"
-                    onkeyup="total_1(1)">
-                </td>
+                <td><select name="kode[]" id="kode1" class="select2_el_farmasi_baranggud form-control" onchange="getbarang(1)"></select></td>
+                <td><input name="qty[]" id="qty1" type="text" class="form-control" value="1" min="1" onchange="total_1(1);"></td>
                 <td><input name="sat[]" id="sat1" type="text" class="form-control"></td>
                 <td><input name="harga[]" id="harga1" type="text" class="form-control" readonly></td>
-                <td><input name="total[]" id="total1" type="text" class="form-control sumsubtot" readonly></td>
+                <td><input name="total[]" id="total1" type="text" class="form-control" readonly></td>
                 <td><input name="note[]" id="note1" type="text" class="form-control"></td>
               </tr>
             </tbody>
@@ -135,8 +132,12 @@ $this->load->view('template/body');
       </div>
 
       <div style="padding:20px;padding-top:0px">
-        <button type="button" class="btn blue" style="font-weight:bold" id="save_pembayaran" onclick="save()"><i
-            class="fa fa-save fa-fw"></i>&nbsp; Simpan</button>
+        <button type="button" class="btn blue" style="font-weight:bold" id="save_pembayaran" onclick="save()">
+          <i class="fa fa-save fa-fw"></i>&nbsp; Simpan
+        </button>
+
+        <a class="btn red" href="<?php echo base_url('Farmasi_pbb')?>">
+        <i class="fa fa-undo"></i><b> KEMBALI </b></a>
       </div>
     </form>
   </div>
@@ -154,6 +155,8 @@ $(window).on("load", function() {
 });
 
 var idrow = 2;
+var rowCount;
+var arr = [1];
 
 function tambah(gudang) {
   var v = document.getElementById('datatable').insertRow(idrow);
@@ -163,81 +166,16 @@ function tambah(gudang) {
   var tdv4 = v.insertCell(3);
   var tdv5 = v.insertCell(4);
   var tdv6 = v.insertCell(5);
-
-  var novoucher = '<select name="kode[]" id="kode' + idrow +
-    '" class="select2_el_farmasi_baranggud form-control" onchange="getbarang(' + idrow + '); total_1(' + idrow +
-    ')"></select>';
-  tdv1.innerHTML = novoucher;
-  tdv2.innerHTML = '<input name="qty[]" id="qty' + idrow +
-    '" value="1" min="1" type="text" class="form-control" onkeyup="total_1(' +
-    idrow + ')">';
+  tdv1.innerHTML = '<select name="kode[]" id="kode' + idrow + '" class="select2_el_farmasi_baranggud form-control" onchange="getbarang(' + idrow + ')"></select>';
+  tdv2.innerHTML = '<input name="qty[]" id="qty' + idrow + '" value="1" min="1" type="text" class="form-control" onchange="total_1(' + idrow + ');">';
   tdv3.innerHTML = '<input name="sat[]" id="sat' + idrow + '" type="text" class="form-control">';
   tdv4.innerHTML = '<input name="harga[]" id="harga' + idrow + '" type="text" class="form-control" readonly>';
-  tdv5.innerHTML = '<input name="total[]" id="total' + idrow +
-    '" type="text" class="form-control sumsubtot" readonly>';
+  tdv5.innerHTML = '<input name="total[]" id="total' + idrow + '" type="text" class="form-control" readonly>';
   tdv6.innerHTML = '<input name="note[]" id="note' + idrow + '" type="text" class="form-control">';
   var gud = $("#gudang_tujuan").val();
   initailizeSelect2_farmasi_baranggud(gud);
   idrow++;
 }
-
-// function checkstock(param){
-// 	var gudang 		= $("#gudang_asal").val();
-// 	var kodebarang	= $("#kode"+ param).val();
-
-// 	if(gudang == null){
-// 		swal({
-// 			title: "Kesalahan",
-// 			html: "Pilih Gudang Asal Terlebih Dahulu",
-// 			type: "error",
-// 			confirmButtonText: "Ok" 
-// 		}).then(function(isConfirm){
-// 			$('#kode'+ param).empty();
-// 			$('#qty'+ param).val("");
-// 			$('#sat'+ param).val("");
-// 			$('#harga'+ param).val("");
-// 			$('#total'+ param).val("");
-// 			$('#note'+ param).val("");
-// 		});
-// 	} else {
-// 		$.ajax({
-// 			url: "/farmasi_pbb/checkstock/?kode="+ kodebarang +"&gudang="+ gudang,
-// 			type: "GET",
-// 			dataType: "JSON",
-// 			success: function(data){
-// 				if(data.status == 0){
-// 					swal({
-// 						title: "Kesalahan",
-// 						html: "Barang Tidak Tersedia",
-// 						type: "error",
-// 						confirmButtonText: "Ok" 
-// 					});
-// 					$('#kode'+ param).empty();
-// 					$('#qty'+ param).val("");
-// 					$('#sat'+ param).val("");
-// 					$('#harga'+ param).val("");
-// 					$('#total'+ param).val("");
-// 					$('#note'+ param).val("");
-// 				} else {
-// 					if(data.stock == 0){
-// 						swal({
-// 							title: "Kesalahan",
-// 							html: "Stock Tidak Cukup",
-// 							type: "error",
-// 							confirmButtonText: "Ok" 
-// 						});
-// 						$('#kode'+ param).empty();
-// 						$('#qty'+ param).val("");
-// 						$('#sat'+ param).val("");
-// 						$('#harga'+ param).val("");
-// 						$('#total'+ param).val("");
-// 						$('#note'+ param).val("");
-// 					}
-// 				}
-// 			}
-// 		});
-// 	}
-// }
 
 function sequentPenjualan() {
   $.ajax({
@@ -278,22 +216,22 @@ function getbarang(param) {
     type: "GET",
     dataType: "JSON",
     success: function(data) {
-      if (data.saldoakhir < qty) {
-        swal({
-          title: "KUANTITAS",
-          html: "Melebihi saldo akhir<br>Saldo akhir saat ini : " + separateComma(data.saldoakhir),
-          type: "info",
-          confirmButtonText: "OK"
-        }).then((value) => {
-          $("#kode" + param).empty();
-        });
-      } else {
+      // if (data.saldoakhir < qty) {
+      //   swal({
+      //     title: "KUANTITAS",
+      //     html: "Melebihi saldo akhir<br>Saldo akhir saat ini : " + separateComma(data.saldoakhir),
+      //     type: "info",
+      //     confirmButtonText: "OK"
+      //   }).then((value) => {
+      //     $("#kode" + param).empty();
+      //   });
+      // } else {
         total = Number(parseInt(qty.replaceAll(',', ''))) * data.hargajual;
         $("#sat" + param).val(data.satuan1);
         $("#harga" + param).val(separateComma(data.hargajual));
         $("#total" + param).val(separateComma(total));
-        // totalline(id);
-      }
+        total_1(param);
+      // }
     }
   });
 }
@@ -334,73 +272,77 @@ function separateComma(val) {
   return sign < 0 ? '-' + result : result;
 }
 
-// function total(param) {
-//   var qtybarang = $("#qty" + param).val();
-//   var hargabarang = $("#harga" + param).val();
-//   var harga1 = hargabarang.split(",").join("");
-//   var harga2 = harga1.split(".00").join("");
-
-//   var subtotal = harga2 * qtybarang;
-//   $("#total" + param).val(separateComma(subtotal));
-
-//   var total = 0;
-//   $("tr .sumsubtot").each(function(index, value) {
-//     currentRow = parseInt(Number($(this).val().replace(/[^0-9\.]+/g, "")));
-//     total += currentRow
-//   });
-//   $("#vtotal").val(separateComma(total));
-// }
-
 function total_1(param) {
-  var total = $("#total" + param).val();
-  var totalNumber = Number(parseInt(total.replaceAll(',', '')));
+  var table = document.getElementById('datatable');
+  // var row = table.rows[arr.indexOf(param) + 1];
+  // var qty = Number(row.cells[1].children[0].value.replace(/[^0-9\.]+/g, ""));
+  // var harga = Number(row.cells[3].children[0].value.replace(/[^0-9\.]+/g, ""));
+  var qtyx = $("#qty"+param).val();
+  var qty = Number(parseInt(qtyx.replaceAll(',','')));
+  var hargax = $("#harga"+param).val();
+  var harga = Number(parseInt(hargax.replaceAll(',','')));
+  var tot = qty * harga;
+  // row.cells[4].children[0].value = separateComma(tot);
+  $("#total"+param).val(separateComma(tot));
+  total_2();
+}
+
+function total_2(){
   var table = document.getElementById('datatable');
   var rowCount = table.rows.length;
-  totalx = 0;
-  for (var i = 1; i < rowCount; i++) {
-    totalx += totalNumber;
+  tjumlah = 0;
+  for (var i = 1; i < rowCount - 1; i++) {
+      var row = table.rows[i];
+      ztotal = row.cells[4].children[0].value;
+      var jumlah1 = Number(ztotal.replace(/[^0-9\.]+/g, ""));
+      tjumlah = tjumlah + eval(jumlah1);
   }
-  console.log(param);
-  $("#vtotal").val(separateComma(total));
+  document.getElementById("vtotal").value = separateComma(tjumlah);
 }
 
 function hapus() {
   if (idrow > 2) {
     var x = document.getElementById('datatable').deleteRow(idrow - 1);
     idrow--;
+    total_2();
   }
 
-  var total = 0;
-  $("tr .sumsubtot").each(function(index, value) {
-    currentRow = parseInt(Number($(this).val().replace(/[^0-9\.]+/g, "")));
-    total += currentRow
-  });
-  $("#vtotal").val(separateComma(total));
+  // var total = 0;
+  // $("tr .sumsubtot").each(function(index, value) {
+  //   currentRow = parseInt(Number($(this).val().replace(/[^0-9\.]+/g, "")));
+  //   total += currentRow
+  // });
+  // $("#vtotal").val(separateComma(total));
 }
 
 function save() {
-  var gudang_asal = $('[name="gudang_asal"]').val();
+  var gudang_asal   = $('[name="gudang_asal"]').val();
   var gudang_tujuan = $('[name="gudang_tujuan"]').val();
-  var total = $('#vtotal').val();
-  var tanggal = $('[name="tanggal"]').val();
-  if (gudang_asal == "" || gudang_tujuan == "" || total == "" || total == "0.00") {
-    swal('MUTASI GUDANG', 'gudang belum diisi ...', '');
+  var ket           = $('[name="ket"]').val();
+  var total         = $('#vtotal').val();
+  var tanggal       = $('[name="tanggal"]').val();
+  if (gudang_asal == "" || gudang_tujuan == "" || ket == "" || total == "" || total == "0.00") {
+    swal({
+      title : "PERMOHONAN GUDANG",
+      html  : "Belum Lengkap !",
+      type  : "warning",
+      confirmButtonText: "OK"
+    });
+    return;
   } else {
     $.ajax({
-      url: "/farmasi_pbb/save/1",
-      data: $('#frmpermohonan').serialize(),
-      type: 'POST',
+      url   : "/farmasi_pbb/save/1",
+      data  : $('#frmpermohonan').serialize(),
+      type  : 'POST',
       success: function(data) {
         swal({
-          title: "PERMOHONAN GUDANG",
-          html: "<p> No. Mutasi   : <b>" + data + "</b> </p>" +
-            "Tanggal :  " + tanggal + "</b> </p>" + "Total" + " " + total,
-          type: "info",
+          title : "PERMOHONAN GUDANG",
+          html  : "<p> No. Mutasi   : <b>" + data + "</b> </p>" + "Tanggal :  " + tanggal + "</b> </p>" + "Total" + " " + total,
+          type  : "info",
           confirmButtonText: "OK"
         }).then((value) => {
           location.href = "<?php echo base_url() ?>farmasi_pbb";
         });
-
       },
       error: function(data) {
         swal('PERMOHONAN GUDANG', 'Data gagal disimpan ...', '');

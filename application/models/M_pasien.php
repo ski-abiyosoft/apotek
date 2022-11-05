@@ -20,56 +20,56 @@ class M_pasien extends CI_Model {
 		$this->db->from($this->table);
 				
 		if($filter !=""){
-		   $param 		= explode('~',$filter);
-		   $nama  		= $param[0];
-		   $alamat		= $param[1];
-		   $noid  		= $param[2];
-		   $rekmed		= $param[3];
-		   $tglLahir	= $param[4];
-		   $noTelp		= $param[5];
-		   $nocard		= $param[6];
+		$param 		= explode('~',$filter);
+		$nama  		= $param[0];
+		$alamat		= $param[1];
+		$noid  		= $param[2];
+		$rekmed		= $param[3];
+		$tglLahir	= $param[4];
+		$noTelp		= $param[5];
+		$nocard		= $param[6];
 		
-			 
-		   if($nama!="" || $alamat!="" || $noid!="" || $rekmed!=""
-		   || $tglLahir!="" || $noTelp!="" || $nocard!=""){	 
-		   if($nama !=""){	
-		     $this->db->like('namapas', $nama);			
-		   }
-		   if($nocard !=""){			
-				$this->db->like('nocard', $nocard);
-		   }
-
-           if($alamat !=""){	
-		     $this->db->like('alamat', $alamat);			
-		   }	
-
-           if($rekmed !=""){	
-		     $this->db->like('rekmed', $rekmed);			
-		   }		   
-		   
-		   if($noid !=""){	
-		     $this->db->like('noidentitas', $noid);			
-		   }	
-		   if($tglLahir !=""){	
-		     $this->db->like('tgllahir', $tglLahir);			
-		   }	
-		   if($noTelp !=""){			
-			 $this->db->like('handphone', str_replace(' ','', $noTelp));	
-			 $this->db->or_like('handphone', '+'.str_replace(' ','', $noTelp));	
-		   }
-		   } else {
-			 $this->db->where('idtr=-1');	  
-		   }
-		   
-		   
-		} else {
-		   $this->db->where('idtr=-1');	
+			
+		if($nama!="" || $alamat!="" || $noid!="" || $rekmed!=""
+		|| $tglLahir!="" || $noTelp!="" || $nocard!=""){	 
+		if($nama !=""){	
+			$this->db->like('namapas', $nama);			
 		}
-        
+		if($nocard !=""){			
+				$this->db->like('nocard', $nocard);
+		}
+
+		if($alamat !=""){	
+			$this->db->like('alamat', $alamat);			
+		}	
+
+		if($rekmed !=""){	
+			$this->db->like('rekmed', $rekmed);			
+		}		   
+		
+		if($noid !=""){	
+			$this->db->like('noidentitas', $noid);			
+		}	
+		if($tglLahir !=""){	
+			$this->db->like('tgllahir', $tglLahir);			
+		}	
+		if($noTelp !=""){			
+			$this->db->like('handphone', str_replace(' ','', $noTelp));	
+			$this->db->or_like('handphone', '+'.str_replace(' ','', $noTelp));	
+		}
+		} else {
+			$this->db->where('idtr=-1');	  
+		}
+		
+		
+		} else {
+		$this->db->where('idtr=-1');	
+		}
+		
 		
 		$i = 0;
 		
-	    
+		
 		foreach ($this->column_search as $item) 
 		{
 			if($_POST['search']['value']) 
@@ -126,40 +126,40 @@ class M_pasien extends CI_Model {
 		$this->db->from($this->table);
 		
 		if($filter !=""){
-		   $param = explode('~',$filter);
-		   $nama  = $param[0];
-		   $alamat= $param[1];
-		   $noid  = $param[2];
-		   $rekmed= $param[3];
-		   $nocard= $param[6];
+		$param = explode('~',$filter);
+		$nama  = $param[0];
+		$alamat= $param[1];
+		$noid  = $param[2];
+		$rekmed= $param[3];
+		$nocard= $param[6];
 		
-			 
-		   if($nama!="" || $alamat!="" || $noid!="" || $rekmed!="" || $nocard!=""){	 
-		   if($nama !=""){	
-		     $this->db->like('namapas', $nama);			
-		   }
+			
+		if($nama!="" || $alamat!="" || $noid!="" || $rekmed!="" || $nocard!=""){	 
+		if($nama !=""){	
+			$this->db->like('namapas', $nama);			
+		}
 
-           if($alamat !=""){	
-		     $this->db->like('alamat', $alamat);			
-		   }		   
-		   
-		   if($rekmed !=""){	
-		     $this->db->like('rekmed', $rekmed);			
-		   }
-		   
-		   if($noid !=""){	
-		     $this->db->like('noidentitas', $noid);			
-		   }		   
-		   if($nocard !=""){	
-		     $this->db->like('nocard', $nocard);			
-		   }
-		   } else {
-			 $this->db->where('idtr=-1');	  
-		   }
-		   
-		   
+		if($alamat !=""){	
+			$this->db->like('alamat', $alamat);			
+		}		   
+		
+		if($rekmed !=""){	
+			$this->db->like('rekmed', $rekmed);			
+		}
+		
+		if($noid !=""){	
+			$this->db->like('noidentitas', $noid);			
+		}		   
+		if($nocard !=""){	
+			$this->db->like('nocard', $nocard);			
+		}
 		} else {
-		   $this->db->where('idtr=-1');	
+			$this->db->where('idtr=-1');	  
+		}
+		
+		
+		} else {
+		$this->db->where('idtr=-1');	
 		}
 		
 		

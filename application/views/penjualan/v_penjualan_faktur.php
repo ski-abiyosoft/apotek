@@ -81,14 +81,24 @@
                                 <tbody>
                                     <?php foreach($eresep as $rkey => $rval){ ?>
                                         <tr>
-                                            <td class="text-center"><button type="button" class="btn btn-primary btn-xs" onclick="window.open('/penjualan_faktur/entri/?eresep=true&noresep=<?= $rval->orderno ?>', '_blank')">proses</button></td>
+                                            <?php 
+                                            $cek =  $this->session->userdata('user_level'); 
+                                            if($cek==0){?> 
+                                                <td class="text-center">
+                                                    <button type="button" class="btn btn-primary btn-xs" >proses</button>
+                                                </td>
+                                            <?php }else{ ?>
+                                                <td class="text-center">
+                                                    <button type="button" class="btn btn-primary btn-xs" onclick="window.open('/penjualan_faktur/entri/?eresep=true&noresep=<?= $rval->orderno ?>', '_blank')">proses</button>
+                                                </td>
+                                            <?php } ?>
                                             <td class="text-center"><?= $rval->koders ?></td>
                                             <td><?= date("d-m-Y", strtotime($rval->tglorder)) ?></td>
                                             <td><?= $rval->orderno ?></td>
                                             <td><?= $rval->noreg ?></td>
                                             <td><?= $rval->rekmed ?></td>
                                             <td><?= $rval->namapas ?></td>
-                                            <td><?= data_master("tbl_dokter", array("kodokter" => $rval->kodokter, "koders" => $rval->koders))->nadokter ?></td>
+                                            <td><?= data_master("dokter", array("kodokter" => $rval->kodokter, "koders" => $rval->koders, "kopoli" => $rval->kodepos))->nadokter ?></td>
                                             <td><?= $rval->keterangan ?></td>
                                         </tr>
                                     <?php } ?>
@@ -111,14 +121,21 @@
 						<div class="portlet-body">
 							<div class="table-toolbar">
 								
-								
 								<div class="btn-group">
-								  <?php if($akses->uadd){?>
-								    <a href="<?php echo base_url()?>penjualan_faktur/entri/" class="btn btn-success">
-									<i class="fa fa-plus"></i>
-                                    <b>Transaksi Baru</b>
-									</a>
-								  <?php } ?>	
+                                    <?php if($akses->uadd){?>
+                                        <?php 
+                                        $cek =  $this->session->userdata('user_level'); 
+                                        if($cek==0){?> 
+                                        <?php }else{ ?>
+
+                                            <a href="<?php echo base_url()?>penjualan_faktur/entri/" class="btn btn-success">
+                                            <i class="fa fa-plus"></i>
+                                            <b>Transaksi Baru</b>
+                                            </a>
+
+                                        <?php } ?>
+
+                                    <?php } ?>	
 								</div>	
 								
 								<div class="btn-group pull-right">

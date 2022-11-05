@@ -163,24 +163,39 @@ class Inventory_mutasi_gudang extends CI_Controller
 			'keterangan' => $note,
 			'exp_date' => $expire,
 		];
-		$datas = [
-			"koders" => $cabang,
-			"kodebarang" => $kode,
-			"gudang" => $gudang_tujuan,
-			"terima" => $qty,
-			"saldoakhir"  => $qty,
-			"tglso" => $tanggal,
-			"lasttr" => $tanggal
-		];
 		if (!empty($cek)) {
+			$date_now = date('Y-m-d H:i:s');
 			$this->db->insert('tbl_apodmove', $data);
-			$check = $this->db->query("SELECT * FROM tbl_barangstock WHERE koders = '$cabang' AND kodebarang = '$kode' AND gudang = '$gudang_tujuan'");
+			$check = $this->db->query("SELECT * FROM tbl_barangstock WHERE koders = '$cabang' AND kodebarang = '$kode' AND gudang = '$gudang_asal'");
 			if ($check->num_rows() == 0) {
+				$datas = [
+					"koders" 			=> $cabang,
+					"kodebarang" 	=> $kode,
+					"gudang" 			=> $gudang_asal,
+					"keluar" 			=> $qty,
+					"terima" 			=> 0,
+					"saldoakhir"  => 0-$qty,
+					"lasttr" 			=> $date_now
+				];
 				$this->db->insert('tbl_barangstock', $datas);
 			} else {
-				$this->db->query("update tbl_barangstock set terima=terima+ $qty, saldoakhir= saldoakhir+ $qty where kodebarang = '$kode' and koders = '$cabang' and gudang = '$gudang_tujuan'");
+				$this->db->query("UPDATE tbl_barangstock set keluar=keluar+$qty, saldoakhir= saldoakhir-$qty, lasttr = '$date_now' where kodebarang = '$kode' and koders = '$cabang' and gudang = '$gudang_asal'");
 			}
-			$this->db->query("update tbl_barangstock set keluar=keluar+ $qty, saldoakhir= saldoakhir- $qty where kodebarang = '$kode' and koders = '$cabang' and gudang = '$gudang_asal'");
+			$check2 = $this->db->query("SELECT * FROM tbl_barangstock WHERE koders = '$cabang' AND kodebarang = '$kode' AND gudang = '$gudang_tujuan'");
+			if($check2->num_rows() == 0){
+				$datas2 = [
+					"koders" 			=> $cabang,
+					"kodebarang" 	=> $kode,
+					"gudang" 			=> $gudang_tujuan,
+					"terima" 			=> $qty,
+					"keluar" 			=> 0,
+					"saldoakhir"  => $qty,
+					"lasttr" 			=> $date_now
+				];
+				$this->db->insert('tbl_barangstock', $datas2);
+			} else {
+				$this->db->query("UPDATE tbl_barangstock set terima=terima+$qty, saldoakhir=saldoakhir+$qty, lasttr = '$date_now' where kodebarang = '$kode' and koders = '$cabang' and gudang = '$gudang_tujuan'");
+			}
 		} else {
 			header('location:' . base_url());
 		}
@@ -212,6 +227,15 @@ class Inventory_mutasi_gudang extends CI_Controller
 			$this->db->set('username', $userid);
 			$this->db->where('moveno', $nomorbukti);
 			$this->db->update('tbl_apohmove');
+			$datamutasi = $this->db->get_where('tbl_apodmove', array('moveno' => $nomorbukti))->result();
+			foreach ($datamutasi as $row) {
+				$_qty = $row->qtymove;
+				$_kode = $row->kodebarang;
+				$this->db->query("update tbl_barangstock set terima=terima- $_qty, saldoakhir= saldoakhir- $_qty where kodebarang = '$_kode' and koders = '$cabang' and gudang = '$gudang_tujuan'");
+				$this->db->query("update tbl_barangstock set keluar=keluar- $_qty, saldoakhir= saldoakhir+ $_qty where kodebarang = '$_kode' and koders = '$cabang' and gudang = '$gudang_asal'");
+			}
+			$this->db->where('moveno', $nomorbukti);
+			$this->db->delete('tbl_apodmove');
 			echo json_encode(['status' => 1, 'nomorbukti' => $nomorbukti, 'keterangan' => $keterangan]);
 		} else {
 			header('location:' . base_url());
@@ -255,26 +279,44 @@ class Inventory_mutasi_gudang extends CI_Controller
 				'keterangan' => $note,
 				'exp_date' => $expire,
 			];
-			$check_move = $this->db->query("SELECT * FROM tbl_apodmove WHERE koders = '$cabang' and moveno = '$nomorbukti' and kodebarang = '$kode'");
-			if ($check_move->num_rows() == 0) {
-				$this->db->insert('tbl_apodmove', $data);
-				$this->db->query("update tbl_barangstock set terima=terima+ $qty, saldoakhir= saldoakhir+ $qty where kodebarang = '$kode' and koders = '$cabang' and gudang = '$gudang_tujuan'");
-
-				$this->db->query("update tbl_barangstock set keluar=keluar+ $qty, saldoakhir= saldoakhir- $qty where kodebarang = '$kode' and koders = '$cabang' and gudang = '$gudang_asal'");
+			$this->db->insert('tbl_apodmove', $data);
+			$date_now = date('Y-m-d H:i:s');
+			$check = $this->db->query("SELECT * FROM tbl_barangstock WHERE koders = '$cabang' AND kodebarang = '$kode' AND gudang = '$gudang_asal'");
+			if ($check->num_rows() == 0) {
+				$datas = [
+					"koders" => $cabang,
+					"kodebarang" => $kode,
+					"gudang" => $gudang_asal,
+					"keluar" => $qty,
+					"terima" => 0,
+					"saldoakhir"  => 0-$qty,
+					"tglso" => $tanggal,
+					"lasttr" => $tanggal
+				];
+				$this->db->insert('tbl_barangstock', $datas);
 			} else {
-				foreach ($check_move->result() as $row) {
-					$_qty  = $row->qtymove;
-					$_kode = $row->kodebarang;
-					$this->db->query("UPDATE tbl_barangstock set terima = terima - $_qty, saldoakhir = saldoakhir - $_qty where kodebarang = '$_kode' and koders = '$cabang' and gudang = '$gudang_tujuan'");
-				}
-				$this->db->where('moveno', $nomorbukti);
-				$this->db->delete('tbl_apodmove');
-				$this->db->insert('tbl_apodmove', $data);
+				$this->db->query("update tbl_barangstock set keluar=keluar+$qty, saldoakhir= saldoakhir-$qty, lasttr = '$date_now' where kodebarang = '$kode' and koders = '$cabang' and gudang = '$gudang_asal'");
+			}
+			$check2 = $this->db->query("SELECT * FROM tbl_barangstock WHERE koders = '$cabang' AND kodebarang = '$kode' AND gudang = '$gudang_tujuan'");
+			if($check2->num_rows() == 0) {
+				$datas2 = [
+					"koders" => $cabang,
+					"kodebarang" => $kode,
+					"gudang" => $gudang_tujuan,
+					"terima" => $qty,
+					"saldoakhir"  => $qty,
+					"tglso" => $tanggal,
+					"lasttr" => $tanggal
+				];
+				$this->db->insert('tbl_barangstock', $datas2);
+			} else {
+				$this->db->query("update tbl_barangstock set terima=terima+$qty, saldoakhir= saldoakhir+$qty, lasttr = '$date_now' where kodebarang = '$kode' and koders = '$cabang' and gudang = '$gudang_tujuan'");
 			}
 		} else {
 			header('location:' . base_url());
 		}
 	}
+
 
 	public function save($param)
 	{

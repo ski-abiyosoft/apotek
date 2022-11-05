@@ -1,12 +1,13 @@
 <?php
-$this->load->view('template/header');
-$this->load->view('template/body');
+    $this->load->view('template/header');
+    $this->load->view('template/body');
 ?>
 
 <!-- <link href="<?php echo base_url('assets/datatables/css/dataTables.bootstrap.css') ?>" rel="stylesheet">
 <link href="<?php echo base_url('assets/bootstrap-datepicker/css/bootstrap-datepicker3.min.css') ?>" rel="stylesheet"> -->
 
 <!-- <link href="<?php echo base_url('css/font_css.css')?>" rel="stylesheet" type="text/css"/> -->
+
 <link href="<?php echo base_url('assets/plugins/uniform/css/uniform.default.css')?>" rel="stylesheet" type="text/css"/>
 <link href="<?php echo base_url('assets/plugins/select2/select2.css')?>" rel="stylesheet" type="text/css" />
 <link href="<?php echo base_url('assets/plugins/select2/select2-metronic.css')?>" rel="stylesheet" type="text/css" />
@@ -430,7 +431,10 @@ $this->load->view('template/body');
                         <td>
                             <button type="button" class="btn blue btn-xs" onclick="window.open('/lab/addDataPemeriksaan/<?= $oval->nolaborat ?>', 'blank')">Edit</button>
                         </td>
-                        <td></td>
+                        <td>
+                            <button type="button" class="btn btn-success btn-xs">Isi</button>
+                            <button type="button" class="btn btn-success btn-xs">Serahkan</button>
+                        </td>
                         <td><?= $oval->nolaborat ?></td>
                         <td><?= $oval->orderno ?></td>
                         <td><?= date("d/m/Y", strtotime($oval->tgllab)) ." ". $oval->jam ?></td>

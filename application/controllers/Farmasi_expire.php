@@ -2,8 +2,6 @@
 
 class Farmasi_expire extends CI_Controller
 {
-
-
 	public function __construct()
 	{
 		parent::__construct();
@@ -53,30 +51,39 @@ class Farmasi_expire extends CI_Controller
 			$row[] = $item->approve_1;
 			$row[] = $item->approve_2;
 			$row[] = $item->approve_3;
-			if ($item->approved == 0) {
-				$color = 'style="background: #FFA500; color: white;"';
-				$text = 'Approve 1';
-				$row[] = '<a class="btn btn-sm" ' . $color . ' href="javascript:void(0)" title="Approve" onclick="approve(' . "'" . $item->id . "'" . ",'" . $item->ed_no . "'" . ')"><i class="glyphicon glyphicon-check"></i> ' . $text . '</a>';
-			} else if ($item->approved == 1) {
-				$color = 'style="background: #FF8C00; color: white;"';
-				$text = 'Approve 2';
-				$row[] = '<a class="btn btn-sm" ' . $color . ' href="javascript:void(0)" title="Approve" onclick="approve(' . "'" . $item->id . "'" . ",'" . $item->ed_no . "'" . ')"><i class="glyphicon glyphicon-check"></i> ' . $text . '</a>';
-			} else if ($item->approved == 2) {
-				$color = 'style="background: #FF6347; color: white;"';
-				$text = 'Approve 3';
-				$row[] = '<a class="btn btn-sm" ' . $color . ' href="javascript:void(0)" title="Approve" onclick="approve(' . "'" . $item->id . "'" . ",'" . $item->ed_no . "'" . ')"><i class="glyphicon glyphicon-check"></i> ' . $text . '</a>';
-			} else {
-				$text = 'Approved';
-				$row[] = '<a class="btn btn-sm btn-success" title="Approve">' . $text . '</a>';
+			if($user_level==0){
+				
+				$row[] = 
+				'';
+					
+			}else{
+				if ($item->approved == 0) {
+					$color = 'style="background: #FFA500; color: white;"';
+					$text = 'Approve 1';
+					$row[] = '<a class="btn btn-sm" ' . $color . ' href="javascript:void(0)" title="Approve" onclick="approve(' . "'" . $item->id . "'" . ",'" . $item->ed_no . "'" . ')"><i class="glyphicon glyphicon-check"></i> ' . $text . '</a>';
+				} else if ($item->approved == 1) {
+					$color = 'style="background: #FF8C00; color: white;"';
+					$text = 'Approve 2';
+					$row[] = '<a class="btn btn-sm" ' . $color . ' href="javascript:void(0)" title="Approve" onclick="approve(' . "'" . $item->id . "'" . ",'" . $item->ed_no . "'" . ')"><i class="glyphicon glyphicon-check"></i> ' . $text . '</a>';
+				} else if ($item->approved == 2) {
+					$color = 'style="background: #FF6347; color: white;"';
+					$text = 'Approve 3';
+					$row[] = '<a class="btn btn-sm" ' . $color . ' href="javascript:void(0)" title="Approve" onclick="approve(' . "'" . $item->id . "'" . ",'" . $item->ed_no . "'" . ')"><i class="glyphicon glyphicon-check"></i> ' . $text . '</a>';
+				} else {
+					$text = 'Approved';
+					$row[] = '<a class="btn btn-sm btn-success" title="Approve">' . $text . '</a>';
+				}
+				if ($item->approved != 3) {
+					$row[] =
+						'<a class="btn btn-sm btn-primary" href="' . base_url("farmasi_expire/edit/" . $item->id . "") . '" title="Edit" ><i class="glyphicon glyphicon-edit"></i></a>
+						<a class="btn btn-sm btn-danger" href="javascript:void(0)" title="Hapus" onclick="delete_data(' . "'" . $item->id . "'" . ')"><i class="glyphicon glyphicon-trash"></i></a>
+						';
+				} else {
+					$row[] = '<a target="_blank" class="btn btn-sm btn-warning" href="' . base_url("Farmasi_expire/cetak/?id=" . $item->ed_no . "") . '" title="Cetak" ><i class="glyphicon glyphicon-print"></i> </a>';
+				}
 			}
-			if ($item->approved != 3) {
-				$row[] =
-					'<a class="btn btn-sm btn-primary" href="' . base_url("farmasi_expire/edit/" . $item->id . "") . '" title="Edit" ><i class="glyphicon glyphicon-edit"></i></a>
-					<a class="btn btn-sm btn-danger" href="javascript:void(0)" title="Hapus" onclick="delete_data(' . "'" . $item->id . "'" . ')"><i class="glyphicon glyphicon-trash"></i></a>
-					';
-			} else {
-				$row[] = '<a target="_blank" class="btn btn-sm btn-warning" href="' . base_url("Farmasi_expire/cetak/?id=" . $item->ed_no . "") . '" title="Cetak" ><i class="glyphicon glyphicon-print"></i> </a>';
-			}
+
+			
 			$data[] = $row;
 		}
 
@@ -347,39 +354,37 @@ class Farmasi_expire extends CI_Controller
 		$userid = $this->session->userdata('username');
 		$tgl_ap = date('Y-m-d');
 		$jam_ap = date('H:i:s');
-		if ($cek_data->approve_1 == null || $cek_data->approve_1 == '') {
+		if ($cek_data->approve_1 == null || $cek_data->approve_1 == '' ) {
 			$this->db->set('approve_1', $userid);
 			$this->db->set('tgl_ap1', $tgl_ap);
 			$this->db->set('jam_ap1', $jam_ap);
 			$this->db->set('approved', 1);
-		} else {
-			if ($cek_data->approve_2 == '' || $cek_data->approve_2 == null) {
+		} else if($cek_data->approve_2 == '' || $cek_data->approve_2 == null) {
 				$this->db->set('approve_2', $userid);
 				$this->db->set('tgl_ap2', $tgl_ap);
 				$this->db->set('jam_ap2', $jam_ap);
 				$this->db->set('approved', 2);
-			} else {
-				$cek_d = $this->db->get_where('tbl_apodex', ['ed_no' => $ed_no])->result();
-				foreach ($cek_d as $cd) {
-					$barangstock = $this->db->query("SELECT * FROM tbl_barangstock WHERE gudang = '$cek_data->gudang' AND koders = '$unit' AND (kodebarang = '$cd->kodebarang')")->row();
-					// print_r((int)$cd->qty);
-					$keluar = (int)$barangstock->keluar + (int)$cd->qty;
-					$saldoakhir = (int)$barangstock->saldoakhir - (int)$cd->qty;
-					$data = [
-						'keluar' => $keluar,
-						'saldoakhir' => $saldoakhir,
-					];
-					$where = [
-						'kodebarang' => $cd->kodebarang,
-						'koders' => $cd->koders,
-					];
-					$this->db->update('tbl_barangstock', $data, $where);
-				}
-				$this->db->set('approve_3', $userid);
-				$this->db->set('tgl_ap3', $tgl_ap);
-				$this->db->set('jam_ap3', $jam_ap);
-				$this->db->set('approved', 3);
+		} else {
+			$cek_d = $this->db->get_where('tbl_apodex', ['ed_no' => $ed_no])->result();
+			foreach ($cek_d as $cd) {
+				$barangstock = $this->db->query("SELECT * FROM tbl_barangstock WHERE gudang = '$cek_data->gudang' AND koders = '$unit' AND (kodebarang = '$cd->kodebarang')")->row();
+				// print_r((int)$cd->qty);
+				$keluar = (int)$barangstock->keluar + (int)$cd->qty;
+				$saldoakhir = (int)$barangstock->saldoakhir - (int)$cd->qty;
+				$data = [
+					'keluar' => $keluar,
+					'saldoakhir' => $saldoakhir,
+				];
+				$where = [
+					'kodebarang' => $cd->kodebarang,
+					'koders' => $cd->koders,
+				];
+				$this->db->update('tbl_barangstock', $data, $where);
 			}
+			$this->db->set('approve_3', $userid);
+			$this->db->set('tgl_ap3', $tgl_ap);
+			$this->db->set('jam_ap3', $jam_ap);
+			$this->db->set('approved', 3);
 		}
 		$this->db->where('id', $id);
 		$this->db->update('tbl_apohex');

@@ -156,6 +156,8 @@ class Lab extends CI_Controller{
 		// HEADER
 		$query_header	= $this->db->query("SELECT * FROM tbl_hlab WHERE nolaborat = '$nolab'");
 		$query_dhasil	= $this->db->query("SELECT * FROM tbl_dhasillabnew WHERE nolaborat = '$nolab'");
+		$query_catatan	= $this->db->query("SELECT * FROM tbl_hlabnotes WHERE nolaborat = '$nolab'");
+		$query_file		= $this->db->query("SELECT * FROM tbl_dhasilfile WHERE nolaborat = '$nolab'");
 
 		if($query_header->num_rows() == 0){
 			$data_header	= "";
@@ -163,12 +165,16 @@ class Lab extends CI_Controller{
 			$title		= "Laboratorium";
 			$menu		= "Tambah Pemeriksaan";
 			$data_hasil	= "";
+			$data_notes	= "";
+			$data_files	= "";
 		} else {
 			$data_header	= $query_header->row();
 			$status		= "update";
 			$title		= "Laboratorium";
 			$menu		= "Edit Pemeriksaan";
 			$data_hasil	= $query_dhasil->result();
+			$data_notes	= $query_catatan->row();
+			$data_files	= $query_file->result();
 		}
 
 		$data = [
@@ -181,7 +187,9 @@ class Lab extends CI_Controller{
 			'listtindakan'		=> $query_tindakan,
 			'status'			=> $status,
 			'data_header'		=> $data_header,
-			'data_hasil'		=> $data_hasil
+			'data_hasil'		=> $data_hasil,
+			'data_notes'		=> $data_notes,
+			'data_file'			=> $data_files
 		];
 
 		$this->load->view('Lab/create', $data);
@@ -668,36 +676,18 @@ class Lab extends CI_Controller{
 			"rilis" => ($this->input->post("rilis") === 'on')? 1 : 0
 		);
 
-		// $fieldData = array(
-		// 	'nolaborat' => $this->input->post('nolaborat'),
-		// 	'tgllab' => $tanggal,
-		// 	'noreg' => $this->input->post('noreg'),
-		// 	'namapas' => $this->input->post('namapas'),
-		// 	'rekmed' => $this->input->post('rekmed'),
-		// 	'tgllahir' => $this->input->post('tgllahir'),
-		// 	'umurth' => $explode_umur[0],
-		// 	'umurbl' => $explode_umur[1],
-		// 	'umurhr' => $explode_umur[2],
-		// 	'jkel' => $this->input->post('jkel'),
-		// 	'orderno' => $this->input->post('orderno'),
-		// 	'jpas' => $this->input->post('jpas'),
-		// 	'jenisperiksa' => $this->input->post('jenisperiksa'),
-		// 	'rujuk' => $this->input->post('rujuk'),
-		// 	'diagnosa' => $this->input->post('diagnosa'),
-		// 	'drperiksa' => $this->input->post('drperiksa'),
-		// 	'drpengirim' => $this->input->post('drpengirim'),
-		// 	'kodepetugas' => $this->input->post('kodepetugas'),
-		// 	'jam' => date('H:i:s'),
-		// 	'editby' => $this->session->userdata('username'),
-		// 	'tgledit' => date('Y-m-d'),
-		// 	"tglsampel" => $this->input->post("tgl_diambil"),
-		// 	"jamsampel" => $this->input->post("jam_diambil"),
-		// 	"tglselesai" => $this->input->post("tgl_selesai"),
-		// 	"jamselesai" => $this->input->post("jam_selesai"),
-		// 	"sampeloleh" => $this->input->post("petugas_pemeriksa"),
-		// 	"rilis" => ($this->input->post("rilis") === 'on')? 1 : 0,
-		// 	"kodepemeriksa" => $this->input->post("final_pemeriksa")
-		// );
+		$data_catatan	= array(
+			"nolaborat"		=> $nolaborat,
+			"catatan"		=> $this->input->post("catatan"),
+			"tglselesai"	=> $this->input->post("tglselesai"),
+			"jamselesai"	=> $this->input->post("jamselesai")
+		);
+
+		$data_catatan_up	= array(
+			"catatan"		=> $this->input->post("catatan"),
+			"tglselesai"	=> $this->input->post("tglselesai"),
+			"jamselesai"	=> $this->input->post("jamselesai")
+		);
 
 		// BILLING
 		$billing_tindakan	= $this->input->post("billing_tindakan");
@@ -710,7 +700,6 @@ class Lab extends CI_Controller{
 		$billing_totalbiaya	= str_replace(",", "", $this->input->post("billing_totalbiaya"));
 
 		if(!empty($billing_tindakan)){
-
 			$this->db->query("DELETE FROM tbl_dlab WHERE nolaborat = '$nolaborat'");
 
 			foreach($billing_tindakan as $btkey => $btval){
@@ -740,7 +729,6 @@ class Lab extends CI_Controller{
 		$bhp_bill			= $this->input->post("bhp_bill");
 
 		if(!empty($bhp_barang)){
-
 			$this->db->query("DELETE FROM tbl_alkestransaksi WHERE notr = '$nolaborat'");
 
 			foreach($bhp_barang as $bbkey => $bbval){
@@ -769,8 +757,8 @@ class Lab extends CI_Controller{
 					$tarifh			= $this->db->query("SELECT * FROM tbl_tarifh WHERE kodetarif = '$btval'")->row();
 					$labmashasil	= $this->db->query("SELECT * FROM tbl_labmashasil WHERE kodeperiksa = '$btval'")->row();
 
-					$normal1 		= ($jenis_kelamin == "1")? $labmashasil->nilainormalp1 : $labmashasil->nilainormalw1;
-					$normal2 		= ($jenis_kelamin == "1")? $labmashasil->nilainormalp2 : $labmashasil->nilainormalw2;
+					$normal1 		= ($jenis_kelamin == "1")? str_replace(".0000", "", $labmashasil->nilainormalp1) : str_replace(".0000", "", $labmashasil->nilainormalw1);
+					$normal2 		= ($jenis_kelamin == "1")? str_replace(".0000", "", $labmashasil->nilainormalp2) : str_replace(".0000", "", $labmashasil->nilainormalw2);
 
 					$data_hasil		= [
 						"nolaborat"		=> $nolaborat,
@@ -780,7 +768,7 @@ class Lab extends CI_Controller{
 						"satuan" 		=> $labmashasil->satuan,
 						"normal1" 		=> $normal1,
 						"normal2" 		=> $normal2,
-						"normalc" 		=> ($jenis_kelamin == "1")? $labmashasil->nilainormalc	: $normal1.'-'.$normal2,
+						"normalc" 		=> ($jenis_kelamin == "1")? str_replace(".0000", "", $labmashasil->nilainormalc)	: $normal1.'-'.$normal2,
 					];
 
 					$this->db->insert("tbl_dhasillabnew", $data_hasil);
@@ -796,8 +784,8 @@ class Lab extends CI_Controller{
 					$tarifh			= $this->db->query("SELECT * FROM tbl_tarifh WHERE kodetarif = '$btval'")->row();
 					$labmashasil	= $this->db->query("SELECT * FROM tbl_labmashasil WHERE kodeperiksa = '$btval'")->row();
 
-					$normal1 		= ($jenis_kelamin == "1")? $labmashasil->nilainormalp1 : $labmashasil->nilainormalw1;
-					$normal2 		= ($jenis_kelamin == "1")? $labmashasil->nilainormalp2 : $labmashasil->nilainormalw2;
+					$normal1 		= ($jenis_kelamin == "1")? str_replace(".0000", "", $labmashasil->nilainormalp1) : str_replace(".0000", "", $labmashasil->nilainormalw1);
+					$normal2 		= ($jenis_kelamin == "1")? str_replace(".0000", "", $labmashasil->nilainormalp2) : str_replace(".0000", "", $labmashasil->nilainormalw2);
 
 					$data_hasil		= [
 						"nolaborat"		=> $nolaborat,
@@ -808,13 +796,80 @@ class Lab extends CI_Controller{
 						"satuan" 		=> $labmashasil->satuan,
 						"normal1" 		=> $normal1,
 						"normal2" 		=> $normal2,
-						"normalc" 		=> ($jenis_kelamin == "1")? $labmashasil->nilainormalc	: $normal1.'-'.$normal2,
+						"normalc" 		=> ($jenis_kelamin == "1")? str_replace(".0000", "", $labmashasil->nilainormalc)	: $normal1.'-'.$normal2,
 						"keterangan"	=> $hasil_catatan[$btkey]
 					];
 
 					$this->db->insert("tbl_dhasillabnew", $data_hasil);
 				}
 			}
+		}
+
+		// CATATAN
+		if($param == "update"){
+			$check_catatan	= $this->db->query("SELECT * FROM tbl_hlabnotes WHERE nolaborat = '$nolaborat'")->num_rows();
+
+			if($check_catatan == 0){
+				$this->db->insert("tbl_hlabnotes", $data_catatan);
+			} else {
+				$this->db->update("tbl_hlabnotes", $data_catatan_up, array("nolaborat" => $nolaborat));
+			}
+		}
+
+		// FILE
+		if($param == "update"){
+			$file_key			= $this->input->post("file_key");
+			$file_keterangan 	= $this->input->post("file_keterangan");
+			$file				= $_FILES["file"]["name"];
+
+			foreach($file_key as $fkey => $fval){
+				$file_allowed   = array("pdf", "png", "jpg", "jpeg", "webp");
+				$file_ext       = explode(".", $file[$fkey]);
+				$file_extension = strtolower(end($file_ext));
+				$file_tmp       = $_FILES["file"]["tmp_name"][$fkey];
+
+				if(in_array($file_extension, $file_allowed) === true){
+					$filename = unique_file("uploads/lab/", basename($file[$fkey]));
+					
+					move_uploaded_file($file_tmp, "uploads/lab/". $filename);
+
+					$data_insert	= [
+						"nolaborat"			=> $nolaborat,
+						"namafile"			=> $filename,
+						"keteranganfile"	=> $file_keterangan[$fkey],
+						"lokasifile"		=> "assets/uploads/lab/",
+					];
+
+					$query_update = $this->db->insert("tbl_dhasilfile", $data_insert);
+
+					if($query_update){
+						$status		= "success";
+						$message	= "File berhasil di upload";
+					} else {
+						$status		= "error";
+						$message	= "File gagal diupload";
+					}
+				} else {
+					$status		= "error";
+					$message	= "Ekstensi file tidak valid";
+				}
+			}
+			// $file_key			= $this->input->post("file_key");
+			// $file_keterangan 	= $this->input->post("file_keterangan");
+			// $file_name			= $this->input->post("file_name");
+
+			// foreach($file_key as $fkkey	=> $fkval){
+			// 	move_uploaded_file($_FILES["file"]["tmp_name"][$fkkey], "/uploads/lab/". $_FILES["file"]["name"][$fkkey]);
+			// 	// INSERT DB
+			// 	$data_insert	= [
+			// 		"nolaborat"			=> $nolaborat,
+			// 		"namafile"			=> $file_name[$fkkey],
+			// 		"keteranganfile"	=> $file_keterangan[$fkkey],
+			// 		"lokasifile"		=> "/uploads/lab/",
+			// 	];
+
+			// 	$this->db->insert("tbl_dhasilfile", $data_insert);
+			// }
 		}
 
 		if($param == "save"){
@@ -828,11 +883,18 @@ class Lab extends CI_Controller{
 		}
 
 		if($query_laboratorium){
-			echo json_encode(array("status" => "success", "nolab" => $nolaborat));
+			$status		= "success";
+			$message	= "Berhasil disimpan";
 		} else {
-			echo json_encode(array("status" => "failed", "nolab" => $nolaborat));
+			$status		= "error";
+			$message	= "Gagal disimpan";
 		}
 
+		echo json_encode(array(
+			"status" => $status,
+			"nolab" => $nolaborat,
+			"message" => $message),
+		JSON_UNESCAPED_SLASHES);
 	}
 
 	public function get_last_laborat(){

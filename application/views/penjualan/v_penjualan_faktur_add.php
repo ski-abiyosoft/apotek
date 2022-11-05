@@ -2,7 +2,7 @@
     $this->load->view('template/header');
     $this->load->view('template/body');
 
-    if(isset($_GET["eresep"])){
+    if(isset($_GET["eresep"]) && isset($_GET["noresep"])){
         $noeresep     = $this->input->get("noresep");
         $cabang       = $this->session->userdata("unit");
 
@@ -85,7 +85,7 @@
                                     <label class="col-md-3 control-label">Resep Dari <font color="red">*</font></label>
                                     <div class="col-md-9">
                                         <select id="dokter" name="dokter" class="form-control select2_el_dokter" data-placeholder="Pilih..." onkeypress="return tabE(this,event)">
-                                            <option value="<?= $heresep->kodokter ?>" selected><?= $heresep->kodokter ." | ". data_master("tbl_dokter", array("kodokter" => $heresep->kodokter, "koders" => $this->session->userdata("unit")))->nadokter ?></option>
+                                            <option value="<?= $heresep->kodokter ?>" selected><?= $heresep->kodokter ." | ". data_master("dokter", array("kodokter" => $heresep->kodokter, "koders" => $this->session->userdata("unit"), "kopoli" => $pasrsp->kodepos))->nadokter ?></option>
                                         </select>
                                     </div>
                                 </div>

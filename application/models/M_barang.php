@@ -14,9 +14,39 @@ class M_barang extends CI_Model {
 		
 	}
 
-	private function _get_datatables_query(){
+	private function _get_datatables_query( $filter ="" ){
 		$this->db->from($this->table);
 		
+		if($filter !="")
+		{
+			$param   = explode('~',$filter);
+			$kd      = $param[0];
+			$nm      = $param[1];
+			$sat     = $param[2];
+		
+			
+			if( $kd!="" || $nm!="" || $sat!="" ){	 
+
+				if($kd !=""){	
+					$this->db->like('kodebarang', $kd);			
+				}
+				if($nm !=""){			
+					$this->db->like('namabarang', $nm);
+				}
+	
+				if($sat !=""){	
+					$this->db->like('satuan1', $sat);			
+				}	
+
+			} else {
+			//   $this->db->where('idtr=-1');	  
+			}
+			
+			
+		} else {
+		// $this->db->where('idtr=-1');	
+		}
+
 		$i = 0;
 		
 		foreach ($this->column_search as $item) 
@@ -53,22 +83,54 @@ class M_barang extends CI_Model {
 		}
 	}
 
-	function get_datatables(){
-		$this->_get_datatables_query();
+	function get_datatables( $filter ){
+		$this->_get_datatables_query( $filter );
 		if($_POST['length'] != -1)
 		$this->db->limit($_POST['length'], $_POST['start']);
 		$query = $this->db->get();
 		return $query->result();
 	}
 
-	function count_filtered(){
-		$this->_get_datatables_query();
+	function count_filtered( $filter )
+	{
+		$this->_get_datatables_query( $filter );
 		$query = $this->db->get();
 		return $query->num_rows();
 	}
 
-	public function count_all(){
+	public function count_all( $filter ){
 		$this->db->from($this->table);
+
+		if($filter !="")
+		{
+			$param   = explode('~',$filter);
+			$kd      = $param[0];
+			$nm      = $param[1];
+			$sat     = $param[2];
+		
+			
+			if( $kd!="" || $nm!="" || $sat!="" ){	 
+
+				if($kd !=""){	
+					$this->db->like('kodebarang', $kd);			
+				}
+				if($nm !=""){			
+					$this->db->like('namabarang', $nm);
+				}
+	
+				if($sat !=""){	
+					$this->db->like('satuan1', $sat);			
+				}	
+
+			} else {
+			//   $this->db->where('idtr=-1');	  
+			}
+			
+			
+		} else {
+		// $this->db->where('idtr=-1');	
+		}
+
 		return $this->db->count_all_results();
 	}
 
@@ -109,7 +171,7 @@ class M_barang extends CI_Model {
 	
 	public function _datamargin($barang){
 		$q1=$this->db->query("SELECT a.koders, b.margin, b.hargajual from tbl_namers AS a left outer join
-        tbl_barangcabang AS b on a.koders=b.koders
+		tbl_barangcabang AS b on a.koders=b.koders
 		and b.kodebarang='$barang'")->result();
 		if($q1){
 		$rowcount =1;
@@ -127,21 +189,21 @@ class M_barang extends CI_Model {
 		extract($info);		
 		
 		?>
-            <tr id="row_<?=$rowcount;?>" data-row='<?=$rowcount;?>'>
-               <td id="td_<?=$rowcount;?>_1">
-                  <!-- item name  -->
-                  <input type="text" style="font-weight: bold-;" name="td_data_1[]" id="td_data_<?=$rowcount;?>_1" class="form-control no-padding" value='<?=$item_kode;?>' readonly >
-               </td>
-			   <td id="td_<?=$rowcount;?>_2">
-                  <!-- item name  -->
-                  <input type="text" style="font-weight: bold-;text-align:right" name="td_data_2[]" id="td_data_<?=$rowcount;?>_2" class="form-control no-padding" onchange="calculate(<?=$rowcount;?>, this.value)" value='<?=number_format($item_margin,0,'.',',');?>'  >
-               </td>			   
-			   <td id="td_<?=$rowcount;?>_3">
-                  <!-- item name  -->
-                  <input type="text" style="font-weight: bold-;text-align:right" name="td_data_3[]" id="td_data_<?=$rowcount;?>_3" class="form-control no-padding" value='<?=number_format($item_harga,0,'.',',');?>'  >
-               </td>			   
-               
-            </tr>
+			<tr id="row_<?=$rowcount;?>" data-row='<?=$rowcount;?>'>
+			<td id="td_<?=$rowcount;?>_1">
+				<!-- item name  -->
+				<input type="text" style="font-weight: bold-;" name="td_data_1[]" id="td_data_<?=$rowcount;?>_1" class="form-control no-padding" value='<?=$item_kode;?>' readonly >
+			</td>
+			<td id="td_<?=$rowcount;?>_2">
+				<!-- item name  -->
+				<input type="text" style="font-weight: bold-;text-align:right" name="td_data_2[]" id="td_data_<?=$rowcount;?>_2" class="form-control no-padding" onchange="calculate(<?=$rowcount;?>, this.value)" value='<?=number_format($item_margin,0,'.',',');?>'  >
+			</td>			   
+			<td id="td_<?=$rowcount;?>_3">
+				<!-- item name  -->
+				<input type="text" style="font-weight: bold-;text-align:right" name="td_data_3[]" id="td_data_<?=$rowcount;?>_3" class="form-control no-padding" value='<?=number_format($item_harga,0,'.',',');?>'  >
+			</td>			   
+			
+			</tr>
 		<?php
 
 	}

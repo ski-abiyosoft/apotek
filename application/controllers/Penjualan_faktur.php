@@ -35,7 +35,7 @@ class Penjualan_faktur extends CI_Controller{
 				$tanggal 		= $_GET["filter-eresep"];
 				$extract_tgl	= explode("~", $tanggal);
 
-				$query_eresep	= $this->db->query("SELECT a.id, a.koders, a.tglorder, a.orderno, a.noreg, a.rekmed, b.namapas, c.kodokter, '-' AS keterangan, a.resep, a.resepok 
+				$query_eresep	= $this->db->query("SELECT c.kodepos, a.id, a.koders, a.tglorder, a.orderno, a.noreg, a.rekmed, b.namapas, c.kodokter, '-' AS keterangan, a.resep, a.resepok 
 				FROM tbl_orderperiksa AS a 
 				LEFT JOIN tbl_pasien AS b ON a.rekmed = b.rekmed 
 				LEFT JOIN tbl_rekammedisrs AS c ON c.noreg = a.noreg
@@ -47,7 +47,7 @@ class Penjualan_faktur extends CI_Controller{
 			} else {
 				$tanggal = date("Y-m-d");
 
-				$query_eresep	= $this->db->query("SELECT a.id, a.koders, a.tglorder, a.orderno, a.noreg, a.rekmed, b.namapas, c.kodokter, '-' AS keterangan, a.resep, a.resepok 
+				$query_eresep	= $this->db->query("SELECT c.kodepos, a.id, a.koders, a.tglorder, a.orderno, a.noreg, a.rekmed, b.namapas, c.kodokter, '-' AS keterangan, a.resep, a.resepok 
 				FROM tbl_orderperiksa AS a 
 				LEFT JOIN tbl_pasien AS b ON a.rekmed = b.rekmed 
 				LEFT JOIN tbl_rekammedisrs AS c ON c.noreg = a.noreg
@@ -1044,10 +1044,19 @@ class Penjualan_faktur extends CI_Controller{
 				// $hpp            = $this->M_global->_data_barang($_kodeo_1)->hpp;
 				$hpp1 = $this->db->get_where('tbl_barang', ['kodebarang' => $_kodeo_1])->row_array();
 				$hpp = $hpp1['hpp'];
-
+				$cekidnya = $this->db->query("SELECT * FROM tbl_apodetresep ORDER BY resepno DESC LIMIT 1")->result();
+				foreach ($cekidnya as $row) {
+					$idnya = $row->id;
+					if ($idnya == null) {
+						$idnya = 0;
+					} else {
+						$idnya = $idnya;
+					}
+					$id_nya = $idnya + 1;
+				}
 
 				$datad = array(
-					'Resepid'     => $cabang,
+					'Resepid'     => $id_nya,
 					'koders'      => $cabang,
 					'hpp'      	  => $hpp,
 					'resepno'     => $noresepo,
@@ -1060,13 +1069,29 @@ class Penjualan_faktur extends CI_Controller{
 					'price'       => $_hargaoju1,
 					'totalrp'     => $_total_hrg1,
 					'exp_date'    => date('Y-m-d'),
-					'jamdresep'    => date('h-i-s'),
+					'jamdresep'    => date('H-i-s'),
 				);
 
 				echo json_encode($datad, JSON_PRETTY_PRINT);
 				if ($_kodeo_1 != "") {
 					$this->db->insert('tbl_apodetresep', $datad);
-					$this->db->query("UPDATE tbl_barangstock SET keluar = keluar+$_qty_racik_1, saldoakhir = saldoakhir-$_qty_racik_1 WHERE kodebarang = '$_kodeo_1' AND koders = '$cabang'  AND gudang = '$gudang'");
+					$cekstok = $this->db->query("SELECT * FROM tbl_barangstock WHERE kodebarang = '$_kodeo_1' AND koders = '$cabang'  AND gudang = '$gudang'")->num_rows();
+					$date_now = date('Y-m-d H:i:s');
+					if($cekstok > 0){
+						$this->db->query("UPDATE tbl_barangstock SET keluar = keluar+$_qty_racik_1, saldoakhir = saldoakhir-$_qty_racik_1, lasttr = '$date_now' WHERE kodebarang = '$_kodeo_1' AND koders = '$cabang'  AND gudang = '$gudang'");
+					} else {
+						$datastock = [
+							'koders'       => $cabang,
+							'kodebarang'   => $_kodeo_1,
+							'gudang'       => $gudang,
+							'saldoawal'    => 0,
+							'terima'    	 => 0,
+							'keluar'       => $_qty_racik_1,
+							'saldoakhir'   => 0-$_qty_racik_1,
+							'lasttr'       => $date_now,
+						];
+						$this->db->insert('tbl_barangstock', $datastock);
+					}
 				}
 			}
 			// end detail harimas
@@ -1168,10 +1193,24 @@ class Penjualan_faktur extends CI_Controller{
 				foreach ($datamutasi as $row) {
 					$_qty = $row->qty;
 					$_kode = $row->kodebarang;
-
-					$this->db->query("UPDATE tbl_barangstock SET keluar = keluar+$_qty, saldoakhir = saldoakhir-$_qty WHERE kodebarang = '$_kode' AND koders = '$cabang'  AND gudang = '$gudang'");
+					$stok = $this->db->query("select * from tbl_barangstock where kodebarang = '$_kode' and gudang = '$gudang' and koders = '$cabang'")->num_rows();
+					$date_now = date('Y-m-d H:i:s');
+					if($stok > 0){
+						$this->db->query("UPDATE tbl_barangstock set keluar = keluar+ $_qty, saldoakhir = saldoakhir - $_qty, lasttr = '$date_now' where kodebarang = '$_kode' and koders = '$cabang' and gudang = '$gudang'");
+					} else {
+						$datastock = array(
+							'koders'       => $cabang,
+							'kodebarang'   => $_kode,
+							'gudang'       => $gudang,
+							'saldoawal'    => 0,
+							'terima'       => 0,
+							'keluar'       => $_qty,
+							'saldoakhir'   => 0-$_qty,
+							'lasttr'       => $date_now,
+						);
+						$this->db->insert('tbl_barangstock', $datastock);
+					}
 				}
-
 				$this->db->delete('tbl_apodresep', array('resepno' => $nobukti));
 			}
 
@@ -1267,28 +1306,22 @@ class Penjualan_faktur extends CI_Controller{
 						$this->db->query("UPDATE tbl_eresep SET qtyproses = $qty[$i] WHERE kodeobat = '$_kode' AND orderno = '$noeresep'");
 					}
 
-					$stokcek   = $this->db->query("SELECT * FROM tbl_barangstock WHERE kodebarang = '$_kode' and koders='$cabang' and gudang='$gudang' ")->result_array();
-					$scek      = count($stokcek);
-
-					if ($scek > 0) {
-
-						$this->db->query("UPDATE tbl_barangstock set keluar=keluar+ $_qty, saldoakhir= saldoakhir- $_qty where kodebarang = '$_kode' and koders = '$cabang' and gudang = '$gudang'");
+					$stokcek = $this->db->query("select * from tbl_barangstock where kodebarang = '$_kode' and gudang = '$gudang' and koders = '$unit'")->num_rows();
+					$date_now = date('Y-m-d H:i:s');
+					if($stokcek > 0){
+						$this->db->query("UPDATE tbl_barangstock set keluar = keluar+ $_qty, saldoakhir = saldoakhir - $_qty, lasttr = '$date_now' where kodebarang = '$_kode' and koders = '$unit' and gudang = '$gudang'");
 					} else {
-						//mutasi barang
-
 						$datastock = array(
-							'koders'       => $cabang,
+							'koders'       => $unit,
 							'kodebarang'   => $_kode,
 							'gudang'       => $gudang,
 							'saldoawal'    => 0,
-							'terima'       => $_qty,
-							'saldoakhir'   => $_qty,
-							'tglso'        => $this->input->post('tanggal'),
-							'lasttr'       => $this->input->post('tanggal'),
-
+							'terima'       => 0,
+							'keluar'			 => $_qty,
+							'saldoakhir'   => 0-$_qty,
+							'lasttr'       => $date_now,
 						);
-
-						$insert_detil = $this->db->insert('tbl_barangstock', $datastock);
+						$this->db->insert('tbl_barangstock', $datastock);
 					}
 				}
 			}
@@ -1298,8 +1331,6 @@ class Penjualan_faktur extends CI_Controller{
 			}
 
 			$noreg = $vnoreg;
-
-
 
 			$data = array(
 				'koders'    => $this->session->userdata('unit'),
@@ -1350,6 +1381,10 @@ class Penjualan_faktur extends CI_Controller{
 
 			);
 
+			if($eresepstatus == 1){
+				$this->db->query("UPDATE tbl_orderperiksa SET resep = 0, resepok = 1, proses = 'terproses' WHERE orderno = '$noeresep'");
+			}
+
 			if ($param == 1) {
 				$this->db->insert('tbl_apoposting', $data2);
 			} else {
@@ -1363,10 +1398,6 @@ class Penjualan_faktur extends CI_Controller{
 				} else {
 					echo json_encode(array('status' => 1, 'nobukti' => $nobukti));
 				}
-			}
-
-			if($eresepstatus == 1){
-				$this->db->query("UPDATE tbl_orderperiksa SET resep = 0, resepok = 1, proses = 'terproses' WHERE orderno = '$noeresep'");
 			}
 		} else {
 			header('location:' . base_url());
@@ -1388,6 +1419,7 @@ class Penjualan_faktur extends CI_Controller{
 				$this->db->query("UPDATE tbl_barangstock set keluar=keluar- $_qty, saldoakhir= saldoakhir+ $_qty where kodebarang = '$_kode' and koders = '$cabang' and gudang = '$gudang'");
 			}
 
+			$this->db->query("UPDATE tbl_orderperiksa SET resep = 1, resepok = 0, proses = 'proses' WHERE orderno = '$hmutasi->eresepno'");
 			$this->db->query("DELETE from tbl_apohresep where resepno = '$nomor' and koders='$unit'");
 			$this->db->query("DELETE from tbl_apodresep where resepno = '$nomor' and koders='$unit'");
 			$this->db->query("DELETE from tbl_apoposting where resepno = '$nomor' and koders='$unit'");

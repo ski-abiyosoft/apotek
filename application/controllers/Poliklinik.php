@@ -82,8 +82,10 @@ class Poliklinik extends CI_Controller {
 	}
 
 	public function ajax_list( $param ){
-		$cabang	= $this->session->userdata("unit");
-		$dat   = explode("~",$param);
+		
+		$user_level   = $this->session->userdata('user_level');
+		$cabang       = $this->session->userdata("unit");
+		$dat          = explode("~",$param);
 		if($dat[0]==1){
 			$bulan       = date('m');
 			$tahun       = date('Y');
@@ -134,8 +136,16 @@ class Poliklinik extends CI_Controller {
 
 			$no++;
 			$row = array();
-			$row[] = '
-			<i class="fa fa-solid fa-address-card" onclick="add_list('."'".$unit->noreg."'".');" data-toggle="modal"></i>';
+			
+			if($user_level==0){
+				
+				$row[] = 
+				'<i class="fa fa-solid fa-address-card"></i>';
+					
+			}else{
+				$row[] = '<i class="fa fa-solid fa-address-card" onclick="add_list('."'".$unit->noreg."'".');" data-toggle="modal"></i>';
+			}
+
 			// $row[] = $periksa_perawat;
 			// $row[] = $periksa_dokter;
 			$row[] = $unit->antrino. '<button type="submit">call</button>';
@@ -652,7 +662,6 @@ class Poliklinik extends CI_Controller {
 
 			$data_op_edit	= array(
 				"tglorder"			=> date("Y-m-d"),
-				"proses"			=> "proses",
 				"jamorder"			=> date("H:i:s"),
 				"kodokter"			=> $opdok,
 				"username"			=> $userid,
@@ -1338,6 +1347,9 @@ class Poliklinik extends CI_Controller {
 		}else{
 			$ttv = $this->db->query("SELECT '-' as id ,'-' as koders ,'-' as noreg ,'-' as rekmed ,'-' as tglperiksa ,'-' as tglkeluar ,'-' as jam ,'-' as tujuan ,'-' as kodepos ,'-' as koderuang ,'-' as keluhanawal ,'-' as pfisik ,'-' as diagnosa ,'-' as simpul ,'-' as anjuran ,'-' as resep ,'-' as kodeicd ,'-' as kodeicd2 ,'-' as kodeicd3 ,'-' as keadaan_pulang ,'-' as ketpulang ,'-' as kodokter ,'-' as tglkonsul ,'-' as rcounter ,'0' as nadi ,'-' as nadi2 ,'-' as nafas ,'-' as tdarah ,'-' as tdarah1 ,'-' as suhu ,'-' as tinggibadan ,'-' as beratbadan ,'-' as bmi ,'-' as bmiresult ,'-' as tglkembali ,'-' as jamkembali ,'-' as nojanji ,'-' as dikonsulkepoli ,'-' as dikonsuldr ,'-' as jamdikonsul ,'-' as tgldikonsul ,'-' as noregkonsul ,'-' as surat1 ,'-' as surat2 ,'-' as surat3 ,'-' as surat4 ,'-' as alasanpulang ,'-' as urutkonsul ,'-' as oksigen ,'-' as kejiwaan ,'-' as lokalis ,'-' as rencana ,'-' as eye ,'-' as verbal ,'-' as movement ,'-' as nyeri ,'-' as urutin ,'-' as rmutama ,'-' as diagu ,'-' as diags ,'-' as tindu ,'-' as tinds ,'-' as asal ,'-' as gambar1 ,'-' as gambar2 ,'-' as pasienvk ,'-' as dead from tbl_rekammedisrs limit 1")->row();
 		}
+
+		$query_kasir		= $this->db->query("SELECT * FROM tbl_kasir WHERE noreg = '$ceknoreg' AND koders = '$koders' ")->num_rows();
+
 		if(!empty($cek)){
 			$data	= [
 				"menu" 		=> "Bedah Central",
@@ -1346,6 +1358,7 @@ class Poliklinik extends CI_Controller {
 				"unit"		=> $koders,
 				"data_pas"	=> $data_pas,
 				"ttv"		=> $ttv,
+				"status_kasir"	=> $query_kasir,
 				// "hubungank" => $query_hubk->result(),
 				// "statuspu"	=> ($data_pas->jkel() > 0)? "done" : "undone",
 				// "usia"   => new Date($data_pas->tgllahire),
@@ -1548,6 +1561,8 @@ class Poliklinik extends CI_Controller {
 				$total_erad		= $query_ordererad->num_rows();
 			}
 
+			$query_kasir		= $this->db->query("SELECT * FROM tbl_kasir WHERE noreg = '$ceknoreg' AND koders = '$koders' ")->num_rows();
+
 			// VALUE
 			if(!empty($cek)){
 				$data	= [
@@ -1597,6 +1612,7 @@ class Poliklinik extends CI_Controller {
 					"status_erad"	=> $status_erad,
 					"data_ordererad"	=> $data_ordererad,
 					"total_erad"	=> $total_erad,
+					"status_kasir"	=> ($query_kasir == 0)? 0 : 1,
 				];
 				
 				$this->load->view("poliklinik/v_poliklinik_p_dokter_add", $data);

@@ -1066,13 +1066,13 @@ class Laporan_persediaan extends CI_Controller
      public function cetak2()
      {
           $cek        = $this->session->userdata('level');
-          $cekpdf     = $this->input->get('pdf');
           $dari       = $this->input->get('dari');
           $sampai     = $this->input->get('sampai');
           $da         = $this->input->get('da');
           $depo       = $this->input->get('depo');
           $laporan    = $this->input->get('laporan');
           $keperluan  = $this->input->get('keperluan');
+          $cekpdf     = $this->input->get('pdf');
           $cabang     = $this->session->userdata('unit');
           $unit       = $cabang;
           $body       = '';
@@ -1305,41 +1305,45 @@ class Laporan_persediaan extends CI_Controller
                                    </tr> 
                               </table>";
                          if ($da == 1) {
-                              $y = " SELECT
-                              a.*
-                              FROM (
-                                   SELECT 
-                                   kodebarang,
-                                   (select namabarang from tbl_barang where kodebarang = tbl_aposesuai.kodebarang) as namabarang,
-                                   (select satuan1 from tbl_barang where kodebarang = tbl_aposesuai.kodebarang) as satuan,
-                                   hasilso,
-                                   (hpp) as sat_HPP,
-                                   (hasilso*hpp) as total_HPP,
-                                   (select hargabeli from tbl_barang where kodebarang = tbl_aposesuai.kodebarang) as sat_HNA,
-                                   ((select hargabeli from tbl_barang where kodebarang = tbl_aposesuai.kodebarang)*hasilso) as total_HNA
-                                   FROM tbl_aposesuai
-                                   WHERE koders = '$unit' and tglso between '$dari' and '$sampai' and gudang = '$qx->gudang'
-                                   ORDER BY kodebarang
-                              ) AS a
-                              ";
+                              $y = "SELECT a.* FROM (
+                                   SELECT kodebarang, namabarang, satuan, 
+                                        SUM(hasilso) AS hasilso, SUM(sat_HPP) AS sat_HPP, 
+                                        (SUM(hasilso)*SUM(sat_HPP)) AS total_HPP, SUM(sat_HNA) AS sat_HNA, 
+                                        (SUM(hasilso)*SUM(sat_HNA)) AS total_HNA
+                                   FROM (
+                                        SELECT 
+                                             kodebarang, 
+                                             (SELECT namabarang FROM tbl_barang WHERE kodebarang = tbl_aposesuai.kodebarang) AS namabarang, 
+                                             (SELECT satuan1 FROM tbl_barang WHERE kodebarang = tbl_aposesuai.kodebarang) AS satuan, 
+                                             hasilso, 
+                                             (hpp) AS sat_HPP, 
+                                             (hasilso*hpp) AS total_HPP, 
+                                             (SELECT hargabeli FROM tbl_barang WHERE kodebarang = tbl_aposesuai.kodebarang) AS sat_HNA, 
+                                             ((SELECT hargabeli FROM tbl_barang WHERE kodebarang = tbl_aposesuai.kodebarang)*hasilso) AS total_HNA 
+                                        FROM tbl_aposesuai 
+                                        WHERE koders = '$unit' AND gudang = '$qx->gudang' AND tglso BETWEEN '$dari' AND '$sampai'
+                                   ) semua GROUP BY kodebarang
+                              ) AS a";
                          } else {
-                              $y = "SELECT
-                              a.*
-                              FROM (
-                                   SELECT 
-                                   kodebarang,
-                                   (select namabarang from tbl_barang where kodebarang = tbl_aposesuai.kodebarang) as namabarang,
-                                   (select satuan1 from tbl_barang where kodebarang = tbl_aposesuai.kodebarang) as satuan,
-                                   hasilso,
-                                   (hpp) as sat_HPP,
-                                   (hasilso*hpp) as total_HPP,
-                                   (select hargabeli from tbl_barang where kodebarang = tbl_aposesuai.kodebarang) as sat_HNA,
-                                   ((select hargabeli from tbl_barang where kodebarang = tbl_aposesuai.kodebarang)*hasilso) as total_HNA
-                                   FROM tbl_aposesuai
-                                   WHERE koders = '$unit' and gudang = '$depo' and tglso between '$dari' and '$sampai'
-                                   ORDER BY kodebarang
-                              ) AS a
-                              ";
+                              $y = "SELECT a.* FROM (
+                                   SELECT kodebarang, namabarang, satuan, 
+                                        SUM(hasilso) AS hasilso, SUM(sat_HPP) AS sat_HPP, 
+                                        (SUM(hasilso)*SUM(sat_HPP)) AS total_HPP, SUM(sat_HNA) AS sat_HNA, 
+                                        (SUM(hasilso)*SUM(sat_HNA)) AS total_HNA
+                                   FROM (
+                                        SELECT 
+                                             kodebarang, 
+                                             (SELECT namabarang FROM tbl_barang WHERE kodebarang = tbl_aposesuai.kodebarang) AS namabarang, 
+                                             (SELECT satuan1 FROM tbl_barang WHERE kodebarang = tbl_aposesuai.kodebarang) AS satuan, 
+                                             hasilso, 
+                                             (hpp) AS sat_HPP, 
+                                             (hasilso*hpp) AS total_HPP, 
+                                             (SELECT hargabeli FROM tbl_barang WHERE kodebarang = tbl_aposesuai.kodebarang) AS sat_HNA, 
+                                             ((SELECT hargabeli FROM tbl_barang WHERE kodebarang = tbl_aposesuai.kodebarang)*hasilso) AS total_HNA 
+                                        FROM tbl_aposesuai 
+                                        WHERE koders = '$unit' AND gudang = '$depo' AND tglso BETWEEN '$dari' AND '$sampai'
+                                   ) semua GROUP BY kodebarang
+                              ) AS a";
                          }
                          $query = $this->db->query($y)->result();
                          $body .=  "<table style=\"border-collapse:collapse;font-family: tahoma; font-size:12px\" width=\"100%\" align=\"center\" border=\"1\">
@@ -1429,7 +1433,7 @@ class Laporan_persediaan extends CI_Controller
                                                   <td style=\"text-align:left;\" width=\"30%\">$chg->keterangan</td>
                                              </tr> 
                                         </table>";
-                                   $query = $this->db->query("SELECT h.ed_no, h.username, h.approve_1, h.approve_2, h.approve_3, h.tgl_ed, h.gudang, h.keterangan, (SELECT namabarang FROM tbl_barang WHERE kodebarang = d.kodebarang) AS namabarang, d.qty, d.exp_date, d.satuan, d.hpp, d.totalrp, d.rakno FROM tbl_apohex h JOIN tbl_apodex d ON h.ed_no=d.ed_no WHERE h.ed_no = '$chg->ed_no'")->result();
+                                   $query = $this->db->query("SELECT h.ed_no, h.username, h.approve_1, h.approve_2, h.approve_3, h.tgl_ed, h.gudang, h.keterangan, (SELECT namabarang FROM tbl_barang WHERE kodebarang = d.kodebarang) AS namabarang, d.qty, d.exp_date, d.satuan, d.hpp, d.totalrp, d.rakno FROM tbl_apohex h JOIN tbl_apodex d ON h.ed_no=d.ed_no WHERE h.ed_no = '$chg->ed_no' AND h.tgl_ed BETWEEN '$dari' AND '$sampai'")->result();
                                    $body .= "<table style=\"border-collapse:collapse;font-family: tahoma; font-size:12px\" width=\"100%\" align=\"center\" border=\"0\">
                                              <tr>
                                                   <td> &nbsp; </td>
@@ -1552,7 +1556,7 @@ class Laporan_persediaan extends CI_Controller
                               }
                          }
                     } else {
-                         $x = "SELECT h.ed_no, h.username, h.approve_1, h.approve_2, h.approve_3, h.tgl_ed, h.gudang, h.keterangan, (SELECT namabarang FROM tbl_barang WHERE kodebarang = d.kodebarang) AS namabarang, d.qty, d.exp_date, d.satuan, d.hpp, d.totalrp, d.rakno FROM tbl_apohex h JOIN tbl_apodex d ON h.ed_no=d.ed_no WHERE h.koders = '$unit' AND h.tgl_ed BETWEEN '$dari' AND '$sampai' OR h.gudang='$depo'";
+                         $x = "SELECT h.ed_no, h.username, h.approve_1, h.approve_2, h.approve_3, h.tgl_ed, h.gudang, h.keterangan, (SELECT namabarang FROM tbl_barang WHERE kodebarang = d.kodebarang) AS namabarang, d.qty, d.exp_date, d.satuan, d.hpp, d.totalrp, d.rakno FROM tbl_apohex h JOIN tbl_apodex d ON h.ed_no=d.ed_no WHERE h.koders = '$unit' AND h.tgl_ed BETWEEN '$dari' AND '$sampai' AND h.gudang='$depo'";
                          $query = $this->db->query($x)->result();
                          $gudangx = $this->db->get_where("tbl_depo", ['depocode' => $depo])->row();
                          $gudang = $gudangx->keterangan;
@@ -1684,7 +1688,7 @@ class Laporan_persediaan extends CI_Controller
                                    </tr> 
                               </table>";
                     }
-               } else if($laporan == 6){
+               } else if ($laporan == 6) {
                     $position = "L";
                     if ($keperluan == 1) {
                          $judul = '06 Laporan Persediaan';
@@ -1703,427 +1707,171 @@ class Laporan_persediaan extends CI_Controller
                          }
                          $queryx = $this->db->query($x)->result();
                     }
-                    foreach($queryx as $qx){
-                         if($depo != ""){
-                              $kondisi = " AND a.gudang = '$depo'";
+                    foreach ($queryx as $qx) {
+                         if ($depo != "") {
+                              $kondisi = "gudang = '$depo'";
                          } else {
-                              $kondisi = " AND a.gudang = '$qx->depocode'";
+                              $kondisi = "gudang = '$qx->depocode'";
                          }
-                         $y = "SELECT 
-                                        a.*,
-     
-                                        (SELECT namabarang FROM tbl_barang WHERE kodebarang = a.kodebarang) AS namabarang,
-     
-                                        (SELECT satuan1 FROM tbl_barang WHERE kodebarang = a.kodebarang) AS satuan,
-     
-                                        IFNULL((SELECT qty_terima FROM 
-                                                  (SELECT c.koders,c.kodebarang, SUM(c.qty_terima)qty_terima,gudang 
-                                                  FROM tbl_baranghterima b JOIN tbl_barangdterima c ON b.terima_no = c.terima_no
-                                                  WHERE b.koders = '$unit' AND b.terima_date BETWEEN '$dari'AND '$sampai'
-                                                  GROUP BY c.koders,c.kodebarang,gudang
-                                                  ORDER BY koders,kodebarang)AS terima 
-                                             WHERE terima.kodebarang=a.kodebarang AND terima.koders=a.koders AND terima.gudang=a.gudang
-                                        ),0) AS pembelian,
-     
-                                        IFNULL((SELECT qtymove FROM 
-                                                  (SELECT e.koders,e.kodebarang, SUM(e.qtymove)qtymove,ke 
-                                                  FROM tbl_apohmove d JOIN tbl_apodmove e ON d.moveno = e.moveno
-                                                  WHERE d.koders = '$unit'  AND d.movedate BETWEEN '$dari'AND '$sampai'
-                                                  GROUP BY e.koders,e.kodebarang,ke
-                                                  ORDER BY koders,kodebarang)AS terima 
-                                             WHERE terima.kodebarang=a.kodebarang AND terima.koders=a.koders AND terima.ke=a.gudang
-                                        ),0) AS mutasi_in,
-     
-                                        IFNULL((SELECT qtyjadi FROM 
-                                                  (SELECT koders,kodebarang, SUM(qtyjadi) qtyjadi,gudang 
-                                                  FROM tbl_apohproduksi d
-                                                  WHERE d.koders = '$unit'  AND d.tglproduksi BETWEEN '$dari'AND '$sampai'
-                                                  GROUP BY koders,kodebarang,gudang
-                                                  ORDER BY koders,kodebarang)AS terima 
-                                             WHERE terima.kodebarang=a.kodebarang AND terima.koders=a.koders AND terima.gudang=a.gudang
-                                        ),0) AS produksi,
-     
-                                        IFNULL((SELECT hasilso FROM
-                                                  (SELECT koders, kodebarang, SUM(sesuai)hasilso, gudang
-                                                  FROM tbl_aposesuai 
-                                                  WHERE tbl_aposesuai.koders = '$unit' AND tbl_aposesuai.tglso BETWEEN '$dari'AND '$sampai'
-                                                  GROUP BY koders,kodebarang,gudang
-                                                  ORDER BY koders, kodebarang
-                                                  ) AS terima
-                                             WHERE terima.kodebarang=a.kodebarang AND terima.koders=a.koders AND terima.gudang=a.gudang
-                                        ), 0) AS so,
-     
-                                        IFNULL((SELECT qty_retur FROM 
-                                                  (SELECT e.koders,e.kodebarang, SUM(e.qtyretur)qty_retur,gudang 
-                                                  FROM tbl_apohreturjual d JOIN tbl_apodreturjual e ON d.returno = e.returno
-                                                  WHERE d.koders = '$unit'  AND d.tglretur BETWEEN '$dari'AND '$sampai'
-                                                  GROUP BY e.koders,e.kodebarang,gudang
-                                                  ORDER BY koders,kodebarang)AS terima 
-                                             WHERE terima.kodebarang=a.kodebarang AND terima.koders=a.koders AND terima.gudang=a.gudang
-                                        ),0) AS retur_beli,
-     
+                         $y = "SELECT *, (total_masuk - total_keluar) AS saldo, hpp, ((total_masuk - total_keluar) * hpp) AS total FROM (
+                                   SELECT p.*, (pembelian + move_in + produksi_jadi + so + retur_beli) AS total_masuk, (jual + mutasi_out + retur_jual + produksi_bahan + bhp + expire) AS total_keluar FROM (
+                                        SELECT a.kodebarang, (SELECT namabarang FROM tbl_barang WHERE kodebarang = a.kodebarang) AS namabarang, (SELECT satuan1 FROM tbl_barang WHERE kodebarang = a.kodebarang) AS satuan, (SELECT hpp FROM tbl_barang WHERE kodebarang = a.kodebarang) AS hpp,
+                                             IFNULL(
+                                   (
+                                        SELECT qty FROM
                                         (
-                                             (IFNULL((SELECT qty_terima FROM 
-                                                       (SELECT c.koders,c.kodebarang, SUM(c.qty_terima)qty_terima,gudang 
-                                                       FROM tbl_baranghterima b JOIN tbl_barangdterima c ON b.terima_no = c.terima_no
-                                                       WHERE b.koders = '$unit' AND b.terima_date BETWEEN '$dari'AND '$sampai'
-                                                       GROUP BY c.koders,c.kodebarang,gudang
-                                                       ORDER BY koders,kodebarang)AS terima 
-                                                  WHERE terima.kodebarang=a.kodebarang AND terima.koders=a.koders AND terima.gudang=a.gudang
-                                             ),0))
-                                             +
-                                             (IFNULL((SELECT qtymove FROM 
-                                                       (SELECT e.koders,e.kodebarang, SUM(e.qtymove)qtymove,ke 
-                                                       FROM tbl_apohmove d JOIN tbl_apodmove e ON d.moveno = e.moveno
-                                                       WHERE d.koders = '$unit'  AND d.movedate BETWEEN '$dari'AND '$sampai'
-                                                       GROUP BY e.koders,e.kodebarang,ke
-                                                       ORDER BY koders,kodebarang)AS terima 
-                                                  WHERE terima.kodebarang=a.kodebarang AND terima.koders=a.koders AND terima.ke=a.gudang
-                                             ),0))
-                                             +
-                                             (IFNULL((SELECT qtyjadi FROM 
-                                                       (SELECT koders,kodebarang, SUM(qtyjadi)qtyjadi,gudang 
-                                                       FROM tbl_apohproduksi d
-                                                       WHERE d.koders = '$unit'  AND d.tglproduksi BETWEEN '$dari'AND '$sampai'
-                                                       GROUP BY koders,kodebarang,gudang
-                                                       ORDER BY koders,kodebarang)AS terima 
-                                                  WHERE terima.kodebarang=a.kodebarang AND terima.koders=a.koders AND terima.gudang=a.gudang
-                                             ),0))
-                                             +
-                                             (IFNULL((SELECT hasilso FROM
-                                                       (SELECT koders, kodebarang, SUM(sesuai)hasilso, gudang
-                                                       FROM tbl_aposesuai 
-                                                       WHERE tbl_aposesuai.koders = '$unit' AND tbl_aposesuai.tglso BETWEEN '$dari'AND '$sampai'
-                                                       GROUP BY koders,kodebarang,gudang
-                                                       ORDER BY koders, kodebarang
-                                                       ) AS terima
-                                                  WHERE terima.kodebarang=a.kodebarang AND terima.koders=a.koders AND terima.gudang=a.gudang
-                                             ), 0))
-                                             +
-                                             (IFNULL((SELECT qty_retur FROM 
-                                                       (SELECT e.koders,e.kodebarang, SUM(e.qtyretur)qty_retur,gudang 
-                                                       FROM tbl_apohreturjual d JOIN tbl_apodreturjual e ON d.returno = e.returno
-                                                       WHERE d.koders = '$unit'  AND d.tglretur BETWEEN '$dari'AND '$sampai'
-                                                       GROUP BY e.koders,e.kodebarang,gudang
-                                                       ORDER BY koders,kodebarang)AS terima 
-                                                  WHERE terima.kodebarang=a.kodebarang AND terima.koders=a.koders AND terima.gudang=a.gudang
-                                             ),0))
-                                        ) AS total_masuk,
-     
-                                        IFNULL((SELECT qtyjual FROM 
-                                                  (SELECT c.koders,c.kodebarang, SUM(c.qty) qtyjual,b.gudang 
-                                                  FROM tbl_apohresep b JOIN tbl_apodresep c ON b.resepno = c.resepno
-                                                  JOIN tbl_apoposting ps ON ps.resepno=b.resepno
-                                                  WHERE b.koders = '$unit' AND b.tglresep BETWEEN '$dari'AND '$sampai'
-                                                  GROUP BY c.koders,c.kodebarang,b.gudang
-                                                  ORDER BY koders,kodebarang)AS terima 
-                                             WHERE terima.kodebarang=a.kodebarang AND terima.koders=a.koders AND terima.gudang=a.gudang
-                                        ),0) AS jual,
-     
-                                        IFNULL((SELECT qtymove FROM 
-                                                  (SELECT e.koders,e.kodebarang, SUM(e.qtymove)qtymove,dari 
-                                                  FROM tbl_apohmove d JOIN tbl_apodmove e ON d.moveno = e.moveno
-                                                  WHERE d.koders = '$unit'  AND d.movedate BETWEEN '$dari'AND '$sampai'
-                                                  GROUP BY e.koders,e.kodebarang,dari
-                                                  ORDER BY koders,kodebarang)AS terima 
-                                             WHERE terima.kodebarang=a.kodebarang AND terima.koders=a.koders AND terima.dari=a.gudang
-                                        ),0) AS mutasi_out,
-     
-                                        IFNULL((SELECT qtyretur FROM 
-                                                  (SELECT e.koders,e.kodebarang, SUM(e.qty_retur)qtyretur,gudang 
-                                                  FROM tbl_baranghreturbeli d JOIN tbl_barangdreturbeli e ON d.retur_no = e.retur_no
-                                                  WHERE d.koders = '$unit'  AND d.retur_date BETWEEN '$dari'AND '$sampai'
-                                                  GROUP BY e.koders,e.kodebarang,gudang
-                                                  ORDER BY koders,kodebarang)AS terima 
-                                             WHERE terima.kodebarang=a.kodebarang AND terima.koders=a.koders AND terima.gudang=a.gudang
-                                        ),0) AS retur_jual,
-     
-                                        IFNULL((SELECT qty FROM 
-                                                  (SELECT e.koders,e.kodebarang, SUM(e.qty)qty,gudang 
-                                                  FROM tbl_apohproduksi d JOIN tbl_apodproduksi e ON d.prdno = e.prdno
-                                                  WHERE d.koders = '$unit'  AND d.tglproduksi BETWEEN '$dari'AND '$sampai'
-                                                  GROUP BY e.koders,e.kodebarang,gudang
-                                                  ORDER BY koders,kodebarang)AS terima 
-                                             WHERE terima.kodebarang=a.kodebarang AND terima.koders=a.koders AND terima.gudang=a.gudang
-                                        ),0) AS produksi_out, 
-     
-                                        0 AS bhp,
-     
-                                        IFNULL((SELECT qty FROM 
-                                                  (SELECT e.koders,e.kodebarang, SUM(e.qty)qty,gudang 
-                                                  FROM tbl_apohex d JOIN tbl_apodex e ON d.ed_no = e.ed_no
-                                                  WHERE d.koders = '$unit'  AND d.tgl_ed BETWEEN '$dari'AND '$sampai'
-                                                  GROUP BY e.koders,e.kodebarang,gudang
-                                                  ORDER BY koders,kodebarang)AS terima 
-                                             WHERE terima.kodebarang=a.kodebarang AND terima.koders=a.koders AND terima.gudang=a.gudang
-                                        ),0) AS expired,
+                                        SELECT dt.kodebarang, SUM(dt.qty_terima) AS qty, ht.gudang, ht.koders
+                                        FROM tbl_barangdterima dt 
+                                        JOIN tbl_baranghterima ht ON dt.terima_no = ht.terima_no
+                                        WHERE ht.$kondisi AND ht.koders = '$unit' AND ht.terima_date BETWEEN '$dari' AND '$sampai'
+                                        GROUP BY dt.kodebarang
+                                        ) AS beli
+                                        WHERE beli.kodebarang=a.kodebarang
+                                   )
+                                   ,0) AS pembelian,
+                                   IFNULL(
+                                   (
+                                        SELECT qty FROM
                                         (
-                                             (IFNULL((SELECT qtyjual FROM 
-                                                       (SELECT c.koders,c.kodebarang, SUM(c.qty)qtyjual,b.gudang 
-                                                       FROM tbl_apohresep b JOIN tbl_apodresep c ON b.resepno = c.resepno 
-                                                       WHERE b.koders = '$unit' AND b.tglresep BETWEEN '$dari'AND '$sampai'
-                                                       GROUP BY c.koders,c.kodebarang,b.gudang
-                                                       ORDER BY koders,kodebarang)AS terima 
-                                                  WHERE terima.kodebarang=a.kodebarang AND terima.koders=a.koders AND terima.gudang=a.gudang
-                                             ),0))
-                                             +
-                                             (IFNULL((SELECT qtymove FROM 
-                                                       (SELECT e.koders,e.kodebarang, SUM(e.qtymove)qtymove,dari 
-                                                       FROM tbl_apohmove d JOIN tbl_apodmove e ON d.moveno = e.moveno
-                                                       WHERE d.koders = '$unit'  AND d.movedate BETWEEN '$dari'AND '$sampai'
-                                                       GROUP BY e.koders,e.kodebarang,dari
-                                                       ORDER BY koders,kodebarang)AS terima 
-                                                  WHERE terima.kodebarang=a.kodebarang AND terima.koders=a.koders AND terima.dari=a.gudang
-                                             ),0))
-                                             +
-                                             (IFNULL((SELECT qtyretur FROM 
-                                                       (SELECT e.koders,e.kodebarang, SUM(e.qty_retur)qtyretur,gudang 
-                                                       FROM tbl_baranghreturbeli d JOIN tbl_barangdreturbeli e ON d.retur_no = e.retur_no
-                                                       WHERE d.koders = '$unit'  AND d.retur_date BETWEEN '$dari'AND '$sampai'
-                                                       GROUP BY e.koders,e.kodebarang,gudang
-                                                       ORDER BY koders,kodebarang)AS terima 
-                                                  WHERE terima.kodebarang=a.kodebarang AND terima.koders=a.koders AND terima.gudang=a.gudang
-                                             ),0))
-                                             +
-                                             (IFNULL((SELECT qty FROM 
-                                                       (SELECT e.koders,e.kodebarang, SUM(e.qty)qty,gudang 
-                                                       FROM tbl_apohproduksi d JOIN tbl_apodproduksi e ON d.prdno = e.prdno
-                                                       WHERE d.koders = '$unit'  AND d.tglproduksi BETWEEN '$dari'AND '$sampai'
-                                                       GROUP BY e.koders,e.kodebarang,gudang
-                                                       ORDER BY koders,kodebarang)AS terima 
-                                                  WHERE terima.kodebarang=a.kodebarang AND terima.koders=a.koders AND terima.gudang=a.gudang
-                                             ),0))
-                                             +
-                                             0
-                                             +
-                                             (IFNULL((SELECT qty FROM 
-                                                       (SELECT e.koders,e.kodebarang, SUM(e.qty)qty,gudang 
-                                                       FROM tbl_apohex d JOIN tbl_apodex e ON d.ed_no = e.ed_no
-                                                       WHERE d.koders = '$unit'  AND d.tgl_ed BETWEEN '$dari'AND '$sampai'
-                                                       GROUP BY e.koders,e.kodebarang,gudang
-                                                       ORDER BY koders,kodebarang)AS terima 
-                                                  WHERE terima.kodebarang=a.kodebarang AND terima.koders=a.koders AND terima.gudang=a.gudang
-                                             ),0))
-                                        ) AS total_keluar,
-     
-                                        (SELECT hpp FROM tbl_barang WHERE kodebarang = a.kodebarang) AS hpp,
-     
+                                        SELECT dm.kodebarang, SUM(dm.qtymove) AS qty, hm.dari, hm.koders
+                                        FROM tbl_apodmove dm 
+                                        JOIN tbl_apohmove hm ON dm.moveno = hm.moveno
+                                        WHERE hm.dari = '$qx->depocode' AND hm.koders = '$unit' AND hm.movedate BETWEEN '$dari' AND '$sampai'
+                                        GROUP BY dm.kodebarang
+                                        ) AS move_i
+                                        WHERE move_i.kodebarang=a.kodebarang
+                                   )
+                                   ,0) AS move_in,
+                                   IFNULL(
+                                   (
+                                        SELECT qty FROM
                                         (
-                                             (
-                                                  (
-                                                       (
-                                                            (IFNULL((SELECT qty_terima FROM 
-                                                                      (SELECT c.koders,c.kodebarang, SUM(c.qty_terima)qty_terima,gudang 
-                                                                      FROM tbl_baranghterima b JOIN tbl_barangdterima c ON b.terima_no = c.terima_no
-                                                                      WHERE b.koders = '$unit' AND b.terima_date BETWEEN '$dari'AND '$sampai'
-                                                                      GROUP BY c.koders,c.kodebarang,gudang
-                                                                      ORDER BY koders,kodebarang)AS terima 
-                                                                 WHERE terima.kodebarang=a.kodebarang AND terima.koders=a.koders AND terima.gudang=a.gudang
-                                                            ),0))
-                                                            +
-                                                            (IFNULL((SELECT qtymove FROM 
-                                                                      (SELECT e.koders,e.kodebarang, SUM(e.qtymove)qtymove,ke 
-                                                                      FROM tbl_apohmove d JOIN tbl_apodmove e ON d.moveno = e.moveno
-                                                                      WHERE d.koders = '$unit'  AND d.movedate BETWEEN '$dari'AND '$sampai'
-                                                                      GROUP BY e.koders,e.kodebarang,ke
-                                                                      ORDER BY koders,kodebarang)AS terima 
-                                                                 WHERE terima.kodebarang=a.kodebarang AND terima.koders=a.koders AND terima.ke=a.gudang
-                                                            ),0))
-                                                            +
-                                                            (IFNULL((SELECT qtyjadi FROM 
-                                                                      (SELECT koders,kodebarang, SUM(qtyjadi) qtyjadi,gudang 
-                                                                      FROM tbl_apohproduksi d
-                                                                      WHERE d.koders = '$unit'  AND d.tglproduksi BETWEEN '$dari'AND '$sampai'
-                                                                      GROUP BY koders,kodebarang,gudang
-                                                                      ORDER BY koders,kodebarang)AS terima 
-                                                                 WHERE terima.kodebarang=a.kodebarang AND terima.koders=a.koders AND terima.gudang=a.gudang
-                                                            ),0))
-                                                            +
-                                                            (IFNULL((SELECT hasilso FROM
-                                                                      (SELECT koders, kodebarang, SUM(sesuai)hasilso, gudang
-                                                                      FROM tbl_aposesuai 
-                                                                      WHERE tbl_aposesuai.koders = '$unit' AND tbl_aposesuai.tglso BETWEEN '$dari'AND '$sampai'
-                                                                      GROUP BY koders,kodebarang,gudang
-                                                                      ORDER BY koders, kodebarang
-                                                                      ) AS terima
-                                                                 WHERE terima.kodebarang=a.kodebarang AND terima.koders=a.koders AND terima.gudang=a.gudang
-                                                            ), 0))
-                                                            +
-                                                            (IFNULL((SELECT qty_retur FROM 
-                                                                      (SELECT e.koders,e.kodebarang, SUM(e.qtyretur)qty_retur,gudang 
-                                                                      FROM tbl_apohreturjual d JOIN tbl_apodreturjual e ON d.returno = e.returno
-                                                                      WHERE d.koders = '$unit'  AND d.tglretur BETWEEN '$dari'AND '$sampai'
-                                                                      GROUP BY e.koders,e.kodebarang,gudang
-                                                                      ORDER BY koders,kodebarang)AS terima 
-                                                                 WHERE terima.kodebarang=a.kodebarang AND terima.koders=a.koders AND terima.gudang=a.gudang
-                                                            ),0))
-                                                       )
-                                                       -
-                                                       (
-                                                            (IFNULL((SELECT qtyjual FROM 
-                                                                      (SELECT c.koders,c.kodebarang, SUM(c.qty)qtyjual,b.gudang 
-                                                                      FROM tbl_apohresep b JOIN tbl_apodresep c ON b.resepno = c.resepno
-                                                                      WHERE b.koders = '$unit' AND b.tglresep BETWEEN '$dari'AND '$sampai'
-                                                                      GROUP BY c.koders,c.kodebarang,b.gudang
-                                                                      ORDER BY koders,kodebarang)AS terima 
-                                                                 WHERE terima.kodebarang=a.kodebarang AND terima.koders=a.koders AND terima.gudang=a.gudang
-                                                            ),0))
-                                                            +
-                                                            (IFNULL((SELECT qtymove FROM 
-                                                                      (SELECT e.koders,e.kodebarang, SUM(e.qtymove)qtymove,dari 
-                                                                      FROM tbl_apohmove d JOIN tbl_apodmove e ON d.moveno = e.moveno
-                                                                      WHERE d.koders = '$unit'  AND d.movedate BETWEEN '$dari'AND '$sampai'
-                                                                      GROUP BY e.koders,e.kodebarang,dari
-                                                                      ORDER BY koders,kodebarang)AS terima 
-                                                                 WHERE terima.kodebarang=a.kodebarang AND terima.koders=a.koders AND terima.dari=a.gudang
-                                                            ),0))
-                                                            +
-                                                            (IFNULL((SELECT qtyretur FROM 
-                                                                      (SELECT e.koders,e.kodebarang, SUM(e.qty_retur)qtyretur,gudang 
-                                                                      FROM tbl_baranghreturbeli d JOIN tbl_barangdreturbeli e ON d.retur_no = e.retur_no
-                                                                      WHERE d.koders = '$unit'  AND d.retur_date BETWEEN '$dari'AND '$sampai'
-                                                                      GROUP BY e.koders,e.kodebarang,gudang
-                                                                      ORDER BY koders,kodebarang)AS terima 
-                                                                 WHERE terima.kodebarang=a.kodebarang AND terima.koders=a.koders AND terima.gudang=a.gudang
-                                                            ),0))
-                                                            +
-                                                            (IFNULL((SELECT qty FROM 
-                                                                      (SELECT e.koders,e.kodebarang, SUM(e.qty)qty,gudang 
-                                                                      FROM tbl_apohproduksi d JOIN tbl_apodproduksi e ON d.prdno = e.prdno
-                                                                      WHERE d.koders = '$unit'  AND d.tglproduksi BETWEEN '$dari'AND '$sampai'
-                                                                      GROUP BY e.koders,e.kodebarang,gudang
-                                                                      ORDER BY koders,kodebarang)AS terima 
-                                                                 WHERE terima.kodebarang=a.kodebarang AND terima.koders=a.koders AND terima.gudang=a.gudang
-                                                            ),0))
-                                                            +
-                                                            0
-                                                            +
-                                                            (IFNULL((SELECT qty FROM 
-                                                                      (SELECT e.koders,e.kodebarang, SUM(e.qty)qty,gudang 
-                                                                      FROM tbl_apohex d JOIN tbl_apodex e ON d.ed_no = e.ed_no
-                                                                      WHERE d.koders = '$unit'  AND d.tgl_ed BETWEEN '$dari'AND '$sampai'
-                                                                      GROUP BY e.koders,e.kodebarang,gudang
-                                                                      ORDER BY koders,kodebarang)AS terima 
-                                                                 WHERE terima.kodebarang=a.kodebarang AND terima.koders=a.koders AND terima.gudang=a.gudang
-                                                            ),0))
-                                                       )
-                                                  )
-                                             )
-                                             *
-                                             (SELECT hpp FROM tbl_barang WHERE kodebarang = a.kodebarang)
-                                        ) AS total_persediaan_rp,
+                                        SELECT kodebarang, SUM(qtyjadi) AS qty, gudang, koders
+                                        FROM tbl_apohproduksi
+                                        WHERE $kondisi AND koders = '$unit' AND tglproduksi BETWEEN '$dari' AND '$sampai'
+                                        GROUP BY kodebarang
+                                        ) AS prod_jadi
+                                        WHERE prod_jadi.kodebarang=a.kodebarang
+                                   )
+                                   ,0) AS produksi_jadi,
+                                   IFNULL(
+                                   (
+                                        SELECT qty FROM
                                         (
-                                             (
-                                                  (
-                                                       (IFNULL((SELECT qty_terima FROM 
-                                                                 (SELECT c.koders,c.kodebarang, SUM(c.qty_terima)qty_terima,gudang 
-                                                                 FROM tbl_baranghterima b JOIN tbl_barangdterima c ON b.terima_no = c.terima_no
-                                                                 WHERE b.koders = '$unit' AND b.terima_date BETWEEN '$dari'AND '$sampai'
-                                                                 GROUP BY c.koders,c.kodebarang,gudang
-                                                                 ORDER BY koders,kodebarang)AS terima 
-                                                            WHERE terima.kodebarang=a.kodebarang AND terima.koders=a.koders AND terima.gudang=a.gudang
-                                                       ),0))
-                                                       +
-                                                       (IFNULL((SELECT qtymove FROM 
-                                                                 (SELECT e.koders,e.kodebarang, SUM(e.qtymove)qtymove,ke 
-                                                                 FROM tbl_apohmove d JOIN tbl_apodmove e ON d.moveno = e.moveno
-                                                                 WHERE d.koders = '$unit'  AND d.movedate BETWEEN '$dari'AND '$sampai'
-                                                                 GROUP BY e.koders,e.kodebarang,ke
-                                                                 ORDER BY koders,kodebarang)AS terima 
-                                                            WHERE terima.kodebarang=a.kodebarang AND terima.koders=a.koders AND terima.ke=a.gudang
-                                                       ),0))
-                                                       +
-                                                       (IFNULL((SELECT qtyjadi FROM 
-                                                                 (SELECT koders,kodebarang, SUM(qtyjadi)qtyjadi,gudang 
-                                                                 FROM tbl_apohproduksi d
-                                                                 WHERE d.koders = '$unit'  AND d.tglproduksi BETWEEN '$dari'AND '$sampai'
-                                                                 GROUP BY koders,kodebarang,gudang
-                                                                 ORDER BY koders,kodebarang)AS terima 
-                                                            WHERE terima.kodebarang=a.kodebarang AND terima.koders=a.koders AND terima.gudang=a.gudang
-                                                       ),0))
-                                                       +
-                                                       (IFNULL((SELECT hasilso FROM
-                                                                 (SELECT koders, kodebarang, SUM(sesuai)hasilso, gudang
-                                                                 FROM tbl_aposesuai 
-                                                                 WHERE tbl_aposesuai.koders = '$unit' AND tbl_aposesuai.tglso BETWEEN '$dari'AND '$sampai'
-                                                                 GROUP BY koders,kodebarang,gudang
-                                                                 ORDER BY koders, kodebarang
-                                                                 ) AS terima
-                                                            WHERE terima.kodebarang=a.kodebarang AND terima.koders=a.koders AND terima.gudang=a.gudang
-                                                       ), 0))
-                                                       +
-                                                       (IFNULL((SELECT qty_retur FROM 
-                                                                 (SELECT e.koders,e.kodebarang, SUM(e.qtyretur)qty_retur,gudang 
-                                                                 FROM tbl_apohreturjual d JOIN tbl_apodreturjual e ON d.returno = e.returno
-                                                                 WHERE d.koders = '$unit'  AND d.tglretur BETWEEN '$dari'AND '$sampai'
-                                                                 GROUP BY e.koders,e.kodebarang,gudang
-                                                                 ORDER BY koders,kodebarang)AS terima 
-                                                            WHERE terima.kodebarang=a.kodebarang AND terima.koders=a.koders AND terima.gudang=a.gudang
-                                                       ),0))
-                                                  )
-                                                  -
-                                                  (
-                                                       (IFNULL((SELECT qtyjual FROM 
-                                                                 (SELECT c.koders,c.kodebarang, SUM(c.qty)qtyjual,b.gudang 
-                                                                 FROM tbl_apohresep b JOIN tbl_apodresep c ON b.resepno = c.resepno
-                                                                 WHERE b.koders = '$unit' AND b.tglresep BETWEEN '$dari'AND '$sampai'
-                                                                 GROUP BY c.koders,c.kodebarang,b.gudang
-                                                                 ORDER BY koders,kodebarang)AS terima 
-                                                            WHERE terima.kodebarang=a.kodebarang AND terima.koders=a.koders AND terima.gudang=a.gudang
-                                                       ),0))
-                                                       +
-                                                       (IFNULL((SELECT qtymove FROM 
-                                                                 (SELECT e.koders,e.kodebarang, SUM(e.qtymove)qtymove,dari 
-                                                                 FROM tbl_apohmove d JOIN tbl_apodmove e ON d.moveno = e.moveno
-                                                                 WHERE d.koders = '$unit'  AND d.movedate BETWEEN '$dari'AND '$sampai'
-                                                                 GROUP BY e.koders,e.kodebarang,dari
-                                                                 ORDER BY koders,kodebarang)AS terima 
-                                                            WHERE terima.kodebarang=a.kodebarang AND terima.koders=a.koders AND terima.dari=a.gudang
-                                                       ),0))
-                                                       +
-                                                       (IFNULL((SELECT qtyretur FROM 
-                                                                 (SELECT e.koders,e.kodebarang, SUM(e.qty_retur)qtyretur,gudang 
-                                                                 FROM tbl_baranghreturbeli d JOIN tbl_barangdreturbeli e ON d.retur_no = e.retur_no
-                                                                 WHERE d.koders = '$unit'  AND d.retur_date BETWEEN '$dari'AND '$sampai'
-                                                                 GROUP BY e.koders,e.kodebarang,gudang
-                                                                 ORDER BY koders,kodebarang)AS terima 
-                                                            WHERE terima.kodebarang=a.kodebarang AND terima.koders=a.koders AND terima.gudang=a.gudang
-                                                       ),0))
-                                                       +
-                                                       (IFNULL((SELECT qty FROM 
-                                                                 (SELECT e.koders,e.kodebarang, SUM(e.qty)qty,gudang 
-                                                                 FROM tbl_apohproduksi d JOIN tbl_apodproduksi e ON d.prdno = e.prdno
-                                                                 WHERE d.koders = '$unit'  AND d.tglproduksi BETWEEN '$dari'AND '$sampai'
-                                                                 GROUP BY e.koders,e.kodebarang,gudang
-                                                                 ORDER BY koders,kodebarang)AS terima 
-                                                            WHERE terima.kodebarang=a.kodebarang AND terima.koders=a.koders AND terima.gudang=a.gudang
-                                                       ),0))
-                                                       +
-                                                       0
-                                                       +
-                                                       (IFNULL((SELECT qty FROM 
-                                                                 (SELECT e.koders,e.kodebarang, SUM(e.qty)qty,gudang 
-                                                                 FROM tbl_apohex d JOIN tbl_apodex e ON d.ed_no = e.ed_no
-                                                                 WHERE d.koders = '$unit'  AND d.tgl_ed BETWEEN '$dari'AND '$sampai'
-                                                                 GROUP BY e.koders,e.kodebarang,gudang
-                                                                 ORDER BY koders,kodebarang)AS terima 
-                                                            WHERE terima.kodebarang=a.kodebarang AND terima.koders=a.koders AND terima.gudang=a.gudang
-                                                       ),0))
-                                                  )
-                                             )
-                                        ) AS salakhir
-                                   FROM
+                                        SELECT kodebarang, SUM(hasilso) AS qty, gudang, koders
+                                        FROM tbl_aposesuai
+                                        WHERE $kondisi AND koders = '$unit' AND tglso BETWEEN '$dari' AND '$sampai'
+                                        GROUP BY kodebarang
+                                        ) AS so_
+                                        WHERE so_.kodebarang=a.kodebarang
+                                   )
+                                   ,0) AS so,
+                                   IFNULL(
+                                   (
+                                        SELECT qty FROM
                                         (
-                                             SELECT koders,kodebarang,gudang, tglso, saldoakhir
-                                             FROM tbl_barangstock a
-                                             GROUP BY koders,kodebarang,gudang
-                                        ) a
-                                   WHERE a.koders = '$unit' $kondisi and a.tglso between '$dari' and '$sampai' 
-                                   
-                                   ";
+                                        SELECT dr.kodebarang, SUM(dr.qty_retur) AS qty, hr.gudang, hr.koders
+                                        FROM tbl_barangdreturbeli dr
+                                        JOIN tbl_baranghreturbeli hr ON dr.retur_no = hr.retur_no
+                                        WHERE hr.$kondisi AND hr.koders = '$unit' AND hr.retur_date BETWEEN '$dari' AND '$sampai'
+                                        GROUP BY dr.kodebarang
+                                        ) AS ret
+                                        WHERE ret.kodebarang=a.kodebarang
+                                   )
+                                   ,0) AS retur_beli,
+                                   IFNULL(
+                                   (
+                                        SELECT SUM(qty) AS qty FROM
+                                        (
+                                        SELECT d.kodebarang, SUM(d.qty) AS qty, h.gudang, h.koders
+                                        FROM tbl_apodresep d
+                                        JOIN tbl_apohresep h ON d.resepno = h.resepno
+                                        WHERE h.$kondisi AND h.koders = '$unit' AND h.tglresep BETWEEN '$dari' AND '$sampai'
+                                        GROUP BY d.kodebarang
+                                        UNION ALL
+                                        SELECT d.kodebarang, SUM(d.qtyr) AS qty, h.gudang, h.koders
+                                        FROM tbl_apodetresep d
+                                        JOIN tbl_apohresep h ON d.resepno = h.resepno
+                                        WHERE h.$kondisi AND h.koders = '$unit' AND h.tglresep BETWEEN '$dari' AND '$sampai'
+                                        GROUP BY d.kodebarang
+                                        ) xx 
+                                        WHERE xx.kodebarang=a.kodebarang
+                                        GROUP BY xx.kodebarang
+                                   )
+                                   ,0) AS jual,
+                                   IFNULL(
+                                   (
+                                        SELECT qty FROM
+                                        (
+                                        SELECT dm.kodebarang, SUM(dm.qtymove) AS qty, hm.ke, hm.koders
+                                        FROM tbl_apodmove dm 
+                                        JOIN tbl_apohmove hm ON dm.moveno = hm.moveno
+                                        WHERE hm.ke = '$qx->depocode' AND hm.koders = '$unit' AND hm.movedate BETWEEN '$dari' AND '$sampai'
+                                        GROUP BY dm.kodebarang
+                                        ) AS move_o
+                                        WHERE move_o.kodebarang=a.kodebarang
+                                   )
+                                   ,0) AS mutasi_out,
+                                   IFNULL(
+                                   (
+                                        SELECT qty FROM
+                                        (
+                                        SELECT dm.kodebarang, SUM(dm.qtyretur) AS qty, hm.gudang, hm.koders
+                                        FROM tbl_apodreturjual dm 
+                                        JOIN tbl_apohreturjual hm ON dm.returno = hm.returno
+                                        WHERE hm.$kondisi AND hm.koders = '$unit' AND hm.tglretur BETWEEN '$dari' AND '$sampai'
+                                        GROUP BY dm.kodebarang
+                                        ) AS retur_j
+                                        WHERE retur_j.kodebarang=a.kodebarang
+                                   )
+                                   ,0) AS retur_jual,
+                                   IFNULL(
+                                   (
+                                        SELECT qty FROM
+                                        (
+                                        SELECT tbl_apodproduksi.kodebarang, SUM(tbl_apodproduksi.qty) AS qty, tbl_apohproduksi.gudang, tbl_apodproduksi.koders
+                                        FROM tbl_apodproduksi
+                                        JOIN tbl_apohproduksi ON tbl_apohproduksi.prdno = tbl_apodproduksi.prdno
+                                        WHERE tbl_apohproduksi.$kondisi AND tbl_apodproduksi.koders = '$unit' AND tbl_apohproduksi.tglproduksi BETWEEN '$dari' AND '$sampai'
+                                        GROUP BY kodebarang
+                                        ) AS prod_jadi
+                                        WHERE prod_jadi.kodebarang=a.kodebarang
+                                   )
+                                   ,0) AS produksi_bahan,
+                                   IFNULL(
+                                   (
+                                        SELECT qty FROM
+                                        (
+                                        SELECT tbl_apodpakai.kodeobat AS kodebarang, SUM(tbl_apodpakai.qty) AS qty, tbl_apohpakai.gudang, tbl_apohpakai.koders
+                                        FROM tbl_apodpakai
+                                        JOIN tbl_apohpakai ON tbl_apohpakai.nobhp = tbl_apodpakai.nobhp
+                                        WHERE tbl_apohpakai.$kondisi AND tbl_apohpakai.koders = '$unit' AND tbl_apohpakai.tglbhp BETWEEN '$dari' AND '$sampai'
+                                        GROUP BY kodebarang
+                                        ) AS prod_jadi
+                                        WHERE prod_jadi.kodebarang=a.kodebarang
+                                   )
+                                   ,0) AS bhp,
+                                   IFNULL(
+                                   (
+                                        SELECT qty FROM
+                                        (
+                                        SELECT dm.kodebarang, SUM(dm.qty) AS qty, hm.gudang, hm.koders
+                                        FROM tbl_apodex dm 
+                                        JOIN tbl_apohex hm ON dm.ed_no = hm.ed_no
+                                        WHERE hm.$kondisi AND hm.koders = '$unit' AND hm.tgl_ed BETWEEN '$dari' AND '$sampai'
+                                        GROUP BY dm.kodebarang
+                                        ) AS expi
+                                        WHERE expi.kodebarang=a.kodebarang
+                                   )
+                                   ,0) AS expire
+                                        FROM tbl_barangstock a
+                                        WHERE a.$kondisi AND a.koders = '$unit'
+                                   ) p
+                              ) z
+                         ";
                          $query = $this->db->query($y)->result();
                          $queryx = $this->db->query($y)->num_rows();
-                         if($queryx > 0){
+                         if ($queryx > 0) {
                               $body .= "<table style=\"border-collapse:collapse;font-family: tahoma; font-size:12px\" width=\"100%\" align=\"center\" border=\"0\">
                                              <tr>
                                                   <td> &nbsp; </td>
@@ -2169,8 +1917,8 @@ class Laporan_persediaan extends CI_Controller
                                    foreach ($query as $q) {
                                         $namabarang = $q->namabarang;
                                         $satuan = $q->satuan;
-                                        $salakhir = number_format($q->salakhir);
-     
+                                        $salakhir = number_format($q->saldo);
+
                                         $body .= "<tr>
                                              <td align=\"center\">" . $no++ . "</td>
                                              <td align=\"left\">$namabarang</td>
@@ -2216,27 +1964,21 @@ class Laporan_persediaan extends CI_Controller
                                              <td width=\"4%\" bgcolor=\"#cccccc\" align=\"center\">Total Keluar</td>
                                         </tr>
                                    </thead>";
-     
+
                                    $no = 1;
                                    foreach ($query as $q) {
                                         $kodebarang             = $q->kodebarang;
                                         $namabarang             = $q->namabarang;
                                         $satuan                 = $q->satuan;
                                         $pembelian              = number_format($q->pembelian);
-<<<<<<< HEAD
                                         $mutasi_in              = number_format($q->move_in);
                                         $produksi               = number_format($q->produksi_jadi);
-=======
-                                        $mutasi_in              = number_format($q->mutasi_in);
-                                        $produksi               = number_format($q->produksi);
->>>>>>> master
                                         $so                     = number_format($q->so);
                                         $retur_beli             = number_format($q->retur_beli);
                                         $total_masuk            = number_format($q->total_masuk);
                                         $jual                   = number_format($q->jual);
                                         $mutasi_out             = number_format($q->mutasi_out);
                                         $retur_jual             = number_format($q->retur_jual);
-<<<<<<< HEAD
                                         $produksi_out           = number_format($q->produksi_bahan);
                                         $bhp                    = number_format($q->bhp);
                                         $expired                = number_format($q->expire);
@@ -2244,16 +1986,7 @@ class Laporan_persediaan extends CI_Controller
                                         $salakhir               = number_format($q->saldo);
                                         $hpp                    = number_format($q->hpp);
                                         $total_persediaan_rp    = number_format($q->total);
-=======
-                                        $produksi_out           = number_format($q->produksi_out);
-                                        $bhp                    = number_format($q->bhp);
-                                        $expired                = number_format($q->expired);
-                                        $total_keluar           = number_format($q->total_keluar);
-                                        $salakhir               = number_format($q->salakhir);
-                                        $hpp                    = number_format($q->hpp);
-                                        $total_persediaan_rp    = number_format($q->total_persediaan_rp);
->>>>>>> master
-     
+
                                         $body .= "<tr>
                                              <td align=\"center\">" . $no++ . "</td>
                                              <td align=\"left\">$kodebarang</td>
@@ -2282,7 +2015,7 @@ class Laporan_persediaan extends CI_Controller
                          }
                     }
                }
-               $this->M_template_cetak->template($judul, $body, $position, $date,$cekpdf);
+               $this->M_template_cetak->template($judul, $body, $position, $date, $cekpdf);
           } else {
                header('location:' . base_url());
           }

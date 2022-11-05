@@ -8,6 +8,7 @@ class Pembelian_farmasi_laporan extends CI_Controller
 
 		$this->load->model('M_global', 'M_global');
 		$this->load->model('M_cetak');
+		$this->load->model('M_template_cetak');
 		$this->load->model('M_Lap_Farm');
 		$this->load->helper('simkeu_rpt');
 		$this->load->helper('simkeu_nota');
@@ -1344,6 +1345,7 @@ class Pembelian_farmasi_laporan extends CI_Controller
 		];
 		$this->load->view('LaporanFarmasi/v_lap_farm4', $data);
 	}
+
 	function ctk_112($cek = '', $thnn = '')
 	{
 		$profile = $this->M_global->_LoadProfileLap();
@@ -1377,6 +1379,7 @@ class Pembelian_farmasi_laporan extends CI_Controller
 
 		$this->load->view('LaporanFarmasi/v_lap_farm5', $data);
 	}
+
 	function ctk_113($cek = '', $thnn = '')
 	{
 		$profile = $this->M_global->_LoadProfileLap();
@@ -1420,6 +1423,7 @@ class Pembelian_farmasi_laporan extends CI_Controller
 
 		$this->load->view('LaporanFarmasi/v_lap_farm6', $data);
 	}
+
 	function ctk_114($cek = '', $thnn = '')
 	{
 		$profile = $this->M_global->_LoadProfileLap();
@@ -1479,6 +1483,7 @@ class Pembelian_farmasi_laporan extends CI_Controller
 
 		$this->load->view('LaporanFarmasi/v_lap_farm7', $data);
 	}
+
 	function ctk_115($cek = '', $thnn = '')
 	{
 		$profile = $this->M_global->_LoadProfileLap();
@@ -1573,6 +1578,7 @@ class Pembelian_farmasi_laporan extends CI_Controller
 
 		$this->load->view('LaporanFarmasi/v_lap_farm8', $data);
 	}
+
 	public function cetak()
 	{
 		$cek = $this->session->userdata('level');
@@ -2163,6 +2169,7 @@ class Pembelian_farmasi_laporan extends CI_Controller
 	}
 
 	public function cetak2(){
+		$cekpdf = $this->input->get("pdf");
 		$cek = $this->session->userdata('level');
 		$idlap = $this->input->get('idlap');
 		$unit = $this->input->get('cabang');
@@ -2944,7 +2951,7 @@ class Pembelian_farmasi_laporan extends CI_Controller
 										</tr> 
 									</table>";
 			}
-			$this->M_template_cetak->template($judul, $body, $position, $date);
+			$this->M_template_cetak->template($judul, $body, $position, $date, $cekpdf);
 		} else {
 			header('location:' . base_url());
 		}

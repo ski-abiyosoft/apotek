@@ -326,11 +326,11 @@
                     <div class="row">
                     <div class="col-md-12">		
                         <div class="form-actions">
-                            <?php if($ttv->nadi=='0' || $ttv->id=='-' ){?>
+                            <?php if($status_kasir == 0){ if($ttv->nadi=='0' || $ttv->id=='-' ){?>
                                 <button id="btnsimpan" type="button" onclick="save()" class="btn blue"><i class="fa fa-save"></i><b> Simpan</b></button>
                             <?php }else{ ?>
                                 <button id="btnsimpan" type="button" onclick="save()" class="btn blue"><i class="fa fa-save"></i><b> Update</b></button>
-                            <?php } ?>
+                            <?php } } ?>
 
                             
 

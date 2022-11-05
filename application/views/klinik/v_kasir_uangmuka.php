@@ -55,17 +55,17 @@
 									<?php 
 									//if($akses->uadd)
 									{?>
-								    <?php 
-									$cek =  $this->session->userdata('user_level'); 
-									if($cek==0){?> 
-									<?php }else{ ?>
+										<?php 
+										$cek =  $this->session->userdata('user_level'); 
+										if($cek==0){?> 
+										<?php }else{ ?>
 
-										<a href="<?php echo base_url()?>kasir_uangmuka/entri" class="btn btn-success">
-											<i class="fa fa-plus"></i>
-										Transaksi Baru
-										</a>
+											<a href="<?php echo base_url()?>kasir_uangmuka/entri" class="btn btn-success">
+												<i class="fa fa-plus"></i>
+											Transaksi Baru
+											</a>
 
-									<?php } ?>
+										<?php } ?>
 
 									<?php } ?>	
 								</div>	

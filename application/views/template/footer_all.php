@@ -1629,7 +1629,7 @@
       });
    }
 
-   function initailizeSelect2_dokter() {
+   function initailizeSelect2_dokter(poli) {
       $(".select2_el_dokter").select2({
          allowClear: true,
          multiple: false,
@@ -1642,7 +1642,7 @@
             }
          },
          ajax: {
-            url: "<?php echo base_url(); ?>app/search_dokter",
+            url: "<?php echo base_url(); ?>app/search_dokter/"+ poli,
             type: "post",
             dataType: 'json',
             delay: 250,
@@ -1695,7 +1695,7 @@
       });
    }
 
-   function initailizeSelect2_perawat() {
+   function initailizeSelect2_perawat(poli) {
       $(".select2_el_perawat").select2({
          allowClear: true,
          multiple: false,
@@ -1708,7 +1708,7 @@
             }
          },
          ajax: {
-            url: "<?php echo base_url(); ?>app/search_perawat",
+            url: "<?php echo base_url(); ?>app/search_perawat/"+ poli,
             type: "post",
             dataType: 'json',
             delay: 250,

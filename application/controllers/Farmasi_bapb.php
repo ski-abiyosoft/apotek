@@ -322,9 +322,10 @@ class Farmasi_bapb extends CI_Controller
 
 	public function ajax_list($param)
 	{
-		$level = $this->session->userdata('level');
-		$akses = $this->M_global->cek_menu_akses($level, 3102);
-		$dat   = explode("~", $param);
+		$user_level   = $this->session->userdata('user_level');
+		$level        = $this->session->userdata('level');
+		$akses        = $this->M_global->cek_menu_akses($level, 3102);
+		$dat          = explode("~", $param);
 		if ($dat[0] == 1) {
 			$bulan = date('m');
 			$tahun = date('Y');
@@ -357,18 +358,24 @@ class Farmasi_bapb extends CI_Controller
 			$gd = $this->db->get_where("tbl_depo", ['depocode' => $rd->gudang])->row();
 			$row[] = '<span "font-weight:bold;"><b>' . $gd->keterangan . '</b></span>';
 
-			if ($akses->uedit == 1 && $akses->udel == 1) {
+			if($user_level==0){
 				$row[] = '
-				<a class="btn btn-sm btn-primary" href="' . base_url("farmasi_bapb/edit/" . $rd->terima_no . "") . '" title="Edit" ><i class="glyphicon glyphicon-edit"></i> </a>
-			    <a target="_blank" class="btn btn-sm btn-warning" href="' . base_url("farmasi_bapb/cetak/?id=" . $rd->terima_no . "") . '" title="Cetak" ><i class="glyphicon glyphicon-print"></i> </a>
-				<a class="btn btn-sm btn-danger" href="javascript:void(0)" title="Hapus" onclick="delete_data(' . "'" . $rd->id . "'" . ",'" . $rd->terima_no . "'" . ')"><i class="glyphicon glyphicon-trash"></i> </a>';
-			} else if ($akses->uedit == 1 && $akses->udel == 0) {
-				$row[] = '<a class="btn btn-sm btn-primary" href="' . base_url("farmasi_bapb/edit/" . $rd->id . "") . '" title="Edit" ><i class="glyphicon glyphicon-edit"></i> </a> ';
-			} else if ($akses->uedit == 0 && $akses->udel == 1) {
-				$row[] = '<a class="btn btn-sm btn-danger" href="javascript:void(0)" title="Hapus" onclick="delete_data(' . "'" . $rd->id . "'" . ')"><i class="glyphicon glyphicon-trash"></i> </a>';
-			} else {
-				$row[] = '';
+				<a target="_blank" class="btn btn-sm btn-warning" href="' . base_url("farmasi_bapb/cetak/?id=" . $rd->terima_no . "") . '" title="Cetak" ><i class="glyphicon glyphicon-print"></i> </a>';
+			}else{
+				if ($akses->uedit == 1 && $akses->udel == 1) {
+					$row[] = '
+					<a class="btn btn-sm btn-primary" href="' . base_url("farmasi_bapb/edit/" . $rd->terima_no . "") . '" title="Edit" ><i class="glyphicon glyphicon-edit"></i> </a>
+					<a target="_blank" class="btn btn-sm btn-warning" href="' . base_url("farmasi_bapb/cetak/?id=" . $rd->terima_no . "") . '" title="Cetak" ><i class="glyphicon glyphicon-print"></i> </a>
+					<a class="btn btn-sm btn-danger" href="javascript:void(0)" title="Hapus" onclick="delete_data(' . "'" . $rd->id . "'" . ",'" . $rd->terima_no . "'" . ')"><i class="glyphicon glyphicon-trash"></i> </a>';
+				} else if ($akses->uedit == 1 && $akses->udel == 0) {
+					$row[] = '<a class="btn btn-sm btn-primary" href="' . base_url("farmasi_bapb/edit/" . $rd->id . "") . '" title="Edit" ><i class="glyphicon glyphicon-edit"></i> </a> ';
+				} else if ($akses->uedit == 0 && $akses->udel == 1) {
+					$row[] = '<a class="btn btn-sm btn-danger" href="javascript:void(0)" title="Hapus" onclick="delete_data(' . "'" . $rd->id . "'" . ')"><i class="glyphicon glyphicon-trash"></i> </a>';
+				} else {
+					$row[] = '';
+				}
 			}
+			
 
 			$data[] = $row;
 		}
@@ -540,12 +547,13 @@ class Farmasi_bapb extends CI_Controller
 				$this->db->update("tbl_baranghpo");
 			}
 			$stokcek = $this->db->query("SELECT * FROM tbl_barangstock WHERE kodebarang = '$kode' and koders='$cabang' and gudang='$gudang'");
+			$date_now = date('Y-m-d H:i:s');
 			if ($stokcek->num_rows() > 0) {
 				$stok = $stokcek->result();
 				foreach ($stok as $key => $value) {
 					$terima = (int)$value->terima + $qty;
 					$saldoakhir = (int)$value->saldoakhir + $qty;
-					$this->db->query("UPDATE tbl_barangstock set terima=$terima, saldoakhir=$saldoakhir where kodebarang='$kode' and koders='$cabang' and gudang='$gudang'");
+					$this->db->query("UPDATE tbl_barangstock set terima=$terima, saldoakhir=$saldoakhir, lasttr = '$date_now' where kodebarang='$kode' and koders='$cabang' and gudang='$gudang'");
 				}
 			} else {
 				$datastock = array(
@@ -555,8 +563,7 @@ class Farmasi_bapb extends CI_Controller
 					'saldoawal'    => 0,
 					'terima'       => $qty,
 					'saldoakhir'   => $qty,
-					'tglso'        => $this->input->post('tanggal'),
-					'lasttr'       => $this->input->post('tanggal'),
+					'lasttr'       => $date_now,
 				);
 				$this->db->insert('tbl_barangstock', $datastock);
 			}
@@ -715,10 +722,10 @@ class Farmasi_bapb extends CI_Controller
 				'po_no' => $po_no,
 			];
 			$this->db->insert('tbl_barangdterima', $data);
-			$stokcek = $this->db->query("SELECT * FROM tbl_barangstock WHERE kodebarang = '$kode' and koders='$cabang' and gudang='$gudang' ")->result_array();
-			$scek = count($stokcek);
-			if ($scek > 0) {
-				$this->db->query("UPDATE tbl_barangstock set terima = terima+ $qty, saldoakhir = saldoakhir + $qty where kodebarang = '$kode' and koders = '$cabang' and gudang = '$gudang'");
+			$stokcekx = $this->db->query("SELECT * FROM tbl_barangstock WHERE kodebarang = '$kode' and koders='$cabang' and gudang='$gudang' ")->num_rows();
+			$date_now = date('Y-m-d H:i:s');
+			if ($stokcekx > 0) {
+				$this->db->query("UPDATE tbl_barangstock set terima = terima+ $qty, saldoakhir = saldoakhir + $qty, lasttr = '$date_now' where kodebarang = '$kode' and koders = '$cabang' and gudang = '$gudang'");
 			} else {
 				$datastock = array(
 					'koders'       => $cabang,
@@ -727,8 +734,7 @@ class Farmasi_bapb extends CI_Controller
 					'saldoawal'    => 0,
 					'terima'       => $qty,
 					'saldoakhir'   => $qty,
-					'tglso'        => $this->input->post('tanggal'),
-					'lasttr'       => $this->input->post('tanggal'),
+					'lasttr'       => $date_now,
 				);
 				$this->db->insert('tbl_barangstock', $datastock);
 			}
