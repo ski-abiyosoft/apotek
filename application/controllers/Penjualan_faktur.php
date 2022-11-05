@@ -35,7 +35,7 @@ class Penjualan_faktur extends CI_Controller{
 				$tanggal 		= $_GET["filter-eresep"];
 				$extract_tgl	= explode("~", $tanggal);
 
-				$query_eresep	= $this->db->query("SELECT a.id, a.koders, a.tglorder, a.orderno, a.noreg, a.rekmed, b.namapas, c.kodokter, '-' AS keterangan, a.resep, a.resepok 
+				$query_eresep	= $this->db->query("SELECT c.kodepos, a.id, a.koders, a.tglorder, a.orderno, a.noreg, a.rekmed, b.namapas, c.kodokter, '-' AS keterangan, a.resep, a.resepok 
 				FROM tbl_orderperiksa AS a 
 				LEFT JOIN tbl_pasien AS b ON a.rekmed = b.rekmed 
 				LEFT JOIN tbl_rekammedisrs AS c ON c.noreg = a.noreg
@@ -47,7 +47,7 @@ class Penjualan_faktur extends CI_Controller{
 			} else {
 				$tanggal = date("Y-m-d");
 
-				$query_eresep	= $this->db->query("SELECT a.id, a.koders, a.tglorder, a.orderno, a.noreg, a.rekmed, b.namapas, c.kodokter, '-' AS keterangan, a.resep, a.resepok 
+				$query_eresep	= $this->db->query("SELECT c.kodepos, a.id, a.koders, a.tglorder, a.orderno, a.noreg, a.rekmed, b.namapas, c.kodokter, '-' AS keterangan, a.resep, a.resepok 
 				FROM tbl_orderperiksa AS a 
 				LEFT JOIN tbl_pasien AS b ON a.rekmed = b.rekmed 
 				LEFT JOIN tbl_rekammedisrs AS c ON c.noreg = a.noreg

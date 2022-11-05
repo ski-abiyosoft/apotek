@@ -123,10 +123,17 @@
     			<div class="portlet-body">
     				<div class="table-toolbar">
     					<div class="btn-group">
-    						<a href="<?php echo base_url() ?>farmasi_expire/entri" class="btn btn-success">
+						<?php 
+						$cek =  $this->session->userdata('user_level'); 
+						if($cek==0){?> 
+						<?php }else{ ?>
+
+							<a href="<?php echo base_url() ?>farmasi_expire/entri" class="btn btn-success">
     							<i class="fa fa-plus"></i>
     							Data Baru
     						</a>
+
+						<?php } ?>
 
     					</div>
     					<!--button class="btn btn-success" onclick="add_data()"><i class="glyphicon glyphicon-plus"></i> Data Baru</button-->
@@ -149,18 +156,25 @@
     					<div class="col">Keterangan Approved</div>
     				</div>
     				<div class="row" style="margin-left:3px; margin-bottom: 10px;">
-    					<div class="col-md-3 text-center" style="width: 60px; background: #FFA500; padding: 5px; margin-right:5px;color:white">
-    						<i class="glyphicon glyphicon-check" style="color:white"></i> 1
-    					</div>
-    					<div class="col-md-3 text-center" style="width: 60px; background: #FF8C00; padding: 5px; margin-right:5px;color:white">
-    						<i class="glyphicon glyphicon-check" style="color:white"></i> 2
-    					</div>
-    					<div class="col-md-3 text-center" style="width: 60px; background: #FF6347; padding: 5px; margin-right:5px;color:white">
-    						<i class="glyphicon glyphicon-check" style="color:white"></i> 3
-    					</div>
-    					<div class="col-md-3 text-center" style="width: 80px; background: green; padding: 5px; margin-right:5px; color:white">
-    						Approved
-    					</div>
+					<?php 
+						$cek =  $this->session->userdata('user_level'); 
+						if($cek==0){?> 
+						<?php }else{ ?>
+
+						<div class="col-md-3 text-center" style="width: 60px; background: #FFA500; padding: 5px; margin-right:5px;color:white">
+						<i class="glyphicon glyphicon-check" style="color:white"></i> 1
+						</div>
+						<div class="col-md-3 text-center" style="width: 60px; background: #FF8C00; padding: 5px; margin-right:5px;color:white">
+							<i class="glyphicon glyphicon-check" style="color:white"></i> 2
+						</div>
+						<div class="col-md-3 text-center" style="width: 60px; background: #FF6347; padding: 5px; margin-right:5px;color:white">
+							<i class="glyphicon glyphicon-check" style="color:white"></i> 3
+						</div>
+						<div class="col-md-3 text-center" style="width: 80px; background: green; padding: 5px; margin-right:5px; color:white">
+							Approved
+						</div>
+
+						<?php } ?>
     				</div>
     				<table id="table" class="table table-striped table-bordered" cellspacing="0" width="100%">
     					<thead>

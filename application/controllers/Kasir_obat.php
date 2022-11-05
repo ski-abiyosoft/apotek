@@ -73,6 +73,7 @@ class Kasir_obat extends CI_Controller
 
 	public function ajax_list($param)
 	{
+		$user_level   = $this->session->userdata('user_level');
 		$dat   = explode("~", $param);
 
 		if ($dat[0] == 1) {
@@ -126,16 +127,23 @@ class Kasir_obat extends CI_Controller
 			$row[] = $unit->totalsemua;
 			$row[] = $unit->lainket;
 			//if($sisa>0){			
-			$row[] =
-				'<a class="btn btn-sm btn-primary" href="' . base_url("kasir_obat/edit/" . $unit->id . "") . '" title="Edit" ><i class="glyphicon glyphicon-edit"></i></a>
+				if($user_level==0){
+			
+					$row[] = 
+					'<a class="btn btn-sm btn-warning" href="' . base_url("kasir_obat/cetak/" . $vcetak . "") . '" target="_blank" title="Cetak" ><i class="glyphicon glyphicon-print"></i></a>';
+						
+				}else{
+					$row[] = 
+					'<a class="btn btn-sm btn-primary" href="' . base_url("kasir_obat/edit/" . $unit->id . "") . '" title="Edit" ><i class="glyphicon glyphicon-edit"></i></a>
 					
 					<a class="btn btn-sm btn-warning" href="' . base_url("kasir_obat/cetak/" . $vcetak . "") . '" target="_blank" title="Cetak" ><i class="glyphicon glyphicon-print"></i></a>
-
+	
 					<a class="btn btn-sm btn-success" href="javascript:void(0)" title="Kirim Email" onclick="send_email(' . "'" . $unit->id . "'" . ",'" . $email . "'" . ')"><i class="glyphicon glyphicon-envelope"></i> </a>
 					
 					<a class="btn btn-sm btn-success" href="javascript:void(0)" title="Kirim Whatsapp" onclick="send_wa(' . "'" . $unit->id . "'" . ",'" . $hp . "'" . ')"><i class="fa fa-whatsapp"></i> </a>
 									
 					<a class="btn btn-sm btn-danger" href="javascript:void(0)" title="Batalkan" onclick="Batalkan(' . "'" . $unit->id . "'" . ')"><i class="glyphicon glyphicon-remove"></i> </a>';
+				}
 			// }
 
 			$data[] = $row;

@@ -1949,6 +1949,7 @@
                                                                     <th>Dokter</th>
                                                                     <th>Keluhan Awal</th>
                                                                     <th>Pemeriksaan</th>
+                                                                    <th>Tindakan</th>
                                                                     <th>Diagnosa Masuk</th>
                                                                     <th>Diagnosa ICD</th>
                                                                     <th>Terapi</th>
@@ -2038,6 +2039,7 @@
                                                                         </td>
                                                                         <td><?= $dhval->keluhanawal ?></td>
                                                                         <td><?= $dhval->pfisik ?></td>
+                                                                        <td><?= $dhval->tindu ?></td>
                                                                         <td><?= $dhval->diagnosa ?></td>
                                                                         <td><button class="btn btn-primary btn-xs" type="button" data-toggle="modal" data-target="#detailDiagnosa<?= $dhval->id ?>">Detail</button></td>
                                                                         <td><?= $dhval->resep ?></td>

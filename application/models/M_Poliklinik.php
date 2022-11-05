@@ -76,7 +76,7 @@ class M_Poliklinik extends CI_Model
 		
 
 		$sql = "SELECT *, CONCAT(namapas, ' ' , preposisi, ' ', DATE_FORMAT(tgllahir, '%d-%m-%Y') ) AS namapasien_lengkap
-		FROM $this->table WHERE koders ='$cabang' $polii $kodokteri $tgll $search2 and batal = '0' GROUP BY noreg	DESC $limm ";
+		FROM $this->table WHERE koders ='$cabang' $polii $kodokteri $tgll $search2 and batal = '0' GROUP BY noreg ORDER BY noreg desc $limm ";
 		return $sql;
     
     }

@@ -154,7 +154,15 @@ $this->load->view('template/body');
                                 <!-- <a href="<?php echo base_url() ?>inventory_tso/entri" class="btn btn-success"><i
                                         class="fa fa-plus"></i> Data Baru</a> -->
                             
-                                <button type="button" class="btn btn-success" data-toggle="modal" data-target="#SO"><i class="fa fa-plus"></i> <b>Data Baru</b></button>
+                                <?php 
+                                $cek =  $this->session->userdata('user_level'); 
+                                if($cek==0){?> 
+                                <?php }else{ ?>
+
+                                    <button type="button" class="btn btn-success" data-toggle="modal" data-target="#SO"><i class="fa fa-plus"></i> <b>Data Baru</b></button>
+
+                                <?php } ?>
+                                
                                 <?php if ($this->session->userdata('user_level') >= 2) : ?>
                                     <button type="button" class="btn btn-info" style="margin-left: 5px;" onclick="approveall()"><i class="fa fa-check"></i><b> Approve Semua</b></button>
                                 <?php endif; ?>

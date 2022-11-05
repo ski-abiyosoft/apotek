@@ -55,10 +55,17 @@
 								  <?php 
 								  //if($akses->uadd)
 								  {?>
-								    <a href="<?php echo base_url()?>kasir_obat/entri" class="btn btn-success">
-									<i class="fa fa-plus"></i>
-                                    Biaya Obat
-									</a>
+								    <?php 
+									$cek =  $this->session->userdata('user_level'); 
+									if($cek==0){?> 
+									<?php }else{ ?>
+
+										<a href="<?php echo base_url()?>kasir_obat/entri" class="btn btn-success">
+											<i class="fa fa-plus"></i>
+										Biaya Obat
+										</a>
+
+									<?php } ?>
 								  <?php } ?>	
 								  
 								</div>	

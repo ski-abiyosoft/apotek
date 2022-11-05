@@ -322,9 +322,10 @@ class Farmasi_bapb extends CI_Controller
 
 	public function ajax_list($param)
 	{
-		$level = $this->session->userdata('level');
-		$akses = $this->M_global->cek_menu_akses($level, 3102);
-		$dat   = explode("~", $param);
+		$user_level   = $this->session->userdata('user_level');
+		$level        = $this->session->userdata('level');
+		$akses        = $this->M_global->cek_menu_akses($level, 3102);
+		$dat          = explode("~", $param);
 		if ($dat[0] == 1) {
 			$bulan = date('m');
 			$tahun = date('Y');
@@ -357,18 +358,24 @@ class Farmasi_bapb extends CI_Controller
 			$gd = $this->db->get_where("tbl_depo", ['depocode' => $rd->gudang])->row();
 			$row[] = '<span "font-weight:bold;"><b>' . $gd->keterangan . '</b></span>';
 
-			if ($akses->uedit == 1 && $akses->udel == 1) {
+			if($user_level==0){
 				$row[] = '
-				<a class="btn btn-sm btn-primary" href="' . base_url("farmasi_bapb/edit/" . $rd->terima_no . "") . '" title="Edit" ><i class="glyphicon glyphicon-edit"></i> </a>
-			    <a target="_blank" class="btn btn-sm btn-warning" href="' . base_url("farmasi_bapb/cetak/?id=" . $rd->terima_no . "") . '" title="Cetak" ><i class="glyphicon glyphicon-print"></i> </a>
-				<a class="btn btn-sm btn-danger" href="javascript:void(0)" title="Hapus" onclick="delete_data(' . "'" . $rd->id . "'" . ",'" . $rd->terima_no . "'" . ')"><i class="glyphicon glyphicon-trash"></i> </a>';
-			} else if ($akses->uedit == 1 && $akses->udel == 0) {
-				$row[] = '<a class="btn btn-sm btn-primary" href="' . base_url("farmasi_bapb/edit/" . $rd->id . "") . '" title="Edit" ><i class="glyphicon glyphicon-edit"></i> </a> ';
-			} else if ($akses->uedit == 0 && $akses->udel == 1) {
-				$row[] = '<a class="btn btn-sm btn-danger" href="javascript:void(0)" title="Hapus" onclick="delete_data(' . "'" . $rd->id . "'" . ')"><i class="glyphicon glyphicon-trash"></i> </a>';
-			} else {
-				$row[] = '';
+				<a target="_blank" class="btn btn-sm btn-warning" href="' . base_url("farmasi_bapb/cetak/?id=" . $rd->terima_no . "") . '" title="Cetak" ><i class="glyphicon glyphicon-print"></i> </a>';
+			}else{
+				if ($akses->uedit == 1 && $akses->udel == 1) {
+					$row[] = '
+					<a class="btn btn-sm btn-primary" href="' . base_url("farmasi_bapb/edit/" . $rd->terima_no . "") . '" title="Edit" ><i class="glyphicon glyphicon-edit"></i> </a>
+					<a target="_blank" class="btn btn-sm btn-warning" href="' . base_url("farmasi_bapb/cetak/?id=" . $rd->terima_no . "") . '" title="Cetak" ><i class="glyphicon glyphicon-print"></i> </a>
+					<a class="btn btn-sm btn-danger" href="javascript:void(0)" title="Hapus" onclick="delete_data(' . "'" . $rd->id . "'" . ",'" . $rd->terima_no . "'" . ')"><i class="glyphicon glyphicon-trash"></i> </a>';
+				} else if ($akses->uedit == 1 && $akses->udel == 0) {
+					$row[] = '<a class="btn btn-sm btn-primary" href="' . base_url("farmasi_bapb/edit/" . $rd->id . "") . '" title="Edit" ><i class="glyphicon glyphicon-edit"></i> </a> ';
+				} else if ($akses->uedit == 0 && $akses->udel == 1) {
+					$row[] = '<a class="btn btn-sm btn-danger" href="javascript:void(0)" title="Hapus" onclick="delete_data(' . "'" . $rd->id . "'" . ')"><i class="glyphicon glyphicon-trash"></i> </a>';
+				} else {
+					$row[] = '';
+				}
 			}
+			
 
 			$data[] = $row;
 		}

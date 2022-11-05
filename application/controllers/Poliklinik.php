@@ -82,8 +82,9 @@ class Poliklinik extends CI_Controller {
 	}
 
 	public function ajax_list( $param ){
-		$cabang	= $this->session->userdata("unit");
-		$dat   = explode("~",$param);
+		$user_level   = $this->session->userdata('user_level');
+		$cabang       = $this->session->userdata("unit");
+		$dat          = explode("~",$param);
 		if($dat[0]==1){
 			$bulan       = date('m');
 			$tahun       = date('Y');
@@ -134,8 +135,16 @@ class Poliklinik extends CI_Controller {
 
 			$no++;
 			$row = array();
-			$row[] = '
-			<i class="fa fa-solid fa-address-card" onclick="add_list('."'".$unit->noreg."'".');" data-toggle="modal"></i>';
+			
+			if($user_level==0){
+				
+				$row[] = 
+				'<i class="fa fa-solid fa-address-card"></i>';
+					
+			}else{
+				$row[] = '<i class="fa fa-solid fa-address-card" onclick="add_list('."'".$unit->noreg."'".');" data-toggle="modal"></i>';
+			}
+			
 			// $row[] = $periksa_perawat;
 			// $row[] = $periksa_dokter;
 			$row[] = $unit->antrino. '<button type="submit">call</button>';

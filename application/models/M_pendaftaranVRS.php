@@ -51,7 +51,7 @@ class M_pendaftaranVRS extends CI_Model {
 	var $tablerj = 'pasien_rajal';
 	var $column_orderrj = array('id', 'koders','uidlogin','antrino', 'noreg', 'rekmed', 'tglmasuk', 'namapas', 'tujuan', 'nadokter', 'cust_nama', 'jenispas', 'batal', 'keluar', 'nobpjs');
 	var $column_searchrj = array('id', 'koders','uidlogin','antrino', 'noreg', 'rekmed', 'tglmasuk', 'namapas', 'tujuan', 'nadokter', 'cust_nama', 'jenispas', 'batal', 'keluar', 'nobpjs');
-	var $orderrj = array('pasien_rajal.koders' => 'asc'); 
+	var $orderrj = array('pasien_rajal.noreg' => 'desc'); 
 
 	private function _get_datatables_query($jns, $bulan, $tahun)
 	{

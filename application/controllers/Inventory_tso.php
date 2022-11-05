@@ -140,7 +140,16 @@ class Inventory_tso extends CI_Controller
 							$cek = $this->db->query("SELECT * FROM tbl_barangstock JOIN tbl_aposesuai ON tbl_barangstock.kodebarang=tbl_aposesuai.kodebarang WHERE tbl_barangstock.kodebarang = '$item->kodebarang' AND tbl_barangstock.koders = '$cabang' and menyetujui = '$userid' GROUP BY tbl_barangstock.id DESC")->row_array();
 							if ($userid == $cek['menyetujui']) {
 								if ($item->approve != 1) {
-									$row[] = '<a class="btn btn-sm btn-info" href="javascript:void(0)" title="Approve" onclick="approve(' . "'" . $item->id . "'" . ",'" . $item->kodebarang . "'" . ')"><i class="glyphicon glyphicon-check"></i></a>';
+
+									if($user_level==0){
+				
+										$row[] = 
+										'';
+											
+									}else{
+										$row[] = '<a class="btn btn-sm btn-info" href="javascript:void(0)" title="Approve" onclick="approve(' . "'" . $item->id . "'" . ",'" . $item->kodebarang . "'" . ')"><i class="glyphicon glyphicon-check"></i></a>';
+									}
+
 								} else {
 									$row[] = '';
 								}
@@ -195,8 +204,15 @@ class Inventory_tso extends CI_Controller
 						$cek = $this->db->query("SELECT * FROM tbl_barangstock JOIN tbl_aposesuai ON tbl_barangstock.kodebarang=tbl_aposesuai.kodebarang WHERE tbl_barangstock.kodebarang = '$item->kodebarang' AND tbl_barangstock.koders = '$cabang' and menyetujui = '$userid' GROUP BY tbl_barangstock.id DESC")->row_array();
 						if ($userid == $cek['menyetujui']) {
 							if ($item->approve != 1) {
-								$row[] = '<a class="btn btn-sm btn-info" href="javascript:void(0)" title="Approve" onclick="approve(' . "'" . $item->id . "'" . ",'" . $item->kodebarang . "'" . ')"><i class="glyphicon glyphicon-check"></i></a>
-							';
+								if($user_level==0){
+				
+									$row[] = 
+									'';
+										
+								}else{
+									$row[] = '<a class="btn btn-sm btn-info" href="javascript:void(0)" title="Approve" onclick="approve(' . "'" . $item->id . "'" . ",'" . $item->kodebarang . "'" . ')"><i class="glyphicon glyphicon-check"></i></a> ';
+								}
+								
 							} else {
 								$row[] = '';
 							}
@@ -268,6 +284,11 @@ class Inventory_tso extends CI_Controller
 		$this->db->where('id', $id);
 		$this->db->update('tbl_aposesuai');
 		$sesuai = $this->db->get_where("tbl_aposesuai", ['id' => $id])->row();
+		if($sesuai->typestock == 'so'){
+			$this->db->set("apoperiode", date('Y-m-d'));
+			$this->db->where("koders", $this->session->userdata('unit'));
+			$this->db->update("tbl_periode");
+		}
 		$xxx = $sesuai->saldo + $sesuai->sesuai;
 		$tanggal = date("Y-m-d");
 		$this->db->query("UPDATE tbl_barangstock set hasilso = $sesuai->hasilso, sesuai = $sesuai->sesuai, saldoakhir= $xxx, tglso = '$tanggal' where kodebarang = '$sesuai->kodebarang' and koders = '$sesuai->koders' and gudang = '$sesuai->gudang'");
@@ -288,14 +309,19 @@ class Inventory_tso extends CI_Controller
 			$this->db->query("UPDATE tbl_barangstock set hasilso = $sesuai->hasilso, sesuai = $sesuai->sesuai, saldoakhir= $xxx, tglso = '$tanggal' where kodebarang = '$sesuai->kodebarang' and koders = '$sesuai->koders' and gudang = '$sesuai->gudang'");
 		}
 		
-
-
-
-
 		$this->db->set('approve', 1);
 		$this->db->where('approve', 0);
 		$this->db->where('koders', $cabang);
 		$this->db->update('tbl_aposesuai');
+
+		$sesuain = $this->db->get_where("tbl_aposesuai", ["koders"=>$cabang, "approve"=>1])->result();
+		foreach($sesuain as $sn){
+			if($sn->typestock == 'so'){
+				$this->db->set("apoperiode", date('Y-m-d'));
+				$this->db->where("koders", $this->session->userdata('unit'));
+				$this->db->update("tbl_periode");
+			}
+		}
 
 		$this->db->set('menyetujui', $userid);
 		$this->db->where('koders', $cabang);
@@ -366,9 +392,6 @@ class Inventory_tso extends CI_Controller
 						$this->db->query("insert into tbl_barangstock(koders, kodebarang, gudang, lasttr, sesuai, menyetujui) values('$cabang','$_kode','$gudang','$tanggal', '$_plusminus', '$yangsetuju')");
 					} else {
 						$this->db->query("insert into tbl_barangstock(koders, kodebarang, gudang, lasttr, sesuai, menyetujui) values('$cabang','$_kode','$gudang','$tanggal', '$_plusminus', '$yangsetuju')");
-						$this->db->set("apoperiode", date('Y-m-d'));
-						$this->db->where("koders", $this->session->userdata('unit'));
-						$this->db->update("tbl_periode");
 					}
 				}
 				$datad = array(

@@ -65,10 +65,17 @@ $this->load->view('template/body');
 
           <div class="btn-group">
             <?php if ($akses->uadd) { ?>
-            <a href="<?php echo base_url() ?>penjualan_cabang/entri" class="btn btn-success">
-              <i class="fa fa-plus"></i>
-              Data Baru
-            </a>
+              <?php 
+              $cek =  $this->session->userdata('user_level'); 
+              if($cek==0){?> 
+              <?php }else{ ?>
+
+                <a href="<?php echo base_url() ?>penjualan_cabang/entri" class="btn btn-success">
+                  <i class="fa fa-plus"></i>
+                  Data Baru
+                </a>
+
+              <?php } ?>
             <?php } ?>
           </div>
 

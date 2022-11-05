@@ -44,7 +44,15 @@
                 <div class="portlet-body">
                     <div class="table-toolbar">
                         <div class="btn-group">
-                            <a href="<?php echo base_url()?>approval_ccdc/entri" class="btn btn-success"><i class="fa fa-plus fa-fw"></i>&nbsp;Data Baru</a>
+                            <?php 
+                            $cek =  $this->session->userdata('user_level'); 
+                            if($cek==0){?> 
+                            <?php }else{ ?>
+
+                                <a href="<?php echo base_url()?>approval_ccdc/entri" class="btn btn-success">
+                                <i class="fa fa-plus fa-fw"></i>&nbsp;Data Baru</a>
+
+                            <?php } ?>
 						</div>
                         <div class="btn-group pull-right">
                             <button class="btn dropdown-toggle" data-toggle="dropdown">Data <i class="fa fa-angle-down"></i></button>

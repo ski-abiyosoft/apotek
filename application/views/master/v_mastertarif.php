@@ -44,7 +44,13 @@ $this->load->view('template/body');
         </div>
         <div class="btn-group pull-right" style="margin-bottom: 20px;">
           <label>Cabang : </label>
-          <select class="form-control input-large select2_el_cabang_all" id="cabang" name="cabang" onchange="getcabang()"></select>
+          <select class="form-control input-large select2_el_cabang_all" id="cabang" name="cabang" onchange="getcabang()">
+            <?php if (isset($_GET["cabang"])) :
+              $rs = $this->db->query("SELECT * FROM tbl_namers WHERE koders = '$_GET[cabang]'")->row();
+            ?>
+              <option value="<?= $rs->koders ?>" selected><?= $rs->namars ?></option>
+            <?php endif; ?>
+          </select>
         </div>
       </div>
       <div class="portlet-body">
