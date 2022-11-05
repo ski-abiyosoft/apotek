@@ -317,7 +317,6 @@ class Inventory_mutasi_gudang extends CI_Controller
 		}
 	}
 
-
 	public function save($param)
 	{
 		$cek = $this->session->userdata('level');

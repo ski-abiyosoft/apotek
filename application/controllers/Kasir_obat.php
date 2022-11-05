@@ -273,6 +273,12 @@ class Kasir_obat extends CI_Controller
 		);
 
 		$insert = $this->db->insert('tbl_kasir', $data);
+		
+		// update pasien
+		$this->db->set('ada', 0);
+		$this->db->where('lastnoreg', $noreg);
+		$this->db->update('tbl_pasien');
+		// end update pasien
 
 
 		$bayar_bank = $this->input->post('bayar_bank');

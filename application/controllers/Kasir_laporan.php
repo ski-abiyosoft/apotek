@@ -1866,7 +1866,7 @@ class Kasir_laporan extends CI_Controller
 				case 2;
 					header("Cache-Control: no-cache, no-store, must-revalidate");
 					header("Content-Type: application/vnd-ms-excel");
-					header("Content-Disposition: attachment; filename= $judul.xlx");
+					header("Content-Disposition: attachment; filename= $judul.xls");
 					$this->load->view('app/master_cetak', $data);
 					break;
 			}

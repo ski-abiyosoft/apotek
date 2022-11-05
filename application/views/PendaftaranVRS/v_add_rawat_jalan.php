@@ -26,7 +26,6 @@
   }
 </style>
 
-
 <div class="row" style="margin-bottom:20px;">
   <div class="col-md-12">
     <h3 class="page-title">
@@ -1231,7 +1230,10 @@ function getdes(kode) {
 $(".select2_dokterx").select2();
 $(".select2_lokasix").select2();
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> 2b048ebe2756fae81a8015c3e19900a3e1c0e10a
 function update() {
   var select = document.getElementById('poliklinik1').value;
   $.ajax({
@@ -2118,6 +2120,10 @@ function Batalkan(id) {
   });
 }
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> 2b048ebe2756fae81a8015c3e19900a3e1c0e10a
 /**
  * Script untuk memilih pasien lama
  * 

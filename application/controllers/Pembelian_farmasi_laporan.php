@@ -1345,7 +1345,6 @@ class Pembelian_farmasi_laporan extends CI_Controller
 		];
 		$this->load->view('LaporanFarmasi/v_lap_farm4', $data);
 	}
-
 	function ctk_112($cek = '', $thnn = '')
 	{
 		$profile = $this->M_global->_LoadProfileLap();
@@ -1379,7 +1378,6 @@ class Pembelian_farmasi_laporan extends CI_Controller
 
 		$this->load->view('LaporanFarmasi/v_lap_farm5', $data);
 	}
-
 	function ctk_113($cek = '', $thnn = '')
 	{
 		$profile = $this->M_global->_LoadProfileLap();
@@ -1423,7 +1421,6 @@ class Pembelian_farmasi_laporan extends CI_Controller
 
 		$this->load->view('LaporanFarmasi/v_lap_farm6', $data);
 	}
-
 	function ctk_114($cek = '', $thnn = '')
 	{
 		$profile = $this->M_global->_LoadProfileLap();
@@ -1483,7 +1480,6 @@ class Pembelian_farmasi_laporan extends CI_Controller
 
 		$this->load->view('LaporanFarmasi/v_lap_farm7', $data);
 	}
-
 	function ctk_115($cek = '', $thnn = '')
 	{
 		$profile = $this->M_global->_LoadProfileLap();
@@ -1578,7 +1574,6 @@ class Pembelian_farmasi_laporan extends CI_Controller
 
 		$this->load->view('LaporanFarmasi/v_lap_farm8', $data);
 	}
-
 	public function cetak()
 	{
 		$cek = $this->session->userdata('level');
@@ -2169,17 +2164,17 @@ class Pembelian_farmasi_laporan extends CI_Controller
 	}
 
 	public function cetak2(){
-		$cekpdf = $this->input->get("pdf");
-		$cek = $this->session->userdata('level');
-		$idlap = $this->input->get('idlap');
-		$unit = $this->input->get('cabang');
+		$cekpdf   = $this->input->get("pdf");
+		$cek      = $this->session->userdata('level');
+		$idlap    = $this->input->get('idlap');
+		$unit     = $this->input->get('cabang');
 		$tanggal1 = $this->input->get('tanggal1');
 		$tanggal2 = $this->input->get('tanggal2');
-		$vendorx = $this->input->get('vendor');
-		$body = '';
-		$date = "Dari Tgl : ".date("d-m-Y", strtotime($tanggal1))." S/D ".date("d-m-Y", strtotime($tanggal2));
-		$profile = data_master('tbl_namers', array('koders' => $unit));
-		$kota  = $profile->kota;
+		$vendorx  = $this->input->get('vendor');
+		$body     = '';
+		$date     = "Dari Tgl : ".date("d-m-Y", strtotime($tanggal1))." S/D ".date("d-m-Y", strtotime($tanggal2));
+		$profile  = data_master('tbl_namers', array('koders' => $unit));
+		$kota     = $profile->kota;
 		if (!empty($cek)) {
 			if($idlap == 101){
 				$position = 'L';

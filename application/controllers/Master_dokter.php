@@ -34,11 +34,11 @@ class Master_dokter extends CI_Controller {
 		$cek = $this->session->userdata('level');				
 		if(!empty($cek))
 		{
-			$data['cabang'] = $this->db->select('koders, namars')->get('tbl_namers')->result();
-			$data['unit'] = $this->db->select('kodepos, namapost')->get('tbl_namapos')->result();
-			$data['dokter'] = $this->db->get_where("tbl_dokter", ['jenispegawai' => 1])->result();
-			$data['poli'] = $this->db->get("tbl_namapos")->result();
-			$data['namers'] = $this->db->get("tbl_namers")->result();
+			$data['cabang']    = $this->db->select('koders, namars')->get('tbl_namers')->result();
+			$data['unit']      = $this->db->select('kodepos, namapost')->get('tbl_namapos')->result();
+			$data['dokter']    = $this->db->get_where("tbl_dokter", ['jenispegawai' => 1])->result();
+			$data['poli']      = $this->db->get("tbl_namapos")->result();
+			$data['namers']    = $this->db->get("tbl_namers")->result();
 			$this->load->view('master/v_master_dokter2', $data);
 		} else {
 			header('location:'.base_url());

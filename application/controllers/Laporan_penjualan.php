@@ -615,104 +615,104 @@ class Laporan_penjualan extends CI_Controller
 			$npwp      = $kop['npwp'];
 			$chari  = '';
 			$chari .= "
-                    <table style=\"border-collapse:collapse;font-family: Century Gothic; font-size:12px; color:#000;\" width=\"100%\"  border=\"0\" cellspacing=\"0\" cellpadding=\"0\">
-                         <thead>
-                              <tr>
-                                   <td rowspan=\"6\" align=\"center\">
-                                        <img src=\"" . base_url() . "assets/img_user/$avatar\"  width=\"70\" height=\"70\" />
-                                   </td>
-                                   <td colspan=\"20\">
-                                        <b>
-                                             <tr>
-                                                  <td style=\"font-size:10px;border-bottom: none;\"><b><br>$namars</b></td>
-                                             </tr>
-                                             <tr>
-                                                  <td style=\"font-size:9px;\">$alamat</td>
-                                             </tr>
-                                             <tr>
-                                                  <td style=\"font-size:9px;\">$alamat2</td>
-                                             </tr>
-                                             <tr>
-                                                  <td style=\"font-size:9px;\">Wa :$whatsapp    Telp :$phone </td>
-                                             </tr>
-                                             <tr>
-                                                  <td style=\"font-size:9px;\">No. NPWP : $npwp</td>
-                                             </tr>
-                                        </b>
-                                   </td>
-                              </tr>
-                         </table>";
+					<table style=\"border-collapse:collapse;font-family: Century Gothic; font-size:12px; color:#000;\" width=\"100%\"  border=\"0\" cellspacing=\"0\" cellpadding=\"0\">
+						<thead>
+							<tr>
+								<td rowspan=\"6\" align=\"center\">
+										<img src=\"" . base_url() . "assets/img_user/$avatar\"  width=\"70\" height=\"70\" />
+								</td>
+								<td colspan=\"20\">
+										<b>
+											<tr>
+												<td style=\"font-size:10px;border-bottom: none;\"><b><br>$namars</b></td>
+											</tr>
+											<tr>
+												<td style=\"font-size:9px;\">$alamat</td>
+											</tr>
+											<tr>
+												<td style=\"font-size:9px;\">$alamat2</td>
+											</tr>
+											<tr>
+												<td style=\"font-size:9px;\">Wa :$whatsapp    Telp :$phone </td>
+											</tr>
+											<tr>
+												<td style=\"font-size:9px;\">No. NPWP : $npwp</td>
+											</tr>
+										</b>
+								</td>
+							</tr>
+						</table>";
 			$chari .= "
-                         <table style=\"border-collapse:collapse;font-family: tahoma; font-size:12px\" width=\"100%\" align=\"center\" border=\"0\">
-                              <tr>
-                                   <td> &nbsp; </td>
-                              </tr> 
-                         </table>";
+						<table style=\"border-collapse:collapse;font-family: tahoma; font-size:12px\" width=\"100%\" align=\"center\" border=\"0\">
+							<tr>
+								<td> &nbsp; </td>
+							</tr> 
+						</table>";
 			$chari .= "
-                    <table style=\"border-collapse:collapse;font-family: tahoma; font-size:2px\" width=\"100%\" align=\"center\" border=\"1\">     
-                         <tr>
-                              <td style=\"border-top: none;border-right: none;border-left: none;\"></td>
-                         </tr> 
-                    </table>";
+					<table style=\"border-collapse:collapse;font-family: tahoma; font-size:2px\" width=\"100%\" align=\"center\" border=\"1\">     
+						<tr>
+							<td style=\"border-top: none;border-right: none;border-left: none;\"></td>
+						</tr> 
+					</table>";
 			$chari .= "
-                    <table style=\"border-collapse:collapse;font-family: tahoma; font-size:2px\" width=\"100%\" align=\"center\" border=\"1\">     
-                         <tr>
-                              <td style=\"border-top: none;border-right: none;border-left: none;\"></td>
-                         </tr> 
-                    </table>";
+					<table style=\"border-collapse:collapse;font-family: tahoma; font-size:2px\" width=\"100%\" align=\"center\" border=\"1\">     
+						<tr>
+							<td style=\"border-top: none;border-right: none;border-left: none;\"></td>
+						</tr> 
+					</table>";
 			$chari .= "
-                    <table style=\"border-collapse:collapse;font-family: tahoma; font-size:12px\" width=\"100%\" align=\"center\" border=\"0\">
-                         <tr>
-                              <td> &nbsp; </td>
-                         </tr> 
-                    </table>";
+					<table style=\"border-collapse:collapse;font-family: tahoma; font-size:12px\" width=\"100%\" align=\"center\" border=\"0\">
+						<tr>
+							<td> &nbsp; </td>
+						</tr> 
+					</table>";
 			$chari .= "
-                    <table style=\"border-collapse:collapse;font-family: tahoma; font-size:12px\" width=\"100%\" align=\"center\" border=\"0\" cellspacing=\"1\" cellpadding=\"3\">
-                         <tr>
-                              <td width=\"15%\" style=\"text-align:left;border-bottom: none;\">Dari Gudang</td>
-                              <td width=\"5%\" style=\"text-align:center;border-bottom: none;\">:</td>
-                              <td width=\"30%\" style=\"text-align:left;border-bottom: none;\">" . $gdx . "</td>
-                              <td width=\"15%\" style=\"text-align:left;border-bottom: none;\">Tanggal</td>
-                              <td width=\"5%\" style=\"text-align:center;border-bottom: none;\">:</td>
-                              <td width=\"30%\" style=\"text-align:left;border-bottom: none;\">" . date('d-m-Y', strtotime($dari)) . ' / ' . date('d-m-Y', strtotime($sampai)) . "</td>
-                         </tr>
-                    </table>";
+					<table style=\"border-collapse:collapse;font-family: tahoma; font-size:12px\" width=\"100%\" align=\"center\" border=\"0\" cellspacing=\"1\" cellpadding=\"3\">
+						<tr>
+							<td width=\"15%\" style=\"text-align:left;border-bottom: none;\">Dari Gudang</td>
+							<td width=\"5%\" style=\"text-align:center;border-bottom: none;\">:</td>
+							<td width=\"30%\" style=\"text-align:left;border-bottom: none;\">" . $gdx . "</td>
+							<td width=\"15%\" style=\"text-align:left;border-bottom: none;\">Tanggal</td>
+							<td width=\"5%\" style=\"text-align:center;border-bottom: none;\">:</td>
+							<td width=\"30%\" style=\"text-align:left;border-bottom: none;\">" . date('d-m-Y', strtotime($dari)) . ' / ' . date('d-m-Y', strtotime($sampai)) . "</td>
+						</tr>
+					</table>";
 			$chari .= "
-                    <table style=\"border-collapse:collapse;font-family: Tahoma; font-size:11px\" width=\"100%\" align=\"center\" border=\"1\" cellspacing=\"1\" cellpadding=\"3\">
-                         <thead>
-                              <tr>
-                                   <td style=\"border:0\" align=\"center\"><br></td>
-                              </tr>
-                              <tr>
-                                   <td width=\"3%\" align=\"center\" rowspan=\"2\"><br>No</td>
-                                   <td width=\"4%\" align=\"center\" rowspan=\"2\"><br>Kode Barang</td>
-                                   <td width=\"4%\" align=\"center\" rowspan=\"2\"><br>Nama Barang</td>
-                                   <td width=\"4%\" align=\"center\" rowspan=\"2\"><br>Satuan</td>
-                                   <td width=\"24%\" align=\"center\" colspan=\"2\"><br>Tunai</td>
-                                   <td width=\"24%\" align=\"center\" colspan=\"2\"><br>Lokal</td>
-                                   <td width=\"24%\" align=\"center\" colspan=\"2\"><br>Kirim</td>
-                                   <td width=\"24%\" align=\"center\" colspan=\"2\"><br>Spa</td>
-                                   <td width=\"24%\" align=\"center\" colspan=\"2\"><br>Apotik</td>
-                                   <td width=\"24%\" align=\"center\" colspan=\"2\"><br>Cabang</td>
-                                   <td width=\"24%\" align=\"center\" colspan=\"2\"><br>Total</td>
-                              </tr>
-                              <tr>
-                                   <td width=\"4%\" align=\"center\"><br>Qty</td>
-                                   <td width=\"4%\" align=\"center\"><br>Rp</td>
-                                   <td width=\"4%\" align=\"center\"><br>Qty</td>
-                                   <td width=\"4%\" align=\"center\"><br>Rp</td>
-                                   <td width=\"4%\" align=\"center\"><br>Qty</td>
-                                   <td width=\"4%\" align=\"center\"><br>Rp</td>
-                                   <td width=\"4%\" align=\"center\"><br>Qty</td>
-                                   <td width=\"4%\" align=\"center\"><br>Rp</td>
-                                   <td width=\"4%\" align=\"center\"><br>Qty</td>
-                                   <td width=\"4%\" align=\"center\"><br>Rp</td>
-                                   <td width=\"4%\" align=\"center\"><br>Qty</td>
-                                   <td width=\"4%\" align=\"center\"><br>Rp</td>
-                                   <td width=\"4%\" align=\"center\"><br>Qty</td>
-                                   <td width=\"4%\" align=\"center\"><br>Rp</td>
-                              </tr>
-                         </thead>";
+					<table style=\"border-collapse:collapse;font-family: Tahoma; font-size:11px\" width=\"100%\" align=\"center\" border=\"1\" cellspacing=\"1\" cellpadding=\"3\">
+						<thead>
+							<tr>
+								<td style=\"border:0\" align=\"center\"><br></td>
+							</tr>
+							<tr>
+								<td width=\"3%\" align=\"center\" rowspan=\"2\"><br>No</td>
+								<td width=\"4%\" align=\"center\" rowspan=\"2\"><br>Kode Barang</td>
+								<td width=\"4%\" align=\"center\" rowspan=\"2\"><br>Nama Barang</td>
+								<td width=\"4%\" align=\"center\" rowspan=\"2\"><br>Satuan</td>
+								<td width=\"24%\" align=\"center\" colspan=\"2\"><br>Tunai</td>
+								<td width=\"24%\" align=\"center\" colspan=\"2\"><br>Lokal</td>
+								<td width=\"24%\" align=\"center\" colspan=\"2\"><br>Kirim</td>
+								<td width=\"24%\" align=\"center\" colspan=\"2\"><br>Spa</td>
+								<td width=\"24%\" align=\"center\" colspan=\"2\"><br>Apotik</td>
+								<td width=\"24%\" align=\"center\" colspan=\"2\"><br>Cabang</td>
+								<td width=\"24%\" align=\"center\" colspan=\"2\"><br>Total</td>
+							</tr>
+							<tr>
+								<td width=\"4%\" align=\"center\"><br>Qty</td>
+								<td width=\"4%\" align=\"center\"><br>Rp</td>
+								<td width=\"4%\" align=\"center\"><br>Qty</td>
+								<td width=\"4%\" align=\"center\"><br>Rp</td>
+								<td width=\"4%\" align=\"center\"><br>Qty</td>
+								<td width=\"4%\" align=\"center\"><br>Rp</td>
+								<td width=\"4%\" align=\"center\"><br>Qty</td>
+								<td width=\"4%\" align=\"center\"><br>Rp</td>
+								<td width=\"4%\" align=\"center\"><br>Qty</td>
+								<td width=\"4%\" align=\"center\"><br>Rp</td>
+								<td width=\"4%\" align=\"center\"><br>Qty</td>
+								<td width=\"4%\" align=\"center\"><br>Rp</td>
+								<td width=\"4%\" align=\"center\"><br>Qty</td>
+								<td width=\"4%\" align=\"center\"><br>Rp</td>
+							</tr>
+						</thead>";
 			$no = 1;
 			foreach ($query as $q) {
 				$kodebarang = $q->kodebarang;
@@ -734,25 +734,25 @@ class Laporan_penjualan extends CI_Controller
 				$jualtotal_rp = number_format($q->jualtotal_rp);
 
 				$chari .= "<tr>
-                                   <td align=\"left\">" . $no++ . "</td>
-                                   <td align=\"left\">$kodebarang</td>
-                                   <td align=\"left\">$namabarang</td>
-                                   <td align=\"left\">$satuan</td>
-                                   <td align=\"right\">$qty_tunai</td>
-                                   <td align=\"right\">$rp_tunai</td>
-                                   <td align=\"right\">$qty_lokal</td>
-                                   <td align=\"right\">$rp_lokal</td>
-                                   <td align=\"right\">$qty_kirim</td>
-                                   <td align=\"right\">$rp_kirim</td>
-                                   <td align=\"right\">$qty_spa</td>
-                                   <td align=\"right\">$rp_spa</td>
-                                   <td align=\"right\">$qty_apotik</td>
-                                   <td align=\"right\">$rp_apotik</td>
-                                   <td align=\"right\">$qty_cabang</td>
-                                   <td align=\"right\">$rp_cabang</td>
-                                   <td align=\"right\">$jualtotal_qty</td>
-                                   <td align=\"right\">$jualtotal_rp</td>
-                              </tr>";
+								<td align=\"left\">" . $no++ . "</td>
+								<td align=\"left\">$kodebarang</td>
+								<td align=\"left\">$namabarang</td>
+								<td align=\"left\">$satuan</td>
+								<td align=\"right\">$qty_tunai</td>
+								<td align=\"right\">$rp_tunai</td>
+								<td align=\"right\">$qty_lokal</td>
+								<td align=\"right\">$rp_lokal</td>
+								<td align=\"right\">$qty_kirim</td>
+								<td align=\"right\">$rp_kirim</td>
+								<td align=\"right\">$qty_spa</td>
+								<td align=\"right\">$rp_spa</td>
+								<td align=\"right\">$qty_apotik</td>
+								<td align=\"right\">$rp_apotik</td>
+								<td align=\"right\">$qty_cabang</td>
+								<td align=\"right\">$rp_cabang</td>
+								<td align=\"right\">$jualtotal_qty</td>
+								<td align=\"right\">$jualtotal_rp</td>
+							</tr>";
 			}
 			$chari .= "</table>";
 			$judul = '02 LAPORAN PENJUALAN OBAT';
@@ -876,8 +876,7 @@ class Laporan_penjualan extends CI_Controller
 				} else {
 					$depox = '';
 				}
-				$query = $this->db->query("
-				SELECT p.*,
+				$query = $this->db->query("SELECT p.*,
 				qty_tunai +qty_lokal +qty_kirim +qty_spa +qty_apotik as jualtotal_qty, 
 				rp_tunai +rp_lokal +rp_kirim +rp_spa +rp_apotik as jualtotal_rp 
 				FROM(

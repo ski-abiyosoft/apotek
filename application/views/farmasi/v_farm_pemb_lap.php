@@ -94,7 +94,7 @@ $this->load->view('template/body');
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="form-group">
-                                    <label class="col-md-3 control-label">KLINIK ESTETIKA</label>
+                                    <label class="col-md-3 control-label">KLINIK</label>
                                     <div class="col-md-9">
                                         <input style="background-color:#99ff33; color:black" type="text" name="cabang" id="cabang" class="form-control" disabled>
 
@@ -264,7 +264,7 @@ $this->load->view('template/v_report');
         var tanggal2 = $('#tanggal2').val();
         var vendor = document.getElementById('vendor').value;
         // console.log(idlap);
-        location.href = "<?= site_url() ?>Pembelian_farmasi_laporan/cetak2?idlap="+' + idlap + '&cabang=' + cabang + '&tanggal1=' + tanggal1 + '&tanggal2=' + tanggal2 + '&vendor=' + vendor + '&pdf=1';
+        location.href = "<?= site_url() ?>Pembelian_farmasi_laporan/cetak2?idlap="+' + idlap + '&cabang=' + cabang + '&tanggal1=' + tanggal1 + '&tanggal2=' + tanggal2 + '&vendor=' + vendor + '&pdf=2';
         // $.ajax({
         //     url: '<?= site_url('Pembelian_farmasi_laporan/excel?idlap=') ?>' + idlap + '&cabang=' + cabang +
         //         '&tgl1=' + tanggal1 + '&tgl2=' + tanggal2 + '&vendor=' + vendor,

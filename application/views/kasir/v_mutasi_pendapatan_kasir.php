@@ -1,5 +1,5 @@
 <?php 
-	$this->load->view('template/header');
+    $this->load->view('template/header');
     $this->load->view('template/body');    	  
 ?>
 <link href="<?php echo base_url('assets/bootstrap/css/bootstrap.min.css-')?>" rel="stylesheet">
@@ -54,7 +54,7 @@
                             Mutasi Baru</a>
 
                         <?php } ?>
-                       
+                    
                     </div>
                     <div class="btn-group pull-right">
                         <button class="btn dropdown-toggle" data-toggle="dropdown">Data <i

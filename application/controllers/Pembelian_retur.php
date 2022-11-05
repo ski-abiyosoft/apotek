@@ -1,6 +1,6 @@
-<?php if (!defined('BASEPATH')) exit('No direct script access allowed');
-class Pembelian_retur extends CI_Controller
-{
+  <?php if (!defined('BASEPATH')) exit('No direct script access allowed');
+  class Pembelian_retur extends CI_Controller
+  {
   public function __construct()
   {
     parent::__construct();
@@ -32,7 +32,7 @@ class Pembelian_retur extends CI_Controller
 
   public function data_list($param)
   {
-		$user_level   = $this->session->userdata('user_level');
+    $user_level   = $this->session->userdata('user_level');
     $dat = explode("~", $param);
     if ($dat[0] == 1) {
       $bulan  = $this->M_global->_periodebulan();
@@ -56,7 +56,7 @@ class Pembelian_retur extends CI_Controller
       $row[]  = $vendor->vendor_name;
 
       if($user_level==0){
-				
+        
           $row[]  = 
           '<div style="text-align: center;">
           <a class="btn btn-sm btn-warning" href="' . base_url("Pembelian_retur/cetak/?id=" . $unit->retur_no . "") . '" target="_blank" title="Cetak" ><i class="glyphicon glyphicon-print"></i></a></div>';
@@ -422,151 +422,151 @@ class Pembelian_retur extends CI_Controller
     $cek = $this->session->userdata('level');
     $unit = $this->session->userdata('unit');
     if (!empty($cek)) {
-      $unit = $this->session->userdata('unit');
-      $avatar = $this->session->userdata('avatar_cabang');
-      $kop       = $this->M_cetak->kop($unit);
-      $profile = data_master('tbl_namers', array('koders' => $unit));
-      $namars    = $kop['namars'];
-      $alamat    = $kop['alamat'];
-      $alamat2   = $kop['alamat2'];
-      $alamat3  = $profile->kota;
-      $kota      = $kop['kota'];
-      $phone     = $kop['phone'];
-      $whatsapp  = $kop['whatsapp'];
-      $npwp      = $kop['npwp'];
-      $chari  = '';
-      $param = $this->input->get('id');
-      $queryh = "SELECT * from tbl_baranghreturbeli inner join 
-			tbl_vendor on tbl_baranghreturbeli.vendor_id=tbl_vendor.vendor_id 
-			where tbl_baranghreturbeli.retur_no = '$param'";
+      $unit       = $this->session->userdata('unit');
+      $avatar     = $this->session->userdata('avatar_cabang');
+      $kop        = $this->M_cetak->kop($unit);
+      $profile    = data_master('tbl_namers', array('koders' => $unit));
+      $namars     = $kop['namars'];
+      $alamat     = $kop['alamat'];
+      $alamat2    = $kop['alamat2'];
+      $alamat3    = $profile->kota;
+      $kota       = $kop['kota'];
+      $phone      = $kop['phone'];
+      $whatsapp   = $kop['whatsapp'];
+      $npwp       = $kop['npwp'];
+      $chari      = '';
+      $param      = $this->input->get('id');
+      $queryh     = "SELECT * from tbl_baranghreturbeli inner join
+      tbl_vendor on tbl_baranghreturbeli.vendor_id=tbl_vendor.vendor_id 
+      where tbl_baranghreturbeli.retur_no = '$param'";
       $queryd = "SELECT tbl_barangdreturbeli.*, tbl_barang.namabarang from tbl_barangdreturbeli inner join 
-			tbl_barang on tbl_barangdreturbeli.kodebarang=tbl_barang.kodebarang
-			where retur_no = '$param'";
+      tbl_barang on tbl_barangdreturbeli.kodebarang=tbl_barang.kodebarang
+      where retur_no = '$param'";
       $detil  = $this->db->query($queryd)->result();
       $header = $this->db->query($queryh)->row();
       $gudangz = $this->db->get_where('tbl_depo', ['depocode' => $header->gudang])->row_array();
       $chari .= "
                     <table style=\"border-collapse:collapse;font-family: Century Gothic; font-size:12px; color:#000;\" width=\"100%\"  border=\"0\" cellspacing=\"0\" cellpadding=\"0\">
-                         <thead>
+                          <thead>
                               <tr>
-                                   <td rowspan=\"6\" align=\"center\">
+                                    <td rowspan=\"6\" align=\"center\">
                                         <img src=\"" . base_url() . "assets/img_user/$avatar\"  width=\"70\" height=\"70\" />
-                                   </td>
-                                   <td colspan=\"20\">
+                                    </td>
+                                    <td colspan=\"20\">
                                         <b>
-                                             <tr>
+                                              <tr>
                                                   <td style=\"font-size:10px;border-bottom: none;\"><b><br>$namars</b></td>
-                                             </tr>
-                                             <tr>
+                                              </tr>
+                                              <tr>
                                                   <td style=\"font-size:9px;\">$alamat</td>
-                                             </tr>
-                                             <tr>
+                                              </tr>
+                                              <tr>
                                                   <td style=\"font-size:9px;\">$alamat2</td>
-                                             </tr>
-                                             <tr>
+                                              </tr>
+                                              <tr>
                                                   <td style=\"font-size:9px;\">Wa :$whatsapp    Telp :$phone </td>
-                                             </tr>
-                                             <tr>
+                                              </tr>
+                                              <tr>
                                                   <td style=\"font-size:9px;\">No. NPWP : $npwp</td>
-                                             </tr>
+                                              </tr>
                                         </b>
-                                   </td>
+                                    </td>
                               </tr>
-                         </table>";
+                          </table>";
       $chari .= "
                               <table style=\"border-collapse:collapse;font-family: tahoma; font-size:12px\" width=\"100%\" align=\"center\" border=\"0\">
-                                   <tr>
+                                    <tr>
                                         <td> &nbsp; </td>
-                                   </tr> 
+                                    </tr> 
                               </table>";
       $chari .= "
-                         <table style=\"border-collapse:collapse;font-family: tahoma; font-size:2px\" width=\"100%\" align=\"center\" border=\"1\">     
+                          <table style=\"border-collapse:collapse;font-family: tahoma; font-size:2px\" width=\"100%\" align=\"center\" border=\"1\">     
                               <tr>
-                                   <td style=\"border-top: none;border-right: none;border-left: none;\"></td>
+                                    <td style=\"border-top: none;border-right: none;border-left: none;\"></td>
                               </tr> 
-                         </table>";
+                          </table>";
       $chari .= "
-                         <table style=\"border-collapse:collapse;font-family: tahoma; font-size:2px\" width=\"100%\" align=\"center\" border=\"1\">     
+                          <table style=\"border-collapse:collapse;font-family: tahoma; font-size:2px\" width=\"100%\" align=\"center\" border=\"1\">     
                               <tr>
-                                   <td style=\"border-top: none;border-right: none;border-left: none;\"></td>
+                                    <td style=\"border-top: none;border-right: none;border-left: none;\"></td>
                               </tr> 
-                         </table>";
+                          </table>";
       $chari .= "
-                         <table style=\"border-collapse:collapse;font-family: tahoma; font-size:12px\" width=\"100%\" align=\"center\" border=\"0\">
+                          <table style=\"border-collapse:collapse;font-family: tahoma; font-size:12px\" width=\"100%\" align=\"center\" border=\"0\">
                               <tr>
-                                   <td> &nbsp; </td>
+                                    <td> &nbsp; </td>
                               </tr> 
-                         </table>";
+                          </table>";
       $chari .= "
-                         <table style=\"border-collapse:collapse;font-family: Tahoma; font-size:11px\" width=\"100%\" align=\"center\" border=\"1\" cellspacing=\"1\" cellpadding=\"3\">
+                          <table style=\"border-collapse:collapse;font-family: Tahoma; font-size:11px\" width=\"100%\" align=\"center\" border=\"1\" cellspacing=\"1\" cellpadding=\"3\">
                               <tr>
-                                   <td width=\"15%\" style=\"text-align:center; font-size:20px;\"><b>RETUR PEMBELIAN</b></td>
+                                    <td width=\"15%\" style=\"text-align:center; font-size:20px;\"><b>RETUR PEMBELIAN</b></td>
                               </tr>
-                         </table>";
+                          </table>";
       $chari .= "
-                         <table style=\"border-collapse:collapse;font-family: tahoma; font-size:12px\" width=\"100%\" align=\"center\" border=\"0\">
+                          <table style=\"border-collapse:collapse;font-family: tahoma; font-size:12px\" width=\"100%\" align=\"center\" border=\"0\">
                               <tr>
-                                   <td> &nbsp; </td>
+                                    <td> &nbsp; </td>
                               </tr> 
-                         </table>";
+                          </table>";
       $chari .= "
-                         <table style=\"border-collapse:collapse;font-family: Tahoma; font-size:11px\" width=\"100%\" align=\"center\" border=\"0\" cellspacing=\"1\" cellpadding=\"3\">
+                          <table style=\"border-collapse:collapse;font-family: Tahoma; font-size:11px\" width=\"100%\" align=\"center\" border=\"0\" cellspacing=\"1\" cellpadding=\"3\">
                               <tr>
-                                   <td width=\"15%\" style=\"text-align:left;\"><b>Kepada Yth:</b></td>
+                                    <td width=\"15%\" style=\"text-align:left;\"><b>Kepada Yth:</b></td>
                               </tr>
-                         </table>";
+                          </table>";
       $chari .= "
-                         <table style=\"border-collapse:collapse;font-family: tahoma; font-size:12px\" width=\"100%\" align=\"center\" border=\"1\">
+                          <table style=\"border-collapse:collapse;font-family: tahoma; font-size:12px\" width=\"100%\" align=\"center\" border=\"1\">
                               <tr>
-                                   <td width=\"10%\" style=\"border-left:none; border-right:none; border-bottom:none;\">Di return ke</td>
-                                   <td width=\"3%\" style=\"border-left:none; border-right:none; border-bottom:none;\">:</td>
-                                   <td width=\"35%\" style=\"border-left:none; border-right:none; border-bottom:none;\">$header->vendor_name</td>
-                                   <td width=\"4%\" style=\"border-left:none; border-right:none; border-bottom:none;\">&nbsp;</td>
-                                   <td width=\"10%\" style=\"border-left:none; border-right:none; border-bottom:none;\">Retur No.</td>
-                                   <td width=\"3%\" style=\"border-left:none; border-right:none; border-bottom:none;\">:</td>
-                                   <td width=\"35%\" style=\"border-left:none; border-right:none; border-bottom:none;\">$header->retur_no</td>
+                                    <td width=\"10%\" style=\"border-left:none; border-right:none; border-bottom:none;\">Di return ke</td>
+                                    <td width=\"3%\" style=\"border-left:none; border-right:none; border-bottom:none;\">:</td>
+                                    <td width=\"35%\" style=\"border-left:none; border-right:none; border-bottom:none;\">$header->vendor_name</td>
+                                    <td width=\"4%\" style=\"border-left:none; border-right:none; border-bottom:none;\">&nbsp;</td>
+                                    <td width=\"10%\" style=\"border-left:none; border-right:none; border-bottom:none;\">Retur No.</td>
+                                    <td width=\"3%\" style=\"border-left:none; border-right:none; border-bottom:none;\">:</td>
+                                    <td width=\"35%\" style=\"border-left:none; border-right:none; border-bottom:none;\">$header->retur_no</td>
                               </tr> 
                               <tr>
-                                   <td width=\"10%\" style=\"border-left:none; border-right:none; border-bottom:none; border-top:none;\">&nbsp;</td>
-                                   <td width=\"3%\" style=\"border-left:none; border-right:none; border-bottom:none; border-top:none;\">&nbsp;</td>
-                                   <td width=\"35%\" style=\"border-left:none; border-right:none; border-bottom:none; border-top:none;\">$header->alamat</td>
-                                   <td width=\"4%\" style=\"border-left:none; border-right:none; border-bottom:none; border-top:none;\">&nbsp;</td>
-                                   <td width=\"10%\" style=\"border-left:none; border-right:none; border-bottom:none; border-top:none;\">No. BAPB</td>
-                                   <td width=\"3%\" style=\"border-left:none; border-right:none; border-bottom:none; border-top:none;\">:</td>
-                                   <td width=\"35%\" style=\"border-left:none; border-right:none; border-bottom:none; border-top:none;\">$header->terima_no</td>
+                                    <td width=\"10%\" style=\"border-left:none; border-right:none; border-bottom:none; border-top:none;\">&nbsp;</td>
+                                    <td width=\"3%\" style=\"border-left:none; border-right:none; border-bottom:none; border-top:none;\">&nbsp;</td>
+                                    <td width=\"35%\" style=\"border-left:none; border-right:none; border-bottom:none; border-top:none;\">$header->alamat</td>
+                                    <td width=\"4%\" style=\"border-left:none; border-right:none; border-bottom:none; border-top:none;\">&nbsp;</td>
+                                    <td width=\"10%\" style=\"border-left:none; border-right:none; border-bottom:none; border-top:none;\">No. BAPB</td>
+                                    <td width=\"3%\" style=\"border-left:none; border-right:none; border-bottom:none; border-top:none;\">:</td>
+                                    <td width=\"35%\" style=\"border-left:none; border-right:none; border-bottom:none; border-top:none;\">$header->terima_no</td>
                               </tr> 
                               <tr>
-                                   <td width=\"10%\" style=\"border-left:none; border-right:none; border-bottom:none; border-top:none;\">&nbsp;</td>
-                                   <td width=\"3%\" style=\"border-left:none; border-right:none; border-bottom:none; border-top:none;\">&nbsp;</td>
-                                   <td width=\"35%\" style=\"border-left:none; border-right:none; border-bottom:none; border-top:none;\">&nbsp;</td>
-                                   <td width=\"4%\" style=\"border-left:none; border-right:none; border-bottom:none; border-top:none;\">&nbsp;</td>
-                                   <td width=\"10%\" style=\"border-left:none; border-right:none; border-bottom:none; border-top:none;\">Tanggal</td>
-                                   <td width=\"3%\" style=\"border-left:none; border-right:none; border-bottom:none; border-top:none;\">:</td>
-                                   <td width=\"35%\" style=\"border-left:none; border-right:none; border-bottom:none; border-top:none;\">" . date('d-m-Y', strtotime($header->retur_date)) . "</td>
+                                    <td width=\"10%\" style=\"border-left:none; border-right:none; border-bottom:none; border-top:none;\">&nbsp;</td>
+                                    <td width=\"3%\" style=\"border-left:none; border-right:none; border-bottom:none; border-top:none;\">&nbsp;</td>
+                                    <td width=\"35%\" style=\"border-left:none; border-right:none; border-bottom:none; border-top:none;\">&nbsp;</td>
+                                    <td width=\"4%\" style=\"border-left:none; border-right:none; border-bottom:none; border-top:none;\">&nbsp;</td>
+                                    <td width=\"10%\" style=\"border-left:none; border-right:none; border-bottom:none; border-top:none;\">Tanggal</td>
+                                    <td width=\"3%\" style=\"border-left:none; border-right:none; border-bottom:none; border-top:none;\">:</td>
+                                    <td width=\"35%\" style=\"border-left:none; border-right:none; border-bottom:none; border-top:none;\">" . date('d-m-Y', strtotime($header->retur_date)) . "</td>
                               </tr> 
                               <tr>
-                                   <td width=\"10%\" style=\"border-left:none; border-right:none; border-bottom:none; border-top:none;\">&nbsp;</td>
-                                   <td width=\"3%\" style=\"border-left:none; border-right:none; border-bottom:none; border-top:none;\">&nbsp;</td>
-                                   <td width=\"35%\" style=\"border-left:none; border-right:none; border-bottom:none; border-top:none;\">$header->phone</td>
-                                   <td width=\"4%\" style=\"border-left:none; border-right:none; border-bottom:none; border-top:none;\">&nbsp;</td>
-                                   <td width=\"10%\" style=\"border-left:none; border-right:none; border-bottom:none; border-top:none;\">Invoice</td>
-                                   <td width=\"3%\" style=\"border-left:none; border-right:none; border-bottom:none; border-top:none;\">:</td>
-                                   <td width=\"35%\" style=\"border-left:none; border-right:none; border-bottom:none; border-top:none;\">$header->invoice_no</td>
+                                    <td width=\"10%\" style=\"border-left:none; border-right:none; border-bottom:none; border-top:none;\">&nbsp;</td>
+                                    <td width=\"3%\" style=\"border-left:none; border-right:none; border-bottom:none; border-top:none;\">&nbsp;</td>
+                                    <td width=\"35%\" style=\"border-left:none; border-right:none; border-bottom:none; border-top:none;\">$header->phone</td>
+                                    <td width=\"4%\" style=\"border-left:none; border-right:none; border-bottom:none; border-top:none;\">&nbsp;</td>
+                                    <td width=\"10%\" style=\"border-left:none; border-right:none; border-bottom:none; border-top:none;\">Invoice</td>
+                                    <td width=\"3%\" style=\"border-left:none; border-right:none; border-bottom:none; border-top:none;\">:</td>
+                                    <td width=\"35%\" style=\"border-left:none; border-right:none; border-bottom:none; border-top:none;\">$header->invoice_no</td>
                               </tr> 
                               <tr>
-                                   <td width=\"10%\" style=\"border-left:none; border-right:none; border-bottom:none; border-top:none;\">&nbsp;</td>
-                                   <td width=\"3%\" style=\"border-left:none; border-right:none; border-bottom:none; border-top:none;\">&nbsp;</td>
-                                   <td width=\"35%\" style=\"border-left:none; border-right:none; border-bottom:none; border-top:none;\">&nbsp;</td>
-                                   <td width=\"4%\" style=\"border-left:none; border-right:none; border-bottom:none; border-top:none;\">&nbsp;</td>
-                                   <td width=\"10%\" style=\"border-left:none; border-right:none; border-bottom:none; border-top:none;\">Gudang</td>
-                                   <td width=\"3%\" style=\"border-left:none; border-right:none; border-bottom:none; border-top:none;\">:</td>
-                                   <td width=\"35%\" style=\"border-left:none; border-right:none; border-bottom:none; border-top:none;\">" . $gudangz['keterangan'] . "</td>
+                                    <td width=\"10%\" style=\"border-left:none; border-right:none; border-bottom:none; border-top:none;\">&nbsp;</td>
+                                    <td width=\"3%\" style=\"border-left:none; border-right:none; border-bottom:none; border-top:none;\">&nbsp;</td>
+                                    <td width=\"35%\" style=\"border-left:none; border-right:none; border-bottom:none; border-top:none;\">&nbsp;</td>
+                                    <td width=\"4%\" style=\"border-left:none; border-right:none; border-bottom:none; border-top:none;\">&nbsp;</td>
+                                    <td width=\"10%\" style=\"border-left:none; border-right:none; border-bottom:none; border-top:none;\">Gudang</td>
+                                    <td width=\"3%\" style=\"border-left:none; border-right:none; border-bottom:none; border-top:none;\">:</td>
+                                    <td width=\"35%\" style=\"border-left:none; border-right:none; border-bottom:none; border-top:none;\">" . $gudangz['keterangan'] . "</td>
                               </tr> 
-                         </table>";
+                          </table>";
       $chari .= "
-                         <table style=\"border-collapse:collapse;font-family: Tahoma; font-size:11px\" width=\"100%\" align=\"center\" border=\"1\" cellspacing=\"1\" cellpadding=\"3\">
+                          <table style=\"border-collapse:collapse;font-family: Tahoma; font-size:11px\" width=\"100%\" align=\"center\" border=\"1\" cellspacing=\"1\" cellpadding=\"3\">
                               <thead>
-                                   <tr>
+                                    <tr>
                                         <td width=\"5%\" align=\"center\" style=\"text-align:center; border-right: none;\"><b>No</b></td>
                                         <td width=\"15%\" align=\"center\" style=\"text-align:center; border-right: none; border-left: none;\"><b>Kode Barang</b></td>
                                         <td width=\"15%\" align=\"center\" style=\"text-align:center; border-right: none; border-left: none;\"><b>Nama Barang</b></td>
@@ -575,7 +575,7 @@ class Pembelian_retur extends CI_Controller
                                         <td width=\"10%\" align=\"center\" style=\"text-align:center; border-right: none; border-left: none;\"><b>Harga</b></td>
                                         <td width=\"15%\" align=\"center\" style=\"text-align:center; border-right: none; border-left: none;\"><b>Diskon</b></td>
                                         <td width=\"15%\" align=\"center\" style=\"text-align:center; border-left: none;\"><b>Total</b></td>
-                                   </tr>
+                                    </tr>
                               </thead>";
       $no = 1;
       $totitem = 0;
@@ -586,15 +586,15 @@ class Pembelian_retur extends CI_Controller
       $ppna = $this->db->get_where('tbl_pajak', ['kodetax' => 'PPN'])->row_array();
       foreach ($detil as $db) {
         $chari .= "<tbody><tr>
-																<td style=\"text-align:center; border-right: none; border-left: none;\">" . $no++ . "</td>
-																<td style=\"text-align:left; border-right: none; border-left: none;\">$db->kodebarang</td>
-																<td style=\"text-align:left; border-right: none; border-left: none;\">$db->namabarang</td>
-																<td style=\"text-align:right; border-right: none; border-left: none;\">" . number_format($db->qty_retur) . "</td>
-																<td style=\"text-align:right; border-right: none; border-left: none;\">" . $db->satuan . "</td>
-																<td style=\"text-align:right; border-right: none; border-left: none;\">" . number_format($db->price) . "</td>
-																<td style=\"text-align:right; border-right: none; border-left: none;\">" . number_format($db->discountrp) . "</td>
-																<td style=\"text-align:right; border-left: none; border-right: none;\">" . number_format($db->totalrp) . "</td>
-													 </tr></tbody>";
+                                <td style=\"text-align:center; border-right: none; border-left: none;\">" . $no++ . "</td>
+                                <td style=\"text-align:left; border-right: none; border-left: none;\">$db->kodebarang</td>
+                                <td style=\"text-align:left; border-right: none; border-left: none;\">$db->namabarang</td>
+                                <td style=\"text-align:right; border-right: none; border-left: none;\">" . number_format($db->qty_retur) . "</td>
+                                <td style=\"text-align:right; border-right: none; border-left: none;\">" . $db->satuan . "</td>
+                                <td style=\"text-align:right; border-right: none; border-left: none;\">" . number_format($db->price) . "</td>
+                                <td style=\"text-align:right; border-right: none; border-left: none;\">" . number_format($db->discountrp) . "</td>
+                                <td style=\"text-align:right; border-left: none; border-right: none;\">" . number_format($db->totalrp) . "</td>
+                            </tr></tbody>";
         $subtotal += ($db->qty_retur * $db->price);
         $diskon += ($db->discountrp);
 
@@ -611,79 +611,79 @@ class Pembelian_retur extends CI_Controller
       $dpp = ($tot) / (111 / 100);
       $chari .= "</table>";
       $chari .= "
-                         <table style=\"border-collapse:collapse;font-family: tahoma; font-size:12px\" width=\"100%\" align=\"center\" border=\"0\">
+                          <table style=\"border-collapse:collapse;font-family: tahoma; font-size:12px\" width=\"100%\" align=\"center\" border=\"0\">
                               <tr>
-                                   <td colspan=\"7\" style=\"text-align:right; border-right: none; border-top: none;\"><b>Subtotal</b></td>
-                                   <td width=\"15%\" style=\"text-align:right; border-left: none; border-top: none;\">" . number_format($subtotal) . "</td>
+                                    <td colspan=\"7\" style=\"text-align:right; border-right: none; border-top: none;\"><b>Subtotal</b></td>
+                                    <td width=\"15%\" style=\"text-align:right; border-left: none; border-top: none;\">" . number_format($subtotal) . "</td>
                               </tr> 
                               <tr>
-                                   <td colspan=\"7\" style=\"text-align:right; border-right: none; border-top: none;\"><b>Diskon</b></td>
-                                   <td width=\"15%\" style=\"text-align:right; border-left: none; border-top: none;\">" . number_format($diskon) . "</td>
+                                    <td colspan=\"7\" style=\"text-align:right; border-right: none; border-top: none;\"><b>Diskon</b></td>
+                                    <td width=\"15%\" style=\"text-align:right; border-left: none; border-top: none;\">" . number_format($diskon) . "</td>
                               </tr> 
                               <tr>
-                                   <td colspan=\"7\" style=\"text-align:right; border-right: none; border-top: none;\"><b>DPP</b></td>
-                                   <td width=\"15%\" style=\"text-align:right; border-left: none; border-top: none;\">" . number_format($dpp) . "</td>
+                                    <td colspan=\"7\" style=\"text-align:right; border-right: none; border-top: none;\"><b>DPP</b></td>
+                                    <td width=\"15%\" style=\"text-align:right; border-left: none; border-top: none;\">" . number_format($dpp) . "</td>
                               </tr> 
                               <tr>
-                                   <td colspan=\"7\" style=\"text-align:right; border-right: none; border-top: none;\"><b>PPN</b></td>
-                                   <td width=\"15%\" style=\"text-align:right; border-left: none; border-top: none;\">" . number_format($ppn) . "</td>
+                                    <td colspan=\"7\" style=\"text-align:right; border-right: none; border-top: none;\"><b>PPN</b></td>
+                                    <td width=\"15%\" style=\"text-align:right; border-left: none; border-top: none;\">" . number_format($ppn) . "</td>
                               </tr> 
                               <tr>
-                                   <td colspan=\"7\" style=\"text-align:right; border-right: none; border-top: none;\"><b>Total</b></td>
-                                   <td width=\"15%\" style=\"text-align:right; border-left: none; border-top: none;\">" . number_format($tot) . "</td>
+                                    <td colspan=\"7\" style=\"text-align:right; border-right: none; border-top: none;\"><b>Total</b></td>
+                                    <td width=\"15%\" style=\"text-align:right; border-left: none; border-top: none;\">" . number_format($tot) . "</td>
                               </tr> 
-                         </table>";
+                          </table>";
       $chari .= "
-                         <table style=\"border-collapse:collapse;font-family: tahoma; font-size:12px\" width=\"100%\" align=\"center\" border=\"0\">
+                          <table style=\"border-collapse:collapse;font-family: tahoma; font-size:12px\" width=\"100%\" align=\"center\" border=\"0\">
                               <tr>
-                                   <td> &nbsp; </td>
+                                    <td> &nbsp; </td>
                               </tr> 
-                         </table>";
+                          </table>";
       $chari .= "
-                         <table style=\"border-collapse:collapse;font-family: tahoma; font-size:12px\" width=\"100%\" align=\"center\" border=\"0\">
+                          <table style=\"border-collapse:collapse;font-family: tahoma; font-size:12px\" width=\"100%\" align=\"center\" border=\"0\">
                               <tr>
-                                   <td> &nbsp; </td>
+                                    <td> &nbsp; </td>
                               </tr> 
-                         </table>";
+                          </table>";
       $chari .= "
-                         <table style=\"border-collapse:collapse;font-family: tahoma; font-size:12px\" width=\"100%\" align=\"center\" border=\"0\">
+                          <table style=\"border-collapse:collapse;font-family: tahoma; font-size:12px\" width=\"100%\" align=\"center\" border=\"0\">
                               <tr>
-                                   <td width=\"25%\"  style=\"text-align:center;\">Mengetahui :</td>
-                                   <td width=\"25%\"  style=\"text-align:center;\">Disetujui Oleh :</td>
-                                   <td width=\"25%\"  style=\"text-align:center;\">Yang Menerima :</td>
-                                   <td width=\"25%\"  style=\"text-align:center;\">$alamat3, " . date('d-m-Y') . "</td>
+                                    <td width=\"25%\"  style=\"text-align:center;\">Mengetahui :</td>
+                                    <td width=\"25%\"  style=\"text-align:center;\">Disetujui Oleh :</td>
+                                    <td width=\"25%\"  style=\"text-align:center;\">Yang Menerima :</td>
+                                    <td width=\"25%\"  style=\"text-align:center;\">$alamat3, " . date('d-m-Y') . "</td>
                               </tr> 
                               <tr>
-                                   <td width=\"25%\"  style=\"text-align:center;\">Keuangan,</td>
-                                   <td width=\"25%\"  style=\"text-align:center;\">Apoteker Penanggung Jawab,</td>
-                                   <td width=\"25%\"  style=\"text-align:center;\">$header->vendor_name</td>
-                                   <td width=\"25%\"  style=\"text-align:center;\">Yang Meretur,</td>
+                                    <td width=\"25%\"  style=\"text-align:center;\">Keuangan,</td>
+                                    <td width=\"25%\"  style=\"text-align:center;\">Apoteker Penanggung Jawab,</td>
+                                    <td width=\"25%\"  style=\"text-align:center;\">$header->vendor_name</td>
+                                    <td width=\"25%\"  style=\"text-align:center;\">Yang Meretur,</td>
                               </tr> 
                               <tr>
-                                   <td width=\"25%\"  style=\"text-align:center;\">&nbsp;</td>
-                                   <td width=\"25%\"  style=\"text-align:center;\">&nbsp;</td>
-                                   <td width=\"25%\"  style=\"text-align:center;\">&nbsp;</td>
-                                   <td width=\"25%\"  style=\"text-align:center;\">&nbsp;</td>
+                                    <td width=\"25%\"  style=\"text-align:center;\">&nbsp;</td>
+                                    <td width=\"25%\"  style=\"text-align:center;\">&nbsp;</td>
+                                    <td width=\"25%\"  style=\"text-align:center;\">&nbsp;</td>
+                                    <td width=\"25%\"  style=\"text-align:center;\">&nbsp;</td>
                               </tr> 
                               <tr>
-                                   <td width=\"25%\"  style=\"text-align:center;\">&nbsp;</td>
-                                   <td width=\"25%\"  style=\"text-align:center;\">&nbsp;</td>
-                                   <td width=\"25%\"  style=\"text-align:center;\">&nbsp;</td>
-                                   <td width=\"25%\"  style=\"text-align:center;\">&nbsp;</td>
+                                    <td width=\"25%\"  style=\"text-align:center;\">&nbsp;</td>
+                                    <td width=\"25%\"  style=\"text-align:center;\">&nbsp;</td>
+                                    <td width=\"25%\"  style=\"text-align:center;\">&nbsp;</td>
+                                    <td width=\"25%\"  style=\"text-align:center;\">&nbsp;</td>
                               </tr> 
                               <tr>
-                                   <td width=\"25%\"  style=\"text-align:center;\">&nbsp;</td>
-                                   <td width=\"25%\"  style=\"text-align:center;\">&nbsp;</td>
-                                   <td width=\"25%\"  style=\"text-align:center;\">&nbsp;</td>
-                                   <td width=\"25%\"  style=\"text-align:center;\">&nbsp;</td>
+                                    <td width=\"25%\"  style=\"text-align:center;\">&nbsp;</td>
+                                    <td width=\"25%\"  style=\"text-align:center;\">&nbsp;</td>
+                                    <td width=\"25%\"  style=\"text-align:center;\">&nbsp;</td>
+                                    <td width=\"25%\"  style=\"text-align:center;\">&nbsp;</td>
                               </tr> 
                               <tr>
-                                   <td width=\"25%\"  style=\"text-align:center;\">$profile->pejabat1</td>
-                                   <td width=\"25%\"  style=\"text-align:center;\">$profile->apoteker</td>
-                                   <td width=\"25%\"  style=\"text-align:center;\">....................................</td>
-                                   <td width=\"25%\"  style=\"text-align:center;\">&nbsp;</td>
+                                    <td width=\"25%\"  style=\"text-align:center;\">$profile->pejabat1</td>
+                                    <td width=\"25%\"  style=\"text-align:center;\">$profile->apoteker</td>
+                                    <td width=\"25%\"  style=\"text-align:center;\">....................................</td>
+                                    <td width=\"25%\"  style=\"text-align:center;\">&nbsp;</td>
                               </tr> 
-                         </table>";
+                          </table>";
       $data['prev'] = $chari;
       $judul = $param;
       echo ("<title>$judul</title>");
@@ -713,4 +713,4 @@ class Pembelian_retur extends CI_Controller
       header('location:' . base_url());
     }
   }
-}
+  }

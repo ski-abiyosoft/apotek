@@ -1964,7 +1964,6 @@ class Laporan_persediaan extends CI_Controller
                                              <td width=\"4%\" bgcolor=\"#cccccc\" align=\"center\">Total Keluar</td>
                                         </tr>
                                    </thead>";
-
                                    $no = 1;
                                    foreach ($query as $q) {
                                         $kodebarang             = $q->kodebarang;
@@ -1986,7 +1985,6 @@ class Laporan_persediaan extends CI_Controller
                                         $salakhir               = number_format($q->saldo);
                                         $hpp                    = number_format($q->hpp);
                                         $total_persediaan_rp    = number_format($q->total);
-
                                         $body .= "<tr>
                                              <td align=\"center\">" . $no++ . "</td>
                                              <td align=\"left\">$kodebarang</td>

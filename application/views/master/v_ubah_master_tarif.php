@@ -655,31 +655,31 @@
           success: function(data){
             if(data.status == 1){
               // data detail
-              var cabang = $('[name="cabang"]').val();
-              var keltarif = data.kodetarif;
-              var jasars = $('[name="jasars"]').val();
-              var jasadr = $('[name="jasadr"]').val();
-              var jasaperawat = $('[name="jasaperawat"]').val();
-              var bhp = $('[name="bhp"]').val();
-              var total = $('[name="total"]').val();
-              var kodetarif = data.kodetarif;
+              var cabang              = $('[name="cabang"]').val();
+              var keltarif            = data.kodetarif;
+              var jasars              = $('[name="jasars"]').val();
+              var jasadr              = $('[name="jasadr"]').val();
+              var jasaperawat         = $('[name="jasaperawat"]').val();
+              var bhp                 = $('[name="bhp"]').val();
+              var total               = $('[name="total"]').val();
+              var kodetarif           = data.kodetarif;
               if(cabang != '' && keltarif != '' && jasars != '' && jasadr != '' && jasaperawat != '' && bhp != '' && total != ''){
-                var table = document.getElementById('detail_tarif');
-                var rowCount = table.rows.length;
+                var table             = document.getElementById('detail_tarif');
+                var rowCount          = table.rows.length;
                 for (i = 1; i < rowCount; i++) {
-                  var cabang = $("#cabang"+i).val();
-                  var keltarif = $("#keltarif"+i).val();
-                  var jasarsx = $("#jasars"+i).val();
-                  var jasars = Number(parseInt(jasarsx.replaceAll(',','')));
-                  var jasadrx = $("#jasadr"+i).val();
-                  var jasadr = Number(parseInt(jasadrx.replaceAll(',','')));
-                  var jasaperawatx = $("#jasaperawat"+i).val();
-                  var jasaperawat = Number(parseInt(jasaperawatx.replaceAll(',','')));
-                  var bhpx = $("#bhp"+i).val();
-                  var bhp = Number(parseInt(bhpx.replaceAll(',','')));
-                  var totalx = $("#total"+i).val();
-                  var total = Number(parseInt(totalx.replaceAll(',','')));
-                  var param = "?cabang="+cabang+"&keltarif="+keltarif+"&jasars="+jasars+"&jasadr="+jasadr+"&jasaperawat="+jasaperawat+"&bhp="+bhp+"&total="+total+"&kodetarif="+kodetarif;
+                  var cabang          = $("#cabang"+i).val();
+                  var keltarif        = $("#keltarif"+i).val();
+                  var jasarsx         = $("#jasars"+i).val();
+                  var jasars          = Number(parseInt(jasarsx.replaceAll(',','')));
+                  var jasadrx         = $("#jasadr"+i).val();
+                  var jasadr          = Number(parseInt(jasadrx.replaceAll(',','')));
+                  var jasaperawatx    = $("#jasaperawat"+i).val();
+                  var jasaperawat     = Number(parseInt(jasaperawatx.replaceAll(',','')));
+                  var bhpx            = $("#bhp"+i).val();
+                  var bhp             = Number(parseInt(bhpx.replaceAll(',','')));
+                  var totalx          = $("#total"+i).val();
+                  var total           = Number(parseInt(totalx.replaceAll(',','')));
+                  var param           = "?cabang="+cabang+"&keltarif="+keltarif+"&jasars="+jasars+"&jasadr="+jasadr+"&jasaperawat="+jasaperawat+"&bhp="+bhp+"&total="+total+"&kodetarif="+kodetarif;
                   $.ajax({
                     url: "<?= site_url('Master_tarif/simpan_tarif_detail') ?>"+param,
                     type: "POST",

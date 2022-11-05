@@ -298,18 +298,18 @@ $this->load->view('template/footer');
     $("#btn_save").attr("disabled", true);
     $("#btn_save").text("proses");
     // header
-    var nadokter = $('[name="nadokter"]').val();
-    var nik = $('[name="nik"]').val();
-    var nosip = $('[name="nosip"]').val();
-    var npwp = $('[name="npwp"]').val();
-    var hp = $('[name="hp"]').val();
-    var status = $('[name="status"]').val();
-    var tglmasuk = $('[name="tglmasuk"]').val();
-    var alamat = $('[name="alamat"]').val();
-    var jenispegawai = $('[name="jenispegawai"]').val();
-    var email = $('[name="email"]').val();
-    var unit = $('#unit1').val();
-    var lokasi = $('#lokasi1').val();
+    var nadokter        = $('[name="nadokter"]').val();
+    var nik             = $('[name="nik"]').val();
+    var nosip           = $('[name="nosip"]').val();
+    var npwp            = $('[name="npwp"]').val();
+    var hp              = $('[name="hp"]').val();
+    var status          = $('[name="status"]').val();
+    var tglmasuk        = $('[name="tglmasuk"]').val();
+    var alamat          = $('[name="alamat"]').val();
+    var jenispegawai    = $('[name="jenispegawai"]').val();
+    var email           = $('[name="email"]').val();
+    var unit            = $('#unit1').val();
+    var lokasi          = $('#lokasi1').val();
     if (nadokter == '' || nadokter == null) {
       swal({
         title: "NAMA",

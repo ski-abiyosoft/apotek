@@ -145,7 +145,6 @@ class Poliklinik extends CI_Controller {
 			}else{
 				$row[] = '<i class="fa fa-solid fa-address-card" onclick="add_list('."'".$unit->noreg."'".');" data-toggle="modal"></i>';
 			}
-
 			// $row[] = $periksa_perawat;
 			// $row[] = $periksa_dokter;
 			$row[] = $unit->antrino. '<button type="submit">call</button>';

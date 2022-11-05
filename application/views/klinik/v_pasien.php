@@ -129,15 +129,22 @@
 								  <?php } ?>	
 								</div>	
 								
+                                <?php 
+                                    $cek =  $this->session->userdata('user_level'); 
+                                    if($cek==0){?> 
+                                    <?php }else{ ?>
                                 <div class="btn-group pull-right">
 									<button class="btn dropdown-toggle" data-toggle="dropdown">Data <i class="fa fa-angle-down"></i>
 									</button>
-									<ul class="dropdown-menu pull-right">
-										<li>											
-											<a data-toggle="modal" href="#luppasien">Filter Data</a>										
-										</li>										
-									</ul>
+                                    <ul class="dropdown-menu pull-right">
+                                        <li>	
+                                            <a data-toggle="modal" href="#luppasien">Filter Data</a>										
+                                        </li>										
+                                    </ul>
+
 								</div>
+                                
+                                <?php } ?>
 							</div>
 							<table id="table" class="table table-striped table-bordered" cellspacing="0" width="100%">
                                <thead class="breadcrumb">

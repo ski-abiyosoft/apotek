@@ -53,10 +53,10 @@ $this->load->view('template/body');
               </a>
             </li>
             <!--li class="">
-								<a href="#tab2" data-toggle="tab">
-                                   Biaya Lain-Lain
-								</a>
-							</li-->
+                <a href="#tab2" data-toggle="tab">
+                                  Biaya Lain-Lain
+                </a>
+              </li-->
           </ul>
           <div class="tab-content">
             <div class="tab-pane active" id="tab1">
@@ -225,7 +225,7 @@ $this->load->view('template/body');
                       <th class="title-white" width="15%" style="text-align: center">Satuan</th>
                       <th class="title-white" width="15%" style="text-align: center">Harga</th>
                       <!-- <th class="title-white" width="10%" style="text-align: center" hidden="true">Diskon</th>
-														<th class="title-white" width="5%" style="text-align: center" hidden="true">Tax</th> -->
+                            <th class="title-white" width="5%" style="text-align: center" hidden="true">Tax</th> -->
                       <th class="title-white" width="15%" style="text-align: center">Total Harga</th>
 
                     </thead>
@@ -263,11 +263,11 @@ $this->load->view('template/body');
                             class="form-control rightJustified">
                         </td>
                         <!-- <td  >
-															<input name="disc[]"   onchange="totalline(<?php echo $no; ?>);total()" value="<?= $row->discount; ?>" id="disc<?php echo $no; ?>" type="text" class="form-control rightJustified "  >
-														</td>
+                              <input name="disc[]"   onchange="totalline(<?php echo $no; ?>);total()" value="<?= $row->discount; ?>" id="disc<?php echo $no; ?>" type="text" class="form-control rightJustified "  >
+                            </td>
                                                         <td>
-															<input type="checkbox" name="tax[]" id="tax<?php echo $no; ?>" class="form-control" <?= ($row->vat == '1' ? 'checked' : '') ?> onchange="totalline(<?php echo $no; ?>);total()">
-														</td> -->
+                              <input type="checkbox" name="tax[]" id="tax<?php echo $no; ?>" class="form-control" <?= ($row->vat == '1' ? 'checked' : '') ?> onchange="totalline(<?php echo $no; ?>);total()">
+                            </td> -->
 
                         <td>
                           <input name="jumlah[]" id="jumlah<?php echo $no; ?>" type="text"
@@ -448,10 +448,10 @@ function tambah() {
 }
 
   function changeharga(id) {
-    var qtyx = $("#qty" + id).val();
-    var qty = Number(parseInt(qtyx.replaceAll(',', '')));
-    var hargax = $("#harga" + id).val();
-    var harga = Number(parseInt(hargax.replaceAll(',', '')));
+    var qtyx    = $("#qty" + id).val();
+    var qty     = Number(parseInt(qtyx.replaceAll(',', '')));
+    var hargax  = $("#harga" + id).val();
+    var harga   = Number(parseInt(hargax.replaceAll(',', '')));
     totalline(id);
     $("#harga" + id).val(separateComma(harga));
   }

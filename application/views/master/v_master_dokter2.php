@@ -330,7 +330,7 @@
               </div>
               <div class="col-md-6">
                 <div class="form-group">
-                  <label class="control-label col-md-5">Alamat</label>
+                  <label class="control-label col-md-5">Alamat <font color="red">*</font></label>
                   <div class="col-md-5">
                     <input name="alamat" id="alamat" placeholder="Alamat" class="form-control" maxlength="100" type="text">
                     <span class="help-block"></span>
@@ -341,7 +341,7 @@
             <div class="row">
               <div class="col-md-6">
                 <div class="form-group">
-                  <label class="control-label col-md-5">Nama Dokter</label>
+                  <label class="control-label col-md-5">Nama Dokter <font color="red">*</font></label>
                   <div class="col-md-5">
                     <input name="namadokter" id="namadokter" placeholder="Nama Dokter" class="form-control" maxlength="100" type="text" autofocus>
                     <span class="help-block"></span>
@@ -350,7 +350,7 @@
               </div>
               <div class="col-md-6">
                 <div class="form-group">
-                  <label class="control-label col-md-5">Tanggal Masuk</label>
+                  <label class="control-label col-md-5">Tanggal Masuk <font color="red">*</font></label>
                   <div class="col-md-5">
                     <input name="tglmasuk" id="tglmasuk" value = "<?php echo date('Y-m-d') ?>" placeholder="tglmasuk" class="form-control" type="date" maxlength="100" type="text">
                     <span class="help-block"></span>
@@ -361,7 +361,7 @@
             <div class="row">
               <div class="col-md-6">
                 <div class="form-group">
-                  <label class="control-label col-md-5">NIK / Identitas</label>
+                  <label class="control-label col-md-5">NIK / Identitas <font color="red">*</font></label>
                   <div class="col-md-5">
                     <input name="noidentitas" id="noidentitas" placeholder="NIK" class="form-control" maxlength="100" type="text">
                     <span class="help-block"></span>
@@ -370,7 +370,7 @@
               </div>
               <div class="col-md-6">
                 <div class="form-group">
-                  <label class="control-label col-md-5">Status</label>
+                  <label class="control-label col-md-5">Status <font color="red">*</font></label>
                   <div class="col-md-5">
                     <select name="status" id="status" placeholder="Status" class="form-control">
                         <option value="">Status</option>
@@ -385,7 +385,7 @@
             <div class="row">
               <div class="col-md-6">
                 <div class="form-group">
-                  <label class="control-label col-md-5  ">SIP</label>
+                  <label class="control-label col-md-5  ">SIP <font color="red">*</font></label>
                   <div class="col-md-5">
                     <input name="sip" id="sip" placeholder="SIP" class="form-control" maxlength="100" type="text">
                     <span class="help-block"></span>
@@ -405,7 +405,7 @@
             <div class="row">
               <div class="col-md-6">
                 <div class="form-group">
-                  <label class="control-label col-md-5">NPWP</label>
+                  <label class="control-label col-md-5">NPWP <font color="red">*</font></label>
                   <div class="col-md-5">
                     <input name="npwp" id="npwp" placeholder="NPWP" class="form-control" maxlength="100" type="text">
                     <span class="help-block"></span>
@@ -416,7 +416,7 @@
             <div class="row">
               <div class="col-md-6">
                 <div class="form-group">
-                  <label class="control-label col-md-5">No HP</label>
+                  <label class="control-label col-md-5">No HP <font color="red">*</font></label>
                   <div class="col-md-5">
                     <input name="nohp" id="nohp" placeholder="No HP" class="form-control" maxlength="100" type="number">
                     <span class="help-block"></span>
@@ -426,7 +426,7 @@
             </div>        
             <div class="portlet box blue">
               <div class="portlet-title"><div class="caption">
-                <i class="fa fa-reorder"></i>Data
+                <i class="fa fa-reorder"></i>Data <font color="red">*</font>
               </div>
             </div>
             <div class="portlet-body form">									
@@ -695,15 +695,15 @@
 <!-- function save -->
 <script>
   function save(){
-    var namadokter = $("#namadokter").val();
-    var alamat = $("#alamat").val();
-    var tglmasuk = $("#tglmasuk").val();
-    var noidentitas = $("#noidentitas").val();
-    var status = $("#status").val();
-    var sip = $("#sip").val();
-    var tglberhenti = $("#tglberhenti").val();
-    var npwp = $("#npwp").val();
-    var nohp = $("#nohp").val();
+    var namadokter    = $("#namadokter").val();
+    var alamat        = $("#alamat").val();
+    var tglmasuk      = $("#tglmasuk").val();
+    var noidentitas   = $("#noidentitas").val();
+    var status        = $("#status").val();
+    var sip           = $("#sip").val();
+    var tglberhenti   = $("#tglberhenti").val();
+    var npwp          = $("#npwp").val();
+    var nohp          = $("#nohp").val();
     if(namadokter != '' && alamat != '' && noidentitas != '' && sip != '' && npwp != '' && nohp != '' && status != ''){
       var param = "?namadokter="+namadokter+"&alamat="+alamat+"&noidentitas="+noidentitas+"&sip="+sip+"&npwp="+npwp+"&nohp="+nohp+"&status="+status+"&tglmasuk="+tglmasuk+"&tglberhenti="+tglberhenti;
       $.ajax({

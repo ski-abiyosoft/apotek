@@ -3021,11 +3021,11 @@
                             '<input type="hidden" id="elabtin_tarifdr'+idrowElabOrder+'1" name="elabtin_tarifdr[]" value="">'+
                         '</td>'+
                         '<td>'+
+<<<<<<< HEAD
                             "<select type='text' class='form-control selectpicker input-medium' name='elabtin_kode[]' id='elabtin_kode"+ idrowElabOrder +"1' data-live-search='true' data-width='100%' onkeypress='return tabE(this,event)' onchange='show_tindakan_elab(this.value, "+ idrowElabOrder +"1)'><option value=''>--- Pilih Tindakan ---</option><?php foreach($list_elab as $leval): ?><option value='<?= $leval->kodeid ?>'><?= $leval->text ?></opiton><?php endforeach; ?></select>"+
+=======
+                            '<select type="text" class="form-control selectpicker input-medium" name="elabtin_kode[]" id="elabtin_kode'+ idrowElabOrder +'1" data-live-search="true" data-width="100%" onkeypress="return tabE(this,event)" onchange="show_tindakan_elab(this.value, '+ idrowElabOrder +'1)"><option value="-">--- Pilih Tindakan ---</option><?php foreach($list_elab as $leval): ?><option value="<?= $leval->kodeid ?>"><?= $leval->text ?></opiton><?php endforeach; ?></select>'+
                         '</td>'+
-                        '<td><input type="text" class="form-control" name="elabtin_harga[]" id="elabtin_harga'+ idrowElabOrder +'1" readonly></td>'+
-                        '<td><input type="text" class="form-control" name="elabtin_catatan[]" id="elabtin_catatan'+ idrowElabOrder +'1"></td>'+
-                    '</tr>'+
                 '</tbody>'+
             '</table>'+
         '</div>'+
@@ -3382,6 +3382,7 @@
     }
 
     function hapusBaris_alkes(param){
+<<<<<<< HEAD
         <?php
             $check_list = $this->db->query("SELECT * FROM tbl_alkestransaksi WHERE notr = '". $this->input->get("noreg") ."' AND koders = '". $this->session->userdata("unit") ."'")->num_rows();
         ?>
@@ -3439,6 +3440,9 @@
                 });
             });
         <?php endif; ?>
+=======
+        $("#alkes_tr"+ param).remove();
+>>>>>>> 2b048ebe2756fae81a8015c3e19900a3e1c0e10a
     }
 
     function hapusBaris_eresep(param){
@@ -3652,10 +3656,16 @@
     function save_elab(type){
         var post_form   = $("#frmelab").serialize();
         var dokter      = $("#selectdr").val();
+<<<<<<< HEAD
         var kodepos     = $("#poli_dok").val();
         
         $.ajax({
             url: "/poliklinik/add_elab/<?= $this->input->get("noreg") ?>/<?= $this->input->get("rekmed") ?>/"+ dokter +"/"+ kodepos,
+=======
+        
+        $.ajax({
+            url: "/poliklinik/add_elab/<?= $this->input->get("noreg") ?>/<?= $this->input->get("rekmed") ?>/"+ dokter,
+>>>>>>> 2b048ebe2756fae81a8015c3e19900a3e1c0e10a
             data: post_form,
             type: "POST",
             dataType: "JSON",
@@ -4035,7 +4045,11 @@
                     });    
                     return;
                 }else{
+<<<<<<< HEAD
                     $('[name="sakitselama"]').val(data.jarak+1);
+=======
+                    $('[name="sakitselama"]').val(data.jarak);
+>>>>>>> 2b048ebe2756fae81a8015c3e19900a3e1c0e10a
                 }
             },
             error: function(){
@@ -4054,6 +4068,7 @@
     }
 
 </script>
+<<<<<<< HEAD
 <!-- Latest compiled and minified CSS -->
 <link rel="stylesheet"
 href="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/css/bootstrap-select.min.css">
@@ -4063,3 +4078,14 @@ href="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/css/bootstrap-s
 
 <!-- (Optional) Latest compiled and minified JavaScript translation files -->
 <!-- <script src="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/js/i18n/defaults-*.min.js"></script> -->
+=======
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/css/bootstrap-select.min.css">
+
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/js/bootstrap-select.min.js"></script>
+
+    <!-- (Optional) Latest compiled and minified JavaScript translation files -->
+    <!-- <script src="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/js/i18n/defaults-*.min.js"></script> -->
+>>>>>>> 2b048ebe2756fae81a8015c3e19900a3e1c0e10a

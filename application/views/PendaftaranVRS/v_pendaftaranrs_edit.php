@@ -49,8 +49,8 @@
 						<label class="col-md-3 control-label">Poliklinik <font color="red">*</font></label>
 						<div class="col-md-9">
 							<select class="form-control select2_el_poli" id="poliklinik1" name="poliklinik1" onchange="update(); cekruang()">
-							     <?php if($data->kodepos){ 
-								   	$vpoli = data_master('tbl_namapos', array('kodepos' => $data->kodepos));
+								<?php if($data->kodepos){ 
+									$vpoli = data_master('tbl_namapos', array('kodepos' => $data->kodepos));
 								?>
 								<option value="<?= $data->kodepos;?>"><?= $data->kodepos.' | '.$vpoli->namapost;?></option>
 								<?php } ?>
@@ -305,12 +305,12 @@
 </div>	
 
 <div class="modal fade" id="modal_form" role="dialog">
-    	<div class="modal-dialog modal-full">
-        	<div class="modal-content">
-            	<div class="modal-header header-custom">
-                	<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                	<h3 class="modal-title">Data Pasien</h3>
-            	</div>
+		<div class="modal-dialog modal-full">
+			<div class="modal-content">
+				<div class="modal-header header-custom">
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+					<h3 class="modal-title">Data Pasien</h3>
+				</div>
 			<form id="frmpasien2" class="form-horizontal" style="padding:20px;" method="post">
 				<div class="modal-body form" style="margin-top:20px;">	
 					<div class="row">
@@ -361,14 +361,14 @@
 								<div class="col-md-9">
 									<div class="input-group">
 										<select class="form-control input-small" id="lupidentitas"
-                                                    name="lupidentitas">
+													name="lupidentitas">
 											<option <?= ($data->idpas=='-'?'selected':'')?> value="-">-</option>
 											<option <?= ($data->idpas=='KTP'?'selected':'')?> value="KTP">KTP</option>
 											<option <?= ($data->idpas=='SIM'?'selected':'')?> value="SIM">SIM</option>
 											<option <?= ($data->idpas=='PASPORT'?'selected':'')?> value="PASPORT">PASPORT</option>
 											<option <?= ($data->idpas=='K_PELAJAR'?'selected':'')?>value="K_PELAJAR">K_PELAJAR</option>
 											<option <?= ($data->idpas=='KMAHASISWA'?'selected':'')?> value="KMAHASISWA">KMAHASISWA</option>
-                                                	</select>
+													</select>
 										<input type="text" class="form-control input-medium" name="lupnoidentitas" id="lupnoidentitas" value="<?= $data->noidentitas; ?>">
 									</div>	
 								</div>
@@ -714,80 +714,80 @@
 </div>
 
 <div class="modal fade" id="history_form" role="dialog">
-    <div class="modal-dialog modal-full">
-        <div class="modal-content">
-            <div class="modal-header header-custom">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h3 class="modal-title">Data History Pasien</h3>
-            </div>
-            <div class="modal-body form">
-                <form action="#" id="form" class="form-horizontal">
-                    <input type="hidden" value="" name="id"/> 
-                    <div class="form-body">
-					  <div id="history_panel"></div>  
-                    </div>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-danger" data-dismiss="modal">Tutup</button>
-            </div>
-        </div><!-- /.modal-content -->
-    </div><!-- /.modal-dialog -->
+	<div class="modal-dialog modal-full">
+		<div class="modal-content">
+			<div class="modal-header header-custom">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+				<h3 class="modal-title">Data History Pasien</h3>
+			</div>
+			<div class="modal-body form">
+				<form action="#" id="form" class="form-horizontal">
+					<input type="hidden" value="" name="id"/> 
+					<div class="form-body">
+					<div id="history_panel"></div>  
+					</div>
+				</form>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-danger" data-dismiss="modal">Tutup</button>
+			</div>
+		</div><!-- /.modal-content -->
+	</div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
 
 <script>
 	$(".select2_dokterx").select2();
 
 	function update() {
-  var select = document.getElementById('poliklinik1').value;
-  $.ajax({
-    url: "<?= site_url('PendaftaranVRS/get_dokter_rj');?>",
-    type: "POST",
-    data: ($('#frmpasien').serialize()),
-    dataType: "JSON",
-    success: function(data) {
-      var opt = data;
-      var nadokter = $("#dokter");
-      nadokter.empty();
-      $(opt).each(function() {
-        var option = $("<option/>");
-        option.html(this.nadokter);
-        option.val(this.kodokter);
-        nadokter.append(option);
-      });
-    }
-  });
+var select = document.getElementById('poliklinik1').value;
+$.ajax({
+	url: "<?= site_url('PendaftaranVRS/get_dokter_rj');?>",
+	type: "POST",
+	data: ($('#frmpasien').serialize()),
+	dataType: "JSON",
+	success: function(data) {
+	var opt = data;
+	var nadokter = $("#dokter");
+	nadokter.empty();
+	$(opt).each(function() {
+		var option = $("<option/>");
+		option.html(this.nadokter);
+		option.val(this.kodokter);
+		nadokter.append(option);
+	});
+	}
+});
 }
 
 function cekruang(){
 
-  var poliklinik = $("#poliklinik1").val();
-  
-    $.ajax({
-      url: "/PendaftaranVRS/cekruang/" + poliklinik,
-      type: "GET",
-      dataType: "JSON",
-      success: function(data) {
-        if (data.status == 0) {
-          
-          swal({
-            title: "Kesalahan",
-            html: "Cek Lagi",
-            type: "error",
-            confirmButtonText: "OK"
-          }).then((value) => {
-            return;
-          });
+var poliklinik = $("#poliklinik1").val();
 
-        } else {
-          $("#ruang").empty();
-          $.each(data, function(key, value) {
-            $("#ruang").append("<option value='" + value.koderuang + "'>" + value.namaruang +
-              "</option>");
-          });
-        }
-      }
-    });
+	$.ajax({
+	url: "/PendaftaranVRS/cekruang/" + poliklinik,
+	type: "GET",
+	dataType: "JSON",
+	success: function(data) {
+		if (data.status == 0) {
+		
+		swal({
+			title: "Kesalahan",
+			html: "Cek Lagi",
+			type: "error",
+			confirmButtonText: "OK"
+		}).then((value) => {
+			return;
+		});
+
+		} else {
+		$("#ruang").empty();
+		$.each(data, function(key, value) {
+			$("#ruang").append("<option value='" + value.koderuang + "'>" + value.namaruang +
+			"</option>");
+		});
+		}
+	}
+	});
 
 }
 
@@ -938,16 +938,16 @@ function getKP(){
 
 $(".select2_dokter_igd").select2({
 	allowClear: true,
-     multiple: false,  
+	multiple: false,  
 	placeholder: '--- Pilih Dokter ---',  
-     //minimumInputLength: 2,
+	//minimumInputLength: 2,
 	dropdownAutoWidth : true,
 	language: {
 		inputTooShort: function() {
 			return 'Ketikan Kode/Nama Akun Biaya minimal 2 huruf';
 		}
 	},  
-     ajax: {
+	ajax: {
 		url: "<?php echo base_url();?>PendaftaranVRS/dokter_igd",
 		type: "post",
 		dataType: 'json',
@@ -962,8 +962,8 @@ $(".select2_dokter_igd").select2({
 			results: response
 			};
 		},
-       	cache: true
-     }
+		cache: true
+	}
 });
 
 function getRuang(){
@@ -986,19 +986,19 @@ function _urlcetak1()
 {
 	var baseurl    = "<?php echo base_url()?>";
 	var noreg      = $('[name="noreg"]').val();
-  if(noreg==''){
-    swal({
-      title   : "Data Pasien ",
-      html    : "Belum Ada ...",
-      type    : "error",
-      confirmButtonText: "OK"
-    });
-    return;
-  }else{
-    url = baseurl+'PendaftaranVRS/cetak_rj2/?noreg='+noreg
-    window.open(url, '');
-                
-  }
+if(noreg==''){
+	swal({
+	title   : "Data Pasien ",
+	html    : "Belum Ada ...",
+	type    : "error",
+	confirmButtonText: "OK"
+	});
+	return;
+}else{
+	url = baseurl+'PendaftaranVRS/cetak_rj2/?noreg='+noreg
+	window.open(url, '');
+				
+}
 }
 
 function _urlcetak2()
@@ -1006,25 +1006,25 @@ function _urlcetak2()
 	var baseurl    = "<?php echo base_url()?>";
 	var noreg      = $('[name="noreg"]').val();
 	var umur      = $('#umur123').val();
-  if(noreg==''){
-    swal({
-      title   : "Data Pasien ",
-      html    : "Belum Ada ...",
-      type    : "error",
-      confirmButtonText: "OK"
-    });
-    return;
-  }else{
-    url = baseurl+'PendaftaranVRS/cetak_rj3/?noreg='+noreg+"&umur="+umur
-    window.open(url, '');
-  }
+if(noreg==''){
+	swal({
+	title   : "Data Pasien ",
+	html    : "Belum Ada ...",
+	type    : "error",
+	confirmButtonText: "OK"
+	});
+	return;
+}else{
+	url = baseurl+'PendaftaranVRS/cetak_rj3/?noreg='+noreg+"&umur="+umur
+	window.open(url, '');
+}
 }
 
 function getinfopasien2(){
 	var xhttp; 
-  	var vid = $('#pasien').val();
-	  $('#bpjs').show(200);
-	  $('#penjamin').show(200);
+	var vid = $('#pasien').val();
+	$('#bpjs').show(200);
+	$('#penjamin').show(200);
 	$.ajax({
 	url : "<?php echo base_url();?>PendaftaranVRS/getinfopasien/?id="+vid,
 		type: "GET",
@@ -1137,7 +1137,7 @@ function getinfopasien2(){
 			selectElement.appendChild(opt);
 			$('#lupcabang').val(data.koders);
 		
-            	if(data.propinsi !=''){		
+				if(data.propinsi !=''){		
 				var selectElement = document.getElementById('lupprovinsi');
 				var opt = document.createElement('option');
 				opt.value = data.propinsi;
@@ -1189,7 +1189,7 @@ function getinfopasien2(){
 			opt.innerHTML = data.namapendidikan;
 			selectPendidikan.appendChild(opt);
 			$('#luppendidikan').val(data.pendidikan);
-				  						
+										
 			var selectPekerjaan = document.getElementById('luppekerjaan');
 			var opt = document.createElement('option');
 			opt.value = data.pekerjaan;
@@ -1224,516 +1224,516 @@ function add_pasien(){
 }
 
 function save_pasien() {
-          var clupcabang = document.getElementById('lupcabang').value;
-          var clupnorm = document.getElementById('lupnorm').value;
-          var cluppreposition = document.getElementById('luppreposition').value;
-          var clupnamapasien = document.getElementById('lupnamapasien').value;
-          var clupidentitas = document.getElementById('lupidentitas').value;
-          var clupnoidentitas = document.getElementById('lupnoidentitas').value;
-          var clupnamapanggilan = document.getElementById('lupnamapanggilan').value;
-          var clupnamakeluarga = document.getElementById('lupnamakeluarga').value;
-          var cluptempatlahir = document.getElementById('luptempatlahir').value;
-          var cluptgllahir = document.getElementById('luptgllahir').value;
-          var birthDate = new Date($('#luptgllahir').val());
-          var usia = hitung_usia(birthDate);
-          $('#umur123').val(usia);
-          var clupjeniskelamin = document.getElementById('lupjeniskelamin').value;
-          var clupstatus = document.getElementById('lupstatus').value;
-          var clupwarganegara = document.getElementById('lupwarganegara').value;
-          var clupagama = document.getElementById('lupagama').value;
-          var cluppendidikan = document.getElementById('luppendidikan').value;
-          var clupgoldarah = document.getElementById('lupgoldarah').value;
-          var cluphobby = document.getElementById('luphobby').value;
-          var cluppekerjaan = document.getElementById('luppekerjaan').value;
-          var clupalamat1 = document.getElementById('lupalamat1').value;
-          var cluprt = document.getElementById('luprt').value;
-          var cluprw = document.getElementById('luprw').value;
-          var clupalamat2 = document.getElementById('lupalamat2').value;
-          var cluphp = document.getElementById('luphp').value;
-          var cekhp = cluphp.substring(0, 3);
-          var clupprovinsi = document.getElementById('lupprovinsi').value;
-          var cluptelp = document.getElementById('lupphone').value;
-          var ckabkota = document.getElementById('kabkota').value;
-          var clupemail = document.getElementById('lupemail').value;
-          var clupkecamatan = document.getElementById('lupkecamatan').value;
-          var clupfb = document.getElementById('lupfb').value;
-          var clupkelurahan = document.getElementById('lupkelurahan').value;
-          var cluptwitter = document.getElementById('luptwitter').value;
-          var clupkodepos = document.getElementById('lupkodepos1').value;
-          var clupig = document.getElementById('lupig').value;
-          const tgl = new Date().toISOString().split('T')[0];
+		var clupcabang = document.getElementById('lupcabang').value;
+		var clupnorm = document.getElementById('lupnorm').value;
+		var cluppreposition = document.getElementById('luppreposition').value;
+		var clupnamapasien = document.getElementById('lupnamapasien').value;
+		var clupidentitas = document.getElementById('lupidentitas').value;
+		var clupnoidentitas = document.getElementById('lupnoidentitas').value;
+		var clupnamapanggilan = document.getElementById('lupnamapanggilan').value;
+		var clupnamakeluarga = document.getElementById('lupnamakeluarga').value;
+		var cluptempatlahir = document.getElementById('luptempatlahir').value;
+		var cluptgllahir = document.getElementById('luptgllahir').value;
+		var birthDate = new Date($('#luptgllahir').val());
+		var usia = hitung_usia(birthDate);
+		$('#umur123').val(usia);
+		var clupjeniskelamin = document.getElementById('lupjeniskelamin').value;
+		var clupstatus = document.getElementById('lupstatus').value;
+		var clupwarganegara = document.getElementById('lupwarganegara').value;
+		var clupagama = document.getElementById('lupagama').value;
+		var cluppendidikan = document.getElementById('luppendidikan').value;
+		var clupgoldarah = document.getElementById('lupgoldarah').value;
+		var cluphobby = document.getElementById('luphobby').value;
+		var cluppekerjaan = document.getElementById('luppekerjaan').value;
+		var clupalamat1 = document.getElementById('lupalamat1').value;
+		var cluprt = document.getElementById('luprt').value;
+		var cluprw = document.getElementById('luprw').value;
+		var clupalamat2 = document.getElementById('lupalamat2').value;
+		var cluphp = document.getElementById('luphp').value;
+		var cekhp = cluphp.substring(0, 3);
+		var clupprovinsi = document.getElementById('lupprovinsi').value;
+		var cluptelp = document.getElementById('lupphone').value;
+		var ckabkota = document.getElementById('kabkota').value;
+		var clupemail = document.getElementById('lupemail').value;
+		var clupkecamatan = document.getElementById('lupkecamatan').value;
+		var clupfb = document.getElementById('lupfb').value;
+		var clupkelurahan = document.getElementById('lupkelurahan').value;
+		var cluptwitter = document.getElementById('luptwitter').value;
+		var clupkodepos = document.getElementById('lupkodepos1').value;
+		var clupig = document.getElementById('lupig').value;
+		const tgl = new Date().toISOString().split('T')[0];
 
-          // kondisi
-          if ($('#jeniskelamin').val() == '' || $('#jeniskelamin').val() == null) {
-               if (clupjeniskelamin == 'P') {
-                    clupjkel = 'Pria';
-               } else {
-                    clupjkel = 'Wanita';
-               }
-               $('#jeniskelamin').val(clupjkel);
-          }
+		// kondisi
+		if ($('#jeniskelamin').val() == '' || $('#jeniskelamin').val() == null) {
+			if (clupjeniskelamin == 'P') {
+					clupjkel = 'Pria';
+			} else {
+					clupjkel = 'Wanita';
+			}
+			$('#jeniskelamin').val(clupjkel);
+		}
 
-          if ($('#luppreposition').val() == '' || $('#luppreposition').val() == null) {
-               $('#luppreposition').val(cluppreposition);
-          } else {
-               $('#luppreposition').val();
-          }
+		if ($('#luppreposition').val() == '' || $('#luppreposition').val() == null) {
+			$('#luppreposition').val(cluppreposition);
+		} else {
+			$('#luppreposition').val();
+		}
 
-          if ($('#lupnamapasien').val() == '' || $('#lupnamapasien').val() == null) {
-               $('#lupnamapasien').val(clupnamapasien);
-          } else {
-               $('#lupnamapasien').val();
-          }
+		if ($('#lupnamapasien').val() == '' || $('#lupnamapasien').val() == null) {
+			$('#lupnamapasien').val(clupnamapasien);
+		} else {
+			$('#lupnamapasien').val();
+		}
 
-          if ($('#lupidentitas').val() == '' || $('#lupidentitas').val() == null) {
-               $('#lupidentitas').val(clupidentitas);
-          } else {
-               $('#lupidentitas').val();
-          }
+		if ($('#lupidentitas').val() == '' || $('#lupidentitas').val() == null) {
+			$('#lupidentitas').val(clupidentitas);
+		} else {
+			$('#lupidentitas').val();
+		}
 
-          if ($('#lupnoidentitas').val() == '' || $('#lupnoidentitas').val() == null) {
-               $('#lupnoidentitas').val(clupnoidentitas);
-          } else {
-               $('#lupnoidentitas').val();
-          }
+		if ($('#lupnoidentitas').val() == '' || $('#lupnoidentitas').val() == null) {
+			$('#lupnoidentitas').val(clupnoidentitas);
+		} else {
+			$('#lupnoidentitas').val();
+		}
 
-          if ($('#luptgllahir').val() == '' || $('#luptgllahir').val() == null) {
-               $('#luptgllahir').val(cluptgllahir);
-          } else {
-               $('#luptgllahir').val();
-          }
+		if ($('#luptgllahir').val() == '' || $('#luptgllahir').val() == null) {
+			$('#luptgllahir').val(cluptgllahir);
+		} else {
+			$('#luptgllahir').val();
+		}
 
-          if ($('#luptgllahir').val() == '' || $('#luptgllahir').val() == null) {
-               $('#umur123').val(hitung_usia(cluptgllahir));
-          } else {
-               $('#umur123').val(hitung_usia(cluptgllahir));
-          }
+		if ($('#luptgllahir').val() == '' || $('#luptgllahir').val() == null) {
+			$('#umur123').val(hitung_usia(cluptgllahir));
+		} else {
+			$('#umur123').val(hitung_usia(cluptgllahir));
+		}
 
-          if ($('#luppendidikan').val() == '' || $('#luppendidikan').val() == null) {
-               $('#luppendidikan').val(cluppendidikan);
-          } else {
-               $('#luppendidikan').val();
-          }
+		if ($('#luppendidikan').val() == '' || $('#luppendidikan').val() == null) {
+			$('#luppendidikan').val(cluppendidikan);
+		} else {
+			$('#luppendidikan').val();
+		}
 
-          if ($('#lupnamapasien').val() != '' || $('#lupnamapasien').val() != null) {
-               $('#namapasien').val($('#lupnamapasien').val());
-          }
+		if ($('#lupnamapasien').val() != '' || $('#lupnamapasien').val() != null) {
+			$('#namapasien').val($('#lupnamapasien').val());
+		}
 
-          if ($('#lupnoidentitas').val() != '' || $('#lupnoidentitas').val() != null) {
-               $('#noidentitas').val(clupnoidentitas);
-          }
+		if ($('#lupnoidentitas').val() != '' || $('#lupnoidentitas').val() != null) {
+			$('#noidentitas').val(clupnoidentitas);
+		}
 
-          if ($('#lupnoidentitas').val() != '' || $('#lupnoidentitas').val() != null) {
-               $('#noidentitas').val(clupnoidentitas);
-          }
+		if ($('#lupnoidentitas').val() != '' || $('#lupnoidentitas').val() != null) {
+			$('#noidentitas').val(clupnoidentitas);
+		}
 
-          if ($('#luphp').val() != '' || $('#luphp').val() != null) {
-               $('#hp').val(cluphp);
-          }
+		if ($('#luphp').val() != '' || $('#luphp').val() != null) {
+			$('#hp').val(cluphp);
+		}
 
-          // alert
-          if (cluppreposition == '') {
-               $('#modal_form').modal('hide');
-               swal({
-                    title: "PREPOSISI",
-                    html: " Tidak Boleh Kosong .!!!",
-                    type: "error",
-                    confirmButtonText: "OK"
-               }).then((value) => {
-                    $('#modal_form').modal('show');
-               });
-               $('#btnSave').text('save');
-               $('#btnSave').attr('disabled', false);
-               return;
-          }
+		// alert
+		if (cluppreposition == '') {
+			$('#modal_form').modal('hide');
+			swal({
+					title: "PREPOSISI",
+					html: " Tidak Boleh Kosong .!!!",
+					type: "error",
+					confirmButtonText: "OK"
+			}).then((value) => {
+					$('#modal_form').modal('show');
+			});
+			$('#btnSave').text('save');
+			$('#btnSave').attr('disabled', false);
+			return;
+		}
 
-          if (clupstatus == '') {
-               $('#modal_form').modal('hide');
-               swal({
-                    title: "STATUS",
-                    html: " Tidak Boleh Kosong .!!!",
-                    type: "error",
-                    confirmButtonText: "OK"
-               }).then((value) => {
-                    $('#modal_form').modal('show');
-               });
-               $('#btnSave').text('save');
-               $('#btnSave').attr('disabled', false);
-               return;
-          }
+		if (clupstatus == '') {
+			$('#modal_form').modal('hide');
+			swal({
+					title: "STATUS",
+					html: " Tidak Boleh Kosong .!!!",
+					type: "error",
+					confirmButtonText: "OK"
+			}).then((value) => {
+					$('#modal_form').modal('show');
+			});
+			$('#btnSave').text('save');
+			$('#btnSave').attr('disabled', false);
+			return;
+		}
 
-          if (cluptempatlahir == '') {
-               $('#modal_form').modal('hide');
-               swal({
-                    title: "TEMPAT LAHIR",
-                    html: " Tidak Boleh Kosong .!!!",
-                    type: "error",
-                    confirmButtonText: "OK"
-               }).then((value) => {
-                    $('#modal_form').modal('show');
-               });
-               $('#btnSave').text('save');
-               $('#btnSave').attr('disabled', false);
-               return;
-          }
+		if (cluptempatlahir == '') {
+			$('#modal_form').modal('hide');
+			swal({
+					title: "TEMPAT LAHIR",
+					html: " Tidak Boleh Kosong .!!!",
+					type: "error",
+					confirmButtonText: "OK"
+			}).then((value) => {
+					$('#modal_form').modal('show');
+			});
+			$('#btnSave').text('save');
+			$('#btnSave').attr('disabled', false);
+			return;
+		}
 
-          if (clupcabang == '') {
-               $('#modal_form').modal('hide');
-               swal({
-                    title: "CABANG",
-                    html: " Tidak Boleh Kosong .!!!",
-                    type: "error",
-                    confirmButtonText: "OK"
-               }).then((value) => {
-                    $('#modal_form').modal('show');
-               });
-               $('#btnSave').text('save');
-               $('#btnSave').attr('disabled', false);
-               return;
-          }
+		if (clupcabang == '') {
+			$('#modal_form').modal('hide');
+			swal({
+					title: "CABANG",
+					html: " Tidak Boleh Kosong .!!!",
+					type: "error",
+					confirmButtonText: "OK"
+			}).then((value) => {
+					$('#modal_form').modal('show');
+			});
+			$('#btnSave').text('save');
+			$('#btnSave').attr('disabled', false);
+			return;
+		}
 
-          if (clupnamapasien == '') {
-               $('#modal_form').modal('hide');
-               swal({
-                    title: "NAMA PASIEN",
-                    html: " Tidak Boleh Kosong .!!!",
-                    type: "error",
-                    confirmButtonText: "OK"
-               }).then((value) => {
-                    $('#modal_form').modal('show');
-               });
-               $('#btnSave').text('save');
-               $('#btnSave').attr('disabled', false);
-               return;
-          }
+		if (clupnamapasien == '') {
+			$('#modal_form').modal('hide');
+			swal({
+					title: "NAMA PASIEN",
+					html: " Tidak Boleh Kosong .!!!",
+					type: "error",
+					confirmButtonText: "OK"
+			}).then((value) => {
+					$('#modal_form').modal('show');
+			});
+			$('#btnSave').text('save');
+			$('#btnSave').attr('disabled', false);
+			return;
+		}
 
-          if (cluptgllahir == '') {
-               $('#modal_form').modal('hide');
-               swal({
-                    title: "TANGGAL LAHIR",
-                    html: " Tidak Boleh Kosong .!!!",
-                    type: "error",
-                    confirmButtonText: "OK"
-               }).then((value) => {
-                    $('#modal_form').modal('show');
-               });
-               $('#btnSave').text('save');
-               $('#btnSave').attr('disabled', false);
-               return;
-          }
+		if (cluptgllahir == '') {
+			$('#modal_form').modal('hide');
+			swal({
+					title: "TANGGAL LAHIR",
+					html: " Tidak Boleh Kosong .!!!",
+					type: "error",
+					confirmButtonText: "OK"
+			}).then((value) => {
+					$('#modal_form').modal('show');
+			});
+			$('#btnSave').text('save');
+			$('#btnSave').attr('disabled', false);
+			return;
+		}
 
-          if (cluphp == '') {
-               $('#modal_form').modal('hide');
-               swal({
-                    title: "NOMOR HP",
-                    html: " Tidak Boleh Kosong .!!!",
-                    type: "error",
-                    confirmButtonText: "OK"
-               }).then((value) => {
-                    $('#modal_form').modal('show');
-               });
-               $('#btnSave').text('save');
-               $('#btnSave').attr('disabled', false);
-               return;
-          }
+		if (cluphp == '') {
+			$('#modal_form').modal('hide');
+			swal({
+					title: "NOMOR HP",
+					html: " Tidak Boleh Kosong .!!!",
+					type: "error",
+					confirmButtonText: "OK"
+			}).then((value) => {
+					$('#modal_form').modal('show');
+			});
+			$('#btnSave').text('save');
+			$('#btnSave').attr('disabled', false);
+			return;
+		}
 
-          if (cekhp != '+62') {
-               $('#modal_form').modal('hide');
-               swal({
-                    title: "NOMOR HP",
-                    html: " Harus Di Awali +62 ",
-                    type: "error",
-                    confirmButtonText: "OK"
-               }).then((value) => {
-                    $('#modal_form').modal('show');
-               });
-               $('#btnSave').text('save');
-               $('#btnSave').attr('disabled', false);
-               return;
-          }
+		if (cekhp != '+62') {
+			$('#modal_form').modal('hide');
+			swal({
+					title: "NOMOR HP",
+					html: " Harus Di Awali +62 ",
+					type: "error",
+					confirmButtonText: "OK"
+			}).then((value) => {
+					$('#modal_form').modal('show');
+			});
+			$('#btnSave').text('save');
+			$('#btnSave').attr('disabled', false);
+			return;
+		}
 
-          if (clupidentitas == '') {
-               $('#modal_form').modal('hide');
-               swal({
-                    title: "PILIHAN IDENTITAS",
-                    html: " Pilih Dahulu .!!!",
-                    type: "error",
-                    confirmButtonText: "OK"
-               }).then((value) => {
-                    $('#modal_form').modal('show');
-               });
-               $('#btnSave').text('save');
-               $('#btnSave').attr('disabled', false);
-               return;
-          }
+		if (clupidentitas == '') {
+			$('#modal_form').modal('hide');
+			swal({
+					title: "PILIHAN IDENTITAS",
+					html: " Pilih Dahulu .!!!",
+					type: "error",
+					confirmButtonText: "OK"
+			}).then((value) => {
+					$('#modal_form').modal('show');
+			});
+			$('#btnSave').text('save');
+			$('#btnSave').attr('disabled', false);
+			return;
+		}
 
-          if (clupnoidentitas == '') {
-               $('#modal_form').modal('hide');
-               swal({
-                    title: "NOMOR IDENTITAS",
-                    html: " Tidak Boleh Kosong .!!!",
-                    type: "error",
-                    confirmButtonText: "OK"
-               }).then((value) => {
-                    $('#modal_form').modal('show');
-               });
-               $('#btnSave').text('save');
-               $('#btnSave').attr('disabled', false);
-               return;
-          }
+		if (clupnoidentitas == '') {
+			$('#modal_form').modal('hide');
+			swal({
+					title: "NOMOR IDENTITAS",
+					html: " Tidak Boleh Kosong .!!!",
+					type: "error",
+					confirmButtonText: "OK"
+			}).then((value) => {
+					$('#modal_form').modal('show');
+			});
+			$('#btnSave').text('save');
+			$('#btnSave').attr('disabled', false);
+			return;
+		}
 
-          if (clupjeniskelamin == '') {
-               $('#modal_form').modal('hide');
-               swal({
-                    title: "JENIS KELAMIN",
-                    html: " Tidak Boleh Kosong .!!!",
-                    type: "error",
-                    confirmButtonText: "OK"
-               }).then((value) => {
-                    $('#modal_form').modal('show');
-               });
-               $('#btnSave').text('save');
-               $('#btnSave').attr('disabled', false);
-               return;
-          }
+		if (clupjeniskelamin == '') {
+			$('#modal_form').modal('hide');
+			swal({
+					title: "JENIS KELAMIN",
+					html: " Tidak Boleh Kosong .!!!",
+					type: "error",
+					confirmButtonText: "OK"
+			}).then((value) => {
+					$('#modal_form').modal('show');
+			});
+			$('#btnSave').text('save');
+			$('#btnSave').attr('disabled', false);
+			return;
+		}
 
-          if (clupcabang == '') {
-               $('#modal_form').modal('hide');
-               swal({
-                    title: "CABANG",
-                    html: " Tidak Boleh Kosong .!!!",
-                    type: "error",
-                    confirmButtonText: "OK"
-               }).then((value) => {
-                    $('#modal_form').modal('show');
-               });
-               $('#btnSave').text('save');
-               $('#btnSave').attr('disabled', false);
-               return;
-          }
+		if (clupcabang == '') {
+			$('#modal_form').modal('hide');
+			swal({
+					title: "CABANG",
+					html: " Tidak Boleh Kosong .!!!",
+					type: "error",
+					confirmButtonText: "OK"
+			}).then((value) => {
+					$('#modal_form').modal('show');
+			});
+			$('#btnSave').text('save');
+			$('#btnSave').attr('disabled', false);
+			return;
+		}
 
-          if (cluppendidikan == '') {
-               $('#modal_form').modal('hide');
-               swal({
-                    title: "PENDIDIKAN",
-                    html: " Tidak Boleh Kosong .!!!",
-                    type: "error",
-                    confirmButtonText: "OK"
-               }).then((value) => {
-                    $('#modal_form').modal('show');
-               });
-               $('#btnSave').text('save');
-               $('#btnSave').attr('disabled', false);
-               return;
-          }
+		if (cluppendidikan == '') {
+			$('#modal_form').modal('hide');
+			swal({
+					title: "PENDIDIKAN",
+					html: " Tidak Boleh Kosong .!!!",
+					type: "error",
+					confirmButtonText: "OK"
+			}).then((value) => {
+					$('#modal_form').modal('show');
+			});
+			$('#btnSave').text('save');
+			$('#btnSave').attr('disabled', false);
+			return;
+		}
 
-          if (clupalamat2 == '') {
-               $('#modal_form').modal('hide');
-               swal({
-                    title: "KEC / KAB KOTA / PROV",
-                    html: " Tidak Boleh Kosong .!!!",
-                    type: "error",
-                    confirmButtonText: "OK"
-               }).then((value) => {
-                    $('#modal_form').modal('show');
-               });
-               $('#btnSave').text('save');
-               $('#btnSave').attr('disabled', false);
-               return;
-          }
+		if (clupalamat2 == '') {
+			$('#modal_form').modal('hide');
+			swal({
+					title: "KEC / KAB KOTA / PROV",
+					html: " Tidak Boleh Kosong .!!!",
+					type: "error",
+					confirmButtonText: "OK"
+			}).then((value) => {
+					$('#modal_form').modal('show');
+			});
+			$('#btnSave').text('save');
+			$('#btnSave').attr('disabled', false);
+			return;
+		}
 
-          if (cluppekerjaan == '') {
-               $('#modal_form').modal('hide');
-               swal({
-                    title: "PEKERJAAN",
-                    html: " Tidak Boleh Kosong .!!!",
-                    type: "error",
-                    confirmButtonText: "OK"
-               }).then((value) => {
-                    $('#modal_form').modal('show');
-               });
-               $('#btnSave').text('save');
-               $('#btnSave').attr('disabled', false);
-               return;
-          }
+		if (cluppekerjaan == '') {
+			$('#modal_form').modal('hide');
+			swal({
+					title: "PEKERJAAN",
+					html: " Tidak Boleh Kosong .!!!",
+					type: "error",
+					confirmButtonText: "OK"
+			}).then((value) => {
+					$('#modal_form').modal('show');
+			});
+			$('#btnSave').text('save');
+			$('#btnSave').attr('disabled', false);
+			return;
+		}
 
-          if (clupalamat1 == '') {
-               $('#modal_form').modal('hide');
-               swal({
-                    title: "ALAMAT SESUAI KTP",
-                    html: " Tidak Boleh Kosong .!!!",
-                    type: "error",
-                    confirmButtonText: "OK"
-               }).then((value) => {
-                    $('#modal_form').modal('show');
-               });
-               $('#btnSave').text('save');
-               $('#btnSave').attr('disabled', false);
-               return;
-          }
+		if (clupalamat1 == '') {
+			$('#modal_form').modal('hide');
+			swal({
+					title: "ALAMAT SESUAI KTP",
+					html: " Tidak Boleh Kosong .!!!",
+					type: "error",
+					confirmButtonText: "OK"
+			}).then((value) => {
+					$('#modal_form').modal('show');
+			});
+			$('#btnSave').text('save');
+			$('#btnSave').attr('disabled', false);
+			return;
+		}
 
-          if (cluprt == '') {
-               $('#modal_form').modal('hide');
-               swal({
-                    title: "RT",
-                    html: " Tidak Boleh Kosong .!!!",
-                    type: "error",
-                    confirmButtonText: "OK"
-               }).then((value) => {
-                    $('#modal_form').modal('show');
-               });
-               $('#btnSave').text('save');
-               $('#btnSave').attr('disabled', false);
-               return;
-          }
+		if (cluprt == '') {
+			$('#modal_form').modal('hide');
+			swal({
+					title: "RT",
+					html: " Tidak Boleh Kosong .!!!",
+					type: "error",
+					confirmButtonText: "OK"
+			}).then((value) => {
+					$('#modal_form').modal('show');
+			});
+			$('#btnSave').text('save');
+			$('#btnSave').attr('disabled', false);
+			return;
+		}
 
-          if (cluprw == '') {
-               $('#modal_form').modal('hide');
-               swal({
-                    title: "RW",
-                    html: " Tidak Boleh Kosong .!!!",
-                    type: "error",
-                    confirmButtonText: "OK"
-               }).then((value) => {
-                    $('#modal_form').modal('show');
-               });
-               $('#btnSave').text('save');
-               $('#btnSave').attr('disabled', false);
-               return;
-          }
+		if (cluprw == '') {
+			$('#modal_form').modal('hide');
+			swal({
+					title: "RW",
+					html: " Tidak Boleh Kosong .!!!",
+					type: "error",
+					confirmButtonText: "OK"
+			}).then((value) => {
+					$('#modal_form').modal('show');
+			});
+			$('#btnSave').text('save');
+			$('#btnSave').attr('disabled', false);
+			return;
+		}
 
-          if (clupprovinsi == '') {
-               $('#modal_form').modal('hide');
-               swal({
-                    title: "PROVINSI",
-                    html: " Tidak Boleh Kosong .!!!",
-                    type: "error",
-                    confirmButtonText: "OK"
-               }).then((value) => {
-                    $('#modal_form').modal('show');
-               });
-               $('#btnSave').text('save');
-               $('#btnSave').attr('disabled', false);
-               return;
-          }
+		if (clupprovinsi == '') {
+			$('#modal_form').modal('hide');
+			swal({
+					title: "PROVINSI",
+					html: " Tidak Boleh Kosong .!!!",
+					type: "error",
+					confirmButtonText: "OK"
+			}).then((value) => {
+					$('#modal_form').modal('show');
+			});
+			$('#btnSave').text('save');
+			$('#btnSave').attr('disabled', false);
+			return;
+		}
 
-          if (ckabkota == '') {
-               $('#modal_form').modal('hide');
-               swal({
-                    title: "KAB/KOTA",
-                    html: " Tidak Boleh Kosong .!!!",
-                    type: "error",
-                    confirmButtonText: "OK"
-               }).then((value) => {
-                    $('#modal_form').modal('show');
-               });
-               $('#btnSave').text('save');
-               $('#btnSave').attr('disabled', false);
-               return;
-          }
+		if (ckabkota == '') {
+			$('#modal_form').modal('hide');
+			swal({
+					title: "KAB/KOTA",
+					html: " Tidak Boleh Kosong .!!!",
+					type: "error",
+					confirmButtonText: "OK"
+			}).then((value) => {
+					$('#modal_form').modal('show');
+			});
+			$('#btnSave').text('save');
+			$('#btnSave').attr('disabled', false);
+			return;
+		}
 
-          if (clupkecamatan == '') {
-               $('#modal_form').modal('hide');
-               swal({
-                    title: "KECAMATAN",
-                    html: " Tidak Boleh Kosong .!!!",
-                    type: "error",
-                    confirmButtonText: "OK"
-               }).then((value) => {
-                    $('#modal_form').modal('show');
-               });
-               $('#btnSave').text('save');
-               $('#btnSave').attr('disabled', false);
-               return;
-          }
+		if (clupkecamatan == '') {
+			$('#modal_form').modal('hide');
+			swal({
+					title: "KECAMATAN",
+					html: " Tidak Boleh Kosong .!!!",
+					type: "error",
+					confirmButtonText: "OK"
+			}).then((value) => {
+					$('#modal_form').modal('show');
+			});
+			$('#btnSave').text('save');
+			$('#btnSave').attr('disabled', false);
+			return;
+		}
 
-          if (clupkelurahan == '') {
-               $('#modal_form').modal('hide');
-               swal({
-                    title: "KELURAHAN",
-                    html: " Tidak Boleh Kosong .!!!",
-                    type: "error",
-                    confirmButtonText: "OK"
-               }).then((value) => {
-                    $('#modal_form').modal('show');
-               });
-               $('#btnSave').text('save');
-               $('#btnSave').attr('disabled', false);
-               return;
-          }
+		if (clupkelurahan == '') {
+			$('#modal_form').modal('hide');
+			swal({
+					title: "KELURAHAN",
+					html: " Tidak Boleh Kosong .!!!",
+					type: "error",
+					confirmButtonText: "OK"
+			}).then((value) => {
+					$('#modal_form').modal('show');
+			});
+			$('#btnSave').text('save');
+			$('#btnSave').attr('disabled', false);
+			return;
+		}
 
-          $('#modal_form').modal('hide');
-          swal({
-               title: "DATA PASIEN",
-               html: "Akan dikonfirmasi",
-               type: "success",
-               confirmButtonText: "OK"
-          });
+		$('#modal_form').modal('hide');
+		swal({
+			title: "DATA PASIEN",
+			html: "Akan dikonfirmasi",
+			type: "success",
+			confirmButtonText: "OK"
+		});
 
-          url = "<?php echo site_url('PendaftaranVRS/tambah_pasien_rawat_jalan')?>";
-          $.ajax({
-               url : url,
-               type: "POST",
-               data: ($('#frmpasien2').serialize()),
-               dataType: "JSON",
-               success: function(data){
-                    if(data.status == 0){
-                         swal({
-                              title: "DATA PASIEN",
-                              html: "Data berhasil tersimpan",
-                              type: "success",
-                              confirmButtonText: "OK" 
-                         }).then((value) => {
-                              $('#modal_form').modal('hide');
-                         });
-                    }
-                    if(data.status == 1){
-                        swal({
-                            title: "DATA PASIEN",
-                            text: "Ingin mengubah data ini?",
-                            icon: "warning",
-                            buttons: true,
-                            buttons: false,
-                            dangerMode: true,
-                        }).then((value) => {
-                            swal({
-                                title: "DATA PASIEN",
-                                html: "Data berhasil diubah",
-                                type: "success",
-                                confirmButtonText: "OK" 
-                            }).then((value) => {
-                                $('#modal_form').modal('hide');
-                            });
-                        }); 
-                    } else {
-                         swal({
-                              title: "DATA PASIEN",
-                              html: "Data gagal tersimpan",
-                              type: "error",
-                              confirmButtonText: "OK" 
-                         }).then((value) => {
-                              $('#modal_form').modal('hide');
-                         });
-                    }
-               }
-          });
-     }
+		url = "<?php echo site_url('PendaftaranVRS/tambah_pasien_rawat_jalan')?>";
+		$.ajax({
+			url : url,
+			type: "POST",
+			data: ($('#frmpasien2').serialize()),
+			dataType: "JSON",
+			success: function(data){
+					if(data.status == 0){
+						swal({
+							title: "DATA PASIEN",
+							html: "Data berhasil tersimpan",
+							type: "success",
+							confirmButtonText: "OK" 
+						}).then((value) => {
+							$('#modal_form').modal('hide');
+						});
+					}
+					if(data.status == 1){
+						swal({
+							title: "DATA PASIEN",
+							text: "Ingin mengubah data ini?",
+							icon: "warning",
+							buttons: true,
+							buttons: false,
+							dangerMode: true,
+						}).then((value) => {
+							swal({
+								title: "DATA PASIEN",
+								html: "Data berhasil diubah",
+								type: "success",
+								confirmButtonText: "OK" 
+							}).then((value) => {
+								$('#modal_form').modal('hide');
+							});
+						}); 
+					} else {
+						swal({
+							title: "DATA PASIEN",
+							html: "Data gagal tersimpan",
+							type: "error",
+							confirmButtonText: "OK" 
+						}).then((value) => {
+							$('#modal_form').modal('hide');
+						});
+					}
+			}
+		});
+	}
 
 
 
 $('#lupnoidentitas').on('change', function() {
-    var noktp = this.value;
-    var prov = noktp.substring(0, 2);
-    var kotakab = noktp.substring(0, 4);
-    var kec = noktp.substring(0, 6);
-    getprov(prov);
-    getkot(kotakab);
-    getkec(kec);
-    $('#lupkecamatan').click();	
+	var noktp = this.value;
+	var prov = noktp.substring(0, 2);
+	var kotakab = noktp.substring(0, 4);
+	var kec = noktp.substring(0, 6);
+	getprov(prov);
+	getkot(kotakab);
+	getkec(kec);
+	$('#lupkecamatan').click();	
 });
 
 function getprov(kode) {
-    	$.ajax({
+		$.ajax({
 		url: "<?php echo base_url();?>PendaftaranVRS/namaprovinsi/?kode=" + kode,
 		type: "POST",
 		dataType: "JSON",
@@ -1751,53 +1751,53 @@ function getprov(kode) {
 				option.val(this.kodeprop);
 				lupprovinsi.append(option);
 			});
-        	}
-    	});
+			}
+		});
 }
 
 function getkot(kode) {
-    $.ajax({
-        url: "<?php echo base_url();?>PendaftaranVRS/namakota/?kode=" + kode,
-        type: "POST",
-        dataType: "JSON",
-        success: function(data) {
-            // $('#kabkota').val(data.kodekab).change();	
-            var opt = data;
-            var kabkota = $("#kabkota");
-            kabkota.empty();
-            $(opt).each(function() {
-                console.log(this.namakab);
-                var option = $("<option/>");
-                option.html(this.namakab);
-                option.val(this.kodekab);
-                kabkota.append(option);
-            });
-        }
-    });
+	$.ajax({
+		url: "<?php echo base_url();?>PendaftaranVRS/namakota/?kode=" + kode,
+		type: "POST",
+		dataType: "JSON",
+		success: function(data) {
+			// $('#kabkota').val(data.kodekab).change();	
+			var opt = data;
+			var kabkota = $("#kabkota");
+			kabkota.empty();
+			$(opt).each(function() {
+				console.log(this.namakab);
+				var option = $("<option/>");
+				option.html(this.namakab);
+				option.val(this.kodekab);
+				kabkota.append(option);
+			});
+		}
+	});
 }
 
 
 function getkec(kode) {
-    $.ajax({
-        url: "<?php echo base_url();?>PendaftaranVRS/namakecamatan/?kode=" + kode,
-        type: "POST",
-        dataType: "JSON",
-        success: function(data) {
-            // console.log(data.namakec);
-            // $('#lupkecamatan').val(data.namakec).change();		
-            var opt = data;
-            var lupkecamatan = $("#lupkecamatan");
-            lupkecamatan.empty();
-            $(opt).each(function() {
-                console.log(this.namakec);
-                var option = $("<option/>");
-                option.html(this.namakec);
-                option.val(this.kodekec);
-                lupkecamatan.append(option);
-            });
-            getdes(data.kodekec);
-        }
-    });
+	$.ajax({
+		url: "<?php echo base_url();?>PendaftaranVRS/namakecamatan/?kode=" + kode,
+		type: "POST",
+		dataType: "JSON",
+		success: function(data) {
+			// console.log(data.namakec);
+			// $('#lupkecamatan').val(data.namakec).change();		
+			var opt = data;
+			var lupkecamatan = $("#lupkecamatan");
+			lupkecamatan.empty();
+			$(opt).each(function() {
+				console.log(this.namakec);
+				var option = $("<option/>");
+				option.html(this.namakec);
+				option.val(this.kodekec);
+				lupkecamatan.append(option);
+			});
+			getdes(data.kodekec);
+		}
+	});
 }
 
 function getdes(kode) {
@@ -1823,120 +1823,120 @@ function getdes(kode) {
 }
 
 function register(){
-          var norm = document.getElementById('norm').value;
-          var tanggal = document.getElementById('tanggal').value;
-          var jam = document.getElementById('jam').value;
-          var jenispasien = document.getElementById('jenispasien').value;
-          var poliklinik = document.getElementById('poliklinik1').value;
-          var penjamin = document.getElementById('vpenjamin').value;
-          var dokter = document.getElementById('dokter').value;
-          var antrino = document.getElementById('antrino').value;
-          var pengirim = document.getElementById('pengirim').value;
-          var ruang = document.getElementById('ruang').value;
-          var booking = document.getElementById('booking').value;
-          var nocard = document.getElementById('nocard').value;
-          var norujukan = document.getElementById('norujukan').value;
-          var nosep = document.getElementById('nosep').value;
+		var norm = document.getElementById('norm').value;
+		var tanggal = document.getElementById('tanggal').value;
+		var jam = document.getElementById('jam').value;
+		var jenispasien = document.getElementById('jenispasien').value;
+		var poliklinik = document.getElementById('poliklinik1').value;
+		var penjamin = document.getElementById('vpenjamin').value;
+		var dokter = document.getElementById('dokter').value;
+		var antrino = document.getElementById('antrino').value;
+		var pengirim = document.getElementById('pengirim').value;
+		var ruang = document.getElementById('ruang').value;
+		var booking = document.getElementById('booking').value;
+		var nocard = document.getElementById('nocard').value;
+		var norujukan = document.getElementById('norujukan').value;
+		var nosep = document.getElementById('nosep').value;
 
-          // alert
-          if (poliklinik == '') {
-               $('#modal_form').modal('hide');
-               swal({
-                    title: "POLIKLINIK",
-                    html: " Tidak Boleh Kosong .!!!",
-                    type: "error",
-                    confirmButtonText: "OK"
-               }).then((value) => {
-                    $('#modal_form').modal('show');
-               });
-               $('#btnSave').text('save');
-               $('#btnSave').attr('disabled', false);
-               return;
-          }
-          if (dokter == '') {
-               $('#modal_form').modal('hide');
-               swal({
-                    title: "NAMA DOKTER",
-                    html: " Tidak Boleh Kosong .!!!",
-                    type: "error",
-                    confirmButtonText: "OK"
-               }).then((value) => {
-                    $('#modal_form').modal('show');
-               });
-               $('#btnSave').text('save');
-               $('#btnSave').attr('disabled', false);
-               return;
-          }
-          if (ruang == '') {
-               $('#modal_form').modal('hide');
-               swal({
-                    title: "RUAMG",
-                    html: " Tidak Boleh Kosong .!!!",
-                    type: "error",
-                    confirmButtonText: "OK"
-               }).then((value) => {
-                    $('#modal_form').modal('show');
-               });
-               $('#btnSave').text('save');
-               $('#btnSave').attr('disabled', false);
-               return;
-          }
-          if (tanggal == '') {
-               $('#modal_form').modal('hide');
-               swal({
-                    title: "TANGGAL",
-                    html: " Tidak Boleh Kosong .!!!",
-                    type: "error",
-                    confirmButtonText: "OK"
-               }).then((value) => {
-                    $('#modal_form').modal('show');
-               });
-               $('#btnSave').text('save');
-               $('#btnSave').attr('disabled', false);
-               return;
-          }
-          if (jam == '') {
-               $('#modal_form').modal('hide');
-               swal({
-                    title: "JAM",
-                    html: " Tidak Boleh Kosong .!!!",
-                    type: "error",
-                    confirmButtonText: "OK"
-               }).then((value) => {
-                    $('#modal_form').modal('show');
-               });
-               $('#btnSave').text('save');
-               $('#btnSave').attr('disabled', false);
-               return;
-          }
-        //   if (pengirim == '') {
-        //        $('#modal_form').modal('hide');
-        //        swal({
-        //             title: "PENGIRIM",
-        //             html: " Tidak Boleh Kosong .!!!",
-        //             type: "error",
-        //             confirmButtonText: "OK"
-        //        }).then((value) => {
-        //             $('#modal_form').modal('show');
-        //        });
-        //        $('#btnSave').text('save');
-        //        $('#btnSave').attr('disabled', false);
-        //        return;
-        //   }
-          if (jenispasien == '') {
-               $('#modal_form').modal('hide');
-               swal({
-                    title: "JENIS PASIEN",
-                    html: " Tidak Boleh Kosong .!!!",
-                    type: "error",
-                    confirmButtonText: "OK"
-               }).then((value) => {
-                    $('#modal_form').modal('show');
-               });
-               $('#btnSave').text('save');
-               $('#btnSave').attr('disabled', false);
-               return;
-          }
+		// alert
+		if (poliklinik == '') {
+			$('#modal_form').modal('hide');
+			swal({
+					title: "POLIKLINIK",
+					html: " Tidak Boleh Kosong .!!!",
+					type: "error",
+					confirmButtonText: "OK"
+			}).then((value) => {
+					$('#modal_form').modal('show');
+			});
+			$('#btnSave').text('save');
+			$('#btnSave').attr('disabled', false);
+			return;
+		}
+		if (dokter == '') {
+			$('#modal_form').modal('hide');
+			swal({
+					title: "NAMA DOKTER",
+					html: " Tidak Boleh Kosong .!!!",
+					type: "error",
+					confirmButtonText: "OK"
+			}).then((value) => {
+					$('#modal_form').modal('show');
+			});
+			$('#btnSave').text('save');
+			$('#btnSave').attr('disabled', false);
+			return;
+		}
+		if (ruang == '') {
+			$('#modal_form').modal('hide');
+			swal({
+					title: "RUAMG",
+					html: " Tidak Boleh Kosong .!!!",
+					type: "error",
+					confirmButtonText: "OK"
+			}).then((value) => {
+					$('#modal_form').modal('show');
+			});
+			$('#btnSave').text('save');
+			$('#btnSave').attr('disabled', false);
+			return;
+		}
+		if (tanggal == '') {
+			$('#modal_form').modal('hide');
+			swal({
+					title: "TANGGAL",
+					html: " Tidak Boleh Kosong .!!!",
+					type: "error",
+					confirmButtonText: "OK"
+			}).then((value) => {
+					$('#modal_form').modal('show');
+			});
+			$('#btnSave').text('save');
+			$('#btnSave').attr('disabled', false);
+			return;
+		}
+		if (jam == '') {
+			$('#modal_form').modal('hide');
+			swal({
+					title: "JAM",
+					html: " Tidak Boleh Kosong .!!!",
+					type: "error",
+					confirmButtonText: "OK"
+			}).then((value) => {
+					$('#modal_form').modal('show');
+			});
+			$('#btnSave').text('save');
+			$('#btnSave').attr('disabled', false);
+			return;
+		}
+		//   if (pengirim == '') {
+		//        $('#modal_form').modal('hide');
+		//        swal({
+		//             title: "PENGIRIM",
+		//             html: " Tidak Boleh Kosong .!!!",
+		//             type: "error",
+		//             confirmButtonText: "OK"
+		//        }).then((value) => {
+		//             $('#modal_form').modal('show');
+		//        });
+		//        $('#btnSave').text('save');
+		//        $('#btnSave').attr('disabled', false);
+		//        return;
+		//   }
+		if (jenispasien == '') {
+			$('#modal_form').modal('hide');
+			swal({
+					title: "JENIS PASIEN",
+					html: " Tidak Boleh Kosong .!!!",
+					type: "error",
+					confirmButtonText: "OK"
+			}).then((value) => {
+					$('#modal_form').modal('show');
+			});
+			$('#btnSave').text('save');
+			$('#btnSave').attr('disabled', false);
+			return;
+		}
 					var noregz = $("#noreg").val();
 					// console.log(noregz)
 					if(poliklinik != '' && dokter != '' && ruang != '' && tanggal != '' && jam != '' && jenispasien != ''){
@@ -1983,5 +1983,5 @@ function register(){
 							});
 						});
 					}
-     }
+	}
 </script>

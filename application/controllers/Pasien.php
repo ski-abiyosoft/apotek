@@ -135,6 +135,7 @@ class Pasien extends CI_Controller {
 		$nama = preg_replace('/\s+/', ' ', $namax);
 		$tgllahir = $this->input->post('luptgllahir');
 		$tmptlhr = $this->input->post('luptempatlahir');
+		// $noidentitas = $this->input->post('lupnoidentitas');
 		$q = $this->input->post('searchTerm');
 		// echo '<pre>';
 		// print_r($q);

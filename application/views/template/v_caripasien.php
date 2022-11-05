@@ -7,31 +7,31 @@
 			<h4 class="modal-title">Data Pasien</h4>											
 		</div>
 		<div class="modal-body">										 		  
-		  <form action="#" class="form-horizontal">
-		        <div class="form-group">
+		<form action="#" class="form-horizontal">
+				<div class="form-group">
 					<label class="col-md-3 control-label">No. Rek Med</label>
 					<div class="col-md-9">
-					  <input id="rekmed" name="rekmed" class="form-control" type="text"  />
-					  
+					<input id="rekmed" name="rekmed" class="form-control" type="text"  />
+					
 					</div>
 				</div>
 				<div class="form-group">
 					<label class="col-md-3 control-label">Nama</label>
 					<div class="col-md-9">
-					  <input id="carinama" name="carinama" class="form-control" type="text"  />
-					  
+					<input id="carinama" name="carinama" class="form-control" type="text"  />
+					
 					</div>
 				</div>
 				<div class="form-group">
 					<label class="col-md-3 control-label">Alamat</label>
 					<div class="col-md-9">
-					   <input id="carialamat" name="carialamat" class="form-control" type="text" value="" />
+					<input id="carialamat" name="carialamat" class="form-control" type="text" value="" />
 					</div>
 				</div>	
-                <div class="form-group">
+				<div class="form-group">
 					<label class="col-md-3 control-label">No. Identitas</label>
 					<div class="col-md-9">
-					   <input id="carinoid" name="carinoid" class="form-control" type="text" value="" />
+					<input id="carinoid" name="carinoid" class="form-control" type="text" value="" />
 					</div>
 				</div>	
 				
@@ -56,20 +56,20 @@
 				<div class="form-group">
 					<label class="col-md-3 control-label">Handphone</label>
 					<div class="col-md-9">
-					  <input id="noTlp" name="noTlp" class="form-control" type="text"  />  
+					<input id="noTlp" name="noTlp" class="form-control" type="text"  />  
 					</div>
 				</div>			
 				<div class="form-group">
 					<label class="col-md-3 control-label">No. Kartu</label>
 					<div class="col-md-9">
-					  <input id="nocard" name="nocard" class="form-control" type="text"  />  
+					<input id="nocard" name="nocard" class="form-control" type="text"  />  
 					</div>
 				</div>			
-		 </form>
+		</form>
 		</div>   
 		<div class="modal-footer">
-		     <p align="center">
-			  <button type="button" id="btnfilter" class="btn green" onclick="filterdata()" data-dismiss="modal">Proses Query</button>		</p>																				 			
+			<p align="center">
+			<button type="button" id="btnfilter" class="btn green" onclick="filterdata()" data-dismiss="modal">Proses Query</button>		</p>																				 			
 		</div>											
 	</div>									
 </div>								

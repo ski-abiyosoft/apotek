@@ -46,8 +46,8 @@
 		//$data  = explode("~",$x)
 
 		$query_data = $this->db->query("SELECT a.terima , a.keluar , a.saldoakhir, a.periodedate, a.koders, a.maksimumstock,
-			b.hargabeli FROM tbl_apostocklog AS a JOIN tbl_logbarang AS b ON a.kodebarang = b.kodebarang 
-			WHERE a.koders = '$unit' 
+		b.hargabeli FROM tbl_apostocklog AS a JOIN tbl_logbarang AS b ON a.kodebarang = b.kodebarang 
+		WHERE a.koders = '$unit' 
 		")->result();
 
 		$barang  = $this->input->get('barang');
@@ -494,7 +494,7 @@
 			header('location:' . base_url());
 		}
 	}
-	}
+}
 
 	/* End of file akuntansi_jurnal.php */
 	/* Location: ./application/controllers/akuntansi_jurnal.php */

@@ -1,43 +1,43 @@
     <?php 
-	  $this->load->view('template/header');
-      $this->load->view('template/body');    	  
-	//   initailizeSelect2_jnsicd();
-	?>
+    $this->load->view('template/header');
+    $this->load->view('template/body');    	  
+    //   initailizeSelect2_jnsicd();
+    ?>
 
-	
-			<div class="row">
-				<div class="col-md-12">
-					<h3 class="page-title">
-					<span class="title-unit">
+    
+            <div class="row">
+                <div class="col-md-12">
+                    <h3 class="page-title">
+                    <span class="title-unit">
                             &nbsp;<?php echo $this->session->userdata('unit'); ?> 
                         </span>
-                      - 
-                      <span class="title-web">e-HMS <small>Poliklinik</small>
-					</h3>
-                      <ul class="page-breadcrumb breadcrumb">
+                    - 
+                    <span class="title-web">e-HMS <small>Poliklinik</small>
+                    </h3>
+                    <ul class="page-breadcrumb breadcrumb">
 
-						<li>
-							<i style="color:white;" class="fa fa-home"></i>
-							<a class="title-white" href="<?php echo base_url();?>home">
-                               Awal
-							</a>
-							<i style="color:white;" class="fa fa-angle-right"></i>
-						</li>
-						<li>
-							<a class="title-white" href="#">
+                        <li>
+                            <i style="color:white;" class="fa fa-home"></i>
+                            <a class="title-white" href="<?php echo base_url();?>home">
+                            Awal
+                            </a>
+                            <i style="color:white;" class="fa fa-angle-right"></i>
+                        </li>
+                        <li>
+                            <a class="title-white" href="#">
                             e-HMS
-							</a>
-							<i style="color:white;" class="fa fa-angle-right"></i>
-						</li>
-						<li>
-							<a class="title-white" href="#">
+                            </a>
+                            <i style="color:white;" class="fa fa-angle-right"></i>
+                        </li>
+                        <li>
+                            <a class="title-white" href="#">
                             Poliklinik
-							</a>
-						</li>
-					</ul>
-				</div>
-			</div>
-			
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            
             <div class="row">
                 <div class="col-md-12">
                     <div class="portlet">
@@ -192,8 +192,8 @@
                         </div>
                         </table>
                         <div class="portlet-body">
-							<table id="tableraj" class="table table-striped table-bordered table-hover" style="overflow: auto;" width="100%">
-							<!-- <table id="tableraj" class="table table-striped table-bordered table-hover" style="overflow: auto; white-space: nowrap; display: inline-block;cellspacing:0;" width="100%"> -->
+                            <table id="tableraj" class="table table-striped table-bordered table-hover" style="overflow: auto;" width="100%">
+                            <!-- <table id="tableraj" class="table table-striped table-bordered table-hover" style="overflow: auto; white-space: nowrap; display: inline-block;cellspacing:0;" width="100%"> -->
 
                                 <thead class="page-breadcrumb breadcrumb">
                                 <tr>
@@ -216,13 +216,13 @@
                                 </thead>
                                 <tbody>
                                 </tbody>
-							</table>
-						</div>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>
-       </div>
-  </div>
+    </div>
+</div>
 </div>  
 
 <div class="modal fade" id="hperiode" tabindex="-1" role="dialog" aria-hidden="true">
@@ -298,7 +298,7 @@
 
 <div class="modal fade " id="modal-detail" role="dialog" >
     <div class="container"> 
-     <div class="modal-dialog modal-sm"> 
+    <div class="modal-dialog modal-sm"> 
         <div class="modal-content">
             <div class="modal-header header-custom" >
                 
@@ -367,7 +367,7 @@
                 <button type="button"  class="btn btn-danger" data-dismiss="modal">Batal</button>
             </div>
         </div>
-     </div>
+    </div>
     </div>
 </div>
 
@@ -387,10 +387,10 @@
 </div>
 
 <?php
-  $this->load->view('template/footer_tb');
-  $this->load->view('template/v_periode');
+$this->load->view('template/footer_tb');
+$this->load->view('template/v_periode');
 ?>
-	
+    
 
 <script type="text/javascript">
 var save_method; //for save method string
@@ -432,25 +432,25 @@ $(document).ready(function() {
 
     //datatables
     // $('#loading').modal('show');
-	var display = $.fn.dataTable.render.number( '.', ',', 2, ' ' ).display;
+    var display = $.fn.dataTable.render.number( '.', ',', 2, ' ' ).display;
     tableraj = $('#tableraj').DataTable({ 
 
         
         "processing": true, //Feature control the processing indicator.
         "serverSide": true, //Feature control DataTables' server-side processing mode.
         "order": [], //Initial no order.
-       
+    
         "ajax": {
             "url": "<?php echo site_url('poliklinik/ajax_list/1')?>",
             "type": "POST"
         },
-		
+        
         //scrollX: true,
-		//"scrollY":        "200px",
+        //"scrollY":        "200px",
         "scrollCollapse": false,
         "paging":         true,
-		
-		"oLanguage": {
+        
+        "oLanguage": {
             "sEmptyTable": "<div class='text-center'>Data Kosong</div>",
             "sInfoEmpty": "",
             "sInfoFiltered": " - Dipilih dari _MAX_ data",
@@ -467,19 +467,19 @@ $(document).ready(function() {
             }
         },
 
-				
-		"aLengthMenu": [
+                
+        "aLengthMenu": [
                     [5, 15, 20, -1],
                     [5, 15, 20, "Semua"] // change per page values here
                 ],		
 
         //Set column definition initialisation properties.
         "columnDefs": [{  
-			//    "targets": [10], //last column
-			   "orderable": true, //set not orderable
-			   "className" : "text-right",
-				render: function ( data, type, row ) {
-				//    return '<b>' + display(row[10]) + '</b>';
+            //    "targets": [10], //last column
+            "orderable": true, //set not orderable
+            "className" : "text-right",
+                render: function ( data, type, row ) {
+                //    return '<b>' + display(row[10]) + '</b>';
                 }
         }],
     });
@@ -544,7 +544,7 @@ $('#berat, #tinggi').keyup(function(){
     $('[name="bmi"]').val(bmi2);
     $('[name="bmi_result"]').val(bmi_res);
     
-	
+    
 });
 
 function c_ceknyeri($cekn)
@@ -736,7 +736,7 @@ function save()
                     title: "DATA",
                     html: 
                         "<p> Nama   : <b>"+namapass+"</b> </p>"+ 
-					    "<br> <p> No. Register   : <b>"+data.nomor+"</b> </p>"+
+                        "<br> <p> No. Register   : <b>"+data.nomor+"</b> </p>"+
                         "<br>Berhasil di Perbarui...",
                     type: "success",
                     confirmButtonText: "OK" 
@@ -749,7 +749,7 @@ function save()
                     title: "DATA",
                     html: 
                         "<p> Nama   : <b>"+namapass+"</b> </p>"+ 
-					    "<br> <p> No. Register   : <b>"+data.nomor+"</b> </p>"+
+                        "<br> <p> No. Register   : <b>"+data.nomor+"</b> </p>"+
                         "<br>Berhasil Tersimpan...",
                     type: "success",
                     confirmButtonText: "OK" 
@@ -781,7 +781,7 @@ function filterdata(){
     var tgl2        = document.getElementById("tglakhir").value;
     var id          = 2;
     var str         = id+'~'+tgl1+'~'+tgl2+'~'+poli+'~'+kodokter;
-	tableraj.ajax.url("<?php echo base_url('poliklinik/ajax_list/')?>"+str).load();
+    tableraj.ajax.url("<?php echo base_url('poliklinik/ajax_list/')?>"+str).load();
     // $('#').modal('hide');
     // setTimeout(function() { $('#loading').modal('hide'); }, 2000);
 
@@ -859,7 +859,7 @@ function cek_odon()
 function update() {
     // var select = document.getElementById('unit');
     // $('#loading').modal('show'); // show bootstrap modal
-	var select = $('[name="unit"]').val();
+    var select = $('[name="unit"]').val();
     $.ajax({
         url: "<?= site_url('Poliklinik/get_dokter_ajax');?>",
         type: "POST",

@@ -51,7 +51,7 @@ class M_pendaftaranVRS extends CI_Model {
 	var $tablerj = 'pasien_rajal';
 	var $column_orderrj = array('id', 'koders','uidlogin','antrino', 'noreg', 'rekmed', 'tglmasuk', 'namapas', 'tujuan', 'nadokter', 'cust_nama', 'jenispas', 'batal', 'keluar', 'nobpjs');
 	var $column_searchrj = array('id', 'koders','uidlogin','antrino', 'noreg', 'rekmed', 'tglmasuk', 'namapas', 'tujuan', 'nadokter', 'cust_nama', 'jenispas', 'batal', 'keluar', 'nobpjs');
-	var $orderrj = array('pasien_rajal.noreg' => 'asc'); 
+	var $orderrj = array('pasien_rajal.noreg' => 'desc'); 
 
 	private function _get_datatables_query($jns, $bulan, $tahun)
 	{
@@ -153,7 +153,7 @@ class M_pendaftaranVRS extends CI_Model {
 		$this->db->join('userlogin','userlogin.uidlogin=pasien_rajal.username');
 		$this->db->where('pasien_rajal.koders', $cabang);
 		$this->db->where('pasien_rajal.tujuan', 1);
-		$this->db->where('pasien_rajal.kodepos =', 'PUGD');
+		$this->db->where('pasien_rajal.kodepos', 'PUGD');
 		$this->db->group_by('pasien_rajal.id');
 		if($jns == 1){
 			$tanggal = date('Y-m-d');

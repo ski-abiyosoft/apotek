@@ -914,6 +914,7 @@ $this->load->view('template/footer_tb');
 ?>
 
 <script>
+  $("#btnbayar").hide();
   $("#j_umum").attr("disabled", true);
   $("#j_jaminan").attr("disabled", true);
   function cekpenjamin() {
@@ -1985,6 +1986,7 @@ $this->load->view('template/footer_tb');
           if(data.jenispas == 'PAS1'){
             document.getElementById('j_umum').checked = true;
             $("#show_jaminan").hide();
+            $("#btncetak_bayar2").hide();
           } else{
             document.getElementById('j_jaminan').checked = true;
             $("#show_jaminan").show();

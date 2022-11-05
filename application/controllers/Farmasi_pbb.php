@@ -1,6 +1,6 @@
-	<?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+<?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
-	class Farmasi_pbb extends CI_Controller {
+class Farmasi_pbb extends CI_Controller {
 
 	public function __construct(){
 		parent::__construct();
@@ -146,14 +146,12 @@
 			header('location:'.base_url());
 		}
 	}
-
 	public function ajax_delete($id){
 		$nobukti = $this->db->query("SELECT * FROM tbl_apohmohon WHERE id = '$id'")->row()->mohonno;
 		$this->db->query("delete from tbl_apohmohon where id = '$id'");
 		$this->db->query("delete from tbl_apodmohon where mohonno = '$nobukti'");
 		echo json_encode(array("status" => TRUE));
 	}
-
 	public function entri(){
 		$cek = $this->session->userdata('level');		
 		$uid = $this->session->userdata('unit');		
@@ -165,6 +163,21 @@
 		}
 	}
 
+	// public function cekbarang(){
+	// 	$gudang = $this->input->get("gud");
+	// 	$gud = $this->db->get_where("tbl_depo", ['depocode' => $gudang])->row();
+	// 	$gudangx = $gud->keterangan;
+	// 	$kodebarang = $this->input->get("kodebarang");
+	// 	$data = $this->db->get_where("tbl_barangstock", ['gudang' => $gudang, "kodebarang" => $kodebarang])->row();
+	// 	if(empty($data->kodebarang)){
+	// 		echo json_encode(['status' => 1, 'gudangx' => $gudangx]);
+	// 	} else {
+	// 		$qty = $data->saldoakhir;
+	// 		$barang = $this->db->get_where("tbl_barang", ['kodebarang' => $kodebarang])->row();
+	// 		echo json_encode(['status' => 0, "qty" => $qty, 'hargajual' => $barang->hargajual]);
+	// 	}
+	// }
+	
 	public function edit( $id ){
 		$cek = $this->session->userdata('level');		
 		$uid = $this->session->userdata('unit');
@@ -357,7 +370,6 @@
 			header('location:'.base_url());
 		}
 	}
-
 	public function get_last_number($jenis_urut){
 		$unit = $this->session->userdata("unit");
 		echo json_encode(array(
