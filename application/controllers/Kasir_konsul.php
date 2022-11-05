@@ -955,7 +955,7 @@ class Kasir_konsul extends CI_Controller
 			$noreg = $this->input->get('noreg');
 			$regist = $this->db->query("SELECT tbl_regist.*, tbl_pasien.namapas from tbl_regist inner join tbl_pasien on tbl_regist.rekmed=tbl_pasien.rekmed where noreg = '$noreg'")->row();
 			$kasir = $this->db->query("select * from tbl_kasir where nokwitansi = '$nokwitansi'")->row();
-			$detil = $this->db->query("select * from (select tbl_tarifh.tindakan as ket, (tbl_dpoli.tarifrs + tbl_dpoli.tarifdr + tbl_dpoli.paramedis + tbl_dpoli.obatpoli) as jumlah from tbl_dpoli inner join tbl_tarifh on tbl_dpoli.kodetarif=tbl_tarifh.kodetarif where noreg = '$noreg' union	all select 'Adm' as ket, tbl_kasir.adm as jumlah from tbl_kasir where nokwitansi = '$nokwitansi' union	all select 'Diskon Total' as ket, tbl_kasir.diskonrp*-1 as jumlah from tbl_kasir where nokwitansi = '$nokwitansi') kasir where jumlah<>0")->result();
+			$detil = $this->db->query("SELECT * from (select tbl_tarifh.tindakan as ket, (tbl_dpoli.tarifrs + tbl_dpoli.tarifdr + tbl_dpoli.paramedis + tbl_dpoli.obatpoli) as jumlah from tbl_dpoli inner join tbl_tarifh on tbl_dpoli.kodetarif=tbl_tarifh.kodetarif where noreg = '$noreg' union	all select 'Adm' as ket, tbl_kasir.adm as jumlah from tbl_kasir where nokwitansi = '$nokwitansi' union	all select 'Diskon Total' as ket, tbl_kasir.diskonrp*-1 as jumlah from tbl_kasir where nokwitansi = '$nokwitansi') kasir where jumlah<>0")->result();
 			$dresep = $this->db->query("SELECT * from tbl_apohresep where noreg = '$noreg'")->row();
 			if ($dresep) {
 				$eresep = $dresep->orderno;
@@ -1338,7 +1338,7 @@ class Kasir_konsul extends CI_Controller
 									</table>";
 			$query_kartu_card	= $this->db->query("SELECT * FROM tbl_kartukredit WHERE nokwitansi = '$nokwitansi'")->result();
 			foreach ($query_kartu_card as $cckey => $ccval) {
-				$query_nama_bank	= $this->db->query("SELECT * FROM tbl_edc WHERE bankcode = $ccval->kodebank")->row();
+				$query_nama_bank	= $this->db->query("SELECT * FROM tbl_edc WHERE bankcode = '$ccval->kodebank'")->row();
 				switch ($ccval->cardtype) {
 					case 1:
 						$cardType = "DEBIT NO";

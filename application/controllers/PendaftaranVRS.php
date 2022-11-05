@@ -1289,7 +1289,7 @@ class PendaftaranVRS extends CI_Controller {
 		if(!empty($cek))
 		{
 			$data['id'] = $id;
-			$data['data'] = $this->db->query("select tbl_regist.*, tbl_pasien.namapas, tbl_pasien.noidentitas, tbl_pasien.idpas, tbl_pasien.jkel, tbl_pasien.handphone, tbl_pasien.preposisi, tbl_pasien.namapanggilan, tbl_pasien.namakeluarga, tbl_pasien.tempatlahir, tbl_pasien.tgllahir, tbl_pasien.status, tbl_pasien.wn, tbl_pasien.agama, tbl_pasien.pendidikan, tbl_pasien.goldarah, tbl_pasien.hoby, tbl_pasien.pekerjaan, tbl_pasien.alamat, tbl_pasien.rt, tbl_pasien.rw, tbl_pasien.alamat2, tbl_pasien.handphone, tbl_pasien.propinsi, tbl_pasien.phone, tbl_pasien.kabupaten, tbl_pasien.email, tbl_pasien.kecamatan, tbl_pasien.fb, tbl_pasien.ig, tbl_pasien.twit, tbl_pasien.kelurahan, tbl_pasien.kodepos as kdpos
+			$data['data'] = $this->db->query("SELECT tbl_regist.*, tbl_pasien.namapas, tbl_pasien.noidentitas, tbl_pasien.idpas, tbl_pasien.jkel, tbl_pasien.handphone, tbl_pasien.preposisi, tbl_pasien.namapanggilan, tbl_pasien.namakeluarga, tbl_pasien.tempatlahir, tbl_pasien.tgllahir, tbl_pasien.status, tbl_pasien.wn, tbl_pasien.agama, tbl_pasien.pendidikan, tbl_pasien.goldarah, tbl_pasien.hoby, tbl_pasien.pekerjaan, tbl_pasien.alamat, tbl_pasien.rt, tbl_pasien.rw, tbl_pasien.alamat2, tbl_pasien.handphone, tbl_pasien.propinsi, tbl_pasien.phone, tbl_pasien.kabupaten, tbl_pasien.email, tbl_pasien.kecamatan, tbl_pasien.fb, tbl_pasien.ig, tbl_pasien.twit, tbl_pasien.kelurahan, tbl_pasien.kodepos as kdpos
 			from tbl_regist inner join tbl_pasien on tbl_regist.rekmed=tbl_pasien.rekmed
 			where tbl_regist.id = '$id'")->row();
 			
@@ -1650,7 +1650,7 @@ class PendaftaranVRS extends CI_Controller {
 		inner join tbl_pasien on tbl_regist.rekmed=tbl_pasien.rekmed
 		where tbl_regist.id = '$param'")->row();
 		
-		$this->genpdf($data->noreg);
+		// $this->genpdf($data->noreg);
 		
 		$pelayanan = data_master('tbl_namapos',array('kodepos' => $data->kodepost));
 		$attched_file  = base_url()."uploads/regist/".$data->noreg.".PDF";

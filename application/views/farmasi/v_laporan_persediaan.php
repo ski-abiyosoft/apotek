@@ -59,7 +59,7 @@ $this->load->view('template/body');
                                                        <tr>
                                                             <td align="center" width="20%">
                                                                  <label for="label">
-                                                                      <input class="form-control" type="checkbox" name="depoall" value="7" id="depoall">
+                                                                      <input class="form-control" type="checkbox" name="depoall" value="7" id="depoall" disabled>
                                                                  </label>
                                                             </td>
                                                             <td>

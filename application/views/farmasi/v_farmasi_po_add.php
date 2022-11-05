@@ -544,10 +544,6 @@ $this->load->view('template/currency');
                     }
                 });
             });
-<<<<<<< HEAD
-
-=======
->>>>>>> 2b048ebe2756fae81a8015c3e19900a3e1c0e10a
         }
     }
 

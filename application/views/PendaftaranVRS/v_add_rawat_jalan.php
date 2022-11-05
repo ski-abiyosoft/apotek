@@ -429,7 +429,7 @@
               <div class="form-group">
                 <label class="col-md-3 control-label">Tanggal Lahir <font color="red">*</font></label>
                 <div class="col-md-9">
-                  <input type="date" class="form-control input-medium" onChange="tgllahir()" id="luptgllahir"
+                  <input type="date" class="form-control input-medium" onchange="tgllahir()" id="luptgllahir"
                     name="luptgllahir" value="">
                 </div>
               </div>
@@ -1230,10 +1230,6 @@ function getdes(kode) {
 $(".select2_dokterx").select2();
 $(".select2_lokasix").select2();
 
-<<<<<<< HEAD
-
-=======
->>>>>>> 2b048ebe2756fae81a8015c3e19900a3e1c0e10a
 function update() {
   var select = document.getElementById('poliklinik1').value;
   $.ajax({
@@ -2120,10 +2116,6 @@ function Batalkan(id) {
   });
 }
 
-<<<<<<< HEAD
-=======
-
->>>>>>> 2b048ebe2756fae81a8015c3e19900a3e1c0e10a
 /**
  * Script untuk memilih pasien lama
  * 

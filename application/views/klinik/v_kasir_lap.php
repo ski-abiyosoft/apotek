@@ -63,7 +63,7 @@ $this->load->view('template/body');
 						<div class="row">
 							<div class="col-md-10">
 								<div class="form-group">
-									<label class="col-md-3 control-label">KLINIK ESTETIKA</label>
+									<label class="col-md-3 control-label">CABANG</label>
 									<div class="col-md-7">
 										<B><input style="background-color:#99ff33; color:black" type="text" name="cabang" id="cabang" class="form-control" disabled> </B>
 
