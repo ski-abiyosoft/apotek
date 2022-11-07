@@ -53,6 +53,7 @@ class Laporan_penjualan extends CI_Controller
 		$laporan    = $this->input->get('laporan');
 		$cabang     = $this->session->userdata('unit');
 		$unit       = $cabang;
+		$position   = 'L';
 		if (!empty($cek)) {
 			if ($laporan == 1) {
 				$position   = 'L';

@@ -355,7 +355,7 @@ class Farmasi_stock extends CI_Controller
 				<td colspan=\"10\" style=\"text-align:center;font-size:22px;border-bottom: none;color:#120292;\"><b><br></b></td>
 			</tr> 
 			<tr>
-				<td colspan=\"10\" style=\"text-align:center;font-size:22px;border-bottom: none;color:#120292;\"><b>LAPORAN FARMASI CABANG $unit</b></td>
+				<td colspan=\"10\" style=\"text-align:center;font-size:22px;border-bottom: none;color:#120292;\"><b>LAPORAN DAFTAR STOCK CABANG $unit</b></td>
 			</tr> 
 				
 			
@@ -373,7 +373,7 @@ class Farmasi_stock extends CI_Controller
 				<td bgcolor=\"#cccccc\" width=\"23%\" align=\"center\"><b>NAMA BARANG</b></td>
 				<td bgcolor=\"#cccccc\" width=\"10%\" align=\"center\"><b>SALDO AWAL</b></td>
 				<td bgcolor=\"#cccccc\" width=\"8%\" align=\"center\"><b>SESUAI</b></td>
-				<td bgcolor=\"#cccccc\" width=\"8%\" align=\"center\"><b>TERIMA</b></td>
+				<td bgcolor=\"#cccccc\" width=\"8%\" align=\"center\"><b>MASUK</b></td>
 				<td bgcolor=\"#cccccc\" width=\"8%\" align=\"center\"><b>KELUAR</b></td>
 				<td bgcolor=\"#cccccc\" width=\"8%\" align=\"center\"><b>HASIL SO</b></td>
 				<td bgcolor=\"#cccccc\" width=\"10%\" align=\"center\"><b>SALDO AKHIR</b></td>
@@ -426,16 +426,16 @@ class Farmasi_stock extends CI_Controller
 		$chari .= "</table>";
 
 		$data['prev'] = $chari;
-		$judul        = 'LAPORAN FARMASI CABANG';
+		$judul        = 'LAPORAN DAFTAR STOCK';
 
 			switch ($cek) {
 				case 0;
-					echo ("<title>LAPORAN FARMASI CABANG</title>");
+					echo ("<title>LAPORAN DAFTAR STOCK</title>");
 					echo ($chari);
 					break;
 
 				case 1;
-					$this->M_cetak->mpdf('P', 'A4', $judul, $chari, 'LAPORAN_FARMASI_CABANG.PDF', 10, 10, 10, 2);
+					$this->M_cetak->mpdf('P', 'A4', $judul, $chari, 'LAPORAN_DAFTAR_STOCK.PDF', 10, 10, 10, 2);
 					break;
 				case 2;
 					header("Cache-Control: no-cache, no-store, must-revalidate");
