@@ -2164,7 +2164,7 @@ class Pembelian_farmasi_laporan extends CI_Controller
 	}
 
 	public function cetak2(){
-		$cekpdf   = 2;
+		$cekpdf   = $this->input->get('pdf');;
 		$cek      = $this->session->userdata('level');
 		$idlap    = $this->input->get('idlap');
 		$unit     = $this->input->get('cabang');
@@ -2463,6 +2463,7 @@ class Pembelian_farmasi_laporan extends CI_Controller
 				$no = 1;
 				$tqty_terima = 0;
 				$ttotalrp = 0;
+				$ttotalrp2 = 0;
 				$tdiscountrp = 0;
 				$tvatrp = 0;
 				$tmaterai = 0;
@@ -2485,7 +2486,7 @@ class Pembelian_farmasi_laporan extends CI_Controller
 					$tdiscountrp += $q->discountrp;
 					$tvatrp += $q->vatrp;
 					$tmaterai += $q->materai;
-					$ttotalrp += $q->totalrp;
+					$ttotalrp2 += $q->totalrp;
 				}
 				$body .= 	"<tfoot>
 										<tr>
@@ -2495,7 +2496,7 @@ class Pembelian_farmasi_laporan extends CI_Controller
 											<td style=\"text-align: right;\">" . number_format($tdiscountrp) . "</td>
 											<td style=\"text-align: right;\">" . number_format($tvatrp) . "</td>
 											<td style=\"text-align: right;\">" . number_format($tmaterai) . "</td>
-											<td style=\"text-align: right;\">" . number_format($ttotalrp) . "</td>
+											<td style=\"text-align: right;\">" . number_format($ttotalrp2) . "</td>
 										</tr>
 									</tfoot>";
 				$body .=	"</table>";

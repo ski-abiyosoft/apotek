@@ -73,10 +73,28 @@
 						<label class="col-md-3 control-label">Nama Dokter <font color="red">*</font></label>
 						<div class="col-md-9">
 							<select class="form-control select2_dokterx" id="dokter" name="dokter">
-								<?php if($data->kodokter){ 
+								<!-- <?php if($data->kodokter){ 
 									$vdokter = data_master('tbl_dokter', array('kodokter' => $data->kodokter));
 								?>
 								<option value="<?= $data->kodokter;?>"><?= $data->kodokter.' | '.$vdokter->nadokter;?></option>
+								<?php } ?> -->
+
+								
+								<?php 
+								
+
+									$vdokter2 = $this->db->query("SELECT * FROM dokter WHERE kodokter = '$data->kodokter' and  koders='$data->koders' and kopoli='$data->kodepos'
+									union ALL
+									select*from((select*from dokter where koders='$data->koders' and kopoli='$data->kodepos' and nadokter='-' limit 1)
+									union all
+									select*from dokter where koders='$data->koders' and kopoli='$data->kodepos' and nadokter <> '-'
+									)a where kodokter<>'$data->kodokter'")->result();
+
+									foreach($vdokter2 as $row){  
+										
+									$selected = ($row->kodokter==$data->kodokter?'selected':'');?>
+
+									<option <?= $selected; ?> value="<?= $row->kodokter;?>"><?= $row->kodokter.' | '.$row->nadokter;?></option>
 								<?php } ?>
 							</select>
 						</div>

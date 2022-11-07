@@ -29,7 +29,7 @@
    initailizeSelect2_pekerjaan();
    initailizeSelect2_pasien();
    initailizeSelect2_poli();
-   initailizeSelect2_dokter();
+   initailizeSelect2_dokter('');
    initailizeSelect2_perawat();
    initailizeSelect2_register('');
    initailizeSelect2_registerresep('');

@@ -145,9 +145,9 @@ $this->load->view('template/body');
 
                                 <!-- <a class="btn btn-sm red print_laporan" onclick="javascript:_urlcetak('1');"><i
                                         title="CETAK PDF" class="glyphicon glyphicon-print"></i><b> PDF </b></a> -->
-                                <a class=" btn btn-sm red print_laporan  print_laporan" id="cetak" href="#report" data-toggle="modal">Cetak PDF</a>
+                                <a class=" btn btn-sm red  print_laporan" id="cetak" href="#report" data-toggle="modal">Cetak PDF</a>
 
-                                <a class="btn btn-sm green print_laporan" onclick="exp()"><i title=" CETAK PDF" class="fa fa-download"></i><b> EXCEL </b></a>
+                                <a class="btn btn-sm green" onclick="exp()"><i title=" CETAK PDF" class="fa fa-download"></i><b> EXCEL </b></a>
 
                                 <br />
                                 <h4>
@@ -247,24 +247,29 @@ $this->load->view('template/v_report');
 
     }
     $('.print_laporan').on("click", function() {
-        var idlap = document.getElementById('idlap').value;
-        var cabang = document.getElementById('cabang').value;
-        var tanggal1 = document.getElementById('tanggal1').value;
-        var tanggal2 = document.getElementById('tanggal2').value;
-        var vendor = document.getElementById('vendor').value;
+        var idlap       = document.getElementById('idlap').value;
+        var cabang      = document.getElementById('cabang').value;
+        var tanggal1    = document.getElementById('tanggal1').value;
+        var tanggal2    = document.getElementById('tanggal2').value;
+        var vendor      = document.getElementById('vendor').value;
         $('.modal-title').text('CETAK LAPORAN PEMBELIAN BARANG');
         // console.log(tanggal1);
-        $("#simkeureport").html('<iframe src="<?php echo base_url(); ?>Pembelian_farmasi_laporan/cetak2?idlap=' + idlap + '&cabang=' + cabang + '&tanggal1=' + tanggal1 + '&tanggal2=' + tanggal2 + '&vendor=' + vendor + '&pdf=1' + '" frameborder="no" width="100%" height="520"></iframe>');
+        $("#simkeureport").html(
+            '<iframe src="<?php echo base_url(); ?>Pembelian_farmasi_laporan/cetak2?idlap=' + idlap + '&cabang=' + cabang + '&tanggal1=' + tanggal1 + '&tanggal2=' + tanggal2 + '&vendor=' + vendor + '&pdf=1' + '" frameborder="no" width="100%" height="520"></iframe>');
     });
 
     function exp() {
-        var idlap = document.getElementById('idlap').value;
-        var cabang = document.getElementById('cabang').value;
-        var tanggal1 = document.getElementById('tanggal1').value;
-        var tanggal2 = $('#tanggal2').val();
-        var vendor = document.getElementById('vendor').value;
-        // console.log(idlap);
-        location.href = "<?= site_url() ?>Pembelian_farmasi_laporan/cetak2?idlap="+' + idlap + '&cabang=' + cabang + '&tanggal1=' + tanggal1 + '&tanggal2=' + tanggal2 + '&vendor=' + vendor + '&pdf=2';
+        var idlap       = document.getElementById('idlap').value;
+        var cabang      = document.getElementById('cabang').value;
+        var tanggal1    = document.getElementById('tanggal1').value;
+        var tanggal2    = $('#tanggal2').val();
+        var vendor      = document.getElementById('vendor').value;
+        var str         = 'idlap='+idlap+ '&cabang='+cabang+'&tanggal1='+tanggal1+'&tanggal2='+tanggal2+'&vendor='+vendor+'&pdf=2';
+
+        location.href   = "<?= site_url() ?>Pembelian_farmasi_laporan/cetak2?"+str;
+
+        
+    
         // $.ajax({
         //     url: '<?= site_url('Pembelian_farmasi_laporan/excel?idlap=') ?>' + idlap + '&cabang=' + cabang +
         //         '&tgl1=' + tanggal1 + '&tgl2=' + tanggal2 + '&vendor=' + vendor,

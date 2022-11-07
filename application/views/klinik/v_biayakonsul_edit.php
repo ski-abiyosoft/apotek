@@ -211,7 +211,7 @@ date_default_timezone_set("Asia/Jakarta");
                                                             if ($detil->kodokter) {
                                                                 $namadr = data_master('tbl_dokter', array('kodokter' => $detil->kodokter))->nadokter; ?>
                                                                 <option value="<?= $detil->kodokter; ?>">
-                                                                    <?= $detil->kodokter . ' | ' . $namadr; ?></option>
+                                                                    <?= $namadr . ' | ' .$detil->kodokter; ?></option>
                                                             <?php }
                                                             ?>
                                                         </select>
@@ -222,7 +222,7 @@ date_default_timezone_set("Asia/Jakarta");
                                                             if ($detil->koperawat) {
                                                                 $namadr = data_master('tbl_dokter', array('kodokter' => $detil->koperawat))->nadokter; ?>
                                                                 <option value="<?= $detil->koperawat; ?>">
-                                                                    <?= $detil->koperawat . ' | ' . $namadr; ?></option>
+                                                                    <?= $namadr . ' | ' . $detil->koperawat; ?></option>
                                                             <?php }
                                                             ?>
                                                         </select>

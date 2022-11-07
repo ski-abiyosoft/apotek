@@ -550,6 +550,7 @@ $this->load->view('template/footer');
           $("#btn_save").text("Simpan");
         }
       });
+      $('#btn_save').attr('disabled', false);
     }
   }
 </script>

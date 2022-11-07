@@ -1081,7 +1081,7 @@ class Laporan_persediaan extends CI_Controller
           $kota       = $profile->kota;
           $position   = 'P';
           if (!empty($cek)) {
-               if($laporan == 1){
+               if($laporan == 0){
                     $judul = '01 Laporan Mutasi Barang';
                     if ($da == 1) {
                          $x = "SELECT
@@ -1145,7 +1145,7 @@ class Laporan_persediaan extends CI_Controller
                     }
                     $body .=       "</tbody>
                               </table>";
-               } else if($laporan == 2){
+               } else if($laporan == 0){
                     $judul = '02 Laporan Rekap Mutasi Barang';
                     if ($da == 1) {
                          $x = "SELECT
@@ -1206,9 +1206,9 @@ class Laporan_persediaan extends CI_Controller
                     }
                     $body .=       "</tbody>
                               </table>";
-               } else if($laporan == 3){
+               } else if($laporan == 1){
                     $position = "L";
-                    $judul = '03 Laporan Produksi Farmasi';
+                    $judul = '01 Laporan Produksi Farmasi';
                     if ($da == 1) {
                          $x = "SELECT
                          h.*, (select namabarang from tbl_barang where kodebarang = h.kodebarang) as namabarang,
@@ -1278,9 +1278,9 @@ class Laporan_persediaan extends CI_Controller
                          }
                     }
                     $body .=  "</table>";
-               } else if($laporan == 4){
+               } else if($laporan == 2){
                     $position = "L";
-                    $judul = '04 Laporan Stock Opname';
+                    $judul = '02 Laporan Stock Opname';
                     if ($da == 1) {
                          $x = "SELECT
                          h.gudang
@@ -1321,83 +1321,93 @@ class Laporan_persediaan extends CI_Controller
                                              (SELECT hargabeli FROM tbl_barang WHERE kodebarang = tbl_aposesuai.kodebarang) AS sat_HNA, 
                                              ((SELECT hargabeli FROM tbl_barang WHERE kodebarang = tbl_aposesuai.kodebarang)*hasilso) AS total_HNA 
                                         FROM tbl_aposesuai 
-                                        WHERE koders = '$unit' AND gudang = '$qx->gudang' AND tglso BETWEEN '$dari' AND '$sampai'
+                                        WHERE koders = '$unit' AND gudang = '$qx->gudang' AND tglso BETWEEN '$dari' AND '$sampai' and type = 'so'
                                    ) semua GROUP BY kodebarang
-                              ) AS a";
+                              ) AS a ORDER BY kodebarang";
                          } else {
-                              $y = "SELECT a.* FROM (
-                                   SELECT kodebarang, namabarang, satuan, 
-                                        SUM(hasilso) AS hasilso, SUM(sat_HPP) AS sat_HPP, 
-                                        (SUM(hasilso)*SUM(sat_HPP)) AS total_HPP, SUM(sat_HNA) AS sat_HNA, 
-                                        (SUM(hasilso)*SUM(sat_HNA)) AS total_HNA
-                                   FROM (
-                                        SELECT 
-                                             kodebarang, 
-                                             (SELECT namabarang FROM tbl_barang WHERE kodebarang = tbl_aposesuai.kodebarang) AS namabarang, 
-                                             (SELECT satuan1 FROM tbl_barang WHERE kodebarang = tbl_aposesuai.kodebarang) AS satuan, 
-                                             hasilso, 
-                                             (hpp) AS sat_HPP, 
-                                             (hasilso*hpp) AS total_HPP, 
-                                             (SELECT hargabeli FROM tbl_barang WHERE kodebarang = tbl_aposesuai.kodebarang) AS sat_HNA, 
-                                             ((SELECT hargabeli FROM tbl_barang WHERE kodebarang = tbl_aposesuai.kodebarang)*hasilso) AS total_HNA 
-                                        FROM tbl_aposesuai 
-                                        WHERE koders = '$unit' AND gudang = '$depo' AND tglso BETWEEN '$dari' AND '$sampai'
-                                   ) semua GROUP BY kodebarang
-                              ) AS a";
+                              $y = "SELECT a.* FROM 
+                                   ( 
+                                        SELECT kodebarang, 
+                                             namabarang, 
+                                             satuan, 
+                                             typenya,
+                                             hasilso AS hasilso, 
+                                             sat_HPP AS sat_HPP, 
+                                             hasilso*sat_HPP AS total_HPP, 
+                                             sat_HNA AS sat_HNA, 
+                                             (hasilso*sat_HNA) AS total_HNA 
+                                        FROM 
+                                             ( 
+                                                  SELECT kodebarang, tbl_aposesuai.type AS typenya,
+                                                       (SELECT namabarang FROM tbl_barang WHERE kodebarang = tbl_aposesuai.kodebarang) AS namabarang, 
+                                                       (SELECT satuan1 FROM tbl_barang WHERE kodebarang = tbl_aposesuai.kodebarang) AS satuan, 
+                                                       hasilso, 
+                                                       (hpp) AS sat_HPP, 
+                                                       (hasilso*hpp) AS total_HPP, 
+                                                       (SELECT hargabeli FROM tbl_barang WHERE kodebarang = tbl_aposesuai.kodebarang) AS sat_HNA, 
+                                                       ((SELECT hargabeli FROM tbl_barang WHERE kodebarang = tbl_aposesuai.kodebarang)*hasilso) AS total_HNA 
+                                                  FROM tbl_aposesuai 
+                                                  WHERE koders = '$unit' AND gudang = '$depo' AND tglso BETWEEN '$dari' AND '$sampai' and type = 'so'
+                                             ) 
+                                        semua
+                                   ) 
+                              AS a ORDER BY kodebarang";
                          }
                          $query = $this->db->query($y)->result();
-                         $body .=  "<table style=\"border-collapse:collapse;font-family: tahoma; font-size:12px\" width=\"100%\" align=\"center\" border=\"1\">
-                                   <thead>
-                                        <tr>
-                                             <td bgcolor=\"#cccccc\" style=\"text-align: center; font-weight: bold; padding: 10px;\" rowspan=\"2\">No</td>
-                                             <td bgcolor=\"#cccccc\" style=\"text-align: center; font-weight: bold; padding: 10px;\" rowspan=\"2\">Kode Barang</td>
-                                             <td bgcolor=\"#cccccc\" style=\"text-align: center; font-weight: bold; padding: 10px;\" rowspan=\"2\">Nama Barang</td>
-                                             <td bgcolor=\"#cccccc\" style=\"text-align: center; font-weight: bold; padding: 10px;\" rowspan=\"2\">Satuan</td>
-                                             <td bgcolor=\"#cccccc\" style=\"text-align: center; font-weight: bold; padding: 10px;\" rowspan=\"2\">Qty Adjusment</td>
-                                             <td bgcolor=\"#cccccc\" style=\"text-align: center; font-weight: bold; padding: 10px;\" colspan=\"2\">HPP</td>
-                                             <td bgcolor=\"#cccccc\" style=\"text-align: center; font-weight: bold; padding: 10px;\" colspan=\"2\">HNA</td>
-                                        </tr>
-                                        <tr>
-                                             <td bgcolor=\"#cccccc\" style=\"text-align: center; font-weight: bold; padding: 10px;\">Sat</td>
-                                             <td bgcolor=\"#cccccc\" style=\"text-align: center; font-weight: bold; padding: 10px;\">Total</td>
-                                             <td bgcolor=\"#cccccc\" style=\"text-align: center; font-weight: bold; padding: 10px;\">Sat</td>
-                                             <td bgcolor=\"#cccccc\" style=\"text-align: center; font-weight: bold; padding: 10px;\">Total</td>
-                                        </tr>
-                                   </thead>";
-                         $no = 1;
-                         $thasilso = 0;
-                         $tsat_HPP = 0;
-                         $ttotal_HPP = 0;
-                         $tsat_HNA = 0;
-                         $ttotal_HNA = 0;
+                         $body .=  "<table style=\"border-collapse:collapse;font-family: tahoma; font-size:12px\" width=\"100%\" align=\"center\" border=\"1\" cellspacing=\"1\" cellpadding=\"3\">
+                         <thead>
+                              <tr>
+                                   <td bgcolor=\"#cccccc\" style=\"text-align: center; font-weight: bold;\" rowspan=\"2\" width=\"5%\">No</td>
+                                   <td bgcolor=\"#cccccc\" style=\"text-align: center; font-weight: bold;\" rowspan=\"2\" width=\"10%\">Kode Barang</td>
+                                   <td bgcolor=\"#cccccc\" style=\"text-align: center; font-weight: bold;\" rowspan=\"2\" width=\"25%\">Nama Barang</td>
+                                   <td bgcolor=\"#cccccc\" style=\"text-align: center; font-weight: bold;\" rowspan=\"2\" width=\"8%\">Satuan</td>
+                                   <td bgcolor=\"#cccccc\" style=\"text-align: center; font-weight: bold;\" rowspan=\"2\" width=\"6%\">Type</td>
+                                   <td bgcolor=\"#cccccc\" style=\"text-align: center; font-weight: bold;\" rowspan=\"2\" width=\"6%\">Qty SO</td>
+                                   <td bgcolor=\"#cccccc\" style=\"text-align: center; font-weight: bold;\" colspan=\"2\" width=\"20%\">HPP</td>
+                                   <td bgcolor=\"#cccccc\" style=\"text-align: center; font-weight: bold;\" colspan=\"2\" width=\"20%\">HNA</td>
+                              </tr>
+                              <tr>
+                                   <td bgcolor=\"#cccccc\" style=\"text-align: center; font-weight: bold;\">Sat</td>
+                                   <td bgcolor=\"#cccccc\" style=\"text-align: center; font-weight: bold;\">Total</td>
+                                   <td bgcolor=\"#cccccc\" style=\"text-align: center; font-weight: bold;\">Sat</td>
+                                   <td bgcolor=\"#cccccc\" style=\"text-align: center; font-weight: bold;\">Total</td>
+                              </tr>
+                         </thead>";
+                         $no          = 1;
+                         $thasilso    = 0;
+                         $tsat_HPP    = 0;
+                         $ttotal_HPP  = 0;
+                         $tsat_HNA    = 0;
+                         $ttotal_HNA  = 0;
                          foreach($query as $q){
                               $body .=  "<tbody>
                                         <tr>
-                                             <td style=\"text-align: right;\">" . $no++ . "</td>
+                                             <td style=\"text-align: center;\">" . $no++ . "</td>
                                              <td>$q->kodebarang</td>
                                              <td>$q->namabarang</td>
                                              <td>$q->satuan</td>
-                                             <td style=\"text-align: right;\">" . number_format($q->hasilso) . "</td>
+                                             <td>$q->typenya</td>
+                                             <td style=\"text-align: left;\">" . number_format($q->hasilso) . "</td>
                                              <td style=\"text-align: right;\">" . number_format($q->sat_HPP) . "</td>
                                              <td style=\"text-align: right;\">" . number_format($q->total_HPP) . "</td>
                                              <td style=\"text-align: right;\">" . number_format($q->sat_HNA) . "</td>
                                              <td style=\"text-align: right;\">" . number_format($q->total_HNA) . "</td>
                                         </tr>
                                    </tbody>";
-                              $thasilso += $q->hasilso;
-                              $tsat_HPP += $q->sat_HPP;
+                              $thasilso   += $q->hasilso;
+                              $tsat_HPP   += $q->sat_HPP;
                               $ttotal_HPP += $q->total_HPP;
-                              $tsat_HNA += $q->sat_HNA;
+                              $tsat_HNA   += $q->sat_HNA;
                               $ttotal_HNA += $q->total_HNA;
                          }
                          $body .=  "<tfoot>
                                         <tr>
-                                             <td style=\"text-align: center;\" colspan=\"4\">TOTAL</td>
-                                             <td style=\"text-align: right;\">" . number_format($thasilso) . "</td>
-                                             <td style=\"text-align: right;\">" . number_format($tsat_HPP) . "</td>
-                                             <td style=\"text-align: right;\">" . number_format($ttotal_HPP) . "</td>
-                                             <td style=\"text-align: right;\">" . number_format($tsat_HNA) . "</td>
-                                             <td style=\"text-align: right;\">" . number_format($ttotal_HNA) . "</td>
+                                             <td style=\"text-align: center;\" colspan=\"5\"><b>TOTAL</b></td>
+                                             <td style=\"text-align: right;\"><b>" . number_format($thasilso) . "</b></td>
+                                             <td style=\"text-align: right;\"><b>" . number_format($tsat_HPP) . "</b></td>
+                                             <td style=\"text-align: right;\"><b>" . number_format($ttotal_HPP) . "</b></td>
+                                             <td style=\"text-align: right;\"><b>" . number_format($tsat_HNA) . "</b></td>
+                                             <td style=\"text-align: right;\"><b>" . number_format($ttotal_HNA) . "</b></td>
                                         </tr>
                                    </tfoot>";
                          $body .=  "</table>";
@@ -1407,7 +1417,7 @@ class Laporan_persediaan extends CI_Controller
                                         </tr> 
                                    </table>";
                     }
-               } else if($laporan == 5){
+               } else if($laporan == 0){
                     $judul = "05 BERITA ACARA PEMUSNAHAN BARANG";
                     if ($da == 1) {
                          $cekheadergudang = $this->db->query("SELECT * FROM tbl_apohex WHERE tgl_ed BETWEEN '$dari' AND '$sampai' AND koders = '$unit'")->result();
@@ -1688,10 +1698,10 @@ class Laporan_persediaan extends CI_Controller
                                    </tr> 
                               </table>";
                     }
-               } else if ($laporan == 6) {
+               } else if ($laporan == 3) {
                     $position = "L";
                     if ($keperluan == 1) {
-                         $judul = '06 Laporan Persediaan';
+                         $judul = '03 Laporan Persediaan';
                          if ($da == 1) {
                               $x = "SELECT depocode FROM tbl_depo";
                          } else {
@@ -1758,10 +1768,9 @@ class Laporan_persediaan extends CI_Controller
                                    (
                                         SELECT qty FROM
                                         (
-                                        SELECT kodebarang, SUM(hasilso) AS qty, gudang, koders
+                                        SELECT kodebarang, hasilso AS qty, gudang, koders
                                         FROM tbl_aposesuai
-                                        WHERE $kondisi AND koders = '$unit' AND tglso BETWEEN '$dari' AND '$sampai'
-                                        GROUP BY kodebarang
+                                        WHERE $kondisi AND koders = '$unit' AND tglso BETWEEN '$dari' AND '$sampai' order by tglso, jamentry DESC LIMIT 1
                                         ) AS so_
                                         WHERE so_.kodebarang=a.kodebarang
                                    )

@@ -438,7 +438,7 @@
 																<td width=\"10%\" style=\"text-align:right;\">-</td>
 															</tr>
 															<tr>
-																<td colspan=\"10\">&nbsp;</td>
+																<td colspan=\"11\">&nbsp;</td>
 															</tr>";
 			$date1 = str_replace('-', '/', $sampai);
 			$now = date('Y-m-d', strtotime($date1 . "+1 days"));

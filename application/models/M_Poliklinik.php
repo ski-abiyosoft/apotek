@@ -145,22 +145,33 @@ class M_Poliklinik extends CI_Model
        
     }
     public function diperiksa_perawat(){ 
-        $cabang = $this->session->userdata('unit');	
-        $tgln   = date('Y-m-d');
-        $query = "SELECT count(*)jum
-        FROM pasien_rajal
-        WHERE koders = '$cabang' AND tglmasuk = '$tgln' AND diperiksa_perawat = 1;";
-        $qry = $this->db->query($query)->result();
-		return $qry;
-    }
-    public function diperiksa_dokter(){
-		
+        // $cabang = $this->session->userdata('unit');	
+        // $tgln   = date('Y-m-d');
+        // $query = "SELECT count(*)jum
+        // FROM pasien_rajal
+        // WHERE koders = '$cabang' AND tglmasuk = '$tgln' AND diperiksa_perawat = 1;";
+        // $qry = $this->db->query($query)->result();
 		$cabang = $this->session->userdata('unit');	
         $tgln   = date('Y-m-d');
         $query = "SELECT count(*)jum
         FROM pasien_rajal
-        WHERE koders = '$cabang' AND tglmasuk = '$tgln' AND diperiksa_dokter = 1;";
-        $qry = $this->db->query($query)->result();
+        WHERE koders = '$cabang' AND tglmasuk = '$tgln' AND diperiksa_perawat = 1";
+        $qry = $this->db->query($query);
+		return $qry;
+    }
+    public function diperiksa_dokter(){
+		// $cabang = $this->session->userdata('unit');	
+        // $tgln   = date('Y-m-d');
+        // $query = "SELECT count(*)jum
+        // FROM pasien_rajal
+        // WHERE koders = '$cabang' AND tglmasuk = '$tgln' AND diperiksa_dokter = 1;";
+        // $qry = $this->db->query($query)->result();
+		$cabang = $this->session->userdata('unit');	
+        $tgln   = date('Y-m-d');
+        $query = "SELECT count(*)jum
+        FROM pasien_rajal
+        WHERE koders = '$cabang' AND tglmasuk = '$tgln' AND diperiksa_dokter = 1";
+        $qry = $this->db->query($query);
 		return $qry;
     }
 

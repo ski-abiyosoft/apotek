@@ -52,7 +52,7 @@ $this->load->view('template/body');
                          <div class="form-body">
                               <div class="row" style="margin-top:15px;">
                                    <div class="col-md-12">
-                                        <div class="row">
+                                        <div class="row" id="semua">
                                              <div class="col-md-3 control-label"></div>
                                              <div class="col-md-9 control-label">
                                                   <table>
@@ -63,7 +63,7 @@ $this->load->view('template/body');
                                                                  </label>
                                                             </td>
                                                             <td>
-                                                                 <label for="label">Semua Depo</label>
+                                                                 <label for="label" style="text-decoration: line-through;">Semua Depo</label>
                                                             </td>
                                                        </tr>
                                                   </table>
@@ -107,12 +107,12 @@ $this->load->view('template/body');
                                              <label class="col-md-3 control-label">Laporan</label>
                                              <div class="col-md-3">
                                                   <select name="laporan" id="laporan" class="select2_laporan form-control">
-                                                       <option value="1">01 Laporan Mutasi Barang</option>
-                                                       <option value="2">02 Laporan Rekap Mutasi Barang</option>
-                                                       <option value="3">03 Laporan Produksi Farmasi</option>
-                                                       <option value="4">04 Laporan Stock Opname</option>
-                                                       <option value="5">05 Laporan Permusnahan Barang</option>
-                                                       <option value="6">06 Laporan Persediaan Barang</option>
+                                                       <!-- <option value="1">01 Laporan Mutasi Barang</option>
+                                                       <option value="2">02 Laporan Rekap Mutasi Barang</option> -->
+                                                       <option value="1">01 Laporan Produksi Farmasi</option>
+                                                       <option value="2">02 Laporan Stock Opname</option>
+                                                       <!-- <option value="5">05 Laporan Permusnahan Barang</option> -->
+                                                       <option value="3">03 Laporan Persediaan Barang</option>
                                                   </select>
                                              </div>
                                         </div>
@@ -180,6 +180,7 @@ $this->load->view('template/v_report');
 ?>
 
 <script>
+     $("#semua").hide();
      // function depoallx() {
      //      // if (document.getElementById('depoall').checked === true) {
      //      var cek = $("#depo").val();

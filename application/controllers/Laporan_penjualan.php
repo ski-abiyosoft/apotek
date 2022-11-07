@@ -29,10 +29,10 @@ class Laporan_penjualan extends CI_Controller
 	}
 
 	public function cetak2(){
-		$cek = $this->session->userdata('level');
-		$dari = $this->input->get('dari');
-		$sampai = $this->input->get('sampai');
-		$dari_jam = $this->input->get('dari_jam');
+		$cek        = $this->session->userdata('level');
+		$dari       = $this->input->get('dari');
+		$sampai     = $this->input->get('sampai');
+		$dari_jam   = $this->input->get('dari_jam');
 		$sampai_jam = $this->input->get('sampai_jam');
 		$cekpdf     = $this->input->get('pdf');
 		$cabang     = $this->session->userdata('unit');
@@ -41,7 +41,7 @@ class Laporan_penjualan extends CI_Controller
 		$date       = "Dari Tgl : " . date("d-m-Y", strtotime($dari)) . " S/D " . date("d-m-Y", strtotime($sampai));
 		$profile    = data_master('tbl_namers', array('koders' => $unit));
 		$kota       = $profile->kota;
-		$jenisx = $this->input->get('jenis');
+		$jenisx     = $this->input->get('jenis');
 		if ($jenisx == 3) {
 			$jenis = '';
 		} else if ($jenisx == 1) {
@@ -49,10 +49,10 @@ class Laporan_penjualan extends CI_Controller
 		} else {
 			$jenis = ' AND jenisjual = 2';
 		}
-		$depo = $this->input->get('depo');
-		$laporan = $this->input->get('laporan');
-		$cabang = $this->session->userdata('unit');
-		$unit = $cabang;
+		$depo       = $this->input->get('depo');
+		$laporan    = $this->input->get('laporan');
+		$cabang     = $this->session->userdata('unit');
+		$unit       = $cabang;
 		if (!empty($cek)) {
 			if ($laporan == 1) {
 				$position   = 'L';
@@ -123,7 +123,7 @@ class Laporan_penjualan extends CI_Controller
 				</tr>
 				</table>";
 			} else if ($laporan == 2) {
-				$judul = '02 LAPORAN PENJUALAN OBAT';
+				$judul = '02 LAPORAN REKAP PENJUALAN RESEP';
 				if ($depo != '') {
 					$depox = " and gudang = '$depo'";
 				} else {
@@ -261,7 +261,7 @@ class Laporan_penjualan extends CI_Controller
 				}
 			$body .= "</table>";
 			} else if ($laporan == 3) {
-				$judul = '03 Laporan Rincian Penjualan Resep';
+				$judul = '03 LAPORAN RINCIAN PENJUALAN RESEP';
 				if ($depo != '') {
 					$depox = " and gudang = '$depo'";
 				} else {
@@ -308,7 +308,7 @@ class Laporan_penjualan extends CI_Controller
 						<td style=\"text-align: left; padding: 5px;\">$q->rekmed</td>
 						<td style=\"text-align: left; padding: 5px;\">$q->kodebarang</td>
 						<td style=\"text-align: left; padding: 5px;\">$q->namabarang</td>
-						<td style=\"text-align: right; padding: 5px;\">$q->satuan</td>
+						<td style=\"text-align: left; padding: 5px;\">$q->satuan</td>
 						<td style=\"text-align: right; padding: 5px;\" width=\"5%\">$qty</td>
 						<td style=\"text-align: right; padding: 5px;\" width=\"8%\">$totalrp</td>
 						<td style=\"text-align: right; padding: 5px;\" width=\"8%\">$hna</td>
@@ -316,7 +316,7 @@ class Laporan_penjualan extends CI_Controller
 				}
 				$body .= "</table>";
 			} else if ($laporan == 4) {
-				$judul = '04 ANALISA PENJUALAN OBAT';
+				$judul = '04 LAPORAN ANALISA PENJUALAN OBAT';
 				if ($depo != '') {
 					$depox = " and h.gudang = '$depo'";
 				} else {

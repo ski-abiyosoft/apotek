@@ -180,8 +180,16 @@ class Kasir_konsul extends CI_Controller
 	{
 		$unit = $this->session->userdata('unit');
 		$kode = $this->input->get('noreg');
-		// $barang = $this->db->query("SELECT b.kodetarif, b.tindakan, a.*, d.nadokter FROM tbl_dpoli a LEFT JOIN daftar_tarif_nonbedah b ON a.koders=b.koders JOIN tbl_dokter d ON d.kodokter = a.kodokter AND a.kodetarif=b.kodetarif  WHERE noreg = '$kode' AND a.koders='$unit' GROUP BY b.kodetarif")->result();
-		$barang = $this->db->query("SELECT a.kodetarif, b.tindakan, a.kodokter, a.koperawat, (SELECT nadokter FROM tbl_dokter WHERE kodokter=a.koperawat AND koders = '$unit' limit 1) as naperawat, (SELECT nadokter FROM tbl_dokter WHERE kodokter=a.kodokter AND koders = '$unit' limit 1) as nadokter FROM tbl_dpoli a LEFT JOIN tbl_tarifh b ON a.kodetarif = b.kodetarif WHERE a.noreg = '$kode' AND a.koders='$unit'")->result();
+		// $barang = $this->db->query("SELECT a.kodetarif, b.tindakan, a.kodokter, a.koperawat, (SELECT nadokter FROM tbl_dokter WHERE kodokter=a.koperawat AND koders = '$unit' limit 1) as naperawat, (SELECT nadokter FROM tbl_dokter WHERE kodokter=a.kodokter AND koders = '$unit' limit 1) as nadokter FROM tbl_dpoli a LEFT JOIN tbl_tarifh b ON a.kodetarif = b.kodetarif WHERE a.noreg = '$kode' AND a.koders='$unit'")->result();
+		$barang = $this->db->query("SELECT 
+			a.kodetarif, 
+			b.tindakan, 
+			a.kodokter, 
+			a.koperawat, 
+			(SELECT nadokter FROM perawat WHERE kodokter=a.koperawat AND koders = a.koders AND kopoli=a.pos) AS naperawat, 
+			(SELECT nadokter FROM dokter WHERE kodokter=a.kodokter AND koders = a.koders AND kopoli=a.pos) AS nadokter 
+		FROM tbl_dpoli a JOIN tbl_tarifh b ON a.kodetarif = b.kodetarif 
+		WHERE a.noreg = '$kode' AND a.koders='$unit'")->result();
 		echo json_encode($barang);
 	}
 
@@ -262,14 +270,13 @@ class Kasir_konsul extends CI_Controller
 						
 				}else{
 					$row[] =
-					'<a class="btn btn-sm btn-primary" href="' . base_url("kasir_konsul/edit/" . $unit->id . "") . '" title="Lihat" ><i class="glyphicon glyphicon-eye-open"></i> </a>
+					'<div class="text-center"><a class="btn btn-sm btn-primary" href="' . base_url("kasir_konsul/edit/" . $unit->id . "") . '" title="Lihat" ><i class="glyphicon glyphicon-eye-open"></i> </a>
 
-					<a class="btn btn-sm btn-success" href="javascript:void(0)" title="Kirim Email" onclick="send_email(' . "'" . $unit->id . "'" . ",'" . $email . "'" . ')"><i class="glyphicon glyphicon-envelope"></i> </a>
+					<a class="btn btn-sm btn-warning" href="javascript:void(0)" title="Kirim Email" onclick="send_email(' . "'" . $unit->id . "'" . ",'" . $email . "'" . ')"><i class="glyphicon glyphicon-envelope"></i> </a>
 
-					<a class="btn btn-sm btn-success" href="javascript:void(0)" title="Kirim Whatsapp" onclick="send_wa(' . "'" . $unit->id . "'" . ",'" . $hp . "'" . ')"><i class="fa fa-whatsapp"></i> </a>
+					<a class="btn btn-sm btn-success" href="javascript:void(0)" title="Kirim Whatsapp" onclick="send_wa(' . "'" . $unit->id . "'" . ",'" . $hp . "'" . ')"><i class="fa fa-whatsapp"></i> </a></div>';
 
-					<a class="btn btn-sm btn-danger" href="javascript:void(0)" title="Batalkan" onclick="Batalkan(' . "'" . $unit->id . "'" . ')"><i class="glyphicon glyphicon-remove"></i> </a>';
-
+					// <a class="btn btn-sm btn-danger" href="javascript:void(0)" title="Batalkan" onclick="Batalkan(' . "'" . $unit->id . "'" . ')"><i class="glyphicon glyphicon-remove"></i> </a>
 				//<a class="btn btn-sm btn-danger" href="javascript:void(0)" title="Batalkan" onclick="Batalkan('."'".$unit->id."'".')"><i class="glyphicon glyphicon-remove"></i> </a>';
 				}
 				
@@ -1375,23 +1382,27 @@ class Kasir_konsul extends CI_Controller
 												<tr>
 															<td width=\"55%\">Nominal</td>
 															<td width=\"5%\"> : </td>
-															<td width=\"40%\" style=\"text-align: right;\">$ccval->jumlahbayar</td>
-												</tr> 
-										</table>";
+															<td width=\"40%\" style=\"text-align: right;\">".number_format($ccval->jumlahbayar, 2)."</td>
+												</tr>";
 			}
-			if ($kasir->kembalikeuangmuka == 0) {
-				$kembalikeuangmuka = number_format(0, 2);
-			} else {
-				$kembalikeuangmuka = number_format($kasir->kembali, 2);
+			if ($kasir->kembalikeuangmuka != 0) {
+				$kembalikeuangmuka = number_format($kasir->uangmuka, 2);
+				$chari .= "<tr>
+																<td width=\"55%\">Kembali ke Uang muka</td>
+																<td width=\"5%\"> : </td>
+																<td width=\"40%\" style=\"text-align: right;\">$kembalikeuangmuka</td>
+													</tr>";
 			}
-			$chari .= "
-										<table style=\"border-collapse:collapse;font-family: tahoma; font-size:12px\" width=\"40%\" align=\"left\" border=\"0\">
-												<tr>
-															<td width=\"55%\">Kembali ke Uang muka</td>
-															<td width=\"5%\"> : </td>
-															<td width=\"40%\" style=\"text-align: right;\">$kembalikeuangmuka</td>
-												</tr> 
-										</table>";
+			if ($kasir->kembali != 0) {
+				$kembali = number_format($kasir->kembali, 2);
+				$chari .= "<tr>
+																<td width=\"55%\">Kembali ke Pasien</td>
+																<td width=\"5%\"> : </td>
+																<td width=\"40%\" style=\"text-align: right;\">$kembali</td>
+													</tr> 
+											";
+			}
+			$chari .= "</table>";
 			$chari .= "
 									<table style=\"border-collapse:collapse;font-family: tahoma; font-size:12px\" width=\"100%\" align=\"center\" border=\"0\">
 											<tr>
@@ -1974,6 +1985,7 @@ class Kasir_konsul extends CI_Controller
 												<td style=\"text-align:left;\">$cob</td>
 												<td style=\"text-align:right;\">".$tercover2."</td>
 										</tr></tbody>";
+				$totalnya = $j->jumlahhutang + $j->nilaiklaim2;
 			}
 			$chari .= "</table>";
 			$chari .= "
@@ -2009,7 +2021,7 @@ class Kasir_konsul extends CI_Controller
 																<tr>
 																	<td width=\"30%\" style=\"border-right: none; border-bottom: none;\"><b>Total Rp</b></td>
 																	<td width=\"5%\" style=\"border-right: none; border-left: none; border-bottom: none;\"> : </td>
-																	<td width=\"65%\" style=\"text-align:right; border-left: none; border-bottom: none;\"><b>".number_format($xxx,2)."</b></td>
+																	<td width=\"65%\" style=\"text-align:right; border-left: none; border-bottom: none;\"><b>".number_format($totalnya,2)."</b></td>
 																</tr>
 																<tr>
 																	<td width=\"30%\" style=\"border-right: none; border-left: none; border-bottom: none;\">&nbsp;</td>

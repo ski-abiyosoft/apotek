@@ -790,9 +790,7 @@
                                                                             </select>
                                                                         </td>
                                                                         <td>
-                                                                            <select name="paramedis[]" class="select2_el_perawat form-control" id="paramedis1">
-                                                                                <!-- <option value="<?= $kodokter ?>" selected><?= data_master("dokter", array("kodokter" => $kodokter, "koders" => $this->session->userdata("unit"), "kopoli" => $polipas))->nadokter ?></option> -->
-                                                                            </select>
+                                                                            <select name="paramedis[]" class="select2_el_perawat form-control" id="paramedis1"></select>
                                                                         </td>
 
                                                                         
@@ -828,10 +826,10 @@
                                                                             <td>
                                                                                 <select name="paramedis[]" id="paramedis<?= $no2 ?>" type="text" class="select2_el_perawat form-control">
                                                                                     <?php
-                                                                                        if(isset($bval->kodokter)){
+                                                                                        if(isset($bval->koperawat)){
                                                                                     ?>
                                                                                         <!-- echo "<option value='$bval->kodokter'>". data_master("tbl_dokter", array("kodokter" => $bval->koperawat, "koders" => $this->session->userdata("unit")))->nadokter ."</option>"; -->
-                                                                                        <option value="<?= $bval->koperawat ?>" selected><?= data_master("perawat", array("kodokter" => $bval->kodokter, "koders" => $this->session->userdata("unit"), "kopoli" => $polipas))->nadokter ?></option>
+                                                                                        <option value="<?= $bval->koperawat ?>" selected><?= data_master("perawat", array("kodokter" => $bval->koperawat, "koders" => $this->session->userdata("unit"), "kopoli" => $polipas))->nadokter ?></option>
                                                                                     <?php
                                                                                         }
                                                                                     ?>
@@ -2405,8 +2403,10 @@
         var vid       = id;
         var kodokter    = '<?= $data_pas->kodokter ?>';
         var nadokter    = '<?= $data_pas->nadokter ?>';
+        var kodepos     = $("#poli_dok").val();
+        
         $.ajax({
-            url: "<?php echo base_url();?>Poliklinik/getpoli_tin/?kode=" + str,
+            url: "<?php echo base_url();?>Poliklinik/getpoli_tin/"+ str +"/"+ kodepos,
             type: "GET",
             dataType: "JSON",
             success: function(data) {
@@ -2416,7 +2416,6 @@
                 var totalharga=eval(data.tarifrspoli)+eval(data.tarifdrpoli)+eval(data.feemedispoli)+eval(data.bhppoli);
                 $('#hrg' + vid).val(formatCurrency1(totalharga));
                 $('#dokter' + vid).html("<option value='"+ kodokter +"'>"+ nadokter +"</option>");
-                $('#paramedis' + vid).html("<option value='"+ kodokter +"'>"+ nadokter +"</option>");
             }
         });
     }

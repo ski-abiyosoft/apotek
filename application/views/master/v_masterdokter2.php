@@ -45,12 +45,11 @@ $this->load->view('template/body');
         <div class="btn-group pull-right" style="margin-bottom:20px;">
           <label>Cabang : </label>
           <select class="form-control input-large select2_el_cabang_all" id="cabang" name="cabang" onchange="getcabang()">
-            <?php
-            if (isset($cabang)) {
-              $datacabang = data_master("tbl_namers", ["koders" => $koders]);
-              echo "<option value='$koders' selected>$datacabang->namars</option>";
-            }
+            <?php if (isset($cabang)) :
+              $rs = $this->db->query("SELECT * FROM tbl_namers WHERE koders = '$cabang'")->row();
             ?>
+              <option value="<?= $cabang ?>" selected><?= $rs->namars ?></option>
+            <?php endif; ?>
           </select>
         </div>
       </div>
@@ -112,16 +111,16 @@ $this->load->view('template/v_report');
       [5, 20, 50, 'semua']
     ],
     "oLanguage": {
-      "sEmptyTable": "<div class='text-center'>Data Kosong</div>",
-      "sInfoEmpty": "",
-      "sInfoFiltered": " - Dipilih dari _MAX_ data",
-      "sSearch": "Pencarian Data : ",
-      "sInfo": " Jumlah _TOTAL_ Data (_START_ - _END_)",
-      "sLengthMenu": "_MENU_ Baris",
-      "sZeroRecords": "<div class='text-center'>Tida ada data</div>",
+      "sEmptyTable"   : "<div class='text-center'>Data Kosong</div>",
+      "sInfoEmpty"    : "",
+      "sInfoFiltered" : " - Dipilih dari _MAX_ data",
+      "sSearch"       : "Pencarian Data : ",
+      "sInfo"         : " Jumlah _TOTAL_ Data (_START_ - _END_)",
+      "sLengthMenu"   : "_MENU_ Baris",
+      "sZeroRecords"  : "<div class='text-center'>Tida ada data</div>",
       "oPaginate": {
-        "sPrevious": "Sebelumnya",
-        "sNext": "Berikutnya"
+        "sPrevious"   : "Sebelumnya",
+        "sNext"       : "Berikutnya"
       }
     },
     "scrollCollapse": false,

@@ -77,7 +77,7 @@ class Farmasi_stock extends CI_Controller
 			$sesuaiz = $this->db->query("SELECT sum(sesuai) as sesuai FROM tbl_aposesuai WHERE kodebarang = '$unit->kodebarang' AND gudang = '$unit->gudang' AND koders = '$unit->koders'")->row();
 			$so_done = $unit->saldoakhir;
 			$row[] = $unit->satuan1;
-			$row[] = angka_rp($so_done, 0);
+			$row[] = '<div class="text-right">'.number_format($so_done, 0).'</div>';
 			$row[] = $unit->gudang;
 
 			$row[] = '<div class="text-center">
@@ -296,20 +296,20 @@ class Farmasi_stock extends CI_Controller
 	{
 
 		// $cek          = $this->input->get('cekk');
-		$cek          = $cekpdf;
-		$chari   	  = '';
-		$cekk         = $this->session->userdata('level');
-		$unit   	  = $this->session->userdata('unit');
-		$unit   	  = $this->session->userdata('unit');
-		$avatar       = $this->session->userdata('avatar_cabang');
-		$profile       = $this->M_global->_LoadProfileLap();
-		$unit          = $this->session->userdata('unit');
-		$nama_usaha    = $profile->nama_usaha;
-		$alamat1       = $profile->alamat1;
-		$alamat2       = $profile->alamat2;
+		$cek        = $cekpdf;
+		$chari      = '';
+		$cekk       = $this->session->userdata('level');
+		$unit       = $this->session->userdata('unit');
+		$unit       = $this->session->userdata('unit');
+		$avatar     = $this->session->userdata('avatar_cabang');
+		$profile    = $this->M_global->_LoadProfileLap();
+		$unit       = $this->session->userdata('unit');
+		$nama_usaha = $profile->nama_usaha;
+		$alamat1    = $profile->alamat1;
+		$alamat2    = $profile->alamat2;
 
-		$qheader       = "SELECT * from tbl_barangstock where gudang = '$gudang'";
-		$header        = $gudang;
+		$qheader    = "SELECT * from tbl_barangstock where gudang = '$gudang'";
+		$header     = $gudang;
 
 
 		// echo json_encode($data_tes, JSON_PRETTY_PRINT);
@@ -389,13 +389,23 @@ class Farmasi_stock extends CI_Controller
 			$lcno          = $lcno + 1;
 			$kodebarang    = $row->kodebarang;
 			$namabarang    = $row->namabarang;
-			$saldoawal     = number_format($row->saldoawal, 0, ',', '.');
-			$sesuai        = number_format($row->sesuai, 0, ',', '.');
-			$terima        = number_format($row->terima, 0, ',', '.');
-			$keluar        = number_format($row->keluar, 0, ',', '.');
-			$hasilso       = number_format($row->hasilso, 0, ',', '.');
-			$saldoakhir    = number_format($row->saldoakhir, 0, ',', '.');
 			$satuan1       = $row->satuan1;
+			if($cek==1){
+				$saldoawal     = number_format($row->saldoawal, 0, ',', '.');
+				$sesuai        = number_format($row->sesuai, 0, ',', '.');
+				$terima        = number_format($row->terima, 0, ',', '.');
+				$keluar        = number_format($row->keluar, 0, ',', '.');
+				$hasilso       = number_format($row->hasilso, 0, ',', '.');
+				$saldoakhir    = number_format($row->saldoakhir, 0, ',', '.');
+			}else{
+				$saldoawal     = $row->saldoawal;
+				$sesuai        = $row->sesuai;
+				$terima        = $row->terima;
+				$keluar        = $row->keluar;
+				$hasilso       = $row->hasilso;
+				$saldoakhir    = $row->saldoakhir;
+			}
+			
 
 			$chari .= "<tr>
 			<td style=\"\" align=\"center\">$lcno</td>
@@ -659,12 +669,12 @@ class Farmasi_stock extends CI_Controller
 		foreach($cek as $c){
 			$terima += $c->terima;
 			$keluar += $c->keluar;
-			$saldonya = $saldoawal + ($saldo += $c->terima - $c->keluar);
+			$saldo += $c->terima - $c->keluar;
 		}
 		$data = [
 			'terima' => $terima,
 			'keluar' => $keluar,
-			'saldoakhir' => $saldonya,
+			'saldoakhir' => $saldo + $saldoawal,
 		];
 		$this->db->update("tbl_barangstock", $data, ["id"=>$id]);
 		echo json_encode(['status' => 1]);
@@ -685,12 +695,12 @@ class Farmasi_stock extends CI_Controller
 			foreach ($cek as $c) {
 				$terima += $c->terima;
 				$keluar += $c->keluar;
-				$saldonya = $saldoawal + ($saldo += $c->terima - $c->keluar);
+				$saldo += $c->terima - $c->keluar;
 			}
 			$data = [
 				'terima' => $terima,
 				'keluar' => $keluar,
-				'saldoakhir' => $saldonya,
+				'saldoakhir' => $saldo + $saldoawal,
 			];
 			$this->db->update("tbl_barangstock", $data, ["id" => $bs->id]);
 		}

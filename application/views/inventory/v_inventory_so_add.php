@@ -118,7 +118,7 @@ $this->load->view('template/body');
                                                 <option value="">--- Pilih Barang ---</option>
                                             </select>
                                         </td>
-                                        <td width="20%"><input name="saldoakhir[]" value="0" id="saldoakhir1" type="text" class="form-control rightJustified"></td>
+                                        <td width="20%"><input name="saldoakhir[]" value="0" id="saldoakhir1" type="text" class="form-control rightJustified" readonly></td>
                                         <td width="20%"><input name="qty[]" value="1" id="qty1" type="text" class="form-control rightJustified" onchange="totalline(1)"></td>
                                         <td width="10%"><input name="plusminus[]" id="plusminus1" type="text" class="form-control rightJustified" readonly>
                                         <td width="10%"><input name="sat[]" id="sat1" type="text" class="form-control "></td>
@@ -185,15 +185,10 @@ $this->load->view('template/footer');
 
         // var akun = "<select name='kode[]' id=kode" + idrow + " onchange='showbarangname(this.value," + idrow +
         //     ")' class='select2_el_farmasi_baranggudso form-control' ><option value=''>--- Pilih Barang ---</option></select>";
-        var akun = "<select name='kode[]' id=kode" + idrow + " onchange='showbarangname(this.value," + idrow +
-            ")' class='select2_el_farmasi_barangdata form-control' ><option value=''>--- Pilih Barang ---</option></select>";
-        td1.innerHTML = akun;
-        td2.innerHTML = "<input name='saldoakhir[]'    id='saldoakhir" + idrow + "' onchange='totalline(" + idrow +
-            ")' value='0'  type='text' class='form-control rightJustified' >";
-        td3.innerHTML = "<input name='qty[]' id=qty" + idrow + " onchange='totalline(" + idrow +
-            ")' value='1'  type='text' class='form-control rightJustified'  >";
-        td4.innerHTML = "<input name='plusminus[]'    id=plusminus" + idrow + " onchange='totalline(" + idrow +
-            ")' type='text' class='form-control rightJustified'  readonly>";
+        td1.innerHTML = "<select name='kode[]' id=kode" + idrow + " onchange='showbarangname(this.value," + idrow + ")' class='select2_el_farmasi_barangdata form-control' ><option value=''>--- Pilih Barang ---</option></select>";
+        td2.innerHTML = "<input name='saldoakhir[]'    id='saldoakhir" + idrow + "' onchange='totalline(" + idrow + ")' value='0'  type='text' class='form-control rightJustified' readonly>";
+        td3.innerHTML = "<input name='qty[]' id=qty" + idrow + " onchange='totalline(" + idrow + ")' value='1'  type='text' class='form-control rightJustified'  >";
+        td4.innerHTML = "<input name='plusminus[]'    id=plusminus" + idrow + " onchange='totalline(" + idrow + ")' type='text' class='form-control rightJustified'  readonly>";
         td5.innerHTML = "<input name='sat[]'    id=sat" + idrow + " type='text' class='form-control' >";
         td6.innerHTML = "<select name='yangubah[]' id='yangubah" + idrow + "' class='form-control select2_el_farmasi_user'></select>";
         // initailizeSelect2_farmasi_baranggudso($("#gudang").val());

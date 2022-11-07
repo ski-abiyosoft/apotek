@@ -28,8 +28,8 @@ class Poliklinik extends CI_Controller {
 				// 'listKodePoli'		=> $this->M_Poliklinik->getListKodePoli(),
 				// 'tglmasuk'			=> $this->M_Poliklinik->gettglmasuk(),
 				'total_pasien'  	=> $this->M_Poliklinik->total_pasien(),
-				'diperiksa_perawat' => $this->M_Poliklinik->diperiksa_perawat(),
-				'diperiksa_dokter'  => $this->M_Poliklinik->diperiksa_dokter(),
+				'diperiksa_perawat' => $this->M_Poliklinik->diperiksa_perawat()->num_rows(),
+				'diperiksa_dokter'  => $this->M_Poliklinik->diperiksa_dokter()->num_rows(),
 				'periode'			=> $periode,
 				// 'naDokter'			=> $this->M_Poliklinik->naDokter(),
 				'menu'				=> 'e-HMS',
@@ -216,6 +216,7 @@ class Poliklinik extends CI_Controller {
 			$alergi	= $this->input->post("alergi_per");
 
 			$this->db->query("UPDATE tbl_pasien SET alergi = '$alergi' WHERE rekmed = '$rekmed_per' AND koders = '$cabang'");
+			$this->db->query("UPDATE tbl_regist SET diperiksa_perawat = 1 WHERE noreg = '$noreg_per' AND koders = '$cabang'");
 
 			$qcek = $this->db->query("SELECT * FROM tbl_rekammedisrs WHERE noreg = '$noreg_per' and rekmed = '$rekmed_per' and koders='$cabang'")->result_array();
 			$cek = count($qcek);
@@ -303,6 +304,7 @@ class Poliklinik extends CI_Controller {
 			$alergi	= $this->input->post("alergi_dok");
 
 			$this->db->query("UPDATE tbl_pasien SET alergi = '$alergi' WHERE rekmed = '$rekmed_dok' AND koders = '$cabang'");
+			$this->db->query("UPDATE tbl_regist SET diperiksa_dokter = 1 WHERE noreg = '$noreg_dok' AND koders = '$cabang'");
 
 			//-- Diagnosa ICD --//
 			$c_jenis_diag    = $this->input->post('jenis_diag');
@@ -1210,13 +1212,13 @@ class Poliklinik extends CI_Controller {
 		echo json_encode(array("jarak" => $jarak));
     }
 
-	public function getpoli_tin(){
+	public function getpoli_tin($kode, $kodepos){
 		$unit = $this->session->userdata('unit');
-		$kode = $this->input->get('kode');
 
-		$data = $this->db->query("SELECT *	from daftar_tarif_nonbedah
-		-- where daftar_tarif_nonbedah.koders='$unit'
-		where daftar_tarif_nonbedah.kodetarif ='$kode'")->row();
+		$data = $this->db->query("SELECT * FROM daftar_tarif_nonbedah AS a
+		WHERE a.koders = '$unit' 
+		AND a.kodetarif = '$kode' 
+		And a.kodepos = '$kodepos'")->row();
 		echo json_encode($data);
 	}
 

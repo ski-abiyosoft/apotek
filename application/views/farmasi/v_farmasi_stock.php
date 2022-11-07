@@ -129,8 +129,8 @@ $this->load->view('template/v_report');
     function exp() {
         var gudang    = $('#gudang').val();
         var baseurl   = "<?php echo base_url() ?>";
-                    url = baseurl + 'Farmasi_stock/cetak/' + gudang+'/2';
-                    window.open(url, '');
+        url           = baseurl + 'Farmasi_stock/cetak/' + gudang+'/2';
+        window.open(url, '');
     }
 
     $('#drp-down').hide();
@@ -167,7 +167,7 @@ $this->load->view('template/v_report');
                 "sSearch": "Pencarian Data : ",
                 "sInfo": " Jumlah _TOTAL_ Data (_START_ - _END_)",
                 "sLengthMenu": "_MENU_ Baris",
-                "sZeroRecords": "Tida ada data",
+                "sZeroRecords": "<div class='text-center'>Tidak Ada Data</div>",
                 "oPaginate": {
                     "sPrevious": "Sebelumnya",
                     "sNext": "Berikutnya"

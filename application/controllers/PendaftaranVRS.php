@@ -1077,21 +1077,13 @@ class PendaftaranVRS extends CI_Controller {
 			$pdf->FancyRow(array('Pasien',':',($regist->baru==1?'Baru':'Lama'),'','','',''), $fc, $border);
 			$pdf->FancyRow(array('Pelayanan',':',data_master('tbl_namapos',array('kodepos' => $regist->kodepost))->namapost,'','','',''), $fc, $border);
 			$pdf->FancyRow(array('Dokter',':',data_master('tbl_dokter',array('kodokter' => $regist->kodokter))->nadokter,'','','',''), $fc, $border);
-			
-			
 			$pdf->ln(2);
-			
-			
-            $pdf->setTitle($noreg); 
+			$pdf->setTitle($noreg); 
 			$pdf->AliasNbPages();
 			$pdf->output('./uploads/regist/'.$noreg.'.PDF','F');
-			$pdf->output($noreg.'.PDF','I');			
-		}
-		else
-		{
-			
+			// $pdf->output($noreg.'.PDF','I');			
+		} else {
 			header('location:'.base_url());
-			
 		}
 	}
 	// end cetak rj 2
@@ -1721,21 +1713,11 @@ class PendaftaranVRS extends CI_Controller {
 		// UNION ALL (SELECT DISTINCT d.kodokter, d.nadokter 
 		// from tbl_drpoli p join tbl_dokter d on p.kodokter=d.kodokter where nadokter<>"-" AND p.kopoli = "'.$poli.'" and koders = "'.$this->session->userdata('unit').'"
 		// order by nadokter)')->result();
+
 		$data = $this->db->query(
-			"(SELECT DISTINCT b.kodokter, b.nadokter  
-			FROM tbl_doktercabang a 
-			LEFT JOIN tbl_dokter  b ON a.kodokter=b.kodokter 
-			JOIN tbl_drpoli dr ON b.kodokter=dr.kodokter
-			WHERE nadokter='-' AND dr.kopoli = '$poli' AND a.koders = '$cabang'
-			LIMIT 1
-			)
-			UNION ALL 
-			(SELECT DISTINCT b.kodokter, b.nadokter  
-			FROM tbl_doktercabang a 
-			LEFT JOIN tbl_dokter  b ON a.kodokter=b.kodokter 
-			JOIN tbl_drpoli dr ON b.kodokter=dr.kodokter
-			WHERE nadokter<>'-' AND dr.kopoli = '$poli' AND a.koders = '$cabang'
-			ORDER BY nadokter)")->result();
+			"(SELECT*from dokter where koders='$cabang' and kopoli='$poli' and nadokter='-' and koders='$cabang' limit 1) union all
+			SELECT*from dokter where koders='$cabang' and kopoli='$poli' and nadokter <> '-' and koders='$cabang'
+			order by nadokter")->result();
 
 		
 		// $query = $this->db->query("SELECT DISTINCT d.kodokter, dr.nadokter FROM tbl_drpoli p JOIN tbl_doktercabang d ON p.kodokter=d.kodokter JOIN tbl_dokter dr ON d.kodokter=dr.kodokter WHERE nadokter='-' AND p.kopoli = '$poli' AND d.koders = '$cabang' UNION ALL (SELECT DISTINCT d.kodokter, dr.nadokter FROM tbl_drpoli p JOIN tbl_doktercabang d ON p.kodokter=d.kodokter JOIN tbl_dokter dr ON d.kodokter=dr.kodokter WHERE nadokter<>'-' AND p.kopoli = '$poli' AND d.koders = '$cabang' ORDER BY nadokter)")->result();

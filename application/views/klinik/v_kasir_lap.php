@@ -63,9 +63,10 @@ $this->load->view('template/body');
 						<div class="row">
 							<div class="col-md-10">
 								<div class="form-group">
-									<label class="col-md-3 control-label">CABANG</label>
+									<label class="col-md-3 control-label">Cabang</label>
 									<div class="col-md-7">
-										<B><input style="background-color:#99ff33; color:black" type="text" name="cabang" id="cabang" class="form-control" disabled> </B>
+										<B><input type="hidden" name="cabang" id="cabang" class="form-control"></B>
+										<B><input style="background-color:#99ff33; color:black" type="text" name="cabangx" id="cabangx" class="form-control" disabled></B>
 
 									</div>
 								</div>
@@ -131,22 +132,22 @@ $this->load->view('template/body');
 						<div class="row">
 							<div class="col-md-10">
 								<div class="form-group">
-									<label class="col-md-3 control-label">Dokter</label>
+									<label class="col-md-3 control-label">Unit</label>
 									<div class="col-md-7">
-										<select name="dokter" id="dokter" class="select2_el_dokter form-control">
+										<select name="unit" id="unit" class="select2_el_poli form-control" onchange="getdokter(this.value)">
 										</select>
 									</div>
 								</div>
 							</div>
 
-
 						</div>
 						<div class="row">
+
 							<div class="col-md-10">
 								<div class="form-group">
-									<label class="col-md-3 control-label">Unit</label>
+									<label class="col-md-3 control-label">Dokter</label>
 									<div class="col-md-7">
-										<select name="unit" id="unit" class="select2_el_poli form-control">
+										<select name="dokter" id="dokter" class="select2_el_dokter form-control">
 										</select>
 									</div>
 								</div>
@@ -212,6 +213,9 @@ $this->load->view('template/v_report');
 
 
 <script>
+	function getdokter(param){
+		initailizeSelect2_dokter(param);
+	}
 	cabb();
 
 	function cabb() {
@@ -228,6 +232,14 @@ $this->load->view('template/v_report');
 				// opt.innerHTML = data.namatext;
 				// selectElement.appendChild(opt);			
 				$('#cabang').val(data.id);
+				$.ajax({
+					url: "<?= site_url('Kasir_laporan/namars/'); ?>"+data.id,
+					type: "POST",
+					dataType: "JSON",
+					success: function(data){
+						$('#cabangx').val(data.namars);
+					}
+				})
 
 			}
 		});

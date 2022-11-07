@@ -97,7 +97,7 @@
           <div class="form-group">
             <label class="col-md-3 control-label">Nama Dokter <font color="red">*</font></label>
             <div class="col-md-9">
-              <select name="dokter" class="form-control select2_dokterx" id="dokter"></select>
+              <select name="dokter" class="form-control select2_dokter" id="dokter"></select>
             </div>
           </div>
         </div>
@@ -1227,11 +1227,12 @@ function getdes(kode) {
   });
 }
 
-$(".select2_dokterx").select2();
+$(".select2_dokter").select2("");
 $(".select2_lokasix").select2();
 
 function update() {
   var select = document.getElementById('poliklinik1').value;
+  initailizeSelect2_dokter(select);
   $.ajax({
     url: "<?= site_url('PendaftaranVRS/get_dokter_rj');?>",
     type: "POST",

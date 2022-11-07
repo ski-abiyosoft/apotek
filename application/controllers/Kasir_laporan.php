@@ -27,7 +27,10 @@ class Kasir_laporan extends CI_Controller
 		}
 	}
 
-
+	public function namars($kode){
+		$data = $this->db->get_where("tbl_namers", ["koders"=>$kode])->row();
+		echo json_encode($data);
+	}
 
 	public function cetak()
 	{
@@ -131,106 +134,104 @@ class Kasir_laporan extends CI_Controller
 			} else if ($idlp == 102) {
 				$bulan = date('n', strtotime($tgl1));
 				$tahun = date('Y', strtotime($tgl2));
-			// 	$query =
-			// 		"SELECT 'Order Tunai' as keterangan, count(*) as jumlah, sum(bayarcash+bayarcard) as nilai
-			// from tbl_kasir 
-			// where jenisbayar=1 and koders='$unit' and tglbayar between '$_tgl1' and '$_tgl2' and totalresep>0
-			// union all
-			// SELECT '   Order Cash' as keterangan, count(*) as jumlah, sum(bayarcash) as nilai
-			// from tbl_kasir where jenisbayar=1
-			// and koders='$unit' and tglbayar between '$_tgl1' and '$_tgl2' and totalresep>0
-			// union all
-			// SELECT '   Order Card' as keterangan, count(*) as jumlah, sum(bayarcard) as nilai
-			// from tbl_kasir where jenisbayar=1
-			// and koders='$unit' and tglbayar between '$_tgl1' and '$_tgl2' and totalresep>0
-			// union all
-			// SELECT 'Tindakan Dokter' as keterangan, count(*) as jumlah, sum(totalpoli) as nilai
-			// from tbl_kasir where jenisbayar=1
-			// and koders='$unit' and tglbayar between '$_tgl1' and '$_tgl2' and totalpoli>0
-			// union all
-			// SELECT '   Order Cash' as keterangan, count(*) as jumlah, sum(bayarcash) as nilai
-			// from tbl_kasir where jenisbayar=1
-			// and koders='$unit' and tglbayar between '$_tgl1' and '$_tgl2' and totalpoli>0
-			// union all
-			// SELECT '   Order Card' as keterangan, count(*) as jumlah, sum(bayarcard) as nilai
-			// from tbl_kasir where jenisbayar=1
-			// and koders='$unit' and tglbayar between '$_tgl1' and '$_tgl2' and totalpoli>0
-			// union all
-			// SELECT 'Order Lokal' as keterangan, 0 as jumlah, 0 as nilai
-			// from tbl_kasir where jenisbayar=1
-			// and koders='$unit' and tglbayar between '$_tgl1' and '$_tgl2' and totalpoli>0
-			// union all
-			// SELECT '   Order Cash' as keterangan, 0 as jumlah, 0 as nilai
-			// from tbl_kasir where jenisbayar=1
-			// and koders='$unit' and tglbayar between '$_tgl1' and '$_tgl2' and totalpoli>0
-			// union all
-			// SELECT '   Order Card' as keterangan, 0 as jumlah, 0 as nilai
-			// from tbl_kasir where jenisbayar=1
-			// and koders='$unit' and tglbayar between '$_tgl1' and '$_tgl2' and totalpoli>0
-			// union all
-			// SELECT 'Order Kirim' as keterangan, 0 as jumlah, 0 as nilai
-			// from tbl_kasir where jenisbayar=1
-			// and koders='$unit' and tglbayar between '$_tgl1' and '$_tgl2' and totalpoli>0
-			// union all
-			// SELECT '   Order Cash' as keterangan, 0 as jumlah, 0 as nilai
-			// from tbl_kasir where jenisbayar=1
-			// and koders='$unit' and tglbayar between '$_tgl1' and '$_tgl2' and totalpoli>0
-			// union all
-			// SELECT '   Order Card' as keterangan, 0 as jumlah, 0 as nilai
-			// from tbl_kasir where jenisbayar=1
-			// and koders='$unit' and tglbayar between '$_tgl1' and '$_tgl2' and totalpoli>0
-			// union all
-			// SELECT 'Ongkos Kirim' as keterangan, 0 as jumlah, 0 as nilai
-			// from tbl_kasir where jenisbayar=1
-			// and koders='$unit' and tglbayar between '$_tgl1' and '$_tgl2' and totalpoli>0
-			// union all
-			// SELECT '   Order Cash' as keterangan, 0 as jumlah, 0 as nilai
-			// from tbl_kasir where jenisbayar=1
-			// and koders='$unit' and tglbayar between '$_tgl1' and '$_tgl2' and totalpoli>0
-			// union all
-			// SELECT '   Order Card' as keterangan, 0 as jumlah, 0 as nilai
-			// from tbl_kasir where jenisbayar=1
-			// and koders='$unit' and tglbayar between '$_tgl1' and '$_tgl2' and totalpoli>0
-			// union all
-			// SELECT 'SPA' as keterangan, 0 as jumlah, 0 as nilai
-			// from tbl_kasir where jenisbayar=1
-			// and koders='$unit' and tglbayar between '$_tgl1' and '$_tgl2' and totalpoli>0
-			// union all
-			// SELECT '   Order Cash' as keterangan, 0 as jumlah, 0 as nilai
-			// from tbl_kasir where jenisbayar=1
-			// and koders='$unit' and tglbayar between '$_tgl1' and '$_tgl2' and totalpoli>0
-			// union all
-			// SELECT '   Order Card' as keterangan, 0 as jumlah, 0 as nilai
-			// from tbl_kasir where jenisbayar=1
-			// and koders='$unit' and tglbayar between '$_tgl1' and '$_tgl2' and totalpoli>0
-			// union all
-			// SELECT 'Produk SPA' as keterangan, 0 as jumlah, 0 as nilai
-			// from tbl_kasir where jenisbayar=1
-			// and koders='$unit' and tglbayar between '$_tgl1' and '$_tgl2' and totalpoli>0
-			// union all
-			// SELECT '   Order Cash' as keterangan, 0 as jumlah, 0 as nilai
-			// from tbl_kasir where jenisbayar=1
-			// and koders='$unit' and tglbayar between '$_tgl1' and '$_tgl2' and totalpoli>0
-			// union all
-			// SELECT '   Order Card' as keterangan, 0 as jumlah, 0 as nilai
-			// from tbl_kasir where jenisbayar=1
-			// and koders='$unit' and tglbayar between '$_tgl1' and '$_tgl2' and totalpoli>0
-			// union all
-			// select 'APOTIK' as keterangan, 0 as jumlah, 0 as nilai
-			// from tbl_kasir where jenisbayar=1
-			// and koders='$unit' and tglbayar between '$_tgl1' and '$_tgl2' and totalpoli>0
-			// union all
-			// select '   Order Cash' as keterangan, 0 as jumlah, 0 as nilai
-			// from tbl_kasir where jenisbayar=1
-			// and koders='$unit' and tglbayar between '$_tgl1' and '$_tgl2' and totalpoli>0
-			// union all
-			// select '   Order Card' as keterangan, 0 as jumlah, 0 as nilai
-			// from tbl_kasir where jenisbayar=1
-			// and koders='$unit' and tglbayar between '$_tgl1' and '$_tgl2' and totalpoli>0
-			// ";
-
-			// husain change
-			$query =
+				// 	$query =
+				// 		"SELECT 'Order Tunai' as keterangan, count(*) as jumlah, sum(bayarcash+bayarcard) as nilai
+				// from tbl_kasir 
+				// where jenisbayar=1 and koders='$unit' and tglbayar between '$_tgl1' and '$_tgl2' and totalresep>0
+				// union all
+				// SELECT '   Order Cash' as keterangan, count(*) as jumlah, sum(bayarcash) as nilai
+				// from tbl_kasir where jenisbayar=1
+				// and koders='$unit' and tglbayar between '$_tgl1' and '$_tgl2' and totalresep>0
+				// union all
+				// SELECT '   Order Card' as keterangan, count(*) as jumlah, sum(bayarcard) as nilai
+				// from tbl_kasir where jenisbayar=1
+				// and koders='$unit' and tglbayar between '$_tgl1' and '$_tgl2' and totalresep>0
+				// union all
+				// SELECT 'Tindakan Dokter' as keterangan, count(*) as jumlah, sum(totalpoli) as nilai
+				// from tbl_kasir where jenisbayar=1
+				// and koders='$unit' and tglbayar between '$_tgl1' and '$_tgl2' and totalpoli>0
+				// union all
+				// SELECT '   Order Cash' as keterangan, count(*) as jumlah, sum(bayarcash) as nilai
+				// from tbl_kasir where jenisbayar=1
+				// and koders='$unit' and tglbayar between '$_tgl1' and '$_tgl2' and totalpoli>0
+				// union all
+				// SELECT '   Order Card' as keterangan, count(*) as jumlah, sum(bayarcard) as nilai
+				// from tbl_kasir where jenisbayar=1
+				// and koders='$unit' and tglbayar between '$_tgl1' and '$_tgl2' and totalpoli>0
+				// union all
+				// SELECT 'Order Lokal' as keterangan, 0 as jumlah, 0 as nilai
+				// from tbl_kasir where jenisbayar=1
+				// and koders='$unit' and tglbayar between '$_tgl1' and '$_tgl2' and totalpoli>0
+				// union all
+				// SELECT '   Order Cash' as keterangan, 0 as jumlah, 0 as nilai
+				// from tbl_kasir where jenisbayar=1
+				// and koders='$unit' and tglbayar between '$_tgl1' and '$_tgl2' and totalpoli>0
+				// union all
+				// SELECT '   Order Card' as keterangan, 0 as jumlah, 0 as nilai
+				// from tbl_kasir where jenisbayar=1
+				// and koders='$unit' and tglbayar between '$_tgl1' and '$_tgl2' and totalpoli>0
+				// union all
+				// SELECT 'Order Kirim' as keterangan, 0 as jumlah, 0 as nilai
+				// from tbl_kasir where jenisbayar=1
+				// and koders='$unit' and tglbayar between '$_tgl1' and '$_tgl2' and totalpoli>0
+				// union all
+				// SELECT '   Order Cash' as keterangan, 0 as jumlah, 0 as nilai
+				// from tbl_kasir where jenisbayar=1
+				// and koders='$unit' and tglbayar between '$_tgl1' and '$_tgl2' and totalpoli>0
+				// union all
+				// SELECT '   Order Card' as keterangan, 0 as jumlah, 0 as nilai
+				// from tbl_kasir where jenisbayar=1
+				// and koders='$unit' and tglbayar between '$_tgl1' and '$_tgl2' and totalpoli>0
+				// union all
+				// SELECT 'Ongkos Kirim' as keterangan, 0 as jumlah, 0 as nilai
+				// from tbl_kasir where jenisbayar=1
+				// and koders='$unit' and tglbayar between '$_tgl1' and '$_tgl2' and totalpoli>0
+				// union all
+				// SELECT '   Order Cash' as keterangan, 0 as jumlah, 0 as nilai
+				// from tbl_kasir where jenisbayar=1
+				// and koders='$unit' and tglbayar between '$_tgl1' and '$_tgl2' and totalpoli>0
+				// union all
+				// SELECT '   Order Card' as keterangan, 0 as jumlah, 0 as nilai
+				// from tbl_kasir where jenisbayar=1
+				// and koders='$unit' and tglbayar between '$_tgl1' and '$_tgl2' and totalpoli>0
+				// union all
+				// SELECT 'SPA' as keterangan, 0 as jumlah, 0 as nilai
+				// from tbl_kasir where jenisbayar=1
+				// and koders='$unit' and tglbayar between '$_tgl1' and '$_tgl2' and totalpoli>0
+				// union all
+				// SELECT '   Order Cash' as keterangan, 0 as jumlah, 0 as nilai
+				// from tbl_kasir where jenisbayar=1
+				// and koders='$unit' and tglbayar between '$_tgl1' and '$_tgl2' and totalpoli>0
+				// union all
+				// SELECT '   Order Card' as keterangan, 0 as jumlah, 0 as nilai
+				// from tbl_kasir where jenisbayar=1
+				// and koders='$unit' and tglbayar between '$_tgl1' and '$_tgl2' and totalpoli>0
+				// union all
+				// SELECT 'Produk SPA' as keterangan, 0 as jumlah, 0 as nilai
+				// from tbl_kasir where jenisbayar=1
+				// and koders='$unit' and tglbayar between '$_tgl1' and '$_tgl2' and totalpoli>0
+				// union all
+				// SELECT '   Order Cash' as keterangan, 0 as jumlah, 0 as nilai
+				// from tbl_kasir where jenisbayar=1
+				// and koders='$unit' and tglbayar between '$_tgl1' and '$_tgl2' and totalpoli>0
+				// union all
+				// SELECT '   Order Card' as keterangan, 0 as jumlah, 0 as nilai
+				// from tbl_kasir where jenisbayar=1
+				// and koders='$unit' and tglbayar between '$_tgl1' and '$_tgl2' and totalpoli>0
+				// union all
+				// select 'APOTIK' as keterangan, 0 as jumlah, 0 as nilai
+				// from tbl_kasir where jenisbayar=1
+				// and koders='$unit' and tglbayar between '$_tgl1' and '$_tgl2' and totalpoli>0
+				// union all
+				// select '   Order Cash' as keterangan, 0 as jumlah, 0 as nilai
+				// from tbl_kasir where jenisbayar=1
+				// and koders='$unit' and tglbayar between '$_tgl1' and '$_tgl2' and totalpoli>0
+				// union all
+				// select '   Order Card' as keterangan, 0 as jumlah, 0 as nilai
+				// from tbl_kasir where jenisbayar=1
+				// and koders='$unit' and tglbayar between '$_tgl1' and '$_tgl2' and totalpoli>0
+				// ";
+				$query =
 				"SELECT 'Order Tunai' as keterangan, count(*) as jumlah, sum(bayarcash+bayarcard) as nilai
 			from tbl_kasir 
 			where jenisbayar=1 and koders='$unit' and tglbayar between '$_tgl1' and '$_tgl2' and noreg is not null
@@ -391,7 +392,6 @@ class Kasir_laporan extends CI_Controller
 			JOIN tbl_apohresep ON tbl_kasir.nokwitansi = tbl_apohresep.nokwitansi
 			WHERE tbl_kasir.koders = '$unit' and totalpoli > 0 AND tbl_kasir.tglbayar BETWEEN '$_tgl1' AND '$_tgl2' AND tbl_kasir.noreg != '' AND tbl_apohresep.jenispas = '7' and tbl_kasir.nokwitansi in (select nokwitansi from tbl_kartukredit)
 			";
-			// end husain
 
 				$lap = $this->db->query($query)->result();
 				$pdf = new simkeu_rpt();
@@ -451,14 +451,14 @@ class Kasir_laporan extends CI_Controller
 				$pdf->setsubjudul($_peri);
 				$pdf->addpage("L", "A4");
 				$pdf->setsize("L", "A4");
-				$pdf->SetWidths(array(32, 22, 35, 20, 25, 20, 20, 20, 20, 20, 30, 20));
-				$pdf->SetAligns(array('C', 'C', 'C', 'C', 'C', 'C', 'C', 'C', 'C', 'C', 'C', 'C'));
-				$judul = array('TR No', 'Tanggal', 'Pro', 'Adm+Jasa', 'Obat Tunai', 'Lokal', 'Kirim', 'Obat Spa', 'Apotek', 'Obat Gigi', 'Total', 'No. Resep');
+				$pdf->SetWidths(array(32, 22, 35, 20,25, 25, 20, 20, 20, 20, 20, 30, 20));
+				$pdf->SetAligns(array('C', 'C', 'C','C', 'C', 'C', 'C', 'C', 'C', 'C', 'C', 'C', 'C'));
+				$judul = array('TR No', 'Tanggal', 'Pro', 'Adm', 'Jasa', 'Obat Tunai', 'Lokal', 'Kirim', 'Obat Spa', 'Apotek', 'Obat Gigi', 'Total', 'No. Resep');
 				$pdf->setfont('Arial', 'B', 8);
 				$pdf->row($judul);
 
-				$pdf->SetWidths(array(32, 22, 35, 20, 25, 20, 20, 20, 20, 20, 30, 20));
-				$pdf->SetAligns(array('C', 'C', 'L', 'R', 'R', 'R', 'R', 'R', 'R', 'R', 'R', 'L'));
+				$pdf->SetWidths(array(32, 22, 35, 20,25, 25, 20, 20, 20, 20, 20, 30, 20));
+				$pdf->SetAligns(array('C', 'C', 'L', 'R','R', 'R', 'R', 'R', 'R', 'R', 'R', 'R', 'L'));
 				$pdf->setfont('Arial', '', 8);
 				$pdf->SetFillColor(224, 235, 255);
 				$pdf->SetTextColor(0);
@@ -475,7 +475,8 @@ class Kasir_laporan extends CI_Controller
 						$db->noreg,
 						tanggal($db->tglbayar),
 						$db->namapas,
-						angka_rp($db->adm + $db->totalpoli, 0),
+						angka_rp($db->adm, 0),
+						angka_rp($db->totalpoli, 0),
 						angka_rp(0, 0),
 						angka_rp(0, 0),
 						angka_rp(0, 0),
@@ -866,24 +867,23 @@ class Kasir_laporan extends CI_Controller
 	function ctk_101($cek = '', $thnn = '')
 	{
 
-		$cek           = $this->input->get('cekk');
-		$chari         = '';
-		$cekk          = $this->session->userdata('level');
-		$unit          = $this->session->userdata('unit');
-		$unit          = $this->session->userdata('unit');
-		$avatar        = $this->session->userdata('avatar_cabang');
-		$profile       = $this->M_global->_LoadProfileLap();
-		$nama_usaha    = $profile->nama_usaha;
-		$motto         = '';
-		$alamat        = '';
-		$idlp          = $this->input->get('idlap');
-		$tgl1          = $this->input->get('tgl1');
-		$tgl2          = $this->input->get('tgl2');
-		$dokter        = $this->input->get('dokter');
-		$cab           = $this->input->get('cabang');
-		$_tgl1         = date('Y-m-d', strtotime($tgl1));
-		$_tgl2         = date('Y-m-d', strtotime($tgl2));
-		$_peri         = 'Dari ' . date('d-m-Y', strtotime($tgl1)) . ' s/d ' . date('d-m-Y', strtotime($tgl2));
+		$cek          = $this->input->get('cekk');
+		$chari   	  = '';
+		$cekk         = $this->session->userdata('level');
+		$unit   	  = $this->session->userdata('unit');
+		$unit   	  = $this->session->userdata('unit');
+		$profile      = $this->M_global->_LoadProfileLap();
+		$nama_usaha   = $profile->nama_usaha;
+		$motto        = '';
+		$alamat       = '';
+		$idlp         = $this->input->get('idlap');
+		$tgl1         = $this->input->get('tgl1');
+		$tgl2         = $this->input->get('tgl2');
+		$dokter       = $this->input->get('dokter');
+		$cab          = $this->input->get('cabang');
+		$_tgl1        = date('Y-m-d', strtotime($tgl1));
+		$_tgl2        = date('Y-m-d', strtotime($tgl2));
+		$_peri        = 'Dari ' . date('d-m-Y', strtotime($tgl1)) . ' s/d ' . date('d-m-Y', strtotime($tgl2));
 		if (!empty($cekk)) {
 			$kop       = $this->M_cetak->kop($unit);
 			$namars    = $kop['namars'];
@@ -898,7 +898,7 @@ class Kasir_laporan extends CI_Controller
 			<thead>
 			<tr>
 				<td rowspan=\"6\" align=\"center\">
-				<img src=\"" . base_url() . "assets/img_user/$avatar\"  width=\"100\" height=\"100\" /></td>
+				<img src=\"" . base_url() . "assets/img_usrt/".$this->session->userdata("avatar_cabang")."\"  width=\"100\" height=\"100\" /></td>
 
 				<td colspan=\"20\"><b>
 					<tr><td style=\"font-size:14px;border-bottom: none;\"><b>$namars</b></td></tr>
@@ -977,7 +977,7 @@ class Kasir_laporan extends CI_Controller
 			CONCAT(left(tglbayar,10),' ',jambayar)tglbayar,
 			jambayar,
 			adm,
-			totalsemua as totalresep,
+			totalresep as totalresep,
 			totalpoli,
 			(case when c.kodepos='KULIT' THEN totalpoli else 0 end)jkulit,
 			(case when c.kodepos='GIGI' THEN totalpoli else 0 end)jgigi,
@@ -1004,7 +1004,7 @@ class Kasir_laporan extends CI_Controller
 		inner join tbl_pasien b on a.rekmed=b.rekmed 
 		LEFT JOIN tbl_regist c on a.koders=c.koders and a.noreg=c.noreg
 		where tglbayar between '$_tgl1' and '$_tgl2' and a.koders='$unit' and jenisbayar in ('1','2','3','4','5') 
-		order by jambayar, tglbayar asc
+		order by tglbayar, jambayar asc
 		";
 
 
@@ -1126,7 +1126,8 @@ class Kasir_laporan extends CI_Controller
 				$nmjenisbayar   = $row->nmjenisbayar;
 				$a_adm          = $row->adm;
 				$a_umuka        = $row->uangmuka;
-				$a_jkulit       = $row->jkulit;
+				// $a_jkulit       = $row->jkulit;
+				$a_jkulit       = $row->totalpoli;
 				$a_resep        = $row->totalresep;
 				$a_rlabel       = $row->lain;
 				$a_jgigi        = $row->jgigi;
@@ -1146,7 +1147,8 @@ class Kasir_laporan extends CI_Controller
 
 				$adm            = angka_rp($row->adm, 0);
 				$umuka          = angka_rp($row->uangmuka, 0);
-				$jkulit         = angka_rp($row->jkulit, 0);
+				// $jkulit         = angka_rp($row->jkulit, 0);
+				$jkulit         = angka_rp($row->totalpoli, 0);
 				$resep          = angka_rp($row->totalresep, 0);
 				$rlabel         = angka_rp($row->lain, 0);
 				$jgigi          = angka_rp($row->jgigi, 0);
@@ -1323,6 +1325,11 @@ class Kasir_laporan extends CI_Controller
 			$mandiri       = 0;
 			$bca_tunai     = 0;
 
+			$cek_cash = $this->db->query("SELECT SUM(bayarcash) AS cash FROM tbl_kasir WHERE koders = '$unit' AND tglbayar BETWEEN '$_tgl1' AND '$_tgl2'")->row();
+			$cek_debit = $this->db->query("SELECT SUM(jumlahbayar) AS debit FROM tbl_kartukredit WHERE cardtype = 1 AND koders = '$unit' AND tanggal BETWEEN '$_tgl1' AND '$_tgl2'")->row();
+			$cek_credit = $this->db->query("SELECT SUM(jumlahbayar) AS credit FROM tbl_kartukredit WHERE cardtype = 2 AND koders = '$unit' AND tanggal BETWEEN '$_tgl1' AND '$_tgl2'")->row();
+			$cek_transfer = $this->db->query("SELECT SUM(jumlahbayar) AS transfer FROM tbl_kartukredit WHERE cardtype = 3 AND koders = '$unit' AND tanggal BETWEEN '$_tgl1' AND '$_tgl2'")->row();
+			$cek_online = $this->db->query("SELECT SUM(jumlahbayar) AS online FROM tbl_kartukredit WHERE cardtype = 4 AND koders = '$unit' AND tanggal BETWEEN '$_tgl1' AND '$_tgl2'")->row();
 
 			foreach ($query1->result() as $row) {
 				$lcno         = $lcno + 1;
@@ -1338,35 +1345,41 @@ class Kasir_laporan extends CI_Controller
 					$mandiri      = angka_rp($row2->mandiri, 0);
 					$bca_tunai    = angka_rp($row2->bca_tunai, 0);
 
+					// cash old $Cash
+					// credit old $CreditCard
+					// debit old $DebetCard
+					// transfer old $Transfer
+					// online old $Online
+
 					$chari    .= "
 			<tr>
 				<td colspan=\"2\" style=\"font-size:12px; border-top:none;border-left:none;border-right:none\" align=\"LEFT\"><b>TOTAL TUNAI</b></td>
-				<td style=\"border-top:none;border-left:none;border-right:none\" align=\"right\">$Cash</td>
+				<td style=\"border-top:none;border-left:none;border-right:none\" align=\"right\">" . number_format($cek_cash->cash, 0) . "</td>
 				<td style=\"border:none\"></td>
 				<td colspan=\"3\" style=\"border:none\" align=\"LEFT\"><b>BANK BCA LOKAL</b></td>
 				<td colspan=\"2\" style=\"border:none\" align=\"right\">$bca_lokal</td>                       
             </tr>
 			<tr>
 				<td colspan=\"2\" style=\"font-size:12px; border-top:none;border-left:none;border-right:none\" align=\"LEFT\"><b>TOTAL KREDIT</b></td>
-				<td style=\"border-top:none;border-left:none;border-right:none\" align=\"right\">$CreditCard</td>
+				<td style=\"border-top:none;border-left:none;border-right:none\" align=\"right\">".number_format($cek_credit->credit,0)."</td>
 				<td style=\"border:none\"></td>
 				<td colspan=\"3\" style=\"border:none\" align=\"LEFT\"><b>BANK MANDIRI</b></td>
 				<td colspan=\"2\" style=\"border:none\" align=\"right\">$mandiri</td>                       
             </tr>
 			<tr>
 				<td colspan=\"2\" style=\"font-size:12px; border-top:none;border-left:none;border-right:none\" align=\"LEFT\"><b>TOTAL DEBIT</b></td>
-				<td style=\"border-top:none;border-left:none;border-right:none\" align=\"right\">$DebetCard</td>
+				<td style=\"border-top:none;border-left:none;border-right:none\" align=\"right\">".number_format($cek_debit->debit,0)."</td>
 				<td style=\"border:none\"></td>
 				<td colspan=\"3\" style=\"border:none\" align=\"LEFT\"><b>BANK BCA TUNAI</b></td>
 				<td colspan=\"2\" style=\"border:none\" align=\"right\">$bca_tunai</td>                       
             </tr>
 			<tr>
 				<td colspan=\"2\" style=\"font-size:12px; border-top:none;border-left:none;border-right:none\" align=\"LEFT\"><b>TOTAL TRANSFER</b></td>
-				<td style=\"border-top:none;border-left:none;border-right:none\" align=\"right\">$Transfer</td>                       
+				<td style=\"border-top:none;border-left:none;border-right:none\" align=\"right\">" . number_format($cek_transfer->transfer, 0) . "</td>                       
             </tr>
 			<tr>
 				<td colspan=\"2\" style=\"font-size:12px; border-top:none;border-left:none;border-right:none\" align=\"LEFT\"><b>TOTAL ONLINE</b></td>
-				<td style=\"border-top:none;border-left:none;border-right:none\" align=\"right\">$Online</td>                       
+				<td style=\"border-top:none;border-left:none;border-right:none\" align=\"right\">" . number_format($cek_online->online, 0) . "</td>                       
             </tr>
 			<tr><td style=\"border:none;\" colspan=\"21\"><br></td></tr>";
 				}
@@ -1421,7 +1434,7 @@ class Kasir_laporan extends CI_Controller
 
 
 			$data['prev'] = $chari;
-			$judul          = '01. LAPORAN HARIAN KASIR PENDAFTARAN PER SHIFT';
+			$judul          = 'LAPORAN HARIAN KASIR PENDAFTARAN PER SHIFT';
 			switch ($cek) {
 				case 0;
 					echo ("<title>DATA GLOBAL SKI</title>");
@@ -1452,7 +1465,6 @@ class Kasir_laporan extends CI_Controller
 		$cekk         = $this->session->userdata('level');
 		$unit   	  = $this->session->userdata('unit');
 		$unit   	  = $this->session->userdata('unit');
-		$avatar       = $this->session->userdata('avatar_cabang');
 		$profile      = $this->M_global->_LoadProfileLap();
 		$nama_usaha   = $profile->nama_usaha;
 		$motto        = '';
@@ -1480,7 +1492,7 @@ class Kasir_laporan extends CI_Controller
 			<thead>
 			<tr>
 				<td rowspan=\"6\" align=\"center\">
-				<img src=\"" . base_url() . "assets/img_user/$avatar\"  width=\"100\" height=\"100\" /></td>
+				<img src=\"" . base_url() . "assets/img_usrt/".$this->session->userdata("avatar_cabang")."\"  width=\"100\" height=\"100\" /></td>
 
 				<td colspan=\"20\"><b>
 					<tr><td style=\"font-size:14px;border-bottom: none;\"><b>$namars</b></td></tr>
@@ -1852,7 +1864,7 @@ class Kasir_laporan extends CI_Controller
 			$chari .= "</table>";
 
 			$data['prev'] = $chari;
-			$judul        = '05.REKAP PENJUALAN HARIAN';
+			$judul        = 'REKAP PENJUALAN HARIAN';
 
 			switch ($cek) {
 				case 0;
@@ -1866,7 +1878,7 @@ class Kasir_laporan extends CI_Controller
 				case 2;
 					header("Cache-Control: no-cache, no-store, must-revalidate");
 					header("Content-Type: application/vnd-ms-excel");
-					header("Content-Disposition: attachment; filename= $judul.xls");
+					header("Content-Disposition: attachment; filename= $judul.xlx");
 					$this->load->view('app/master_cetak', $data);
 					break;
 			}
@@ -1884,7 +1896,6 @@ class Kasir_laporan extends CI_Controller
 		$cekk         = $this->session->userdata('level');
 		$unit   	  = $this->session->userdata('unit');
 		$unit   	  = $this->session->userdata('unit');
-		$avatar       = $this->session->userdata('avatar_cabang');
 		$profile      = $this->M_global->_LoadProfileLap();
 		$nama_usaha   = $profile->nama_usaha;
 		$motto        = '';
@@ -1912,7 +1923,7 @@ class Kasir_laporan extends CI_Controller
 			<thead>
 			<tr>
 				<td rowspan=\"6\" align=\"center\">
-				<img src=\"" . base_url() . "assets/img_user/$avatar\"  width=\"100\" height=\"100\" /></td>
+				<img src=\"" . base_url() . "assets/img_usrt/".$this->session->userdata("avatar_cabang")."\"  width=\"100\" height=\"100\" /></td>
 
 				<td colspan=\"20\"><b>
 					<tr><td style=\"font-size:10px;border-bottom: none;\"><b>$namars</b></td></tr>
@@ -1958,76 +1969,81 @@ class Kasir_laporan extends CI_Controller
             
 		</thead>";
 
-			$sql = $query =
+			$sql = 
 				"SELECT 
-		'<15' as xrange,
-		'UMUR <15' as keterangan,
-		coalesce(sum(case when TIMESTAMPDIFF(YEAR, tbl_pasien.tgllahir, CURDATE()) between 0 and 14 then 1 end),0) as jmlpasien, 
-		coalesce(sum(case when TIMESTAMPDIFF(YEAR, tbl_pasien.tgllahir, CURDATE()) between 0 and 14 then tbl_kasir.totalsemua end),0) as omset
-		from tbl_kasir 
-		inner join tbl_pasien on tbl_kasir.rekmed=tbl_pasien.rekmed
-		where 
-			tbl_kasir.tglbayar between '$_tgl1' and '$_tgl2' and tbl_kasir.koders='$unit'
-		union 
-		SELECT 
-		'15-20' as xrange,
-		'UMUR 15-20' as keterangan,
-		coalesce(sum(case when TIMESTAMPDIFF(YEAR, tbl_pasien.tgllahir, CURDATE()) between 15 and 20 then 1 end),0) as jmlpasien, 
-		coalesce(sum(case when TIMESTAMPDIFF(YEAR, tbl_pasien.tgllahir, CURDATE()) between 15 and 20 then tbl_kasir.totalsemua end),0) as omset
-		from tbl_kasir 
-		inner join tbl_pasien on tbl_kasir.rekmed=tbl_pasien.rekmed
-		where 
-			tbl_kasir.tglbayar between '$_tgl1' and '$_tgl2' and tbl_kasir.koders='$unit'
-		union 
-		select 
-		'21-25' as xrange,
-		'UMUR 21-25' as keterangan,
-		coalesce(sum(case when TIMESTAMPDIFF(YEAR, tbl_pasien.tgllahir, CURDATE()) between 21 and 25 then 1 end),0) as jmlpasien, 
-		coalesce(sum(case when TIMESTAMPDIFF(YEAR, tbl_pasien.tgllahir, CURDATE()) between 21 and 25 then tbl_kasir.totalsemua end),0) as omset
-		from tbl_kasir 
-		inner join tbl_pasien on tbl_kasir.rekmed=tbl_pasien.rekmed
-		where 
-			tbl_kasir.tglbayar between '$_tgl1' and '$_tgl2' and tbl_kasir.koders='$unit'			
-		union	
-		select 
-		'26-30' as xrange,
-		'UMUR 26-30' as keterangan,
-		coalesce(sum(case when TIMESTAMPDIFF(YEAR, tbl_pasien.tgllahir, CURDATE()) between 26 and 30 then 1 end),0) as jmlpasien, 
-		coalesce(sum(case when TIMESTAMPDIFF(YEAR, tbl_pasien.tgllahir, CURDATE()) between 26 and 30 then tbl_kasir.totalsemua end),0) as omset
-		from tbl_kasir 
-		inner join tbl_pasien on tbl_kasir.rekmed=tbl_pasien.rekmed
-		where 
-			tbl_kasir.tglbayar between '$_tgl1' and '$_tgl2' and tbl_kasir.koders='$unit'	
-		union	
-		select 
-		'31-35' as xrange,
-		'UMUR 31-35' as keterangan,
-		coalesce(sum(case when TIMESTAMPDIFF(YEAR, tbl_pasien.tgllahir, CURDATE()) between 31 and 35 then 1 end),0) as jmlpasien, 
-		coalesce(sum(case when TIMESTAMPDIFF(YEAR, tbl_pasien.tgllahir, CURDATE()) between 31 and 35 then tbl_kasir.totalsemua end),0) as omset
-		from tbl_kasir 
-		inner join tbl_pasien on tbl_kasir.rekmed=tbl_pasien.rekmed
-		where 
-			tbl_kasir.tglbayar between '$_tgl1' and '$_tgl2' and tbl_kasir.koders='$unit'
-		union	
-		select 
-		'36-40' as xrange,
-		'UMUR 36-40' as keterangan,
-		coalesce(sum(case when TIMESTAMPDIFF(YEAR, tbl_pasien.tgllahir, CURDATE()) between 36 and 40 then 1 end),0) as jmlpasien, 
-		coalesce(sum(case when TIMESTAMPDIFF(YEAR, tbl_pasien.tgllahir, CURDATE()) between 46 and 40 then tbl_kasir.totalsemua end),0) as omset
-		from tbl_kasir 
-		inner join tbl_pasien on tbl_kasir.rekmed=tbl_pasien.rekmed
-		where 
-			tbl_kasir.tglbayar between '$_tgl1' and '$_tgl2' and tbl_kasir.koders='$unit'
-		 union	
-		select 
-		'>40' as xrange,
-		'UMUR >40' as keterangan,
-		coalesce(sum(case when TIMESTAMPDIFF(YEAR, tbl_pasien.tgllahir, CURDATE())>40 then 1 end),0) as jmlpasien, 
-		coalesce(sum(case when TIMESTAMPDIFF(YEAR, tbl_pasien.tgllahir, CURDATE())>40 then tbl_kasir.totalsemua end),0) as omset
-		from tbl_kasir 
-		inner join tbl_pasien on tbl_kasir.rekmed=tbl_pasien.rekmed
-		where 
-			tbl_kasir.tglbayar between '$_tgl1' and '$_tgl2' and tbl_kasir.koders='$unit'	
+					'<15' as xrange, 
+					'UMUR <15' as keterangan, 
+					coalesce(sum(case when TIMESTAMPDIFF(YEAR, tbl_pasien.tgllahir, CURDATE()) between 0 and 14 then 1 end),0) as jmlpasien, 
+					coalesce(sum(case when TIMESTAMPDIFF(YEAR, tbl_pasien.tgllahir, CURDATE()) between 0 and 14 then tbl_kasir.totalsemua end),0) as omset
+				from tbl_kasir 
+				inner join tbl_pasien on tbl_kasir.rekmed=tbl_pasien.rekmed
+				where tbl_kasir.tglbayar between '$_tgl1' and '$_tgl2' and tbl_kasir.koders='$unit'
+
+				union 
+				
+				SELECT 
+					'15-20' as xrange,
+					'UMUR 15-20' as keterangan,
+					coalesce(sum(case when TIMESTAMPDIFF(YEAR, tbl_pasien.tgllahir, CURDATE()) between 15 and 20 then 1 end),0) as jmlpasien, 
+					coalesce(sum(case when TIMESTAMPDIFF(YEAR, tbl_pasien.tgllahir, CURDATE()) between 15 and 20 then tbl_kasir.totalsemua end),0) as omset
+				from tbl_kasir 
+				inner join tbl_pasien on tbl_kasir.rekmed=tbl_pasien.rekmed
+				where tbl_kasir.tglbayar between '$_tgl1' and '$_tgl2' and tbl_kasir.koders='$unit'
+				
+				union 
+				
+				select 
+					'21-25' as xrange,
+					'UMUR 21-25' as keterangan,
+					coalesce(sum(case when TIMESTAMPDIFF(YEAR, tbl_pasien.tgllahir, CURDATE()) between 21 and 25 then 1 end),0) as jmlpasien, 
+					coalesce(sum(case when TIMESTAMPDIFF(YEAR, tbl_pasien.tgllahir, CURDATE()) between 21 and 25 then tbl_kasir.totalsemua end),0) as omset
+				from tbl_kasir 
+				inner join tbl_pasien on tbl_kasir.rekmed=tbl_pasien.rekmed
+				where tbl_kasir.tglbayar between '$_tgl1' and '$_tgl2' and tbl_kasir.koders='$unit'			
+				
+				union	
+				
+				select 
+					'26-30' as xrange,
+					'UMUR 26-30' as keterangan,
+					coalesce(sum(case when TIMESTAMPDIFF(YEAR, tbl_pasien.tgllahir, CURDATE()) between 26 and 30 then 1 end),0) as jmlpasien, 
+					coalesce(sum(case when TIMESTAMPDIFF(YEAR, tbl_pasien.tgllahir, CURDATE()) between 26 and 30 then tbl_kasir.totalsemua end),0) as omset
+				from tbl_kasir 
+				inner join tbl_pasien on tbl_kasir.rekmed=tbl_pasien.rekmed
+				where tbl_kasir.tglbayar between '$_tgl1' and '$_tgl2' and tbl_kasir.koders='$unit'	
+				
+				union	
+				
+				select 
+					'31-35' as xrange,
+					'UMUR 31-35' as keterangan,
+					coalesce(sum(case when TIMESTAMPDIFF(YEAR, tbl_pasien.tgllahir, CURDATE()) between 31 and 35 then 1 end),0) as jmlpasien, 
+					coalesce(sum(case when TIMESTAMPDIFF(YEAR, tbl_pasien.tgllahir, CURDATE()) between 31 and 35 then tbl_kasir.totalsemua end),0) as omset
+				from tbl_kasir 
+				inner join tbl_pasien on tbl_kasir.rekmed=tbl_pasien.rekmed
+				where tbl_kasir.tglbayar between '$_tgl1' and '$_tgl2' and tbl_kasir.koders='$unit'
+				
+				union	
+				
+				select 
+					'36-40' as xrange,
+					'UMUR 36-40' as keterangan,
+					coalesce(sum(case when TIMESTAMPDIFF(YEAR, tbl_pasien.tgllahir, CURDATE()) between 36 and 40 then 1 end),0) as jmlpasien, 
+					coalesce(sum(case when TIMESTAMPDIFF(YEAR, tbl_pasien.tgllahir, CURDATE()) between 46 and 40 then tbl_kasir.totalsemua end),0) as omset
+				from tbl_kasir 
+				inner join tbl_pasien on tbl_kasir.rekmed=tbl_pasien.rekmed
+				where tbl_kasir.tglbayar between '$_tgl1' and '$_tgl2' and tbl_kasir.koders='$unit'
+				
+				union	
+				
+				select 
+					'>40' as xrange,
+					'UMUR >40' as keterangan,
+					coalesce(sum(case when TIMESTAMPDIFF(YEAR, tbl_pasien.tgllahir, CURDATE())>40 then 1 end),0) as jmlpasien, 
+					coalesce(sum(case when TIMESTAMPDIFF(YEAR, tbl_pasien.tgllahir, CURDATE())>40 then tbl_kasir.totalsemua end),0) as omset
+				from tbl_kasir 
+				inner join tbl_pasien on tbl_kasir.rekmed=tbl_pasien.rekmed
+				where tbl_kasir.tglbayar between '$_tgl1' and '$_tgl2' and tbl_kasir.koders='$unit'	
 		";
 
 			$query1    = $this->db->query($sql);
@@ -2075,7 +2091,7 @@ class Kasir_laporan extends CI_Controller
 			$chari .= "</table>";
 
 			$data['prev'] = $chari;
-			$judul        = '06.LAPORAN OMSET PER KELOMPOK UMUR';
+			$judul        = 'LAPORAN OMSET PER KELOMPOK UMUR';
 
 			switch ($cek) {
 				case 0;
@@ -2084,7 +2100,7 @@ class Kasir_laporan extends CI_Controller
 					break;
 
 				case 1;
-					$this->M_cetak->mpdf('p', 'A4', $judul, $chari, 'LAPORAN-KASIR-06.PDF', 10, 10, 10, 2);
+					$this->M_cetak->mpdf('P', 'A4', '', $chari, 'LAPORAN-KASIR-06.PDF', 10, 10, 10, 2);
 					break;
 				case 2;
 					header("Cache-Control: no-cache, no-store, must-revalidate");
@@ -2107,7 +2123,6 @@ class Kasir_laporan extends CI_Controller
 		$cekk         = $this->session->userdata('level');
 		$unit   	  = $this->session->userdata('unit');
 		$unit   	  = $this->session->userdata('unit');
-		$avatar       = $this->session->userdata('avatar_cabang');
 		$profile      = $this->M_global->_LoadProfileLap();
 		$nama_usaha   = $profile->nama_usaha;
 		$motto        = '';
@@ -2135,7 +2150,7 @@ class Kasir_laporan extends CI_Controller
 			<thead>
 			<tr>
 				<td rowspan=\"6\" align=\"center\">
-				<img src=\"" . base_url() . "assets/img_user/$avatar\"  width=\"100\" height=\"100\" /></td>
+				<img src=\"" . base_url() . "assets/img_usrt/".$this->session->userdata("avatar_cabang")."\"  width=\"100\" height=\"100\" /></td>
 
 				<td colspan=\"20\"><b>
 					<tr><td style=\"font-size:14px;border-bottom: none;\"><b>$namars</b></td></tr>
@@ -2194,7 +2209,7 @@ class Kasir_laporan extends CI_Controller
 		case when posbayar<>'UANG_MUKA' then uangmuka else 0 end	keluar,
 		a.koders,(select b.namapas from tbl_pasien b where a.rekmed=b.rekmed)namapas 
 		from tbl_kasir a
-		where tglbayar between '$_tgl1' and '$_tgl2' and a.koders='$unit'
+		where tglbayar between '$_tgl1' and '$_tgl2' and a.koders='$unit' and a.bayarcash != 0
 		)a where a.masuk<>0 or a.keluar<>0
 		GROUP BY rekmed,koders,namapas
 		ORDER BY rekmed
@@ -2255,7 +2270,7 @@ class Kasir_laporan extends CI_Controller
 			$chari .= "</table>";
 
 			$data['prev'] = $chari;
-			$judul        = '07.REKAP UANG MUKA';
+			$judul        = 'REKAP UANG MUKA';
 
 
 			switch ($cek) {
@@ -2288,7 +2303,6 @@ class Kasir_laporan extends CI_Controller
 		$cekk         = $this->session->userdata('level');
 		$unit   	  = $this->session->userdata('unit');
 		$unit   	  = $this->session->userdata('unit');
-		$avatar       = $this->session->userdata('avatar_cabang');
 		$profile      = $this->M_global->_LoadProfileLap();
 		$nama_usaha   = $profile->nama_usaha;
 		$motto        = '';
@@ -2316,7 +2330,7 @@ class Kasir_laporan extends CI_Controller
 			<thead>
 			<tr>
 				<td rowspan=\"6\" align=\"center\">
-				<img src=\"" . base_url() . "assets/img_user/$avatar\"  width=\"100\" height=\"100\" /></td>
+				<img src=\"" . base_url() . "assets/img_usrt/".$this->session->userdata("avatar_cabang")."\"  width=\"100\" height=\"100\" /></td>
 
 				<td colspan=\"20\"><b>
 					<tr><td style=\"font-size:14px;border-bottom: none;\"><b>$namars</b></td></tr>
@@ -2489,7 +2503,7 @@ class Kasir_laporan extends CI_Controller
 			$chari .= "</table>";
 
 			$data['prev'] = $chari;
-			$judul        = '08.DETAIL UANG MUKA';
+			$judul        = 'DETAIL UANG MUKA';
 
 
 			switch ($cek) {

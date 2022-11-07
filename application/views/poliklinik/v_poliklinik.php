@@ -83,14 +83,10 @@
                                     </div>
                                     <div class="details">
                                         <div class="number">
-                                            <?php foreach($diperiksa_perawat as $periksaper): ?>
-                                            <?= $periksaper->jum;?>
-                                            <?php endforeach; ?>
-
+                                            <?= $diperiksa_perawat == 0 ? "0" : $diperiksa_perawat ?>
                                         </div>
                                         <div class="desc">
-                                            <h6>BELUM DIVERIFIKASI DAN DIPERIKSA OLEH TTV PERAWAT</h6>
-
+                                            PASIEN BELUM DIPERIKSA
                                         </div>
                                     </div>
 
@@ -106,10 +102,7 @@
                                     </div>
                                     <div class="details">
                                         <div class="number">
-                                            <?php foreach($diperiksa_dokter as $periksadok): ?>
-                                            <?= $periksadok->jum;?>
-                                            <?php endforeach; ?>
-
+                                            <?= $diperiksa_dokter == 0 ? "0" : $diperiksa_dokter ?>
                                         </div>
                                         <div class="desc">
                                             PASIEN SELESAI DIPERIKSA

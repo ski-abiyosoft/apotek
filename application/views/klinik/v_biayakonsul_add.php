@@ -2030,7 +2030,6 @@ $this->load->view('template/footer_tb');
           type: "GET",
           dataType: "JSON",
           success: function(data) {
-            console.log(data)
             for (i = 0; i <= data.length-1; i++) {
               hapus();
             }

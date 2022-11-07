@@ -161,11 +161,13 @@
                             <div class="col-md-offset-3 col-md-9">
                                 <!-- <a class=" btn btn-sm red print_laporan  print_laporan" id="cetak" href="#report"
                                     data-toggle="modal">Cetak PDF</a> -->
-                                <a class="btn btn-sm red " onclick="cetak()"><i title=" CETAK PDF"
-                                        class="fa fa-print"></i><b> CETAK </b></a>
-                                <a class="btn btn-sm green " onclick="exp()"><i title=" EXPORT PDF"
-                                        class="fa fa-download"></i><b> EXCEL </b></a>
-                                <br />
+                                <a class="btn btn-sm red " onclick="cetak()">
+                                    <i title=" CETAK PDF" class="fa fa-print"></i><b> CETAK </b>
+                                </a>
+                                <a class="btn btn-sm green " onclick="exp()">
+                                    <i title=" EXPORT PDF" class="fa fa-download"></i><b> EXCEL </b>
+                                </a>
+                                <br/>
                                 <h4>
                                     <div class="err" id="resultss"></div>
                                 </h4>
@@ -207,25 +209,25 @@ $('.select2_laporan').select2();
     function cetak() {
         var laporan = document.getElementById('laporan').value;
         if(laporan != ''){
-            var dari = document.getElementById('dari').value;
-            var sampai = document.getElementById('sampai').value;
-            var dari_jam = document.getElementById('dari_jam').value;
-            var sampai_jam = document.getElementById('sampai_jam').value;
-            var jenis = $('input[name="jenis"]:checked').val();
-            var depo = document.getElementById('depo').value;
-            var baseurl = "<?php echo base_url() ?>";
-            var urlnya = baseurl + 'Laporan_penjualan/cetak2/?dari=' +dari + "&dari_jam="+dari_jam+ "&sampai_jam="+sampai_jam+'&sampai=' + sampai + '&jenis=' + jenis + '&depo=' + depo + '&laporan=' + laporan+"&pdf=1";
+            var dari        = document.getElementById('dari').value;
+            var sampai      = document.getElementById('sampai').value;
+            var dari_jam    = document.getElementById('dari_jam').value;
+            var sampai_jam  = document.getElementById('sampai_jam').value;
+            var jenis       = $('input[name="jenis"]:checked').val();
+            var depo        = document.getElementById('depo').value;
+            var baseurl     = "<?php echo base_url() ?>";
+            var urlnya      = baseurl + 'Laporan_penjualan/cetak2/?dari=' +dari + "&dari_jam="+dari_jam+ "&sampai_jam="+sampai_jam+'&sampai=' + sampai + '&jenis=' + jenis + '&depo=' + depo + '&laporan=' + laporan+"&pdf=1";
             window.open(urlnya, '_blank');
         }
     }
 
 function exp() {
-    var dari = document.getElementById('dari').value;
-    var sampai = document.getElementById('sampai').value;
-    var jenis = $('input[name="jenis"]:checked').val();
-    var depo = document.getElementById('depo').value;
+    var dari    = document.getElementById('dari').value;
+    var sampai  = document.getElementById('sampai').value;
+    var jenis   = $('input[name="jenis"]:checked').val();
+    var depo    = document.getElementById('depo').value;
     var laporan = document.getElementById('laporan').value;
-    location.href = '<?= site_url('Laporan_penjualan/cetak2/?dari=')?>' +dari + "&dari_jam="+dari_jam+ "&sampai_jam="+sampai_jam+'&sampai=' + sampai + '&jenis=' + jenis + '&depo=' + depo + '&laporan=' + laporan+"&pdf=2";
+    location.href   = '<?= site_url('Laporan_penjualan/cetak2/?dari=')?>' +dari + "&dari_jam="+dari_jam+ "&sampai_jam="+sampai_jam+'&sampai=' + sampai + '&jenis=' + jenis + '&depo=' + depo + '&laporan=' + laporan+"&pdf=2";
 
 }
 </script>

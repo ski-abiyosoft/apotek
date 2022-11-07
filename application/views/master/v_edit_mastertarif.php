@@ -589,7 +589,8 @@ $this->load->view('template/footer');
             }
           }
         });
-      })
+      });
+      $('#btn_save').attr('disabled', false);
     }
   }
 </script>
