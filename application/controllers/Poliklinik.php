@@ -147,15 +147,17 @@ class Poliklinik extends CI_Controller {
 			}
 			// $row[] = $periksa_perawat;
 			// $row[] = $periksa_dokter;
-			$row[] = $unit->antrino. '<button type="submit">call</button>';
-			$row[] = $status_kasir;
-			$row[] = $unit->noreg;
-			$row[] = $unit->rekmed;
-			$row[] = $unit->tglmasuk;
-			$row[] = $unit->namapasien_lengkap. '&nbsp;'. $jkell;
-			$row[] = $unit->namapost;
-			$row[] = $unit->nadokter;
-			$row[] = $jpas;
+			$sebut   = trim($this->M_global->penyebut($unit->antrino));
+			$row[]   = $unit->antrino. '<button class="btn btn-primary btn-sm" onclick="playAudio('."'".$unit->antrino."',"."'".$sebut."'".')" type="button"><b>call </b><i class="fa fa-volume-off"></i></button>';
+			$row[]   = $status_kasir;
+			$row[]   = $unit->noreg;
+			$row[]   = $unit->rekmed;
+			$row[]   = date("Y-m-d", strtotime($unit->tglmasuk)) ." ". $unit->jam;
+			$row[]   = $unit->namapasien_lengkap. '&nbsp;'. $jkell;
+			$row[]   = $unit->namapost;
+			$row[]   = $unit->nadokter;
+			$row[]   = $jpas;
+			$row[]   = $unit->nobpjs;
 						//saya mengganti line 120 semula $unit->id
 
 
@@ -216,6 +218,7 @@ class Poliklinik extends CI_Controller {
 			$alergi	= $this->input->post("alergi_per");
 
 			$this->db->query("UPDATE tbl_pasien SET alergi = '$alergi' WHERE rekmed = '$rekmed_per' AND koders = '$cabang'");
+
 			$this->db->query("UPDATE tbl_regist SET diperiksa_perawat = 1 WHERE noreg = '$noreg_per' AND koders = '$cabang'");
 
 			$qcek = $this->db->query("SELECT * FROM tbl_rekammedisrs WHERE noreg = '$noreg_per' and rekmed = '$rekmed_per' and koders='$cabang'")->result_array();

@@ -1709,7 +1709,7 @@ class Laporan_persediaan extends CI_Controller
                          }
                          $queryx = $this->db->query($x)->result();
                     } else {
-                         $judul = '06 Laporan Persediaan';
+                         $judul = '03 Laporan Persediaan';
                          if ($da == 1) {
                               $x = "SELECT depocode FROM tbl_depo";
                          } else {
@@ -1768,9 +1768,9 @@ class Laporan_persediaan extends CI_Controller
                                    (
                                         SELECT qty FROM
                                         (
-                                        SELECT kodebarang, hasilso AS qty, gudang, koders
+                                        SELECT kodebarang, SUM(sesuai) AS qty, gudang, koders
                                         FROM tbl_aposesuai
-                                        WHERE $kondisi AND koders = '$unit' AND tglso BETWEEN '$dari' AND '$sampai' order by tglso, jamentry DESC LIMIT 1
+                                        WHERE $kondisi AND koders = '$unit' AND tglso BETWEEN '$dari' AND '$sampai' GROUP BY kodebarang
                                         ) AS so_
                                         WHERE so_.kodebarang=a.kodebarang
                                    )

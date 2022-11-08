@@ -152,10 +152,12 @@ class M_Poliklinik extends CI_Model
         // WHERE koders = '$cabang' AND tglmasuk = '$tgln' AND diperiksa_perawat = 1;";
         // $qry = $this->db->query($query)->result();
 		$cabang = $this->session->userdata('unit');	
-        $tgln   = date('Y-m-d');
-        $query = "SELECT count(*)jum
+        $tgl    = date('Y-m-d');
+        $query 	= "SELECT * 
         FROM pasien_rajal
-        WHERE koders = '$cabang' AND tglmasuk = '$tgln' AND diperiksa_perawat = 1";
+        WHERE koders = '$cabang' 
+		AND tglmasuk LIKE '%$tgl%' 
+		AND diperiksa_perawat = 1";
         $qry = $this->db->query($query);
 		return $qry;
     }
@@ -167,10 +169,12 @@ class M_Poliklinik extends CI_Model
         // WHERE koders = '$cabang' AND tglmasuk = '$tgln' AND diperiksa_dokter = 1;";
         // $qry = $this->db->query($query)->result();
 		$cabang = $this->session->userdata('unit');	
-        $tgln   = date('Y-m-d');
-        $query = "SELECT count(*)jum
+        $tgl    = date('Y-m-d');
+        $query 	= "SELECT * 
         FROM pasien_rajal
-        WHERE koders = '$cabang' AND tglmasuk = '$tgln' AND diperiksa_dokter = 1";
+        WHERE koders = '$cabang' 
+		AND tglmasuk LIKE '%$tgl%' 
+		AND diperiksa_dokter = 1";
         $qry = $this->db->query($query);
 		return $qry;
     }

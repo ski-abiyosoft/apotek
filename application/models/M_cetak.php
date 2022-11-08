@@ -15,8 +15,15 @@ class M_cetak extends CI_Model {
 
 	function mpdf($form='',$uk='' , $judul='',$isi='',$jdlsave='',$lMargin='',$rMargin='',$font=10,$orientasi='',$hal='',$tab='',$tMargin='')
     {
-        ini_set("memory_limit", "-1");
+				// hussain change
+				ini_set("pcre.backtrack_limit", "5000000");
+				ini_set('memory_limit', '1500000M');
+				// end husain
+
+				// ori
+        // ini_set("memory_limit", "-1");
         ini_set("MAX_EXECUTION_TIME","-1");
+				// end ori
 		
         $jam = date("H:i:s");
 		if ($hal==''){

@@ -87,28 +87,29 @@ class Pendaftaran_laporan extends CI_Controller {
 				$pdf->addpage("L","A4");   
 				$pdf->setsize("L","A4");
 				if($unitx != ''){
-					$pdf->SetWidths(array(32,20,20,40,40,25,30, 20, 20,35));
-					$pdf->SetAligns(array('C','C','C','C','C','C','C','C','C','C'));
-					$judul=array('Noreg ','Rek-med','Tgl. Masuk','Nama Pasien','Alamat','Phone','Dokter', 'Poli', 'No. Antri','Status Bayar');
+					$pdf->SetWidths(array(8,25,20,20,40,40,25,30, 20, 20,35));
+					$pdf->SetAligns(array('C','C','C','C','C','C','C','C','C','C','C'));
+					$judul=array('No','Noreg ','Rek-med','Tgl. Masuk','Nama Pasien','Alamat','Phone','Dokter', 'Poli', 'No. Antri','Status Bayar');
 				} else {
-					$pdf->SetWidths(array(32,20,20,50,50,25,30,20,35));
-					$pdf->SetAligns(array('C','C','C','C','C','C','C','C','C'));
-					$judul=array('Noreg ','Rek-med','Tgl. Masuk','Nama Pasien','Alamat','Phone','Dokter','No. Antri','Status Bayar');
+					$pdf->SetWidths(array(8,25,20,20,50,50,25,30,20,35));
+					$pdf->SetAligns(array('C','C','C','C','C','C','C','C','C','C'));
+					$judul=array('No','Noreg ','Rek-med','Tgl. Masuk','Nama Pasien','Alamat','Phone','Dokter','No. Antri','Status Bayar');
 				}
 				$pdf->setfont('Arial','B',10);
 				$pdf->row($judul);
 				if($unitx != ''){
-					$pdf->SetWidths(array(32,20,20,40,40,25,30, 20, 20,35));
-					$pdf->SetAligns(array('C','C','C','L','L','L','L','L','L','L'));
+					$pdf->SetWidths(array(8,25,20,20,40,40,25,30, 20, 20,35));
+					$pdf->SetAligns(array('C','C','C','C','L','L','L','L','L','L','L'));
 				} else {
-					$pdf->SetWidths(array(32,20,20,50,50,25,30,20,35));
-					$pdf->SetAligns(array('C','C','C','C','L','L','L','L','L'));
+					$pdf->SetWidths(array(8,25,20,20,50,50,25,30,20,35));
+					$pdf->SetAligns(array('C','C','C','C','C','L','L','L','L','L'));
 				}
 				$pdf->setfont('Arial','',9);
 				$pdf->SetFillColor(224,235,255);
 				$pdf->SetTextColor(0);
 				$pdf->SetFont('');
 				if($unitx == ''){
+					$no = 1;
 					foreach($lap as $db){
 						if($db->antrino < 2){
 							$antrian = $db->antrino." Baru";
@@ -147,6 +148,7 @@ class Pendaftaran_laporan extends CI_Controller {
 						}
 							$pdf->row(
 							array(
+								$no++,
 								$db->noreg, 
 								$db->rekmed, 
 								tanggal($db->tglmasuk), 
@@ -160,6 +162,7 @@ class Pendaftaran_laporan extends CI_Controller {
 						);
 					}
 				} else {
+					$no = 1;
 					foreach($lap as $db){
 						if($db->antrino < 2){
 							$antrian = $db->antrino." Baru";
@@ -197,6 +200,7 @@ class Pendaftaran_laporan extends CI_Controller {
 						}
 							$pdf->row(
 							array(
+								$no++,
 								$db->noreg, 
 								$db->rekmed, 
 								tanggal($db->tglmasuk), 

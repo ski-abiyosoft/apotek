@@ -185,9 +185,9 @@ $this->load->view('template/body');
 								<br>
 								<!-- <a class="btn btn-sm blue print_laporan" onclick="javascript:window.open(_urlcetak(0),'_blank');" ><i title="CETAK PDF" class="glyphicon glyphicon-file"></i><b> LAYAR </b></a> -->
 
-								<a class="btn btn-sm red print_laporan" onclick="javascript:window.open(_urlcetak(1),'_blank');"><i title="CETAK PDF" class="glyphicon glyphicon-print"></i><b> PDF </b></a>
+								<a class="btn btn-sm red print_laporan" onclick="_urlcetak(0)"><i title="CETAK PDF" class="glyphicon glyphicon-print"></i><b> PDF </b></a>
 
-								<a class="btn btn-sm green print_laporan" onclick="javascript:window.open(_urlcetak(2),'_blank');"><i title="CETAK PDF" class="fa fa-download"></i><b> EXCEL </b></a>
+								<a class="btn btn-sm green print_laporan" onclick="_urlcetak(2)"><i title="CETAK PDF" class="fa fa-download"></i><b> EXCEL </b></a>
 
 								<br>
 								<br>
@@ -247,8 +247,17 @@ $this->load->view('template/v_report');
 
 	}
 
+	function hitungselisihtgl(tgl1, tgl2){
+		var miliday = 24 * 60 * 60 * 1000;
+		tanggal1 = new Date(tgl1);
+		tanggal2 = new Date(tgl2);
+		var tglPertama = Date.parse(tanggal1);
+		var tglKedua = Date.parse(tanggal2);
+		var selisih = (tglKedua - tglPertama) / miliday;
+		return selisih;
+	}
+
 	function _urlcetak(cek) {
-		var baseurl = "<?php echo base_url() ?>";
 		var idlap = $('[name="idlap"]').val();
 		var tgl1 = $('[name="tanggal1"]').val();
 		var tgl2 = $('[name="tanggal2"]').val();
@@ -256,32 +265,73 @@ $this->load->view('template/v_report');
 		var unit = $('[name="unit"]').val();
 		var cbg = $('[name="cabang"]').val();
 		var pemb = $('[name="pembayaran"]').val();
-		var param = '?idlap=' + idlap + '&tgl1=' + tgl1 + '&tgl2=' + tgl2 + '&dokter=' + dokter + '&cabang=' + cbg + '&unit=' + unit + '&cekk=' + cek;
-
-		// return baseurl+'kasir_laporan/cetak/'+param;
-		if (idlap == '101') {
-			return baseurl + 'kasir_laporan/ctk_101/' + param;
-		}
-		if (idlap == '102') {
-			return baseurl + 'kasir_laporan/cetak/' + param;
-		}
-		if (idlap == '103') {
-			return baseurl + 'kasir_laporan/cetak/' + param;
-		}
-		if (idlap == '104') {
-			return baseurl + 'kasir_laporan/cetak/' + param;
-		}
-		if (idlap == '105') {
-			return baseurl + 'kasir_laporan/ctk_105/' + param;
-		}
-		if (idlap == '106') {
-			return baseurl + 'kasir_laporan/ctk_106/' + param;
-		}
-		if (idlap == '107') {
-			return baseurl + 'kasir_laporan/ctk_107/' + param;
-		}
-		if (idlap == '108') {
-			return baseurl + 'kasir_laporan/ctk_108/' + param;
+		var cektgl = hitungselisihtgl(tgl1, tgl2);
+		if(cek < 1){
+			if(cektgl < 8){
+				var baseurl = "<?php echo base_url() ?>";
+				var param = '?idlap=' + idlap + '&tgl1=' + tgl1 + '&tgl2=' + tgl2 + '&dokter=' + dokter + '&cabang=' + cbg + '&unit=' + unit + '&cekk=' + cek;
+				// return baseurl+'kasir_laporan/cetak/'+param;
+				if (idlap == '101') {
+					return window.open(baseurl + 'kasir_laporan/ctk_101/' + param, '_blank');
+				}
+				if (idlap == '102') {
+					return window.open(baseurl + 'kasir_laporan/cetak/' + param, '_blank');
+				}
+				if (idlap == '103') {
+					return window.open(baseurl + 'kasir_laporan/cetak/' + param, '_blank');
+				}
+				if (idlap == '104') {
+					return window.open(baseurl + 'kasir_laporan/cetak/' + param, '_blank');
+				}
+				if (idlap == '105') {
+					return window.open(baseurl + 'kasir_laporan/ctk_105/' + param, '_blank');
+				}
+				if (idlap == '106') {
+					return window.open(baseurl + 'kasir_laporan/ctk_106/' + param, '_blank');
+				}
+				if (idlap == '107') {
+					return window.open(baseurl + 'kasir_laporan/ctk_107/' + param, '_blank');
+				}
+				if (idlap == '108') {
+					return window.open(baseurl + 'kasir_laporan/ctk_108/' + param, '_blank');
+				}
+			} else {
+				swal({
+						title: "CETAK PDF MAKSIMAL",
+						html: "Hanya boleh 7 hari",
+						type: "error",
+						confirmButtonText: "OK"
+				});
+				return;
+			}
+		} else {
+			var baseurl = "<?php echo base_url() ?>";
+				var param = '?idlap=' + idlap + '&tgl1=' + tgl1 + '&tgl2=' + tgl2 + '&dokter=' + dokter + '&cabang=' + cbg + '&unit=' + unit + '&cekk=' + cek;
+				// return baseurl+'kasir_laporan/cetak/'+param;
+				if (idlap == '101') {
+					return window.open(baseurl + 'kasir_laporan/ctk_101/' + param, '_blank');
+				}
+				if (idlap == '102') {
+					return window.open(baseurl + 'kasir_laporan/cetak/' + param, '_blank');
+				}
+				if (idlap == '103') {
+					return window.open(baseurl + 'kasir_laporan/cetak/' + param, '_blank');
+				}
+				if (idlap == '104') {
+					return window.open(baseurl + 'kasir_laporan/cetak/' + param, '_blank');
+				}
+				if (idlap == '105') {
+					return window.open(baseurl + 'kasir_laporan/ctk_105/' + param, '_blank');
+				}
+				if (idlap == '106') {
+					return window.open(baseurl + 'kasir_laporan/ctk_106/' + param, '_blank');
+				}
+				if (idlap == '107') {
+					return window.open(baseurl + 'kasir_laporan/ctk_107/' + param, '_blank');
+				}
+				if (idlap == '108') {
+					return window.open(baseurl + 'kasir_laporan/ctk_108/' + param, '_blank');
+				}
 		}
 	}
 </script>
