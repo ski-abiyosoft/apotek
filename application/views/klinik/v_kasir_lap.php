@@ -256,7 +256,6 @@ $this->load->view('template/v_report');
 		var selisih = (tglKedua - tglPertama) / miliday;
 		return selisih;
 	}
-
 	function _urlcetak(cek) {
 		var idlap = $('[name="idlap"]').val();
 		var tgl1 = $('[name="tanggal1"]').val();

@@ -146,10 +146,6 @@
                                         <a type="button" class="btn btn-sm btn-primary" href="<?php echo base_url('penjualan_retur/edit/').$row->returno; ?>" title="Edit"><i class="glyphicon glyphicon-edit"></i></a>
 
                                     <?php } ?>
-<<<<<<< HEAD
-
-=======
->>>>>>> 2b048ebe2756fae81a8015c3e19900a3e1c0e10a
                                 <?php endif;?>
                             </td>
                             <td style="text-align: center">
@@ -160,10 +156,6 @@
                             </td>
                             <td style="text-align: center">
                                 <?php if ($row->posting=='0') : ?>
-<<<<<<< HEAD
-
-=======
->>>>>>> 2b048ebe2756fae81a8015c3e19900a3e1c0e10a
                                     <?php 
                                     $cek =  $this->session->userdata('user_level'); 
                                     if($cek==0){?> 

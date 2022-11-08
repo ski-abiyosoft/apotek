@@ -2175,6 +2175,7 @@ class Pembelian_farmasi_laporan extends CI_Controller
 		$date     = "Dari Tgl : ".date("d-m-Y", strtotime($tanggal1))." S/D ".date("d-m-Y", strtotime($tanggal2));
 		$profile  = data_master('tbl_namers', array('koders' => $unit));
 		$kota     = $profile->kota;
+		$position = 'L';
 		if (!empty($cek)) {
 			if($idlap == 101){
 				$position = 'L';
@@ -2440,6 +2441,7 @@ class Pembelian_farmasi_laporan extends CI_Controller
 										</tr> 
                   </table>";
 			} else if($idlap == 104){
+				$position = 'L';
 				if ($vendorx != '') {
 					$vendor = "a.vendor_id='$vendorx' AND";
 				} else {
@@ -2472,7 +2474,11 @@ class Pembelian_farmasi_laporan extends CI_Controller
 				$sql = $this->db->get_where("tbl_pajak", ["kodetax"=>"PPN"])->row();
 				$pajak = $sql->prosentase / 100;
 				foreach ($query as $q) {
-					$vatrp = ($q->totalrp * $pajak);
+					if($q->vat == 1){
+						$vatrp = ($q->totalrp * $pajak);
+					} else {
+						$vatrp = 0;
+					}
 					$totalrp = ($q->totalrp + $q->discountrp);
 					$body .= 		"<tbody>
 											<tr>
@@ -2557,6 +2563,7 @@ class Pembelian_farmasi_laporan extends CI_Controller
 										</tr> 
 									</table>";
 			} else if ($idlap == 105){
+				$position = 'L';
 				if ($vendorx != '') {
 					$vendor = "h.vendor_id='$vendorx' AND";
 				} else {

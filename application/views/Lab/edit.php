@@ -1059,10 +1059,6 @@ $this->load->view('template/footer');
         $('#bhpModalEdit #bhp-edit-lokasi-barang').val(gudang);
         $('#bhpModalEdit #bhp-edit-id').val(id);
         $('#bhpModalEdit #bhp-edit-id-pemeriksaan').val(id_pemeriksaan);
-<<<<<<< HEAD
-=======
-
->>>>>>> master
     });
 
     //when change nama_barang in bhp tab

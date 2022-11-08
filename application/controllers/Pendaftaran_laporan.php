@@ -108,6 +108,7 @@ class Pendaftaran_laporan extends CI_Controller {
 				$pdf->SetFillColor(224,235,255);
 				$pdf->SetTextColor(0);
 				$pdf->SetFont('');
+				$no = 1;
 				if($unitx == ''){
 					$no = 1;
 					foreach($lap as $db){

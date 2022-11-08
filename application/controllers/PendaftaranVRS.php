@@ -1080,7 +1080,7 @@ class PendaftaranVRS extends CI_Controller {
 			$pdf->ln(2);
 			$pdf->setTitle($noreg); 
 			$pdf->AliasNbPages();
-			$pdf->output('./uploads/regist/'.$noreg.'.PDF','F');
+			$pdf->output('', $noreg.'.PDF','F');
 			// $pdf->output($noreg.'.PDF','I');			
 		} else {
 			header('location:'.base_url());
