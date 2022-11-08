@@ -2448,12 +2448,13 @@ class Pembelian_farmasi_laporan extends CI_Controller
 					$vendor = '';
 				}
 				$judul = '04 REKAP PEMBELIAN BARANG PER SUPPLIER TOTAL';
-				$query = $this->db->query("SELECT a.vatrp, a.materai, b.discountrp, b.qty_terima , b.discountrp, b.totalrp, (b.totalrp / b.qty_terima ) AS ratarata, c.vendor_name , c.vendor_id FROM tbl_baranghterima as a JOIN tbl_barangdterima AS b ON a.terima_no = b.terima_no JOIN tbl_vendor AS c ON a.vendor_id = c.vendor_id WHERE $vendor a.koders = '$unit' and a.terima_date between '$tanggal1' and '$tanggal2'")->result();
+				$query = $this->db->query("SELECT a.vatrp, a.materai, b.discountrp, b.qty_terima , b.discountrp, b.totalrp, (b.totalrp / b.qty_terima ) AS ratarata, c.vendor_name , c.vendor_id, a.terima_date FROM tbl_baranghterima as a JOIN tbl_barangdterima AS b ON a.terima_no = b.terima_no JOIN tbl_vendor AS c ON a.vendor_id = c.vendor_id WHERE $vendor a.koders = '$unit' and a.terima_date between '$tanggal1' and '$tanggal2'")->result();
 				$body .= "<table style=\"border-collapse:collapse;font-family: tahoma; font-size:12px\" width=\"100%\" align=\"center\" border=\"1\">
                     <thead>
 											<tr>
 												<td style=\"text-align: center; font-weight: bold; padding: 10px;\">No</td>
 												<td style=\"text-align: center; font-weight: bold; padding: 10px;\">Supplier</td>
+												<td style=\"text-align: center; font-weight: bold; padding: 10px;\">Tanggal</td>
 												<td style=\"text-align: center; font-weight: bold; padding: 10px;\">Qty</td>
 												<td style=\"text-align: center; font-weight: bold; padding: 10px;\">Total</td>
 												<td style=\"text-align: center; font-weight: bold; padding: 10px;\">Diskon</td>
@@ -2470,29 +2471,38 @@ class Pembelian_farmasi_laporan extends CI_Controller
 				$tvatrp = 0;
 				$tmaterai = 0;
 				$ttotalrp = 0;
-				foreach($query as $q){
+				$sql = $this->db->get_where("tbl_pajak", ["kodetax"=>"PPN"])->row();
+				$pajak = $sql->prosentase / 100;
+				foreach ($query as $q) {
+					if($q->vat == 1){
+						$vatrp = ($q->totalrp * $pajak);
+					} else {
+						$vatrp = 0;
+					}
+					$totalrp = ($q->totalrp + $q->discountrp);
 					$body .= 		"<tbody>
 											<tr>
 												<td style=\"text-align: right;\">" . $no++ . "</td>
 												<td>$q->vendor_name</td>
+												<td>".date("d-m-Y", strtotime($q->terima_date))."</td>
 												<td style=\"text-align: right;\">" . number_format($q->qty_terima) . "</td>
-												<td style=\"text-align: right;\">" . number_format($q->totalrp) . "</td>
+												<td style=\"text-align: right;\">" . number_format($totalrp) . "</td>
 												<td style=\"text-align: right;\">" . number_format($q->discountrp) . "</td>
-												<td style=\"text-align: right;\">" . number_format($q->vatrp) . "</td>
+												<td style=\"text-align: right;\">" . number_format($vatrp) . "</td>
 												<td style=\"text-align: right;\">" . number_format($q->materai) . "</td>
-												<td style=\"text-align: right;\">" . number_format($q->totalrp) . "</td>
+												<td style=\"text-align: right;\">" . number_format($q->totalrp + $q->vatrp) . "</td>
 											</tr>
 										</tbody>";
 					$tqty_terima += $q->qty_terima;
-					$ttotalrp += $q->totalrp;
+					$ttotalrp += $totalrp;
 					$tdiscountrp += $q->discountrp;
-					$tvatrp += $q->vatrp;
+					$tvatrp += $vatrp;
 					$tmaterai += $q->materai;
-					$ttotalrp2 += $q->totalrp;
+					$ttotalrp2 += ($q->totalrp + $q->vatrp);
 				}
 				$body .= 	"<tfoot>
 										<tr>
-											<td style=\"text-align: center;\" colspan=\"2\">TOTAL</td>
+											<td style=\"text-align: center;\" colspan=\"3\">TOTAL</td>
 											<td style=\"text-align: right;\">" . number_format($tqty_terima) . "</td>
 											<td style=\"text-align: right;\">" . number_format($ttotalrp) . "</td>
 											<td style=\"text-align: right;\">" . number_format($tdiscountrp) . "</td>
@@ -2560,7 +2570,7 @@ class Pembelian_farmasi_laporan extends CI_Controller
 					$vendor = '';
 				}
 				$judul = '05 LAPORAN PEMBELIAN BARANG PER ITEM (TOTAL)';
-				$query = $this->db->query("SELECT b.kodebarang , (select namabarang from tbl_barang where kodebarang = b.kodebarang) as namabarang , h.vendor_id, b.satuan , b.qty_terima , (b.totalrp / b.qty_terima ) AS ratarata, b.koders, h.vendor_id , (select vendor_name from tbl_vendor where vendor_id=h.vendor_id) as vendor_name FROM tbl_barangdterima AS b JOIN tbl_baranghterima h ON b.terima_no = h.terima_no JOIN tbl_vendor AS c ON h.vendor_id = c.vendor_id WHERE $vendor b.koders = '$unit' and h.terima_date between '$tanggal1' and '$tanggal2'")->result();
+				$query = $this->db->query("SELECT b.kodebarang , (select namabarang from tbl_barang where kodebarang = b.kodebarang) as namabarang , h.vendor_id, b.satuan , sum(b.qty_terima) as qty_terima, (b.totalrp / b.qty_terima ) AS ratarata, b.koders, h.vendor_id , (select vendor_name from tbl_vendor where vendor_id=h.vendor_id) as vendor_name FROM tbl_barangdterima AS b JOIN tbl_baranghterima h ON b.terima_no = h.terima_no JOIN tbl_vendor AS c ON h.vendor_id = c.vendor_id WHERE $vendor b.koders = '$unit' and h.terima_date between '$tanggal1' and '$tanggal2' GROUP BY b.kodebarang")->result();
 				$body .= "<table style=\"border-collapse:collapse;font-family: tahoma; font-size:12px\" width=\"100%\" align=\"center\" border=\"1\">
                     <thead>
 											<tr>

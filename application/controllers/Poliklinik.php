@@ -147,7 +147,8 @@ class Poliklinik extends CI_Controller {
 			}
 			// $row[] = $periksa_perawat;
 			// $row[] = $periksa_dokter;
-			$row[] = $unit->antrino. '<button type="submit">call</button>';
+			$sebut   = trim($this->M_global->penyebut($unit->antrino));
+			$row[]   = $unit->antrino. '<button class="btn btn-primary btn-sm" onclick="playAudio('."'".$unit->antrino."',"."'".$sebut."'".')" type="button"><b>call </b><i class="fa fa-volume-off"></i></button>';
 			$row[] = $status_kasir;
 			$row[] = $unit->noreg;
 			$row[] = $unit->rekmed;

@@ -962,7 +962,7 @@ class Kasir_konsul extends CI_Controller
 			$noreg = $this->input->get('noreg');
 			$regist = $this->db->query("SELECT tbl_regist.*, tbl_pasien.namapas from tbl_regist inner join tbl_pasien on tbl_regist.rekmed=tbl_pasien.rekmed where noreg = '$noreg'")->row();
 			$kasir = $this->db->query("select * from tbl_kasir where nokwitansi = '$nokwitansi'")->row();
-			$detil = $this->db->query("SELECT * from (select tbl_tarifh.tindakan as ket, (tbl_dpoli.tarifrs + tbl_dpoli.tarifdr + tbl_dpoli.paramedis + tbl_dpoli.obatpoli) as jumlah from tbl_dpoli inner join tbl_tarifh on tbl_dpoli.kodetarif=tbl_tarifh.kodetarif where noreg = '$noreg' union	all select 'Adm' as ket, tbl_kasir.adm as jumlah from tbl_kasir where nokwitansi = '$nokwitansi' union	all select 'Diskon Total' as ket, tbl_kasir.diskonrp*-1 as jumlah from tbl_kasir where nokwitansi = '$nokwitansi') kasir where jumlah<>0")->result();
+			$detil = $this->db->query("select * from (select tbl_tarifh.tindakan as ket, (tbl_dpoli.tarifrs + tbl_dpoli.tarifdr + tbl_dpoli.paramedis + tbl_dpoli.obatpoli) as jumlah from tbl_dpoli inner join tbl_tarifh on tbl_dpoli.kodetarif=tbl_tarifh.kodetarif where noreg = '$noreg' union	all select 'Adm' as ket, tbl_kasir.adm as jumlah from tbl_kasir where nokwitansi = '$nokwitansi' union	all select 'Diskon Total' as ket, tbl_kasir.diskonrp*-1 as jumlah from tbl_kasir where nokwitansi = '$nokwitansi') kasir where jumlah<>0")->result();
 			$dresep = $this->db->query("SELECT * from tbl_apohresep where noreg = '$noreg'")->row();
 			if ($dresep) {
 				$eresep = $dresep->orderno;
@@ -1345,7 +1345,7 @@ class Kasir_konsul extends CI_Controller
 									</table>";
 			$query_kartu_card	= $this->db->query("SELECT * FROM tbl_kartukredit WHERE nokwitansi = '$nokwitansi'")->result();
 			foreach ($query_kartu_card as $cckey => $ccval) {
-				$query_nama_bank	= $this->db->query("SELECT * FROM tbl_edc WHERE bankcode = '$ccval->kodebank'")->row();
+				$query_nama_bank	= $this->db->query("SELECT * FROM tbl_edc WHERE bankcode = $ccval->kodebank")->row();
 				switch ($ccval->cardtype) {
 					case 1:
 						$cardType = "DEBIT NO";
@@ -1382,27 +1382,32 @@ class Kasir_konsul extends CI_Controller
 												<tr>
 															<td width=\"55%\">Nominal</td>
 															<td width=\"5%\"> : </td>
-															<td width=\"40%\" style=\"text-align: right;\">".number_format($ccval->jumlahbayar, 2)."</td>
-												</tr>";
+															<td width=\"40%\" style=\"text-align: right;\">$ccval->jumlahbayar</td>
+												</tr> 
+										</table>";
 			}
-			if ($kasir->kembalikeuangmuka != 0) {
+			if ($kasir->kembalikeuangmuka == 1) {
 				$kembalikeuangmuka = number_format($kasir->uangmuka, 2);
-				$chari .= "<tr>
+				$chari .= "
+											<table style=\"border-collapse:collapse;font-family: tahoma; font-size:12px\" width=\"40%\" align=\"left\" border=\"0\">
+													<tr>
 																<td width=\"55%\">Kembali ke Uang muka</td>
 																<td width=\"5%\"> : </td>
 																<td width=\"40%\" style=\"text-align: right;\">$kembalikeuangmuka</td>
-													</tr>";
+													</tr> 
+											</table>";
 			}
-			if ($kasir->kembali != 0) {
+			if($kasir->kembalikeuangmuka == 0) {
 				$kembali = number_format($kasir->kembali, 2);
-				$chari .= "<tr>
-																<td width=\"55%\">Kembali ke Pasien</td>
+				$chari .= "
+											<table style=\"border-collapse:collapse;font-family: tahoma; font-size:12px\" width=\"40%\" align=\"left\" border=\"0\">
+													<tr>
+																<td width=\"55%\">Kembali ke Uang muka</td>
 																<td width=\"5%\"> : </td>
 																<td width=\"40%\" style=\"text-align: right;\">$kembali</td>
 													</tr> 
-											";
+											</table>";
 			}
-			$chari .= "</table>";
 			$chari .= "
 									<table style=\"border-collapse:collapse;font-family: tahoma; font-size:12px\" width=\"100%\" align=\"center\" border=\"0\">
 											<tr>

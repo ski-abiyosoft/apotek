@@ -894,74 +894,63 @@ class Kasir_laporan extends CI_Controller
 			$npwp      = $kop['npwp'];
 
 			$chari .= "<table style=\"border-collapse:collapse;font-family: Century Gothic; font-size:12px; color:#000;\" width=\"100%\"  border=\"0\" cellspacing=\"0\" cellpadding=\"0\">
-                     
-			<thead>
-			<tr>
-				<td rowspan=\"6\" align=\"center\">
-				<img src=\"" . base_url() . "assets/img_usrt/".$this->session->userdata("avatar_cabang")."\"  width=\"100\" height=\"100\" /></td>
-
-				<td colspan=\"20\"><b>
-					<tr><td style=\"font-size:14px;border-bottom: none;\"><b>$namars</b></td></tr>
-					<tr><td style=\"font-size:13px;\">$alamat</td></tr>
-					<tr><td style=\"font-size:13px;\">$alamat2</td></tr>
-					<tr><td style=\"font-size:13px;\">Wa :$whatsapp    Telp :$phone </td></tr>
-					<tr><td style=\"font-size:13px;\">No. NPWP : $npwp</td></tr>
-
-				</b></td>
-			</tr> 
-			 
-			
+				<tr>
+					<td rowspan=\"6\" align=\"center\">
+						<img src=\"" . base_url() . "assets/img_user/".$this->session->userdata("avatar_cabang")."\"  width=\"100\" height=\"100\" />
+					</td>
+					<td colspan=\"20\">
+						<b>
+							<tr><td style=\"font-size:14px;border-bottom: none;\"><b>$namars</b></td></tr>
+							<tr><td style=\"font-size:13px;\">$alamat</td></tr>
+							<tr><td style=\"font-size:13px;\">$alamat2</td></tr>
+							<tr><td style=\"font-size:13px;\">Wa :$whatsapp    Telp :$phone </td></tr>
+							<tr><td style=\"font-size:13px;\">No. NPWP : $npwp</td></tr>
+						</b>
+					</td>
+				</tr>
 			</table>";
-
 			$chari .= "<table style=\"border-collapse:collapse;font-family: tahoma; font-size:12px\" width=\"100%\" align=\"center\" border=\"0\" cellspacing=\"1\" cellpadding=\"3\">
-                     
-                <thead>
-                <tr>
-                    <td colspan=\"21\" style=\"text-align:center;font-size:22px;border-bottom: none;color:#120292;\"><b>01 LAPORAN HARIAN KASIR PENDAPATAN PER SHIFT</b></td>
-                </tr> 
-                 
-                <tr>
-                    <td colspan=\"21\" style=\"text-align:center;font-size:15px;border-top: none;\">$_peri</td>
-                </tr>
-                
-                </table>";
-
+				<tr>
+					<td colspan=\"21\" style=\"text-align:center;font-size:22px;border-bottom: none;color:#120292;\">
+						<b>01 LAPORAN HARIAN KASIR PENDAPATAN PER SHIFT</b>
+					</td>
+				</tr>
+				<tr>
+					<td colspan=\"21\" style=\"text-align:center;font-size:15px;border-top: none;\">$_peri</td>
+				</tr>
+			</table>";
 			$chari .= "<table style=\"border-collapse:collapse;font-family: Times New Roman; font-size:12px\" width=\"100%\" align=\"center\" border=\"1\" cellspacing=\"1\" cellpadding=\"3\">
-
-		<thead>
-			<tr>
-				<td style=\"border:0\" colspan=\"21\" align=\"center\"><br></td>                
-			</tr>
-			<tr>
-                <td rowspan=\"2\" bgcolor=\"#cccccc\" width=\"2%\" align=\"center\"><b>No.</b></td>
-                <td rowspan=\"2\" bgcolor=\"#cccccc\" width=\"5%\" align=\"center\"><b>Kwitansi</b></td>
-                <td rowspan=\"2\" bgcolor=\"#cccccc\" width=\"5%\" align=\"center\"><b>Tangal</b></td>
-                <td rowspan=\"2\" bgcolor=\"#cccccc\" width=\"7%\" align=\"center\"><b>Nama Pasien</b></td>
-                <td rowspan=\"2\" bgcolor=\"#cccccc\" width=\"3%\" align=\"center\"><b>Adm</b></td>
-                <td rowspan=\"2\" bgcolor=\"#cccccc\" width=\"4%\" align=\"center\"><b>U.Muka</b></td>
-                <td rowspan=\"2\" bgcolor=\"#cccccc\" width=\"4%\" align=\"center\"><b>J.Kulit</b></td>
-                <td rowspan=\"2\" bgcolor=\"#cccccc\" width=\"4%\" align=\"center\"><b>Resep</b></td>
-                <td rowspan=\"2\" bgcolor=\"#cccccc\" width=\"4%\" align=\"center\"><b>R/Label</b></td>
-                <td rowspan=\"2\" bgcolor=\"#cccccc\" width=\"4%\" align=\"center\"><b>J.Gigi</b></td>
-                <td rowspan=\"2\" bgcolor=\"#cccccc\" width=\"4%\" align=\"center\"><b>Lain-lain</b></td>
-                <td rowspan=\"2\" bgcolor=\"#cccccc\" width=\"4%\" align=\"center\"><b>Ord. Kirim</b></td>
-                <td rowspan=\"2\" bgcolor=\"#cccccc\" width=\"4%\" align=\"center\"><b>Ongkir</b></td>
-                <td rowspan=\"2\" bgcolor=\"#cccccc\" width=\"4%\" align=\"center\"><b>J.Spa</b></td>
-                <td rowspan=\"2\" bgcolor=\"#cccccc\" width=\"4%\" align=\"center\"><b>R/Spa</b></td>
-                <td rowspan=\"2\" bgcolor=\"#cccccc\" width=\"4%\" align=\"center\"><b>Apotek</b></td>
-                <td rowspan=\"2\" bgcolor=\"#cccccc\" width=\"5%\" align=\"center\"><b>Total</b></td>
-                <td rowspan=\"2\" bgcolor=\"#cccccc\" width=\"7%\" align=\"center\"><b>Selisih</b></td>
-                <td colspan=\"2\"  bgcolor=\"#cccccc\" width=\"5%\" align=\"center\"><b>Diskon</b></td>
-                <td rowspan=\"2\" bgcolor=\"#cccccc\" width=\"5%\" align=\"center\"><b>Voucher</b></td>
-                <td rowspan=\"2\" bgcolor=\"#cccccc\" width=\"5%\" align=\"center\"><b>Total Net</b></td>
-                <td rowspan=\"2\" bgcolor=\"#cccccc\" width=\"5%\" align=\"center\"><b>Cara Bayar</b></td>
-            </tr>
-			<tr>
-                <td bgcolor=\"#cccccc\" width=\"5%\" align=\"center\"><b>Resep</b></td>
-                <td bgcolor=\"#cccccc\" width=\"5%\" align=\"center\"><b>Tin Kon</b></td>
-            </tr>
-            
-		</thead>";
+				<tr>
+					<td style=\"border:0\" colspan=\"21\" align=\"center\"><br></td>                
+				</tr>
+				<tr>
+					<td rowspan=\"2\" bgcolor=\"#cccccc\" width=\"2%\" align=\"center\"><b>No.</b></td>
+					<td rowspan=\"2\" bgcolor=\"#cccccc\" width=\"5%\" align=\"center\"><b>Kwitansi</b></td>
+					<td rowspan=\"2\" bgcolor=\"#cccccc\" width=\"5%\" align=\"center\"><b>Tangal</b></td>
+					<td rowspan=\"2\" bgcolor=\"#cccccc\" width=\"7%\" align=\"center\"><b>Nama Pasien</b></td>
+					<td rowspan=\"2\" bgcolor=\"#cccccc\" width=\"3%\" align=\"center\"><b>Adm</b></td>
+					<td rowspan=\"2\" bgcolor=\"#cccccc\" width=\"4%\" align=\"center\"><b>U.Muka</b></td>
+					<td rowspan=\"2\" bgcolor=\"#cccccc\" width=\"4%\" align=\"center\"><b>J.Kulit</b></td>
+					<td rowspan=\"2\" bgcolor=\"#cccccc\" width=\"4%\" align=\"center\"><b>Resep</b></td>
+					<td rowspan=\"2\" bgcolor=\"#cccccc\" width=\"4%\" align=\"center\"><b>R/Label</b></td>
+					<td rowspan=\"2\" bgcolor=\"#cccccc\" width=\"4%\" align=\"center\"><b>J.Gigi</b></td>
+					<td rowspan=\"2\" bgcolor=\"#cccccc\" width=\"4%\" align=\"center\"><b>Lain-lain</b></td>
+					<td rowspan=\"2\" bgcolor=\"#cccccc\" width=\"4%\" align=\"center\"><b>Ord. Kirim</b></td>
+					<td rowspan=\"2\" bgcolor=\"#cccccc\" width=\"4%\" align=\"center\"><b>Ongkir</b></td>
+					<td rowspan=\"2\" bgcolor=\"#cccccc\" width=\"4%\" align=\"center\"><b>J.Spa</b></td>
+					<td rowspan=\"2\" bgcolor=\"#cccccc\" width=\"4%\" align=\"center\"><b>R/Spa</b></td>
+					<td rowspan=\"2\" bgcolor=\"#cccccc\" width=\"4%\" align=\"center\"><b>Apotek</b></td>
+					<td rowspan=\"2\" bgcolor=\"#cccccc\" width=\"5%\" align=\"center\"><b>Total</b></td>
+					<td rowspan=\"2\" bgcolor=\"#cccccc\" width=\"7%\" align=\"center\"><b>Selisih</b></td>
+					<td colspan=\"2\"  bgcolor=\"#cccccc\" width=\"5%\" align=\"center\"><b>Diskon</b></td>
+					<td rowspan=\"2\" bgcolor=\"#cccccc\" width=\"5%\" align=\"center\"><b>Voucher</b></td>
+					<td rowspan=\"2\" bgcolor=\"#cccccc\" width=\"5%\" align=\"center\"><b>Total Net</b></td>
+					<td rowspan=\"2\" bgcolor=\"#cccccc\" width=\"5%\" align=\"center\"><b>Cara Bayar</b></td>
+        </tr>
+				<tr>
+					<td bgcolor=\"#cccccc\" width=\"5%\" align=\"center\"><b>Resep</b></td>
+					<td bgcolor=\"#cccccc\" width=\"5%\" align=\"center\"><b>Tin Kon</b></td>
+				</tr>";
 
 			$sql = "
 		SELECT 
@@ -1286,7 +1275,6 @@ class Kasir_laporan extends CI_Controller
 
 			$chari    .= "<tr>
             <td colspan=\"21\" style=\"border:none\" align=\"center\"><br></td>
-                       
             </tr>";
 
 			$sql = "SELECT
@@ -1439,6 +1427,7 @@ class Kasir_laporan extends CI_Controller
 				case 0;
 					echo ("<title>DATA GLOBAL SKI</title>");
 					echo ($chari);
+					echo "<script>window.print();</script>";
 					break;
 
 				case 1;

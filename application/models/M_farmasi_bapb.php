@@ -25,7 +25,7 @@ class M_farmasi_bapb extends CI_Model {
 			$tanggal = date('Y-m-d');
 			$tgll= "and terima_date = '$tanggal'";			
 		} else {
-		    $tgll= "and terima_date >= '$bulan' AND terima_date<= '$tahun'";
+		    $tgll= "and terima_date >= '$bulan' AND terima_date <= '$tahun'";
 			
 		}
 
