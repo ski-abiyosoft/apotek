@@ -1208,12 +1208,14 @@ $this->load->view('template/footer_tb');
 
   function save() {
     //var tanggal   = $('[name="tanggal"]').val(); 
-    var poli = $('[name="reg_klinik"]').val();
-    var nomor = $('[name="noreg"]').val();
-    var nohp = $('#reg_hp').val();
-    var total = $('#_vtotal2').text();
-    var cekhp = $('#reg_cekhp').is(':checked');
-    var tresepx = $('#_vtotalresep').text();
+    
+    var kembalirp   = $('[name="kembalirp"]').val();
+    var poli        = $('[name="reg_klinik"]').val();
+    var nomor       = $('[name="noreg"]').val();
+    var nohp        = $('#reg_hp').val();
+    var total       = $('#_vtotal2').text();
+    var cekhp       = $('#reg_cekhp').is(':checked');
+    var tresepx     = $('#_vtotalresep').text();
 
     if (nohp == '') {
       swal({
@@ -1281,6 +1283,8 @@ $this->load->view('template/footer_tb');
 
   function save_bayar() {
     // husain add
+    var kembalirp   = angka($('[name="kembalirp"]').val());
+    
     if(document.getElementById("j_umum").checked == true && document.getElementById("j_jaminan").checked == false){
       jaminan = 0;
     } else if(document.getElementById("j_jaminan").checked == true && document.getElementById("j_umum").checked == false){
@@ -1347,6 +1351,16 @@ $this->load->view('template/footer_tb');
     var total = $('#totalnet').val();
     var terimadari = $('#terimadari').val();
 
+    if (kembalirp<0){
+      swal({
+        title: "PEMBAYARAN",
+        html: "<p>MASIH BELUM LUNAS, Silahkan Lunasi Terlebih Dahulu...</p>",
+        type: "error",
+        confirmButtonText: "OK" 
+      });    
+      return;
+    } 
+
     if (nomor == "" || terimadari == "" || statuspromo == "" || statuskembalian == "" || uangmukapakai > nuangmuka) {
       if (statuspromo == "") {
         var title = "Status Promo Belum dipilih";
@@ -1382,6 +1396,7 @@ $this->load->view('template/footer_tb');
               type: "error",
               confirmButtonText: "OK"
             });
+            return;
           } else {
             $.ajax({
               url: '<?php echo site_url('kasir_konsul/ajax_add_bayar?jaminan=') ?>'+jaminan+'&hasil='+hasil,
@@ -1476,6 +1491,7 @@ $this->load->view('template/footer_tb');
               type: "error",
               confirmButtonText: "OK"
             });
+            return;
           } else {
             $.ajax({
               url: '<?php echo site_url('kasir_konsul/ajax_add_bayar?jaminan=') ?>'+jaminan+'&hasil='+hasil,
@@ -1570,6 +1586,7 @@ $this->load->view('template/footer_tb');
               type: "error",
               confirmButtonText: "OK"
             });
+            return;
           } else {
             $.ajax({
               url: '<?php echo site_url('kasir_konsul/ajax_add_bayar?jaminan=') ?>'+jaminan+'&hasil='+hasil,
@@ -1664,6 +1681,7 @@ $this->load->view('template/footer_tb');
               type: "error",
               confirmButtonText: "OK"
             });
+            return;
           } else {
             $.ajax({
               url: '<?php echo site_url('kasir_konsul/ajax_add_bayar?jaminan=') ?>'+jaminan+'&hasil='+hasil,

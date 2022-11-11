@@ -77,7 +77,7 @@ class Pendaftaran_laporan extends CI_Controller {
 				// if($unit !='null'){
 				// $query.= "and tbl_pasien.koders = '$unit'";	
 				// }
-				$query.= "ORDER BY tbl_regist.kodepos, tglmasuk,namapas";
+				$query.= "ORDER BY tbl_regist.kodepos, tglmasuk desc,jam desc,namapas";
 				$lap = $this->db->query($query)->result();
 				$pdf=new simkeu_rpt();
 				$pdf->setID($nama_usaha,$motto,$alamat);

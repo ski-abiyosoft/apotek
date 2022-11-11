@@ -403,7 +403,8 @@ function playAudio(antriangka="", noantri="satu") {
     var bel5  = new Audio('audio/puluh.wav');
     var bel7  = new Audio('audio/ratus.wav');
     var to    = new Audio('audio/silakan_menuju_ke.wav');
-    var poli  = new Audio('audio/poliklinik.wav');
+    var poli  = new Audio('audio/poli.wav');
+    var umum  = new Audio('audio/umum.wav');
 
     totalwaktu=0; 
     
@@ -539,6 +540,9 @@ function playAudio(antriangka="", noantri="satu") {
         totalwaktu=totalwaktu+1700;
 
     setTimeout(function() { poli.pause(); poli.currentTime=0; poli.play(); }, totalwaktu);
+        totalwaktu=totalwaktu+1000;
+
+    setTimeout(function() { umum.pause(); umum.currentTime=0; umum.play(); }, totalwaktu);
         totalwaktu=totalwaktu+1500;
     
 }
@@ -602,7 +606,8 @@ $(document).ready(function() {
             "sInfoEmpty": "",
             "sInfoFiltered": " - Dipilih dari _MAX_ data",
             "sSearch": "Pencarian Data : ",
-            "sInfo": " Jumlah _TOTAL_ Data (_START_ - _END_)",
+            // "sInfo": " Jumlah _TOTAL_ Data (_START_ - _END_)",
+            "sInfo": "Data (_START_ - _END_)",
             "sLengthMenu": "_MENU_ Baris",
             "sLoadingRecords": "Loading...",
             "sProcessing":"Tunggu Sebentar... Loading...",

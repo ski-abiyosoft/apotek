@@ -185,7 +185,7 @@ $this->load->view('template/body');
 								<br>
 								<!-- <a class="btn btn-sm blue print_laporan" onclick="javascript:window.open(_urlcetak(0),'_blank');" ><i title="CETAK PDF" class="glyphicon glyphicon-file"></i><b> LAYAR </b></a> -->
 
-								<a class="btn btn-sm red print_laporan" onclick="_urlcetak(0)"><i title="CETAK PDF" class="glyphicon glyphicon-print"></i><b> PDF </b></a>
+								<a class="btn btn-sm red print_laporan" onclick="_urlcetak(1)"><i title="CETAK PDF" class="glyphicon glyphicon-print"></i><b> PDF </b></a>
 
 								<a class="btn btn-sm green print_laporan" onclick="_urlcetak(2)"><i title="CETAK PDF" class="fa fa-download"></i><b> EXCEL </b></a>
 
@@ -257,14 +257,20 @@ $this->load->view('template/v_report');
 		return selisih;
 	}
 	function _urlcetak(cek) {
-		var idlap = $('[name="idlap"]').val();
-		var tgl1 = $('[name="tanggal1"]').val();
-		var tgl2 = $('[name="tanggal2"]').val();
-		var dokter = $('[name="dokter"]').val();
-		var unit = $('[name="unit"]').val();
-		var cbg = $('[name="cabang"]').val();
-		var pemb = $('[name="pembayaran"]').val();
-		var cektgl = hitungselisihtgl(tgl1, tgl2);
+		var idlap   = $('[name="idlap"]').val();
+		var tgl1    = $('[name="tanggal1"]').val();
+		var tgl2    = $('[name="tanggal2"]').val();
+		var dokter  = $('[name="dokter"]').val();
+		var unit    = $('[name="unit"]').val();
+		var cbg     = $('[name="cabang"]').val();
+		var pemb    = $('[name="pembayaran"]').val();
+		var cektgl  = hitungselisihtgl(tgl1, tgl2);
+		
+		if(idlap == '101'){
+			cek=0;
+		}else{
+			cek=cek;
+		}
 		if(cek < 1){
 			if(cektgl < 8){
 				var baseurl = "<?php echo base_url() ?>";

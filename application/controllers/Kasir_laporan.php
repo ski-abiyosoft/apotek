@@ -1481,7 +1481,7 @@ class Kasir_laporan extends CI_Controller
 			<thead>
 			<tr>
 				<td rowspan=\"6\" align=\"center\">
-				<img src=\"" . base_url() . "assets/img_usrt/".$this->session->userdata("avatar_cabang")."\"  width=\"100\" height=\"100\" /></td>
+				<img src=\"" . base_url() . "assets/img_user/".$this->session->userdata("avatar_cabang")."\"  width=\"100\" height=\"100\" /></td>
 
 				<td colspan=\"20\"><b>
 					<tr><td style=\"font-size:14px;border-bottom: none;\"><b>$namars</b></td></tr>
@@ -1912,7 +1912,7 @@ class Kasir_laporan extends CI_Controller
 			<thead>
 			<tr>
 				<td rowspan=\"6\" align=\"center\">
-				<img src=\"" . base_url() . "assets/img_usrt/".$this->session->userdata("avatar_cabang")."\"  width=\"100\" height=\"100\" /></td>
+				<img src=\"" . base_url() . "assets/img_user/".$this->session->userdata("avatar_cabang")."\"  width=\"100\" height=\"100\" /></td>
 
 				<td colspan=\"20\"><b>
 					<tr><td style=\"font-size:10px;border-bottom: none;\"><b>$namars</b></td></tr>
@@ -2139,7 +2139,7 @@ class Kasir_laporan extends CI_Controller
 			<thead>
 			<tr>
 				<td rowspan=\"6\" align=\"center\">
-				<img src=\"" . base_url() . "assets/img_usrt/".$this->session->userdata("avatar_cabang")."\"  width=\"100\" height=\"100\" /></td>
+				<img src=\"" . base_url() . "assets/img_user/".$this->session->userdata("avatar_cabang")."\"  width=\"100\" height=\"100\" /></td>
 
 				<td colspan=\"20\"><b>
 					<tr><td style=\"font-size:14px;border-bottom: none;\"><b>$namars</b></td></tr>
@@ -2319,7 +2319,7 @@ class Kasir_laporan extends CI_Controller
 			<thead>
 			<tr>
 				<td rowspan=\"6\" align=\"center\">
-				<img src=\"" . base_url() . "assets/img_usrt/".$this->session->userdata("avatar_cabang")."\"  width=\"100\" height=\"100\" /></td>
+				<img src=\"" . base_url() . "assets/img_user/".$this->session->userdata("avatar_cabang")."\"  width=\"100\" height=\"100\" /></td>
 
 				<td colspan=\"20\"><b>
 					<tr><td style=\"font-size:14px;border-bottom: none;\"><b>$namars</b></td></tr>

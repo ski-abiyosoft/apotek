@@ -148,7 +148,7 @@ class Poliklinik extends CI_Controller {
 			// $row[] = $periksa_perawat;
 			// $row[] = $periksa_dokter;
 			$sebut   = trim($this->M_global->penyebut($unit->antrino));
-			$row[]   = $unit->antrino. '<button class="btn btn-primary btn-sm" onclick="playAudio('."'".$unit->antrino."',"."'".$sebut."'".')" type="button"><b>call </b><i class="fa fa-volume-off"></i></button>';
+			$row[]   = '<button class="btn btn-primary btn-sm" onclick="playAudio('."'".$unit->antrino."',"."'".$sebut."'".')" type="button"><b>'.$unit->antrino.' | call </b><i class="fa fa-volume-off"></i></button>';
 			$row[] = $status_kasir;
 			$row[] = $unit->noreg;
 			$row[] = $unit->rekmed;
@@ -1789,7 +1789,7 @@ class Poliklinik extends CI_Controller {
 		$cek = '1';
 		$chari ='';
 		$check_suket	= $this->db->query("SELECT * FROM tbl_rekammedisrs WHERE koders = '$param_unit' AND noreg = '$param_noreg'");
-
+		$check_reg		= $this->db->query("SELECT * FROM tbl_regist WHERE koders = '$param_unit' AND noreg = '$param_noreg'");
 		if($check_suket->num_rows() == 0){
 			redirect("/poliklinik/pemeriksaan_dokter/?noreg=". $param_noreg ."&rekmed=". $param_rekmed);
 		} else {
@@ -1797,6 +1797,8 @@ class Poliklinik extends CI_Controller {
 			$head		= $this->db->query("SELECT * FROM tbl_namers WHERE koders = '$param_unit'")->row();
 			$judul		= ($param_type == "sakit")? "SURAT KETERANGAN SAKIT" : "SURAT KETERANGAN DOKTER";
 			$data		= $check_suket->row();
+			$data_2reg	= $check_reg->row();
+			$dokter_sk	= ($data->kodokter == "")? $data_2reg->kodokter : $data->kodokter;
 			$avatar   	= $this->session->userdata('avatar_cabang');
 
 			$comp_name	= $head->namars;
@@ -1921,7 +1923,7 @@ class Poliklinik extends CI_Controller {
 					<tr>
 						<td><b>'. $data->diagnosa .'</b></td>
 						<td colspan="2" align="center">
-						<br /><br /><br /><br /><br />('. data_master("dokter", array("kodokter" => $data->kodokter, "koders" => $param_unit, "kopoli" => $data->kodepos))->nadokter .')</td>
+						<br /><br /><br /><br /><br />('. data_master("dokter", array("kodokter" => $dokter_sk, "koders" => $param_unit, "kopoli" => $data->kodepos))->nadokter .')</td>
 					</tr>
 				</table>';
 				switch ($cek) {
@@ -2045,7 +2047,7 @@ class Poliklinik extends CI_Controller {
 					<tr>
 						<td><b>'. $data->diagnosa .'</b></td>
 						<td colspan="2" align="center">
-						<br /><br /><br /><br /><br />('. data_master("dokter", array("kodokter" => $data->kodokter, "koders" => $param_unit, "kopoli" => $data->kodepos))->nadokter .')</td>
+						<br /><br /><br /><br /><br />('. data_master("dokter", array("kodokter" => $dokter_sk, "koders" => $param_unit, "kopoli" => $data->kodepos))->nadokter .')</td>
 					</tr>
 				</table>';
 				switch ($cek) {

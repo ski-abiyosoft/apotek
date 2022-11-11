@@ -130,24 +130,18 @@ class Laporan_penjualan extends CI_Controller
 				} else {
 					$depox = '';
 				}
-				$query = $this->db->query("SELECT kodebarang, satuan, namabarang, tglresep, jenispas, SUM(qty_tunai) AS qty_tunai, SUM(qty_lokal) AS qty_lokal, SUM(qty_kirim) AS qty_kirim, SUM(qty_spa) AS qty_spa, SUM(qty_apotik) AS qty_apotik, SUM(qty_cabang) AS qty_cabang, (rp_lokal * SUM(qty_lokal)) AS rp_lokal, (rp_tunai * SUM(qty_tunai)) AS rp_tunai, (rp_kirim * SUM(qty_kirim)) AS rp_kirim, (rp_spa * SUM(qty_spa)) AS rp_spa, (rp_apotik * SUM(qty_apotik)) AS rp_apotik, (rp_cabang * SUM(qty_cabang)) AS rp_cabang,
-				(SUM(xx.qty_tunai) + SUM(xx.qty_lokal) + SUM(xx.qty_kirim) + SUM(xx.qty_spa) + SUM(xx.qty_apotik) + SUM(xx.qty_cabang)) AS jualtotal_qty, 
-				(SUM(xx.rp_tunai) + SUM(xx.rp_lokal) + SUM(xx.rp_kirim) + SUM(xx.rp_spa) + SUM(xx.rp_apotik) + SUM(xx.rp_cabang)) AS jualtotal_rp  
+				$query = $this->db->query("SELECT kodebarang, satuan, namabarang, tglresep, jenispas, SUM(qty_apotik) AS qty_apotik, SUM(qty_rajal) AS qty_rajal, SUM(qty_ranap) AS qty_ranap, (rp_apotik * SUM(qty_apotik)) AS rp_apotik, (rp_rajal * SUM(qty_rajal)) AS rp_rajal, (rp_ranap * SUM(qty_ranap)) AS rp_ranap,
+				(SUM(xx.qty_apotik) + SUM(xx.qty_rajal) + SUM(xx.qty_ranap)) AS jualtotal_qty, 
+				((SUM(xx.qty_apotik)*xx.rp_apotik) + (SUM(xx.qty_rajal)*xx.rp_rajal) + (SUM(xx.qty_ranap)*xx.rp_ranap)) AS jualtotal_rp  
 				FROM
 					(
 						SELECT d.kodebarang, d.satuan, d.namabarang, h.tglresep, h.jenispas,
-						( CASE  WHEN jenispas = 1 THEN qty ELSE 0 END) AS qty_tunai,
-						( CASE WHEN jenispas = 1 THEN price ELSE 0 END) AS rp_tunai,
-						( CASE  WHEN jenispas = 2 THEN qty ELSE 0 END) AS qty_lokal,
-						( CASE WHEN jenispas = 2 THEN price ELSE 0 END) AS rp_lokal,
-						( CASE  WHEN jenispas = 3 THEN qty ELSE 0 END) AS qty_kirim,
-						( CASE WHEN jenispas = 3 THEN price ELSE 0 END) AS rp_kirim,
-						( CASE  WHEN jenispas = 4 THEN qty ELSE 0 END) AS qty_spa,
-						( CASE WHEN jenispas = 4 THEN price ELSE 0 END) AS rp_spa,
 						( CASE  WHEN jenispas = 7 THEN qty ELSE 0 END) AS qty_apotik,
 						( CASE WHEN jenispas = 7 THEN price ELSE 0 END) AS rp_apotik,
-						( CASE  WHEN jenispas = 0 THEN qty ELSE 0 END) AS qty_cabang,
-						( CASE WHEN jenispas = 0 THEN price ELSE 0 END) AS rp_cabang
+						( CASE  WHEN jenispas = 8 THEN qty ELSE 0 END) AS qty_rajal,
+						( CASE WHEN jenispas = 8 THEN price ELSE 0 END) AS rp_rajal,
+						( CASE  WHEN jenispas = 9 THEN qty ELSE 0 END) AS qty_ranap,
+						( CASE WHEN jenispas = 9 THEN price ELSE 0 END) AS rp_ranap
 						FROM tbl_apohresep h 
 						JOIN tbl_apodresep d ON h.resepno = d.resepno 
 						WHERE h.koders = '$unit' AND tglresep BETWEEN '$dari' AND '$sampai' $depox $jenis
@@ -179,21 +173,12 @@ class Laporan_penjualan extends CI_Controller
 						<td bgcolor=\"#cccccc\" style=\"text-align: center; font-weight: bold; padding: 10px;\" width=\"10%\" align=\"center\" rowspan=\"2\"><br>Kode Barang</td>
 						<td bgcolor=\"#cccccc\" style=\"text-align: center; font-weight: bold; padding: 10px;\" width=\"30%\" align=\"center\" rowspan=\"2\"><br>Nama Barang</td>
 						<td bgcolor=\"#cccccc\" style=\"text-align: center; font-weight: bold; padding: 10px;\" width=\"10%\" align=\"center\" rowspan=\"2\"><br>Satuan</td>
-						<td bgcolor=\"#cccccc\" style=\"text-align: center; font-weight: bold; padding: 10px;\" width=\"10%\" align=\"center\" colspan=\"2\"><br>Tunai</td>
-						<td bgcolor=\"#cccccc\" style=\"text-align: center; font-weight: bold; padding: 10px;\" width=\"10%\" align=\"center\" colspan=\"2\"><br>Lokal</td>
-						<td bgcolor=\"#cccccc\" style=\"text-align: center; font-weight: bold; padding: 10px;\" width=\"10%\" align=\"center\" colspan=\"2\"><br>Kirim</td>
-						<td bgcolor=\"#cccccc\" style=\"text-align: center; font-weight: bold; padding: 10px;\" width=\"10%\" align=\"center\" colspan=\"2\"><br>Spa</td>
 						<td bgcolor=\"#cccccc\" style=\"text-align: center; font-weight: bold; padding: 10px;\" width=\"10%\" align=\"center\" colspan=\"2\"><br>Apotik</td>
-						<td bgcolor=\"#cccccc\" style=\"text-align: center; font-weight: bold; padding: 10px;\" width=\"10%\" align=\"center\" colspan=\"2\"><br>Cabang</td>
+						<td bgcolor=\"#cccccc\" style=\"text-align: center; font-weight: bold; padding: 10px;\" width=\"10%\" align=\"center\" colspan=\"2\"><br>Rawat Jalan</td>
+						<td bgcolor=\"#cccccc\" style=\"text-align: center; font-weight: bold; padding: 10px;\" width=\"10%\" align=\"center\" colspan=\"2\"><br>Rawat Inap</td>
 						<td bgcolor=\"#cccccc\" style=\"text-align: center; font-weight: bold; padding: 10px;\" width=\"10%\" align=\"center\" colspan=\"2\"><br>Total</td>
 					</tr>
 					<tr>
-						<td bgcolor=\"#cccccc\" style=\"text-align: center; font-weight: bold; padding: 10px;\" width=\"5%\" align=\"center\"><br>Qty</td>
-						<td bgcolor=\"#cccccc\" style=\"text-align: center; font-weight: bold; padding: 10px;\" width=\"5%\" align=\"center\"><br>Rp</td>
-						<td bgcolor=\"#cccccc\" style=\"text-align: center; font-weight: bold; padding: 10px;\" width=\"5%\" align=\"center\"><br>Qty</td>
-						<td bgcolor=\"#cccccc\" style=\"text-align: center; font-weight: bold; padding: 10px;\" width=\"5%\" align=\"center\"><br>Rp</td>
-						<td bgcolor=\"#cccccc\" style=\"text-align: center; font-weight: bold; padding: 10px;\" width=\"5%\" align=\"center\"><br>Qty</td>
-						<td bgcolor=\"#cccccc\" style=\"text-align: center; font-weight: bold; padding: 10px;\" width=\"5%\" align=\"center\"><br>Rp</td>
 						<td bgcolor=\"#cccccc\" style=\"text-align: center; font-weight: bold; padding: 10px;\" width=\"5%\" align=\"center\"><br>Qty</td>
 						<td bgcolor=\"#cccccc\" style=\"text-align: center; font-weight: bold; padding: 10px;\" width=\"5%\" align=\"center\"><br>Rp</td>
 						<td bgcolor=\"#cccccc\" style=\"text-align: center; font-weight: bold; padding: 10px;\" width=\"5%\" align=\"center\"><br>Qty</td>
@@ -209,33 +194,21 @@ class Laporan_penjualan extends CI_Controller
 					$namabarang = $q->namabarang;
 					$satuan = $q->satuan;
 					if($cekpdf == 1){
-						$qty_tunai = number_format($q->qty_tunai);
-						$rp_tunai = number_format($q->rp_tunai);
-						$qty_lokal = number_format($q->qty_lokal);
-						$rp_lokal = number_format($q->rp_lokal);
-						$qty_kirim = number_format($q->qty_kirim);
-						$rp_kirim = number_format($q->rp_kirim);
-						$qty_spa = number_format($q->qty_spa);
-						$rp_spa = number_format($q->rp_spa);
 						$qty_apotik = number_format($q->qty_apotik);
 						$rp_apotik = number_format($q->rp_apotik);
-						$qty_cabang = number_format($q->qty_cabang);
-						$rp_cabang = number_format($q->rp_cabang);
+						$qty_rajal = number_format($q->qty_rajal);
+						$rp_rajal = number_format($q->rp_rajal);
+						$qty_ranap = number_format($q->qty_ranap);
+						$rp_ranap = number_format($q->rp_ranap);
 						$jualtotal_qty = number_format($q->jualtotal_qty);
 						$jualtotal_rp = number_format($q->jualtotal_rp);
 					} else {
-						$qty_tunai = $q->qty_tunai;
-						$rp_tunai = $q->rp_tunai;
-						$qty_lokal = $q->qty_lokal;
-						$rp_lokal = $q->rp_lokal;
-						$qty_kirim = $q->qty_kirim;
-						$rp_kirim = $q->rp_kirim;
-						$qty_spa = $q->qty_spa;
-						$rp_spa = $q->rp_spa;
 						$qty_apotik = $q->qty_apotik;
 						$rp_apotik = $q->rp_apotik;
-						$qty_cabang = $q->qty_cabang;
-						$rp_cabang = $q->rp_cabang;
+						$qty_rajal = $q->qty_rajal;
+						$rp_lokal = $q->rp_lokal;
+						$qty_ranap = $q->qty_ranap;
+						$rp_ranap = $q->rp_ranap;
 						$jualtotal_qty = $q->jualtotal_qty;
 						$jualtotal_rp = $q->jualtotal_rp;
 					}
@@ -244,18 +217,12 @@ class Laporan_penjualan extends CI_Controller
 						<td align=\"left\">$kodebarang</td>
 						<td align=\"left\">$namabarang</td>
 						<td align=\"left\">$satuan</td>
-						<td align=\"right\">$qty_tunai</td>
-						<td align=\"right\">$rp_tunai</td>
-						<td align=\"right\">$qty_lokal</td>
-						<td align=\"right\">$rp_lokal</td>
-						<td align=\"right\">$qty_kirim</td>
-						<td align=\"right\">$rp_kirim</td>
-						<td align=\"right\">$qty_spa</td>
-						<td align=\"right\">$rp_spa</td>
 						<td align=\"right\">$qty_apotik</td>
 						<td align=\"right\">$rp_apotik</td>
-						<td align=\"right\">$qty_cabang</td>
-						<td align=\"right\">$rp_cabang</td>
+						<td align=\"right\">$qty_rajal</td>
+						<td align=\"right\">$rp_rajal</td>
+						<td align=\"right\">$qty_ranap</td>
+						<td align=\"right\">$rp_ranap</td>
 						<td align=\"right\">$jualtotal_qty</td>
 						<td align=\"right\">$jualtotal_rp</td>
 					</tr>";

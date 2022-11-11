@@ -691,69 +691,69 @@ class Kasir_konsul extends CI_Controller
 
 		$this->_validate();
 		$data = [
-			'koders'        => $cabang,
-			'nokwitansi'    => $kwitansi_kasir,
-			'fakturpajak'   => $fakturpajak,
-			'rekmed'        => $this->input->post('pasien'),
-			'noreg'         => $noreg,
-			'tglbayar'      => $tanggal,
-			'jambayar'      => $jam,
-			'totalpoli'     => $totalpoli,
-			'totalresep'    => $totalresep,
-			'uangmuka'      => $uangmukapakai,
-			'adm'           => $adm,
-			'diskon'        => $diskon,
-			'diskonrp'      => $diskonrp,
-			'admcredit'     => $admcredit,
-			'totalsemua'    => $totalnet,
-			'bayarcash'     => $bayarcash,
-			'selisihrp'     => $selisihrp,
-			'bayarcard'     => $bayarcard,
-			'refund'        => $refund,
-			// 'voucherrp' => $voucherrp,
-			'voucherrp1'    => $voucherrp1,
-			'voucherrp2'    => $voucherrp2,
-			'voucherrp3'    => $voucherrp3,
-			// 'novoucher' => $this->input->post('vouchercode'), saya ganti
-			'novoucher1'    => $this->input->post('vouchercode1'),
-			'novoucher2'    => $this->input->post('vouchercode2'),
-			'novoucher3'    => $this->input->post('vouchercode3'),
-			//promoid
-			'promoid'       => $promoid[0],
-			'promoid2'      => $promoid[1],
-			'promoid3'      => $promoid[2],
-			'promoid4'      => $promoid[3],
-			'promoid5'      => $promoid[4],
-			// hadiah
-			'hadiah1'       => $hadiah[0],
-			'hadiah2'       => $hadiah[1],
-			'hadiah3'       => $hadiah[2],
-			'hadiah4'       => $hadiah[3],
-			'hadiah5'       => $hadiah[4],
-			// qtyhad1
-			'qtyhad1'       => $qtyhadiah[0],
-			'qtyhad2'       => $qtyhadiah[1],
-			'qtyhad3'       => $qtyhadiah[2],
-			'qtyhad4'       => $qtyhadiah[3],
-			'qtyhad5'       => $qtyhadiah[4],
-			// cust_id
-			// script original
-			'cust_id'       => $this->input->post('vouchersource'),
-			// husain change
-			// 'cust_id'       => $this->input->post('vpenjamin'),
-			// end husain
-			'totalbayar'    => $totalbayar,
-			'kembali'       => $kembali,
-			'posbayar'      => 'RAWAT_JALAN',
-			'dibayaroleh'   => $this->input->post('terimadari'),
-			'jenisbayar'    => 1,
-			'username'      => $userid,
-			'kembalikeuangmuka'      => $this->input->post('kembaliuang'),
-			'adapromo'		=> $this->input->post('adapromo'),
-			'diskonresep'	=> $diskonresep,
-			'namapasien' => $pas->namapas,
-			'resepno' => $eresepz,
-		];
+				'koders'        => $cabang,
+				'nokwitansi'    => $kwitansi_kasir,
+				'fakturpajak'   => $fakturpajak,
+				'rekmed'        => $this->input->post('pasien'),
+				'noreg'         => $noreg,
+				'tglbayar'      => $tanggal,
+				'jambayar'      => $jam,
+				'totalpoli'     => $totalpoli,
+				'totalresep'    => $totalresep,
+				'uangmuka'      => $uangmukapakai,
+				'adm'           => $adm,
+				'diskon'        => $diskon,
+				'diskonrp'      => $diskonrp,
+				'admcredit'     => $admcredit,
+				'totalsemua'    => $totalnet,
+				'bayarcash'     => $bayarcash,
+				'selisihrp'     => $selisihrp,
+				'bayarcard'     => $bayarcard,
+				'refund'        => $refund,
+				// 'voucherrp' => $voucherrp,
+				'voucherrp1'    => $voucherrp1,
+				'voucherrp2'    => $voucherrp2,
+				'voucherrp3'    => $voucherrp3,
+				// 'novoucher' => $this->input->post('vouchercode'), saya ganti
+				'novoucher1'    => $this->input->post('vouchercode1'),
+				'novoucher2'    => $this->input->post('vouchercode2'),
+				'novoucher3'    => $this->input->post('vouchercode3'),
+				//promoid
+				'promoid'       => $promoid[0],
+				'promoid2'      => $promoid[1],
+				'promoid3'      => $promoid[2],
+				'promoid4'      => $promoid[3],
+				'promoid5'      => $promoid[4],
+				// hadiah
+				'hadiah1'       => $hadiah[0],
+				'hadiah2'       => $hadiah[1],
+				'hadiah3'       => $hadiah[2],
+				'hadiah4'       => $hadiah[3],
+				'hadiah5'       => $hadiah[4],
+				// qtyhad1
+				'qtyhad1'       => $qtyhadiah[0],
+				'qtyhad2'       => $qtyhadiah[1],
+				'qtyhad3'       => $qtyhadiah[2],
+				'qtyhad4'       => $qtyhadiah[3],
+				'qtyhad5'       => $qtyhadiah[4],
+				// cust_id
+				// script original
+				'cust_id'       => $this->input->post('vouchersource'),
+				// husain change
+				// 'cust_id'       => $this->input->post('vpenjamin'),
+				// end husain
+				'totalbayar'    => $totalbayar,
+				'kembali'       => $kembali,
+				'posbayar'      => 'RAWAT_JALAN',
+				'dibayaroleh'   => $this->input->post('terimadari'),
+				'jenisbayar'    => 1,
+				'username'      => $userid,
+				'kembalikeuangmuka'      => $this->input->post('kembaliuang'),
+				'adapromo'		=> $this->input->post('adapromo'),
+				'diskonresep'	=> $diskonresep,
+				'namapasien' => $pas->namapas,
+				'resepno' => $eresepz,
+			];
 		$insert = $this->db->insert('tbl_kasir', $data);
 		// husain add
 		$datapap = [
@@ -1386,7 +1386,7 @@ class Kasir_konsul extends CI_Controller
 												</tr> 
 										</table>";
 			}
-			if ($kasir->kembalikeuangmuka == 1) {
+			if ($kasir->kembalikeuangmuka > 0) {
 				$kembalikeuangmuka = number_format($kasir->uangmuka, 2);
 				$chari .= "
 											<table style=\"border-collapse:collapse;font-family: tahoma; font-size:12px\" width=\"40%\" align=\"left\" border=\"0\">
@@ -1396,13 +1396,12 @@ class Kasir_konsul extends CI_Controller
 																<td width=\"40%\" style=\"text-align: right;\">$kembalikeuangmuka</td>
 													</tr> 
 											</table>";
-			}
-			if($kasir->kembalikeuangmuka == 0) {
+			} else {
 				$kembali = number_format($kasir->kembali, 2);
 				$chari .= "
 											<table style=\"border-collapse:collapse;font-family: tahoma; font-size:12px\" width=\"40%\" align=\"left\" border=\"0\">
 													<tr>
-																<td width=\"55%\">Kembali ke Uang muka</td>
+																<td width=\"55%\">Kembali ke Pasien</td>
 																<td width=\"5%\"> : </td>
 																<td width=\"40%\" style=\"text-align: right;\">$kembali</td>
 													</tr> 

@@ -29,7 +29,7 @@
   <link href="<?php echo base_url();?>assets/css/custom.css?v=1.1" rel="stylesheet" type="text/css" />
 
   <link href="<?= base_url('assets/calendar/fullcalendar.css');?>" rel='stylesheet' />
-  <script src="<?= base_url('assets/calendar/jquery.min.js');?>"></script>
+  <script src="<?= base_url('assets/calendar/jquery.min.js?v=1.1');?>"></script>
   <script src="<?= base_url('assets/calendar/jquery-ui.min.js');?>"></script>
   <script src="<?= base_url('assets/calendar/moment.min.js');?>"></script>
   <script src="<?= base_url('assets/calendar/fullcalendar.min.js');?>"></script>
