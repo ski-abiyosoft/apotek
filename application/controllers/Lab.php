@@ -5,10 +5,9 @@ class Lab extends CI_Controller{
 	public function __construct(){
 		parent::__construct();
 		$this->session->set_userdata('menuapp', '2000');
-		$this->session->set_userdata('submenuapp', '2651');
+		$this->session->set_userdata('submenuapp', '2700');
 		$this->load->model(array("M_bedah", "M_pasien_global", "M_cetak", "M_lab", "M_barang", "M_alkes_transaksi"));
-		$this->load->helper(array("app_global", "rsreport"));
-		$this->load->library("session");
+		$this->load->helper(array("rsreport"));
 	}
 
 	public function index(){
@@ -150,7 +149,8 @@ class Lab extends CI_Controller{
 		$query_tindakan	= $this->db->query("SELECT CONCAT('[ ', kodetarif ,' ] - [ ', tindakan ,' ]') AS text,
 		kodetarif AS kodeid
 		FROM daftar_tarif_nonbedah
-		WHERE kodepos = 'LABOR'
+		WHERE kodepos = 'LABOR' 
+		AND koders = '$unit' 
 		ORDER BY tindakan ASC")->result();
 
 		// HEADER
@@ -751,59 +751,93 @@ class Lab extends CI_Controller{
 		}
 
 		// HASIL
-		if($param == "save"){
-			if(!empty($billing_tindakan)){
-				foreach($billing_tindakan as $btkey => $btval){
-					$tarifh			= $this->db->query("SELECT * FROM tbl_tarifh WHERE kodetarif = '$btval'")->row();
-					$labmashasil	= $this->db->query("SELECT * FROM tbl_labmashasil WHERE kodeperiksa = '$btval'")->row();
+		// $datas = $this->db->query("SELECT tbl_dlab.*, tbl_tarifh.kodetindak, tbl_tarifh.kodetarif , tbl_labmashasil.*
+		// FROM tbl_dlab
+		// JOIN tbl_tarifh ON tbl_dlab.kodetarif=tbl_tarifh.kodetarif
+		// JOIN tbl_labmashasil ON tbl_tarifh.kodetindak=tbl_labmashasil.kodeperiksa
+		// WHERE tbl_dlab.nolaborat='".$nolaborat."'")->result();
 
-					$normal1 		= ($jenis_kelamin == "1")? str_replace(".0000", "", $labmashasil->nilainormalp1) : str_replace(".0000", "", $labmashasil->nilainormalw1);
-					$normal2 		= ($jenis_kelamin == "1")? str_replace(".0000", "", $labmashasil->nilainormalp2) : str_replace(".0000", "", $labmashasil->nilainormalw2);
+		// foreach($datas as $i => $data){
+		// 	$kodeperiksa = $data->kodeperiksa;
+		// 	$kodetindak = $data->kodetindak;
+		// 	$kodelab= $data->kodelab;
+		// 	$nmperiksa = $data->nmperiksa;
+		// 	$normal1 = ( $jenis_kelamin === 1 ) ? $data->nilainormalp1 : $data->nilainormalw1;
+		// 	$normal2 = ( $jenis_kelamin === 1 ) ? $data->nilainormalp2 : $data->nilainormalw2;
+		// 	$normalc = ( $data->nilainormalc ) ? $data->nilainormalc : $normal1.'-'.$normal2;
+		// 	$satuan  = $data->satuan;
 
-					$data_hasil		= [
-						"nolaborat"		=> $nolaborat,
-						"kodeperiksa"	=> $labmashasil->kodeperiksa,
-						"kodelab"		=> $labmashasil->kodelab,
-						"pemeriksaan"	=> $labmashasil->nmperiksa,
-						"satuan" 		=> $labmashasil->satuan,
-						"normal1" 		=> $normal1,
-						"normal2" 		=> $normal2,
-						"normalc" 		=> ($jenis_kelamin == "1")? str_replace(".0000", "", $labmashasil->nilainormalc)	: $normal1.'-'.$normal2,
-					];
+		// 	$payload = [
+		// 		"nolaborat" => $nolaborat,
+		// 		"kodeperiksa" => $data->kodetindak,
+		// 		"kodelab" => $kodelab,
+		// 		"pemeriksaan" => $nmperiksa,
+		// 		"satuan" => $satuan,
+		// 		"normal1" => $normal1,
+		// 		"normal2" => $normal2,
+		// 		"normalc" => $normalc
+		// 	];
 
-					$this->db->insert("tbl_dhasillabnew", $data_hasil);
-				}
-			}
-		} else {
-			if(!empty($billing_tindakan)){
-				$this->db->delete("tbl_dhasillabnew", array("nolaborat" => $nolaborat));
+		// 	$cek_thasillabnew = $this->db->where('nolaborat', $nolaborat)->where('kodeperiksa', $kodetindak)->where('kodelab', $kodelab)->get('tbl_dhasillabnew')->row();
+		// 	if($cek_thasillabnew){
+		// 	 	$this->M_lab->updateDhasillabnew(  $cek_thasillabnew->id, $payload );
+		// 	} else {
+		// 		$this->M_lab->insertDhasillabnew( $payload );
+		// 	}
+		// }
+		// if($param == "save"){
+		// 	if(!empty($billing_tindakan)){
+		// 		foreach($billing_tindakan as $btkey => $btval){
+		// 			$tarifh			= $this->db->query("SELECT * FROM tbl_tarifh WHERE kodetarif = '$btval'")->row();
+		// 			$labmashasil	= $this->db->query("SELECT * FROM tbl_labmashasil WHERE kodeperiksa = '$btval'")->row();
 
-				$hasil_c		= $this->input->post("hasil_c");
-				$hasil_catatan	= $this->input->post("hasil_catatan");
-				foreach($billing_tindakan as $btkey => $btval){
-					$tarifh			= $this->db->query("SELECT * FROM tbl_tarifh WHERE kodetarif = '$btval'")->row();
-					$labmashasil	= $this->db->query("SELECT * FROM tbl_labmashasil WHERE kodeperiksa = '$btval'")->row();
+		// 			$normal1 		= ($jenis_kelamin == "1")? str_replace(".0000", "", $labmashasil->nilainormalp1) : str_replace(".0000", "", $labmashasil->nilainormalw1);
+		// 			$normal2 		= ($jenis_kelamin == "1")? str_replace(".0000", "", $labmashasil->nilainormalp2) : str_replace(".0000", "", $labmashasil->nilainormalw2);
 
-					$normal1 		= ($jenis_kelamin == "1")? str_replace(".0000", "", $labmashasil->nilainormalp1) : str_replace(".0000", "", $labmashasil->nilainormalw1);
-					$normal2 		= ($jenis_kelamin == "1")? str_replace(".0000", "", $labmashasil->nilainormalp2) : str_replace(".0000", "", $labmashasil->nilainormalw2);
+		// 			$data_hasil		= [
+		// 				"nolaborat"		=> $nolaborat,
+		// 				"kodeperiksa"	=> $labmashasil->kodeperiksa,
+		// 				"kodelab"		=> $labmashasil->kodelab,
+		// 				"pemeriksaan"	=> $labmashasil->nmperiksa,
+		// 				"satuan" 		=> $labmashasil->satuan,
+		// 				"normal1" 		=> $normal1,
+		// 				"normal2" 		=> $normal2,
+		// 				"normalc" 		=> ($jenis_kelamin == "1")? str_replace(".0000", "", $labmashasil->nilainormalc)	: $normal1.'-'.$normal2,
+		// 			];
 
-					$data_hasil		= [
-						"nolaborat"		=> $nolaborat,
-						"kodeperiksa"	=> $tarifh->kodetindak,
-						"kodelab"		=> $labmashasil->kodelab,
-						"pemeriksaan"	=> $labmashasil->nmperiksa,
-						"hasilc"		=> $hasil_c[$btkey],
-						"satuan" 		=> $labmashasil->satuan,
-						"normal1" 		=> $normal1,
-						"normal2" 		=> $normal2,
-						"normalc" 		=> ($jenis_kelamin == "1")? str_replace(".0000", "", $labmashasil->nilainormalc)	: $normal1.'-'.$normal2,
-						"keterangan"	=> $hasil_catatan[$btkey]
-					];
+		// 			$this->db->insert("tbl_dhasillabnew", $data_hasil);
+		// 		}
+		// 	}
+		// } else {
+		// 	if(!empty($billing_tindakan)){
+		// 		$this->db->delete("tbl_dhasillabnew", array("nolaborat" => $nolaborat));
 
-					$this->db->insert("tbl_dhasillabnew", $data_hasil);
-				}
-			}
-		}
+		// 		$hasil_c		= $this->input->post("hasil_c");
+		// 		$hasil_catatan	= $this->input->post("hasil_catatan");
+		// 		foreach($billing_tindakan as $btkey => $btval){
+		// 			$tarifh			= $this->db->query("SELECT * FROM tbl_tarifh WHERE kodetarif = '$btval'")->row();
+		// 			$labmashasil	= $this->db->query("SELECT * FROM tbl_labmashasil WHERE kodeperiksa = '$btval'")->row();
+
+		// 			$normal1 		= ($jenis_kelamin == "1")? str_replace(".0000", "", $labmashasil->nilainormalp1) : str_replace(".0000", "", $labmashasil->nilainormalw1);
+		// 			$normal2 		= ($jenis_kelamin == "1")? str_replace(".0000", "", $labmashasil->nilainormalp2) : str_replace(".0000", "", $labmashasil->nilainormalw2);
+
+		// 			$data_hasil		= [
+		// 				"nolaborat"		=> $nolaborat,
+		// 				"kodeperiksa"	=> $tarifh->kodetindak,
+		// 				"kodelab"		=> $labmashasil->kodelab,
+		// 				"pemeriksaan"	=> $labmashasil->nmperiksa,
+		// 				"hasilc"		=> $hasil_c[$btkey],
+		// 				"satuan" 		=> $labmashasil->satuan,
+		// 				"normal1" 		=> $normal1,
+		// 				"normal2" 		=> $normal2,
+		// 				"normalc" 		=> ($jenis_kelamin == "1")? str_replace(".0000", "", $labmashasil->nilainormalc)	: $normal1.'-'.$normal2,
+		// 				"keterangan"	=> $hasil_catatan[$btkey]
+		// 			];
+
+		// 			$this->db->insert("tbl_dhasillabnew", $data_hasil);
+		// 		}
+		// 	}
+		// }
 
 		// CATATAN
 		if($param == "update"){
@@ -822,36 +856,38 @@ class Lab extends CI_Controller{
 			$file_keterangan 	= $this->input->post("file_keterangan");
 			$file				= $_FILES["file"]["name"];
 
-			foreach($file_key as $fkey => $fval){
-				$file_allowed   = array("pdf", "png", "jpg", "jpeg", "webp");
-				$file_ext       = explode(".", $file[$fkey]);
-				$file_extension = strtolower(end($file_ext));
-				$file_tmp       = $_FILES["file"]["tmp_name"][$fkey];
+			if($file == ""){
+				foreach($file_key as $fkey => $fval){
+					$file_allowed   = array("pdf", "png", "jpg", "jpeg", "webp");
+					$file_ext       = explode(".", $file[$fkey]);
+					$file_extension = strtolower(end($file_ext));
+					$file_tmp       = $_FILES["file"]["tmp_name"][$fkey];
 
-				if(in_array($file_extension, $file_allowed) === true){
-					$filename = unique_file("uploads/lab/", basename($file[$fkey]));
-					
-					move_uploaded_file($file_tmp, "uploads/lab/". $filename);
+					if(in_array($file_extension, $file_allowed) === true){
+						$filename = unique_file("uploads/lab/", basename($file[$fkey]));
+						
+						move_uploaded_file($file_tmp, "uploads/lab/". $filename);
 
-					$data_insert	= [
-						"nolaborat"			=> $nolaborat,
-						"namafile"			=> $filename,
-						"keteranganfile"	=> $file_keterangan[$fkey],
-						"lokasifile"		=> "assets/uploads/lab/",
-					];
+						$data_insert	= [
+							"nolaborat"			=> $nolaborat,
+							"namafile"			=> $filename,
+							"keteranganfile"	=> $file_keterangan[$fkey],
+							"lokasifile"		=> "assets/uploads/lab/",
+						];
 
-					$query_update = $this->db->insert("tbl_dhasilfile", $data_insert);
+						$query_update = $this->db->insert("tbl_dhasilfile", $data_insert);
 
-					if($query_update){
-						$status		= "success";
-						$message	= "File berhasil di upload";
+						if($query_update){
+							$status		= "success";
+							$message	= "File berhasil di upload";
+						} else {
+							$status		= "error";
+							$message	= "File gagal diupload";
+						}
 					} else {
 						$status		= "error";
-						$message	= "File gagal diupload";
+						$message	= "Ekstensi file tidak valid";
 					}
-				} else {
-					$status		= "error";
-					$message	= "Ekstensi file tidak valid";
 				}
 			}
 			// $file_key			= $this->input->post("file_key");

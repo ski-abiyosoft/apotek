@@ -2440,7 +2440,7 @@ class Pembelian_farmasi_laporan extends CI_Controller
 											<td width=\"15%\" style=\"text-align: right; font-weight: bold; color:red;\">" . number_format($totalsemua) . "</td>
 										</tr> 
                   </table>";
-			} else if($idlap == 104){
+			} else if ($idlap == 104) {
 				$position = 'L';
 				if ($vendorx != '') {
 					$vendor = "a.vendor_id='$vendorx' AND";
@@ -2448,7 +2448,7 @@ class Pembelian_farmasi_laporan extends CI_Controller
 					$vendor = '';
 				}
 				$judul = '04 REKAP PEMBELIAN BARANG PER SUPPLIER TOTAL';
-				$query = $this->db->query("SELECT a.vatrp, a.materai, b.discountrp, b.qty_terima , b.discountrp, b.totalrp, (b.totalrp / b.qty_terima ) AS ratarata, c.vendor_name , c.vendor_id, a.terima_date FROM tbl_baranghterima as a JOIN tbl_barangdterima AS b ON a.terima_no = b.terima_no JOIN tbl_vendor AS c ON a.vendor_id = c.vendor_id WHERE $vendor a.koders = '$unit' and a.terima_date between '$tanggal1' and '$tanggal2'")->result();
+				$query = $this->db->query("SELECT a.vatrp, b.vat, a.materai, b.discountrp, b.qty_terima , b.discountrp, b.totalrp, (b.totalrp / b.qty_terima ) AS ratarata, c.vendor_name , c.vendor_id, a.terima_date FROM tbl_baranghterima as a JOIN tbl_barangdterima AS b ON a.terima_no = b.terima_no JOIN tbl_vendor AS c ON a.vendor_id = c.vendor_id WHERE $vendor a.koders = '$unit' and a.terima_date between '$tanggal1' and '$tanggal2'")->result();
 				$body .= "<table style=\"border-collapse:collapse;font-family: tahoma; font-size:12px\" width=\"100%\" align=\"center\" border=\"1\">
                     <thead>
 											<tr>
@@ -2471,10 +2471,10 @@ class Pembelian_farmasi_laporan extends CI_Controller
 				$tvatrp = 0;
 				$tmaterai = 0;
 				$ttotalrp = 0;
-				$sql = $this->db->get_where("tbl_pajak", ["kodetax"=>"PPN"])->row();
+				$sql = $this->db->get_where("tbl_pajak", ["kodetax" => "PPN"])->row();
 				$pajak = $sql->prosentase / 100;
 				foreach ($query as $q) {
-					if($q->vat == 1){
+					if ($q->vat == 1) {
 						$vatrp = ($q->totalrp * $pajak);
 					} else {
 						$vatrp = 0;
@@ -2484,13 +2484,13 @@ class Pembelian_farmasi_laporan extends CI_Controller
 											<tr>
 												<td style=\"text-align: right;\">" . $no++ . "</td>
 												<td>$q->vendor_name</td>
-												<td>".date("d-m-Y", strtotime($q->terima_date))."</td>
+												<td>" . date("d-m-Y", strtotime($q->terima_date)) . "</td>
 												<td style=\"text-align: right;\">" . number_format($q->qty_terima) . "</td>
 												<td style=\"text-align: right;\">" . number_format($totalrp) . "</td>
 												<td style=\"text-align: right;\">" . number_format($q->discountrp) . "</td>
 												<td style=\"text-align: right;\">" . number_format($vatrp) . "</td>
 												<td style=\"text-align: right;\">" . number_format($q->materai) . "</td>
-												<td style=\"text-align: right;\">" . number_format($q->totalrp + $q->vatrp) . "</td>
+												<td style=\"text-align: right;\">" . number_format($q->totalrp + $q->vatrp + $q->materai) . "</td>
 											</tr>
 										</tbody>";
 					$tqty_terima += $q->qty_terima;
@@ -2498,7 +2498,7 @@ class Pembelian_farmasi_laporan extends CI_Controller
 					$tdiscountrp += $q->discountrp;
 					$tvatrp += $vatrp;
 					$tmaterai += $q->materai;
-					$ttotalrp2 += ($q->totalrp + $q->vatrp);
+					$ttotalrp2 += ($q->totalrp + $q->vatrp + $q->materai);
 				}
 				$body .= 	"<tfoot>
 										<tr>

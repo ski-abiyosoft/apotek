@@ -1701,7 +1701,7 @@ class Laporan_persediaan extends CI_Controller
                } else if ($laporan == 3) {
                     $position = "L";
                     if ($keperluan == 1) {
-                         $judul = '03 Laporan Persediaan';
+                         $judul = '03 Laporan Persediaan Barang';
                          if ($da == 1) {
                               $x = "SELECT depocode FROM tbl_depo";
                          } else {
@@ -1709,7 +1709,7 @@ class Laporan_persediaan extends CI_Controller
                          }
                          $queryx = $this->db->query($x)->result();
                     } else {
-                         $judul = '03 Laporan Persediaan';
+                         $judul = '03 Laporan Persediaan Barang';
                          if ($da == 1) {
                               $x = "SELECT depocode FROM tbl_depo";
                          } else {

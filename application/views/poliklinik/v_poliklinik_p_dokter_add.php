@@ -3,13 +3,13 @@
     $this->load->view('template/body');    
     date_default_timezone_set("Asia/Jakarta");
 
-    if(!isset($_GET["noreg"]) && !isset($_GET["rekmed"])){
-        echo "<script>location.href='/poliklinik'</script>";
-    } else {
-        if($_GET["noreg"] == "" || $_GET["rekmed"] == ""){
-            echo "<script>location.href='/poliklinik'</script>";
-        }
-    }
+    // if(!isset($_GET["noreg"]) && !isset($_GET["rekmed"])){
+    //     echo "<script>location.href='/poliklinik'</script>";
+    // } else {
+    //     if($_GET["noreg"] == "" || $_GET["rekmed"] == ""){
+    //         echo "<script>location.href='/poliklinik'</script>";
+    //     }
+    // }
 ?>
 
 <!-- <link href="<?php echo base_url('assets/bootstrap/css/bootstrap.min.css-')?>" rel="stylesheet"> -->
@@ -187,10 +187,10 @@
                 </div>
                 <div class="portlet-body">			
                     <div class="row form-section modal-title">
-                        <div class="col-md-6">
+                        <div class="col-md-4">
                             <h3 style="color:green" align="left"><b>EMR-RAWAT JALAN</b></h3>
                         </div>
-                        <div class="col-md-<?= $status_kasir == 0 ? "3" : "6" ?>">
+                        <div class="col-md-<?= $status_kasir == 0 ? "5" : "8" ?>">
                             <h3 style="color:green;font-weight:bold" align="left" id="doktertitle"><b>
                                 <?php
                                     if(isset($ttv->kodokter)){
@@ -366,7 +366,26 @@
                             </div>
                         </div>
                     </div>
+
+                    <br />
+
+                    <div class="row" style="margin:20px 50px 20px 50px !important">
+                        <div class="col-sm-4">
+                            <label style="color:green;font-weight:bold;display:block;padding-bottom:5px">Riwayat Keluarga</label>
+                            <textarea style="resize:none" name="" placeholder="Front Dulu" class="form-control" rows="4" disabled></textarea>
+                        </div>
+                        <div class="col-sm-4">
+                            <label style="color:green;font-weight:bold;display:block;padding-bottom:5px">Riwayat Penyakit</label>
+                            <textarea style="resize:none" name="" placeholder="Front Dulu" class="form-control" rows="4" disabled></textarea>
+                        </div>
+                        <div class="col-sm-4">
+                            <label style="color:green;font-weight:bold;display:block;padding-bottom:5px">Kesimpulan Pemeriksaan Fisik</label>
+                            <textarea style="resize:none" name="simpulfisik" placeholder="" class="form-control" rows="4" ><?= isset($ttv->pfisik)? $ttv->pfisik : "" ?></textarea>
+                        </div>
+                    </div>
         
+                    <br />
+
                     <div class="row">
                         <table  border="0" style="width:100%">
                             <tr>
@@ -395,8 +414,7 @@
                                 <td align="center" width="2%" style="font-size:3px black;"><b>10</b></td>
                                 <td align="center" width="2%">&nbsp;</td>
                                 <td align="center" width="5%">&nbsp;</td>
-                                <td width="40%">
-                                    <label class="control-label">&nbsp;&nbsp;&nbsp;&nbsp; Kesimpulan Pemeriksaan Fisik</label></td>
+                                <td width="40%">&nbsp;</td>
                             </tr>
                             <tr>
                                 <td align="center" >&nbsp;</td>
@@ -424,12 +442,7 @@
                                 <td align="center" style="border-top:3px solid #fe060e; border-right:3px solid #fe060e ">&nbsp;</td>
                                 <td align="center">&nbsp;</td>
                                 <td align="center">&nbsp;</td>
-                                <td rowspan="3" >
-                                        <div class="col-md-9"><br>
-                                            <textarea style="resize:none" name="simpulfisik" placeholder="" class="form-control" rows="4" ><?= isset($ttv->pfisik)? $ttv->pfisik : "" ?></textarea>
-                                            <span class="help-block"></span>
-                                        </div>
-                                </td>
+                                <td rowspan="3" >&nbsp;</td>
                                 
                             </tr>
                             <tr>
@@ -3699,9 +3712,10 @@
     function save_emed(type){
         var post_form   = $("#frmemed").serialize();
         var dokter      = $("#selectdr").val();
+        var kodepos     = $("#poli_dok").val();
         
         $.ajax({
-            url: "/poliklinik/add_emed/<?= $this->input->get("noreg") ?>/<?= $this->input->get("rekmed") ?>/"+ dokter,
+            url: "/poliklinik/add_emed/<?= $this->input->get("noreg") ?>/<?= $this->input->get("rekmed") ?>/"+ dokter +"/"+ kodepos,
             data: post_form,
             type: "POST",
             dataType: "JSON",
@@ -3749,9 +3763,10 @@
     function save_erad(type){
         var post_form   = $("#frmerad").serialize();
         var dokter      = $("#selectdr").val();
+        var kodepos     = $("#poli_dok").val();
         
         $.ajax({
-            url: "/poliklinik/add_erad/<?= $this->input->get("noreg") ?>/<?= $this->input->get("rekmed") ?>/"+ dokter,
+            url: "/poliklinik/add_erad/<?= $this->input->get("noreg") ?>/<?= $this->input->get("rekmed") ?>/"+ dokter +"/"+ kodepos,
             data: post_form,
             type: "POST",
             dataType: "JSON",

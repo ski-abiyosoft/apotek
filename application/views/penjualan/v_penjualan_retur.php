@@ -112,9 +112,7 @@
                             <th class="title-white" style="text-align: center">Jumlah Rp</th>
                             <th class="title-white" style="text-align: center">Tanggal</th>
                             <th class="title-white" style="text-align: center">Gudang</th>
-                            <th>&nbsp;</th>
-                            <th>&nbsp;</th>
-                            <th>&nbsp;</th>
+                            <th class="title-white" style="text-align: center" width="13%">Aksi</th>
                         </tr>
                     </thead>
 
@@ -136,34 +134,16 @@
                             <td><?php echo $row->gudang;?></td>
                             <td style="text-align: center">
                                 <?php if ($row->posting=='0') : ?>
-                                    <!-- <a type="button" class="btn btn-sm btn-primary editbuttondouble" href="<?php echo base_url()?>penjualan_retur/edit/<?php echo $row->returno;?>">edit</a> -->
+                                    <a target="_blank" type="button" class="btn btn-sm btn-warning" href="<?php echo base_url()?>penjualan_retur/cetak/?id=<?php echo $row->returno;?>"><i class="glyphicon glyphicon-print"></i></a>
                                     <?php 
                                     $cek =  $this->session->userdata('user_level'); 
                                     if($cek==0){?> 
                                         <a type="button" class="btn btn-sm btn-primary" title="Edit"><i class="glyphicon glyphicon-edit"></i></a>
-                                    <?php }else{ ?>
-
-                                        <a type="button" class="btn btn-sm btn-primary" href="<?php echo base_url('penjualan_retur/edit/').$row->returno; ?>" title="Edit"><i class="glyphicon glyphicon-edit"></i></a>
-
-                                    <?php } ?>
-                                <?php endif;?>
-                            </td>
-                            <td style="text-align: center">
-                                <?php if ($row->posting=='0') : ?>
-                                    <a target="_blank" type="button" class="btn btn-sm btn-warning" 
-                                    href="<?php echo base_url()?>penjualan_retur/cetak/?id=<?php echo $row->returno;?>"><i class="glyphicon glyphicon-print"></i></a>
-                                <?php endif;?>
-                            </td>
-                            <td style="text-align: center">
-                                <?php if ($row->posting=='0') : ?>
-                                    <?php 
-                                    $cek =  $this->session->userdata('user_level'); 
-                                    if($cek==0){?> 
                                         <a type="button" class="btn btn-sm btn-danger" href="javascript:"><i class="glyphicon glyphicon-trash"></i></a>
                                     <?php }else{ ?>
+                                        <a type="button" class="btn btn-sm btn-primary" href="<?php echo base_url('penjualan_retur/edit/').$row->returno; ?>" title="Edit"><i  class="glyphicon glyphicon-edit"></i></a>
                                         <a type="button" class="delete btn btn-sm btn-danger" href="javascript:"><i class="glyphicon glyphicon-trash"></i></a>
                                     <?php } ?>
-                                    
                                 <?php endif;?>
                             </td>
                         </tr>

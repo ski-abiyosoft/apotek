@@ -1,9 +1,15 @@
-
-    <?php 
+<?php 
     $this->load->view('template/header');
     $this->load->view('template/body');    
-    date_default_timezone_set("Asia/Jakarta");	
-    ?>	
+    date_default_timezone_set("Asia/Jakarta");
+
+    $fill_perawat   = $this->session->flashdata("isi_perawat");
+
+    if(isset($fill_perawat)){
+        echo "<script>alert('$fill_perawat')</script>";
+    }
+
+?>	
 
             <div class="row">
                 <div class="col-md-12">

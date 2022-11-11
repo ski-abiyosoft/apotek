@@ -148,7 +148,7 @@ class Poliklinik extends CI_Controller {
 			// $row[] = $periksa_perawat;
 			// $row[] = $periksa_dokter;
 			$sebut   = trim($this->M_global->penyebut($unit->antrino));
-			$row[]   = $unit->antrino. '<button class="btn btn-primary btn-sm" onclick="playAudio('."'".$unit->antrino."',"."'".$sebut."'".')" type="button"><b>call </b><i class="fa fa-volume-off"></i></button>';
+			$row[]   = '<button class="btn btn-primary btn-sm" onclick="playAudio('."'".strtolower($unit->antrino1)."',"."'".$unit->antrino."',"."'".$sebut."'".')" type="button"><b>'.$unit->antrino1.'.'.$unit->antrino.' | call </b><i class="fa fa-volume-off"></i></button>';
 			$row[]   = $status_kasir;
 			$row[]   = $unit->noreg;
 			$row[]   = $unit->rekmed;
@@ -904,7 +904,7 @@ class Poliklinik extends CI_Controller {
 		));
 	}
 
-	public function add_emed($noreg, $rekmed, $kodokter){
+	public function add_emed($noreg, $rekmed, $kodokter, $kodepos){
 		$unit		= $this->session->userdata("unit");
 		$orderno	= $this->input->post("emed_no");
 		$tanggal	= $this->input->post("emed_tanggal");
@@ -932,6 +932,7 @@ class Poliklinik extends CI_Controller {
 				"proses"	=> "proses",
 				"jamorder"	=> $jam[$okey],
 				"kodokter"	=> $kodokter,
+				"asal"		=> $kodepos,
 				"medis"		=> "1",
 				"medisok"	=> "0",
 			);
@@ -988,7 +989,7 @@ class Poliklinik extends CI_Controller {
 		));
 	}
 
-	public function add_erad($noreg, $rekmed, $kodokter){
+	public function add_erad($noreg, $rekmed, $kodokter, $kodepos){
 		$unit		= $this->session->userdata("unit");
 		$orderno	= $this->input->post("erad_no");
 		$tanggal	= $this->input->post("erad_tanggal");
@@ -1016,6 +1017,7 @@ class Poliklinik extends CI_Controller {
 				"proses"	=> "proses",
 				"jamorder"	=> $jam[$okey],
 				"kodokter"	=> $kodokter,
+				"asal"		=> $kodepos,
 				"radio"		=> "1",
 				"radiook"	=> "0",
 			);
@@ -1341,37 +1343,42 @@ class Poliklinik extends CI_Controller {
 		$ceknoreg   = $this->input->get('noreg');
 		$rekmed     = $this->input->get('rekmed');
 
-		$data_pas = $this->db->query("SELECT *FROM pasien_rajal where koders='$koders' and noreg='$ceknoreg'")->row();
+		if(isset($ceknoreg) && isset($rekmed)){
+			$data_pas = $this->db->query("SELECT *FROM pasien_rajal where koders='$koders' and noreg='$ceknoreg'")->row();
 
-		$qcek = $this->db->query("SELECT * FROM tbl_rekammedisrs WHERE noreg = '$ceknoreg' and rekmed = '$rekmed' and koders='$koders'")->result_array();
-		$qcek2 = count($qcek);
+			$qcek = $this->db->query("SELECT * FROM tbl_rekammedisrs WHERE noreg = '$ceknoreg' and rekmed = '$rekmed' and koders='$koders'")->result_array();
+			$qcek2 = count($qcek);
 
-		if ($qcek2 > 0) {
-			$ttv = $this->db->query("SELECT * FROM tbl_rekammedisrs WHERE noreg = '$ceknoreg' and rekmed = '$rekmed' and koders='$koders'")->row();
-		}else{
-			$ttv = $this->db->query("SELECT '-' as id ,'-' as koders ,'-' as noreg ,'-' as rekmed ,'-' as tglperiksa ,'-' as tglkeluar ,'-' as jam ,'-' as tujuan ,'-' as kodepos ,'-' as koderuang ,'-' as keluhanawal ,'-' as pfisik ,'-' as diagnosa ,'-' as simpul ,'-' as anjuran ,'-' as resep ,'-' as kodeicd ,'-' as kodeicd2 ,'-' as kodeicd3 ,'-' as keadaan_pulang ,'-' as ketpulang ,'-' as kodokter ,'-' as tglkonsul ,'-' as rcounter ,'' as nadi ,'-' as nadi2 ,'-' as nafas ,'-' as tdarah ,'-' as tdarah1 ,'-' as suhu ,'-' as tinggibadan ,'-' as beratbadan ,'-' as bmi ,'-' as bmiresult ,'-' as tglkembali ,'-' as jamkembali ,'-' as nojanji ,'-' as dikonsulkepoli ,'-' as dikonsuldr ,'-' as jamdikonsul ,'-' as tgldikonsul ,'-' as noregkonsul ,'-' as surat1 ,'-' as surat2 ,'-' as surat3 ,'-' as surat4 ,'-' as alasanpulang ,'-' as urutkonsul ,'-' as oksigen ,'-' as kejiwaan ,'-' as lokalis ,'-' as rencana ,'-' as eye ,'-' as verbal ,'-' as movement ,'-' as nyeri ,'-' as urutin ,'-' as rmutama ,'-' as diagu ,'-' as diags ,'-' as tindu ,'-' as tinds ,'-' as asal ,'-' as gambar1 ,'-' as gambar2 ,'-' as pasienvk ,'-' as dead from tbl_rekammedisrs limit 1")->row();
-		}
+			if ($qcek2 > 0) {
+				$ttv = $this->db->query("SELECT * FROM tbl_rekammedisrs WHERE noreg = '$ceknoreg' and rekmed = '$rekmed' and koders='$koders'")->row();
+			}else{
+				$ttv = $this->db->query("SELECT '-' as id ,'-' as koders ,'-' as noreg ,'-' as rekmed ,'-' as tglperiksa ,'-' as tglkeluar ,'-' as jam ,'-' as tujuan ,'-' as kodepos ,'-' as koderuang ,'-' as keluhanawal ,'-' as pfisik ,'-' as diagnosa ,'-' as simpul ,'-' as anjuran ,'-' as resep ,'-' as kodeicd ,'-' as kodeicd2 ,'-' as kodeicd3 ,'-' as keadaan_pulang ,'-' as ketpulang ,'-' as kodokter ,'-' as tglkonsul ,'-' as rcounter ,'' as nadi ,'-' as nadi2 ,'-' as nafas ,'-' as tdarah ,'-' as tdarah1 ,'-' as suhu ,'-' as tinggibadan ,'-' as beratbadan ,'-' as bmi ,'-' as bmiresult ,'-' as tglkembali ,'-' as jamkembali ,'-' as nojanji ,'-' as dikonsulkepoli ,'-' as dikonsuldr ,'-' as jamdikonsul ,'-' as tgldikonsul ,'-' as noregkonsul ,'-' as surat1 ,'-' as surat2 ,'-' as surat3 ,'-' as surat4 ,'-' as alasanpulang ,'-' as urutkonsul ,'-' as oksigen ,'-' as kejiwaan ,'-' as lokalis ,'-' as rencana ,'-' as eye ,'-' as verbal ,'-' as movement ,'-' as nyeri ,'-' as urutin ,'-' as rmutama ,'-' as diagu ,'-' as diags ,'-' as tindu ,'-' as tinds ,'-' as asal ,'-' as gambar1 ,'-' as gambar2 ,'-' as pasienvk ,'-' as dead from tbl_rekammedisrs limit 1")->row();
+			}
 
-		$query_kasir		= $this->db->query("SELECT * FROM tbl_kasir WHERE noreg = '$ceknoreg' AND koders = '$koders' ")->num_rows();
+			$query_kasir		= $this->db->query("SELECT * FROM tbl_kasir WHERE noreg = '$ceknoreg' AND koders = '$koders' ")->num_rows();
 
-		if(!empty($cek)){
-			$data	= [
-				"menu" 		=> "Bedah Central",
-				"submenu" 	=> "Persetujuan Umum",
-				"link"		=> "Bedah_Central",
-				"unit"		=> $koders,
-				"data_pas"	=> $data_pas,
-				"ttv"		=> $ttv,
-				"status_kasir"	=> $query_kasir,
-				// "hubungank" => $query_hubk->result(),
-				// "statuspu"	=> ($data_pas->jkel() > 0)? "done" : "undone",
-				// "usia"   => new Date($data_pas->tgllahire),
-				// "usia"   	=> $this->footer_all->hitung_usia($data_pas->tgllahire),
-			];
+			if(!empty($cek)){
+				$data	= [
+					"menu" 		=> "Bedah Central",
+					"submenu" 	=> "Persetujuan Umum",
+					"link"		=> "Bedah_Central",
+					"unit"		=> $koders,
+					"data_pas"	=> $data_pas,
+					"ttv"		=> $ttv,
+					"status_kasir"	=> $query_kasir,
+					// "hubungank" => $query_hubk->result(),
+					// "statuspu"	=> ($data_pas->jkel() > 0)? "done" : "undone",
+					// "usia"   => new Date($data_pas->tgllahire),
+					// "usia"   	=> $this->footer_all->hitung_usia($data_pas->tgllahire),
+				];
 
-			$this->load->view("poliklinik/v_poliklinik_p_perawat", $data);
+				$this->load->view("poliklinik/v_poliklinik_p_perawat", $data);
+			} else {
+				redirect("/");
+			}
 		} else {
-			redirect("/");
+			$this->session->set_flashdata("session", "Sesi sudah berakhir, silahkan pilih kembali");
+			redirect("/poliklinik");
 		}
 	}
 
@@ -1382,249 +1389,257 @@ class Poliklinik extends CI_Controller {
 		$ceknoreg   = $this->input->get('noreg');
 		$rekmed     = $this->input->get('rekmed');
 
-		if(isset($ceknoreg) && isset($rekmed)){
-			$data_pas = $this->db->query("SELECT (select nadokter from tbl_dokter a where a.kodokter=pasien_rajal.kodokter and a.koders=pasien_rajal.koders limit 1)nadokter,
-			pasien_rajal.* FROM pasien_rajal where koders='$koders' and noreg='$ceknoreg'")->row();
+		$check_rekam_medis	= $this->db->query("SELECT * FROM tbl_rekammedisrs WHERE noreg = '$ceknoreg'")->num_rows();
 
-			$qcek = $this->db->query("SELECT * FROM tbl_rekammedisrs WHERE noreg = '$ceknoreg' and rekmed = '$rekmed' and koders='$koders'")->num_rows();
-			// $qcek2 = count($qcek);
-			// $ttv = $this->db->query("SELECT '-' as id ,'-' as koders ,'-' as noreg ,'-' as rekmed ,'-' as tglperiksa ,'-' as tglkeluar ,'-' as jam ,'-' as tujuan ,'-' as kodepos ,'-' as koderuang ,'-' as keluhanawal ,'-' as pfisik ,'-' as diagnosa ,'-' as simpul ,'-' as anjuran ,'-' as resep ,'-' as kodeicd ,'-' as kodeicd2 ,'-' as kodeicd3 ,'-' as keadaan_pulang ,'-' as ketpulang ,'-' as kodokter ,'-' as tglkonsul ,'-' as rcounter ,'0' as nadi ,'-' as nadi2 ,'-' as nafas ,'-' as tdarah ,'-' as tdarah1 ,'-' as suhu ,'-' as tinggibadan ,'-' as beratbadan ,'-' as bmi ,'-' as bmiresult ,'-' as tglkembali ,'-' as jamkembali ,'-' as nojanji ,'-' as dikonsulkepoli ,'-' as dikonsuldr ,'-' as jamdikonsul ,'-' as tgldikonsul ,'-' as noregkonsul ,'-' as surat1 ,'-' as surat2 ,'-' as surat3 ,'-' as surat4 ,'-' as alasanpulang ,'-' as urutkonsul ,'-' as oksigen ,'-' as kejiwaan ,'-' as lokalis ,'-' as rencana ,'-' as eye ,'-' as verbal ,'-' as movement ,'-' as nyeri ,'-' as urutin ,'-' as rmutama ,'-' as diagu ,'-' as diags ,'-' as tindu ,'-' as tinds ,'-' as asal ,'-' as gambar1 ,'-' as gambar2 ,'-' as pasienvk ,'-' as dead from tbl_rekammedisrs limit 1")->row();
-			$ttv = $this->db->query("SELECT * FROM tbl_rekammedisrs WHERE noreg = '$ceknoreg' and rekmed = '$rekmed' and koders='$koders'")->row();
+		if($check_rekam_medis != 0){
+			if(isset($ceknoreg) && isset($rekmed)){
+				$data_pas = $this->db->query("SELECT (select nadokter from tbl_dokter a where a.kodokter=pasien_rajal.kodokter and a.koders=pasien_rajal.koders limit 1)nadokter,
+				pasien_rajal.* FROM pasien_rajal where koders='$koders' and noreg='$ceknoreg'")->row();
 
-			// ICDTR //
-			$icd = $this->db->query("SELECT * FROM tbl_icdtr WHERE noreg = '$ceknoreg' and koders='$koders'")->num_rows();
-			if ($icd > 0) {
-				$detilicd    = $this->db->query(
-				"SELECT a.*,b.sab, concat( b.code,' | ', b.str,' | ', b.code2 )nmdiag, case when b.sab='ICD10_1998' then 'DG01' else 'DG02' end as jns  FROM tbl_icdtr a
-				left join tbl_icdinb b on a.icdcode=b.code
-				WHERE noreg = '$ceknoreg' and koders='$koders'")->result();
-			}else{
-				$detilicd = "";
-			}
+				$qcek = $this->db->query("SELECT * FROM tbl_rekammedisrs WHERE noreg = '$ceknoreg' and rekmed = '$rekmed' and koders='$koders'")->num_rows();
+				// $qcek2 = count($qcek);
+				// $ttv = $this->db->query("SELECT '-' as id ,'-' as koders ,'-' as noreg ,'-' as rekmed ,'-' as tglperiksa ,'-' as tglkeluar ,'-' as jam ,'-' as tujuan ,'-' as kodepos ,'-' as koderuang ,'-' as keluhanawal ,'-' as pfisik ,'-' as diagnosa ,'-' as simpul ,'-' as anjuran ,'-' as resep ,'-' as kodeicd ,'-' as kodeicd2 ,'-' as kodeicd3 ,'-' as keadaan_pulang ,'-' as ketpulang ,'-' as kodokter ,'-' as tglkonsul ,'-' as rcounter ,'0' as nadi ,'-' as nadi2 ,'-' as nafas ,'-' as tdarah ,'-' as tdarah1 ,'-' as suhu ,'-' as tinggibadan ,'-' as beratbadan ,'-' as bmi ,'-' as bmiresult ,'-' as tglkembali ,'-' as jamkembali ,'-' as nojanji ,'-' as dikonsulkepoli ,'-' as dikonsuldr ,'-' as jamdikonsul ,'-' as tgldikonsul ,'-' as noregkonsul ,'-' as surat1 ,'-' as surat2 ,'-' as surat3 ,'-' as surat4 ,'-' as alasanpulang ,'-' as urutkonsul ,'-' as oksigen ,'-' as kejiwaan ,'-' as lokalis ,'-' as rencana ,'-' as eye ,'-' as verbal ,'-' as movement ,'-' as nyeri ,'-' as urutin ,'-' as rmutama ,'-' as diagu ,'-' as diags ,'-' as tindu ,'-' as tinds ,'-' as asal ,'-' as gambar1 ,'-' as gambar2 ,'-' as pasienvk ,'-' as dead from tbl_rekammedisrs limit 1")->row();
+				$ttv = $this->db->query("SELECT * FROM tbl_rekammedisrs WHERE noreg = '$ceknoreg' and rekmed = '$rekmed' and koders='$koders'")->row();
 
-			// BILLING //
-			$billing = $this->db->query("SELECT * FROM tbl_dpoli WHERE noreg = '$ceknoreg' and koders='$koders'")->num_rows();
-			if ($billing > 0) {
-				$detilbilling    = $this->db->query("SELECT concat( ' [',b.kodetarif,'] ',' - ',' [',b.tindakan,'] ' ) as nm_tin,
-				(select c.nadokter from tbl_dokter c where a.kodokter=c.kodokter limit 1)nadok,
-				(select c.nadokter from tbl_dokter c where a.koperawat=c.kodokter limit 1)naper
-				,a.*
-				FROM tbl_dpoli a left join daftar_tarif_nonbedah b on a.koders=b.koders and a.kodetarif=b.kodetarif WHERE a.noreg = '$ceknoreg' and a.koders='$koders'")->result();
-			}else{
-				$detilbilling = "";
-			}
+				// ICDTR //
+				$icd = $this->db->query("SELECT * FROM tbl_icdtr WHERE noreg = '$ceknoreg' and koders='$koders'")->num_rows();
+				if ($icd > 0) {
+					$detilicd    = $this->db->query(
+					"SELECT a.*,b.sab, concat( b.code,' | ', b.str,' | ', b.code2 )nmdiag, case when b.sab='ICD10_1998' then 'DG01' else 'DG02' end as jns  FROM tbl_icdtr a
+					left join tbl_icdinb b on a.icdcode=b.code
+					WHERE noreg = '$ceknoreg' and koders='$koders'")->result();
+				}else{
+					$detilicd = "";
+				}
 
-			// ALKES BHP //
-			$alkes = $this->db->query("SELECT * FROM tbl_alkestransaksi WHERE notr = '$ceknoreg' and koders='$koders'")->num_rows();
-			if ($alkes > 0) {
-				$detilalkes    = $this->db->query("SELECT
-				REPLACE(concat(' [ ', kodebarang ,' ] ',' - ',' [ ', namabarang ,' ] ',
-				' - ',' [ ', satuan1 ,' ] '),'   ','') as nm_brg,
-				a.*
-				FROM tbl_alkestransaksi a
-				LEFT JOIN tbl_barang b ON a.kodeobat=b.kodebarang WHERE notr = '$ceknoreg' and koders='$koders' ")->result();
-			}else{
-				$detilalkes = "";
-			}
+				// BILLING //
+				$billing = $this->db->query("SELECT * FROM tbl_dpoli WHERE noreg = '$ceknoreg' and koders='$koders'")->num_rows();
+				if ($billing > 0) {
+					$detilbilling    = $this->db->query("SELECT concat( ' [',b.kodetarif,'] ',' - ',' [',b.tindakan,'] ' ) as nm_tin,
+					(select c.nadokter from tbl_dokter c where a.kodokter=c.kodokter limit 1)nadok,
+					(select c.nadokter from tbl_dokter c where a.koperawat=c.kodokter limit 1)naper
+					,a.*
+					FROM tbl_dpoli a left join daftar_tarif_nonbedah b on a.koders=b.koders and a.kodetarif=b.kodetarif WHERE a.noreg = '$ceknoreg' and a.koders='$koders'")->result();
+				}else{
+					$detilbilling = "";
+				}
 
-			// ORDER PERIKSA //
+				// ALKES BHP //
+				$alkes = $this->db->query("SELECT * FROM tbl_alkestransaksi WHERE notr = '$ceknoreg' and koders='$koders'")->num_rows();
+				if ($alkes > 0) {
+					$detilalkes    = $this->db->query("SELECT
+					REPLACE(concat(' [ ', kodebarang ,' ] ',' - ',' [ ', namabarang ,' ] ',
+					' - ',' [ ', satuan1 ,' ] '),'   ','') as nm_brg,
+					a.*
+					FROM tbl_alkestransaksi a
+					LEFT JOIN tbl_barang b ON a.kodeobat=b.kodebarang WHERE notr = '$ceknoreg' and koders='$koders' ")->result();
+				}else{
+					$detilalkes = "";
+				}
 
-			$eresep		= $this->db->query("SELECT * FROM tbl_orderperiksa WHERE noreg = '$ceknoreg' AND koders = '$koders'");
-			$eresep_row	= $eresep->num_rows();
-			if($eresep_row != 0){
-				$eresep_val		= "done";
-				$order_periksa	= $eresep->row();
+				// ORDER PERIKSA //
+
+				$eresep		= $this->db->query("SELECT * FROM tbl_orderperiksa WHERE noreg = '$ceknoreg' AND koders = '$koders'");
+				$eresep_row	= $eresep->num_rows();
+				if($eresep_row != 0){
+					$eresep_val		= "done";
+					$order_periksa	= $eresep->row();
+				} else {
+					$eresep_val		= "undone";
+					$order_periksa	= "";
+				}
+
+				// ERESEP //
+
+				$query_eresep	= $this->db->query("SELECT concat(' [ ', kodeobat ,' ] ',' - ',' [ ', namaobat ,' ] ',' - ',' [ ', satuan ,' ] ',' - ',' [ ', harga ,' ]') as namaobatnya, tbl_eresep.* 
+				FROM tbl_eresep 
+				WHERE noreg = '$ceknoreg' 
+				AND koders = '$koders'");
+				$eresep_row	= $query_eresep->num_rows();
+				if($eresep_row != 0){
+					$status_eresep	= "done";
+					$detileresep	= $query_eresep->result();
+				} else {
+					$status_eresep	= "undone";
+					$detileresep	= "";
+				}
+
+				// RACIKAN //
+				$query_racikan1	= $this->db->query("SELECT CONCAT(' [ ', kodeobat ,' ] ',' - ',' [ ', namaobat ,' ] ',' - ',' [ ', satuan ,' ] ',' - ',' [ ', harga ,' ]') as namaobatr1, tbl_eracik.*  
+				FROM tbl_eracik 
+				WHERE racikid = 'RACIK1' 
+				AND noreg = '$ceknoreg' 
+				AND koders = '$koders'");
+				$query_racikan2	= $this->db->query("SELECT CONCAT(' [ ', kodeobat ,' ] ',' - ',' [ ', namaobat ,' ] ',' - ',' [ ', satuan ,' ] ',' - ',' [ ', harga ,' ]') as namaobatr2, tbl_eracik.*  
+				FROM tbl_eracik 
+				WHERE racikid = 'RACIK2' 
+				AND noreg = '$ceknoreg' 
+				AND koders = '$koders'");
+				$query_racikan3	= $this->db->query("SELECT CONCAT(' [ ', kodeobat ,' ] ',' - ',' [ ', namaobat ,' ] ',' - ',' [ ', satuan ,' ] ',' - ',' [ ', harga ,' ]') as namaobatr3, tbl_eracik.*  
+				FROM tbl_eracik 
+				WHERE racikid = 'RACIK3' 
+				AND noreg = '$ceknoreg' 
+				AND koders = '$koders'");
+
+				$racik1_row	= $query_racikan1->num_rows();
+				$racik2_row	= $query_racikan2->num_rows();
+				$racik3_row	= $query_racikan3->num_rows();
+
+				if($racik1_row == 0){
+					$status_racik1	= "undone";
+					$detilracik1	= "";
+				} else {
+					$status_racik1	= "done";
+					$detilracik1	= $query_racikan1->result();
+				}
+
+				if($racik2_row == 0){
+					$status_racik2	= "undone";
+					$detilracik2	= "";
+				} else {
+					$status_racik2	= "done";
+					$detilracik2	= $query_racikan2->result();
+				}
+
+				if($racik3_row == 0){
+					$status_racik3	= "undone";
+					$detilracik3	= "";
+				} else {
+					$status_racik3	= "done";
+					$detilracik3	= $query_racikan3->result();
+				}
+
+				// STATUS ORDER //
+				$data_order_periksa	= $this->db->query("SELECT orderno, tglorder, proses FROM tbl_orderperiksa WHERE orderno LIKE '%ER%' AND orderno NOT LIKE '%ERD%' AND orderno NOT LIKE '%ERM%' AND noreg = '$ceknoreg' AND koders = '$koders'");
+				if($data_order_periksa->num_rows() == 0){
+					$status_dop		= "undone";
+					$data_dop		= "";
+					$dop_row		= "";
+				} else {
+					$status_dop		= "done";
+					$data_dop		= $data_order_periksa->result();
+					$dop_row		= $data_order_periksa->row();
+				}
+
+				// HISTORY PASIEN
+				$query_hispas	= $this->db->query("SELECT * FROM tbl_rekammedisrs WHERE rekmed = '$rekmed'");
+				if($query_hispas->num_rows() == 0){
+					$status_hispas	= "undone";
+					$data_hispas	= "";
+					$total_hispas	= "0";
+				} else {
+					$status_hispas	= "done";
+					$data_hispas	= $query_hispas->result();
+					$total_hispas	= $query_hispas->num_rows();
+				}
+
+				//E_LAB
+				$query_list	= $this->db->query("SELECT CONCAT('[ ', kodetarif ,' ] - [ ', tindakan ,' ]') AS text, kodetarif AS kodeid FROM daftar_tarif_nonbedah WHERE kodepos = 'LABOR' ORDER BY tindakan ASC")->result();
+
+				$query_orderelab	= $this->db->query("SELECT * FROM tbl_orderperiksa WHERE koders = '$koders' AND noreg = '$ceknoreg' AND orderno LIKE '%EL%'");
+				if($query_orderelab->num_rows() == 0){
+					$status_elab	= "undone";
+					$data_orderlab	= "";
+					$total_elab		= "0";
+				} else {
+					$status_elab	= "done";
+					$data_orderlab	= $query_orderelab->result();
+					$total_elab		= $query_orderelab->num_rows();
+				}
+
+				$query_emed_unit	= $this->db->query("SELECT kodepos AS id, namapost AS text FROM tbl_namapos")->result();
+
+				//E_ERM
+
+				$query_orderemed	= $this->db->query("SELECT * FROM tbl_orderperiksa WHERE koders = '$koders' AND noreg = '$ceknoreg' AND orderno LIKE '%ERM%'");
+				if($query_orderemed->num_rows() == 0){
+					$status_emed	= "undone";
+					$data_ordermed	= "";
+					$total_emed		= "0";
+				} else {
+					$status_emed	= "done";
+					$data_ordermed	= $query_orderemed->result();
+					$total_emed		= $query_orderemed->num_rows();
+				}
+
+				//E-RAD
+
+				$query_ordererad	= $this->db->query("SELECT * FROM tbl_orderperiksa WHERE koders = '$koders' AND noreg = '$ceknoreg' AND orderno LIKE '%ERD%'");
+				if($query_ordererad->num_rows() == 0){
+					$status_erad	= "undone";
+					$data_ordererad	= "";
+					$total_erad		= "0";
+				} else {
+					$status_erad	= "done";
+					$data_ordererad	= $query_ordererad->result();
+					$total_erad		= $query_ordererad->num_rows();
+				}
+
+				$query_kasir		= $this->db->query("SELECT * FROM tbl_kasir WHERE noreg = '$ceknoreg' AND koders = '$koders' ")->num_rows();
+
+				// VALUE
+				if(!empty($cek)){
+					$data	= [
+						"menu" 			=> "Bedah Central",
+						"submenu" 		=> "Persetujuan Umum",
+						"link"			=> "Bedah_Central",
+						"unit"			=> $koders,
+						"data_pas"		=> $data_pas,
+						"ttv"			=> $ttv,
+						"detilicd"  	=> $detilicd,
+						"detilbilling"  => $detilbilling,
+						"detilalkes"    => $detilalkes,
+						"statuspu"		=> ($qcek > 0)? "done" : "undone",
+						"statusicd"		=> ($icd > 0)? "done" : "undone",
+						"jumdataicd"	=> $icd,
+						"statusbill"	=> ($billing > 0)? "done" : "undone",
+						"jumdatabill"	=> $billing,
+						"statusalkes"	=> ($alkes > 0)? "done" : "undone",
+						"jumdataalkes"	=> $alkes,
+						"eresep"		=> $eresep_val,
+						"orderperiksa"	=> $order_periksa,
+						"status_eresep"	=> $status_eresep,
+						"detileresep"	=> $detileresep,
+						"jumdataer"		=> $eresep_row,
+						"status_racik1"	=> $status_racik1,
+						"status_racik2"	=> $status_racik2,
+						"status_racik3"	=> $status_racik3,
+						"detil_racik1"	=> $detilracik1,
+						"detil_racik2"	=> $detilracik2,
+						"detil_racik3"	=> $detilracik3,
+						"jumdataracik1" => $racik1_row,
+						"jumdataracik2"	=> $racik2_row,
+						"jumdataracik3"	=> $racik3_row,
+						"status_dop"	=> $status_dop,
+						"data_dop"		=> $data_dop,
+						"status_hispas"	=> $status_hispas,
+						"data_hispas"	=> $data_hispas,
+						"total_hispas"	=> $total_hispas,
+						"list_elab"		=> $query_list,
+						"status_elab"	=> $status_elab,
+						"data_orderlab"	=> $data_orderlab,
+						"total_elab"	=> $total_elab,
+						"emed_unit"		=> $query_emed_unit,
+						"status_emed"	=> $status_emed,
+						"data_orderemed"	=> $data_ordermed,
+						"total_emed"	=> $total_emed,
+						"status_erad"	=> $status_erad,
+						"data_ordererad"	=> $data_ordererad,
+						"total_erad"	=> $total_erad,
+						"status_kasir"	=> ($query_kasir == 0)? 0 : 1,
+					];
+					
+					$this->load->view("poliklinik/v_poliklinik_p_dokter_add", $data);
+				} else {
+					redirect("/");
+				}
 			} else {
-				$eresep_val		= "undone";
-				$order_periksa	= "";
-			}
-
-			// ERESEP //
-
-			$query_eresep	= $this->db->query("SELECT concat(' [ ', kodeobat ,' ] ',' - ',' [ ', namaobat ,' ] ',' - ',' [ ', satuan ,' ] ',' - ',' [ ', harga ,' ]') as namaobatnya, tbl_eresep.* 
-			FROM tbl_eresep 
-			WHERE noreg = '$ceknoreg' 
-			AND koders = '$koders'");
-			$eresep_row	= $query_eresep->num_rows();
-			if($eresep_row != 0){
-				$status_eresep	= "done";
-				$detileresep	= $query_eresep->result();
-			} else {
-				$status_eresep	= "undone";
-				$detileresep	= "";
-			}
-
-			// RACIKAN //
-			$query_racikan1	= $this->db->query("SELECT CONCAT(' [ ', kodeobat ,' ] ',' - ',' [ ', namaobat ,' ] ',' - ',' [ ', satuan ,' ] ',' - ',' [ ', harga ,' ]') as namaobatr1, tbl_eracik.*  
-			FROM tbl_eracik 
-			WHERE racikid = 'RACIK1' 
-			AND noreg = '$ceknoreg' 
-			AND koders = '$koders'");
-			$query_racikan2	= $this->db->query("SELECT CONCAT(' [ ', kodeobat ,' ] ',' - ',' [ ', namaobat ,' ] ',' - ',' [ ', satuan ,' ] ',' - ',' [ ', harga ,' ]') as namaobatr2, tbl_eracik.*  
-			FROM tbl_eracik 
-			WHERE racikid = 'RACIK2' 
-			AND noreg = '$ceknoreg' 
-			AND koders = '$koders'");
-			$query_racikan3	= $this->db->query("SELECT CONCAT(' [ ', kodeobat ,' ] ',' - ',' [ ', namaobat ,' ] ',' - ',' [ ', satuan ,' ] ',' - ',' [ ', harga ,' ]') as namaobatr3, tbl_eracik.*  
-			FROM tbl_eracik 
-			WHERE racikid = 'RACIK3' 
-			AND noreg = '$ceknoreg' 
-			AND koders = '$koders'");
-
-			$racik1_row	= $query_racikan1->num_rows();
-			$racik2_row	= $query_racikan2->num_rows();
-			$racik3_row	= $query_racikan3->num_rows();
-
-			if($racik1_row == 0){
-				$status_racik1	= "undone";
-				$detilracik1	= "";
-			} else {
-				$status_racik1	= "done";
-				$detilracik1	= $query_racikan1->result();
-			}
-
-			if($racik2_row == 0){
-				$status_racik2	= "undone";
-				$detilracik2	= "";
-			} else {
-				$status_racik2	= "done";
-				$detilracik2	= $query_racikan2->result();
-			}
-
-			if($racik3_row == 0){
-				$status_racik3	= "undone";
-				$detilracik3	= "";
-			} else {
-				$status_racik3	= "done";
-				$detilracik3	= $query_racikan3->result();
-			}
-
-			// STATUS ORDER //
-			$data_order_periksa	= $this->db->query("SELECT orderno, tglorder, proses FROM tbl_orderperiksa WHERE orderno LIKE '%ER%' AND orderno NOT LIKE '%ERD%' AND orderno NOT LIKE '%ERM%' AND noreg = '$ceknoreg' AND koders = '$koders'");
-			if($data_order_periksa->num_rows() == 0){
-				$status_dop		= "undone";
-				$data_dop		= "";
-				$dop_row		= "";
-			} else {
-				$status_dop		= "done";
-				$data_dop		= $data_order_periksa->result();
-				$dop_row		= $data_order_periksa->row();
-			}
-
-			// HISTORY PASIEN
-			$query_hispas	= $this->db->query("SELECT * FROM tbl_rekammedisrs WHERE rekmed = '$rekmed'");
-			if($query_hispas->num_rows() == 0){
-				$status_hispas	= "undone";
-				$data_hispas	= "";
-				$total_hispas	= "0";
-			} else {
-				$status_hispas	= "done";
-				$data_hispas	= $query_hispas->result();
-				$total_hispas	= $query_hispas->num_rows();
-			}
-
-			//E_LAB
-			$query_list	= $this->db->query("SELECT CONCAT('[ ', kodetarif ,' ] - [ ', tindakan ,' ]') AS text, kodetarif AS kodeid FROM daftar_tarif_nonbedah WHERE kodepos = 'LABOR' ORDER BY tindakan ASC")->result();
-
-			$query_orderelab	= $this->db->query("SELECT * FROM tbl_orderperiksa WHERE koders = '$koders' AND noreg = '$ceknoreg' AND orderno LIKE '%EL%'");
-			if($query_orderelab->num_rows() == 0){
-				$status_elab	= "undone";
-				$data_orderlab	= "";
-				$total_elab		= "0";
-			} else {
-				$status_elab	= "done";
-				$data_orderlab	= $query_orderelab->result();
-				$total_elab		= $query_orderelab->num_rows();
-			}
-
-			$query_emed_unit	= $this->db->query("SELECT kodepos AS id, namapost AS text FROM tbl_namapos")->result();
-
-			//E_ERM
-
-			$query_orderemed	= $this->db->query("SELECT * FROM tbl_orderperiksa WHERE koders = '$koders' AND noreg = '$ceknoreg' AND orderno LIKE '%ERM%'");
-			if($query_orderemed->num_rows() == 0){
-				$status_emed	= "undone";
-				$data_ordermed	= "";
-				$total_emed		= "0";
-			} else {
-				$status_emed	= "done";
-				$data_ordermed	= $query_orderemed->result();
-				$total_emed		= $query_orderemed->num_rows();
-			}
-
-			//E-RAD
-
-			$query_ordererad	= $this->db->query("SELECT * FROM tbl_orderperiksa WHERE koders = '$koders' AND noreg = '$ceknoreg' AND orderno LIKE '%ERD%'");
-			if($query_ordererad->num_rows() == 0){
-				$status_erad	= "undone";
-				$data_ordererad	= "";
-				$total_erad		= "0";
-			} else {
-				$status_erad	= "done";
-				$data_ordererad	= $query_ordererad->result();
-				$total_erad		= $query_ordererad->num_rows();
-			}
-
-			$query_kasir		= $this->db->query("SELECT * FROM tbl_kasir WHERE noreg = '$ceknoreg' AND koders = '$koders' ")->num_rows();
-
-			// VALUE
-			if(!empty($cek)){
-				$data	= [
-					"menu" 			=> "Bedah Central",
-					"submenu" 		=> "Persetujuan Umum",
-					"link"			=> "Bedah_Central",
-					"unit"			=> $koders,
-					"data_pas"		=> $data_pas,
-					"ttv"			=> $ttv,
-					"detilicd"  	=> $detilicd,
-					"detilbilling"  => $detilbilling,
-					"detilalkes"    => $detilalkes,
-					"statuspu"		=> ($qcek > 0)? "done" : "undone",
-					"statusicd"		=> ($icd > 0)? "done" : "undone",
-					"jumdataicd"	=> $icd,
-					"statusbill"	=> ($billing > 0)? "done" : "undone",
-					"jumdatabill"	=> $billing,
-					"statusalkes"	=> ($alkes > 0)? "done" : "undone",
-					"jumdataalkes"	=> $alkes,
-					"eresep"		=> $eresep_val,
-					"orderperiksa"	=> $order_periksa,
-					"status_eresep"	=> $status_eresep,
-					"detileresep"	=> $detileresep,
-					"jumdataer"		=> $eresep_row,
-					"status_racik1"	=> $status_racik1,
-					"status_racik2"	=> $status_racik2,
-					"status_racik3"	=> $status_racik3,
-					"detil_racik1"	=> $detilracik1,
-					"detil_racik2"	=> $detilracik2,
-					"detil_racik3"	=> $detilracik3,
-					"jumdataracik1" => $racik1_row,
-					"jumdataracik2"	=> $racik2_row,
-					"jumdataracik3"	=> $racik3_row,
-					"status_dop"	=> $status_dop,
-					"data_dop"		=> $data_dop,
-					"status_hispas"	=> $status_hispas,
-					"data_hispas"	=> $data_hispas,
-					"total_hispas"	=> $total_hispas,
-					"list_elab"		=> $query_list,
-					"status_elab"	=> $status_elab,
-					"data_orderlab"	=> $data_orderlab,
-					"total_elab"	=> $total_elab,
-					"emed_unit"		=> $query_emed_unit,
-					"status_emed"	=> $status_emed,
-					"data_orderemed"	=> $data_ordermed,
-					"total_emed"	=> $total_emed,
-					"status_erad"	=> $status_erad,
-					"data_ordererad"	=> $data_ordererad,
-					"total_erad"	=> $total_erad,
-					"status_kasir"	=> ($query_kasir == 0)? 0 : 1,
-				];
-				
-				$this->load->view("poliklinik/v_poliklinik_p_dokter_add", $data);
-			} else {
-				redirect("/");
+				$this->session->set_flashdata("session", "Sesi sudah berakhir, silahkan pilih kembali");
+				redirect("/poliklinik");
 			}
 		} else {
-			redirect("/poliklinik/");
+			$this->session->set_flashdata("isi_perawat", "Isi pemeriksaan perawat terlebih dahulu");
+			redirect("/poliklinik/pemeriksaan_perawat/?noreg=$ceknoreg&rekmed=$rekmed");
 		}
 	}
 
@@ -1791,7 +1806,7 @@ class Poliklinik extends CI_Controller {
 		$cek = '1';
 		$chari ='';
 		$check_suket	= $this->db->query("SELECT * FROM tbl_rekammedisrs WHERE koders = '$param_unit' AND noreg = '$param_noreg'");
-
+		$check_reg		= $this->db->query("SELECT * FROM tbl_regist WHERE koders = '$param_unit' AND noreg = '$param_noreg'");
 		if($check_suket->num_rows() == 0){
 			redirect("/poliklinik/pemeriksaan_dokter/?noreg=". $param_noreg ."&rekmed=". $param_rekmed);
 		} else {
@@ -1799,6 +1814,8 @@ class Poliklinik extends CI_Controller {
 			$head		= $this->db->query("SELECT * FROM tbl_namers WHERE koders = '$param_unit'")->row();
 			$judul		= ($param_type == "sakit")? "SURAT KETERANGAN SAKIT" : "SURAT KETERANGAN DOKTER";
 			$data		= $check_suket->row();
+			$data_2reg	= $check_reg->row();
+			$dokter_sk	= ($data->kodokter == "")? $data_2reg->kodokter : $data->kodokter;
 			$avatar   	= $this->session->userdata('avatar_cabang');
 
 			$comp_name	= $head->namars;
@@ -1923,7 +1940,7 @@ class Poliklinik extends CI_Controller {
 					<tr>
 						<td><b>'. $data->diagnosa .'</b></td>
 						<td colspan="2" align="center">
-						<br /><br /><br /><br /><br />('. data_master("dokter", array("kodokter" => $data->kodokter, "koders" => $param_unit, "kopoli" => $data->kodepos))->nadokter .')</td>
+						<br /><br /><br /><br /><br />('. data_master("dokter", array("kodokter" => $dokter_sk, "koders" => $param_unit, "kopoli" => $data->kodepos))->nadokter .')</td>
 					</tr>
 				</table>';
 				switch ($cek) {
@@ -2047,7 +2064,7 @@ class Poliklinik extends CI_Controller {
 					<tr>
 						<td><b>'. $data->diagnosa .'</b></td>
 						<td colspan="2" align="center">
-						<br /><br /><br /><br /><br />('. data_master("dokter", array("kodokter" => $data->kodokter, "koders" => $param_unit, "kopoli" => $data->kodepos))->nadokter .')</td>
+						<br /><br /><br /><br /><br />('. data_master("dokter", array("kodokter" => $dokter_sk, "koders" => $param_unit, "kopoli" => $data->kodepos))->nadokter .')</td>
 					</tr>
 				</table>';
 				switch ($cek) {

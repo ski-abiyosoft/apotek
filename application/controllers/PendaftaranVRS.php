@@ -770,6 +770,7 @@ class PendaftaranVRS extends CI_Controller {
 		$dokter               = $this->input->post('dokter');
 		// $noreg        = urut_transaksi('REGISTRASI', 16);
 		$ruang                = $this->input->post('ruang');
+		$antrino1             = $this->input->post('antrino1');
 		$antrino              = $this->input->post('antrino');
 		$tanggal              = $this->input->post('tanggal');
 		$jam                  = $this->input->post('jam');
@@ -791,16 +792,17 @@ class PendaftaranVRS extends CI_Controller {
 		$batal                = 0;
 		$batalkarena          = '';
 		$diperiksa_perawat    = 0;
+
 		if($jenispasien == 'PAS1'){
-			$cust = '';
-			$bpjs = null;
+			$cust    = '';
+			$bpjs    = null;
 			$rujukan = null;
-			$sep = null;
+			$sep     = null;
 		} else {
-			$cust = $penjamin;
-			$bpjs = $nocard;
+			$cust    = $penjamin;
+			$bpjs    = $nocard;
 			$rujukan = $norujukan;
-			$sep = $nosep;
+			$sep     = $nosep;
 		}
 		
 		$noreg = urut_transaksi('REGISTRASI', 16);
@@ -813,25 +815,26 @@ class PendaftaranVRS extends CI_Controller {
 		
 			// husain change
 			$dataregist = [
-				'username' => $username,
-				'mjkn_token' => $mjkn_token,
-				'rekmed' => $norm,
-				'noreg' => $noreg,
-				'kodokter' => $dokter,
-				'koderuang' => $ruang,
-				'tujuan' => $tujuan,
-				'kodepos' => $poli,
-				'baru' => $baru,
-				'antrino' => $antrino,
-				'tglmasuk' => $tanggal,
-				'jam' => $jam,
-				'drpengirim' => $pengirim,
-				'jenispas' => $jenispasien,
-				'cust_id' => $cust,
-				'nobpjs' => $bpjs,
-				'norujukan' => $rujukan,
-				'nosep' => $sep,
-				'koders' => $cabang,
+				'username'    => $username,
+				'mjkn_token'  => $mjkn_token,
+				'rekmed'      => $norm,
+				'noreg'       => $noreg,
+				'kodokter'    => $dokter,
+				'koderuang'   => $ruang,
+				'tujuan'      => $tujuan,
+				'kodepos'     => $poli,
+				'baru'        => $baru,
+				'antrino'     => $antrino,
+				'antrino1'    => $antrino1,
+				'tglmasuk'    => $tanggal,
+				'jam'         => $jam,
+				'drpengirim'  => $pengirim,
+				'jenispas'    => $jenispasien,
+				'cust_id'     => $cust,
+				'nobpjs'      => $bpjs,
+				'norujukan'   => $rujukan,
+				'nosep'       => $sep,
+				'koders'      => $cabang,
 			];
 			$this->db->insert('tbl_regist', $dataregist);
 			// husain add
@@ -850,23 +853,24 @@ class PendaftaranVRS extends CI_Controller {
 	}
 	// end rawat jalan add and regist
 	public function edit_rawatjalan(){
-		$cabang       = $this->session->userdata('unit');
-		$poli         = $this->input->post('poliklinik1');
-		$mjkn_token   = $this->input->post('booking');
-		$dokter       = $this->input->post('dokter');
-		$noreg        = $this->input->get('noreg');
-		$ruang        = $this->input->post('ruang');
-		$antrino      = $this->input->post('antrino');
-		$tanggal      = $this->input->post('tanggal');
-		$jam          = $this->input->post('jam');
+		$cabang               = $this->session->userdata('unit');
+		$poli                 = $this->input->post('poliklinik1');
+		$mjkn_token           = $this->input->post('booking');
+		$dokter               = $this->input->post('dokter');
+		$noreg                = $this->input->get('noreg');
+		$ruang                = $this->input->post('ruang');
+		$antrino              = $this->input->post('antrino');
+		$antrino1             = $this->input->post('antrino1');
+		$tanggal              = $this->input->post('tanggal');
+		$jam                  = $this->input->post('jam');
 		// $pengirim     = $this->input->post('pengirim');
-		$pengirim     = '';
-		$norm         = $this->input->post('norm');
-		$username     = $this->session->userdata('username');
-		$jenispasien  = $this->input->post('jenispasien');
-		$penjamin     = $this->input->post('vpenjamin');
-		$nocard       = $this->input->post('nocard');
-		$norujukan    = $this->input->post('norujukan');
+		$pengirim             = '';
+		$norm                 = $this->input->post('norm');
+		$username             = $this->session->userdata('username');
+		$jenispasien          = $this->input->post('jenispasien');
+		$penjamin             = $this->input->post('vpenjamin');
+		$nocard               = $this->input->post('nocard');
+		$norujukan            = $this->input->post('norujukan');
 		$nosep                = $this->input->post('nosep');
 		$tujuan               = 1;
 		$kelas                = '';
@@ -879,34 +883,35 @@ class PendaftaranVRS extends CI_Controller {
 		$batalkarena          = '';
 		$diperiksa_perawat    = 0;
 		if($jenispasien == 'PAS1'){
-			$cust = '';
-			$bpjs = null;
+			$cust    = '';
+			$bpjs    = null;
 			$rujukan = null;
-			$sep = null;
+			$sep     = null;
 		} else {
-			$cust = $penjamin;
-			$bpjs = $nocard;
+			$cust    = $penjamin;
+			$bpjs    = $nocard;
 			$rujukan = $norujukan;
-			$sep = $nosep;
+			$sep     = $nosep;
 		}
 
 		$data = [
-			'username' => $username,
-			'koders' => $cabang,
+			'username'   => $username,
+			'koders'     => $cabang,
 			'mjkn_token' => $mjkn_token,
-			'kodokter' => $dokter,
-			'koderuang' => $ruang,
-			'baru' => $baru,
-			'antrino' => $antrino,
-			'tglmasuk' => $tanggal,
-			'jam' => $jam,
+			'kodokter'   => $dokter,
+			'koderuang'  => $ruang,
+			'baru'       => $baru,
+			'antrino'    => $antrino,
+			'antrino1'   => $antrino1,
+			'tglmasuk'   => $tanggal,
+			'jam'        => $jam,
 			'drpengirim' => $pengirim,
-			'jenispas' => $jenispasien,
-			'cust_id' => $cust,
-			'nobpjs' => $bpjs,
-			'norujukan' => $rujukan,
-			'nosep' => $sep,
-			'kodepos' => $poli,
+			'jenispas'   => $jenispasien,
+			'cust_id'    => $cust,
+			'nobpjs'     => $bpjs,
+			'norujukan'  => $rujukan,
+			'nosep'      => $sep,
+			'kodepos'    => $poli,
 		];
 		$where = [
 			'noreg' => $noreg,
@@ -955,7 +960,7 @@ class PendaftaranVRS extends CI_Controller {
 			$row[] = $no;
 			$row[] = $unit->koders;
 			$row[] = $unit->uidlogin;
-			$row[] = $unit->antrino;
+			$row[] = $unit->antrino1.'.'.$unit->antrino;
 			$row[] = $unit->noreg;
 			$row[] = $unit->rekmed;
 			$row[] = date('d-m-Y',strtotime($unit->tglmasuk));

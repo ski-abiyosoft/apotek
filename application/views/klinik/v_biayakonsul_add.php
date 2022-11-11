@@ -1281,25 +1281,27 @@ $this->load->view('template/footer_tb');
 
   function save_bayar() {
     // husain add
+    var kembalirp   = angka($('[name="kembalirp"]').val());
+    
     if(document.getElementById("j_umum").checked == true && document.getElementById("j_jaminan").checked == false){
       jaminan = 0;
     } else if(document.getElementById("j_jaminan").checked == true && document.getElementById("j_umum").checked == false){
       jaminan = 1;
     }
-    var tercover = $("#tercover_rp").val();
-    var tercoverx = Number(parseInt(tercover.replaceAll(',','')));
-    var tercover2 = $("#tercover_rp2").val();
-    var totalrpx = $("#totalrp_transaksi").val();
-    var totalrp = Number(parseInt(totalrpx.replaceAll(',','')));
-    var trp = Number(parseInt(tercover.replaceAll(',','')));
-    var trp2 = Number(parseInt(tercover2.replaceAll(',','')));
-    total_cover = trp + trp2;
-    hasil = totalrp - total_cover;
+    var tercover    = $("#tercover_rp").val();
+    var tercoverx   = Number(parseInt(tercover.replaceAll(',','')));
+    var tercover2   = $("#tercover_rp2").val();
+    var totalrpx    = $("#totalrp_transaksi").val();
+    var totalrp     = Number(parseInt(totalrpx.replaceAll(',','')));
+    var trp         = Number(parseInt(tercover.replaceAll(',','')));
+    var trp2        = Number(parseInt(tercover2.replaceAll(',','')));
+    total_cover     = trp + trp2;
+    hasil           = totalrp - total_cover;
     // end husain
     //cek promo
-    var voucherrp1 = $('#voucherrp1').val();
-    var voucherrp2 = $('#voucherrp2').val();
-    var voucherrp3 = $('#voucherrp3').val();
+    var voucherrp1  = $('#voucherrp1').val();
+    var voucherrp2  = $('#voucherrp2').val();
+    var voucherrp3  = $('#voucherrp3').val();
     if (voucherrp1 != '' | voucherrp1 != null) {
       var vc1 = '<br>VC1 : ' + voucherrp1;
     } else {
@@ -1315,42 +1317,50 @@ $this->load->view('template/footer_tb');
     } else {
       var vc3 = '';
     }
-    var tresepx = $('#_vtotalresep').text();
-    var statuspromo = '';
-    var ada = $('#adapromo').is(':checked');
-    var tidak = $('#tidakadapromo').is(':checked');
-    var totalnetx = $('#totalnet').val();
-    var totaltunairp = $('#totaltunairp').val();
-    var totalnet = parseInt(totalnetx.replaceAll(',', ''));
+    var tresepx       = $('#_vtotalresep').text();
+    var statuspromo   = '';
+    var ada           = $('#adapromo').is(':checked');
+    var tidak         = $('#tidakadapromo').is(':checked');
+    var totalnetx     = $('#totalnet').val();
+    var totaltunairp  = $('#totaltunairp').val();
+    var totalnet      = parseInt(totalnetx.replaceAll(',', ''));
     if (ada) {
       var statuspromo = 'ada';
     } else if (tidak) {
       var statuspromo = 'tidak';
     }
     //cek kembalian
-    var statuskembalian = "";
-    var kembali_ya = $('#uangmukakembaliya').is(':checked');
-    var kembali_tidak = $('#uangmukakembalitidak').is(':checked');
+    var statuskembalian   = "";
+    var kembali_ya        = $('#uangmukakembaliya').is(':checked');
+    var kembali_tidak     = $('#uangmukakembalitidak').is(':checked');
     if (kembali_ya) {
       var statuskembalian = 'kembali';
     } else if (kembali_tidak) {
       var statuskembalian = 'tidak';
     }
     // cek pakai uang muka apakah lebih dari tersedia uang muka
-    var uangmukapakai = $('#uangmukapakai').val();
-    var uangmukapakaix = parseInt(uangmukapakai.replaceAll(',', ''));
-    var uangmuka = $('#uangmuka').val();
-    var nuangmuka = Number(uangmuka.replace(/[^0-9\.]+/g, ""));
-
-
-    var nomor = $('[name="noreg"]').val();
-    var total = $('#totalnet').val();
-    var terimadari = $('#terimadari').val();
+    var uangmukapakai   = $('#uangmukapakai').val();
+    var uangmukapakaix  = parseInt(uangmukapakai.replaceAll(',', ''));
+    var uangmuka        = $('#uangmuka').val();
+    var nuangmuka       = Number(uangmuka.replace(/[^0-9\.]+/g, ""));
+    var nomor           = $('[name="noreg"]').val();
+    var total           = $('#totalnet').val();
+    var terimadari      = $('#terimadari').val();
+    
+    if (kembalirp<0){
+      swal({
+        title: "PEMBAYARAN",
+        html: "<p>MASIH BELUM LUNAS, Silahkan Lunasi Terlebih Dahulu...</p>",
+        type: "error",
+        confirmButtonText: "OK" 
+      });    
+      return;
+    } 
 
     if (nomor == "" || terimadari == "" || statuspromo == "" || statuskembalian == "" || uangmukapakai > nuangmuka) {
       if (statuspromo == "") {
-        var title = "Status Promo Belum dipilih";
-        var html = " Tidak Boleh Kosong .!!!";
+        var title   = "Status Promo Belum dipilih";
+        var html    = " Tidak Boleh Kosong .!!!";
       } else if (total == "0" || total == "") {
         var title = "Belum ada pembayaran";
         var html = " Tidak Boleh Kosong .!!!";
@@ -1382,6 +1392,7 @@ $this->load->view('template/footer_tb');
               type: "error",
               confirmButtonText: "OK"
             });
+            return;
           } else {
             $.ajax({
               url: '<?php echo site_url('kasir_konsul/ajax_add_bayar?jaminan=') ?>'+jaminan+'&hasil='+hasil,
@@ -1476,6 +1487,7 @@ $this->load->view('template/footer_tb');
               type: "error",
               confirmButtonText: "OK"
             });
+            return;
           } else {
             $.ajax({
               url: '<?php echo site_url('kasir_konsul/ajax_add_bayar?jaminan=') ?>'+jaminan+'&hasil='+hasil,
@@ -1570,6 +1582,7 @@ $this->load->view('template/footer_tb');
               type: "error",
               confirmButtonText: "OK"
             });
+            return;
           } else {
             $.ajax({
               url: '<?php echo site_url('kasir_konsul/ajax_add_bayar?jaminan=') ?>'+jaminan+'&hasil='+hasil,
@@ -1664,6 +1677,7 @@ $this->load->view('template/footer_tb');
               type: "error",
               confirmButtonText: "OK"
             });
+            return;
           } else {
             $.ajax({
               url: '<?php echo site_url('kasir_konsul/ajax_add_bayar?jaminan=') ?>'+jaminan+'&hasil='+hasil,

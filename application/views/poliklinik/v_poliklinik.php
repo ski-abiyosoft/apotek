@@ -1,7 +1,14 @@
     <?php 
     $this->load->view('template/header');
-    $this->load->view('template/body');    	  
+    $this->load->view('template/body');
     //   initailizeSelect2_jnsicd();
+
+    $session   = $this->session->flashdata("session");
+
+    if(isset($session)){
+        echo "<script>if(confirm('$session')){ window.open('','_self').close(); } else { window.open('','_self').close(); }</script>";
+    }
+
     ?>
 
     
@@ -397,22 +404,26 @@ function alltrim(kata){
     return c
 }
 
-function playAudio(antriangka="", noantri="satu") {
+function playAudio(noantri1="Z", antriangka="", noantri="satu") {
+    
     
     var bel   = new Audio('audio/bell_long.wav');
     var bel2  = new Audio('audio/nomor_antrian.wav');
+    var belh  = new Audio('audio/'+noantri1+'.wav');
     var bel4  = new Audio('audio/belas.wav');
     var bel5  = new Audio('audio/puluh.wav');
     var bel7  = new Audio('audio/ratus.wav');
     var to    = new Audio('audio/silakan_menuju_ke.wav');
-    var poli  = new Audio('audio/poliklinik.wav');
-
+    var poli  = new Audio('audio/poli.wav');
+    var umum  = new Audio('audio/umum.wav');
     totalwaktu=0; 
     
     setTimeout(function() { bel.pause(); bel.currentTime=0; bel.play(); }, totalwaktu);
     totalwaktu=totalwaktu+1500;
     setTimeout(function() { bel2.pause(); bel2.currentTime=0; bel2.play(); }, totalwaktu);
     totalwaktu=totalwaktu+1500;
+    setTimeout(function() { belh.pause(); belh.currentTime=0; belh.play(); }, totalwaktu);
+    totalwaktu=totalwaktu+1000;
     
     if(antriangka<=11 || antriangka==100){
 
@@ -541,6 +552,9 @@ function playAudio(antriangka="", noantri="satu") {
         totalwaktu=totalwaktu+1700;
 
     setTimeout(function() { poli.pause(); poli.currentTime=0; poli.play(); }, totalwaktu);
+        totalwaktu=totalwaktu+1000;
+
+    setTimeout(function() { umum.pause(); umum.currentTime=0; umum.play(); }, totalwaktu);
         totalwaktu=totalwaktu+1500;
     
 }
@@ -604,7 +618,8 @@ $(document).ready(function() {
             "sInfoEmpty": "",
             "sInfoFiltered": " - Dipilih dari _MAX_ data",
             "sSearch": "Pencarian Data : ",
-            "sInfo": " Jumlah _TOTAL_ Data (_START_ - _END_)",
+            // "sInfo": " Jumlah _TOTAL_ Data (_START_ - _END_)",
+            "sInfo": " Data (_START_ - _END_)",
             "sLengthMenu": "_MENU_ Baris",
             "sLoadingRecords": "Loading...",
             "sProcessing":"Tunggu Sebentar... Loading...",

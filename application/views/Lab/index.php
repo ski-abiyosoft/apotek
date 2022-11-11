@@ -24,7 +24,6 @@
 </style>
 
 <!-- Modal Filter Date -->
-
 <?php
     // Filter Periode Default Date Value
 
@@ -441,7 +440,7 @@
                         <td><?= $oval->rekmed ?></td>
                         <td><?= $oval->namapas ?></td>
                         <td><button class="btn btn-info btn-xs" type="button" data-toggle="modal" data-target="#<?= $oval->nolaborat ?>">detail</button></td>
-                        <td><?= data_master("dokter", array("kodokter" => $oval->drpengirim, "koders" => $this->session->userdata("unit")))->nadokter ?></td>
+                        <td><?= data_master("dokter", array("kodokter" => $oval->drpengirim, "koders" => $this->session->userdata("unit"), "kopoli" => $oval->asal))->nadokter ?></td>
                     </tr>
                     <?php } ?>
                 </tbody>
