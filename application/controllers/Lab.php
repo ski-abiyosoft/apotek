@@ -195,37 +195,37 @@ class Lab extends CI_Controller{
 		$this->load->view('Lab/create', $data);
 	}
 
-	// public function simpanDataPemeriksaan(){
-	// 	$replace_umur	= str_replace(array( " Tahun", " Bulan", " Hari"), array("","",""), $this->input->post("umur"));
-	// 	$explode_umur	= explode(" ", $replace_umur);
+	public function ___simpanDataPemeriksaan(){
+		$replace_umur	= str_replace(array( " Tahun", " Bulan", " Hari"), array("","",""), $this->input->post("umur"));
+		$explode_umur	= explode(" ", $replace_umur);
 
-	// 	$fieldData = array(
-	// 		'nolaborat' => $this->input->post('nolaborat', TRUE),
-	// 		'tgllab' => $this->input->post('tgllab', TRUE),
-	// 		'noreg' => $this->input->post('noreg', TRUE),
-	// 		'namapas' => $this->input->post('namapas', TRUE),
-	// 		'rekmed' => $this->input->post('rekmed', TRUE),
-	// 		'tgllahir' => $this->input->post('tgllahir', TRUE),
-	// 		'umurth' => $explode_umur[0],
-	// 		'umurbl' => $explode_umur[1],
-	// 		'umurhr' => $explode_umur[2],
-	// 		'jkel' => $this->input->post('jkel', TRUE),
-	// 		'orderno' => $this->input->post('orderno', TRUE),
-	// 		'jpas' => $this->input->post('jpas', TRUE),
-	// 		'jenisperiksa' => $this->input->post('jenisperiksa', TRUE),
-	// 		'rujuk' => $this->input->post('rujuk', TRUE),
-	// 		'diagnosa' => $this->input->post('diagnosa', TRUE),
-	// 		'drperiksa' => $this->input->post('drperiksa', TRUE),
-	// 		'drpengirim' => $this->input->post('drpengirim', TRUE),
-	// 		'kodepetugas' => $this->input->post('kodepetugas', TRUE),
-	// 		'username' => $this->session->userdata('username'),
-	// 		'jam' => date('H:i:s'),
+		$fieldData = array(
+			'nolaborat' => $this->input->post('nolaborat', TRUE),
+			'tgllab' => $this->input->post('tgllab', TRUE),
+			'noreg' => $this->input->post('noreg', TRUE),
+			'namapas' => $this->input->post('namapas', TRUE),
+			'rekmed' => $this->input->post('rekmed', TRUE),
+			'tgllahir' => $this->input->post('tgllahir', TRUE),
+			'umurth' => $explode_umur[0],
+			'umurbl' => $explode_umur[1],
+			'umurhr' => $explode_umur[2],
+			'jkel' => $this->input->post('jkel', TRUE),
+			'orderno' => $this->input->post('orderno', TRUE),
+			'jpas' => $this->input->post('jpas', TRUE),
+			'jenisperiksa' => $this->input->post('jenisperiksa', TRUE),
+			'rujuk' => $this->input->post('rujuk', TRUE),
+			'diagnosa' => $this->input->post('diagnosa', TRUE),
+			'drperiksa' => $this->input->post('drperiksa', TRUE),
+			'drpengirim' => $this->input->post('drpengirim', TRUE),
+			'kodepetugas' => $this->input->post('kodepetugas', TRUE),
+			'username' => $this->session->userdata('username'),
+			'jam' => date('H:i:s'),
 
-	// 	);
-	// 	$this->M_lab->insert($fieldData);
-	// 	$id = $this->db->insert_id();
-	// 	redirect('lab/getData/' . $id);
-	// }
+		);
+		$this->M_lab->insert($fieldData);
+		$id = $this->db->insert_id();
+		redirect('lab/getData/' . $id);
+	}
 
 	private function preg_grep_keys($pattern, $input, $flags = 0) {
 		return array_intersect_key($input, array_flip(preg_grep($pattern, array_keys($input), $flags)));
@@ -595,8 +595,8 @@ class Lab extends CI_Controller{
 		$unit = $this->session->userdata('unit');
 
 		$data = $this->db->query("SELECT *	FROM daftar_tarif_nonbedah AS a
-		-- WHERE a.koders = '$unit'
-		WHERE a.kodetarif ='$kode'
+		WHERE a.koders = '$unit'
+		AND a.kodetarif ='$kode'
 		AND a.kodepos = 'LABOR'")->row();
 
 		echo json_encode($data);
@@ -623,57 +623,59 @@ class Lab extends CI_Controller{
 		$tanggal		= $this->input->post('tgllab');
 
 		$data_header	= array(
-			'nolaborat' => $nolaborat,
-			'tgllab' => $tanggal,
-			'noreg' => $this->input->post('noreg'),
-			'namapas' => $this->input->post('namapas'),
-			'rekmed' => $this->input->post('rekmed'),
-			'tgllahir' => $this->input->post('tgllahir'),
-			'umurth' => $explode_umur[0],
-			'umurbl' => $explode_umur[1],
-			'umurhr' => $explode_umur[2],
-			'jkel' => $this->input->post('jkel'),
-			'orderno' => $this->input->post('orderno'),
-			'jpas' => $this->input->post('jpas'),
-			'jenisperiksa' => $this->input->post('jenisperiksa'),
-			'rujuk' => $this->input->post('rujuk'),
-			'diagnosa' => $this->input->post('diagnosa'),
-			'drperiksa' => $this->input->post('drperiksa'),
-			'drpengirim' => $this->input->post('drpengirim'),
-			'kodepetugas' => $this->input->post('kodepetugas'),
-			'username' => $this->session->userdata('username'),
-			'jam' => date('H:i:s'),
+			'koders'		=> $unit,
+			'nolaborat' 	=> $nolaborat,
+			'tgllab' 		=> $tanggal ." ". date("H:i:s"),
+			'noreg' 		=> $this->input->post('noreg'),
+			'namapas' 		=> $this->input->post('namapas'),
+			'rekmed' 		=> $this->input->post('rekmed'),
+			'tgllahir' 		=> $this->input->post('tgllahir'),
+			'umurth' 		=> $explode_umur[0],
+			'umurbl' 		=> $explode_umur[1],
+			'umurhr' 		=> $explode_umur[2],
+			'jkel' 			=> $this->input->post('jkel'),
+			'orderno' 		=> $this->input->post('orderno'),
+			'jpas' 			=> $this->input->post('jpas'),
+			'jenisperiksa' 	=> $this->input->post('jenisperiksa'),
+			'rujuk' 		=> $this->input->post('rujuk'),
+			'diagnosa' 		=> $this->input->post('diagnosa'),
+			'drperiksa' 	=> $this->input->post('drperiksa'),
+			'drpengirim' 	=> $this->input->post('drpengirim'),
+			'kodepetugas' 	=> $this->input->post('kodepetugas'),
+			'username' 		=> $this->session->userdata('username'),
+			'jam' 			=> date('H:i:s'),
 		);
 
 		$data_header_up	= array(
-			'nolaborat' => $nolaborat,
-			'tgllab' => $tanggal,
-			'noreg' => $this->input->post('noreg'),
-			'namapas' => $this->input->post('namapas'),
-			'rekmed' => $this->input->post('rekmed'),
-			'tgllahir' => $this->input->post('tgllahir'),
-			'umurth' => $explode_umur[0],
-			'umurbl' => $explode_umur[1],
-			'umurhr' => $explode_umur[2],
-			'jkel' => $this->input->post('jkel'),
-			'orderno' => $this->input->post('orderno'),
-			'jpas' => $this->input->post('jpas'),
-			'jenisperiksa' => $this->input->post('jenisperiksa'),
-			'rujuk' => $this->input->post('rujuk'),
-			'diagnosa' => $this->input->post('diagnosa'),
-			'drperiksa' => $this->input->post('drperiksa'),
-			'drpengirim' => $this->input->post('drpengirim'),
-			'kodepetugas' => $this->input->post('kodepetugas'),
-			'jam' => date('H:i:s'),
+			'koders'		=> $unit,
+			'nolaborat' 	=> $nolaborat,
+			'tgllab' 		=> $tanggal ." ". date("H:i:s"),
+			'noreg' 		=> $this->input->post('noreg'),
+			'namapas' 		=> $this->input->post('namapas'),
+			'rekmed' 		=> $this->input->post('rekmed'),
+			'tgllahir' 		=> $this->input->post('tgllahir'),
+			'umurth' 		=> $explode_umur[0],
+			'umurbl' 		=> $explode_umur[1],
+			'umurhr' 		=> $explode_umur[2],
+			'jkel' 			=> $this->input->post('jkel'),
+			'orderno' 		=> $this->input->post('orderno'),
+			'jpas'			=> $this->input->post('jpas'),
+			'jenisperiksa' 	=> $this->input->post('jenisperiksa'),
+			'rujuk' 		=> $this->input->post('rujuk'),
+			'diagnosa' 		=> $this->input->post('diagnosa'),
+			'drperiksa' 	=> $this->input->post('drperiksa'),
+			'drpengirim' 	=> $this->input->post('drpengirim'),
+			'kodepetugas' 	=> $this->input->post('kodepetugas'),
+			// 'jam' => date('H:i:s'),
 			'tglselesai'	=> $this->input->post('tglselesai'),
 			'jamselesai'	=> $this->input->post('jamselesai'),
-			'tglsampel'	=> $this->input->post('tglsampel'),
-			'jamsampel'	=> $this->input->post('jamsampel'),
-			'editby' => $this->session->userdata('username'),
-			'tgledit' => date('Y-m-d'),
-			"sampeloleh" => $this->input->post("sampeloleh"),
+			'tglsampel'		=> $this->input->post('tglsampel'),
+			'jamsampel'		=> $this->input->post('jamsampel'),
+			'editby' 		=> $this->session->userdata('username'),
+			'tgledit' 		=> date('Y-m-d'),
+			"sampeloleh" 	=> $this->input->post("sampeloleh"),
 			"kodepemeriksa" => $this->input->post("kodepemeriksa"),
-			"rilis" => ($this->input->post("rilis") === 'on')? 1 : 0
+			"rilis" 		=> ($this->input->post("rilis") === 'on')? 1 : 0
 		);
 
 		$data_catatan	= array(
@@ -856,7 +858,7 @@ class Lab extends CI_Controller{
 			$file_keterangan 	= $this->input->post("file_keterangan");
 			$file				= $_FILES["file"]["name"];
 
-			if($file == ""){
+			if($file != ""){
 				foreach($file_key as $fkey => $fval){
 					$file_allowed   = array("pdf", "png", "jpg", "jpeg", "webp");
 					$file_ext       = explode(".", $file[$fkey]);
@@ -864,15 +866,15 @@ class Lab extends CI_Controller{
 					$file_tmp       = $_FILES["file"]["tmp_name"][$fkey];
 
 					if(in_array($file_extension, $file_allowed) === true){
-						$filename = unique_file("uploads/lab/", basename($file[$fkey]));
+						$filename = unique_file("assets/img/laboratorium/", basename($file[$fkey]));
 						
-						move_uploaded_file($file_tmp, "uploads/lab/". $filename);
+						move_uploaded_file($file_tmp, "assets/img/laboratorium/". $filename);
 
 						$data_insert	= [
 							"nolaborat"			=> $nolaborat,
 							"namafile"			=> $filename,
 							"keteranganfile"	=> $file_keterangan[$fkey],
-							"lokasifile"		=> "assets/uploads/lab/",
+							"lokasifile"		=> "assets/img/laboratorium/",
 						];
 
 						$query_update = $this->db->insert("tbl_dhasilfile", $data_insert);
@@ -890,22 +892,6 @@ class Lab extends CI_Controller{
 					}
 				}
 			}
-			// $file_key			= $this->input->post("file_key");
-			// $file_keterangan 	= $this->input->post("file_keterangan");
-			// $file_name			= $this->input->post("file_name");
-
-			// foreach($file_key as $fkkey	=> $fkval){
-			// 	move_uploaded_file($_FILES["file"]["tmp_name"][$fkkey], "/uploads/lab/". $_FILES["file"]["name"][$fkkey]);
-			// 	// INSERT DB
-			// 	$data_insert	= [
-			// 		"nolaborat"			=> $nolaborat,
-			// 		"namafile"			=> $file_name[$fkkey],
-			// 		"keteranganfile"	=> $file_keterangan[$fkkey],
-			// 		"lokasifile"		=> "/uploads/lab/",
-			// 	];
-
-			// 	$this->db->insert("tbl_dhasilfile", $data_insert);
-			// }
 		}
 
 		if($param == "save"){
@@ -938,5 +924,163 @@ class Lab extends CI_Controller{
 		echo json_encode(array(
 			"nolab" => temp_urut_transaksi("TR_LABORATORIUM", $unit, 19)
 		));
+	}
+
+	public function delete_files($id){
+		if($id == ""){
+			$status     = "error";
+			$message    = "ID atau No Radiologi tidak ditemukan";
+		} else {
+			
+			$file           = data_master("tbl_dhasilfile", array("id" => $id))->namafile;
+			$delete_file    = $this->db->delete("tbl_dhasilfile", array("id" => $id));
+
+			if($delete_file){
+				unlink("assets/img/laboratorium/". $file);
+
+				$status     = "success";
+				$message    = "File berhasil dihapus";
+			} else {
+				$status     = "error";
+				$message    = "Gagal menghapus file<br />Kesalahan sistem (server)";
+			}
+
+		}
+
+		echo json_encode(array(
+			"status"    => $status,
+			"message"   => $message
+		), JSON_UNESCAPED_SLASHES);
+	}
+
+	// PRINT
+
+	public function cetak($param){
+		
+		$chari      = "";
+		$unit       = $this->session->userdata("unit");
+		$head		= $this->db->query("SELECT * FROM tbl_namers WHERE koders = '$unit'")->row();
+		$avatar   	= $this->session->userdata('avatar_cabang');
+		$header		= $this->db->query("SELECT * FROM tbl_hlab WHERE nolaborat = '$param'");
+		$data		= $header->row();
+		$hasil		= $this->db->query("SELECT * FROM tbl_dhasillabnew WHERE nolaborat = '$param'");
+
+		
+		$judul		= "HASIL LABORATORIUM ". $data->nolaborat;
+
+		$comp_name	= $head->namars;
+		$comp_addr	= $head->alamat;
+		$comp_addr2	= $head->alamat2;
+		$comp_phone	= $head->phone;
+		$comp_wa	= $head->whatsapp;
+		$comp_npwp	= $head->npwp;
+		$comp_image	= base_url()."assets/img_user/$avatar";
+
+		if($header->num_rows() == 0){
+			$this->session->set_flashdata("error", "Data tidak ditemukan<br />Cetakan gagal dibuka");
+			redirect(base_url("lab"));
+		} else {
+
+			$chari  .= "<style>
+				.table {border-collapse:collapse;font-family: Century Gothic;font-size:12px;color:#000;width:100%;margin:auto}
+				.bordered {padding:5px;border:1px solid #222}
+				.bt {padding-top:5px}
+				.bm {padding-bottom:5px}
+				.centered {text-align:center;margin:auto}
+				.bold {font-weight:bold}
+				.subtitle {font-size:12px;padding-bottom:15px !important}
+				.title {font-size:16px;margin-top:10px;margin-bottom:20px}
+				.separator {border:115px solid #222}
+			</style>";
+
+			$chari  .= '<table class="table" align="center">	
+				<thead>
+					<tr>
+						<td rowspan="4">
+							<img src="'. $comp_image .'"  width="100" height="70" />
+						</td>
+						<td>
+							<tr><td style="font-size:14px;border-bottom: none;"><b>'. $comp_name .'</b></td></tr>
+							<tr><td style="font-size:13px;">'. $comp_addr .'</td></tr>
+							<tr><td style="font-size:13px;">Telp : '. $comp_phone .'</td></tr>
+						</td>
+					</tr> 
+				</thead>
+			</table>';
+
+			$chari  .= "<hr class=\"separator\">"; 
+
+			$chari	.= "<table class='table'>
+				<tbody>
+					<tr>
+						<td style='width:15%'>Nama Pasien</td>
+						<td style='width:35%'>: <b>". $data->namapas ."</b></td>
+						<td style='width:15%'>Dokter</td>
+						<td style='width:35%'>: <b>". data_master("dokter", array("kodokter" => $data->drpengirim, "koders" => $data->koders, "kopoli" => $data->asal))->nadokter ."</b></td>
+					</tr>
+					<tr>
+						<td style='width:15%'>No Rekam Medis</td>
+						<td style='width:35%'>: <b>". $data->rekmed ."</b></td>
+						<td style='width:15%'>Umur</td>
+						<td style='width:35%'>: <b>". $data->umurth ." Tahun ". $data->umurbl ." Bulan ". $data->umurhr ." Hari</b></td>
+					</tr>
+					<tr>
+						<td style='width:15%'>No Registrasi</td>
+						<td style='width:35%'>: <b>". $data->noreg ."</b></td>
+						<td style='width:15%'>Asal / Dari</td>
+						<td style='width:35%'>: <b>". ($data->asal == "" ? "-" : data_master("tbl_namapos", array("kodepos" => $data->asal))->namapost) ."</b></td>
+					</tr>
+					<tr>
+						<td style='width:15%'>No Lab</td>
+						<td style='width:35%'>: <b>". $data->nolaborat ."</b></td>
+						<td style='width:15%'>Tgl Transaksi</td>
+						<td style='width:35%'>: <b>". date("d/m/Y H:i:s", strtotime($data->tgllab)) ."</b></td>
+					</tr>
+					<tr>
+						<td style='width:15%'>Alamat</td>
+						<td style='width:35%'>: <b>". data_master("tbl_pasien", array("rekmed" => $data->rekmed))->alamat .", ". data_master("tbl_pasien", array("rekmed" => $data->rekmed))->alamat2 ."</b></td>
+						<td style='width:15%'>Tgl Bhn Diterima</td>
+						<td style='width:35%'>: <b>". date("d/m/Y H:i:s", strtotime($data->tglambil)) ."</b></td>
+					</tr>
+					<tr>
+						<td style='width:15%'></td>
+						<td style='width:35%'> <b></b></td>
+						<td style='width:15%'>Tgl Hasil Selesai</td>
+						<td style='width:35%'>: <b>". date("d/m/Y H:i:s", strtotime($data->tglselesai)) ."</b></td>
+					</tr>
+				</tbody>
+			</table>
+			<hr class=\"separator\">";
+
+			$chari	.= "<table class='table'>
+				<thead>
+					<tr style='background:#f5f5f5'>
+						<th class='bordered' style='text-align:left'>Pemeriksaan</th>
+						<th class='bordered'>Hasil Tes</th>
+						<th class='bordered'>Nilai Normal</th>
+						<th class='bordered'>Satuan</th>
+						<th class='bordered'>Keterangan</th>
+					</tr>
+				</thead>
+				<tbody>";
+				if($hasil->num_rows() != 0){
+					foreach($hasil->result() as $fh){
+						$chari	.= "<tr>
+							<td class='bordered'>". $fh->pemeriksaan."</td>
+							<td class='bordered'>". $fh->hasilc ."</td>
+							<td class='bordered'>". $fh->normalc ."</td>
+							<td class='bordered'>". $fh->satuan ."</td>
+							<td class='bordered'>". $fh->keterangan ."</td>
+						</tr>";
+					}
+				} else {
+					$chari	.= "<tr><td colspan='5' class='bordered centered' style='background:#f5f5f5'>Belum Isi Hasil</td></tr>";
+				}
+			$chari	.= "</tbody></table>";
+
+			$this->M_cetak->mpdf('P','A4',$judul, $chari, $judul . '.PDF', 0, 0, 10, 2);
+
+		}
+
 	}
 }

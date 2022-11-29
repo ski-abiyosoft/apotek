@@ -96,6 +96,47 @@
     </div>
 </div>
 
+<!-- Modal Print -->
+<div id="modal_print" class="modal fade" role="dialog">
+    <div class="modal-dialog modal-lg">
+
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" style="font-weight:bold">CETAK HASIL (PDF)</h4>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <div id="signature-pad">
+                        <table border="1" width="100%">
+                            <tr>
+                                <td align="center"><label class="control-label ">&nbsp;<b> Tanda Tangan Digital</b></label>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                <canvas width="570" height="200" ></canvas>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                <button type="button" data-action="clear" class="btn btn-sm red pull-right">
+                                    <i class="fa fa-trash-o"></i> Clear</button>
+                                </td>
+                            </tr>
+                        </table>
+                        
+                        
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Tutup</button>
+            </div>
+        </div>
+
+    </div>
+</div>
+
     <div class="row">
         <div class="col-md-12">
             <h3 class="page-title">
@@ -117,668 +158,804 @@
 
     <hr />
 
-<form id="frmlab" enctype="multipart/form-data">
-    <div class="row">
-        <div class="col-md-12">
-            <div class="portlet box blue">
+    <form id="frmlab" enctype="multipart/form-data">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="portlet box blue">
 
-                <!-- CONTENT START -->
+                    <!-- CONTENT START -->
 
-                <div class="portlet-title">
-                    <div class="caption"><i class="fa fa-bars fa-fw"></i>&nbsp; <?= ($status == "save")? "Form Entri" : "Form Edit" ?></div>
-                </div>
-                
-                <?php if(isset($elab)): ?>
-                <input type="hidden" name="asal" value="<?= $helab->asal ?>">
-                <div class="portlet-body" style="padding:20px !important;border-radius:0px !important">
-                    <div class="col-md-6">
-                        <div class="form-group row">
-                            <label for="inputEmail3" class="col-sm-3 col-form-label">No Pemeriksaan</label>
-                            <div class="col-sm-9">
-                                <input type="text" class="form-control" id="nolaborat" readonly>
-                                <input type="hidden" name="nolaborat" id="nolaborathide" value="">
-                            </div>
-                        </div>
-                        <div class="form-group row">
-                            <label for="tgllab" class="col-sm-3 col-form-label">Tanggal Periksa</label>
-                            <div class="col-sm-9">
-                                <input type="date" class="form-control" id="tgllab" name="tgllab" placeholder="" value="<?= date('Y-m-d'); ?>" required>
-                            </div>
-                        </div>
-                        <div class="form-group row">
-                            <label for="inputEmail3" class="col-sm-3 col-form-label">No Registrasi</label>
-                            <div class="col-sm-5">
-                                <div class="input-group">
-                                    <input id="noreg" type="text" class="form-control" name="noreg" placeholder="No registrasi" value="<?= $helab->noreg ?>" readonly>
-                                    <div class="input-group-btn">
-                                        <button class="btn green" type="button" data-toggle="modal" data-target="#noregister"><i class="fa fa-search"></i></button>
-                                    </div>
+                    <div class="portlet-title">
+                        <div class="caption"><i class="fa fa-bars fa-fw"></i>&nbsp; <?= ($status == "save")? "Form Entri" : "Form Edit" ?></div>
+                    </div>
+                    
+                    <?php if(isset($elab)): ?>
+                    <input type="hidden" name="asal" value="<?= $helab->asal ?>">
+                    <div class="portlet-body" style="padding:20px !important;border-radius:0px !important">
+                        <div class="col-md-6">
+                            <div class="form-group row">
+                                <label for="inputEmail3" class="col-sm-3 col-form-label">No Pemeriksaan</label>
+                                <div class="col-sm-9">
+                                    <input type="text" class="form-control" id="nolaborat" readonly>
+                                    <input type="hidden" name="nolaborat" id="nolaborathide" value="">
                                 </div>
                             </div>
-                            <div class="col-sm-4">
-                                <input type="text" class="form-control" id="rekmed" name="rekmed" placeholder="No rekam medis" readonly>
-                            </div>
-                        </div>
-
-                        <div class="form-group row">
-                            <label for="namapas" class="col-sm-3 col-form-label">Nama Pasien</label>
-                            <div class="col-sm-9">
-                                <input type="text" class="form-control" id="namapas" name="namapas" placeholder="" readonly>
-                            </div>
-                        </div>
-                        <div class="form-group row">
-                            <label for="tgllahir" class="col-sm-3 col-form-label">Tanggal Lahir</label>
-                            <div class="col-sm-9">
-                                <input type="date" class="form-control" id="tgllahir" name="tgllahir" placeholder="" readonly required>
-                            </div>
-                        </div>
-                        <div class="form-group row">
-                            <label for="umurth" class="col-sm-3 col-form-label">Umur</label>
-                            <div class="col-sm-9">
-                                <input type="text" class="form-control" id="umur" name="umur" readonly>
-                            </div>
-                            <!-- <div class="col-sm-3">
-                                <input type="number" class="form-control" id="umurth" name="umurth" placeholder="Tahun" required>
-                            </div>
-                            <div class="col-sm-3">
-                                <input type="number" class="form-control" id="umurbl" name="umurbl" placeholder="Bulan" required>
-                            </div>
-                            <div class="col-sm-3">
-                                <input type="number" class="form-control" id="umurhr" name="umurhr" placeholder="Hari" required>
-                            </div> -->
-                        </div>
-
-                        <div class="form-group row">
-                            <label for="inputEmail3" class="col-sm-3 col-form-label">Jenis Kalamin</label>
-                            <table class="col-sm-7">
-                                <tr>
-                                    <td style="width:5%;padding-left:10px"><input type="radio" value="1" name="jkel" id="jeniskelamin1" required></td>
-                                    <td style="width:45%">Pria</td>
-                                    <td style="width:5%;padding-left:10px"><input type="radio" value="2" name="jkel" id="jeniskelamin2" required></td>
-                                    <td style="width:45%">Wanita</td>
-                                </tr>
-                            </table>
-                            <!-- <div class="col-sm-2 " style="margin-top: -10px !important;">
-                                <input type="radio" class="form-check-input" value="1" name="jkel" id="jenis_kelamin1" placeholder="" required> <label for="jenis_kelamin1" style="margin-left: 20px;">Pria</label>
-                            </div>
-                            <div class="col-sm-2" style="margin-top: -10px !important;">
-                                <input type="radio" class="form-check-input" value="2" name="jkel" id="jenis_kelamin2" placeholder="" required> <label for="jenis_kelamin2" style="margin-left: 20px;" >Wanita</label>
-                            </div> -->
-                        </div>
-
-                    </div>
-
-                    <div class="col-md-6">
-                        <div class="form-group row">
-                            <label for="orderno" class="col-sm-3 col-form-label">No Order</label>
-                            <div class="col-sm-9">
-                                <input type="text" class="form-control" id="orderno" name="orderno" placeholder="" value="<?= $noelab ?>" required readonly>
-                            </div>
-                        </div>
-                        <div class="form-group row">
-                            <label for="inputEmail3" class="col-sm-3 col-form-label">Jenis Pasien</label>
-                            <table class="col-sm-7">
-                                <tr>
-                                    <td style="width:5%;padding-left:10px"><input type="radio" value="1" name="jpas" required></td>
-                                    <td style="width:45%">Pasien RS</td>
-                                    <td style="width:5%;padding-left:10px"><input type="radio" value="2" name="jpas" required></td>
-                                    <td style="width:45%">Pasien Luar</td>
-                                </tr>
-                            </table>
-                            <!-- <div class="col-sm-3" style="margin-top: -10px !important;">
-                                <input required type="radio" class="form-check-input" value="1" id="jpas1" name="jpas" placeholder=""> <label for="jpas1" style="margin-left: 20px;">Pasien RS</label>
-                            </div>
-                            <div class="col-sm-3" style="margin-top: -10px !important;">
-                                <input required type="radio" class="form-check-input" value="2" id="jpas2" name="jpas" placeholder=""> <label for="jpas2" style="margin-left: 20px;">Pasien Luar</label>
-                            </div> -->
-                        </div>
-                        <div class="form-group row">
-                            <label for="inputEmail3" class="col-sm-3 col-form-label">Jenis Pemeriksaan</label>
-                            <table class="col-sm-7">
-                                <tr>
-                                    <td style="width:5%;padding-left:10px"><input type="radio" value="1" name="jenisperiksa" required></td>
-                                    <td style="width:45%">Rujukan Dokter</td>
-                                    <td style="width:5%;padding-left:10px"><input type="radio" value="2" name="jenisperiksa" required></td>
-                                    <td style="width:45%">Permintaan Sendiri</td>
-                                </tr>
-                            </table>
-                            <!-- <div class="col-sm-3 " style="margin-top: -10px !important;">
-                                <input type="radio" required class="form-check-input" value="1" id="jenisperiksa1" name="jenisperiksa" placeholder=""> <label for="jenisperiksa1" style="margin-left: 20px;">Rujukan Dokter</label>
-                            </div>
-                            <div class="col-sm-3" style="margin-top: -10px !important;">
-                                <input type="radio" required class="form-check-input" value="2" id="jenisperiksa2" name="jenisperiksa" placeholder=""> <label for="jenisperiksa2" style="margin-left: 20px;">Permintaan Sendiri</label>
-                            </div> -->
-                        </div>
-                        <div class="form-group row">
-                            <label for="inputEmail3" class="col-sm-3 col-form-label">Pemeriksaan</label>
-                            <table class="col-sm-7">
-                                <tr>
-                                    <td style="width:5%;padding-left:10px"><input type="radio" value="1" name="rujuk" required></td>
-                                    <td style="width:45%">Lab Dalam</td>
-                                    <td style="width:5%;padding-left:10px"><input type="radio" value="2" name="rujuk" required></td>
-                                    <td style="width:45%">Dikirim Ke Faskes Lain</td>
-                                </tr>
-                            </table>
-                            <!-- <div class="col-sm-3 " style="margin-top: -10px !important;">
-                                <input type="radio" required class="form-check-input" value="1" id="rujuk1" name="rujuk" placeholder=""> <label for="rujuk1" style="margin-left: 20px;">Lab Dalam</label>
-                            </div>
-                            <div class="col-sm-3" style="margin-top: -10px !important;">
-                                <input type="radio" required class="form-check-input" value="2" id="rujuk2" name="rujuk" placeholder=""> <label for="rujuk2" style="margin-left: 20px;">Dikirim Ke Faskes Lain</label>
-                            </div> -->
-                        </div>
-                        <div class="form-group row">
-                            <label for="diagnosa" class="col-sm-3 col-form-label">Diagnosa</label>
-                            <div class="col-sm-9">
-                                <input type="text" required class="form-control selectpicker" id="diagnosa" name="diagnosa" placeholder="" value="<?= $rekmed->diagnosa ?>" required>
-                            </div>
-                        </div>
-                        <div class="form-group row">
-                            <label for="drpengirim" class="col-sm-3 col-form-label">Dokter Pengirim</label>
-                            <div class="col-sm-9">
-                                <select required  id="drpengirim" name="drpengirim" class="selectpicker" data-live-search="true" data-width="100%" onkeypress="return tabE(this,event)" >
-                                    <option  value="" selected disabled>-- Pilih Data --</option>
-                                    <?php
-                                        $unit   = $this->session->userdata("unit");
-                                        $data_dokter    = $this->db->query("SELECT * FROM dokter WHERE koders = '$unit' AND kopoli = '$helab->asal' GROUP BY kodokter")->result();
-                                        foreach($data_dokter as $value){
-                                            if($value->kodokter == $rekmed->kodokter){
-                                                echo '<option value="'. $rekmed->kodokter .'" selected>'. data_master("dokter", array("kodokter" => $rekmed->kodokter, "koders" => $unit, "kopoli" => $rekmed->kodepos))->nadokter .'</option>';
-                                            } else {
-                                                echo '<option value="'. $value->kodokter .'">'. $value->nadokter .'</option>';
-                                            }
-                                        }
-                                    ?>
-                                </select>
-                            </div>
-                        </div>
-
-                        <div class="form-group row">
-                            <label for="drperiksa" class="col-sm-3 col-form-label">Dokter Laborat</label>
-                            <div class="col-sm-9">
-                                <select required id="drperiksa" name="drperiksa" class="selectpicker" data-live-search="true" data-width="100%" onkeypress="return tabE(this,event)" >
-                                    <option  value="" selected disabled>-- Pilih Data --</option>
-                                    <?php
-                                        foreach($dataDokter as $value){
-                                            echo '<option value="'. $value->kodokter .'">'. $value->nadokter .'</option>';
-                                        }
-                                    ?>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="form-group row">
-                            <label for="inputEmail3" class="col-sm-3 col-form-label">Petugas Lab</label>
-                            <div class="col-sm-9">
-                                <select required id="kodepetugas" name="kodepetugas" class="selectpicker" data-live-search="true" data-width="100%" onkeypress="return tabE(this,event)" >
-                                    <option  value="" selected disabled>-- Pilih Data --</option>
-                                    <?php
-                                        foreach($petugas as $value){
-                                            echo '<option value="'. $value->nokk .'">'. $value->namapetugas .'</option>';
-                                        }
-                                    ?>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-                    &nbsp;
-                </div>
-                <?php else: ?>
-                <input type="hidden" name="asal" value="<?= isset($data_header->asal)? $data_header->asal : ""  ?>">
-                <div class="portlet-body" style="padding:20px !important;border-radius:0px !important">
-                    <div class="col-md-6">
-                        <div class="form-group row">
-                            <label for="inputEmail3" class="col-sm-3 col-form-label">No Pemeriksaan</label>
-                            <div class="col-sm-9">
-                                <input type="email" class="form-control" name="nolaborat" id="nolaborat" value="<?= isset($data_header->nolaborat)? $data_header->nolaborat : "" ?>" readonly>
-                            </div>
-                        </div>
-                        <div class="form-group row">
-                            <label for="tgllab" class="col-sm-3 col-form-label">Tanggal Periksa</label>
-                            <div class="col-sm-9">
-                                <input type="date" class="form-control" id="tgllab" name="tgllab" placeholder="" value="<?= isset($data_header->tgllab)? date("Y-m-d", strtotime($data_header->tgllab)) : date('Y-m-d'); ?>" required>
-                            </div>
-                        </div>
-                        <div class="form-group row">
-                            <label for="inputEmail3" class="col-sm-3 col-form-label">No Registrasi</label>
-                            <div class="col-sm-5">
-                                <div class="input-group">
-                                    <input id="noreg" type="text" class="form-control" name="noreg" placeholder="No registrasi" value="<?= isset($data_header->noreg)? $data_header->noreg : "" ?>" readonly>
-                                    <div class="input-group-btn">
-                                        <button class="btn green" type="button" data-toggle="modal" data-target="#noregister"><i class="fa fa-search"></i></button>
-                                    </div>
+                            <div class="form-group row">
+                                <label for="tgllab" class="col-sm-3 col-form-label">Tanggal Periksa</label>
+                                <div class="col-sm-9">
+                                    <input type="date" class="form-control" id="tgllab" name="tgllab" placeholder="" value="<?= date('Y-m-d'); ?>" required>
                                 </div>
                             </div>
-                            <div class="col-sm-4">
-                                <input type="text" class="form-control" id="rekmed" name="rekmed" placeholder="No rekam medis" value="<?= isset($data_header->rekmed)? $data_header->rekmed : "" ?>" readonly>
+                            <div class="form-group row">
+                                <label for="inputEmail3" class="col-sm-3 col-form-label">No Registrasi</label>
+                                <div class="col-sm-5">
+                                    <div class="input-group">
+                                        <input id="noreg" type="text" class="form-control" name="noreg" placeholder="No registrasi" value="<?= $helab->noreg ?>" readonly>
+                                        <div class="input-group-btn">
+                                            <button class="btn green" type="button" data-toggle="modal" data-target="#noregister"><i class="fa fa-search"></i></button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-sm-4">
+                                    <input type="text" class="form-control" id="rekmed" name="rekmed" placeholder="No rekam medis" readonly>
+                                </div>
                             </div>
+
+                            <div class="form-group row">
+                                <label for="namapas" class="col-sm-3 col-form-label">Nama Pasien</label>
+                                <div class="col-sm-9">
+                                    <input type="text" class="form-control" id="namapas" name="namapas" placeholder="" readonly>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="tgllahir" class="col-sm-3 col-form-label">Tanggal Lahir</label>
+                                <div class="col-sm-9">
+                                    <input type="date" class="form-control" id="tgllahir" name="tgllahir" placeholder="" readonly required>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="umurth" class="col-sm-3 col-form-label">Umur</label>
+                                <div class="col-sm-9">
+                                    <input type="text" class="form-control" id="umur" name="umur" placeholder="Cth : 20 Tahun 12 Bulan 31 Hari" readonly>
+                                </div>
+                                <!-- <div class="col-sm-3">
+                                    <input type="number" class="form-control" id="umurth" name="umurth" placeholder="Tahun" required>
+                                </div>
+                                <div class="col-sm-3">
+                                    <input type="number" class="form-control" id="umurbl" name="umurbl" placeholder="Bulan" required>
+                                </div>
+                                <div class="col-sm-3">
+                                    <input type="number" class="form-control" id="umurhr" name="umurhr" placeholder="Hari" required>
+                                </div> -->
+                            </div>
+
+                            <div class="form-group row">
+                                <label for="inputEmail3" class="col-sm-3 col-form-label">Jenis Kalamin</label>
+                                <table class="col-sm-7">
+                                    <tr>
+                                        <td style="width:5%;padding-left:10px"><input type="radio" value="1" name="jkel" id="jeniskelamin1" required></td>
+                                        <td style="width:45%">Pria</td>
+                                        <td style="width:5%;padding-left:10px"><input type="radio" value="2" name="jkel" id="jeniskelamin2" required></td>
+                                        <td style="width:45%">Wanita</td>
+                                    </tr>
+                                </table>
+                                <!-- <div class="col-sm-2 " style="margin-top: -10px !important;">
+                                    <input type="radio" class="form-check-input" value="1" name="jkel" id="jenis_kelamin1" placeholder="" required> <label for="jenis_kelamin1" style="margin-left: 20px;">Pria</label>
+                                </div>
+                                <div class="col-sm-2" style="margin-top: -10px !important;">
+                                    <input type="radio" class="form-check-input" value="2" name="jkel" id="jenis_kelamin2" placeholder="" required> <label for="jenis_kelamin2" style="margin-left: 20px;" >Wanita</label>
+                                </div> -->
+                            </div>
+
                         </div>
 
-                        <div class="form-group row">
-                            <label for="namapas" class="col-sm-3 col-form-label">Nama Pasien</label>
-                            <div class="col-sm-9">
-                                <input type="text" class="form-control" id="namapas" name="namapas" placeholder="" value="<?= isset($data_header->namapas)? $data_header->namapas : "" ?>" readonly>
+                        <div class="col-md-6">
+                            <div class="form-group row">
+                                <label for="orderno" class="col-sm-3 col-form-label">No Order</label>
+                                <div class="col-sm-9">
+                                    <input type="text" class="form-control" id="orderno" name="orderno" placeholder="" value="<?= $noelab ?>" required readonly>
+                                </div>
                             </div>
-                        </div>
-                        <div class="form-group row">
-                            <label for="tgllahir" class="col-sm-3 col-form-label">Tanggal Lahir</label>
-                            <div class="col-sm-9">
-                                <input type="date" class="form-control" id="tgllahir" name="tgllahir" placeholder="" value="<?= isset($data_header->tgllahir)? date("Y-m-d", strtotime($data_header->tgllahir)) : "" ?>" readonly required>
+                            <div class="form-group row">
+                                <label for="inputEmail3" class="col-sm-3 col-form-label">Jenis Pasien</label>
+                                <table class="col-sm-7">
+                                    <tr>
+                                        <td style="width:5%;padding-left:10px"><input type="radio" value="1" name="jpas" required></td>
+                                        <td style="width:45%">Pasien RS</td>
+                                        <td style="width:5%;padding-left:10px"><input type="radio" value="2" name="jpas" required></td>
+                                        <td style="width:45%">Pasien Luar</td>
+                                    </tr>
+                                </table>
+                                <!-- <div class="col-sm-3" style="margin-top: -10px !important;">
+                                    <input required type="radio" class="form-check-input" value="1" id="jpas1" name="jpas" placeholder=""> <label for="jpas1" style="margin-left: 20px;">Pasien RS</label>
+                                </div>
+                                <div class="col-sm-3" style="margin-top: -10px !important;">
+                                    <input required type="radio" class="form-check-input" value="2" id="jpas2" name="jpas" placeholder=""> <label for="jpas2" style="margin-left: 20px;">Pasien Luar</label>
+                                </div> -->
                             </div>
-                        </div>
-                        <div class="form-group row">
-                            <label for="umurth" class="col-sm-3 col-form-label">Umur</label>
-                            <div class="col-sm-9">
-                                <input type="text" class="form-control" id="umur" name="umur" readonly>
+                            <div class="form-group row">
+                                <label for="inputEmail3" class="col-sm-3 col-form-label">Jenis Pemeriksaan</label>
+                                <table class="col-sm-7">
+                                    <tr>
+                                        <td style="width:5%;padding-left:10px"><input type="radio" value="1" name="jenisperiksa" required></td>
+                                        <td style="width:45%">Rujukan Dokter</td>
+                                        <td style="width:5%;padding-left:10px"><input type="radio" value="2" name="jenisperiksa" required></td>
+                                        <td style="width:45%">Permintaan Sendiri</td>
+                                    </tr>
+                                </table>
+                                <!-- <div class="col-sm-3 " style="margin-top: -10px !important;">
+                                    <input type="radio" required class="form-check-input" value="1" id="jenisperiksa1" name="jenisperiksa" placeholder=""> <label for="jenisperiksa1" style="margin-left: 20px;">Rujukan Dokter</label>
+                                </div>
+                                <div class="col-sm-3" style="margin-top: -10px !important;">
+                                    <input type="radio" required class="form-check-input" value="2" id="jenisperiksa2" name="jenisperiksa" placeholder=""> <label for="jenisperiksa2" style="margin-left: 20px;">Permintaan Sendiri</label>
+                                </div> -->
                             </div>
-                            <!-- <div class="col-sm-3">
-                                <input type="number" class="form-control" id="umurth" name="umurth" placeholder="Tahun" required>
+                            <div class="form-group row">
+                                <label for="inputEmail3" class="col-sm-3 col-form-label">Pemeriksaan</label>
+                                <table class="col-sm-7">
+                                    <tr>
+                                        <td style="width:5%;padding-left:10px"><input type="radio" value="1" name="rujuk" required></td>
+                                        <td style="width:45%">Lab Dalam</td>
+                                        <td style="width:5%;padding-left:10px"><input type="radio" value="2" name="rujuk" required></td>
+                                        <td style="width:45%">Dikirim Ke Faskes Lain</td>
+                                    </tr>
+                                </table>
+                                <!-- <div class="col-sm-3 " style="margin-top: -10px !important;">
+                                    <input type="radio" required class="form-check-input" value="1" id="rujuk1" name="rujuk" placeholder=""> <label for="rujuk1" style="margin-left: 20px;">Lab Dalam</label>
+                                </div>
+                                <div class="col-sm-3" style="margin-top: -10px !important;">
+                                    <input type="radio" required class="form-check-input" value="2" id="rujuk2" name="rujuk" placeholder=""> <label for="rujuk2" style="margin-left: 20px;">Dikirim Ke Faskes Lain</label>
+                                </div> -->
                             </div>
-                            <div class="col-sm-3">
-                                <input type="number" class="form-control" id="umurbl" name="umurbl" placeholder="Bulan" required>
+                            <div class="form-group row">
+                                <label for="diagnosa" class="col-sm-3 col-form-label">Diagnosa</label>
+                                <div class="col-sm-9">
+                                    <input type="text" required class="form-control selectpicker" id="diagnosa" name="diagnosa" placeholder="" value="<?= $rekmed->diagnosa ?>" required>
+                                </div>
                             </div>
-                            <div class="col-sm-3">
-                                <input type="number" class="form-control" id="umurhr" name="umurhr" placeholder="Hari" required>
-                            </div> -->
-                        </div>
-
-                        <div class="form-group row">
-                            <label for="inputEmail3" class="col-sm-3 col-form-label">Jenis Kalamin</label>
-                            <table class="col-sm-7">
-                                <tr>
-                                    <td style="width:5%;padding-left:10px"><input type="radio" value="1" name="jkel" id="jeniskelamin1" <?= isset($data_header->jkel)? ($data_header->jkel == "1")? "checked" : "" : "" ?> required></td>
-                                    <td style="width:45%">Pria</td>
-                                    <td style="width:5%;padding-left:10px"><input type="radio" value="2" name="jkel" id="jeniskelamin2" <?= isset($data_header->jkel)? ($data_header->jkel == "2")? "checked" : "" : "" ?> required></td>
-                                    <td style="width:45%">Wanita</td>
-                                </tr>
-                            </table>
-                            <!-- <div class="col-sm-2 " style="margin-top: -10px !important;">
-                                <input type="radio" class="form-check-input" value="1" name="jkel" id="jenis_kelamin1" placeholder="" required> <label for="jenis_kelamin1" style="margin-left: 20px;">Pria</label>
-                            </div>
-                            <div class="col-sm-2" style="margin-top: -10px !important;">
-                                <input type="radio" class="form-check-input" value="2" name="jkel" id="jenis_kelamin2" placeholder="" required> <label for="jenis_kelamin2" style="margin-left: 20px;" >Wanita</label>
-                            </div> -->
-                        </div>
-
-                    </div>
-
-                    <div class="col-md-6">
-                        <div class="form-group row">
-                            <label for="orderno" class="col-sm-3 col-form-label">No Order</label>
-                            <div class="col-sm-9">
-                                <input type="text" class="form-control" id="orderno" name="orderno" placeholder="" value="<?= isset($data_header->orderno)? $data_header->orderno : "" ?>" required readonly>
-                            </div>
-                        </div>
-                        <div class="form-group row">
-                            <label for="inputEmail3" class="col-sm-3 col-form-label">Jenis Pasien</label>
-                            <table class="col-sm-7">
-                                <tr>
-                                    <td style="width:5%;padding-left:10px"><input type="radio" value="1" name="jpas" <?= isset($data_header->jpas)? ($data_header->jpas == "1")? "checked" : "" : "" ?> required></td>
-                                    <td style="width:45%">Pasien RS</td>
-                                    <td style="width:5%;padding-left:10px"><input type="radio" value="2" name="jpas" <?= isset($data_header->jpas)? ($data_header->jpas == "2")? "checked" : "" : "" ?> required></td>
-                                    <td style="width:45%">Pasien Luar</td>
-                                </tr>
-                            </table>
-                            <!-- <div class="col-sm-3" style="margin-top: -10px !important;">
-                                <input required type="radio" class="form-check-input" value="1" id="jpas1" name="jpas" placeholder=""> <label for="jpas1" style="margin-left: 20px;">Pasien RS</label>
-                            </div>
-                            <div class="col-sm-3" style="margin-top: -10px !important;">
-                                <input required type="radio" class="form-check-input" value="2" id="jpas2" name="jpas" placeholder=""> <label for="jpas2" style="margin-left: 20px;">Pasien Luar</label>
-                            </div> -->
-                        </div>
-                        <div class="form-group row">
-                            <label for="inputEmail3" class="col-sm-3 col-form-label">Jenis Pemeriksaan</label>
-                            <table class="col-sm-7">
-                                <tr>
-                                    <td style="width:5%;padding-left:10px"><input type="radio" value="1" name="jenisperiksa" <?= isset($data_header->jenisperiksa)? ($data_header->jenisperiksa == "1")? "checked" : "" : "" ?> required></td>
-                                    <td style="width:45%">Rujukan Dokter</td>
-                                    <td style="width:5%;padding-left:10px"><input type="radio" value="2" name="jenisperiksa" <?= isset($data_header->jenisperiksa)? ($data_header->jenisperiksa == "2")? "checked" : "" : "" ?> required></td>
-                                    <td style="width:45%">Permintaan Sendiri</td>
-                                </tr>
-                            </table>
-                            <!-- <div class="col-sm-3 " style="margin-top: -10px !important;">
-                                <input type="radio" required class="form-check-input" value="1" id="jenisperiksa1" name="jenisperiksa" placeholder=""> <label for="jenisperiksa1" style="margin-left: 20px;">Rujukan Dokter</label>
-                            </div>
-                            <div class="col-sm-3" style="margin-top: -10px !important;">
-                                <input type="radio" required class="form-check-input" value="2" id="jenisperiksa2" name="jenisperiksa" placeholder=""> <label for="jenisperiksa2" style="margin-left: 20px;">Permintaan Sendiri</label>
-                            </div> -->
-                        </div>
-                        <div class="form-group row">
-                            <label for="inputEmail3" class="col-sm-3 col-form-label">Pemeriksaan</label>
-                            <table class="col-sm-7">
-                                <tr>
-                                    <td style="width:5%;padding-left:10px"><input type="radio" value="1" name="rujuk" <?= isset($data_header->rujuk)? ($data_header->rujuk == "1")? "checked" : "" : "" ?> required></td>
-                                    <td style="width:45%">Lab Dalam</td>
-                                    <td style="width:5%;padding-left:10px"><input type="radio" value="2" name="rujuk" <?= isset($data_header->rujuk)? ($data_header->rujuk == "2")? "checked" : "" : "" ?> required></td>
-                                    <td style="width:45%">Dikirim Ke Faskes Lain</td>
-                                </tr>
-                            </table>
-                            
-                        </div>
-                        <div class="form-group row">
-                            <label for="diagnosa" class="col-sm-3 col-form-label">Diagnosa</label>
-                            <div class="col-sm-9">
-                                <input type="text" required class="form-control selectpicker" id="diagnosa" name="diagnosa" placeholder="" value="<?= isset($data_header->diagnosa)? $data_header->diagnosa : "" ?>" required>
-                            </div>
-                        </div>
-                        <div class="form-group row">
-                            <label for="drpengirim" class="col-sm-3 col-form-label">Dokter Pengirim</label>
-                            <div class="col-sm-9">
-                                <select required  id="drpengirim" name="drpengirim" class="selectpicker" data-live-search="true" data-width="100%" onkeypress="return tabE(this,event)" >
-                                    <option  value="" selected disabled>-- Pilih Data --</option>
-                                    <?php
-                                        $unit       = $this->session->userdata("unit");
-                                        $kopoli     = isset($data_header->asal)? "AND kopoli = '$data_header->asal'" : "";
-                                        $data_dokter    = $this->db->query("SELECT * FROM dokter WHERE koders = '$unit' $kopoli GROUP BY kodokter")->result();
-                                        
-                                        foreach($data_dokter as $value){
-                                            if(isset($data_header->drpengirim)){
-                                                if($value->kodokter == $data_header->drpengirim){
-                                                    echo '<option value="'. $data_header->drpengirim .'" selected>'. data_master("dokter", array("kodokter" => $data_header->drpengirim, "koders" => $this->session->userdata("unit"), "kopoli" => $data_header->asal))->nadokter .'</option>';
+                            <div class="form-group row">
+                                <label for="drpengirim" class="col-sm-3 col-form-label">Dokter Pengirim</label>
+                                <div class="col-sm-9">
+                                    <select required  id="drpengirim" name="drpengirim" class="selectpicker" data-live-search="true" data-width="100%" onkeypress="return tabE(this,event)" >
+                                        <option  value="" selected disabled>-- Pilih Data --</option>
+                                        <?php
+                                            $unit   = $this->session->userdata("unit");
+                                            $data_dokter    = $this->db->query("SELECT * FROM dokter WHERE koders = '$unit' AND kopoli = '$helab->asal' GROUP BY kodokter")->result();
+                                            foreach($data_dokter as $value){
+                                                if($value->kodokter == $rekmed->kodokter){
+                                                    echo '<option value="'. $rekmed->kodokter .'" selected>'. data_master("dokter", array("kodokter" => $rekmed->kodokter, "koders" => $unit, "kopoli" => $rekmed->kodepos))->nadokter .'</option>';
                                                 } else {
                                                     echo '<option value="'. $value->kodokter .'">'. $value->nadokter .'</option>';
                                                 }
-                                            } else {
+                                            }
+                                        ?>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                                <label for="drperiksa" class="col-sm-3 col-form-label">Dokter Laborat</label>
+                                <div class="col-sm-9">
+                                    <select required id="drperiksa" name="drperiksa" class="selectpicker" data-live-search="true" data-width="100%" onkeypress="return tabE(this,event)" >
+                                        <option  value="" selected disabled>-- Pilih Data --</option>
+                                        <?php
+                                            foreach($dataDokter as $value){
                                                 echo '<option value="'. $value->kodokter .'">'. $value->nadokter .'</option>';
                                             }
-                                        }
-                                    ?>
-                                </select>
+                                        ?>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="inputEmail3" class="col-sm-3 col-form-label">Petugas Lab</label>
+                                <div class="col-sm-9">
+                                    <select required id="kodepetugas" name="kodepetugas" class="selectpicker" data-live-search="true" data-width="100%" onkeypress="return tabE(this,event)" >
+                                        <option  value="" selected disabled>-- Pilih Data --</option>
+                                        <?php
+                                            foreach($petugas as $value){
+                                                echo '<option value="'. $value->nokk .'">'. $value->namapetugas .'</option>';
+                                            }
+                                        ?>
+                                    </select>
+                                </div>
                             </div>
                         </div>
+                        &nbsp;
+                    </div>
+                    <?php else: ?>
+                    <input type="hidden" name="asal" value="<?= isset($data_header->asal)? $data_header->asal : ""  ?>">
+                    <div class="portlet-body" style="padding:20px !important;border-radius:0px !important">
+                        <div class="col-md-6">
+                            <div class="form-group row">
+                                <label for="inputEmail3" class="col-sm-3 col-form-label">No Pemeriksaan</label>
+                                <div class="col-sm-9">
+                                    <input type="email" class="form-control" name="nolaborat" id="nolaborat" value="<?= isset($data_header->nolaborat)? $data_header->nolaborat : "" ?>" readonly>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="tgllab" class="col-sm-3 col-form-label">Tanggal Periksa</label>
+                                <div class="col-sm-9">
+                                    <input type="date" class="form-control" id="tgllab" name="tgllab" placeholder="" value="<?= isset($data_header->tgllab)? date("Y-m-d", strtotime($data_header->tgllab)) : date('Y-m-d'); ?>" required>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="inputEmail3" class="col-sm-3 col-form-label">No Registrasi</label>
+                                <div class="col-sm-5">
+                                    <div class="input-group">
+                                        <input id="noreg" type="text" class="form-control" name="noreg" placeholder="No registrasi" value="<?= isset($data_header->noreg)? $data_header->noreg : "" ?>" readonly>
+                                        <div class="input-group-btn">
+                                            <button class="btn green" type="button" data-toggle="modal" data-target="#noregister"><i class="fa fa-search"></i></button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-sm-4">
+                                    <input type="text" class="form-control" id="rekmed" name="rekmed" placeholder="No rekam medis" value="<?= isset($data_header->rekmed)? $data_header->rekmed : "" ?>" readonly>
+                                </div>
+                            </div>
 
-                        <div class="form-group row">
-                            <label for="drperiksa" class="col-sm-3 col-form-label">Dokter Laborat</label>
-                            <div class="col-sm-9">
-                                <select required id="drperiksa" name="drperiksa" class="selectpicker" data-live-search="true" data-width="100%" onkeypress="return tabE(this,event)" >
-                                    <option  value="" selected disabled>-- Pilih Data --</option>
-                                    <?php
-                                        foreach($dataDokter as $value){
-                                            if(isset($data_header->drperiksa)){
-                                                if($value->kodokter == $data_header->drperiksa){
-                                                    echo '<option value="'. $data_header->drperiksa .'" selected>'. data_master("dokter", array("kodokter" => $data_header->drperiksa, "koders" => $this->session->userdata("unit")))->nadokter .'</option>';
+                            <div class="form-group row">
+                                <label for="namapas" class="col-sm-3 col-form-label">Nama Pasien</label>
+                                <div class="col-sm-9">
+                                    <input type="text" class="form-control" id="namapas" name="namapas" placeholder="" value="<?= isset($data_header->namapas)? $data_header->namapas : "" ?>" readonly>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="tgllahir" class="col-sm-3 col-form-label">Tanggal Lahir</label>
+                                <div class="col-sm-9">
+                                    <input type="date" class="form-control" id="tgllahir" name="tgllahir" placeholder="" value="<?= isset($data_header->tgllahir)? date("Y-m-d", strtotime($data_header->tgllahir)) : "" ?>" readonly required>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="umurth" class="col-sm-3 col-form-label">Umur</label>
+                                <div class="col-sm-9">
+                                    <input type="text" class="form-control" id="umur" name="umur" placeholder="Cth : 20 Tahun 12 Bulan 31 Hari" readonly>
+                                </div>
+                                <!-- <div class="col-sm-3">
+                                    <input type="number" class="form-control" id="umurth" name="umurth" placeholder="Tahun" required>
+                                </div>
+                                <div class="col-sm-3">
+                                    <input type="number" class="form-control" id="umurbl" name="umurbl" placeholder="Bulan" required>
+                                </div>
+                                <div class="col-sm-3">
+                                    <input type="number" class="form-control" id="umurhr" name="umurhr" placeholder="Hari" required>
+                                </div> -->
+                            </div>
+
+                            <div class="form-group row">
+                                <label for="inputEmail3" class="col-sm-3 col-form-label">Jenis Kalamin</label>
+                                <table class="col-sm-7">
+                                    <tr>
+                                        <td style="width:5%;padding-left:10px"><input type="radio" value="1" name="jkel" id="jeniskelamin1" <?= isset($data_header->jkel)? ($data_header->jkel == "1")? "checked" : "" : "" ?> required></td>
+                                        <td style="width:45%">Pria</td>
+                                        <td style="width:5%;padding-left:10px"><input type="radio" value="2" name="jkel" id="jeniskelamin2" <?= isset($data_header->jkel)? ($data_header->jkel == "2")? "checked" : "" : "" ?> required></td>
+                                        <td style="width:45%">Wanita</td>
+                                    </tr>
+                                </table>
+                                <!-- <div class="col-sm-2 " style="margin-top: -10px !important;">
+                                    <input type="radio" class="form-check-input" value="1" name="jkel" id="jenis_kelamin1" placeholder="" required> <label for="jenis_kelamin1" style="margin-left: 20px;">Pria</label>
+                                </div>
+                                <div class="col-sm-2" style="margin-top: -10px !important;">
+                                    <input type="radio" class="form-check-input" value="2" name="jkel" id="jenis_kelamin2" placeholder="" required> <label for="jenis_kelamin2" style="margin-left: 20px;" >Wanita</label>
+                                </div> -->
+                            </div>
+
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-group row">
+                                <label for="orderno" class="col-sm-3 col-form-label">No Order</label>
+                                <div class="col-sm-9">
+                                    <input type="text" class="form-control" id="orderno" name="orderno" placeholder="" value="<?= isset($data_header->orderno)? $data_header->orderno : "" ?>" required readonly>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="inputEmail3" class="col-sm-3 col-form-label">Jenis Pasien</label>
+                                <table class="col-sm-7">
+                                    <tr>
+                                        <td style="width:5%;padding-left:10px"><input type="radio" value="1" name="jpas" <?= isset($data_header->jpas)? ($data_header->jpas == "1")? "checked" : "" : "" ?> required></td>
+                                        <td style="width:45%">Pasien RS</td>
+                                        <td style="width:5%;padding-left:10px"><input type="radio" value="2" name="jpas" <?= isset($data_header->jpas)? ($data_header->jpas == "2")? "checked" : "" : "" ?> required></td>
+                                        <td style="width:45%">Pasien Luar</td>
+                                    </tr>
+                                </table>
+                                <!-- <div class="col-sm-3" style="margin-top: -10px !important;">
+                                    <input required type="radio" class="form-check-input" value="1" id="jpas1" name="jpas" placeholder=""> <label for="jpas1" style="margin-left: 20px;">Pasien RS</label>
+                                </div>
+                                <div class="col-sm-3" style="margin-top: -10px !important;">
+                                    <input required type="radio" class="form-check-input" value="2" id="jpas2" name="jpas" placeholder=""> <label for="jpas2" style="margin-left: 20px;">Pasien Luar</label>
+                                </div> -->
+                            </div>
+                            <div class="form-group row">
+                                <label for="inputEmail3" class="col-sm-3 col-form-label">Jenis Pemeriksaan</label>
+                                <table class="col-sm-7">
+                                    <tr>
+                                        <td style="width:5%;padding-left:10px"><input type="radio" value="1" name="jenisperiksa" <?= isset($data_header->jenisperiksa)? ($data_header->jenisperiksa == "1")? "checked" : "" : "" ?> required></td>
+                                        <td style="width:45%">Rujukan Dokter</td>
+                                        <td style="width:5%;padding-left:10px"><input type="radio" value="2" name="jenisperiksa" <?= isset($data_header->jenisperiksa)? ($data_header->jenisperiksa == "2")? "checked" : "" : "" ?> required></td>
+                                        <td style="width:45%">Permintaan Sendiri</td>
+                                    </tr>
+                                </table>
+                                <!-- <div class="col-sm-3 " style="margin-top: -10px !important;">
+                                    <input type="radio" required class="form-check-input" value="1" id="jenisperiksa1" name="jenisperiksa" placeholder=""> <label for="jenisperiksa1" style="margin-left: 20px;">Rujukan Dokter</label>
+                                </div>
+                                <div class="col-sm-3" style="margin-top: -10px !important;">
+                                    <input type="radio" required class="form-check-input" value="2" id="jenisperiksa2" name="jenisperiksa" placeholder=""> <label for="jenisperiksa2" style="margin-left: 20px;">Permintaan Sendiri</label>
+                                </div> -->
+                            </div>
+                            <div class="form-group row">
+                                <label for="inputEmail3" class="col-sm-3 col-form-label">Pemeriksaan</label>
+                                <table class="col-sm-7">
+                                    <tr>
+                                        <td style="width:5%;padding-left:10px"><input type="radio" value="1" name="rujuk" <?= isset($data_header->rujuk)? ($data_header->rujuk == "1")? "checked" : "" : "" ?> required></td>
+                                        <td style="width:45%">Lab Dalam</td>
+                                        <td style="width:5%;padding-left:10px"><input type="radio" value="2" name="rujuk" <?= isset($data_header->rujuk)? ($data_header->rujuk == "2")? "checked" : "" : "" ?> required></td>
+                                        <td style="width:45%">Dikirim Ke Faskes Lain</td>
+                                    </tr>
+                                </table>
+                                
+                            </div>
+                            <div class="form-group row">
+                                <label for="diagnosa" class="col-sm-3 col-form-label">Diagnosa</label>
+                                <div class="col-sm-9">
+                                    <input type="text" required class="form-control selectpicker" id="diagnosa" name="diagnosa" placeholder="" value="<?= isset($data_header->diagnosa)? $data_header->diagnosa : "" ?>" required>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="drpengirim" class="col-sm-3 col-form-label">Dokter Pengirim</label>
+                                <div class="col-sm-9">
+                                    <select required  id="drpengirim" name="drpengirim" class="selectpicker" data-live-search="true" data-width="100%" onkeypress="return tabE(this,event)" >
+                                        <option  value="" selected disabled>-- Pilih Data --</option>
+                                        <?php
+                                            $unit       = $this->session->userdata("unit");
+                                            $kopoli     = isset($data_header->asal)? "AND kopoli = '$data_header->asal'" : "";
+                                            $data_dokter    = $this->db->query("SELECT * FROM dokter WHERE koders = '$unit' $kopoli GROUP BY kodokter")->result();
+                                            
+                                            foreach($data_dokter as $value){
+                                                if(isset($data_header->drpengirim)){
+                                                    if($value->kodokter == $data_header->drpengirim){
+                                                        echo '<option value="'. $data_header->drpengirim .'" selected>'. data_master("dokter", array("kodokter" => $data_header->drpengirim, "koders" => $this->session->userdata("unit"), "kopoli" => $data_header->asal))->nadokter .'</option>';
+                                                    } else {
+                                                        echo '<option value="'. $value->kodokter .'">'. $value->nadokter .'</option>';
+                                                    }
                                                 } else {
                                                     echo '<option value="'. $value->kodokter .'">'. $value->nadokter .'</option>';
                                                 }
-                                            } else {
-                                                echo '<option value="'. $value->kodokter .'">'. $value->nadokter .'</option>';
                                             }
-                                        }
-                                    ?>
-                                </select>
+                                        ?>
+                                    </select>
+                                </div>
                             </div>
-                        </div>
-                        <div class="form-group row">
-                            <label for="inputEmail3" class="col-sm-3 col-form-label">Petugas Lab</label>
-                            <div class="col-sm-9">
-                                <select required id="kodepetugas" name="kodepetugas" class="selectpicker" data-live-search="true" data-width="100%" onkeypress="return tabE(this,event)" >
-                                    <option  value="" selected disabled>-- Pilih Data --</option>
-                                    <?php
-                                        foreach($petugas as $value){
-                                            if(isset($data_header->kodepetugas)){
-                                                if($value->nokk == $data_header->kodepetugas){
-                                                    echo '<option value="'. $data_header->kodepetugas .'" selected>'. data_master("tbl_petugas", array("nokk" => $data_header->kodepetugas, "kodepos" => "LABOR"))->namapetugas .'</option>';
+
+                            <div class="form-group row">
+                                <label for="drperiksa" class="col-sm-3 col-form-label">Dokter Laborat</label>
+                                <div class="col-sm-9">
+                                    <select required id="drperiksa" name="drperiksa" class="selectpicker" data-live-search="true" data-width="100%" onkeypress="return tabE(this,event)" >
+                                        <option  value="" selected disabled>-- Pilih Data --</option>
+                                        <?php
+                                            foreach($dataDokter as $value){
+                                                if(isset($data_header->drperiksa)){
+                                                    if($value->kodokter == $data_header->drperiksa){
+                                                        echo '<option value="'. $data_header->drperiksa .'" selected>'. data_master("dokter", array("kodokter" => $data_header->drperiksa, "koders" => $this->session->userdata("unit")))->nadokter .'</option>';
+                                                    } else {
+                                                        echo '<option value="'. $value->kodokter .'">'. $value->nadokter .'</option>';
+                                                    }
+                                                } else {
+                                                    echo '<option value="'. $value->kodokter .'">'. $value->nadokter .'</option>';
+                                                }
+                                            }
+                                        ?>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="inputEmail3" class="col-sm-3 col-form-label">Petugas Lab</label>
+                                <div class="col-sm-9">
+                                    <select required id="kodepetugas" name="kodepetugas" class="selectpicker" data-live-search="true" data-width="100%" onkeypress="return tabE(this,event)" >
+                                        <option  value="" selected disabled>-- Pilih Data --</option>
+                                        <?php
+                                            foreach($petugas as $value){
+                                                if(isset($data_header->kodepetugas)){
+                                                    if($value->nokk == $data_header->kodepetugas){
+                                                        echo '<option value="'. $data_header->kodepetugas .'" selected>'. data_master("tbl_petugas", array("nokk" => $data_header->kodepetugas, "kodepos" => "LABOR"))->namapetugas .'</option>';
+                                                    } else {
+                                                        echo '<option value="'. $value->nokk .'">'. $value->namapetugas .'</option>';
+                                                    }
                                                 } else {
                                                     echo '<option value="'. $value->nokk .'">'. $value->namapetugas .'</option>';
                                                 }
-                                            } else {
-                                                echo '<option value="'. $value->nokk .'">'. $value->namapetugas .'</option>';
                                             }
-                                        }
-                                    ?>
-                                </select>
+                                        ?>
+                                    </select>
+                                </div>
                             </div>
                         </div>
+                        &nbsp;
                     </div>
-                    &nbsp;
-                </div>
-                <?php endif; ?>
+                    <?php endif; ?>
 
-                <div class="portlet-body" style="padding:20px !important;margin-bottom:0px !important;border-radius:0px !important">
-                    <div class="form-body">
-                        <div class="tabbable tabbable-custom tabbable-full-width">
-                            <ul class="nav nav-tabs">
-                                <li class="active" id="billing">
-                                    <a href="<?= "/lab/addDataPemeriksaan/". $_SERVER["QUERY_STRING"] ?>#tab1" data-toggle="tab" style="font-weight:bold">BILLING</a>
-                                </li>
-                                <li class="" id="bhp">
-                                    <a href="<?= "/lab/addDataPemeriksaan/". $_SERVER["QUERY_STRING"] ?>#tab2" data-toggle="tab" style="font-weight:bold">BHP</a>
-                                </li>
-                                <li class="" id="hasil">
-                                    <a href="<?= "/lab/addDataPemeriksaan/". $_SERVER["QUERY_STRING"] ?>#tab3" data-toggle="tab" style="font-weight:bold">HASIL</a>
-                                </li>
-                                <!-- <li class="" id="">
-                                    <a href="<?= "/lab/addDataPemeriksaan/". $_SERVER["QUERY_STRING"] ?>#tab4" data-toggle="tab" style="font-weight:bold">Test Hasil</a>
-                                </li> -->
-                            </ul>
+                    <div class="portlet-body" style="padding:20px !important;margin-bottom:0px !important;border-radius:0px !important">
+                        <div class="form-body">
+                            <div class="tabbable tabbable-custom tabbable-full-width">
+                                <ul class="nav nav-tabs">
+                                    <li class="active" id="billing">
+                                        <a href="<?= "/lab/addDataPemeriksaan/". $_SERVER["QUERY_STRING"] ?>#tab1" data-toggle="tab" style="font-weight:bold">BILLING</a>
+                                    </li>
+                                    <li class="" id="bhp">
+                                        <a href="<?= "/lab/addDataPemeriksaan/". $_SERVER["QUERY_STRING"] ?>#tab2" data-toggle="tab" style="font-weight:bold">BHP</a>
+                                    </li>
+                                    <li class="" id="hasil">
+                                        <a href="<?= "/lab/addDataPemeriksaan/". $_SERVER["QUERY_STRING"] ?>#tab3" data-toggle="tab" style="font-weight:bold">HASIL</a>
+                                    </li>
+                                    <!-- <li class="" id="">
+                                        <a href="<?= "/lab/addDataPemeriksaan/". $_SERVER["QUERY_STRING"] ?>#tab4" data-toggle="tab" style="font-weight:bold">Test Hasil</a>
+                                    </li> -->
+                                </ul>
+                            </div>
                         </div>
-                    </div>
 
-                    <div class="tab-content">
-                        <div class="tab-pane active" id="tab1">
-                            <div class="portlet-body" style="padding:0px 10px 0px 10px !important">
-                                <h4 style="color:green"><b>BILLING</b></h4>
-                                <hr />
-                                <div class="table-repsonsive">
-                                    <table class="table table-bordered table-striped" id="billing_table" style="width:100%">
-                                        <thead class="page-breadcrumb breadcrumb">
-                                            <tr class="title-white">
-                                                <th style="width:5%">Delete</th>
-                                                <th style="width:20%">Tindakan</th>
-                                                <th style="width:15%">Qty</th>
-                                                <th style="width:15%">Tarif Rp</th>
-                                                <th style="width:5%">Cito</th>
-                                                <th style="width:15%">Cito Rp</th>
-                                                <th style="width:20%">Total Biaya</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody id="billing_body">
-                                            <?php 
-                                                if(isset($elab)): 
-
-                                                $noelab = 1;
-                                                foreach($delab as $dkey => $dval):
-                                            ?>
-                                                <tr id="billing_row1">
-                                                    <td>
-                                                        <center>
-                                                            <button type="button" class="btn red" onclick="hapusBilling(<?= $noelab ?>)"><i class="fa fa-trash"></i></button>
-                                                        </center>
-                                                        <input type="hidden" name="billing_tarifrs[]" id="billing_tarifrs<?= $noelab ?>" value="<?= $dval->tarif ?>">
-                                                        <input type="hidden" name="billing_tarifdr[]" id="billing_tarifdr<?= $noelab ?>" value="<?= $dval->tarif ?>">
-                                                        <input type="hidden" id="billing_citorphide<?= $noelab ?>" value="">
-                                                    </td>
-                                                    <td>
-                                                        <select type="text" class="form-control selectpicker" name="billing_tindakan[]" id="billing_tindakan<?= $noelab ?>" data-live-search="true" data-width="100%" onkeypress="return tabE(this,event)" onchange="show_tindakan(this.value, <?= $noelab ?>)">
-                                                            <option value="">--- Pilih Tindakan ---</option>
-                                                            <?php foreach($listtindakan as $leval): ?>
-                                                                <?php if($leval->kodeid == $dval->kodetarif): ?>
-                                                                    <option value="<?= $dval->kodetarif ?>" selected>[ <?= $dval->kodetarif ?> ] - [ <?= $dval->tindakan ?> ]</option>
-                                                                <?php else: ?>
-                                                                    <option value="<?= $leval->kodeid ?>"><?= $leval->text ?></opiton>
-                                                                <?php endif; ?>
-                                                            <?php endforeach; ?>
-                                                        </select>
-                                                    </td>
-                                                    <td><input type="text" class="form-control" name="billing_qty[]" id="billing_qty<?= $noelab ?>" value="1" onkeyup="qty(<?= $noelab ?>)"></td>
-                                                    <td><input type="text" class="form-control" name="billing_tarifrp[]" id="billing_tarifrp<?= $noelab ?>" value="<?= number_format($dval->tarifrs + $dval->tarifdr, 2, '.', ',') ?>" readonly></td>
-                                                    <td>
-                                                        <center><input type="checkbox" class="form-checkbox" id="billing_cito<?= $noelab ?>" onchange="cito(<?= $noelab ?>)"></center>
-                                                        <input type="hidden" name="billing_cito[]" id="billing_citohide<?= $noelab ?>" value="0">
-                                                    </td>
-                                                    <td><input type="text" class="form-control" name="billing_citorp[]" id="billing_citorp<?= $noelab ?>" readonly></td>
-                                                    <td><input type="text" class="form-control" name="billing_totalbiaya[]" id="billing_totalbiaya<?= $noelab ?>" value="<?= number_format($dval->tarifrs + $dval->tarifdr, 2, '.', ',') ?>"></td>
+                        <div class="tab-content">
+                            <div class="tab-pane active" id="tab1">
+                                <div class="portlet-body" style="padding:0px 10px 0px 10px !important">
+                                    <h4 style="color:green"><b>BILLING</b></h4>
+                                    <hr />
+                                    <div class="table-repsonsive">
+                                        <table class="table table-bordered table-striped" id="billing_table" style="width:100%">
+                                            <thead class="page-breadcrumb breadcrumb">
+                                                <tr class="title-white">
+                                                    <th style="width:5%">Delete</th>
+                                                    <th style="width:20%">Tindakan</th>
+                                                    <th style="width:15%">Qty</th>
+                                                    <th style="width:15%">Tarif Rp</th>
+                                                    <th style="width:5%">Cito</th>
+                                                    <th style="width:15%">Cito Rp</th>
+                                                    <th style="width:20%">Total Biaya</th>
                                                 </tr>
-                                            <?php $noelab++; endforeach; else: ?>
-                                                <?php if($status == "save"){ ?>
-                                                    <tr id="billing_row1">
-                                                        <td>
-                                                            <center>
-                                                                <button type="button" class="btn red" onclick="hapusBilling(1)"><i class="fa fa-trash"></i></button>
-                                                            </center>
-                                                            <input type="hidden" name="billing_tarifrs[]" id="billing_tarifrs1" value="">
-                                                            <input type="hidden" name="billing_tarifdr[]" id="billing_tarifdr1" value="">
-                                                            <input type="hidden" id="billing_citorphide1" value="">
-                                                        </td>
-                                                        <td>
-                                                            <select type="text" class="form-control selectpicker" name="billing_tindakan[]" id="billing_tindakan1" data-live-search="true" data-width="100%" onkeypress="return tabE(this,event)" onchange="show_tindakan(this.value, 1)">
-                                                                <option value="">--- Pilih Tindakan ---</option>
-                                                                <?php foreach($listtindakan as $leval): ?>
-                                                                    <option value="<?= $leval->kodeid ?>"><?= $leval->text ?></opiton>
-                                                                <?php endforeach; ?>
-                                                            </select>
-                                                        </td>
-                                                        <td><input type="text" class="form-control" name="billing_qty[]" id="billing_qty1" value="1" onkeyup="qty(1)"></td>
-                                                        <td><input type="text" class="form-control" name="billing_tarifrp[]" id="billing_tarifrp1" readonly></td>
-                                                        <td>
-                                                            <center><input type="checkbox" class="form-checkbox" id="billing_cito1" onchange="cito(1)"></center>
-                                                            <input type="hidden" name="billing_cito[]" id="billing_citohide1" value="0">
-                                                        </td>
-                                                        <td><input type="text" class="form-control" name="billing_citorp[]" id="billing_citorp1" readonly></td>
-                                                        <td><input type="text" class="form-control" name="billing_totalbiaya[]" id="billing_totalbiaya1"></td>
-                                                    </tr>
+                                            </thead>
+                                            <tbody id="billing_body">
                                                 <?php 
-                                                    } else {
-                                                        $nobill = 1;
-                                                        $list_billing   = $this->db->query("SELECT * FROM tbl_dlab WHERE nolaborat = '$data_header->nolaborat'")->result();
+                                                    if(isset($elab)): 
 
-                                                        foreach($list_billing as $lbkey => $lbval){
+                                                    $noelab = 1;
+                                                    foreach($delab as $dkey => $dval):
                                                 ?>
-                                                    <tr id="billing_row<?= $nobill ?>">
+                                                    <tr id="billing_row<?= $noelab ?>">
                                                         <td>
                                                             <center>
-                                                                <button type="button" class="btn red" onclick="hapusBilling(<?= $nobill ?>)"><i class="fa fa-trash"></i></button>
+                                                                <button type="button" class="btn red" onclick="hapusBilling(<?= $noelab ?>)"><i class="fa fa-trash"></i></button>
                                                             </center>
-                                                            <input type="hidden" name="billing_tarifrs[]" id="billing_tarifrs<?= $nobill ?>" value="<?= number_format($lbval->tarifrs, 2, '.', ',') ?>">
-                                                            <input type="hidden" name="billing_tarifdr[]" id="billing_tarifdr<?= $nobill ?>" value="<?= number_format($lbval->tarifdr, 2, '.', ',') ?>">
-                                                            <input type="hidden" id="billing_citorphide<?= $nobill ?>" value="<?= number_format($lbval->citorp, 2, '.', ',') ?>">
+                                                            <input type="hidden" name="billing_tarifrs[]" id="billing_tarifrs<?= $noelab ?>" value="<?= $dval->tarifrs ?>">
+                                                            <input type="hidden" name="billing_tarifdr[]" id="billing_tarifdr<?= $noelab ?>" value="<?= $dval->tarifdr ?>">
+                                                            <input type="hidden" id="billing_citorphide<?= $noelab ?>" value="">
                                                         </td>
                                                         <td>
-                                                            <select type="text" class="form-control selectpicker" name="billing_tindakan[]" id="billing_tindakan<?= $nobill ?>" data-live-search="true" data-width="100%" onkeypress="return tabE(this,event)" onchange="show_tindakan(this.value, <?= $nobill ?>)">
+                                                            <select type="text" class="form-control selectpicker" name="billing_tindakan[]" id="billing_tindakan<?= $noelab ?>" data-live-search="true" data-width="100%" onkeypress="return tabE(this,event)" onchange="show_tindakan(this.value, <?= $noelab ?>)">
                                                                 <option value="">--- Pilih Tindakan ---</option>
                                                                 <?php foreach($listtindakan as $leval): ?>
-                                                                    <?php if($leval->kodeid == $lbval->kodetarif): ?>
-                                                                        <option value="<?= $lbval->kodetarif ?>" selected>
-                                                                            [<?= $lbval->kodetarif?>] - [<?= data_master("daftar_tarif_nonbedah", array("kodetarif" => $lbval->kodetarif, "kodepos" => "LABOR"))->tindakan ?>]
-                                                                        </opiton>
+                                                                    <?php if($leval->kodeid == $dval->kodetarif): ?>
+                                                                        <option value="<?= $dval->kodetarif ?>" selected>[ <?= $dval->kodetarif ?> ] - [ <?= $dval->tindakan ?> ]</option>
                                                                     <?php else: ?>
                                                                         <option value="<?= $leval->kodeid ?>"><?= $leval->text ?></opiton>
                                                                     <?php endif; ?>
                                                                 <?php endforeach; ?>
                                                             </select>
                                                         </td>
-                                                        <td><input type="text" class="form-control" name="billing_qty[]" id="billing_qty<?= $nobill ?>" onkeyup="qty(<?= $nobill ?>)" value="<?= $lbval->qty ?>"></td>
-                                                        <td><input type="text" class="form-control" name="billing_tarifrp[]" id="billing_tarifrp<?= $nobill ?>" value="<?= number_format($lbval->tarifrp, 2, '.', ',') ?>" readonly></td>
+                                                        <td><input type="text" class="form-control" name="billing_qty[]" id="billing_qty<?= $noelab ?>" value="1" onkeyup="qty(<?= $noelab ?>)"></td>
+                                                        <td><input type="text" class="form-control" name="billing_tarifrp[]" id="billing_tarifrp<?= $noelab ?>" value="<?= number_format($dval->tarifrs + $dval->tarifdr, 2, '.', ',') ?>" readonly></td>
                                                         <td>
-                                                            <center><input type="checkbox" class="form-checkbox" id="billing_cito<?= $nobill ?>" value="<?= $lbval->jenis ?>" onchange="cito(<?= $nobill ?>)" <?= ($lbval->jenis == "1")? "checked" : "" ?>></center>
-                                                            <input type="hidden" name="billing_cito[]" id="billing_citohide<?= $nobill ?>" value="<?= $lbval->jenis ?>">
+                                                            <center><input type="checkbox" class="form-checkbox" id="billing_cito<?= $noelab ?>" onchange="cito(<?= $noelab ?>)"></center>
+                                                            <input type="hidden" name="billing_cito[]" id="billing_citohide<?= $noelab ?>" value="0">
                                                         </td>
-                                                        <td><input type="text" class="form-control" name="billing_citorp[]" id="billing_citorp<?= $nobill ?>" value="<?= number_format($lbval->citorp, 2, '.', ',') ?>" readonly></td>
-                                                        <td><input type="text" class="form-control" name="billing_totalbiaya[]" id="billing_totalbiaya<?= $nobill ?>" value="<?= number_format($lbval->totalrp, 2, '.', ',') ?>"></td>
+                                                        <td><input type="text" class="form-control" name="billing_citorp[]" id="billing_citorp<?= $noelab ?>" readonly></td>
+                                                        <td><input type="text" class="form-control" name="billing_totalbiaya[]" id="billing_totalbiaya<?= $noelab ?>" value="<?= number_format($dval->tarifrs + $dval->tarifdr, 2, '.', ',') ?>"></td>
                                                     </tr>
-                                                <?php $nobill++; } } ?>
-                                            <?php endif; ?>
-                                        </tbody>
-                                    </table>
-                                    <br />
-                                    <div style="position:relative">
-                                        <div class="form-inline" style="position:absolute;right:0">
-                                            <label for="grand_total"><b>Total Billing</b></label>&emsp;
-                                            <input type="text" class="form-control" id="grand_total" readonly>
-                                        </div>
-                                        <button class="btn green" type="button" onclick="tambahBilling()"><i class="fa fa-plus fa-fw"></i>&nbsp; Tambah Tindakan</button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="tab-pane" id="tab2">
-                            <div class="portlet-body" style="padding:0px 10px 0px 10px !important">
-                                <h4 style="color:green"><b>BHP</b></h4>
-                                <hr />
-                                <div class="table-repsonsive">
-                                    <table class="table table-bordered table-striped" id="bhp_table" style="width:100%">
-                                        <thead class="page-breadcrumb breadcrumb">
-                                            <tr class="title-white">
-                                                <th style="width:5%">Delete</th>
-                                                <th style="width:5%">Bill</th>
-                                                <th style="width:20%">Nama Barang</th>
-                                                <th style="width:10%">Satuan</th>
-                                                <th style="width:10%">Qty</th>
-                                                <th style="width:17%">Harga</th>
-                                                <th style="width:17%">Total Harga</th>
-                                                <th style="width:16%">Lokasi Barang</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody id="bhp_body">
-                                            <?php if($status == "save"){ ?>
-                                            <tr id="bhp_row1">
-                                                <td>
-                                                    <center>
-                                                        <button type="button" class="btn red" onclick="hapusBHP(1)"><i class="fa fa-trash"></i></button>
-                                                    </center>
-                                                </td>
-                                                <td>
-                                                    <center><input type="checkbox" class="form-checkbox" id="bhp_bill1" onchange="bill(1)"></center>
-                                                    <input type="hidden" name="bhp_bill[]" id="bhp_billhide1" value="0">
-                                                </td>
-                                                <td>
-                                                    <select type="text" class="form-control select2_el_alkes input-medium" name="bhp_barang[]" id="bhp_barang1" onchange="show_bhp(this.value, 1)"></select>
-                                                </td>
-                                                <td><input type="text" class="form-control" name="bhp_satuan[]" id="bhp_satuan1" readonly></td>
-                                                <td><input type="text" class="form-control" name="bhp_qty[]" id="bhp_qty1" onkeyup="qtyBHP(1)" value="1"></td>
-                                                <td><input type="text" class="form-control" name="bhp_harga[]" id="bhp_harga1" readonly></td>
-                                                <td><input type="text" class="form-control" name="bhp_total[]" id="bhp_totalharga1" readonly></td>
-                                                <td><input type="text" class="form-control" name="bhp_gudang[]" id="bhp_gudang1" value="LABOR"></td>
-                                            </tr>
-                                            <?php 
-                                                } else { 
-                                                    $nobhp      = 1;
-                                                    $list_bhp   = $this->db->query("SELECT * FROM tbl_alkestransaksi WHERE notr = '$data_header->nolaborat'")->result();
+                                                <?php $noelab++; endforeach; else: ?>
+                                                    <?php if($status == "save"){ ?>
+                                                        <tr id="billing_row1">
+                                                            <td>
+                                                                <center>
+                                                                    <button type="button" class="btn red" onclick="hapusBilling(1)"><i class="fa fa-trash"></i></button>
+                                                                </center>
+                                                                <input type="hidden" name="billing_tarifrs[]" id="billing_tarifrs1" value="">
+                                                                <input type="hidden" name="billing_tarifdr[]" id="billing_tarifdr1" value="">
+                                                                <input type="hidden" id="billing_citorphide1" value="">
+                                                            </td>
+                                                            <td>
+                                                                <select type="text" class="form-control selectpicker" name="billing_tindakan[]" id="billing_tindakan1" data-live-search="true" data-width="100%" onkeypress="return tabE(this,event)" onchange="show_tindakan(this.value, 1)">
+                                                                    <option value="">--- Pilih Tindakan ---</option>
+                                                                    <?php foreach($listtindakan as $leval): ?>
+                                                                        <option value="<?= $leval->kodeid ?>"><?= $leval->text ?></opiton>
+                                                                    <?php endforeach; ?>
+                                                                </select>
+                                                            </td>
+                                                            <td><input type="text" class="form-control" name="billing_qty[]" id="billing_qty1" value="1" onkeyup="qty(1)"></td>
+                                                            <td><input type="text" class="form-control" name="billing_tarifrp[]" id="billing_tarifrp1" readonly></td>
+                                                            <td>
+                                                                <center><input type="checkbox" class="form-checkbox" id="billing_cito1" onchange="cito(1)"></center>
+                                                                <input type="hidden" name="billing_cito[]" id="billing_citohide1" value="0">
+                                                            </td>
+                                                            <td><input type="text" class="form-control" name="billing_citorp[]" id="billing_citorp1" readonly></td>
+                                                            <td><input type="text" class="form-control" name="billing_totalbiaya[]" id="billing_totalbiaya1"></td>
+                                                        </tr>
+                                                    <?php 
+                                                        } else {
+                                                            $nobill = 1;
+                                                            $list_billing   = $this->db->query("SELECT * FROM tbl_dlab WHERE nolaborat = '$data_header->nolaborat'")->result();
 
-                                                    foreach($list_bhp as $lbkey => $lbval){
-                                            ?>
-                                            <tr id="bhp_row1">
-                                                <td>
-                                                    <center>
-                                                        <button type="button" class="btn red" onclick="hapusBHP(<?= $nobhp ?>)"><i class="fa fa-trash"></i></button>
-                                                    </center>
-                                                </td>
-                                                <td>
-                                                    <center><input type="checkbox" class="form-checkbox" id="bhp_bill<?= $nobhp ?>" onchange="bill(<?= $nobhp ?>)" <?= ($lbval->dibebankan == "1")? "checked" : "" ?>></center>
-                                                    <input type="hidden" name="bhp_bill[]" id="bhp_billhide<?= $nobhp ?>" value="<?= $lbval->dibebankan ?>">
-                                                </td>
-                                                <td>
-                                                    <select type="text" class="form-control select2_el_alkes input-medium" name="bhp_bhp_barang[]" id="bhp_barang<?= $nobhp ?>" onchange="show_bhp(this.value, <?= $nobhp ?>)">
-                                                        <option value="<?= $lbval->kodeobat ?>" selected>
-                                                            <?php $kodeobat = data_master("tbl_barang", array("kodebarang" => $lbval->kodeobat)); ?>
-                                                            [ <?= $kodeobat->kodebarang ?> ] - [ <?= $kodeobat->namabarang ?> ]
-                                                        </opiton>
-                                                    </select>
-                                                </td>
-                                                <td><input type="text" class="form-control" name="bhp_satuan[]" value="<?= $lbval->satuan ?>" id="bhp_satuan<?= $nobhp ?>" readonly></td>
-                                                <td><input type="text" class="form-control" name="bhp_qty[]" value="<?= number_format($lbval->qty, 0 ,',' ,'.') ?>" id="bhp_qty<?= $nobhp ?>" onkeyup="qtyBHP(<?= $nobhp ?>)"></td>
-                                                <td><input type="text" class="form-control" name="bhp_harga[]" value="<?= number_format($lbval->harga, 2 ,'.', ',') ?>" id="bhp_harga<?= $nobhp ?>" readonly></td>
-                                                <td><input type="text" class="form-control" name="bhp_total[]" value="<?= number_format($lbval->totalharga, 2 ,'.', ',') ?>" id="bhp_totalharga<?= $nobhp ?>" readonly></td>
-                                                <td><input type="text" class="form-control" name="bhp_gudang[]" value="<?= $lbval->gudang ?>" id="bhp_gudang<?= $nobhp ?>" value="LABOR"></td>
-                                            </tr>
-                                            <?php $nobhp++; } } ?>
-                                        </tbody>
-                                    </table>
-                                    <br />
-                                    <div style="position:relative">
-                                        <div class="form-inline" style="position:absolute;right:0">
-                                            <label for="grand_total_bhp"><b>Total</b></label>&emsp;
-                                            <input type="text" class="form-control" id="grand_total_bhp" readonly>
+                                                            foreach($list_billing as $lbkey => $lbval){
+                                                    ?>
+                                                        <tr id="billing_row<?= $nobill ?>">
+                                                            <td>
+                                                                <center>
+                                                                    <button type="button" class="btn red" onclick="hapusBilling(<?= $nobill ?>)"><i class="fa fa-trash"></i></button>
+                                                                </center>
+                                                                <input type="hidden" name="billing_tarifrs[]" id="billing_tarifrs<?= $nobill ?>" value="<?= number_format($lbval->tarifrs, 2, '.', ',') ?>">
+                                                                <input type="hidden" name="billing_tarifdr[]" id="billing_tarifdr<?= $nobill ?>" value="<?= number_format($lbval->tarifdr, 2, '.', ',') ?>">
+                                                                <input type="hidden" id="billing_citorphide<?= $nobill ?>" value="<?= number_format($lbval->citorp, 2, '.', ',') ?>">
+                                                            </td>
+                                                            <td>
+                                                                <select type="text" class="form-control selectpicker" name="billing_tindakan[]" id="billing_tindakan<?= $nobill ?>" data-live-search="true" data-width="100%" onkeypress="return tabE(this,event)" onchange="show_tindakan(this.value, <?= $nobill ?>)">
+                                                                    <option value="">--- Pilih Tindakan ---</option>
+                                                                    <?php foreach($listtindakan as $leval): ?>
+                                                                        <?php if($leval->kodeid == $lbval->kodetarif): ?>
+                                                                            <option value="<?= $lbval->kodetarif ?>" selected>
+                                                                                [<?= $lbval->kodetarif?>] - [<?= data_master("daftar_tarif_nonbedah", array("kodetarif" => $lbval->kodetarif, "kodepos" => "LABOR"))->tindakan ?>]
+                                                                            </opiton>
+                                                                        <?php else: ?>
+                                                                            <option value="<?= $leval->kodeid ?>"><?= $leval->text ?></opiton>
+                                                                        <?php endif; ?>
+                                                                    <?php endforeach; ?>
+                                                                </select>
+                                                            </td>
+                                                            <td><input type="text" class="form-control" name="billing_qty[]" id="billing_qty<?= $nobill ?>" onkeyup="qty(<?= $nobill ?>)" value="<?= $lbval->qty ?>"></td>
+                                                            <td><input type="text" class="form-control" name="billing_tarifrp[]" id="billing_tarifrp<?= $nobill ?>" value="<?= number_format($lbval->tarifrp, 2, '.', ',') ?>" readonly></td>
+                                                            <td>
+                                                                <center><input type="checkbox" class="form-checkbox" id="billing_cito<?= $nobill ?>" value="<?= $lbval->jenis ?>" onchange="cito(<?= $nobill ?>)" <?= ($lbval->jenis == "1")? "checked" : "" ?>></center>
+                                                                <input type="hidden" name="billing_cito[]" id="billing_citohide<?= $nobill ?>" value="<?= $lbval->jenis ?>">
+                                                            </td>
+                                                            <td><input type="text" class="form-control" name="billing_citorp[]" id="billing_citorp<?= $nobill ?>" value="<?= number_format($lbval->citorp, 2, '.', ',') ?>" readonly></td>
+                                                            <td><input type="text" class="form-control" name="billing_totalbiaya[]" id="billing_totalbiaya<?= $nobill ?>" value="<?= number_format($lbval->totalrp, 2, '.', ',') ?>"></td>
+                                                        </tr>
+                                                    <?php $nobill++; } } ?>
+                                                <?php endif; ?>
+                                            </tbody>
+                                        </table>
+                                        <br />
+                                        <div style="position:relative">
+                                            <div class="form-inline" style="position:absolute;right:0">
+                                                <label for="grand_total"><b>Total Billing</b></label>&emsp;
+                                                <input type="text" class="form-control" id="grand_total" readonly>
+                                            </div>
+                                            <button class="btn green" type="button" onclick="tambahBilling()"><i class="fa fa-plus fa-fw"></i>&nbsp; Tambah Tindakan</button>
                                         </div>
-                                        <button class="btn green" type="button" onclick="tambahBHP()"><i class="fa fa-plus fa-fw"></i>&nbsp; Tambah Barang</button>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="tab-pane" id="tab3">
-                            <?php if($status == "save"): ?>
-                                <div class="alert alert-danger text-center">
-                                    <b><?= strtoupper("Isi Billing Terlebih Dahulu") ?></b>
+                            <div class="tab-pane" id="tab2">
+                                <div class="portlet-body" style="padding:0px 10px 0px 10px !important">
+                                    <h4 style="color:green"><b>BHP</b></h4>
+                                    <hr />
+                                    <div class="table-repsonsive">
+                                        <table class="table table-bordered table-striped" id="bhp_table" style="width:100%">
+                                            <thead class="page-breadcrumb breadcrumb">
+                                                <tr class="title-white">
+                                                    <th style="width:5%">Delete</th>
+                                                    <th style="width:5%">Bill</th>
+                                                    <th style="width:20%">Nama Barang</th>
+                                                    <th style="width:10%">Satuan</th>
+                                                    <th style="width:10%">Qty</th>
+                                                    <th style="width:17%">Harga</th>
+                                                    <th style="width:17%">Total Harga</th>
+                                                    <th style="width:16%">Lokasi Barang</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="bhp_body">
+                                                <?php if($status == "save"){ ?>
+                                                <tr id="bhp_row1">
+                                                    <td>
+                                                        <center>
+                                                            <button type="button" class="btn red" onclick="hapusBHP(1)"><i class="fa fa-trash"></i></button>
+                                                        </center>
+                                                    </td>
+                                                    <td>
+                                                        <center><input type="checkbox" class="form-checkbox" id="bhp_bill1" onchange="bill(1)"></center>
+                                                        <input type="hidden" name="bhp_bill[]" id="bhp_billhide1" value="0">
+                                                    </td>
+                                                    <td>
+                                                        <select type="text" class="form-control select2_el_alkes input-medium" name="bhp_barang[]" id="bhp_barang1" onchange="show_bhp(this.value, 1)"></select>
+                                                    </td>
+                                                    <td><input type="text" class="form-control" name="bhp_satuan[]" id="bhp_satuan1" readonly></td>
+                                                    <td><input type="text" class="form-control" name="bhp_qty[]" id="bhp_qty1" onkeyup="qtyBHP(1)" value="1"></td>
+                                                    <td><input type="text" class="form-control" name="bhp_harga[]" id="bhp_harga1" readonly></td>
+                                                    <td><input type="text" class="form-control" name="bhp_total[]" id="bhp_totalharga1" readonly></td>
+                                                    <td><input type="text" class="form-control" name="bhp_gudang[]" id="bhp_gudang1" value="LABOR"></td>
+                                                </tr>
+                                                <?php 
+                                                    } else { 
+                                                        $nobhp      = 1;
+                                                        $list_bhp   = $this->db->query("SELECT * FROM tbl_alkestransaksi WHERE notr = '$data_header->nolaborat'")->result();
+
+                                                        foreach($list_bhp as $lbkey => $lbval){
+                                                ?>
+                                                <tr id="bhp_row1">
+                                                    <td>
+                                                        <center>
+                                                            <button type="button" class="btn red" onclick="hapusBHP(<?= $nobhp ?>)"><i class="fa fa-trash"></i></button>
+                                                        </center>
+                                                    </td>
+                                                    <td>
+                                                        <center><input type="checkbox" class="form-checkbox" id="bhp_bill<?= $nobhp ?>" onchange="bill(<?= $nobhp ?>)" <?= ($lbval->dibebankan == "1")? "checked" : "" ?>></center>
+                                                        <input type="hidden" name="bhp_bill[]" id="bhp_billhide<?= $nobhp ?>" value="<?= $lbval->dibebankan ?>">
+                                                    </td>
+                                                    <td>
+                                                        <select type="text" class="form-control select2_el_alkes input-medium" name="bhp_bhp_barang[]" id="bhp_barang<?= $nobhp ?>" onchange="show_bhp(this.value, <?= $nobhp ?>)">
+                                                            <option value="<?= $lbval->kodeobat ?>" selected>
+                                                                <?php $kodeobat = data_master("tbl_barang", array("kodebarang" => $lbval->kodeobat)); ?>
+                                                                [ <?= $kodeobat->kodebarang ?> ] - [ <?= $kodeobat->namabarang ?> ]
+                                                            </opiton>
+                                                        </select>
+                                                    </td>
+                                                    <td><input type="text" class="form-control" name="bhp_satuan[]" value="<?= $lbval->satuan ?>" id="bhp_satuan<?= $nobhp ?>" readonly></td>
+                                                    <td><input type="text" class="form-control" name="bhp_qty[]" value="<?= number_format($lbval->qty, 0 ,',' ,'.') ?>" id="bhp_qty<?= $nobhp ?>" onkeyup="qtyBHP(<?= $nobhp ?>)"></td>
+                                                    <td><input type="text" class="form-control" name="bhp_harga[]" value="<?= number_format($lbval->harga, 2 ,'.', ',') ?>" id="bhp_harga<?= $nobhp ?>" readonly></td>
+                                                    <td><input type="text" class="form-control" name="bhp_total[]" value="<?= number_format($lbval->totalharga, 2 ,'.', ',') ?>" id="bhp_totalharga<?= $nobhp ?>" readonly></td>
+                                                    <td><input type="text" class="form-control" name="bhp_gudang[]" value="<?= $lbval->gudang ?>" id="bhp_gudang<?= $nobhp ?>" value="LABOR"></td>
+                                                </tr>
+                                                <?php $nobhp++; } } ?>
+                                            </tbody>
+                                        </table>
+                                        <br />
+                                        <div style="position:relative">
+                                            <div class="form-inline" style="position:absolute;right:0">
+                                                <label for="grand_total_bhp"><b>Total</b></label>&emsp;
+                                                <input type="text" class="form-control" id="grand_total_bhp" readonly>
+                                            </div>
+                                            <button class="btn green" type="button" onclick="tambahBHP()"><i class="fa fa-plus fa-fw"></i>&nbsp; Tambah Barang</button>
+                                        </div>
+                                    </div>
                                 </div>
-                            <?php else: ?>
+                            </div>
+                            <div class="tab-pane" id="tab3">
+                                <?php if($status == "save"): ?>
+                                    <div class="alert alert-danger text-center">
+                                        <b><?= strtoupper("Isi Billing Terlebih Dahulu") ?></b>
+                                    </div>
+                                <?php else: ?>
+                                    <div class="portlet-body" style="padding:0px 10px 0px 10px !important">
+                                        <h4 style="color:green"><b>HASIL</b></h4>
+                                        <hr />
+                                        <div class="row">
+                                            <div class="col-sm-6 form-horizontal">
+                                                <div class="row">
+                                                    <div class="col-sm-4">Tgl Sampel Diambil</div>
+                                                    <div class="col-sm-4"><input type="date" class="form-control" name="tglsampel" id="tglsampel" value="<?= str_replace(" 00:00:00", "", $data_header->tglsampel) ?>"></div>
+                                                    <div class="col-sm-4"><input type="time" class="form-control" name="jamsampel" id="jamsampel" value="<?= $data_header->jamsampel ?>"></div>
+                                                </div>
+                                                <br />
+                                                <div class="row">
+                                                    <div class="col-sm-4">Tgl Selesai Periksa</div>
+                                                    <div class="col-sm-4"><input type="date" class="form-control" name="tglselesai" id="tglselesai" value="<?= str_replace(" 00:00:00", "", $data_header->tglselesai) ?>"></div>
+                                                    <div class="col-sm-4"><input type="time" class="form-control" name="jamselesai" id="jamselesai" value="<?= $data_header->jamselesai ?>"></div>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-6 form-horizontal">
+                                                <div class="row">
+                                                    <div class="col-sm-4">Oleh Petugas</div>
+                                                    <div class="col-sm-8">
+                                                        <select required id="sampeloleh" name="sampeloleh" class="selectpicker" data-live-search="true" data-width="100%" onkeypress="return tabE(this,event)" >
+                                                            <option  value="" selected disabled>-- Pilih Data --</option>
+                                                            <?php
+                                                                foreach($petugas as $value){
+                                                                    if($value->nokk == $data_header->sampeloleh){
+                                                                        echo '<option value="'. $data_header->sampeloleh .'" selected>'. data_master("tbl_petugas", array("nokk" => $data_header->sampeloleh, "kodepos" => "LABOR"))->namapetugas .'</option>';
+                                                                    } else {
+                                                                        echo '<option value="'. $value->nokk .'">'. $value->namapetugas .'</option>';
+                                                                    }
+                                                                }
+                                                            ?>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                <br />
+                                                <div class="row">
+                                                    <div class="col-sm-4">
+                                                        <label class="checkbox-inline"><input type="checkbox" name="rilis"  id="rilis" <?= isset($data_header->rilis)? ($data_header->rilis == 1)? "checked" : "" : "" ?>>&emsp;Final Oleh</label>
+                                                    </div>
+                                                    <div class="col-sm-8">
+                                                        <select required id="kodepemeriksa" name="kodepemeriksa" class="selectpicker" data-live-search="true" data-width="100%" onkeypress="return tabE(this,event)" >
+                                                            <option  value="" selected disabled>-- Pilih Data --</option>
+                                                            <?php
+                                                                foreach($petugas as $value){
+                                                                    if($value->nokk == $data_header->kodepemeriksa){
+                                                                        echo '<option value="'. $data_header->kodepemeriksa .'" selected>'. data_master("tbl_petugas", array("nokk" => $data_header->kodepemeriksa, "kodepos" => "LABOR"))->namapetugas .'</option>';
+                                                                    } else {
+                                                                        echo '<option value="'. $value->nokk .'">'. $value->namapetugas .'</option>';
+                                                                    }
+                                                                }
+                                                            ?>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <hr />
+                                        <!-- <button type="button" class="btn btn-primary" id="hasil-btn-proses-hasil" data-jenis_kelamin="<?= $row->jkel ?>" data-nolaborat="<?= $row->nolaborat ?>" style="margin-bottom: 10px;"><i class="fa fa-plus" aria-hidden="true"></i> Proses Hasil</button> -->
+                                        <button type="button" class="btn btn-primary" id="hasil-btn-proses-hasil" >Proses hasil</button>
+                                        <div class="table-responsive">
+                                            <table class="table table-bordered" style="width:100%">
+                                                <thead class="page-breadcrumb breadcrumb">
+                                                    <tr class="title-white">
+                                                        <th style="width:30%">Pemeriksaan</th>
+                                                        <th style="width:16.6666666667%">Hasil</th>
+                                                        <th style="width:16.6666666667%">Satuan</th>
+                                                        <th style="width:16.6666666667%">Nilai Rujukan</th>
+                                                        <th style="width:30%">Catatan</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody id="hasil-list-pemeriksaan">
+                                                    <?php foreach($data_hasil as $dh_key => $dh_val): ?>
+                                                        <tr>
+                                                            <td><?= $dh_val->pemeriksaan ?></td>
+                                                            <td>
+                                                                <input type="number" class="form-control" name="hasil_c[]" value="<?= $dh_val->hasilc ?>">
+                                                            </td>
+                                                            <td><?= $dh_val->satuan ?></td>
+                                                            <td><?= $dh_val->normalc ?></td>
+                                                            <td>
+                                                                <textarea type="text" class="form-control" name="hasil_catatan[]" rows="2" style="resize:none"><?= $dh_val->keterangan ?></textarea>
+                                                            </td>
+                                                        </tr>
+                                                    <?php endforeach; ?>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        <br />
+                                        <!-- Footer hasil -->
+                                        <div class="row">
+                                            <div class="col-sm-6">
+                                                <div class="form-group">
+                                                    <label for="" class="form-label"><b>Catatan</b></label>
+                                                    <textarea type="text" class="form-control" name="catatan" rows="4" style="resize:none"><?= isset($data_notes->catatan)? $data_notes->catatan : "" ?></textarea>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-6">
+                                                <div class="form-group">
+                                                    <label for="" class="form-label"><b>File hasil dari faskes lain (bila pemeriksaan luar)</b></label>
+                                                    <div class="table-responsive">
+                                                        <table class="table table-bordered" style="table-layout: fixed; width: 100%">
+                                                            <thead class="page-breadcrumb breadcrumb title-white">
+                                                                <tr>
+                                                                    <th style="width:40%">Keterangan</th>
+                                                                    <th style="width:40%">File</th>
+                                                                    <th style="width:10%">Lihat</th>
+                                                                    <th style="width:10%">Hapus</th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody id="file_body">
+                                                                <?php
+                                                                    $nofile = 1;
+
+                                                                    foreach($data_file as $df_key => $df_val):
+                                                                ?>
+                                                                    <tr id="file_row<?= $nofile ?>" style="word-wrap: break-word;">
+                                                                        <td><input type="hidden" name="file_key[]" value="<?= $nofile ?>">
+                                                                            <?= $df_val->keteranganfile ?>
+                                                                        </td>
+                                                                        <td><?= substr($df_val->namafile, 0, 30) ."···.". pathinfo($df_val->namafile, PATHINFO_EXTENSION) ?></td>
+                                                                        <td><button type="button" class="btn btn-info btn-xs" onclick="window.open('<?= base_url() . $df_val->lokasifile . $df_val->namafile ?>', '_blank')"><i class="fa fa-eye"></i></button></td>
+                                                                        <td><button type="button" class="btn red btn-xs" onclick="hapusFileExist(<?= $df_val->id ?>)"><i class="fa fa-trash"></i></button></td>
+                                                                    </tr>
+                                                                <?php $nofile++; endforeach; ?>
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                    <button type="button" class="btn green" onclick="tambahFile()"><i class="fa fa-plus"></i>&nbsp; Tambah Berkas</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                <?php endif; ?>
+                            </div>
+                            <!-- <div class="tab-pane" id="tab4">
                                 <div class="portlet-body" style="padding:0px 10px 0px 10px !important">
                                     <h4 style="color:green"><b>HASIL</b></h4>
                                     <hr />
@@ -786,59 +963,32 @@
                                         <div class="col-sm-6 form-horizontal">
                                             <div class="row">
                                                 <div class="col-sm-4">Tgl Sampel Diambil</div>
-                                                <div class="col-sm-4"><input type="date" class="form-control" name="tglsampel" id="tglsampel" value="<?= str_replace(" 00:00:00", "", $data_header->tglsampel) ?>"></div>
-                                                <div class="col-sm-4"><input type="time" class="form-control" name="jamsampel" id="jamsampel" value="<?= $data_header->jamsampel ?>"></div>
+                                                <div class="col-sm-4"><input type="date" class="form-control" name="tgl_diambil" id="tgl_diambil" value="<?= date("Y-m-d") ?>"></div>
+                                                <div class="col-sm-4"><input type="time" class="form-control" name="jam_diambil" id="jam_diambil" value="<?= date("H:i:s") ?>"></div>
                                             </div>
                                             <br />
                                             <div class="row">
                                                 <div class="col-sm-4">Tgl Selesai Periksa</div>
-                                                <div class="col-sm-4"><input type="date" class="form-control" name="tglselesai" id="tglselesai" value="<?= str_replace(" 00:00:00", "", $data_header->tglselesai) ?>"></div>
-                                                <div class="col-sm-4"><input type="time" class="form-control" name="jamselesai" id="jamselesai" value="<?= $data_header->jamselesai ?>"></div>
+                                                <div class="col-sm-4"><input type="date" class="form-control" name="tgl_selesai" id="tgl_selesai" value="<?= date("Y-m-d") ?>"></div>
+                                                <div class="col-sm-4"><input type="time" class="form-control" name="jam_selesai" id="jam_selesai" value="<?= date("H:i:s") ?>"></div>
                                             </div>
                                         </div>
                                         <div class="col-sm-6 form-horizontal">
                                             <div class="row">
                                                 <div class="col-sm-4">Oleh Petugas</div>
-                                                <div class="col-sm-8">
-                                                    <select required id="sampeloleh" name="sampeloleh" class="selectpicker" data-live-search="true" data-width="100%" onkeypress="return tabE(this,event)" >
-                                                        <option  value="" selected disabled>-- Pilih Data --</option>
-                                                        <?php
-                                                            foreach($petugas as $value){
-                                                                if($value->nokk == $data_header->sampeloleh){
-                                                                    echo '<option value="'. $data_header->sampeloleh .'" selected>'. data_master("tbl_petugas", array("nokk" => $data_header->sampeloleh, "kodepos" => "LABOR"))->namapetugas .'</option>';
-                                                                } else {
-                                                                    echo '<option value="'. $value->nokk .'">'. $value->namapetugas .'</option>';
-                                                                }
-                                                            }
-                                                        ?>
-                                                    </select>
-                                                </div>
+                                                <div class="col-sm-8"><input type="text" class="form-control" name="petugas_pemeriksa" id="petugas_pemeriksa"></div>
                                             </div>
                                             <br />
                                             <div class="row">
                                                 <div class="col-sm-4">
-                                                    <label class="checkbox-inline"><input type="checkbox" name="rilis"  id="rilis" <?= isset($data_header->rilis)? ($data_header->rilis == 1)? "checked" : "" : "" ?>>&emsp;Final Oleh</label>
+                                                <label class="checkbox-inline"><input type="checkbox" name="">&emsp;Final Oleh</label>
                                                 </div>
-                                                <div class="col-sm-8">
-                                                    <select required id="kodepemeriksa" name="kodepemeriksa" class="selectpicker" data-live-search="true" data-width="100%" onkeypress="return tabE(this,event)" >
-                                                        <option  value="" selected disabled>-- Pilih Data --</option>
-                                                        <?php
-                                                            foreach($petugas as $value){
-                                                                if($value->nokk == $data_header->kodepemeriksa){
-                                                                    echo '<option value="'. $data_header->kodepemeriksa .'" selected>'. data_master("tbl_petugas", array("nokk" => $data_header->kodepemeriksa, "kodepos" => "LABOR"))->namapetugas .'</option>';
-                                                                } else {
-                                                                    echo '<option value="'. $value->nokk .'">'. $value->namapetugas .'</option>';
-                                                                }
-                                                            }
-                                                        ?>
-                                                    </select>
-                                                </div>
+                                                <div class="col-sm-8"><input type="text" class="form-control" name="final_pemeriksa" id="final_pemeriksa"></div>
                                             </div>
                                         </div>
                                     </div>
                                     <hr />
-                                    <!-- <button type="button" class="btn btn-primary" id="hasil-btn-proses-hasil" data-jenis_kelamin="<?= $row->jkel ?>" data-nolaborat="<?= $row->nolaborat ?>" style="margin-bottom: 10px;"><i class="fa fa-plus" aria-hidden="true"></i> Proses Hasil</button> -->
-                                    <button type="button" class="btn btn-primary" id="hasil-btn-proses-hasil" >Proses hasil</button>
+                                    <button type="button" class="btn green" id="proses_hasil">Proses hasil</button>
                                     <div class="table-responsive">
                                         <table class="table table-bordered" style="width:100%">
                                             <thead class="page-breadcrumb breadcrumb">
@@ -851,157 +1001,53 @@
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                <?php foreach($data_hasil as $dh_key => $dh_val): ?>
-                                                    <tr>
-                                                        <td><?= $dh_val->pemeriksaan ?></td>
-                                                        <td>
-                                                            <input type="number" class="form-control" name="hasil_c[]" value="<?= $dh_val->hasilc ?>">
-                                                        </td>
-                                                        <td><?= $dh_val->satuan ?></td>
-                                                        <td><?= $dh_val->normalc ?></td>
-                                                        <td>
-                                                            <textarea type="text" class="form-control" name="hasil_catatan[]" rows="2" style="resize:none"><?= $dh_val->keterangan ?></textarea>
-                                                        </td>
-                                                    </tr>
-                                                <?php endforeach; ?>
+                                                <tr>
+                                                    <td>String</td>
+                                                    <td>
+                                                        <input type="number" class="form-control" name="hasil_c[]">
+                                                    </td>
+                                                    <td>String</td>
+                                                    <td>String</td>
+                                                    <td>
+                                                        <textarea type="text" class="form-control" name="hasil_catatan[]" rows="2" style="resize:none"></textarea>
+                                                    </td>
+                                                </tr>
                                             </tbody>
                                         </table>
                                     </div>
-                                    <br />
-                                    <!-- Footer hasil -->
-                                    <div class="row">
-                                        <div class="col-sm-6">
-                                            <div class="form-group">
-                                                <label for="" class="form-label"><b>Catatan</b></label>
-                                                <textarea type="text" class="form-control" name="catatan" rows="4" style="resize:none"><?= isset($data_notes->catatan)? $data_notes->catatan : "" ?></textarea>
-                                            </div>
-                                        </div>
-                                        <div class="col-sm-6">
-                                            <div class="form-group">
-                                                <label for="" class="form-label"><b>File hasil dari faskes lain (bila pemeriksaan luar)</b></label>
-                                                <div class="table-responsive">
-                                                    <table class="table table-bordered" style="table-layout: fixed; width: 100%">
-                                                        <thead class="page-breadcrumb breadcrumb title-white">
-                                                            <tr>
-                                                                <th style="width:40%">Keterangan</th>
-                                                                <th style="width:40%">File</th>
-                                                                <th style="width:10%">Lihat</th>
-                                                                <th style="width:10%">Hapus</th>
-                                                            </tr>
-                                                        </thead>
-                                                        <tbody id="file_body">
-                                                            <?php
-                                                                $nofile = 1;
-
-                                                                foreach($data_file as $df_key => $df_val):
-                                                            ?>
-                                                                <tr id="file_row<?= $nofile ?>" style="word-wrap: break-word;">
-                                                                    <td><input type="hidden" name="file_key[]" value="<?= $nofile ?>">
-                                                                        <?= $df_val->keteranganfile ?>sssssssssssssssssssssssssssssssssssss
-                                                                    </td>
-                                                                    <td><?= substr($df_val->namafile, 0, 30) ."···.". pathinfo($df_val->namafile, PATHINFO_EXTENSION) ?></td>
-                                                                    <td><button type="button" class="btn btn-info btn-xs" onclick="window.open('<?= base_url() . $df_val->lokasifile . $df_val->namafile ?>', '_blank')"><i class="fa fa-eye"></i></button></td>
-                                                                    <td><button type="button" class="btn red btn-xs" onclick="hapusFile(<?= $nofile ?>)"><i class="fa fa-trash"></i></button></td>
-                                                                </tr>
-                                                            <?php $nofile++; endforeach; ?>
-                                                        </tbody>
-                                                    </table>
-                                                </div>
-                                                <button type="button" class="btn green" onclick="tambahFile()"><i class="fa fa-plus"></i>&nbsp; Tambah Berkas</button>
-                                            </div>
-                                        </div>
-                                    </div>
                                 </div>
-                            <?php endif; ?>
+                            </div> -->
                         </div>
-                        <!-- <div class="tab-pane" id="tab4">
-                            <div class="portlet-body" style="padding:0px 10px 0px 10px !important">
-                                <h4 style="color:green"><b>HASIL</b></h4>
-                                <hr />
-                                <div class="row">
-                                    <div class="col-sm-6 form-horizontal">
-                                        <div class="row">
-                                            <div class="col-sm-4">Tgl Sampel Diambil</div>
-                                            <div class="col-sm-4"><input type="date" class="form-control" name="tgl_diambil" id="tgl_diambil" value="<?= date("Y-m-d") ?>"></div>
-                                            <div class="col-sm-4"><input type="time" class="form-control" name="jam_diambil" id="jam_diambil" value="<?= date("H:i:s") ?>"></div>
-                                        </div>
-                                        <br />
-                                        <div class="row">
-                                            <div class="col-sm-4">Tgl Selesai Periksa</div>
-                                            <div class="col-sm-4"><input type="date" class="form-control" name="tgl_selesai" id="tgl_selesai" value="<?= date("Y-m-d") ?>"></div>
-                                            <div class="col-sm-4"><input type="time" class="form-control" name="jam_selesai" id="jam_selesai" value="<?= date("H:i:s") ?>"></div>
-                                        </div>
-                                    </div>
-                                    <div class="col-sm-6 form-horizontal">
-                                        <div class="row">
-                                            <div class="col-sm-4">Oleh Petugas</div>
-                                            <div class="col-sm-8"><input type="text" class="form-control" name="petugas_pemeriksa" id="petugas_pemeriksa"></div>
-                                        </div>
-                                        <br />
-                                        <div class="row">
-                                            <div class="col-sm-4">
-                                            <label class="checkbox-inline"><input type="checkbox" name="">&emsp;Final Oleh</label>
-                                            </div>
-                                            <div class="col-sm-8"><input type="text" class="form-control" name="final_pemeriksa" id="final_pemeriksa"></div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <hr />
-                                <button type="button" class="btn green" id="proses_hasil">Proses hasil</button>
-                                <div class="table-responsive">
-                                    <table class="table table-bordered" style="width:100%">
-                                        <thead class="page-breadcrumb breadcrumb">
-                                            <tr class="title-white">
-                                                <th style="width:30%">Pemeriksaan</th>
-                                                <th style="width:16.6666666667%">Hasil</th>
-                                                <th style="width:16.6666666667%">Satuan</th>
-                                                <th style="width:16.6666666667%">Nilai Rujukan</th>
-                                                <th style="width:30%">Catatan</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr>
-                                                <td>String</td>
-                                                <td>
-                                                    <input type="number" class="form-control" name="hasil_c[]">
-                                                </td>
-                                                <td>String</td>
-                                                <td>String</td>
-                                                <td>
-                                                    <textarea type="text" class="form-control" name="hasil_catatan[]" rows="2" style="resize:none"></textarea>
-                                                </td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                        </div> -->
                     </div>
-                </div>
 
-                <div class="row">
-                    <div class="col-sm-12">
-                        <div class="form-actions" style="margin-top:0px !important;border-radius:0px !important">
-                            <button type="submit" class="btn blue" id="savelab"><i class="fa fa-save"></i><b> Simpan</b></button>
-                            <button type="button" class="btn yellow" <?= $status == "save" ? "disabled" : "" ?>><i class="fa fa-print"></i><b> Cetak</b></button>
-                            <div class="btn-group">
-                                <a class="btn red" onclick="location.href='/lab/'" ><i class="fa fa-undo"></i><b> KEMBALI </b></a>
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <div class="form-actions" style="margin-top:0px !important;border-radius:0px !important">
+                                <button type="submit" class="btn blue" id="savelab"><i class="fa fa-save"></i><b> Simpan</b></button>
+                                <?php if($status == "update"): ?>
+                                <!-- <button type="button" class="btn yellow" <?= $status == "save" ? "disabled" : "" ?> type="button" data-toggle="modal" data-target="#modal_print"><i class="fa fa-print"></i><b> Cetak</b></button> -->
+                                <a href="/lab/cetak/<?= $data_header->nolaborat ?>" target="_blank">
+                                    <button type="button" class="btn yellow"><i class="fa fa-print"></i><b> Cetak</b></button>
+                                </a>
+                                <?php endif; ?>
+                                <div class="btn-group">
+                                    <a class="btn red" onclick="location.href='/lab/'" ><i class="fa fa-undo"></i><b> KEMBALI </b></a>
+                                </div>
                             </div>
                         </div>
                     </div>
+
+                    <!-- CONTENT END -->
+
                 </div>
-
-                <!-- CONTENT END -->
-
             </div>
         </div>
-    </div>
-</form>
+    </form>
 
 <br /><br /><br />
 
 <?php
-$this->load->view('template/footer');
+    $this->load->view('template/footer');
 ?>
 
 <script src="<?php echo base_url('assets/plugins/data-tables/jquery.dataTables.js')?>" type="text/javascript" > </script>
@@ -1110,6 +1156,55 @@ $this->load->view('template/footer');
             }
         });
     });
+
+    // var wrapper    = document.getElementById("signature-pad"),
+    // clearButton    = wrapper.querySelector("[data-action=clear]"),
+    // saveButton     = wrapper.querySelector("[data-action=save]"),
+    // canvas         = wrapper.querySelector("canvas"),
+    // signaturePad;
+
+    // function _urlcetak(){	
+    //     var unit    = '<?= $this->session->userdata('unit') ?>';
+    //     var noreg   = '<?= $this->input->get('noreg') ?>';
+    //     var rekmed  = '<?= $this->input->get('rekmed') ?>';
+    //     var baseurl = "<?php echo base_url()?>";
+        
+    //     $.ajax({
+    //         type: "POST",
+    //         url: "<?php echo base_url();?>Poliklinik/bersihkan_ttd",
+    //         success: function(data){
+            
+    //         if (signaturePad.isEmpty()) {
+
+    //             $("#errors").addClass('shake');
+    //             $("#errors").show();
+    //             $("#errors").delay(4000).hide(200, function() {
+    //                 $("#errors").hide();
+    //             });
+    //             $('#errors').html('Isi Tanda Tangan Dahulu');
+
+    //             } else {
+
+    //             $('#error').html('');
+
+    //             $.ajax({
+    //                 type: "POST",
+    //                 url: "<?php echo base_url();?>Poliklinik/simpan_ttd",
+    //                 data: {image: signaturePad.toDataURL()},
+    //                 success: function(data){
+    //                     signaturePad.clear();
+    //                     var var1    = baseurl+'poliklinik/cetak_suket/'+unit+'/'+noreg+'/'+rekmed+'/'+data+'/sakit';
+
+    //                     window.open(var1,'_blank');
+
+    //                 }
+    //             });
+    //         }
+            
+    //         }
+    //     });
+    //     // window.open('/poliklinik/cetak_suket/<?= $this->session->userdata('unit') ?>/<?= $this->input->get('noreg') ?>/<?= $this->input->get('rekmed') ?>/sakit', 'blank')
+    // }
 
     function spilldata(param){
         $.ajax({
@@ -1222,6 +1317,42 @@ $this->load->view('template/footer');
 
     function hapusFile(id){
         $("#file_row"+ id).remove();
+    }
+
+    function hapusFileExist(id){
+        swal({
+            title: "LABORATORIUM",
+            html: "Apakah yakin<br />Anda ingin menghapus file ini ?",
+            type: "question",
+            // showDenyButton: true,
+            showCancelButton: true,
+            confirmButtonText: 'Hapus',
+            denyButtonText: 'Batal',
+            confirmButtonColor: 'red',
+            // denyButtonColor: 'gray',
+            cancelButtonColor: 'gray',
+        }).then(() => {
+            
+            $.ajax({
+                url: "/lab/delete_files/"+ id,
+                type: "POST",
+                dataType: "JSON",
+                success: function(res){
+                    if(res.status == "success"){
+                        success_alert(res.message);
+                    } else 
+                    if(res.status == "error"){
+                        error_alert(res.message);
+                    } else {
+                        error_alert("Failed undefined request");
+                    }
+                },
+                error: function(jqXHR, textStatus, errorThrown){
+                    error_alert("Gagal menghapus file<br />Kesalahan sistem (client)");
+                }
+            });
+            
+        });
     }
 
     function show_tindakan(str, id){
@@ -1381,6 +1512,18 @@ $this->load->view('template/footer');
             type: "error",
             confirmButtonText: "Tutup", 
             confirmButtonColor: "red"
+        });
+    }
+
+    function success_alert(message){
+        return swal({
+            title: "LABORATORIUM",
+            html: message,
+            type: "success",
+            confirmButtonText: "Ok", 
+            confirmButtonColor: "green"
+        }).then(() => {
+            location.reload();
         });
     }
 

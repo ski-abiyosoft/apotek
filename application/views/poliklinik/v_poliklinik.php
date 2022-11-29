@@ -128,7 +128,26 @@
                                     </div>
                                     <div class="details">
                                         <div class="number">
+                                            <?php
+                                                // $sum = 0.0;
+                                                // foreach($atime as $duration){
+                                                //   list($h,$m,$s) = explode(':',$duration->jam);
+                                                //   $sum += $h * 3600 + $m * 60 + $s;
+                                                // }
+                                                // $avg = $sum/count($atime);
+                                                // echo date("H:i", strtotime($avg));  //3.0130955
 
+                                                // $total_time=0;
+
+                                                // foreach($atime as $t){
+                                                //     $t1 = strtotime($t->jam);
+                                                //     $t2 = strtotime($t->jamkeluar);
+                                                //     $total_time = $t1 - $t2;
+                                                // }
+                                                // $average = $total_time / ( 60 * 60 );
+                                                // echo date("H:i:s", strtotime($average));
+                                            ?>
+                                            0
                                         </div>
                                         <div class="desc">
                                             RATA RATA WAKTU TUNGGU
@@ -404,8 +423,7 @@ function alltrim(kata){
     return c
 }
 
-function playAudio(noantri1="Z", antriangka="", noantri="satu") {
-    
+function playAudio(kodepos="Z", noantri1="Z", antriangka="", noantri="satu") {
     
     var bel   = new Audio('audio/bell_long.wav');
     var bel2  = new Audio('audio/nomor_antrian.wav');
@@ -415,7 +433,20 @@ function playAudio(noantri1="Z", antriangka="", noantri="satu") {
     var bel7  = new Audio('audio/ratus.wav');
     var to    = new Audio('audio/silakan_menuju_ke.wav');
     var poli  = new Audio('audio/poli.wav');
-    var umum  = new Audio('audio/umum.wav');
+
+    if(kodepos=='pumum'){
+        var cek_pol  = new Audio('audio/umum.wav');
+    }else if(kodepos=='pgigi'){
+        var cek_pol  = new Audio('audio/gigi.wav');
+    }else if(kodepos=='bidan'){
+        var cek_pol  = new Audio('audio/ibu_dan_anak.wav');
+    }else if(kodepos=='farmasi'){
+        var cek_pol  = new Audio('audio/customer_service.wav');
+    }else if(kodepos=='ugd'){
+        var cek_pol  = new Audio('audio/customer_service.wav');
+    }else{
+        var cek_pol  = new Audio('audio/umum.wav');
+    }
     totalwaktu=0; 
     
     setTimeout(function() { bel.pause(); bel.currentTime=0; bel.play(); }, totalwaktu);
@@ -554,7 +585,7 @@ function playAudio(noantri1="Z", antriangka="", noantri="satu") {
     setTimeout(function() { poli.pause(); poli.currentTime=0; poli.play(); }, totalwaktu);
         totalwaktu=totalwaktu+1000;
 
-    setTimeout(function() { umum.pause(); umum.currentTime=0; umum.play(); }, totalwaktu);
+    setTimeout(function() { cek_pol.pause(); cek_pol.currentTime=0; cek_pol.play(); }, totalwaktu);
         totalwaktu=totalwaktu+1500;
     
 }

@@ -15,6 +15,7 @@ class Inventory_tso extends CI_Controller
 		$this->load->helper('simkeu_rpt');
 		$this->load->helper('simkeu_nota');
 		$this->load->helper('app_global');
+		$this->load->model('M_KartuStock');
 		$this->session->set_userdata('menuapp', '3000');
 		$this->session->set_userdata('submenuapp', '3301');
 	}
@@ -499,6 +500,32 @@ class Inventory_tso extends CI_Controller
 			redirect('Inventory_tso/entri');
 		} else {
 			redirect('Inventory_tso');
+		}
+	}
+
+	public function validkan($kode_barang, $gudang){
+		$cabang = $this->session->userdata('unit');
+		$seting = $this->M_KartuStock->update_stok($kode_barang, $gudang, $cabang);
+		$cek = $this->db->get_where("tbl_barangstock", ["kodebarang"=>$kode_barang, "gudang"=>$gudang, "koders"=>$cabang])->row();
+		$saldoawal = $cek->saldoawal;
+		if($seting){
+			$terima = 0;
+			$keluar = 0;
+			$saldo = 0;
+			foreach($seting as $c){
+				$terima += $c->terima;
+				$keluar += $c->keluar;
+				$saldo += $c->terima - $c->keluar;
+			}
+			$data = [
+				'terima' => $terima,
+				'keluar' => $keluar,
+				'saldoakhir' => $saldo + $saldoawal,
+			];
+			$this->db->update("tbl_barangstock", $data, ["kodebarang"=>$kode_barang, "gudang"=>$gudang, "koders"=>$cabang]);
+			echo json_encode(['status'=>1]);
+		} else {
+			echo json_encode(['status'=>0]);
 		}
 	}
 

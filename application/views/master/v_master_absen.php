@@ -1,4 +1,4 @@
-    <?php 
+<?php 
         $this->load->view('template/header');
         $this->load->view('template/body');    	  
     ?>	
@@ -8,7 +8,7 @@
         <div class="col-md-12">
             <h3 class="page-title">
             <span class="title-unit">
-                    &nbsp;<?php echo $this->session->userdata('unit'); ?> 
+                    &nbsp;<?php echo $this->session->userdata('username'); ?> 
                 </span>
                 - 
                 <span class="title-web"><?= $form_title ?>
@@ -23,19 +23,15 @@
     <table border='0' width="100%" cellpadding="2" cellspacing="3" style="font-size: 20px;">
         <tr>
             <td width="20%" >&nbsp; <b>Nama Karyawan</b></td>
-            <td width="20%" >
-                <select name="nm_kary" id="nm_kary" class="form-control" onchange="shownama(this.value);">
-                    <?php  
-                    foreach($karyawan as $rows){
-                    ?>
-                    <option value="<?= $rows->nik ?>"><?= $rows->namakary ?></option>
-                    <?php } ?>
-                </select>
-                <input type="hidden" name="nama_kary" value="<?= $nmkaryawan ?>">
-            <td width="60%" >&nbsp;</td>
+            <td width="50%" >
+                <input type="hidden" style="border:none;" name="nama_kary" value="<?= $karyawan->nik ?>">
+                <label for="">&nbsp;<?= $karyawan->namakary ?></label>
+                
+            <td width="30%" >&nbsp;</td>
             </td>
         </tr>
-
+    </table>
+    <table border='0' width="100%" cellpadding="2" cellspacing="3" style="font-size: 20px;">
         <tr>
             <td width="20%" >&nbsp; <b>Status</b></td>
             <td width="20%" >
@@ -61,7 +57,8 @@
         <tr>
             <td align="center" colspan="4" style="font-size: 50px;">
             <b>
-                <input type="text" id="tgl" name="tgl" style="border:none;" value="&nbsp;&nbsp;&nbsp;<?= $cek ?>"></b>
+                
+                <label style="font-size: 50px;" class="control-label" for="">&nbsp;<b><?= $cek ?></b></label>
                 <input type="hidden" id="tgl2" name="tgl2" class="form-control input-medium"  value="<?= date('Y-m-d');?>" />
             </td>
         </tr>
@@ -127,13 +124,13 @@
     function absen(param)
     {            
         var v_nama_kary       = $('[name="nama_kary"]').val();
-        var v_nm_kary         = $('[name="nm_kary"]').val();
+        var nm                = '<?= $karyawan->namakary ?>';
         var v_status_absen    = $('[name="status_absen"]').val();
 
-        if (v_nm_kary=='' || v_nm_kary== null){
+        if (v_nama_kary=='' || v_nama_kary== null){
         swal({
-                title: "NAMA KARYAWAN",
-                html: "<p>HARUS DI PILIH !</p>",
+                title: "KARYAWAN",
+                html: "<p>KOSONG, SILAHKAN LOGIN ULANG</p>",
                 type: "error",
                 confirmButtonText: "OK" 
             });    
@@ -172,7 +169,7 @@
                     swal({
                         title: "<b>DATA ABSENSI</b>",
                         html: 
-                            "<p> Nama   : <b>"+v_nama_kary+" </b></p>"+
+                            "<p> Nama   : <b>"+nm+" </b></p>"+
                             "<p><b>( "+data.tgll+" )</b></p>"+
                             "<p><b> "+stat+" </b></p>"+
                             "Berhasil di Simpan...",
@@ -184,7 +181,7 @@
                     swal({
                         title: "DATA ABSENSI",
                         html: 
-                            "<p> Nama   : <b>"+v_nama_kary+" </b></p>"+
+                            "<p> Nama   : <b>"+nm+" </b></p>"+
                             "<p><b>( "+data.tgll+" )</b></p>"+
                             "<p><b> "+stat+" </b></p>"+
                             "Sudah Ada Di Database...",

@@ -232,166 +232,154 @@ class Kasir_laporan extends CI_Controller
 				// and koders='$unit' and tglbayar between '$_tgl1' and '$_tgl2' and totalpoli>0
 				// ";
 				$query =
-				"SELECT 'Order Tunai' as keterangan, count(*) as jumlah, sum(bayarcash+bayarcard) as nilai
-			from tbl_kasir 
-			where jenisbayar=1 and koders='$unit' and tglbayar between '$_tgl1' and '$_tgl2' and noreg is not null
+					"SELECT 'RAWAT JALAN' as keterangan, sum(jumlah) as jumlah, sum(nilai) as nilai FROM (
+						SELECT * FROM (
+							SELECT COUNT(*) AS jumlah, SUM(bayarcash) AS nilai
+							FROM tbl_kasir 
+							JOIN tbl_apohresep ON tbl_kasir.noreg = tbl_apohresep.noreg
+							WHERE jenisbayar = 1 AND jenispas=8 AND tbl_kasir.koders='$unit' AND tbl_kasir.tglbayar BETWEEN '$_tgl1' AND '$_tgl2' AND bayarcash > 0
+						) AS cash
+						UNION ALL
+						SELECT * FROM (
+							SELECT COUNT(*) AS jumlah, SUM(bayarcard) AS nilai
+							FROM tbl_kasir 
+							JOIN tbl_apohresep ON tbl_kasir.noreg = tbl_apohresep.noreg
+							WHERE jenisbayar=1 AND jenispas=8 AND tbl_kasir.koders='$unit' AND tbl_kasir.tglbayar BETWEEN '$_tgl1' AND '$_tgl2' AND bayarcard > 0 AND tbl_kasir.nokwitansi IN (SELECT nokwitansi FROM tbl_kartukredit)
+						) AS card
+						UNION ALL
+						SELECT * FROM (
+							SELECT COUNT(*) AS jumlah, SUM(jumlahhutang) AS nilai
+							FROM tbl_kasir 
+							JOIN tbl_pap ON tbl_kasir.noreg = tbl_pap.noreg
+							JOIN tbl_apohresep ON tbl_apohresep.noreg=tbl_kasir.noreg
+							WHERE jenisbayar=1 and jenispas=8 AND tbl_kasir.koders='$unit' 
+							AND tbl_kasir.tglbayar BETWEEN '$_tgl1' AND '$_tgl2'
+						) as penjamin
+					) as order_tunai
 
-			union all
+					union all
 
-			SELECT '   Order Cash' as keterangan, count(*) as jumlah, sum(bayarcash) as nilai
-			from tbl_kasir where jenisbayar=1
-			and koders='$unit' and tglbayar between '$_tgl1' and '$_tgl2' and nokwitansi not in (select nokwitansi from tbl_kartukredit)
+					SELECT '   Order Cash' as keterangan, count(*) as jumlah, sum(bayarcash) as nilai
+					from tbl_kasir 
+					JOIN tbl_apohresep ON tbl_kasir.noreg = tbl_apohresep.noreg
+					where jenisbayar=1 AND jenispas=8 AND tbl_kasir.koders='$unit' AND tbl_kasir.tglbayar between '$_tgl1' and '$_tgl2' AND bayarcash > 0
 
-			union all
+					union all
 
-			SELECT '   Order Card' as keterangan, count(*) as jumlah, sum(bayarcard) as nilai
-			from tbl_kasir where jenisbayar=1
-			and koders='$unit' and tglbayar between '$_tgl1' and '$_tgl2'  and nokwitansi in (select nokwitansi from tbl_kartukredit)
+					SELECT '   Order Card' as keterangan, count(*) as jumlah, sum(bayarcard) as nilai
+					from tbl_kasir 
+					JOIN tbl_apohresep ON tbl_kasir.noreg = tbl_apohresep.noreg
+					where jenisbayar=1 AND jenispas=8 AND tbl_kasir.koders='$unit' AND tbl_kasir.tglbayar between '$_tgl1' and '$_tgl2' and bayarcard > 0 and tbl_kasir.nokwitansi in (select nokwitansi from tbl_kartukredit)
 
-			union all
+					union all
 
-			SELECT 'Tindakan Dokter' as keterangan, count(*) as jumlah, sum(totalpoli) as nilai
-			from tbl_kasir where jenisbayar=1
-			and koders='$unit' and tglbayar between '$_tgl1' and '$_tgl2' and totalpoli > 0
+					SELECT '   Penjamin' AS keterangan, COUNT(*) AS jumlah, SUM(jumlahhutang) AS nilai
+					FROM tbl_kasir 
+					JOIN tbl_pap ON tbl_kasir.noreg = tbl_pap.noreg
+					JOIN tbl_apohresep ON tbl_apohresep.noreg=tbl_kasir.noreg
+					WHERE jenisbayar=1 and jenispas=8 AND tbl_kasir.koders='$unit' 
+					AND tbl_kasir.tglbayar BETWEEN '$_tgl1' AND '$_tgl2'
 
-			union all
+					UNION ALL
 
-			SELECT '   Order Cash' as keterangan, count(*) as jumlah, sum(bayarcash) as nilai
-			from tbl_kasir where jenisbayar=1
-			and koders='$unit' and tglbayar between '$_tgl1' and '$_tgl2' and totalpoli > 0 and nokwitansi not in (select nokwitansi from tbl_kartukredit)
+					SELECT 'RAWAT INAP' as keterangan, sum(jumlah) as jumlah, sum(nilai) as nilai FROM (
+						SELECT * FROM (
+							SELECT COUNT(*) AS jumlah, SUM(bayarcash) AS nilai
+							FROM tbl_kasir 
+							JOIN tbl_apohresep ON tbl_kasir.noreg = tbl_apohresep.noreg
+							WHERE jenisbayar = 1 AND jenispas=9 AND tbl_kasir.koders='$unit' AND tbl_kasir.tglbayar BETWEEN '$_tgl1' AND '$_tgl2' AND bayarcash > 0
+						) AS cash
+						UNION ALL
+						SELECT * FROM (
+							SELECT COUNT(*) AS jumlah, SUM(bayarcard) AS nilai
+							FROM tbl_kasir 
+							JOIN tbl_apohresep ON tbl_kasir.noreg = tbl_apohresep.noreg
+							WHERE jenisbayar=1 AND jenispas=9 AND tbl_kasir.koders='$unit' AND tbl_kasir.tglbayar BETWEEN '$_tgl1' AND '$_tgl2' AND bayarcard > 0 AND tbl_kasir.nokwitansi IN (SELECT nokwitansi FROM tbl_kartukredit)
+						) AS card
+						UNION ALL
+						SELECT * FROM (
+							SELECT COUNT(*) AS jumlah, SUM(jumlahhutang) AS nilai
+							FROM tbl_kasir 
+							JOIN tbl_pap ON tbl_kasir.noreg = tbl_pap.noreg
+							JOIN tbl_apohresep ON tbl_apohresep.noreg=tbl_kasir.noreg
+							WHERE jenisbayar=1 and jenispas=9 AND tbl_kasir.koders='$unit' 
+							AND tbl_kasir.tglbayar BETWEEN '$_tgl1' AND '$_tgl2'
+						) as penjamin
+					) as order_tunai
 
-			union all
+					union all
 
-			SELECT '   Order Card' as keterangan, count(*) as jumlah, sum(bayarcard) as nilai
-			from tbl_kasir where jenisbayar=1
-			and koders='$unit' and tglbayar between '$_tgl1' and '$_tgl2' and totalpoli > 0 and nokwitansi in (select nokwitansi from tbl_kartukredit)
+					SELECT '   Order Cash' as keterangan, count(*) as jumlah, sum(bayarcash) as nilai
+					from tbl_kasir 
+					JOIN tbl_apohresep ON tbl_kasir.noreg = tbl_apohresep.noreg
+					where jenisbayar=1 AND jenispas=9 AND tbl_kasir.koders='$unit' AND tbl_kasir.tglbayar between '$_tgl1' and '$_tgl2' AND bayarcash > 0
 
-			union all
+					union all
 
-			SELECT 'Order Lokal' AS keterangan, COUNT(*) AS jumlah, SUM(bayarcash+bayarcard) AS nilai
-			FROM tbl_kasir
-			JOIN tbl_apohresep ON tbl_kasir.nokwitansi = tbl_apohresep.nokwitansi
-			WHERE tbl_kasir.koders = '$unit' and totalpoli > 0 AND tbl_kasir.tglbayar BETWEEN '$_tgl1' AND '$_tgl2' AND tbl_kasir.noreg != '' AND tbl_apohresep.jenispas = '2'
+					SELECT '   Order Card' as keterangan, count(*) as jumlah, sum(bayarcard) as nilai
+					from tbl_kasir 
+					JOIN tbl_apohresep ON tbl_kasir.noreg = tbl_apohresep.noreg
+					where jenisbayar=1 AND jenispas=9 AND tbl_kasir.koders='$unit' AND tbl_kasir.tglbayar between '$_tgl1' and '$_tgl2' and bayarcard > 0 and tbl_kasir.nokwitansi in (select nokwitansi from tbl_kartukredit)
+					
+					union all
 
-			union all
+					SELECT '   Penjamin' AS keterangan, COUNT(*) AS jumlah, SUM(jumlahhutang) AS nilai
+					FROM tbl_kasir 
+					JOIN tbl_pap ON tbl_kasir.noreg = tbl_pap.noreg
+					JOIN tbl_apohresep ON tbl_apohresep.noreg=tbl_kasir.noreg
+					WHERE jenisbayar=1 and jenispas=9 AND tbl_kasir.koders='$unit' 
+					AND tbl_kasir.tglbayar BETWEEN '$_tgl1' AND '$_tgl2'
 
-			SELECT '   Order Cash' AS keterangan, COUNT(*) AS jumlah, SUM(bayarcash) AS nilai
-			FROM tbl_kasir
-			JOIN tbl_apohresep ON tbl_kasir.nokwitansi = tbl_apohresep.nokwitansi
-			WHERE tbl_kasir.koders = '$unit' and totalpoli > 0 AND tbl_kasir.tglbayar BETWEEN '$_tgl1' AND '$_tgl2' AND tbl_kasir.noreg != '' AND tbl_apohresep.jenispas = '2' and tbl_kasir.nokwitansi not in (select nokwitansi from tbl_kartukredit)
+					UNION ALL
 
-			union all
+					SELECT 'APOTIK' as keterangan, sum(jumlah) as jumlah, sum(nilai) as nilai FROM (
+						SELECT * FROM (
+							SELECT COUNT(*) AS jumlah, SUM(bayarcash) AS nilai
+							FROM tbl_kasir 
+							JOIN tbl_apohresep ON tbl_kasir.noreg = tbl_apohresep.noreg
+							WHERE jenisbayar = 1 AND jenispas = 7 AND tbl_kasir.koders='$unit' AND tbl_kasir.tglbayar BETWEEN '$_tgl1' AND '$_tgl2' AND bayarcash > 0
+						) AS cash
+						UNION ALL
+						SELECT * FROM (
+							SELECT COUNT(*) AS jumlah, SUM(bayarcard) AS nilai
+							FROM tbl_kasir 
+							JOIN tbl_apohresep ON tbl_kasir.noreg = tbl_apohresep.noreg
+							WHERE jenisbayar=1 AND jenispas = 7 AND tbl_kasir.koders='$unit' AND tbl_kasir.tglbayar BETWEEN '$_tgl1' AND '$_tgl2' AND bayarcard > 0 AND tbl_kasir.nokwitansi IN (SELECT nokwitansi FROM tbl_kartukredit)
+						) AS card
+						UNION ALL
+						SELECT * FROM (
+							SELECT COUNT(*) AS jumlah, SUM(jumlahhutang) AS nilai
+							FROM tbl_kasir 
+							JOIN tbl_pap ON tbl_kasir.noreg = tbl_pap.noreg
+							JOIN tbl_apohresep ON tbl_apohresep.noreg=tbl_kasir.noreg
+							WHERE jenisbayar=1 and jenispas=7 AND tbl_kasir.koders='$unit' 
+							AND tbl_kasir.tglbayar BETWEEN '$_tgl1' AND '$_tgl2'
+						) as penjamin
+					) as order_tunai
 
-			SELECT '   Order Card' AS keterangan, COUNT(*) AS jumlah, SUM(bayarcard) AS nilai
-			FROM tbl_kasir
-			JOIN tbl_apohresep ON tbl_kasir.nokwitansi = tbl_apohresep.nokwitansi
-			WHERE tbl_kasir.koders = '$unit' and totalpoli > 0 AND tbl_kasir.tglbayar BETWEEN '$_tgl1' AND '$_tgl2' AND tbl_kasir.noreg != '' AND tbl_apohresep.jenispas = '2' and tbl_kasir.nokwitansi in (select nokwitansi from tbl_kartukredit)
+					union all
 
-			union all
+					SELECT '   Order Cash' as keterangan, count(*) as jumlah, sum(bayarcash) as nilai
+					from tbl_kasir 
+					JOIN tbl_apohresep ON tbl_kasir.noreg = tbl_apohresep.noreg
+					where jenisbayar=1 AND jenispas = 7 AND tbl_kasir.koders='$unit' AND tbl_kasir.tglbayar between '$_tgl1' and '$_tgl2' AND bayarcash > 0
 
-			SELECT 'Order Kirim' AS keterangan, COUNT(*) AS jumlah, SUM(bayarcash+bayarcard) AS nilai
-			FROM tbl_kasir
-			JOIN tbl_apohresep ON tbl_kasir.nokwitansi = tbl_apohresep.nokwitansi
-			WHERE tbl_kasir.koders = '$unit' and totalpoli > 0 AND tbl_kasir.tglbayar BETWEEN '$_tgl1' AND '$_tgl2' AND tbl_kasir.noreg != '' AND tbl_apohresep.jenispas = '3'
+					union all
 
-			union all
+					SELECT '   Order Card' as keterangan, count(*) as jumlah, sum(bayarcard) as nilai
+					from tbl_kasir 
+					JOIN tbl_apohresep ON tbl_kasir.noreg = tbl_apohresep.noreg
+					where jenisbayar=1 AND jenispas = 7 AND tbl_kasir.koders='$unit' AND tbl_kasir.tglbayar between '$_tgl1' and '$_tgl2' and bayarcard > 0 and tbl_kasir.nokwitansi in (select nokwitansi from tbl_kartukredit)
 
-			SELECT '   Order Cash' AS keterangan, COUNT(*) AS jumlah, SUM(bayarcash) AS nilai
-			FROM tbl_kasir
-			JOIN tbl_apohresep ON tbl_kasir.nokwitansi = tbl_apohresep.nokwitansi
-			WHERE tbl_kasir.koders = '$unit' and totalpoli > 0 AND tbl_kasir.tglbayar BETWEEN '$_tgl1' AND '$_tgl2' AND tbl_kasir.noreg != '' AND tbl_apohresep.jenispas = '3' and tbl_kasir.nokwitansi not in (select nokwitansi from tbl_kartukredit)
+					union all
 
-			union all
-
-			SELECT '   Order Card' AS keterangan, COUNT(*) AS jumlah, SUM(bayarcard) AS nilai
-			FROM tbl_kasir
-			JOIN tbl_apohresep ON tbl_kasir.nokwitansi = tbl_apohresep.nokwitansi
-			WHERE tbl_kasir.koders = '$unit' and totalpoli > 0 AND tbl_kasir.tglbayar BETWEEN '$_tgl1' AND '$_tgl2' AND tbl_kasir.noreg != '' AND tbl_apohresep.jenispas = '3' and tbl_kasir.nokwitansi in (select nokwitansi from tbl_kartukredit)
-
-			union all
-
-			SELECT 'Ongkos Kirim' AS keterangan, COUNT(*) AS jumlah, SUM(bayarcash+bayarcard) AS nilai
-			FROM tbl_kasir
-			JOIN tbl_apohresep ON tbl_kasir.nokwitansi = tbl_apohresep.nokwitansi
-			WHERE tbl_kasir.koders = '$unit' and totalpoli < 1 AND tbl_kasir.tglbayar BETWEEN '$_tgl1' AND '$_tgl2' AND tbl_kasir.noreg != '' AND tbl_apohresep.jenispas = '3'
-
-			union all
-
-			SELECT '   Order Cash' AS keterangan, COUNT(*) AS jumlah, SUM(bayarcash) AS nilai
-			FROM tbl_kasir
-			JOIN tbl_apohresep ON tbl_kasir.nokwitansi = tbl_apohresep.nokwitansi
-			WHERE tbl_kasir.koders = '$unit' and totalpoli < 1 AND tbl_kasir.tglbayar BETWEEN '$_tgl1' AND '$_tgl2' AND tbl_kasir.noreg != '' AND tbl_apohresep.jenispas = '3' and tbl_kasir.nokwitansi not in (select nokwitansi from tbl_kartukredit)
-
-			union all
-
-			SELECT '   Order Card' AS keterangan, COUNT(*) AS jumlah, SUM(bayarcard) AS nilai
-			FROM tbl_kasir
-			JOIN tbl_apohresep ON tbl_kasir.nokwitansi = tbl_apohresep.nokwitansi
-			WHERE tbl_kasir.koders = '$unit' and totalpoli < 1 AND tbl_kasir.tglbayar BETWEEN '$_tgl1' AND '$_tgl2' AND tbl_kasir.noreg != '' AND tbl_apohresep.jenispas = '3' and tbl_kasir.nokwitansi in (select nokwitansi from tbl_kartukredit)
-
-			union all
-
-			SELECT 'SPA' AS keterangan, COUNT(*) AS jumlah, SUM(bayarcash+bayarcard) AS nilai
-			FROM tbl_kasir
-			JOIN tbl_apohresep ON tbl_kasir.nokwitansi = tbl_apohresep.nokwitansi
-			WHERE tbl_kasir.koders = '$unit' and totalpoli > 0 AND tbl_kasir.tglbayar BETWEEN '$_tgl1' AND '$_tgl2' AND tbl_kasir.noreg != '' AND tbl_apohresep.jenispas = '4'
-
-			union all
-
-			SELECT '   Order Cash' AS keterangan, COUNT(*) AS jumlah, SUM(bayarcash) AS nilai
-			FROM tbl_kasir
-			JOIN tbl_apohresep ON tbl_kasir.nokwitansi = tbl_apohresep.nokwitansi
-			WHERE tbl_kasir.koders = '$unit' and totalpoli > 0 AND tbl_kasir.tglbayar BETWEEN '$_tgl1' AND '$_tgl2' AND tbl_kasir.noreg != '' AND tbl_apohresep.jenispas = '4' and tbl_kasir.nokwitansi not in (select nokwitansi from tbl_kartukredit)
-
-			union all
-
-			SELECT '   Order Card' AS keterangan, COUNT(*) AS jumlah, SUM(bayarcard) AS nilai
-			FROM tbl_kasir
-			JOIN tbl_apohresep ON tbl_kasir.nokwitansi = tbl_apohresep.nokwitansi
-			WHERE tbl_kasir.koders = '$unit' and totalpoli > 0 AND tbl_kasir.tglbayar BETWEEN '$_tgl1' AND '$_tgl2' AND tbl_kasir.noreg != '' AND tbl_apohresep.jenispas = '4' and tbl_kasir.nokwitansi in (select nokwitansi from tbl_kartukredit)
-
-			union all
-
-			SELECT 'Produk SPA' AS keterangan, COUNT(*) AS jumlah, SUM(bayarcash+bayarcard) AS nilai
-			FROM tbl_kasir
-			JOIN tbl_apohresep ON tbl_kasir.nokwitansi = tbl_apohresep.nokwitansi
-			WHERE tbl_kasir.koders = '$unit' and totalpoli < 1 AND tbl_kasir.tglbayar BETWEEN '$_tgl1' AND '$_tgl2' AND tbl_kasir.noreg != '' AND tbl_apohresep.jenispas = '4'
-
-			union all
-
-			SELECT '   Order Cash' AS keterangan, COUNT(*) AS jumlah, SUM(bayarcash) AS nilai
-			FROM tbl_kasir
-			JOIN tbl_apohresep ON tbl_kasir.nokwitansi = tbl_apohresep.nokwitansi
-			WHERE tbl_kasir.koders = '$unit' and totalpoli < 1 AND tbl_kasir.tglbayar BETWEEN '$_tgl1' AND '$_tgl2' AND tbl_kasir.noreg != '' AND tbl_apohresep.jenispas = '4' and tbl_kasir.nokwitansi not in (select nokwitansi from tbl_kartukredit)
-
-			union all
-
-			SELECT '   Order Card' AS keterangan, COUNT(*) AS jumlah, SUM(bayarcard) AS nilai
-			FROM tbl_kasir
-			JOIN tbl_apohresep ON tbl_kasir.nokwitansi = tbl_apohresep.nokwitansi
-			WHERE tbl_kasir.koders = '$unit' and totalpoli < 1 AND tbl_kasir.tglbayar BETWEEN '$_tgl1' AND '$_tgl2' AND tbl_kasir.noreg != '' AND tbl_apohresep.jenispas = '4' and tbl_kasir.nokwitansi in (select nokwitansi from tbl_kartukredit)
-
-			union all
-
-			SELECT 'Apotik' AS keterangan, COUNT(*) AS jumlah, SUM(bayarcash+bayarcard) AS nilai
-			FROM tbl_kasir
-			JOIN tbl_apohresep ON tbl_kasir.nokwitansi = tbl_apohresep.nokwitansi
-			WHERE tbl_kasir.koders = '$unit' and totalpoli > 0 AND tbl_kasir.tglbayar BETWEEN '$_tgl1' AND '$_tgl2' AND tbl_kasir.noreg != '' AND tbl_apohresep.jenispas = '7'
-
-			union all
-
-			SELECT '   Order Cash' AS keterangan, COUNT(*) AS jumlah, SUM(bayarcash) AS nilai
-			FROM tbl_kasir
-			JOIN tbl_apohresep ON tbl_kasir.nokwitansi = tbl_apohresep.nokwitansi
-			WHERE tbl_kasir.koders = '$unit' and totalpoli > 0 AND tbl_kasir.tglbayar BETWEEN '$_tgl1' AND '$_tgl2' AND tbl_kasir.noreg != '' AND tbl_apohresep.jenispas = '7' and tbl_kasir.nokwitansi not in (select nokwitansi from tbl_kartukredit)
-
-			union all
-
-			SELECT '   Order Card' AS keterangan, COUNT(*) AS jumlah, SUM(bayarcard) AS nilai
-			FROM tbl_kasir
-			JOIN tbl_apohresep ON tbl_kasir.nokwitansi = tbl_apohresep.nokwitansi
-			WHERE tbl_kasir.koders = '$unit' and totalpoli > 0 AND tbl_kasir.tglbayar BETWEEN '$_tgl1' AND '$_tgl2' AND tbl_kasir.noreg != '' AND tbl_apohresep.jenispas = '7' and tbl_kasir.nokwitansi in (select nokwitansi from tbl_kartukredit)
-			";
+					SELECT '   Penjamin' AS keterangan, COUNT(*) AS jumlah, SUM(jumlahhutang) AS nilai
+					FROM tbl_kasir 
+					JOIN tbl_pap ON tbl_kasir.noreg = tbl_pap.noreg
+					JOIN tbl_apohresep ON tbl_apohresep.noreg=tbl_kasir.noreg
+					WHERE jenisbayar=1 and jenispas=7 AND tbl_kasir.koders='$unit' 
+					AND tbl_kasir.tglbayar BETWEEN '$_tgl1' AND '$_tgl2'
+				";
 
 				$lap = $this->db->query($query)->result();
 				$pdf = new simkeu_rpt();

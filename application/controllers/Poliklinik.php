@@ -13,10 +13,14 @@ class Poliklinik extends CI_Controller {
 	}
 	
 	public function index(){
-		$cek = $this->session->userdata('username');
-		$unit= $this->session->userdata('unit');
-		if(!empty($cek))
-		{
+		$cek 	= $this->session->userdata('username');
+		$unit	= $this->session->userdata('unit');
+		if(!empty($cek)){
+
+			$average_wait	= $this->db->query("SELECT jam, jamkeluar
+			FROM tbl_rekammedisrs 
+			WHERE koders = '$unit'");
+
 			$data=[
 				$id = $this->uri->segment(3),
 				$bulan  			= $this->M_global->_periodebulan(),
@@ -30,6 +34,7 @@ class Poliklinik extends CI_Controller {
 				'total_pasien'  	=> $this->M_Poliklinik->total_pasien(),
 				'diperiksa_perawat' => $this->M_Poliklinik->diperiksa_perawat()->num_rows(),
 				'diperiksa_dokter'  => $this->M_Poliklinik->diperiksa_dokter()->num_rows(),
+				'atime'				=> $average_wait->result(),
 				'periode'			=> $periode,
 				// 'naDokter'			=> $this->M_Poliklinik->naDokter(),
 				'menu'				=> 'e-HMS',
@@ -148,7 +153,7 @@ class Poliklinik extends CI_Controller {
 			// $row[] = $periksa_perawat;
 			// $row[] = $periksa_dokter;
 			$sebut   = trim($this->M_global->penyebut($unit->antrino));
-			$row[]   = '<button class="btn btn-primary btn-sm" onclick="playAudio('."'".strtolower($unit->antrino1)."',"."'".$unit->antrino."',"."'".$sebut."'".')" type="button"><b>'.$unit->antrino1.'.'.$unit->antrino.' | call </b><i class="fa fa-volume-off"></i></button>';
+			$row[]   = '<button class="btn btn-primary btn-sm" onclick="playAudio('."'".strtolower($unit->kodepos)."',"."'".strtolower($unit->antrino1)."',"."'".$unit->antrino."',"."'".$sebut."'".')" type="button"><b>'.$unit->antrino1.'.'.$unit->antrino.' | call </b><i class="fa fa-volume-off"></i></button>';
 			$row[]   = $status_kasir;
 			$row[]   = $unit->noreg;
 			$row[]   = $unit->rekmed;
@@ -203,8 +208,9 @@ class Poliklinik extends CI_Controller {
 			'tdarah1'      	=> $this->input->post('tekanan1'),
 			'dead'         	=> $this->input->post('doa_hidden'),
 			'pfisik'       	=> $pfisik,
-			'tglkeluar'    	=> date('Y-m-d'),
+			// 'tglkeluar'    	=> date('Y-m-d'),
 			'jam'          	=> date('H:i:s'),
+			'jamdikonsul'	=> date('H:i:s'),
 			'alergi'		=> $this->input->post('alergi_per'),
 
 			// 'coba'  => $this->input->post('tgl_l_per'),
@@ -267,8 +273,8 @@ class Poliklinik extends CI_Controller {
 			'koders'       	=> $cabang,
 			'noreg'        	=> $noreg_dok,
 			'rekmed'       	=> $rekmed_dok,
-			'tglperiksa'   	=> $this->input->post('tgl_dok'),
-			'tglkonsul'    	=> $this->input->post('tgl_dok'),
+			// 'tglperiksa'   	=> $this->input->post('tgl_dok'),
+			// 'tglkonsul'    	=> $this->input->post('tgl_dok'),
 			'kodepos'      	=> $poli_dok,
 			'keluhanawal'  	=> $this->input->post('kelawal'),
 			'pfisik'       	=> $this->input->post('pemeriksaan'),
@@ -279,7 +285,7 @@ class Poliklinik extends CI_Controller {
 			'tindu'        	=> $this->input->post('tindu'),
 			'anjuran'      	=> $this->input->post('anjuran'),
 			'tglkeluar'    	=> date('Y-m-d'),
-			'jam'          	=> date('H:i:s'),
+			'jamkeluar'		=> date('H:i:s'),
 			'nyeri'			=> $this->input->post('ceknyeri'),
 			'alergi'		=> $this->input->post('alergi_dok'),
 			'ijinsakit'		=> $this->input->post('sakitselama'),
@@ -420,7 +426,7 @@ class Poliklinik extends CI_Controller {
 				}
 			}
 
-			// -- ALKES --//
+			//-- ALKES --//
 			$c_bbn       = $this->input->post('bbn_hide');
 			$c_kdalkes   = $this->input->post('kdalkes');
 			$c_satalkes  = $this->input->post('satalkes');
@@ -694,6 +700,30 @@ class Poliklinik extends CI_Controller {
 			}
 
 			// -- HEADER -- //
+
+			// Riwayat Pasien //
+
+			$riwayat_penyakit	= $this->input->post("riwayat_penyakit");
+			$riwayat_keluarga	= $this->input->post("riwayat_keluarga");
+
+			$check_riwayat		= $this->db->query("SELECT * FROM tbl_pasien_catatan WHERE rekmed = '$rekmed_dok'")->num_rows();
+
+			if($check_riwayat == 0){
+				$data_insert_riwayat	= [
+					"rekmed"			=> $rekmed_dok,
+					"riwayat_penyakit"	=> $riwayat_penyakit,
+					"riwayat_keluarga"	=> $riwayat_keluarga
+				];
+
+				$this->db->insert("tbl_pasien_catatan", $data_insert_riwayat);
+			} else {
+				$data_update_riwayat	= [
+					"riwayat_penyakit"	=> $riwayat_penyakit,
+					"riwayat_keluarga"	=> $riwayat_keluarga
+				];
+
+				$this->db->update("tbl_pasien_catatan", $data_update_riwayat, array("rekmed" => $rekmed_dok));
+			}
 
 			if ($param == 0) {
 				/* tbl_rekammedisrs */
@@ -1199,9 +1229,11 @@ class Poliklinik extends CI_Controller {
 		$unit   = $this->input->post('cekunit');
 		$koders = $this->session->userdata('unit');
 
-		$data = $this->db->query(
-			"SELECT d.kodokter, d.nadokter from tbl_drpoli p join tbl_dokter d on p.kodokter=d.kodokter where p.kopoli = '$unit' and koders = '$koders' "
-			)->result();
+		$data	= $this->db->query("SELECT * FROM dokter WHERE koders = '$koders' AND kopoli = '$unit'")->result();
+
+		// $data = $this->db->query(
+		// 	"SELECT d.kodokter, d.nadokter from tbl_drpoli p join tbl_dokter d on p.kodokter=d.kodokter where p.kopoli = '$unit' and koders = '$koders' "
+		// 	)->result();
 		echo json_encode($data);
     }
 
@@ -1217,13 +1249,47 @@ class Poliklinik extends CI_Controller {
 		echo json_encode(array("jarak" => $jarak));
     }
 
-	public function getpoli_tin($kode, $kodepos){
-		$unit = $this->session->userdata('unit');
+	public function getpoli_tin($kode){
+		$unit 		= $this->session->userdata('unit');
+		$kodepos	= $this->input->get("kodepos");
 
 		$data = $this->db->query("SELECT * FROM daftar_tarif_nonbedah AS a
 		WHERE a.koders = '$unit' 
 		AND a.kodetarif = '$kode' 
 		And a.kodepos = '$kodepos'")->row();
+		echo json_encode($data);
+	}
+
+	public function getpoli_lab($kode){
+		$unit 		= $this->session->userdata('unit');
+		$kodepos	= $this->input->get("kodepos");
+
+		$data = $this->db->query("SELECT * FROM daftar_tarif_nonbedah AS a
+		WHERE a.koders = '$unit' 
+		AND a.kodetarif = '$kode' 
+		And a.kodepos = 'LABOR'")->row();
+		echo json_encode($data);
+	}
+
+	public function getpoli_rad($kode){
+		$unit 		= $this->session->userdata('unit');
+		$kodepos	= $this->input->get("kodepos");
+
+		$data = $this->db->query("SELECT * FROM daftar_tarif_nonbedah AS a
+		WHERE a.koders = '$unit' 
+		AND a.kodetarif = '$kode' 
+		And a.kodepos = 'RADIO'")->row();
+		echo json_encode($data);
+	}
+
+	public function getpoli_med($kode){
+		$unit 		= $this->session->userdata('unit');
+		$kodepos	= $this->input->get("kodepos");
+
+		// $data = $this->db->query("SELECT * FROM daftar_tarif_nonbedah AS a
+		// WHERE a.koders = '$unit' 
+		// AND a.kodetarif = '$kode' 
+		// And a.kodepos = 'RADIO'")->row();
 		echo json_encode($data);
 	}
 
@@ -1466,20 +1532,20 @@ class Poliklinik extends CI_Controller {
 
 				// RACIKAN //
 				$query_racikan1	= $this->db->query("SELECT CONCAT(' [ ', kodeobat ,' ] ',' - ',' [ ', namaobat ,' ] ',' - ',' [ ', satuan ,' ] ',' - ',' [ ', harga ,' ]') as namaobatr1, tbl_eracik.*  
-				FROM tbl_eracik 
-				WHERE racikid = 'RACIK1' 
-				AND noreg = '$ceknoreg' 
-				AND koders = '$koders'");
+					FROM tbl_eracik 
+					WHERE racikid = 'RACIK1' 
+					AND noreg = '$ceknoreg' 
+					AND koders = '$koders'");
 				$query_racikan2	= $this->db->query("SELECT CONCAT(' [ ', kodeobat ,' ] ',' - ',' [ ', namaobat ,' ] ',' - ',' [ ', satuan ,' ] ',' - ',' [ ', harga ,' ]') as namaobatr2, tbl_eracik.*  
-				FROM tbl_eracik 
-				WHERE racikid = 'RACIK2' 
-				AND noreg = '$ceknoreg' 
-				AND koders = '$koders'");
+					FROM tbl_eracik 
+					WHERE racikid = 'RACIK2' 
+					AND noreg = '$ceknoreg' 
+					AND koders = '$koders'");
 				$query_racikan3	= $this->db->query("SELECT CONCAT(' [ ', kodeobat ,' ] ',' - ',' [ ', namaobat ,' ] ',' - ',' [ ', satuan ,' ] ',' - ',' [ ', harga ,' ]') as namaobatr3, tbl_eracik.*  
-				FROM tbl_eracik 
-				WHERE racikid = 'RACIK3' 
-				AND noreg = '$ceknoreg' 
-				AND koders = '$koders'");
+					FROM tbl_eracik 
+					WHERE racikid = 'RACIK3' 
+					AND noreg = '$ceknoreg' 
+					AND koders = '$koders'");
 
 				$racik1_row	= $query_racikan1->num_rows();
 				$racik2_row	= $query_racikan2->num_rows();
@@ -1534,7 +1600,12 @@ class Poliklinik extends CI_Controller {
 				}
 
 				//E_LAB
-				$query_list	= $this->db->query("SELECT CONCAT('[ ', kodetarif ,' ] - [ ', tindakan ,' ]') AS text, kodetarif AS kodeid FROM daftar_tarif_nonbedah WHERE kodepos = 'LABOR' ORDER BY tindakan ASC")->result();
+				$query_list	= $this->db->query("SELECT CONCAT('[ ', kodetarif ,' ] - [ ', tindakan ,' ]') AS text,
+				kodetarif AS kodeid
+				FROM daftar_tarif_nonbedah
+				WHERE kodepos = 'LABOR' 
+				AND koders = '$koders' 
+				ORDER BY tindakan ASC")->result();
 
 				$query_orderelab	= $this->db->query("SELECT * FROM tbl_orderperiksa WHERE koders = '$koders' AND noreg = '$ceknoreg' AND orderno LIKE '%EL%'");
 				if($query_orderelab->num_rows() == 0){
@@ -1575,7 +1646,22 @@ class Poliklinik extends CI_Controller {
 					$total_erad		= $query_ordererad->num_rows();
 				}
 
+				// STATUS CLOSE BILL
+
 				$query_kasir		= $this->db->query("SELECT * FROM tbl_kasir WHERE noreg = '$ceknoreg' AND koders = '$koders' ")->num_rows();
+
+				// RIWAYAT PASIEN
+
+				$riwayat_pasien	= $this->db->query("SELECT * FROM tbl_pasien_catatan WHERE rekmed = '$rekmed'");
+
+				if($riwayat_pasien->num_rows() == 0){
+					$data_riwayat_pasien	= (object) [
+						"riwayat_penyakit"	=> "-",
+						"riwayat_keluarga"	=> "-"
+					];
+				} else {
+					$data_riwayat_pasien	= $riwayat_pasien->row();
+				}
 
 				// VALUE
 				if(!empty($cek)){
@@ -1627,6 +1713,7 @@ class Poliklinik extends CI_Controller {
 						"data_ordererad"	=> $data_ordererad,
 						"total_erad"	=> $total_erad,
 						"status_kasir"	=> ($query_kasir == 0)? 0 : 1,
+						"riwayat_pasien"	=> $data_riwayat_pasien,
 					];
 					
 					$this->load->view("poliklinik/v_poliklinik_p_dokter_add", $data);
@@ -1802,7 +1889,7 @@ class Poliklinik extends CI_Controller {
 		}
 	}
 
-	public function cetak_suket($param_unit, $param_noreg, $param_rekmed, $param_type){
+	public function cetak_suket($param_unit, $param_noreg, $param_rekmed, $ttd, $param_type){
 		$cek = '1';
 		$chari ='';
 		$check_suket	= $this->db->query("SELECT * FROM tbl_rekammedisrs WHERE koders = '$param_unit' AND noreg = '$param_noreg'");
@@ -1825,6 +1912,7 @@ class Poliklinik extends CI_Controller {
 			$comp_wa	= $head->whatsapp;
 			$comp_npwp	= $head->npwp;
 			$comp_image	= base_url()."assets/img_user/$avatar";
+			$ttd_       = base_url()."ttd/$ttd";
 
 			// Umur
 			$age_date = new DateTime($pasien->tgllahir);
@@ -1934,13 +2022,20 @@ class Poliklinik extends CI_Controller {
 						<td colspan="3" style="padding-bottom:40px">Demikian, harap yang berkepentingan menjadi maklum. Terimakasih</td>
 					</tr>
 					<tr>
-						<td>Diagnosa/Keterangan Pemeriksaan</td>
-						<td colspan="2" align="center">'. $head->kota .', '. date("d-m-Y") .'<br />Dokter Pemeriksa,<br /><br /></td>
+						<td colspan="2">Diagnosa/Keterangan Pemeriksaan</td>
+						<td align="center">'. $head->kota .', '. date("d-m-Y") .'<br />Dokter Pemeriksa,<br /><br /></td>
 					</tr>
 					<tr>
-						<td><b>'. $data->diagnosa .'</b></td>
-						<td colspan="2" align="center">
-						<br /><br /><br /><br /><br />('. data_master("dokter", array("kodokter" => $dokter_sk, "koders" => $param_unit, "kopoli" => $data->kodepos))->nadokter .')</td>
+						<td colspan="2"><b>'. $data->diagnosa .'</b></td>
+						<td align="center">
+							<img src="'. $ttd_ .'"  width="200" height="100" />
+						</td>
+					</tr>
+					<tr>
+						<td colspan="2"></td>
+						<td align="center">
+							('. data_master("dokter", array("kodokter" => $dokter_sk, "koders" => $param_unit, "kopoli" => $data->kodepos))->nadokter .')
+						</td>
 					</tr>
 				</table>';
 				switch ($cek) {
@@ -2057,15 +2152,24 @@ class Poliklinik extends CI_Controller {
 					<tr>
 						<td colspan="3" style="padding-bottom:40px">Demikian, harap yang berkepentingan menjadi maklum. Terimakasih</td>
 					</tr>
+
 					<tr>
-						<td>Diagnosa/Keterangan Pemeriksaan</td>
-						<td colspan="2" align="center">'. $head->kota .', '. date("d-m-Y") .'<br />Dokter Pemeriksa,<br /><br /></td>
+						<td colspan="2">Diagnosa/Keterangan Pemeriksaan</td>
+						<td align="center">'. $head->kota .', '. date("d-m-Y") .'<br />Dokter Pemeriksa,<br /><br /></td>
 					</tr>
 					<tr>
-						<td><b>'. $data->diagnosa .'</b></td>
-						<td colspan="2" align="center">
-						<br /><br /><br /><br /><br />('. data_master("dokter", array("kodokter" => $dokter_sk, "koders" => $param_unit, "kopoli" => $data->kodepos))->nadokter .')</td>
+						<td colspan="2"><b>'. $data->diagnosa .'</b></td>
+						<td align="center">
+							<img src="'. $ttd_ .'"  width="200" height="100" />
+						</td>
 					</tr>
+					<tr>
+						<td colspan="2"></td>
+						<td align="center">
+							('. data_master("dokter", array("kodokter" => $dokter_sk, "koders" => $param_unit, "kopoli" => $data->kodepos))->nadokter .')
+						</td>
+					</tr>
+
 				</table>';
 				switch ($cek) {
 					case 0;
@@ -2117,6 +2221,32 @@ class Poliklinik extends CI_Controller {
 		} else {
 			echo json_encode(array("status" => false));
 		}
+	}
+	
+	Public function bersihkan_ttd()
+	{
+		$files    =glob('ttd/*.png');
+		foreach ($files as $file) {
+			if (is_file($file))
+			unlink($file); // hapus file
+		}
+		
+		echo json_encode(array("status" => "1"));
+
+	}
+
+	Public function simpan_ttd()
+	{
+		$img              = $this->input->post('image');
+		$img              = str_replace('data:image/png;base64,', '', $img);
+		$img              = str_replace(' ', '+', $img);
+		$data             = base64_decode($img);
+		$image            = uniqid() . '.png';
+		$file             = './ttd/' .$image;
+		$success          = file_put_contents($file, $data);
+		
+		echo $image;
+
 	}
 
 }

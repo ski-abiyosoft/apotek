@@ -1,6 +1,14 @@
 <?php
+
     $this->load->view('template/header');
     $this->load->view('template/body');
+
+    $error  = $this->session->flashdata("error");
+
+    if(isset($error)){
+        echo "<script>alert('". $error ."')</script>";
+    }
+
 ?>
 
 <!-- <link href="<?php echo base_url('assets/datatables/css/dataTables.bootstrap.css') ?>" rel="stylesheet">
@@ -440,7 +448,7 @@
                         <td><?= $oval->rekmed ?></td>
                         <td><?= $oval->namapas ?></td>
                         <td><button class="btn btn-info btn-xs" type="button" data-toggle="modal" data-target="#<?= $oval->nolaborat ?>">detail</button></td>
-                        <td><?= data_master("dokter", array("kodokter" => $oval->drpengirim, "koders" => $this->session->userdata("unit"), "kopoli" => $oval->asal))->nadokter ?></td>
+                        <td><?= $oval->asal == "" ? "-" : data_master("dokter", array("kodokter" => $oval->drpengirim, "koders" => $this->session->userdata("unit"), "kopoli" => $oval->asal))->nadokter ?></td>
                     </tr>
                     <?php } ?>
                 </tbody>

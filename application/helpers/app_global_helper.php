@@ -432,4 +432,33 @@ function unique_file($path, $filename) {
 	return $filename;
 }
 
+function sumTime($time1, $time2) {
+
+    $time1Exp = explode(':', $time1);
+    $time2Exp = explode(':', $time2);
+    $timeResult = array();
+    $extraMinutes = $extraSeconds = 0;
+
+    //sum milliseconds
+    $timeResult[2] = $time1Exp[2] + $time2Exp[2];
+
+    if($timeResult[2] >= 100) {
+        $extraSeconds = floor($timeResult[2] / 100);
+        $timeResult[2] -= $extraSeconds * 100;
+    }
+
+    $timeResult[1] = $time1Exp[1] + $time2Exp[1] + $extraSeconds;
+
+    if($timeResult[1] >= 60) {
+        $extraMinutes = floor($timeResult[1] / 60);
+        $timeResult[1] -= $extraMinutes * 100;
+    }
+
+    $timeResult[0] = $time1Exp[0] + $time2Exp[0] + $extraMinutes;
+
+    return implode(':', $timeResult);
+
+
+}
+
 ?>

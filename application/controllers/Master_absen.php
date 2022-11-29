@@ -15,10 +15,10 @@ class Master_absen extends CI_Controller {
 
 	public function index()
 	{
+		$username   = $this->session->userdata('username');
 		$cekk       = $this->session->userdata('level');
-		$karyawan   = $this->db->query("SELECT*From tbl_kary_ski ORDER BY nik");
-		$nmkaryawan = $this->db->query("SELECT*From tbl_kary_ski ORDER BY nik LIMIT 1")->row();
-		$status     = $this->db->query("SELECT*From tbl_setinghms where lset='ABSN'")->result();
+		$karyawan   = $this->db->query("SELECT*From tbl_kary_ski where user='$username' ORDER BY nik LIMIT 1")->row();
+		$status     = $this->db->query("SELECT*From tbl_setinghms where lset='ABSN' order by kodeset")->result();
         $cek  = $this->M_global->tgln();
 		if(!empty($cekk))
 		{
@@ -26,8 +26,7 @@ class Master_absen extends CI_Controller {
 				'form_id'    => 'absen',
 				'form_title' => 'Data Absensi',
 				'cek'        => $cek,
-				'karyawan'   => $karyawan->result(),
-				'nmkaryawan' => $nmkaryawan->namakary,
+				'karyawan' => $karyawan,
 				'status'     => $status,
 			);
 			$this->load->view('master/v_master_absen',$data);
@@ -39,7 +38,7 @@ class Master_absen extends CI_Controller {
 
 	public function ajax_add($status_masuk='')
 	{
-		$nik          = $this->input->post('nm_kary');
+		$nik          = $this->input->post('nama_kary');
 		$tgl_absen    = $this->input->post('tgl2');
 		$tgll         = $this->M_cetak->tanggal_format_indonesia($tgl_absen);
 		$jam          = date("H:i:s");

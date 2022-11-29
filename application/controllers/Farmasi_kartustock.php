@@ -420,7 +420,7 @@
 					}
 				} else {
 					$_tanggalawal    = $dari;
-					$saldo2           = 0;
+					$saldo2           = $saldo_awal;
 					$jam          = date("H:i:s");
 				}
 			// }

@@ -84,6 +84,12 @@ class Jadwal_dokter extends CI_Controller
     }
   }
 
+  public function hapusdata(){
+    $id = $this->input->post('id');
+    $this->db->delete("tbl_drpraktek", ["id"=>$id]);
+    echo json_encode(['status'=>1]);
+  }
+
   public function read(){
     $id = $this->input->post('id');
     $table = $this->db->query('select * from tbl_drpraktek where koders = "'.$this->session->userdata('unit').'"')->result();
