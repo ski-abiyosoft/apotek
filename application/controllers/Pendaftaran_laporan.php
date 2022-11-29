@@ -110,6 +110,7 @@ class Pendaftaran_laporan extends CI_Controller {
 				$pdf->SetFont('');
 				$no = 1;
 				if($unitx == ''){
+					$no = 1;
 					foreach($lap as $db){
 						if($db->antrino < 2){
 							$antrian = $db->antrino." Baru";
@@ -162,6 +163,7 @@ class Pendaftaran_laporan extends CI_Controller {
 						);
 					}
 				} else {
+					$no = 1;
 					foreach($lap as $db){
 						if($db->antrino < 2){
 							$antrian = $db->antrino." Baru";

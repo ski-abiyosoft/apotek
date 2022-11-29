@@ -98,7 +98,7 @@ class Laporan_penjualan extends CI_Controller
 						$totalrp = $q->totalrp;
 					}
 					$body .=  "<tr>
-						<td style=\"text-align: right; padding: 5px;\" width=\"5%\">" . $no++ . "</td>
+						<td style=\"text-align: center; padding: 5px;\" width=\"5%\">" . $no++ . "</td>
 						<td style=\"text-align: left; padding: 5px;\">$q->resepno</td>
 						<td style=\"text-align: center; padding: 5px;\">".date("d-m-Y", strtotime($q->tglresep))."</td>
 						<td style=\"text-align: left; padding: 5px;\">$noreg</td>
@@ -213,7 +213,7 @@ class Laporan_penjualan extends CI_Controller
 						$jualtotal_rp = $q->jualtotal_rp;
 					}
 					$body .= "<tr>
-						<td align=\"right\">" . $no++ . "</td>
+						<td align=\"center\">" . $no++ . "</td>
 						<td align=\"left\">$kodebarang</td>
 						<td align=\"left\">$namabarang</td>
 						<td align=\"left\">$satuan</td>
@@ -270,7 +270,7 @@ class Laporan_penjualan extends CI_Controller
 						$hna = $q->hna;
 					}
 					$body .=  "<tr>
-						<td style=\"text-align: right; padding: 5px;\" width=\"5%\">" . $no++ . "</td>
+						<td style=\"text-align: center; padding: 5px;\" width=\"5%\">" . $no++ . "</td>
 						<td style=\"text-align: left; padding: 5px;\" width=\"10%\">$q->resepno</td>
 						<td style=\"text-align: left; padding: 5px;\">$q->namapas</td>
 						<td style=\"text-align: left; padding: 5px;\">$q->rekmed</td>
@@ -368,7 +368,7 @@ class Laporan_penjualan extends CI_Controller
 						$persen = $q->persen;
 					}
 					$body .= "<tr>
-						<td align=\"right\">" . $no++ . "</td>
+						<td align=\"center\">" . $no++ . "</td>
 						<td align=\"left\">$q->kodebarang</td>
 						<td align=\"left\">$q->namabarang</td>
 						<td align=\"left\">$q->satuan</td>

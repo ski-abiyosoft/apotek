@@ -1,7 +1,14 @@
     <?php 
     $this->load->view('template/header');
-    $this->load->view('template/body');    	  
+    $this->load->view('template/body');
     //   initailizeSelect2_jnsicd();
+
+    $session   = $this->session->flashdata("session");
+
+    if(isset($session)){
+        echo "<script>if(confirm('$session')){ window.open('','_self').close(); } else { window.open('','_self').close(); }</script>";
+    }
+
     ?>
 
     
@@ -86,7 +93,8 @@
                                             <?= $diperiksa_perawat == 0 ? "0" : $diperiksa_perawat ?>
                                         </div>
                                         <div class="desc">
-                                            PASIEN BELUM DIPERIKSA
+                                            <!-- PASIEN BELUM DIPERIKSA -->
+                                            PEMERIKSAAN PERAWAT
                                         </div>
                                     </div>
 
@@ -105,7 +113,7 @@
                                             <?= $diperiksa_dokter == 0 ? "0" : $diperiksa_dokter ?>
                                         </div>
                                         <div class="desc">
-                                            PASIEN SELESAI DIPERIKSA
+                                            PEMERIKSAAN DOKTER
                                         </div>
                                     </div>
                                     <!-- <a data-toggle="modal" class="more" href="">
@@ -202,6 +210,7 @@
                                     <th class="title-white" style="text-align: center">Poliklinik</th>
                                     <th class="title-white" style="text-align: center">Dokter</th>
                                     <th class="title-white" style="text-align: center">Pembayaran</th>
+                                    <th class="title-white" style="text-align: center">No Kartu</th>
                                     <!-- <th class="title-white">&nbsp;</th>
                                     <th class="title-white">&nbsp;</th>
                                     <th class="title-white">&nbsp;</th> -->
@@ -395,23 +404,38 @@ function alltrim(kata){
     return c
 }
 
-function playAudio(antriangka="", noantri="satu") {
+function playAudio(kodepos="Z", noantri1="Z", antriangka="", noantri="satu") {
     
     var bel   = new Audio('audio/bell_long.wav');
     var bel2  = new Audio('audio/nomor_antrian.wav');
+    var belh  = new Audio('audio/'+noantri1+'.wav');
     var bel4  = new Audio('audio/belas.wav');
     var bel5  = new Audio('audio/puluh.wav');
     var bel7  = new Audio('audio/ratus.wav');
     var to    = new Audio('audio/silakan_menuju_ke.wav');
     var poli  = new Audio('audio/poli.wav');
-    var umum  = new Audio('audio/umum.wav');
 
+    if(kodepos=='pumum'){
+        var cek_pol  = new Audio('audio/umum.wav');
+    }else if(kodepos=='pgigi'){
+        var cek_pol  = new Audio('audio/gigi.wav');
+    }else if(kodepos=='bidan'){
+        var cek_pol  = new Audio('audio/ibu_dan_anak.wav');
+    }else if(kodepos=='farmasi'){
+        var cek_pol  = new Audio('audio/customer_service.wav');
+    }else if(kodepos=='ugd'){
+        var cek_pol  = new Audio('audio/customer_service.wav');
+    }else{
+        var cek_pol  = new Audio('audio/umum.wav');
+    }
     totalwaktu=0; 
     
     setTimeout(function() { bel.pause(); bel.currentTime=0; bel.play(); }, totalwaktu);
     totalwaktu=totalwaktu+1500;
     setTimeout(function() { bel2.pause(); bel2.currentTime=0; bel2.play(); }, totalwaktu);
     totalwaktu=totalwaktu+1500;
+    setTimeout(function() { belh.pause(); belh.currentTime=0; belh.play(); }, totalwaktu);
+    totalwaktu=totalwaktu+1000;
     
     if(antriangka<=11 || antriangka==100){
 
@@ -542,7 +566,7 @@ function playAudio(antriangka="", noantri="satu") {
     setTimeout(function() { poli.pause(); poli.currentTime=0; poli.play(); }, totalwaktu);
         totalwaktu=totalwaktu+1000;
 
-    setTimeout(function() { umum.pause(); umum.currentTime=0; umum.play(); }, totalwaktu);
+    setTimeout(function() { cek_pol.pause(); cek_pol.currentTime=0; cek_pol.play(); }, totalwaktu);
         totalwaktu=totalwaktu+1500;
     
 }

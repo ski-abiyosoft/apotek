@@ -966,8 +966,8 @@ class Laporan_persediaan extends CI_Controller
                                         <td width=\"4%\" align=\"center\" rowspan=\"2\"><br>Kode Barang</td>
                                         <td width=\"4%\" align=\"center\" rowspan=\"2\"><br>Nama Barang</td>
                                         <td width=\"4%\" align=\"center\" rowspan=\"2\"><br>Satuan</td>
-                                        <td width=\"24%\" align=\"center\" colspan=\"6\"><br>Persedaan Masuk</td>
-                                        <td width=\"24%\" align=\"center\" colspan=\"7\"><br>Persedaan Keluar</td>
+                                        <td width=\"24%\" align=\"center\" colspan=\"6\"><br>Persediaan Masuk</td>
+                                        <td width=\"24%\" align=\"center\" colspan=\"7\"><br>Persediaan Keluar</td>
                                         <td width=\"4%\" align=\"center\" rowspan=\"2\"><br>Saldo Akhir</td>
                                         <td width=\"4%\" align=\"center\" rowspan=\"2\"><br>Hpp Average</td>
                                         <td width=\"4%\" align=\"center\" rowspan=\"2\"><br>Total Persediaan</td>
@@ -1701,7 +1701,7 @@ class Laporan_persediaan extends CI_Controller
                } else if ($laporan == 3) {
                     $position = "L";
                     if ($keperluan == 1) {
-                         $judul = '03 Laporan Persediaan';
+                         $judul = '03 Laporan Persediaan Barang';
                          if ($da == 1) {
                               $x = "SELECT depocode FROM tbl_depo";
                          } else {
@@ -1709,7 +1709,7 @@ class Laporan_persediaan extends CI_Controller
                          }
                          $queryx = $this->db->query($x)->result();
                     } else {
-                         $judul = '03 Laporan Persediaan';
+                         $judul = '03 Laporan Persediaan Barang';
                          if ($da == 1) {
                               $x = "SELECT depocode FROM tbl_depo";
                          } else {
@@ -1923,10 +1923,14 @@ class Laporan_persediaan extends CI_Controller
                                         </tr>
                                    </thead>";
                                    $no = 1;
+                                   
                                    foreach ($query as $q) {
+                                        
+                                        $bs = $this->db->get_where("tbl_barangstock", ["koders"=>$unit, "kodebarang"=>$q->kodebarang, "gudang"=>$depo])->row();
+
                                         $namabarang = $q->namabarang;
                                         $satuan = $q->satuan;
-                                        $salakhir = number_format($q->saldo);
+                                        $salakhir = number_format($bs->saldoawal+$q->saldo);
 
                                         $body .= "<tr>
                                              <td align=\"center\">" . $no++ . "</td>
@@ -1951,8 +1955,9 @@ class Laporan_persediaan extends CI_Controller
                                              <td width=\"4%\" bgcolor=\"#cccccc\" align=\"center\" rowspan=\"2\">Kode Barang</td>
                                              <td width=\"4%\" bgcolor=\"#cccccc\" align=\"center\" rowspan=\"2\">Nama Barang</td>
                                              <td width=\"4%\" bgcolor=\"#cccccc\" align=\"center\" rowspan=\"2\">Satuan</td>
-                                             <td width=\"24%\" bgcolor=\"#cccccc\" align=\"center\" colspan=\"6\">Persedaan Masuk</td>
-                                             <td width=\"24%\" bgcolor=\"#cccccc\" align=\"center\" colspan=\"7\">Persedaan Keluar</td>
+                                             <td width=\"4%\" bgcolor=\"#cccccc\" align=\"center\" rowspan=\"2\">Saldo Awal</td>
+                                             <td width=\"24%\" bgcolor=\"#cccccc\" align=\"center\" colspan=\"6\">Persediaan Masuk</td>
+                                             <td width=\"24%\" bgcolor=\"#cccccc\" align=\"center\" colspan=\"7\">Persediaan Keluar</td>
                                              <td width=\"4%\" bgcolor=\"#cccccc\" align=\"center\" rowspan=\"2\">Saldo Akhir</td>
                                              <td width=\"4%\" bgcolor=\"#cccccc\" align=\"center\" rowspan=\"2\">Hpp Average</td>
                                              <td width=\"4%\" bgcolor=\"#cccccc\" align=\"center\" rowspan=\"2\">Total Persediaan</td>
@@ -1975,9 +1980,37 @@ class Laporan_persediaan extends CI_Controller
                                    </thead>";
                                    $no = 1;
                                    foreach ($query as $q) {
+                                        $bs = $this->db->get_where("tbl_barangstock", ["koders"=>$unit, "kodebarang"=>$q->kodebarang, "gudang"=>$depo])->row();
+
+                                        if($cekpdf==2){
+
                                         $kodebarang             = $q->kodebarang;
                                         $namabarang             = $q->namabarang;
                                         $satuan                 = $q->satuan;
+                                        $salawal                = $bs->saldoawal;
+                                        $pembelian              = $q->pembelian;
+                                        $mutasi_in              = $q->move_in;
+                                        $produksi               = $q->produksi_jadi;
+                                        $so                     = $q->so;
+                                        $retur_beli             = $q->retur_beli;
+                                        $total_masuk            = $q->total_masuk;
+                                        $jual                   = $q->jual;
+                                        $mutasi_out             = $q->mutasi_out;
+                                        $retur_jual             = $q->retur_jual;
+                                        $produksi_out           = $q->produksi_bahan;
+                                        $bhp                    = $q->bhp;
+                                        $expired                = $q->expire;
+                                        $total_keluar           = $q->total_keluar;
+                                        $salakhir               = $bs->saldoawal+$q->saldo;
+                                        $hpp                    = $q->hpp;
+                                        $total_persediaan_rp    = $q->total;
+
+                                        }else{
+
+                                        $kodebarang             = $q->kodebarang;
+                                        $namabarang             = $q->namabarang;
+                                        $satuan                 = $q->satuan; 
+                                        $salawal                 = number_format($bs->saldoawal); 
                                         $pembelian              = number_format($q->pembelian);
                                         $mutasi_in              = number_format($q->move_in);
                                         $produksi               = number_format($q->produksi_jadi);
@@ -1991,14 +2024,18 @@ class Laporan_persediaan extends CI_Controller
                                         $bhp                    = number_format($q->bhp);
                                         $expired                = number_format($q->expire);
                                         $total_keluar           = number_format($q->total_keluar);
-                                        $salakhir               = number_format($q->saldo);
+                                        $salakhir               = number_format($bs->saldoawal+$q->saldo);
                                         $hpp                    = number_format($q->hpp);
                                         $total_persediaan_rp    = number_format($q->total);
+
+                                        }
+                                        
                                         $body .= "<tr>
                                              <td align=\"center\">" . $no++ . "</td>
                                              <td align=\"left\">$kodebarang</td>
                                              <td align=\"left\">$namabarang</td>
                                              <td align=\"right\">$satuan</td>
+                                             <td align=\"right\">$salawal</td>
                                              <td align=\"right\">$pembelian</td>
                                              <td align=\"right\">$mutasi_in</td>
                                              <td align=\"right\">$produksi</td>

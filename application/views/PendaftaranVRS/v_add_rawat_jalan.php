@@ -114,18 +114,15 @@
         <div class="col-md-6">
           <div class="form-group">
             <label class="col-md-3 control-label">Lokasi Praktek <font color="red">*</font></label>
-            <div class="col-md-5">
+            <div class="col-md-9">
               <select class="form-control select2_lokasix" id="ruang" name="ruang">
                 
               </select>
             </div>
-            <label class="col-md-2 control-label">No. Antri <font color="red"></font></label>
-            <div class="col-md-2">
-              <input type="text" class="form-control" name="antrino" id="antrino" value="1">
-            </div>
           </div>
         </div>
       </div>
+      
       <div class="row">
         <div class="col-md-6">
           <div class="form-group">
@@ -148,12 +145,34 @@
               </div>
             </div>
           </div> -->
-          <div class="col-md-6">
+        <div class="col-md-6">
+          <div class="form-group">
+            <label class="col-md-3 control-label">No. Antri <font color="red"></font></label>
+            <div class="col-md-9">
+              <div class="input-group">
+                <input type="text" class="form-control input-small" id="antrino1" name="antrino1" value="" placeholder="" readonly>
+                <input type="text" class="form-control input-medium " name="antrino" id="antrino" value="1">
+              </div>
+            </div>
+          </div>
+        </div>
+        
+      </div>
+      <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+              <label class="col-md-3 control-label">No. RM <font color="red"></font></label>
+              <div class="col-md-9">
+                <input type="hidden" name="pengirim" id="pengirim">
+                <input type="text" class="form-control" id="norm" name="norm" value="" placeholder="otomatis" readonly>
+              </div>
+            </div>
+        </div>
+        <div class="col-md-6">
           <div class="form-group">
             <label class="col-md-3 control-label">Jenis Pasien <font color="red">*</font></label>
             <div class="col-md-9">
-              <select class="form-control select2_el_jenispasien" style="width:100%;" id="jenispasien"
-                name="jenispasien" onChange="getRuang()">
+              <select class="form-control select2_el_jenispasien" style="width:100%;" id="jenispasien" name="jenispasien" onChange="getRuang()">
                 <option value="">--- Pilih ---</option>
                 <?php $jenis = $this->db->get_where("tbl_setinghms", array("lset" => 'JPAS'))->result();
 								foreach($jenis as $row){ 
@@ -165,16 +184,16 @@
             </div>
           </div>
         </div>
+
       </div>
       <div class="row">
         <div class="col-md-6">
-            <div class="form-group">
-              <label class="col-md-3 control-label">No. RM <font color="red"></font></label>
-              <div class="col-md-9">
-                <input type="hidden" name="pengirim" id="pengirim">
-                <input type="text" class="form-control" id="norm" name="norm" value="" placeholder="otomatis" readonly>
-              </div>
+          <div class="form-group">
+            <label class="col-md-3 control-label">NIK <font color="red">*</font></label>
+            <div class="col-md-9">
+              <input type="text" class="form-control" id="noidentitas" name="noidentitas" value="" readonly>
             </div>
+          </div>
         </div>
         <div class="col-md-6" id="penjamin">
           <div class="form-group">
@@ -192,14 +211,13 @@
             </div>
           </div>
         </div>
-
       </div>
       <div class="row">
         <div class="col-md-6">
           <div class="form-group">
-            <label class="col-md-3 control-label">NIK <font color="red">*</font></label>
+            <label class="col-md-3 control-label">Nama Pasien <font color="red">*</font></label>
             <div class="col-md-9">
-              <input type="text" class="form-control" id="noidentitas" name="noidentitas" value="" readonly>
+              <input type="text" class="form-control" id="namapasien" name="namapasien" value="" readonly>
             </div>
           </div>
         </div>
@@ -208,16 +226,6 @@
             <label class="col-md-3 control-label">No. Kartu <font color="red">*</font></label>
             <div class="col-md-9">
               <input type="text" class="form-control" id="nocard" name="nocard" value="" maxlength="13">
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="row">
-        <div class="col-md-6">
-          <div class="form-group">
-            <label class="col-md-3 control-label">Nama Pasien <font color="red">*</font></label>
-            <div class="col-md-9">
-              <input type="text" class="form-control" id="namapasien" name="namapasien" value="" readonly>
             </div>
           </div>
         </div>
@@ -1233,6 +1241,19 @@ $(".select2_lokasix").select2();
 function update() {
   var select = document.getElementById('poliklinik1').value;
   initailizeSelect2_dokter(select);
+    // UMUM
+  if(select=='PUMUM'){
+    $('#antrino1').val('A');
+    // GIGI
+  }else if(select=='PGIGI'){
+    $('#antrino1').val('B');
+    // KIA
+  }else if(select=='BIDAN'){
+    $('#antrino1').val('C');
+  }else{
+    $('#antrino1').val('F');
+  }
+
   $.ajax({
     url: "<?= site_url('PendaftaranVRS/get_dokter_rj');?>",
     type: "POST",
@@ -1896,6 +1917,7 @@ function register() {
   var penjamin      = document.getElementById('vpenjamin').value;
   var dokter        = document.getElementById('dokter').value;
   var antrino       = document.getElementById('antrino').value;
+  var antrino1      = document.getElementById('antrino1').value;
   var pengirim      = document.getElementById('pengirim').value;
   var ruang         = document.getElementById('ruang').value;
   var booking       = document.getElementById('booking').value;

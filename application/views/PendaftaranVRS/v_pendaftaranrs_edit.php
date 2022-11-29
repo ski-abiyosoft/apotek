@@ -110,12 +110,13 @@
 						</div>
 					</div>
 				</div>
+				
 				<div class="col-md-6">
 					<div class="form-group">
 						<label class="col-md-3 control-label">Lokasi Praktek <font color="red">*</font></label>
-						<div class="col-md-5">
-							<select class="form-control select2me" id="ruang" name="ruang">
-								<option value="">--- Pilih ---</option>
+						<div class="col-md-9">
+							<select class="form-control lok_prak" id="ruang" name="ruang">
+								<!-- <option value="">--- Pilih ---</option> -->
 								<?php 
 									$poli = $this->db->get("tbl_ruangpoli")->result();
 									foreach($poli as $row){ 
@@ -125,10 +126,7 @@
 								<?php } ?>
 							</select>
 						</div>
-						<label class="col-md-2 control-label">No. Antri <font color="red"></font></label>
-						<div class="col-md-2">
-							<input type="text" class="form-control" name="antrino" id="antrino" value="<?= $data->antrino;?>">
-						</div>
+						
 					</div>
 				</div>
 			</div>
@@ -160,17 +158,13 @@
 				</div> -->
 				<div class="col-md-6">
 					<div class="form-group">
-						<label class="col-md-3 control-label">Jenis Pasien <font color="red">*</font></label>
+						<label class="col-md-3 control-label">No. Antri <font color="red"></font></label>
 						<div class="col-md-9">
-							<select class="form-control select2me" id="jenispasien" name="jenispasien" onchange="getRuang()" onclick="getRuang()">
-								<?php 
-									$jenis = $this->db->get_where("tbl_setinghms", array("lset" => 'JPAS'))->result();
-									foreach($jenis as $row){ 
-										$selected = ($row->kodeset==$data->jenispas?'selected':'');
-								?>
-								<option <?= $selected;?> value="<?= $row->kodeset;?>"><?= $row->keterangan;?></option>
-								<?php } ?>
-							</select>
+							<div class="input-group">
+								<input type="text" class="form-control input-small" id="antrino1" name="antrino1" value="<?= $data->antrino1;?>" placeholder="" readonly>
+								<input type="text" class="form-control input-medium " name="antrino" id="antrino" value="<?= $data->antrino;?>">
+								
+							</div>
 						</div>
 					</div>
 				</div>
@@ -187,13 +181,15 @@
 				</div>
 				<div class="col-md-6" id="penjamin">
 					<div class="form-group">
-						<label class="col-md-3 control-label">Penjamin <font color="red"></font></label>
+						<label class="col-md-3 control-label">Jenis Pasien <font color="red">*</font></label>
 						<div class="col-md-9">
-							<select class="form-control select2_el_penjamin" id="vpenjamin" name="vpenjamin">
-								<?php if($data->cust_id){ 
-									$vpenjamin = data_master('tbl_penjamin', array('cust_id' => $data->cust_id));
+							<select class="form-control jen_pas" id="jenispasien" name="jenispasien" onchange="getRuang()" onclick="getRuang()">
+								<?php 
+									$jenis = $this->db->get_where("tbl_setinghms", array("lset" => 'JPAS'))->result();
+									foreach($jenis as $row){ 
+										$selected = ($row->kodeset==$data->jenispas?'selected':'');
 								?>
-								<option value="<?= $data->cust_id;?>"><?= $vpenjamin->cust_nama;?></option>
+								<option <?= $selected;?> value="<?= $row->kodeset;?>"><?= $row->keterangan;?></option>
 								<?php } ?>
 							</select>
 						</div>
@@ -211,9 +207,15 @@
 				</div>
 				<div class="col-md-6" id="card">
 					<div class="form-group">
-						<label class="col-md-3 control-label">No. Kartu <font color="red">*</font></label>
+						<label class="col-md-3 control-label">Penjamin <font color="red"></font></label>
 						<div class="col-md-9">
-							<input type="text" class="form-control" id="nocard" name="nocard" value="<?= $data->nobpjs; ?>" maxlength="13">
+							<select class="form-control select2_el_penjamin" id="vpenjamin" name="vpenjamin">
+								<?php if($data->cust_id){ 
+									$vpenjamin = data_master('tbl_penjamin', array('cust_id' => $data->cust_id));
+								?>
+								<option value="<?= $data->cust_id;?>"><?= $vpenjamin->cust_nama;?></option>
+								<?php } ?>
+							</select>
 						</div>
 					</div>
 				</div>
@@ -225,6 +227,17 @@
 						<div class="col-md-9">	
 							<input type="text" class="form-control" id="namapasien" name="namapasien" value="<?= $data->namapas; ?>" readonly>
 						</div>
+
+					</div>
+				</div>
+				
+				<div class="col-md-6">
+					<div class="form-group">
+						<label class="col-md-3 control-label">No. Kartu <font color="red">*</font></label>
+						<div class="col-md-8">
+							<input type="text" class="form-control" id="nocard" name="nocard" value="<?= $data->nobpjs; ?>" maxlength="13">
+						</div>
+
 					</div>
 				</div>
 				
@@ -755,26 +768,41 @@
 
 <script>
 	$(".select2_dokterx").select2();
+	$(".lok_prak").select2("");
+	$(".jen_pas").select2("");
 
-	function update() {
-var select = document.getElementById('poliklinik1').value;
-$.ajax({
-	url: "<?= site_url('PendaftaranVRS/get_dokter_rj');?>",
-	type: "POST",
-	data: ($('#frmpasien').serialize()),
-	dataType: "JSON",
-	success: function(data) {
-	var opt = data;
-	var nadokter = $("#dokter");
-	nadokter.empty();
-	$(opt).each(function() {
-		var option = $("<option/>");
-		option.html(this.nadokter);
-		option.val(this.kodokter);
-		nadokter.append(option);
-	});
+function update() {
+	var select = document.getElementById('poliklinik1').value;
+
+	if(select=='PUMUM'){
+	$('#antrino1').val('A');
+		// GIGI
+	}else if(select=='PGIGI'){
+		$('#antrino1').val('B');
+		// KIA
+	}else if(select=='BIDAN'){
+		$('#antrino1').val('C');
+	}else{
+		$('#antrino1').val('F');
 	}
-});
+
+	$.ajax({
+		url: "<?= site_url('PendaftaranVRS/get_dokter_rj');?>",
+		type: "POST",
+		data: ($('#frmpasien').serialize()),
+		dataType: "JSON",
+		success: function(data) {
+		var opt = data;
+		var nadokter = $("#dokter");
+		nadokter.empty();
+		$(opt).each(function() {
+			var option = $("<option/>");
+			option.html(this.nadokter);
+			option.val(this.kodokter);
+			nadokter.append(option);
+		});
+		}
+	});
 }
 
 function cekruang(){
@@ -1841,20 +1869,21 @@ function getdes(kode) {
 }
 
 function register(){
-		var norm = document.getElementById('norm').value;
-		var tanggal = document.getElementById('tanggal').value;
-		var jam = document.getElementById('jam').value;
-		var jenispasien = document.getElementById('jenispasien').value;
-		var poliklinik = document.getElementById('poliklinik1').value;
-		var penjamin = document.getElementById('vpenjamin').value;
-		var dokter = document.getElementById('dokter').value;
-		var antrino = document.getElementById('antrino').value;
-		var pengirim = document.getElementById('pengirim').value;
-		var ruang = document.getElementById('ruang').value;
-		var booking = document.getElementById('booking').value;
-		var nocard = document.getElementById('nocard').value;
-		var norujukan = document.getElementById('norujukan').value;
-		var nosep = document.getElementById('nosep').value;
+		var norm          = document.getElementById('norm').value;
+		var tanggal       = document.getElementById('tanggal').value;
+		var jam           = document.getElementById('jam').value;
+		var jenispasien   = document.getElementById('jenispasien').value;
+		var poliklinik    = document.getElementById('poliklinik1').value;
+		var penjamin      = document.getElementById('vpenjamin').value;
+		var dokter        = document.getElementById('dokter').value;
+		var antrino       = document.getElementById('antrino').value;
+		var antrino1      = document.getElementById('antrino1').value;
+		var pengirim      = document.getElementById('pengirim').value;
+		var ruang         = document.getElementById('ruang').value;
+		var booking       = document.getElementById('booking').value;
+		var nocard        = document.getElementById('nocard').value;
+		var norujukan     = document.getElementById('norujukan').value;
+		var nosep         = document.getElementById('nosep').value;
 
 		// alert
 		if (poliklinik == '') {

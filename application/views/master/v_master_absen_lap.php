@@ -45,7 +45,7 @@ $this->load->view('template/body');
 		<div class="portlet box blue">
 			<div class="portlet-title">
 				<div class="caption">
-					<i class="fa fa-reorder"></i><b>Parameter Laporan</b>
+					<i class="fa fa-reorder"></i><b>Laporan</b>
 				</div>
 
 			</div>
@@ -53,17 +53,54 @@ $this->load->view('template/body');
 				<!-- BEGIN FORM-->
 				<form id="frmlaporan" class="form-horizontal form-bordered1" method="post">
 					<div class="form-body">
+
+						<!-- LAP HARIAN -->
 						<div class="row">
 							<div class="col-md-10">
 								<div class="form-group">
-									<label class="col-md-3 control-label">KLINIK ESTETIKA</label>
-									<div class="col-md-7">
-										<B><input style="background-color:#99ff33; color:black" type="text" name="cabang" id="cabang" class="form-control" disabled> </B>
+									<label class="col-md-5 control-label"><b>LAPORAN HARIAN</b></label>
+									
 
-									</div>
 								</div>
 							</div>
 
+						</div>
+
+						<div class="row">
+							<div class="col-md-10">
+								<div class="form-group">
+									<label class="col-md-3 control-label">TANGGAL LAPORAN</label>
+									<div class="col-md-2">
+
+										<input id="tanggalh" name="tanggalh" class="form-control input-medium" type="date" value="<?php echo date('Y-m-d'); ?>" placeholder="" />
+
+									</div>
+
+								</div>
+							</div>
+
+						</div>
+
+						<div class="row">
+							<div class="col-md-offset-3 col-md-9">
+								<a class="btn btn-sm blue print_laporan" onclick="javascript:window.open(cetak_harian(0),'_blank');" ><i title="CETAK PDF" class="glyphicon glyphicon-file"></i><b> LAYAR </b></a>
+ 
+								<br>
+								<br>
+								<br>
+							</div>
+						</div>
+
+						<!-- LAP BULANAN -->
+
+						<div class="row">
+							<div class="col-md-10">
+								<div class="form-group">
+									<label class="col-md-5 control-label"><b>LAPORAN BULANAN</b></label>
+									
+
+								</div>
+							</div>
 
 						</div>
 
@@ -81,7 +118,49 @@ $this->load->view('template/body');
 							</div>
 
 						</div>
+						<!-- <div class="row">
+							<div class="col-md-10">
+								<div class="form-group">
+									<label class="col-md-3 control-label">Bulan</label>
+									<div class="col-md-3">
+									<select type="text" class="form-control" id="bln" name="bln" >
+									<?php
+										$bln        = date("M");
+                                        foreach($bulan as $bulann){
+										echo '<option value='.$bulann->id.' >'. $bulann->bulan .'</option>';
+									} ?>
+									
+									</select>
+									</div>
 
+									<label class="col-md-2 control-label">Tahun</label>
+									<div class="col-md-2">
+
+									<select type="text" class="form-control" id="thn" name="thn" >
+									<?php 
+										$thang        = date("Y");
+										$thang_maks   = $thang + 2 ;
+										$thang_min    = $thang - 2 ;
+
+										for ($th=$thang_min ; $th<=$thang_maks ; $th++)
+										{
+											if ($th==$thang) {
+												echo "<option selected value=$th>$thang</option>";
+												}
+											else {	
+												echo "<option value=$th>$th</option>";
+											}
+										}
+									?>   
+									
+									</select>
+
+									</div>
+
+								</div>
+							</div>
+
+						</div> -->
 						<div class="row">
 							<div class="col-md-10">
 								<div class="form-group">
@@ -104,15 +183,15 @@ $this->load->view('template/body');
 								<a class="btn btn-sm red print_laporan" onclick="javascript:window.open(_urlcetak(1),'_blank');"><i title="CETAK PDF" class="glyphicon glyphicon-print"></i><b> PDF </b></a>
 
 								<a class="btn btn-sm green print_laporan" onclick="javascript:window.open(_urlcetak(2),'_blank');"><i title="CETAK PDF" class="fa fa-download"></i><b> EXCEL </b></a>
-
 								<br>
 								<br>
 								<br>
-								<!-- <div >
-											<img id="proses" src="<?php echo base_url(); ?>assets/img/loading-spinner-blue.gif" class="img-responsive" style="visibility:hidden"/>
-										</div> -->
+								<br>
 							</div>
 						</div>
+					</div>
+						
+
 				</form>
 			</div>
 		</div>
@@ -146,6 +225,14 @@ $this->load->view('template/v_report');
 
 	}
 
+	function cetak_harian(cek) {
+		var baseurl   = "<?php echo base_url() ?>";
+		var tglh      = $('[name="tanggalh"]').val();
+		var param     = '?tglh=' + tglh + '&cek=' + cek;
+
+		return baseurl + 'Absen_laporan/cetak_absen_h/' + param;
+	}
+	
 	function _urlcetak(cek) {
 		var baseurl = "<?php echo base_url() ?>";
 		var tgl1 = $('[name="tanggal1"]').val();

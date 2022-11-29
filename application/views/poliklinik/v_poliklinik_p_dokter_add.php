@@ -3,13 +3,13 @@
     $this->load->view('template/body');    
     date_default_timezone_set("Asia/Jakarta");
 
-    if(!isset($_GET["noreg"]) && !isset($_GET["rekmed"])){
-        echo "<script>location.href='/poliklinik'</script>";
-    } else {
-        if($_GET["noreg"] == "" || $_GET["rekmed"] == ""){
-            echo "<script>location.href='/poliklinik'</script>";
-        }
-    }
+    // if(!isset($_GET["noreg"]) && !isset($_GET["rekmed"])){
+    //     echo "<script>location.href='/poliklinik'</script>";
+    // } else {
+    //     if($_GET["noreg"] == "" || $_GET["rekmed"] == ""){
+    //         echo "<script>location.href='/poliklinik'</script>";
+    //     }
+    // }
 ?>
 
 <!-- <link href="<?php echo base_url('assets/bootstrap/css/bootstrap.min.css-')?>" rel="stylesheet"> -->
@@ -105,6 +105,31 @@
                             <span class="input-group-addon">hari</span>
                         </div>
                     </div>
+
+                    <div class="form-group">
+                        <div id="signature-pad">
+                            <table border="1" width="100%">
+                                <tr>
+                                    <td align="center"><label class="control-label ">&nbsp;<b> Tanda Tangan Digital</b></label>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                    <canvas width="570" height="200" ></canvas>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                    <button type="button" data-action="clear" class="btn btn-sm red pull-right">
+                                        <i class="fa fa-trash-o"></i> Clear</button>
+                                    </td>
+                                </tr>
+                            </table>
+                            
+                            
+                        </div>
+                    </div>
+
                     <div class="row">
                         <div class="col-sm-4">&nbsp;</div>
                         <div class="col-sm-7 input-group">
@@ -112,7 +137,7 @@
                             <!-- <button id="btnsimpan" type="button" onclick="save()" class="btn blue"><i class="fa fa-save"></i><b> Simpan</b></button>&emsp; -->
                             <button id="btnsimpan" type="button" onclick="save_suketsakit()" class="btn blue"><i class="fa fa-save"></i><b> Simpan</b></button>&emsp;
 
-                            <button type="button" class="btn btn-warning" id="print_suketsakit" <?= isset($ttv->ijinsakit)? "" : "disabled" ?> onclick="window.open('/poliklinik/cetak_suket/<?= $this->session->userdata('unit') ?>/<?= $this->input->get('noreg') ?>/<?= $this->input->get('rekmed') ?>/sakit', 'blank')"><i class="fa fa-print"></i>&nbsp; Print</button>&emsp;
+                            <button type="button" class="btn btn-warning" id="print_suketsakit" <?= isset($ttv->ijinsakit)? "" : "disabled" ?> onclick="_urlcetak();"><i class="fa fa-print"></i>&nbsp; Print</button>&emsp;
 
                             <button type="button"  class="btn btn-danger" data-dismiss="modal"><i class="fa fa-close"></i>&nbsp;<b>Batal<b></button>
 
@@ -160,13 +185,38 @@
                             <textarea type="text" class="form-control" name="ketsehatuntuk" id="ketsehatuntuk" rows="3" style="resize:none !important"><?= isset($ttv->ketsehatuntuk)? $ttv->ketsehatuntuk : "" ?></textarea>
                         </div>
                     </div>
+
+                    <div class="form-group">
+                        <div id="signature-pad2">
+                            <table border="1" width="100%">
+                                <tr>
+                                    <td align="center"><label class="control-label ">&nbsp;<b> Tanda Tangan Digital</b></label>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                    <canvas width="570" height="200" ></canvas>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                    <button type="button" data-action="clear2" class="btn btn-sm red pull-right">
+                                        <i class="fa fa-trash-o"></i> Clear</button>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+
                     <div class="row">
                         <div class="col-sm-4">&nbsp;</div>
                         <div class="col-sm-7 input-group">
                             <span class="suket_sehat_success"></span>
                             <!-- <button id="btnsimpan" type="button" onclick="save()" class="btn blue"><i class="fa fa-save"></i><b> Simpan</b></button>&emsp; -->
                             &emsp; <button type="button" class="btn blue" onclick="save_suketsehat()"><i class="fa fa-save fa-fw"></i>&nbsp; Simpan</button>&emsp;
-                            <button type="button" class="btn btn-warning" <?= isset($ttv->sehat)? "" : "disabled" ?> onclick="window.open('/poliklinik/cetak_suket/<?= $this->session->userdata('unit') ?>/<?= $this->input->get('noreg') ?>/<?= $this->input->get('rekmed') ?>/sehat', 'blank')"><i class="fa fa-print"></i>&nbsp; Print</button>&emsp;
+                            
+                            <button type="button" class="btn btn-warning" <?= isset($ttv->sehat)? "" : "disabled" ?> onclick="_urlcetak2()"><i class="fa fa-print"></i>&nbsp; Print</button>&emsp;
+
                             <button type="button"  class="btn btn-danger" data-dismiss="modal"><i class="fa fa-close"></i>&nbsp;<b>Batal<b></button>
                         </div>
                     </div>
@@ -187,10 +237,10 @@
                 </div>
                 <div class="portlet-body">			
                     <div class="row form-section modal-title">
-                        <div class="col-md-6">
+                        <div class="col-md-4">
                             <h3 style="color:green" align="left"><b>EMR-RAWAT JALAN</b></h3>
                         </div>
-                        <div class="col-md-<?= $status_kasir == 0 ? "3" : "6" ?>">
+                        <div class="col-md-<?= $status_kasir == 0 ? "5" : "8" ?>">
                             <h3 style="color:green;font-weight:bold" align="left" id="doktertitle"><b>
                                 <?php
                                     if(isset($ttv->kodokter)){
@@ -366,7 +416,40 @@
                             </div>
                         </div>
                     </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            &nbsp;
+                        </div>
+                        <div class="col-md-5">
+                            <div class="form-group">
+                                <label class="control-label col-md-4" style="color:green"><b>No Kartu BPJS</b></label>
+                                <div class="col-md-8">
+                                    <input type="" class="form-control" value="<?= isset($ttv->noreg)? data_master("tbl_regist", array("noreg" => $ttv->noreg, "koders" => $ttv->koders))->nobpjs : "" ?>" disabled>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <br />
+
+                    <div class="row" style="margin:20px 50px 20px 50px !important">
+                        <div class="col-sm-4">
+                            <label style="color:green;font-weight:bold;display:block;padding-bottom:5px">Riwayat Keluarga</label>
+                            <textarea style="resize:none" name="" placeholder="Front Dulu" class="form-control" rows="4" disabled></textarea>
+                        </div>
+                        <div class="col-sm-4">
+                            <label style="color:green;font-weight:bold;display:block;padding-bottom:5px">Riwayat Penyakit</label>
+                            <textarea style="resize:none" name="" placeholder="Front Dulu" class="form-control" rows="4" disabled></textarea>
+                        </div>
+                        <div class="col-sm-4">
+                            <label style="color:green;font-weight:bold;display:block;padding-bottom:5px">Kesimpulan Pemeriksaan Fisik</label>
+                            <textarea style="resize:none" name="simpulfisik" placeholder="" class="form-control" rows="4" ><?= isset($ttv->pfisik)? $ttv->pfisik : "" ?></textarea>
+                        </div>
+                    </div>
         
+                    <br />
+
                     <div class="row">
                         <table  border="0" style="width:100%">
                             <tr>
@@ -395,8 +478,7 @@
                                 <td align="center" width="2%" style="font-size:3px black;"><b>10</b></td>
                                 <td align="center" width="2%">&nbsp;</td>
                                 <td align="center" width="5%">&nbsp;</td>
-                                <td width="40%">
-                                    <label class="control-label">&nbsp;&nbsp;&nbsp;&nbsp; Kesimpulan Pemeriksaan Fisik</label></td>
+                                <td width="40%">&nbsp;</td>
                             </tr>
                             <tr>
                                 <td align="center" >&nbsp;</td>
@@ -424,12 +506,7 @@
                                 <td align="center" style="border-top:3px solid #fe060e; border-right:3px solid #fe060e ">&nbsp;</td>
                                 <td align="center">&nbsp;</td>
                                 <td align="center">&nbsp;</td>
-                                <td rowspan="3" >
-                                        <div class="col-md-9"><br>
-                                            <textarea style="resize:none" name="simpulfisik" placeholder="" class="form-control" rows="4" ><?= isset($ttv->pfisik)? $ttv->pfisik : "" ?></textarea>
-                                            <span class="help-block"></span>
-                                        </div>
-                                </td>
+                                <td rowspan="3" >&nbsp;</td>
                                 
                             </tr>
                             <tr>
@@ -2168,6 +2245,123 @@
         console.log(postt);
     });
 
+    var wrapper    = document.getElementById("signature-pad"),
+    clearButton    = wrapper.querySelector("[data-action=clear]"),
+    saveButton     = wrapper.querySelector("[data-action=save]"),
+    canvas         = wrapper.querySelector("canvas"),
+    signaturePad;
+
+    var wrapper   = document.getElementById("signature-pad2"),
+    clearButton2  = wrapper.querySelector("[data-action=clear2]"),
+    saveButton2   = wrapper.querySelector("[data-action=save2]"),
+    canvas2       = wrapper.querySelector("canvas"),
+    signaturePad2;
+
+    function _urlcetak()
+    {	
+        var unit    = '<?= $this->session->userdata('unit') ?>';
+        var noreg   = '<?= $this->input->get('noreg') ?>';
+        var rekmed  = '<?= $this->input->get('rekmed') ?>';
+        var baseurl = "<?php echo base_url()?>";
+        
+        $.ajax({
+            type: "POST",
+            url: "<?php echo base_url();?>Poliklinik/bersihkan_ttd",
+            success: function(data){
+            
+            if (signaturePad.isEmpty()) {
+
+                $("#errors").addClass('shake');
+                $("#errors").show();
+                $("#errors").delay(4000).hide(200, function() {
+                    $("#errors").hide();
+                });
+                $('#errors').html('Isi Tanda Tangan Dahulu');
+
+                } else {
+
+                $('#error').html('');
+
+                $.ajax({
+                    type: "POST",
+                    url: "<?php echo base_url();?>Poliklinik/simpan_ttd",
+                    data: {image: signaturePad.toDataURL()},
+                    success: function(data){
+                        signaturePad.clear();
+                        var var1    = baseurl+'poliklinik/cetak_suket/'+unit+'/'+noreg+'/'+rekmed+'/'+data+'/sakit';
+
+                        window.open(var1,'_blank');
+
+                    }
+                });
+            }
+            
+            }
+        });
+
+
+        // window.open('/poliklinik/cetak_suket/<?= $this->session->userdata('unit') ?>/<?= $this->input->get('noreg') ?>/<?= $this->input->get('rekmed') ?>/sakit', 'blank')
+
+
+    }
+
+    function _urlcetak2()
+    {	
+        var unit    = '<?= $this->session->userdata('unit') ?>';
+        var noreg   = '<?= $this->input->get('noreg') ?>';
+        var rekmed  = '<?= $this->input->get('rekmed') ?>';
+        var baseurl = "<?php echo base_url()?>";
+
+        $.ajax({
+            type: "POST",
+            url: "<?php echo base_url();?>Poliklinik/bersihkan_ttd",
+            success: function(data){
+
+            if (signaturePad2.isEmpty()) {
+
+                $("#errors").addClass('shake');
+                $("#errors").show();
+                $("#errors").delay(4000).hide(200, function() {
+                    $("#errors").hide();
+                });
+                $('#errors').html('Isi Tanda Tangan Dahulu');
+
+            } else {
+
+                $('#error').html('');
+
+                $.ajax({
+                    type: "POST",
+                    url: "<?php echo base_url();?>Poliklinik/simpan_ttd",
+                    data: {image: signaturePad2.toDataURL()},
+                    success: function(data){
+                        signaturePad2.clear();
+                        var var1    = baseurl+'poliklinik/cetak_suket/'+unit+'/'+noreg+'/'+rekmed+'/'+data+'/sehat';
+
+                        window.open(var1,'_blank');
+
+                    }
+                });
+            }
+
+            }
+        });
+
+        // window.open('/poliklinik/cetak_suket/<?= $this->session->userdata('unit') ?>/<?= $this->input->get('noreg') ?>/<?= $this->input->get('rekmed') ?>/sakit', 'blank')
+
+
+    }
+
+    signaturePad = new SignaturePad(canvas);
+	clearButton.addEventListener("click", function (event) {
+		signaturePad.clear();
+	});
+
+    signaturePad2 = new SignaturePad(canvas2);
+	clearButton2.addEventListener("click", function (event) {
+		signaturePad2.clear();
+	});
+
     // INITIALIZE
     $(window).on("load", function(){
         console.log($("#testeresep").serialize());
@@ -3699,9 +3893,10 @@
     function save_emed(type){
         var post_form   = $("#frmemed").serialize();
         var dokter      = $("#selectdr").val();
+        var kodepos     = $("#poli_dok").val();
         
         $.ajax({
-            url: "/poliklinik/add_emed/<?= $this->input->get("noreg") ?>/<?= $this->input->get("rekmed") ?>/"+ dokter,
+            url: "/poliklinik/add_emed/<?= $this->input->get("noreg") ?>/<?= $this->input->get("rekmed") ?>/"+ dokter +"/"+ kodepos,
             data: post_form,
             type: "POST",
             dataType: "JSON",
@@ -3749,9 +3944,10 @@
     function save_erad(type){
         var post_form   = $("#frmerad").serialize();
         var dokter      = $("#selectdr").val();
+        var kodepos     = $("#poli_dok").val();
         
         $.ajax({
-            url: "/poliklinik/add_erad/<?= $this->input->get("noreg") ?>/<?= $this->input->get("rekmed") ?>/"+ dokter,
+            url: "/poliklinik/add_erad/<?= $this->input->get("noreg") ?>/<?= $this->input->get("rekmed") ?>/"+ dokter +"/"+ kodepos,
             data: post_form,
             type: "POST",
             dataType: "JSON",

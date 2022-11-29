@@ -11,6 +11,7 @@ class Kasir_laporan extends CI_Controller
 		$this->load->helper('simkeu_rpt');
 		$this->session->set_userdata('menuapp', '2000');
 		$this->session->set_userdata('submenuapp', '2308');
+		$this->load->model('M_template_cetak');
 	}
 
 	public function index()
@@ -231,167 +232,156 @@ class Kasir_laporan extends CI_Controller
 				// from tbl_kasir where jenisbayar=1
 				// and koders='$unit' and tglbayar between '$_tgl1' and '$_tgl2' and totalpoli>0
 				// ";
+
 				$query =
-				"SELECT 'Order Tunai' as keterangan, count(*) as jumlah, sum(bayarcash+bayarcard) as nilai
-			from tbl_kasir 
-			where jenisbayar=1 and koders='$unit' and tglbayar between '$_tgl1' and '$_tgl2' and noreg is not null
+					"SELECT 'RAWAT JALAN' as keterangan, sum(jumlah) as jumlah, sum(nilai) as nilai FROM (
+						SELECT * FROM (
+							SELECT COUNT(*) AS jumlah, SUM(bayarcash) AS nilai
+							FROM tbl_kasir 
+							JOIN tbl_apohresep ON tbl_kasir.noreg = tbl_apohresep.noreg
+							WHERE jenisbayar = 1 AND jenispas=8 AND tbl_kasir.koders='$unit' AND tbl_kasir.tglbayar BETWEEN '$_tgl1' AND '$_tgl2' AND bayarcash > 0
+						) AS cash
+						UNION ALL
+						SELECT * FROM (
+							SELECT COUNT(*) AS jumlah, SUM(bayarcard) AS nilai
+							FROM tbl_kasir 
+							JOIN tbl_apohresep ON tbl_kasir.noreg = tbl_apohresep.noreg
+							WHERE jenisbayar=1 AND jenispas=8 AND tbl_kasir.koders='$unit' AND tbl_kasir.tglbayar BETWEEN '$_tgl1' AND '$_tgl2' AND bayarcard > 0 AND tbl_kasir.nokwitansi IN (SELECT nokwitansi FROM tbl_kartukredit)
+						) AS card
+						UNION ALL
+						SELECT * FROM (
+							SELECT COUNT(*) AS jumlah, SUM(jumlahhutang) AS nilai
+							FROM tbl_kasir 
+							JOIN tbl_pap ON tbl_kasir.noreg = tbl_pap.noreg
+							JOIN tbl_apohresep ON tbl_apohresep.noreg=tbl_kasir.noreg
+							WHERE jenisbayar=1 and jenispas=8 AND tbl_kasir.koders='$unit' 
+							AND tbl_kasir.tglbayar BETWEEN '$_tgl1' AND '$_tgl2'
+						) as penjamin
+					) as order_tunai
 
-			union all
+					union all
 
-			SELECT '   Order Cash' as keterangan, count(*) as jumlah, sum(bayarcash) as nilai
-			from tbl_kasir where jenisbayar=1
-			and koders='$unit' and tglbayar between '$_tgl1' and '$_tgl2' and nokwitansi not in (select nokwitansi from tbl_kartukredit)
+					SELECT '   Order Cash' as keterangan, count(*) as jumlah, sum(bayarcash) as nilai
+					from tbl_kasir 
+					JOIN tbl_apohresep ON tbl_kasir.noreg = tbl_apohresep.noreg
+					where jenisbayar=1 AND jenispas=8 AND tbl_kasir.koders='$unit' AND tbl_kasir.tglbayar between '$_tgl1' and '$_tgl2' AND bayarcash > 0
 
-			union all
+					union all
 
-			SELECT '   Order Card' as keterangan, count(*) as jumlah, sum(bayarcard) as nilai
-			from tbl_kasir where jenisbayar=1
-			and koders='$unit' and tglbayar between '$_tgl1' and '$_tgl2'  and nokwitansi in (select nokwitansi from tbl_kartukredit)
+					SELECT '   Order Card' as keterangan, count(*) as jumlah, sum(bayarcard) as nilai
+					from tbl_kasir 
+					JOIN tbl_apohresep ON tbl_kasir.noreg = tbl_apohresep.noreg
+					where jenisbayar=1 AND jenispas=8 AND tbl_kasir.koders='$unit' AND tbl_kasir.tglbayar between '$_tgl1' and '$_tgl2' and bayarcard > 0 and tbl_kasir.nokwitansi in (select nokwitansi from tbl_kartukredit)
 
-			union all
+					union all
 
-			SELECT 'Tindakan Dokter' as keterangan, count(*) as jumlah, sum(totalpoli) as nilai
-			from tbl_kasir where jenisbayar=1
-			and koders='$unit' and tglbayar between '$_tgl1' and '$_tgl2' and totalpoli > 0
+					SELECT '   Penjamin' AS keterangan, COUNT(*) AS jumlah, SUM(jumlahhutang) AS nilai
+					FROM tbl_kasir 
+					JOIN tbl_pap ON tbl_kasir.noreg = tbl_pap.noreg
+					JOIN tbl_apohresep ON tbl_apohresep.noreg=tbl_kasir.noreg
+					WHERE jenisbayar=1 and jenispas=8 AND tbl_kasir.koders='$unit' 
+					AND tbl_kasir.tglbayar BETWEEN '$_tgl1' AND '$_tgl2'
 
-			union all
+					UNION ALL
 
-			SELECT '   Order Cash' as keterangan, count(*) as jumlah, sum(bayarcash) as nilai
-			from tbl_kasir where jenisbayar=1
-			and koders='$unit' and tglbayar between '$_tgl1' and '$_tgl2' and totalpoli > 0 and nokwitansi not in (select nokwitansi from tbl_kartukredit)
+					SELECT 'RAWAT INAP' as keterangan, sum(jumlah) as jumlah, sum(nilai) as nilai FROM (
+						SELECT * FROM (
+							SELECT COUNT(*) AS jumlah, SUM(bayarcash) AS nilai
+							FROM tbl_kasir 
+							JOIN tbl_apohresep ON tbl_kasir.noreg = tbl_apohresep.noreg
+							WHERE jenisbayar = 1 AND jenispas=9 AND tbl_kasir.koders='$unit' AND tbl_kasir.tglbayar BETWEEN '$_tgl1' AND '$_tgl2' AND bayarcash > 0
+						) AS cash
+						UNION ALL
+						SELECT * FROM (
+							SELECT COUNT(*) AS jumlah, SUM(bayarcard) AS nilai
+							FROM tbl_kasir 
+							JOIN tbl_apohresep ON tbl_kasir.noreg = tbl_apohresep.noreg
+							WHERE jenisbayar=1 AND jenispas=9 AND tbl_kasir.koders='$unit' AND tbl_kasir.tglbayar BETWEEN '$_tgl1' AND '$_tgl2' AND bayarcard > 0 AND tbl_kasir.nokwitansi IN (SELECT nokwitansi FROM tbl_kartukredit)
+						) AS card
+						UNION ALL
+						SELECT * FROM (
+							SELECT COUNT(*) AS jumlah, SUM(jumlahhutang) AS nilai
+							FROM tbl_kasir 
+							JOIN tbl_pap ON tbl_kasir.noreg = tbl_pap.noreg
+							JOIN tbl_apohresep ON tbl_apohresep.noreg=tbl_kasir.noreg
+							WHERE jenisbayar=1 and jenispas=9 AND tbl_kasir.koders='$unit' 
+							AND tbl_kasir.tglbayar BETWEEN '$_tgl1' AND '$_tgl2'
+						) as penjamin
+					) as order_tunai
 
-			union all
+					union all
 
-			SELECT '   Order Card' as keterangan, count(*) as jumlah, sum(bayarcard) as nilai
-			from tbl_kasir where jenisbayar=1
-			and koders='$unit' and tglbayar between '$_tgl1' and '$_tgl2' and totalpoli > 0 and nokwitansi in (select nokwitansi from tbl_kartukredit)
+					SELECT '   Order Cash' as keterangan, count(*) as jumlah, sum(bayarcash) as nilai
+					from tbl_kasir 
+					JOIN tbl_apohresep ON tbl_kasir.noreg = tbl_apohresep.noreg
+					where jenisbayar=1 AND jenispas=9 AND tbl_kasir.koders='$unit' AND tbl_kasir.tglbayar between '$_tgl1' and '$_tgl2' AND bayarcash > 0
 
-			union all
+					union all
 
-			SELECT 'Order Lokal' AS keterangan, COUNT(*) AS jumlah, SUM(bayarcash+bayarcard) AS nilai
-			FROM tbl_kasir
-			JOIN tbl_apohresep ON tbl_kasir.nokwitansi = tbl_apohresep.nokwitansi
-			WHERE tbl_kasir.koders = '$unit' and totalpoli > 0 AND tbl_kasir.tglbayar BETWEEN '$_tgl1' AND '$_tgl2' AND tbl_kasir.noreg != '' AND tbl_apohresep.jenispas = '2'
+					SELECT '   Order Card' as keterangan, count(*) as jumlah, sum(bayarcard) as nilai
+					from tbl_kasir 
+					JOIN tbl_apohresep ON tbl_kasir.noreg = tbl_apohresep.noreg
+					where jenisbayar=1 AND jenispas=9 AND tbl_kasir.koders='$unit' AND tbl_kasir.tglbayar between '$_tgl1' and '$_tgl2' and bayarcard > 0 and tbl_kasir.nokwitansi in (select nokwitansi from tbl_kartukredit)
+					
+					union all
 
-			union all
+					SELECT '   Penjamin' AS keterangan, COUNT(*) AS jumlah, SUM(jumlahhutang) AS nilai
+					FROM tbl_kasir 
+					JOIN tbl_pap ON tbl_kasir.noreg = tbl_pap.noreg
+					JOIN tbl_apohresep ON tbl_apohresep.noreg=tbl_kasir.noreg
+					WHERE jenisbayar=1 and jenispas=9 AND tbl_kasir.koders='$unit' 
+					AND tbl_kasir.tglbayar BETWEEN '$_tgl1' AND '$_tgl2'
 
-			SELECT '   Order Cash' AS keterangan, COUNT(*) AS jumlah, SUM(bayarcash) AS nilai
-			FROM tbl_kasir
-			JOIN tbl_apohresep ON tbl_kasir.nokwitansi = tbl_apohresep.nokwitansi
-			WHERE tbl_kasir.koders = '$unit' and totalpoli > 0 AND tbl_kasir.tglbayar BETWEEN '$_tgl1' AND '$_tgl2' AND tbl_kasir.noreg != '' AND tbl_apohresep.jenispas = '2' and tbl_kasir.nokwitansi not in (select nokwitansi from tbl_kartukredit)
+					UNION ALL
 
-			union all
+					SELECT 'APOTIK' as keterangan, sum(jumlah) as jumlah, sum(nilai) as nilai FROM (
+						SELECT * FROM (
+							SELECT COUNT(*) AS jumlah, SUM(bayarcash) AS nilai
+							FROM tbl_kasir 
+							JOIN tbl_apohresep ON tbl_kasir.noreg = tbl_apohresep.noreg
+							WHERE jenisbayar = 1 AND jenispas = 7 AND tbl_kasir.koders='$unit' AND tbl_kasir.tglbayar BETWEEN '$_tgl1' AND '$_tgl2' AND bayarcash > 0
+						) AS cash
+						UNION ALL
+						SELECT * FROM (
+							SELECT COUNT(*) AS jumlah, SUM(bayarcard) AS nilai
+							FROM tbl_kasir 
+							JOIN tbl_apohresep ON tbl_kasir.noreg = tbl_apohresep.noreg
+							WHERE jenisbayar=1 AND jenispas = 7 AND tbl_kasir.koders='$unit' AND tbl_kasir.tglbayar BETWEEN '$_tgl1' AND '$_tgl2' AND bayarcard > 0 AND tbl_kasir.nokwitansi IN (SELECT nokwitansi FROM tbl_kartukredit)
+						) AS card
+						UNION ALL
+						SELECT * FROM (
+							SELECT COUNT(*) AS jumlah, SUM(jumlahhutang) AS nilai
+							FROM tbl_kasir 
+							JOIN tbl_pap ON tbl_kasir.noreg = tbl_pap.noreg
+							JOIN tbl_apohresep ON tbl_apohresep.noreg=tbl_kasir.noreg
+							WHERE jenisbayar=1 and jenispas=7 AND tbl_kasir.koders='$unit' 
+							AND tbl_kasir.tglbayar BETWEEN '$_tgl1' AND '$_tgl2'
+						) as penjamin
+					) as order_tunai
 
-			SELECT '   Order Card' AS keterangan, COUNT(*) AS jumlah, SUM(bayarcard) AS nilai
-			FROM tbl_kasir
-			JOIN tbl_apohresep ON tbl_kasir.nokwitansi = tbl_apohresep.nokwitansi
-			WHERE tbl_kasir.koders = '$unit' and totalpoli > 0 AND tbl_kasir.tglbayar BETWEEN '$_tgl1' AND '$_tgl2' AND tbl_kasir.noreg != '' AND tbl_apohresep.jenispas = '2' and tbl_kasir.nokwitansi in (select nokwitansi from tbl_kartukredit)
+					union all
 
-			union all
+					SELECT '   Order Cash' as keterangan, count(*) as jumlah, sum(bayarcash) as nilai
+					from tbl_kasir 
+					JOIN tbl_apohresep ON tbl_kasir.noreg = tbl_apohresep.noreg
+					where jenisbayar=1 AND jenispas = 7 AND tbl_kasir.koders='$unit' AND tbl_kasir.tglbayar between '$_tgl1' and '$_tgl2' AND bayarcash > 0
 
-			SELECT 'Order Kirim' AS keterangan, COUNT(*) AS jumlah, SUM(bayarcash+bayarcard) AS nilai
-			FROM tbl_kasir
-			JOIN tbl_apohresep ON tbl_kasir.nokwitansi = tbl_apohresep.nokwitansi
-			WHERE tbl_kasir.koders = '$unit' and totalpoli > 0 AND tbl_kasir.tglbayar BETWEEN '$_tgl1' AND '$_tgl2' AND tbl_kasir.noreg != '' AND tbl_apohresep.jenispas = '3'
+					union all
 
-			union all
+					SELECT '   Order Card' as keterangan, count(*) as jumlah, sum(bayarcard) as nilai
+					from tbl_kasir 
+					JOIN tbl_apohresep ON tbl_kasir.noreg = tbl_apohresep.noreg
+					where jenisbayar=1 AND jenispas = 7 AND tbl_kasir.koders='$unit' AND tbl_kasir.tglbayar between '$_tgl1' and '$_tgl2' and bayarcard > 0 and tbl_kasir.nokwitansi in (select nokwitansi from tbl_kartukredit)
 
-			SELECT '   Order Cash' AS keterangan, COUNT(*) AS jumlah, SUM(bayarcash) AS nilai
-			FROM tbl_kasir
-			JOIN tbl_apohresep ON tbl_kasir.nokwitansi = tbl_apohresep.nokwitansi
-			WHERE tbl_kasir.koders = '$unit' and totalpoli > 0 AND tbl_kasir.tglbayar BETWEEN '$_tgl1' AND '$_tgl2' AND tbl_kasir.noreg != '' AND tbl_apohresep.jenispas = '3' and tbl_kasir.nokwitansi not in (select nokwitansi from tbl_kartukredit)
+					union all
 
-			union all
-
-			SELECT '   Order Card' AS keterangan, COUNT(*) AS jumlah, SUM(bayarcard) AS nilai
-			FROM tbl_kasir
-			JOIN tbl_apohresep ON tbl_kasir.nokwitansi = tbl_apohresep.nokwitansi
-			WHERE tbl_kasir.koders = '$unit' and totalpoli > 0 AND tbl_kasir.tglbayar BETWEEN '$_tgl1' AND '$_tgl2' AND tbl_kasir.noreg != '' AND tbl_apohresep.jenispas = '3' and tbl_kasir.nokwitansi in (select nokwitansi from tbl_kartukredit)
-
-			union all
-
-			SELECT 'Ongkos Kirim' AS keterangan, COUNT(*) AS jumlah, SUM(bayarcash+bayarcard) AS nilai
-			FROM tbl_kasir
-			JOIN tbl_apohresep ON tbl_kasir.nokwitansi = tbl_apohresep.nokwitansi
-			WHERE tbl_kasir.koders = '$unit' and totalpoli < 1 AND tbl_kasir.tglbayar BETWEEN '$_tgl1' AND '$_tgl2' AND tbl_kasir.noreg != '' AND tbl_apohresep.jenispas = '3'
-
-			union all
-
-			SELECT '   Order Cash' AS keterangan, COUNT(*) AS jumlah, SUM(bayarcash) AS nilai
-			FROM tbl_kasir
-			JOIN tbl_apohresep ON tbl_kasir.nokwitansi = tbl_apohresep.nokwitansi
-			WHERE tbl_kasir.koders = '$unit' and totalpoli < 1 AND tbl_kasir.tglbayar BETWEEN '$_tgl1' AND '$_tgl2' AND tbl_kasir.noreg != '' AND tbl_apohresep.jenispas = '3' and tbl_kasir.nokwitansi not in (select nokwitansi from tbl_kartukredit)
-
-			union all
-
-			SELECT '   Order Card' AS keterangan, COUNT(*) AS jumlah, SUM(bayarcard) AS nilai
-			FROM tbl_kasir
-			JOIN tbl_apohresep ON tbl_kasir.nokwitansi = tbl_apohresep.nokwitansi
-			WHERE tbl_kasir.koders = '$unit' and totalpoli < 1 AND tbl_kasir.tglbayar BETWEEN '$_tgl1' AND '$_tgl2' AND tbl_kasir.noreg != '' AND tbl_apohresep.jenispas = '3' and tbl_kasir.nokwitansi in (select nokwitansi from tbl_kartukredit)
-
-			union all
-
-			SELECT 'SPA' AS keterangan, COUNT(*) AS jumlah, SUM(bayarcash+bayarcard) AS nilai
-			FROM tbl_kasir
-			JOIN tbl_apohresep ON tbl_kasir.nokwitansi = tbl_apohresep.nokwitansi
-			WHERE tbl_kasir.koders = '$unit' and totalpoli > 0 AND tbl_kasir.tglbayar BETWEEN '$_tgl1' AND '$_tgl2' AND tbl_kasir.noreg != '' AND tbl_apohresep.jenispas = '4'
-
-			union all
-
-			SELECT '   Order Cash' AS keterangan, COUNT(*) AS jumlah, SUM(bayarcash) AS nilai
-			FROM tbl_kasir
-			JOIN tbl_apohresep ON tbl_kasir.nokwitansi = tbl_apohresep.nokwitansi
-			WHERE tbl_kasir.koders = '$unit' and totalpoli > 0 AND tbl_kasir.tglbayar BETWEEN '$_tgl1' AND '$_tgl2' AND tbl_kasir.noreg != '' AND tbl_apohresep.jenispas = '4' and tbl_kasir.nokwitansi not in (select nokwitansi from tbl_kartukredit)
-
-			union all
-
-			SELECT '   Order Card' AS keterangan, COUNT(*) AS jumlah, SUM(bayarcard) AS nilai
-			FROM tbl_kasir
-			JOIN tbl_apohresep ON tbl_kasir.nokwitansi = tbl_apohresep.nokwitansi
-			WHERE tbl_kasir.koders = '$unit' and totalpoli > 0 AND tbl_kasir.tglbayar BETWEEN '$_tgl1' AND '$_tgl2' AND tbl_kasir.noreg != '' AND tbl_apohresep.jenispas = '4' and tbl_kasir.nokwitansi in (select nokwitansi from tbl_kartukredit)
-
-			union all
-
-			SELECT 'Produk SPA' AS keterangan, COUNT(*) AS jumlah, SUM(bayarcash+bayarcard) AS nilai
-			FROM tbl_kasir
-			JOIN tbl_apohresep ON tbl_kasir.nokwitansi = tbl_apohresep.nokwitansi
-			WHERE tbl_kasir.koders = '$unit' and totalpoli < 1 AND tbl_kasir.tglbayar BETWEEN '$_tgl1' AND '$_tgl2' AND tbl_kasir.noreg != '' AND tbl_apohresep.jenispas = '4'
-
-			union all
-
-			SELECT '   Order Cash' AS keterangan, COUNT(*) AS jumlah, SUM(bayarcash) AS nilai
-			FROM tbl_kasir
-			JOIN tbl_apohresep ON tbl_kasir.nokwitansi = tbl_apohresep.nokwitansi
-			WHERE tbl_kasir.koders = '$unit' and totalpoli < 1 AND tbl_kasir.tglbayar BETWEEN '$_tgl1' AND '$_tgl2' AND tbl_kasir.noreg != '' AND tbl_apohresep.jenispas = '4' and tbl_kasir.nokwitansi not in (select nokwitansi from tbl_kartukredit)
-
-			union all
-
-			SELECT '   Order Card' AS keterangan, COUNT(*) AS jumlah, SUM(bayarcard) AS nilai
-			FROM tbl_kasir
-			JOIN tbl_apohresep ON tbl_kasir.nokwitansi = tbl_apohresep.nokwitansi
-			WHERE tbl_kasir.koders = '$unit' and totalpoli < 1 AND tbl_kasir.tglbayar BETWEEN '$_tgl1' AND '$_tgl2' AND tbl_kasir.noreg != '' AND tbl_apohresep.jenispas = '4' and tbl_kasir.nokwitansi in (select nokwitansi from tbl_kartukredit)
-
-			union all
-
-			SELECT 'Apotik' AS keterangan, COUNT(*) AS jumlah, SUM(bayarcash+bayarcard) AS nilai
-			FROM tbl_kasir
-			JOIN tbl_apohresep ON tbl_kasir.nokwitansi = tbl_apohresep.nokwitansi
-			WHERE tbl_kasir.koders = '$unit' and totalpoli > 0 AND tbl_kasir.tglbayar BETWEEN '$_tgl1' AND '$_tgl2' AND tbl_kasir.noreg != '' AND tbl_apohresep.jenispas = '7'
-
-			union all
-
-			SELECT '   Order Cash' AS keterangan, COUNT(*) AS jumlah, SUM(bayarcash) AS nilai
-			FROM tbl_kasir
-			JOIN tbl_apohresep ON tbl_kasir.nokwitansi = tbl_apohresep.nokwitansi
-			WHERE tbl_kasir.koders = '$unit' and totalpoli > 0 AND tbl_kasir.tglbayar BETWEEN '$_tgl1' AND '$_tgl2' AND tbl_kasir.noreg != '' AND tbl_apohresep.jenispas = '7' and tbl_kasir.nokwitansi not in (select nokwitansi from tbl_kartukredit)
-
-			union all
-
-			SELECT '   Order Card' AS keterangan, COUNT(*) AS jumlah, SUM(bayarcard) AS nilai
-			FROM tbl_kasir
-			JOIN tbl_apohresep ON tbl_kasir.nokwitansi = tbl_apohresep.nokwitansi
-			WHERE tbl_kasir.koders = '$unit' and totalpoli > 0 AND tbl_kasir.tglbayar BETWEEN '$_tgl1' AND '$_tgl2' AND tbl_kasir.noreg != '' AND tbl_apohresep.jenispas = '7' and tbl_kasir.nokwitansi in (select nokwitansi from tbl_kartukredit)
-			";
+					SELECT '   Penjamin' AS keterangan, COUNT(*) AS jumlah, SUM(jumlahhutang) AS nilai
+					FROM tbl_kasir 
+					JOIN tbl_pap ON tbl_kasir.noreg = tbl_pap.noreg
+					JOIN tbl_apohresep ON tbl_apohresep.noreg=tbl_kasir.noreg
+					WHERE jenisbayar=1 and jenispas=7 AND tbl_kasir.koders='$unit' 
+					AND tbl_kasir.tglbayar BETWEEN '$_tgl1' AND '$_tgl2'
+				";
 
 				$lap = $this->db->query($query)->result();
 				$pdf = new simkeu_rpt();
@@ -432,85 +422,170 @@ class Kasir_laporan extends CI_Controller
 				$pdf->AliasNbPages();
 				$pdf->output('KASIR-02.PDF', 'I');
 			} else if ($idlp == 103) {
-				$bulan = date('n', strtotime($tgl1));
-				$tahun = date('Y', strtotime($tgl2));
+				$bulan    = date('n', strtotime($tgl1));
+				$tahun    = date('Y', strtotime($tgl2));
+				$cekpdf   = 3;
+				$date       = "Dari Tgl : " . date("d-m-Y", strtotime($tgl1)) . " S/D " . date("d-m-Y", strtotime($tgl2));
+
+				$position = 'L';
+				$judul    = '03 REKAP JASA DAN PENJUALAN';
+
+			$body = "<table style=\"border-collapse:collapse;font-family: tahoma; font-size:12px\" width=\"100%\" align=\"center\" border=\"1\" cellspacing=\"1\" cellpadding=\"3\">
+			<tr>
+				<td bgcolor=\"#cccccc\" style=\"text-align: center; font-weight: bold; padding: 10px;\" width=\"5%\">No</td>
+				<td bgcolor=\"#cccccc\" style=\"text-align: center; font-weight: bold; padding: 10px;\" width=\"9%\">No. Tr</td>
+				<td bgcolor=\"#cccccc\" style=\"text-align: center; font-weight: bold; padding: 10px;\" width=\"7%\">Tanggal</td>
+				<td bgcolor=\"#cccccc\" style=\"text-align: center; font-weight: bold; padding: 10px;\" width=\"7%\">Pro</td>
+				<td bgcolor=\"#cccccc\" style=\"text-align: center; font-weight: bold; padding: 10px;\" width=\"7%\">Adm</td>
+				<td bgcolor=\"#cccccc\" style=\"text-align: center; font-weight: bold; padding: 10px;\" width=\"7%\">Jasa</td>
+				<td bgcolor=\"#cccccc\" style=\"text-align: center; font-weight: bold; padding: 10px;\" width=\"7%\">Obat Tunai</td>
+				<td bgcolor=\"#cccccc\" style=\"text-align: center; font-weight: bold; padding: 10px;\" width=\"7%\">Lokal</td>
+				<td bgcolor=\"#cccccc\" style=\"text-align: center; font-weight: bold; padding: 10px;\" width=\"7%\">Kirim</td>
+				<td bgcolor=\"#cccccc\" style=\"text-align: center; font-weight: bold; padding: 10px;\" width=\"7%\">Obat Spa</td>
+				<td bgcolor=\"#cccccc\" style=\"text-align: center; font-weight: bold; padding: 10px;\" width=\"7%\">Apotek</td>
+				<td bgcolor=\"#cccccc\" style=\"text-align: center; font-weight: bold; padding: 10px;\" width=\"7%\">Obat Gigi</td>
+				<td bgcolor=\"#cccccc\" style=\"text-align: center; font-weight: bold; padding: 10px;\" width=\"7%\">Total</td>
+				<td bgcolor=\"#cccccc\" style=\"text-align: center; font-weight: bold; padding: 10px;\" width=\"7%\">No. Resep</td>
+			</tr>";
+
+					
+			// 	$query =
+			// 		"select tbl_kasir.*, tbl_pasien.*, tbl_apoposting.resepno from tbl_kasir 
+			//   inner join tbl_pasien on tbl_kasir.rekmed=tbl_pasien.rekmed
+			//   left outer join tbl_apoposting on tbl_kasir.nokwitansi=tbl_apoposting.nokwitansi
+			//   where tbl_kasir.tglbayar between '$_tgl1' and '$_tgl2' and koders='$unit'
+			//  ";
+
 				$query =
-					"select tbl_kasir.*, tbl_pasien.*, tbl_apoposting.resepno from tbl_kasir 
+					"SELECT tbl_kasir.*, tbl_pasien.* ,
+					(select resepno from tbl_apoposting b where b.nokwitansi=tbl_kasir.nokwitansi)resepno
+					from tbl_kasir 
 			  inner join tbl_pasien on tbl_kasir.rekmed=tbl_pasien.rekmed
-			  left outer join tbl_apoposting on tbl_kasir.nokwitansi=tbl_apoposting.nokwitansi
-			  where tbl_kasir.tglbayar between '$_tgl1' and '$_tgl2'
+			  where tbl_kasir.tglbayar between '$_tgl1' and '$_tgl2' and tbl_kasir.koders='$unit'
+			  order by tbl_kasir.tglbayar
 			 ";
-
-
-				$query .= "order by tbl_kasir.tglbayar";
+				
 				$lap = $this->db->query($query)->result();
-				$pdf = new simkeu_rpt();
-				$pdf->setID($nama_usaha, $motto, $alamat);
-				$pdf->setunit($namaunit);
-				$pdf->setjudul('03 REKAP JASA DAN PENJUALAN');
-				$pdf->setsubjudul($_peri);
-				$pdf->addpage("L", "A4");
-				$pdf->setsize("L", "A4");
-				$pdf->SetWidths(array(32, 22, 35, 20,25, 25, 20, 20, 20, 20, 20, 30, 20));
-				$pdf->SetAligns(array('C', 'C', 'C','C', 'C', 'C', 'C', 'C', 'C', 'C', 'C', 'C', 'C'));
-				$judul = array('TR No', 'Tanggal', 'Pro', 'Adm', 'Jasa', 'Obat Tunai', 'Lokal', 'Kirim', 'Obat Spa', 'Apotek', 'Obat Gigi', 'Total', 'No. Resep');
-				$pdf->setfont('Arial', 'B', 8);
-				$pdf->row($judul);
 
-				$pdf->SetWidths(array(32, 22, 35, 20,25, 25, 20, 20, 20, 20, 20, 30, 20));
-				$pdf->SetAligns(array('C', 'C', 'L', 'R','R', 'R', 'R', 'R', 'R', 'R', 'R', 'R', 'L'));
-				$pdf->setfont('Arial', '', 8);
-				$pdf->SetFillColor(224, 235, 255);
-				$pdf->SetTextColor(0);
-				$pdf->SetFont('');
+				$no = 1;
+				$tot1 = $tot2 = $tot3 = $tot4 = $tot5 = $tot6 = $tot7 = $tot8 =$total= 0 ;
 
-				$nourut = 1;
-				$tot1 = $tot2 = $tot3 = $tot4 = $tot5 = $tot6 = $tot7 = $tot8 = 0;
 				foreach ($lap as $db) {
 					$tot1 += $db->adm + $db->totalpoli;
 					$tot6 += $db->totalresep;
 					$tot8 += $db->totalsemua;
 
-					$pdf->row(array(
-						$db->noreg,
-						tanggal($db->tglbayar),
-						$db->namapas,
-						angka_rp($db->adm, 0),
-						angka_rp($db->totalpoli, 0),
-						angka_rp(0, 0),
-						angka_rp(0, 0),
-						angka_rp(0, 0),
-						angka_rp(0, 0),
-						angka_rp($db->totalresep, 0),
-						angka_rp(0, 0),
-						angka_rp($db->totalsemua, 0),
-						$db->resepno
-
-
-					));
-
-					$nourut++;
+					$body .=  "<tr>
+						<td style=\"text-align: center; padding: 5px;\" width=\"5%\">" . $no++ . "</td>
+						<td style=\"text-align: left; padding: 5px;\">$db->noreg</td>
+						<td style=\"text-align: center; padding: 5px;\">".date("d-m-Y", strtotime($db->tglbayar))."</td>
+						<td style=\"text-align: left; padding: 5px;\">$db->namapas</td>
+						<td style=\"text-align: right; padding: 5px;\">$db->adm</td>
+						<td style=\"text-align: right; padding: 5px;\">".angka_rp($db->totalpoli, 0)."</td>
+						<td style=\"text-align: right; padding: 5px;\" width=\"5%\">".angka_rp(0, 0)."</td>
+						<td style=\"text-align: center; padding: 5px;\">".angka_rp(0, 0)."</td>
+						<td style=\"text-align: right; padding: 5px;\" width=\"5%\">".angka_rp(0, 0)."</td>
+						<td style=\"text-align: right; padding: 5px;\" width=\"8%\">".angka_rp(0, 0)."</td>
+						<td style=\"text-align: right; padding: 5px;\" width=\"8%\">".angka_rp($db->totalresep, 0)."</td>
+						<td style=\"text-align: right; padding: 5px;\" width=\"8%\">".angka_rp(0, 0)."</td>
+						<td style=\"text-align: right; padding: 5px;\" width=\"8%\">".angka_rp($db->totalsemua, 0)."</td>
+						<td style=\"text-align: right; padding: 5px;\" width=\"8%\">$db->resepno</td>
+					</tr>";
+					
+					$total += $db->totalsemua;
+					$no++;
 				}
-				$pdf->setfont('Arial', 'B', 8);
-				$pdf->SetWidths(array(89, 20, 25, 20, 20, 20, 20, 20, 30, 20));
-				$pdf->SetAligns(array('L', 'R', 'R', 'R', 'R', 'R', 'R', 'R', 'R', 'L'));
-				$pdf->row(array(
-					'Total',
-					angka_rp($tot1, 0),
-					angka_rp($tot2, 0),
-					angka_rp($tot3, 0),
-					angka_rp($tot4, 0),
-					angka_rp($tot5, 0),
-					angka_rp($tot6, 0),
-					angka_rp($tot7, 0),
-					angka_rp($tot8, 0),
-					$db->resepno
+
+				if($cekpdf == 3){
+					$ttl = number_format($total);
+				} else {
+					$ttl = $total;
+				}
+				$body .= "<tr>
+					<td style=\"text-align: center; font-weight: bold; padding: 5px;\" colspan=\"4\">TOTAL</td>
+					<td style=\"text-align: right; padding: 5px;\">".angka_rp($db->adm, 0)."</td>
+					<td style=\"text-align: right; padding: 5px;\">".angka_rp($tot1, 0)."</td>
+					<td style=\"text-align: right; padding: 5px;\">".angka_rp($tot2, 0)."</td>
+					<td style=\"text-align: right; padding: 5px;\">".angka_rp($tot3, 0)."</td>
+					<td style=\"text-align: right; padding: 5px;\">".angka_rp($tot4, 0)."</td>
+					<td style=\"text-align: right; padding: 5px;\">".angka_rp($tot5, 0)."</td>
+					<td style=\"text-align: right; padding: 5px;\">".angka_rp($tot6, 0)."</td>
+					<td style=\"text-align: right; padding: 5px;\">".angka_rp($tot7, 0)."</td>
+					<td style=\"text-align: right; padding: 5px;\">".angka_rp($tot8, 0)."</td>
+				</tr>
+				</table>";
+							
+			$this->M_template_cetak->template($judul, $body, $position, $date, $cekpdf);
+
+				// $pdf = new simkeu_rpt();
+				// $pdf->setID($nama_usaha, $motto, $alamat);
+				// $pdf->setunit($namaunit);
+				// $pdf->setjudul('03 REKAP JASA DAN PENJUALAN');
+				// $pdf->setsubjudul($_peri);
+				// $pdf->addpage("L", "A4");
+				// $pdf->setsize("L", "A4");
+				// $pdf->SetWidths(array(32, 22, 35, 20,25, 25, 20, 20, 20, 20, 20, 30, 20));
+				// $pdf->SetAligns(array('C', 'C', 'C','C', 'C', 'C', 'C', 'C', 'C', 'C', 'C', 'C', 'C'));
+				// $judul = array('TR No', 'Tanggal', 'Pro', 'Adm', 'Jasa', 'Obat Tunai', 'Lokal', 'Kirim', 'Obat Spa', 'Apotek', 'Obat Gigi', 'Total', 'No. Resep');
+				// $pdf->setfont('Arial', 'B', 8);
+				// $pdf->row($judul);
+
+				// $pdf->SetWidths(array(32, 22, 35, 20,25, 25, 20, 20, 20, 20, 20, 30, 20));
+				// $pdf->SetAligns(array('C', 'C', 'L', 'R','R', 'R', 'R', 'R', 'R', 'R', 'R', 'R', 'L'));
+				// $pdf->setfont('Arial', '', 8);
+				// $pdf->SetFillColor(224, 235, 255);
+				// $pdf->SetTextColor(0);
+				// $pdf->SetFont('');
+
+				// $nourut = 1;
+				// $tot1 = $tot2 = $tot3 = $tot4 = $tot5 = $tot6 = $tot7 = $tot8 = 0;
+				// foreach ($lap as $db) {
+				// 	$tot1 += $db->adm + $db->totalpoli;
+				// 	$tot6 += $db->totalresep;
+				// 	$tot8 += $db->totalsemua;
+
+				// 	$pdf->row(array(
+				// 		$db->noreg,
+				// 		tanggal($db->tglbayar),
+				// 		$db->namapas,
+				// 		angka_rp($db->adm, 0),
+				// 		angka_rp($db->totalpoli, 0),
+				// 		angka_rp(0, 0),
+				// 		angka_rp(0, 0),
+				// 		angka_rp(0, 0),
+				// 		angka_rp(0, 0),
+				// 		angka_rp($db->totalresep, 0),
+				// 		angka_rp(0, 0),
+				// 		angka_rp($db->totalsemua, 0),
+				// 		$db->resepno
 
 
-				));
-				$pdf->SetTitle('03 REKAP JASA DAN PENJUALAN');
-				$pdf->AliasNbPages();
-				$pdf->output('KASIR-03.PDF', 'I');
+				// 	));
+
+				// 	$nourut++;
+				// }
+				// $pdf->setfont('Arial', 'B', 8);
+				// $pdf->SetWidths(array(89, 20, 25, 20, 20, 20, 20, 20, 30, 20));
+				// $pdf->SetAligns(array('L', 'R', 'R', 'R', 'R', 'R', 'R', 'R', 'R', 'L'));
+				// $pdf->row(array(
+				// 	'Total',
+				// 	angka_rp($tot1, 0),
+				// 	angka_rp($tot2, 0),
+				// 	angka_rp($tot3, 0),
+				// 	angka_rp($tot4, 0),
+				// 	angka_rp($tot5, 0),
+				// 	angka_rp($tot6, 0),
+				// 	angka_rp($tot7, 0),
+				// 	angka_rp($tot8, 0),
+				// 	$db->resepno
+
+
+				// ));
+				// $pdf->SetTitle('03 REKAP JASA DAN PENJUALAN');
+				// $pdf->AliasNbPages();
+				// $pdf->output('KASIR-03.PDF', 'I');
+
+
 			} else if ($idlp == 104) {
 				$bulan = date('n', strtotime($tgl1));
 				$tahun = date('Y', strtotime($tgl2));

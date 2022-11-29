@@ -837,7 +837,8 @@
                                         </div>
                                     </div>
                                     <hr />
-                                    <!-- <button type="button" class="btn green" id="proses_hasil">Proses hasil</button> -->
+                                    <!-- <button type="button" class="btn btn-primary" id="hasil-btn-proses-hasil" data-jenis_kelamin="<?= $row->jkel ?>" data-nolaborat="<?= $row->nolaborat ?>" style="margin-bottom: 10px;"><i class="fa fa-plus" aria-hidden="true"></i> Proses Hasil</button> -->
+                                    <button type="button" class="btn btn-primary" id="hasil-btn-proses-hasil" >Proses hasil</button>
                                     <div class="table-responsive">
                                         <table class="table table-bordered" style="width:100%">
                                             <thead class="page-breadcrumb breadcrumb">
@@ -1357,7 +1358,7 @@ $this->load->view('template/footer');
             },
             success: function(data){
                 $("#nolaborathide").val(data.nolab);
-                $("#nolaborat").val("AUTO");
+                $("#nolaborat").val(data.nolab);
             },
             error: function(jqXHR, textStatus, errorThrown){
                 swal({
@@ -1484,4 +1485,43 @@ $this->load->view('template/footer');
             }
         });
     });
+
+    $('#hasil-btn-proses-hasil').on('click', getListPemeriksaan);
+
+    function getListPemeriksaan() {
+        let jenis_kelamin   = $('[name="jkel"]').val();
+        let nolaborat       = $('#nolaborathide').val();
+        let data = {
+            jenis_kelamin,
+            nolaborat
+        };
+        let request = getRequest("lab/get_pemeriksaan", "POST", data);
+
+        request.then((res) => {
+            console.log({
+                res
+            });
+            let data = res.data;
+            let results = '';
+
+            data.forEach(item => {
+                results += `
+                <tr>
+                    <td>` + item.pemeriksaan + `</td>
+                    <td> 
+                        <input type="text" name="hasilc[]" class="form-control" value='` + item.hasilc + `'>
+                        <input type="hidden" name="kodeperiksa[]" value="${item.kodeperiksa}">
+                        <input type="hidden" name="kodelab[]" value="${item.kodelab}">
+                    </td>
+                    <td>` + item.satuan + `</td>
+                    <td>` + item.normalc + `</td>
+                    <td><input type="text" name="keterangan[]" class="form-control" value='` + item.keterangan + `'></td>
+                </tr>
+                `;
+            });
+
+            $('#hasil-list-pemeriksaan').html(results);
+
+        });
+    }
 </script>
