@@ -329,7 +329,8 @@ $.ajax({
     enctype       : 'multipart/form-data',
     // data: $('#form').serialize(),
     data          : data,
-    dataType      : "JSON",processData: false, // false, it prevent jQuery form transforming the data into a query string
+    dataType      : "JSON",
+    processData: false, // false, it prevent jQuery form transforming the data into a query string
     contentType   : false,
     cache         : false,
     timeout       : 600000,

@@ -58,7 +58,8 @@ class M_Poliklinik extends CI_Model
 				 preposisi LIKE '%$search%' OR
 				 preposisi LIKE '%$search%' OR
 				 tgllahir LIKE '%$search%' OR
-				 nadokter LIKE '%$search%'
+				 nadokter LIKE '%$search%' OR 
+				 nobpjs LIKE '%$search%'
 				  )";				
 		}else{
 			$search2='';

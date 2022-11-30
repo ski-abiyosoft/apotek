@@ -132,7 +132,7 @@
                             <!-- <td>Rp. <span align="right"><?php echo number_format($row->totalnet);?></span></td> -->
                             <td align="center"><?php echo date('d-m-Y',strtotime($row->tglretur));?></td>
                             <td><?php echo $row->gudang;?></td>
-                            <td style="text-align: center">
+                             <td style="text-align: center">
                                 <?php if ($row->posting=='0') : ?>
                                     <a target="_blank" type="button" class="btn btn-sm btn-warning" href="<?php echo base_url()?>penjualan_retur/cetak/?id=<?php echo $row->returno;?>"><i class="glyphicon glyphicon-print"></i></a>
                                     <?php 

@@ -1455,9 +1455,9 @@ class Poliklinik extends CI_Controller {
 		$ceknoreg   = $this->input->get('noreg');
 		$rekmed     = $this->input->get('rekmed');
 
-		$check_rekam_medis	= $this->db->query("SELECT * FROM tbl_rekammedisrs WHERE noreg = '$ceknoreg'")->num_rows();
+		// $check_rekam_medis	= $this->db->query("SELECT * FROM tbl_rekammedisrs WHERE noreg = '$ceknoreg'")->num_rows();
 
-		if($check_rekam_medis != 0){
+		// if($check_rekam_medis != 0){
 			if(isset($ceknoreg) && isset($rekmed)){
 				$data_pas = $this->db->query("SELECT (select nadokter from tbl_dokter a where a.kodokter=pasien_rajal.kodokter and a.koders=pasien_rajal.koders limit 1)nadokter,
 				pasien_rajal.* FROM pasien_rajal where koders='$koders' and noreg='$ceknoreg'")->row();
@@ -1724,10 +1724,10 @@ class Poliklinik extends CI_Controller {
 				$this->session->set_flashdata("session", "Sesi sudah berakhir, silahkan pilih kembali");
 				redirect("/poliklinik");
 			}
-		} else {
-			$this->session->set_flashdata("isi_perawat", "Isi pemeriksaan perawat terlebih dahulu");
-			redirect("/poliklinik/pemeriksaan_perawat/?noreg=$ceknoreg&rekmed=$rekmed");
-		}
+		// } else {
+			// $this->session->set_flashdata("isi_perawat", "Isi pemeriksaan perawat terlebih dahulu");
+			// redirect("/poliklinik/pemeriksaan_perawat/?noreg=$ceknoreg&rekmed=$rekmed");
+		// }
 	}
 
 	public function pemeriksaan_odontogram(){
@@ -2249,4 +2249,29 @@ class Poliklinik extends CI_Controller {
 
 	}
 
+	Public function bersihkan_ttd()
+	{
+		$files    =glob('ttd/*.png');
+		foreach ($files as $file) {
+			if (is_file($file))
+			unlink($file); // hapus file
+		}
+		
+		echo json_encode(array("status" => "1"));
+
+	}
+
+	Public function simpan_ttd()
+	{
+		$img              = $this->input->post('image');
+		$img              = str_replace('data:image/png;base64,', '', $img);
+		$img              = str_replace(' ', '+', $img);
+		$data             = base64_decode($img);
+		$image            = uniqid() . '.png';
+		$file             = './ttd/' .$image;
+		$success          = file_put_contents($file, $data);
+		
+		echo $image;
+
+	}
 }

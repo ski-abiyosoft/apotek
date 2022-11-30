@@ -650,7 +650,7 @@ $(document).ready(function() {
             "sInfoFiltered": " - Dipilih dari _MAX_ data",
             "sSearch": "Pencarian Data : ",
             // "sInfo": " Jumlah _TOTAL_ Data (_START_ - _END_)",
-            "sInfo": " Data (_START_ - _END_)",
+            "sInfo": "Data (_START_ - _END_)",
             "sLengthMenu": "_MENU_ Baris",
             "sLoadingRecords": "Loading...",
             "sProcessing":"Tunggu Sebentar... Loading...",

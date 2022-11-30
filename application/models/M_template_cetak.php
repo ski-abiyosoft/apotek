@@ -111,6 +111,12 @@ class M_template_cetak extends CI_Model {
                     header("Content-Disposition: attachment; filename= $judul.xls");
                     $this->load->view('app/master_cetak', $data);
                     break;
+                    
+               case 3;
+                    echo ("<title>$judul</title>");
+                    echo ($chari);
+                    echo "<script>window.print();</script>";
+               break;
           }
           // $this->M_cetak->mpdf($position, 'A4', $judul, $chari, '.PDF', 10, 10, 10, 2);
      }

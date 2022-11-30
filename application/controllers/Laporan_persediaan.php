@@ -1923,8 +1923,9 @@ class Laporan_persediaan extends CI_Controller
                                         </tr>
                                    </thead>";
                                    $no = 1;
+                                   
                                    foreach ($query as $q) {
-
+                                        
                                         $bs = $this->db->get_where("tbl_barangstock", ["koders"=>$unit, "kodebarang"=>$q->kodebarang, "gudang"=>$depo])->row();
 
                                         $namabarang = $q->namabarang;
@@ -1954,6 +1955,7 @@ class Laporan_persediaan extends CI_Controller
                                              <td width=\"4%\" bgcolor=\"#cccccc\" align=\"center\" rowspan=\"2\">Kode Barang</td>
                                              <td width=\"4%\" bgcolor=\"#cccccc\" align=\"center\" rowspan=\"2\">Nama Barang</td>
                                              <td width=\"4%\" bgcolor=\"#cccccc\" align=\"center\" rowspan=\"2\">Satuan</td>
+                                             <td width=\"4%\" bgcolor=\"#cccccc\" align=\"center\" rowspan=\"2\">Saldo Awal</td>
                                              <td width=\"24%\" bgcolor=\"#cccccc\" align=\"center\" colspan=\"6\">Persediaan Masuk</td>
                                              <td width=\"24%\" bgcolor=\"#cccccc\" align=\"center\" colspan=\"7\">Persediaan Keluar</td>
                                              <td width=\"4%\" bgcolor=\"#cccccc\" align=\"center\" rowspan=\"2\">Saldo Akhir</td>
@@ -1979,10 +1981,35 @@ class Laporan_persediaan extends CI_Controller
                                    $no = 1;
                                    foreach ($query as $q) {
                                         $bs = $this->db->get_where("tbl_barangstock", ["koders"=>$unit, "kodebarang"=>$q->kodebarang, "gudang"=>$depo])->row();
-                                        
+
+                                        if($cekpdf==2){
+
                                         $kodebarang             = $q->kodebarang;
                                         $namabarang             = $q->namabarang;
                                         $satuan                 = $q->satuan;
+                                        $salawal                = $bs->saldoawal;
+                                        $pembelian              = $q->pembelian;
+                                        $mutasi_in              = $q->move_in;
+                                        $produksi               = $q->produksi_jadi;
+                                        $so                     = $q->so;
+                                        $retur_beli             = $q->retur_beli;
+                                        $total_masuk            = $q->total_masuk;
+                                        $jual                   = $q->jual;
+                                        $mutasi_out             = $q->mutasi_out;
+                                        $retur_jual             = $q->retur_jual;
+                                        $produksi_out           = $q->produksi_bahan;
+                                        $bhp                    = $q->bhp;
+                                        $expired                = $q->expire;
+                                        $total_keluar           = $q->total_keluar;
+                                        $salakhir               = $bs->saldoawal+$q->saldo;
+                                        $hpp                    = $q->hpp;
+                                        $total_persediaan_rp    = $q->total;
+
+                                        }else{
+
+                                        $kodebarang             = $q->kodebarang;
+                                        $namabarang             = $q->namabarang;
+                                        $satuan                 = $q->satuan; 
                                         $salawal                 = number_format($bs->saldoawal); 
                                         $pembelian              = number_format($q->pembelian);
                                         $mutasi_in              = number_format($q->move_in);
@@ -2000,6 +2027,9 @@ class Laporan_persediaan extends CI_Controller
                                         $salakhir               = number_format($bs->saldoawal+$q->saldo);
                                         $hpp                    = number_format($q->hpp);
                                         $total_persediaan_rp    = number_format($q->total);
+
+                                        }
+                                        
                                         $body .= "<tr>
                                              <td align=\"center\">" . $no++ . "</td>
                                              <td align=\"left\">$kodebarang</td>

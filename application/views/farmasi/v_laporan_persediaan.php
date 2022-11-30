@@ -228,7 +228,7 @@ $this->load->view('template/v_report');
                     var dari = document.getElementById('dari').value;
                     var sampai = document.getElementById('sampai').value;
                     $('#report').modal('show');
-                    $('.modal-title').text('CETAK LAPORAN PENJUALAN');
+                    $('.modal-title').text('Cetak Laporan Persediaan Barang');
                     $("#simkeureport").html('<iframe src="<?php echo base_url(); ?>Laporan_persediaan/cetak2?dari=' + dari + '&sampai=' + sampai + '&da=' + da + '&depo=' + depo + '&laporan=' + laporan + '&keperluan=' + keperluan + '&pdf=1' + '" frameborder="no" width="100%" height="520"></iframe>');
                } else if (laporan == 5){
                     swal({

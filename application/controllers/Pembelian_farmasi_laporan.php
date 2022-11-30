@@ -2164,7 +2164,7 @@ class Pembelian_farmasi_laporan extends CI_Controller
 	}
 
 	public function cetak2(){
-		$cekpdf   = $this->input->get('pdf');;
+		$cekpdf   = $this->input->get('pdf');
 		$cek      = $this->session->userdata('level');
 		$idlap    = $this->input->get('idlap');
 		$unit     = $this->input->get('cabang');

@@ -16,9 +16,10 @@ class M_cetak extends CI_Model {
 	{
 		// hussain change
 		ini_set("pcre.backtrack_limit", "5000000");
+		// ini_set('memory_limit', '1500000M');
 		// end husain
 
-		// ori
+				// ori
 		ini_set('max_execution_time', 0);
 		ini_set("memory_limit","-1");
 		set_time_limit(0);

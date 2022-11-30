@@ -137,7 +137,7 @@
                             <!-- <button id="btnsimpan" type="button" onclick="save()" class="btn blue"><i class="fa fa-save"></i><b> Simpan</b></button>&emsp; -->
                             <button id="btnsimpan" type="button" onclick="save_suketsakit()" class="btn blue"><i class="fa fa-save"></i><b> Simpan</b></button>&emsp;
 
-                            <button type="button" class="btn btn-warning" id="print_suketsakit" <?= isset($ttv->ijinsakit)? "" : "disabled" ?> onclick="_urlcetak()"><i class="fa fa-print"></i>&nbsp; Print</button>&emsp;
+                            <button type="button" class="btn btn-warning" id="print_suketsakit" <?= isset($ttv->ijinsakit)? "" : "disabled" ?> onclick="_urlcetak();"><i class="fa fa-print"></i>&nbsp; Print</button>&emsp;
 
                             <button type="button"  class="btn btn-danger" data-dismiss="modal"><i class="fa fa-close"></i>&nbsp;<b>Batal<b></button>
 
@@ -213,8 +213,7 @@
                         <div class="col-sm-7 input-group">
                             <span class="suket_sehat_success"></span>
                             <!-- <button id="btnsimpan" type="button" onclick="save()" class="btn blue"><i class="fa fa-save"></i><b> Simpan</b></button>&emsp; -->
-                            &emsp; 
-                            <button type="button" class="btn blue" onclick="save_suketsehat()"> <i class="fa fa-save fa-fw"></i>&nbsp; Simpan</button>&emsp;
+                            &emsp; <button type="button" class="btn blue" onclick="save_suketsehat()"><i class="fa fa-save fa-fw"></i>&nbsp; Simpan</button>&emsp;
                             
                             <button type="button" class="btn btn-warning" <?= isset($ttv->sehat)? "" : "disabled" ?> onclick="_urlcetak2()"><i class="fa fa-print"></i>&nbsp; Print</button>&emsp;
 
@@ -426,7 +425,7 @@
                             <div class="form-group">
                                 <label class="control-label col-md-4" style="color:green"><b>No Kartu BPJS</b></label>
                                 <div class="col-md-8">
-                                    <input type="" class="form-control" value="<?= data_master("tbl_regist", array("noreg" => $ttv->noreg, "koders" => $ttv->koders))->nobpjs ?>" disabled>
+                                    <input type="" class="form-control" value="<?= isset($ttv->noreg)? data_master("tbl_regist", array("noreg" => $ttv->noreg, "koders" => $ttv->koders))->nobpjs : "" ?>" disabled>
                                 </div>
                             </div>
                         </div>
@@ -2261,7 +2260,7 @@
     saveButton2   = wrapper.querySelector("[data-action=save2]"),
     canvas2       = wrapper.querySelector("canvas"),
     signaturePad2;
-    
+
     function _urlcetak()
     {	
         var unit    = '<?= $this->session->userdata('unit') ?>';
@@ -2366,7 +2365,11 @@
 	clearButton2.addEventListener("click", function (event) {
 		signaturePad2.clear();
 	});
+<<<<<<< HEAD
     
+=======
+
+>>>>>>> 33d0c84f972c8626bdc0eab0b0b839a47b6dacb4
     // INITIALIZE
     $(window).on("load", function(){
         console.log($("#testeresep").serialize());

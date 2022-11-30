@@ -1208,12 +1208,14 @@ $this->load->view('template/footer_tb');
 
   function save() {
     //var tanggal   = $('[name="tanggal"]').val(); 
-    var poli = $('[name="reg_klinik"]').val();
-    var nomor = $('[name="noreg"]').val();
-    var nohp = $('#reg_hp').val();
-    var total = $('#_vtotal2').text();
-    var cekhp = $('#reg_cekhp').is(':checked');
-    var tresepx = $('#_vtotalresep').text();
+    
+    var kembalirp   = $('[name="kembalirp"]').val();
+    var poli        = $('[name="reg_klinik"]').val();
+    var nomor       = $('[name="noreg"]').val();
+    var nohp        = $('#reg_hp').val();
+    var total       = $('#_vtotal2').text();
+    var cekhp       = $('#reg_cekhp').is(':checked');
+    var tresepx     = $('#_vtotalresep').text();
 
     if (nohp == '') {
       swal({
@@ -1347,6 +1349,16 @@ $this->load->view('template/footer_tb');
     var total           = $('#totalnet').val();
     var terimadari      = $('#terimadari').val();
     
+    if (kembalirp<0){
+      swal({
+        title: "PEMBAYARAN",
+        html: "<p>MASIH BELUM LUNAS, Silahkan Lunasi Terlebih Dahulu...</p>",
+        type: "error",
+        confirmButtonText: "OK" 
+      });    
+      return;
+    } 
+
     if (kembalirp<0){
       swal({
         title: "PEMBAYARAN",

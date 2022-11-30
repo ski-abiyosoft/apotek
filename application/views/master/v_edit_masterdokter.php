@@ -164,7 +164,8 @@ $this->load->view('template/body');
                         foreach ($kopoli as $k) : ?>
                           <tr id="unitrow_<?= $no; ?>">
                             <td>
-                              <select name="unit[]" id="unit<?= $no; ?>" class="select2_el_poli form-control input-largex">
+                              <input type="hidden" id="unit<?= $no; ?>" name="unit[]" value="<?= $k->kopoli; ?>">
+                              <select name="unit1[]" id="unit1<?= $no; ?>" class="select2_el_poli form-control input-largex" disabled>
                                 <option value="<?= $k->kopoli; ?>"><?= $k->namapost; ?></option>
                               </select>
                             </td>
@@ -177,7 +178,7 @@ $this->load->view('template/body');
                       <div class="col-xs-9">
                         <div class="wells">
                           <button type="button" onclick="tambah_unit()" class="btn green"><i class="fa fa-plus"></i> </button>
-                          <button type="button" onclick="hapusBaris_unit()" class="btn red"><i class="fa fa-trash-o"></i></button>
+                          <!-- <button type="button" onclick="hapusBaris_unit()" class="btn red"><i class="fa fa-trash-o"></i></button> -->
                         </div>
                       </div>
                     </div>
@@ -192,7 +193,8 @@ $this->load->view('template/body');
                         foreach ($drcabang as $dc) : ?>
                           <tr id="lokasirow_<?= $no; ?>">
                             <td>
-                              <select name="lokasi[]" id="lokasi<?= $no; ?>" class="select2_el_cabang_all form-control input-largex">
+                              <input type="hidden" id="lokasi<?= $no; ?>" name="lokasi[]" value="<?= $dc->koders; ?>">
+                              <select name="lokasi1[]" id="lokasi1<?= $no; ?>" class="select2_el_cabang_all form-control input-largex" disabled>
                                 <option value="<?= $dc->koders; ?>"><?= $dc->namars; ?></option>
                               </select>
                             </td>
@@ -205,7 +207,7 @@ $this->load->view('template/body');
                       <div class="col-xs-9">
                         <div class="wells">
                           <button type="button" onclick="tambah_lokasi()" class="btn green"><i class="fa fa-plus"></i> </button>
-                          <button type="button" onclick="hapusBaris_lokasi()" class="btn red"><i class="fa fa-trash-o"></i></button>
+                          <!-- <button type="button" onclick="hapusBaris_lokasi()" class="btn red"><i class="fa fa-trash-o"></i></button> -->
                         </div>
                       </div>
                     </div>
