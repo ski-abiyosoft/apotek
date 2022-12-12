@@ -155,6 +155,17 @@ function urut_transaksi_igd($trkode, $lebar){
 	return $kode_transaksi;	
 }
 
+function urut_faktur_pajak($trkode, $lebar){
+	$CI =& get_instance();
+	$CI->db->query("UPDATE tbl_urutrs set nourut=nourut+1 where kode_urut='$trkode'");
+	$data_urut = $CI->db->query("SELECT * from tbl_urutrs where kode_urut='$trkode'")->row();
+	$nomor_urut = $data_urut->nourut;
+	$date = date("Y");
+	$urut = trim($date);
+	$kode_transaksi = $urut.str_pad( $nomor_urut, $lebar, '0', STR_PAD_LEFT );
+	return $kode_transaksi;	
+}
+
 function urut_tarif($trkode, $lebar){
 	$CI =& get_instance();
 	$CI->db->query("UPDATE tbl_urutrs set nourut=nourut+1 where kode_urut='$trkode'");

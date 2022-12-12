@@ -7,7 +7,7 @@ class Penjualan_cabang extends CI_Controller
 	{
 		parent::__construct();
 		$this->session->set_userdata('menuapp', '4000');
-		$this->session->set_userdata('submenuapp', '7008');
+		$this->session->set_userdata('submenuapp', '4402');
 		$this->load->helper('simkeu_nota1');
 		$this->load->helper('simkeu_nota');
 		$this->load->model('M_farmasi_po');
@@ -97,6 +97,7 @@ class Penjualan_cabang extends CI_Controller
 		$unit = $this->session->userdata('unit');
 		$user = $this->session->userdata('username');
 		$nobukti = $this->input->get('nobukti');
+		$avatar = $this->session->userdata('avatar_cabang');
 		if (!empty($cek)) {
 			$profile       = data_master('tbl_namers', array('koders' => $unit));
 			$nama_usaha    = $profile->namars;
@@ -131,7 +132,7 @@ class Penjualan_cabang extends CI_Controller
                                         <td width=\"50%\">
 																					<table>
 																						<tr>
-																							<td width=\"20%\" style=\"text-align:center;\"><img src=\"" . base_url() . "assets/img/logo.png\"  width=\"70\" height=\"70\" /></td>
+																							<td width=\"20%\" style=\"text-align:center;\"><img src=\"" . base_url() . "assets/img_user/$avatar\"  width=\"70\" height=\"70\" /></td>
 																							<td width=\"80%\" style=\"text-align:left;\">
 																								<table width=\"100%\">
 																									<tr>
@@ -365,6 +366,7 @@ class Penjualan_cabang extends CI_Controller
 		$cek = $this->session->userdata('level');
 		$unit = $this->session->userdata('unit');
 		$user = $this->session->userdata('username');
+		$avatar = $this->session->userdata('avatar_cabang');
 		if (!empty($cek)) {
 			$kop = $this->M_cetak->kop($unit);
 			$namars = $kop['namars'];
@@ -381,7 +383,7 @@ class Penjualan_cabang extends CI_Controller
 			$chari .= "
                               <table style=\"border-collapse:collapse;font-family: tahoma; font-size:12px\" width=\"100%\" align=\"center\" border=\"0\">
                                    <tr>
-                                        <td width=\"30%\" style=\"text-align:center;\"><img src=\"" . base_url() . "assets/img/logo.png\"  width=\"100\" height=\"100\" /></td>
+                                        <td width=\"30%\" style=\"text-align:center;\"><img src=\"" . base_url() . "assets/img_user/$avatar\"  width=\"100\" height=\"100\" /></td>
 																				<td width=\"40%\">&nbsp;</td>
 																				<td width=\"30%\" style=\"text-align:left;\">
 																					<table>
@@ -970,6 +972,7 @@ class Penjualan_cabang extends CI_Controller
 			$data = [
 				'koders' 				=> $cabang,
 				'resepno' 			=> $noprimary,
+				'eresepno'			=> '',
 				'antrino'  			=> 1,
 				'cust_id'  			=> $cust_id,
 				'jenisjual'  		=> 2,

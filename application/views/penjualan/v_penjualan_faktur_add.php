@@ -74,143 +74,7 @@
                 <div class="tabbable tabbable-custom tabbable-full-width">
 
                     <!-- HEADER START -->
-                    <?php if(isset($_GET["eresep"])){ ?>
-                    <div>
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label class="col-md-3 control-label">Pembeli <font color="red">*</font></label>
-                                    <div class="col-md-6">
-                                        <select id="pembeli" name="pembeli" class="form-control select2_pembeli" onchange="getdataklinik()">
-                                            <option value="RAJAL">Rawat Jalan</option>
-                                            <option value="RANAP">Rawat Inap</option>
-                                            <option value="APOTIK">Apotik</option>
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label class="col-md-3 control-label">Resep Dari <font color="red">*</font></label>
-                                    <div class="col-md-9">
-                                        <select id="dokter" name="dokter" class="form-control select2_el_dokter" data-placeholder="Pilih..." onkeypress="return tabE(this,event)">
-                                            <option value="<?= $heresep->kodokter ?>" selected><?= $heresep->kodokter ." | ". data_master("dokter", array("kodokter" => $heresep->kodokter, "koders" => $this->session->userdata("unit"), "kopoli" => $pasrsp->kodepos))->nadokter ?></option>
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <div class="col-sm-6">
-                                <label class="col-md-3 control-label">DEPO <font color="red">*</font></label>
-                                <div class="col-md-6">
-                                    <select id="gudang" name="gudang" class="form-control select2_el_farmasi_depo" data-placeholder="Pilih..." onkeypress="return tabE(this,event)">
-                                        <option value="<?= $heresep->gudang ?>" selected><?= data_master("tbl_depo", array("depocode" => $heresep->gudang))->keterangan ?></option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="col-sm-6">
-                              <div class="form-group">
-                                  <label class="col-md-3 control-label">No. E-Resep <font color="red">*</font></label>
-                                  <div class="col-md-6">
-                                      <input type="text" id="noeresep" name="noeresep" class="form-control" value="<?= $this->input->get("noresep") ?>" readonly>
-                                  </div>
-                              </div>
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <div class="col-md-6" class="vnoreg">
-                                <div class="form-group">
-                                    <label class="col-md-3 control-label">No. Registrasi <font color="red">*</font></label>
-                                    <div class="col-md-6">
-                                        <select id="noreg" name="noreg" class="form-control select2_el_registrasiresep" onchange="getdataregistrasi()">
-                                            <option value="<?= $heresep->noreg ?>" selected><?= $heresep->noreg ?></option>
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label class="col-md-3 control-label">No. Resep <font color="red">*</font></label>
-                                    <div class="col-md-6">
-                                        <input type="hidden" name="eresepstatus" value="1">
-                                        <input type="text" id="noresep" name="noresep" class="form-control" readonly placeholder="AUTO">
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label class="col-md-3 control-label">Member <font color="red">*</font></label>
-                                    <div class="col-md-9">
-                                        <select id="pasien" name="pasien" class="form-control select2_el_pasien" onchange="getinfopasien()" data-placeholder="Pilih..." onkeypress="return tabE(this,event)">
-                                            <?php $gpasraj = $this->db->query("SELECT * FROM tbl_pasien WHERE rekmed = '$heresep->rekmed'")->row(); ?>
-                                            <option value="<?= $heresep->rekmed ?>">
-                                                <?= $gpasraj->rekmed ." | ". $gpasraj->namapas ." | ". $gpasraj->alamat2 ." | ".  $gpasraj->noidentitas ." | ". $gpasraj->handphone ?>
-                                            </option>
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label class="col-md-3 control-label">Tanggal <font color="red">*</font></label>
-                                    <div class="col-md-6">
-                                        <input id="tanggal" name="tanggal" class="form-control input-medium" type="date" value="<?php echo date('Y-m-d'); ?>" />
-                                    </div>
-                                    <div class="col-md-3">
-                                        <input type="time" class="form-control" name="jam" id="jam" value="<?= date('H:i:s'); ?>">
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label class="col-md-3 control-label">Nama Pembeli <font color="red">*</font></label>
-                                    <div class="col-md-6">
-                                        <input type="text" name="namapasien" id="namapasien" class="form-control">
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label class="col-md-3 control-label">Alamat Kirim <font color="red">*</font></label>
-                                    <div class="col-md-9">
-                                        <input type="text" name="alamat" id="alamat" class="form-control">
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label class="col-md-3 control-label">Umur <font color="red">*</font></label>
-                                    <div class="col-md-6">
-                                        <input type="text" name="umurpas" id="umurpas" class="form-control" value="<?= $umur ?>">
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label class="col-md-3 control-label">No Handphone <font color="red">*</font></label>
-                                    <div class="col-md-7">
-                                        <input type="text" name="phone" id="phone" class="form-control">
-                                    </div>
-                                    <div class="col-md-2">
-                                        <input type="checkbox" id="reg_cekhp" name="reg_cekhp" value="1" class="form-control">
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <?php } else { ?>
+                    
                     <div>
                         <div class="row">
                             <div class="col-md-6">
@@ -255,14 +119,6 @@
                         </div>
 
                         <div class="row">
-                            <div class="col-md-6" id="vnoreg">
-                                <div class="form-group">
-                                    <label class="col-md-3 control-label">No. Registrasi <font color="red">*</font></label>
-                                    <div class="col-md-6">
-                                        <select id="noreg" name="noreg" class="form-control select2_el_registrasiresep" onchange="getdataregistrasi()"></select>
-                                    </div>
-                                </div>
-                            </div>
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label class="col-md-3 control-label">Tanggal <font color="red">*</font></label>
@@ -271,17 +127,6 @@
                                     </div>
                                     <div class="col-md-3">
                                         <input type="time" class="form-control" name="jam" id="jam" value="<?= date('H:i:s'); ?>">
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label class="col-md-3 control-label">Member <font color="red">*</font></label>
-                                    <div class="col-md-9">
-                                        <select id="pasien" name="pasien" class="form-control select2_el_pasien" onchange="getinfopasien()" data-placeholder="Pilih..." onkeypress="return tabE(this,event)"></select>
                                     </div>
                                 </div>
                             </div>
@@ -317,7 +162,6 @@
                             </div>
                         </div>
                     </div>
-                    <?php } ?>
 
                     <!-- HEADER END -->
 
@@ -2508,8 +2352,7 @@ function tambah_racikan() {
   $('.nav-pills a[href="#tab2"]').tab('show');
 }
 
-/* Rizki */
-<?php if(!isset($_GET["eresep"])): ?>
+
 $("#pembeli").on("change", function() {
   var pembeli = $("#pembeli").val();
 
@@ -2539,22 +2382,14 @@ $("#pembeli").on("change", function() {
 
   }
 
-  if (pembeli == 'LOKAL') {
+  if (pembeli == 'atr') {
     $('#dokter').prop('disabled', true);
   } else {
     $('#dokter').prop('disabled', false);
   }
-
-  if (pembeli == 'KULIT' || pembeli == 'SPA' || pembeli == 'GIGI' || pembeli == 'ONLINE' || pembeli == 'RAJAL' || pembeli == 'RANAP' || pembeli == 'APOTIK') {
-    $('#vnoreg').show();
-    $("#vnoreg #noreg").attr("style", "width:100%");
-  } else {
-    $('#vnoreg').hide();
-  }
-
   getbar();
 });
-<?php endif; ?>
+
 
 /*
 $('#pembeli').on("change", function(e){
