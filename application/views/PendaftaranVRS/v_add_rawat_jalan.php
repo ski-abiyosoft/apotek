@@ -172,7 +172,7 @@
           <div class="form-group">
             <label class="col-md-3 control-label">Jenis Pasien <font color="red">*</font></label>
             <div class="col-md-9">
-              <select class="form-control select2_el_jenispasien" style="width:100%;" id="jenispasien" name="jenispasien" onChange="getRuang()">
+              <select class="form-control select2_el_jenispasien" style="width:100%;" id="jenispasien" name="jenispasien" onchange="getRuang()">
                 <option value="">--- Pilih ---</option>
                 <?php $jenis = $this->db->get_where("tbl_setinghms", array("lset" => 'JPAS'))->result();
 								foreach($jenis as $row){ 
@@ -199,7 +199,7 @@
           <div class="form-group">
             <label class="col-md-3 control-label">Penjamin <font color="red"></font></label>
             <div class="col-md-9">
-              <select class="form-control select2_el_penjamin" style="width:100%;" id="vpenjamin" name="vpenjamin">
+              <select class="form-control select2_el_penjamin" style="width:100%;" id="vpenjamin" name="vpenjamin" onchange="get_pcare(this.value)">
                 <option value="">--- Pilih ---</option>
                 <?php $penjamin = $this->db->get_where("tbl_penjamin", array("cust_id" => 'BPJS'))->result();
 								foreach($penjamin as $row){ 
@@ -272,6 +272,11 @@
         </div>
       </div>
       <div class="row">
+        <div class="col-md-12">
+          <button class="btn blue" style="float: right" onclick="vpcare();"  id="pcare" name="pcare"> 
+            <i class="fa fa-check-square"></i> Briging PCare
+          </button><br><br>
+        </div>
         <div class="col-md-12">
           <button class="btn green" style="float: right"><i class="fa fa-check-square"></i> Briging
             Vclaim</button>
@@ -738,7 +743,6 @@
 
 <input type="hidden" name="now" id="now" value="<?= date('Y-m-d'); ?>">
 <script>
-
 // husaina add
 function cekruang(){
 
@@ -1890,6 +1894,28 @@ $(".select2_dokter_igd").select2({
     cache: true
   }
 });
+
+document.getElementById('pcare').style.visibility="hidden";
+
+function get_pcare(vpenjamin) {
+  
+  if (vpenjamin == "BPJS") {
+    document.getElementById('pcare').style.visibility="visible";
+  } else {
+    document.getElementById('pcare').style.visibility="hidden";
+  }
+}
+
+function vpcare()
+{
+    // var nampasdet = document.getElementById("nampasdet").value;
+    var noregdet  = 'ABI2022000000546';
+    var rekmeddet = '000459';
+    url="<?php echo base_url()?>PendaftaranVRS/pcare_rj/?noreg="+noregdet+"&rekmed="+rekmeddet
+    
+    window.open(url,'_blank');
+    window.focus();
+}
 
 function getRuang() {
   var jenispasien = document.getElementById('jenispasien').value;

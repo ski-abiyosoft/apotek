@@ -283,6 +283,11 @@
 			</div>			
 			<div class="row">
 				<div class="col-md-12">
+					<button class="btn blue" style="float: right" onclick="vpcare();"  id="pcare" name="pcare"> 
+						<i class="fa fa-check-square"></i> Briging PCare
+					</button><br><br>
+				</div>
+				<div class="col-md-12">
 					<button class="btn green" style="float: right"><i class="fa fa-check-square"></i> Briging Vclaim</button>
 				</div>
 			</div>
@@ -1011,6 +1016,26 @@ $(".select2_dokter_igd").select2({
 		cache: true
 	}
 });
+
+function get_pcare(vpenjamin) {
+  
+  if (vpenjamin == "BPJS") {
+    document.getElementById('pcare').style.visibility="visible";
+  } else {
+    document.getElementById('pcare').style.visibility="hidden";
+  }
+}
+
+function vpcare()
+{
+    // var nampasdet = document.getElementById("nampasdet").value;
+    var noregdet  = 'ABI2022000000546';
+    var rekmeddet = '000459';
+    url="<?php echo base_url()?>PendaftaranVRS/pcare_rj/?noreg="+noregdet+"&rekmed="+rekmeddet
+    
+    window.open(url,'_blank');
+    window.focus();
+}
 
 function getRuang(){
 	var jenispasien = document.getElementById('jenispasien').value;

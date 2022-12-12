@@ -14,7 +14,8 @@
         <thead>
             <tr>
                 <td width="10%">
-                    <img src="<?=base_url('/assets/img/logo.png')?>" width="100" height="100">
+                    <?php $avatar = $this->session->userdata('avatar_cabang'); ?>
+                    <img src="<?=base_url('/assets/img_user/').$avatar?>" width="100" height="100">
                 </td>
                 <td>
                     <table border="0">

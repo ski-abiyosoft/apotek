@@ -135,7 +135,7 @@
                                                 type="text" class="form-control rightJustified"
                                                 onkeypress="return tabE(this,event)"></td>
                                         <td width="10%"><input name="expire[]" id="expire1" type="date"
-                                                class="form-control " onkeypress="return tabE(this,event)"></td>
+                                                class="form-control " onkeypress="return tabE(this,event)" value="<?= date('Y-m-d'); ?>"></td>
                                         <td width="15%"><input name="note[]" id="note1" type="text" class="form-control"
                                                 onkeypress="return tabE(this,event)"></td>
                                     </tr>
@@ -216,6 +216,8 @@ function tambah() {
     var td6 = x.insertCell(5);
     var td7 = x.insertCell(6);
 
+    var date = '<?= date('Y-m-d'); ?>';
+
     var akun = "<select name='kode[]' id='kode" + idrow + "' onchange='showbarangname(this.value," + idrow +
         ")' class='select2_el_log_baranggud form-control' ></select>";
     td1.innerHTML = akun
@@ -226,9 +228,8 @@ function tambah() {
         ")' type='text' class='form-control rightJustified'>";
     td5.innerHTML = "<input name='total[]' id='total" + idrow + "' onchange='totalline(" + idrow +
         ")' type='text' class='form-control rightJustified' >";
-    td6.innerHTML = "<input name='expire[]' id='expire" + idrow + "' type='date' class='form-control' >";
-    td7.innerHTML = '<input name="note[]" id="note' + idrow +
-        '" type="text" class="form-control" onkeypress="return tabE(this,event)">';
+    td6.innerHTML = "<input name='expire[]' id='expire" + idrow + "' type='date' class='form-control' value='"+date+"'>";
+    td7.innerHTML = '<input name="note[]" id="note' + idrow +'" type="text" class="form-control" onkeypress="return tabE(this,event)">';
     var gud = $('[name="gudang_asal"]').val();
     initailizeSelect2_log_baranggud(gud);
     total();
@@ -266,7 +267,7 @@ function getgud() {
         success: function(data) {
             $("#gudang_asal").html("<option value='" + data.keid + "'>" + data.ke + "</option>");
             $("#gudang_tujuan").html("<option value='" + data.dariid + "'>" + data.dari + "</option>");
-            $("#ket").val(data.keterangan).prop("readonly", true);
+            $("#ket").val(data.keterangan).prop("readonly", false);
             initailizeSelect2_log_baranggud($("#gudang_asal").val());
             getpermohonandetil(data.keid);
         }
@@ -336,7 +337,7 @@ function getpermohonandetil(param) {
                     $("#sat" + x).val(data[i].satuan).prop("readonly", true);
                     $("#harga" + x).val(num_restruct(data[i].harga));
                     $("#total" + x).val(formatCurrency1(data[i].totalharga)).prop("readonly", true);
-                    $("#note" + x).val(data[i].keterangan).prop("readonly", true);
+                    $("#note" + x).val(data[i].keterangan).prop("readonly", false);
 
                     checkstock(param, data[i].kodebarng);
                 }
@@ -472,7 +473,7 @@ function checkstock(param1, param2) {
         type: "GET",
         dataType: "JSON",
         success: function(data) {
-            console.log(param1 + " - " + param2);
+            // console.log(param1 + " - " + param2);
             if (data.status == 0) {
                 swal({
                     title: "Kesalahan 1",

@@ -10,7 +10,7 @@ $this->load->view('template/body');
                 &nbsp;<?php echo $this->session->userdata('unit'); ?>
             </span>
             -
-            <span class="title-web">Farmasi <small>Penjualan Ke Cabang</small>
+            <span class="title-web">Logistik <small>Penjualan Ke Cabang</small>
         </h3>
         <ul class="page-breadcrumb breadcrumb">
             <li>
@@ -50,7 +50,7 @@ $this->load->view('template/body');
                     <ul class="nav nav-pills">
                         <li class="active">
                             <a href="#tab1" data-toggle="tab">
-                                Resep
+                                Penjualan
                             </a>
                         </li>
 
@@ -92,7 +92,7 @@ $this->load->view('template/body');
                                         <label class="col-md-3 control-label">No. Faktur <font color="red">*</font>
                                         </label>
                                         <div class="col-md-6">
-                                            <input type="text" name="noresep" value="auto" class="form-control" readonly>
+                                            <input type="text" name="noresep" placeholder="AUTO" class="form-control" readonly>
                                         </div>
                                     </div>
 
@@ -100,9 +100,10 @@ $this->load->view('template/body');
 
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label class="col-md-3 control-label">PO Cabang <font color="red">*</font></label>
+                                        <label class="col-md-3 control-label">PO Cabang <font color="red">*</font>
+                                        </label>
                                         <div class="col-md-6">
-                                            <input type="text" name="po_cabang" id="po_cabang" class="form-control" readonly>
+                                            <input type="text" name="po_cabang" id="po_cabang" class="form-control" readonly placeholder="-- Pilih Lookup">
                                         </div>
                                         <div class="col-md-3">
                                             <button style="width:100%;" type="button" class="btn btn-secondary" id="btn_po_cabang" onclick="lookup()">LOOKUP</button>
@@ -187,8 +188,7 @@ $this->load->view('template/body');
                                     <div class="form-group">
                                         <label class="col-md-3 control-label">VAT <font color="red">*</font></label>
                                         <div class="col-md-1">
-                                            <input type="checkbox" name="vat" class="form-control">
-
+                                            <input type="checkbox" checked name="vat" class="form-control" disabled>
                                         </div>
                                     </div>
                                     <!-- <div class="form-group">
@@ -202,7 +202,7 @@ $this->load->view('template/body');
                                     </div> -->
                                 </div>
                             </div>
-                            <div class="ro">
+                            <div class="row">
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label class="col-md-3 control-label">Nama Pembeli <font color="red">*</font>
@@ -217,7 +217,7 @@ $this->load->view('template/body');
                                         <label class="col-md-3 control-label">Faktur Pajak <font color="red">*</font>
                                         </label>
                                         <div class="col-md-9">
-                                            <input type="text" name="fakturpajak" id="fakturpajak" class="form-control">
+                                            <input type="text" name="fakturpajak" id="fakturpajak" class="form-control" placeholder="AUTO" readonly>
                                         </div>
 
 
@@ -242,8 +242,8 @@ $this->load->view('template/body');
                                                 </th>
                                                 <th class="title-white" width="10%" style="text-align: center">Disc %
                                                 </th>
-                                                <th class="title-white" width="10%" style="text-align: center">Uang
-                                                    Embalase</th>
+                                                <!-- <th class="title-white" width="10%" style="text-align: center">Uang Embalase</th> -->
+                                                <th class="title-white" width="10%" style="text-align: center">Disc Rp</th>
                                                 <th class="title-white" width="5%" style="text-align: center">PPN</th>
                                                 <th class="title-white" width="15%" style="text-align: center">Total
                                                     Harga</th>
@@ -259,7 +259,7 @@ $this->load->view('template/body');
                                         <tbody>
                                             <tr>
                                                 <td width="30%">
-                                                    <select name="kode[]" id="kode1" class="select2_el_farmasi_barang form-control input-largex" onchange="showbarangname(this.value, 1)">
+                                                    <select name="kode[]" id="kode1" class="select2_el_farmasi_barang_cbg form-control input-largex" onchange="showbarangname(this.value, 1)">
                                                     </select>
                                                 </td>
 
@@ -267,10 +267,11 @@ $this->load->view('template/body');
                                                 <td width="10%"><input name="sat[]" id="sat1" type="text" class="form-control " onkeypress="return tabE(this,event)"></td>
                                                 <td width="15%"><input name="harga[]" onchange="totalline(1)" value="0" id="harga1" type="text" class="form-control rightJustified">
                                                 </td>
-                                                <td width="10%"><input name="disc[]" onchange="totalline(1)" value="0" id="disc1" type="text" class="form-control rightJustified ">
+                                                <td width="10%"><input name="disc[]" onchange="totalline_x(1)" value="0" id="disc1" type="text" class="form-control rightJustified ">
                                                 </td>
-                                                <td width="10%"><input name="embalase[]" onchange="totalline(1)" value="0" id="disc1" type="text" class="form-control rightJustified "></td>
-                                                <td><input type="checkbox" name="ppn[]" id="ppn1" class="form-control" onchange="totalline(1);total()"></td>
+                                                <!-- <td width="10%"><input name="embalase[]" onchange="totalline(1)" value="0" id="disc1" type="text" class="form-control rightJustified "></td> -->
+                                                <td width="10%"><input name="discrp[]" onchange="totalline(1)" value="0" id="discrp1" type="text" class="form-control rightJustified "></td>
+                                                <td><input type="checkbox" name="ppn[]" checked disabled id="ppn1" class="form-control" onchange="totalline(1);total()"></td>
                                                 <td width="20%"><input name="jumlah[]" id="jumlah1" type="text" class="form-control rightJustified" size="40%" onchange="total()"></td>
                                                 <!-- <td width="20%"><input name="expire[]" id="expire1" type="date" class="form-control"></td>
                                                 <td width="20%"><input name="aturan[]" id="aturan1" type="text" class="form-control "></td>
@@ -340,18 +341,23 @@ $this->load->view('template/body');
                                         <td width="1%"><strong>:</strong></td>
                                         <td width="59" align="right"><strong><span id="_vsubtotal"></span></strong></td>
                                     </tr>
-                                    <tr>
+                                    <!-- <tr>
                                         <td width="40%"><strong>JASA/EMBAL/KAPSUL</strong></td>
                                         <td width="1%"><strong>:</strong></td>
                                         <td width="59" align="right"><strong><span id="_vembalase"></span></strong></td>
-                                    </tr>
+                                    </tr> -->
                                     <tr>
                                         <td width="40%"><strong>DISKON</strong></td>
                                         <td width="1%"><strong>:</strong></td>
                                         <td width="59" align="right"><strong><span id="_vdiskon"></span></strong></td>
                                     </tr>
                                     <tr>
-                                        <td width="40%"><strong>PAJAK</strong></td>
+                                        <td width="40%"><strong>DPP</strong></td>
+                                        <td width="1%"><strong>:</strong></td>
+                                        <td width="59" align="right"><strong><span id="_vdpp"></span></strong></td>
+                                    </tr>
+                                    <tr>
+                                        <td width="40%"><strong>PPN</strong></td>
                                         <td width="1%"><strong>:</strong></td>
                                         <td width="59" align="right"><strong><span id="_vppn"></span></strong></td>
                                     </tr>
@@ -425,7 +431,7 @@ $this->load->view('template/body');
                                                             <tr>
                                                                 <td><?= $no++; ?></td>
                                                                 <td><?= $farmasi->po_no; ?></td>
-                                                                <td><?= $farmasi->tglpo; ?></td>
+                                                                <td><?= date("d-m-Y", strtotime($farmasi->tglpo)); ?></td>
                                                                 <td><?= $farmasi->koders; ?></td>
                                                                 <td class="text-center">
                                                                     <button class="btn btn-success" type="button" id="selecter" data-po_no="<?= $farmasi->po_no; ?>">Pilih</button>
@@ -458,10 +464,10 @@ $this->load->view('template/body');
                                                     <tr>
                                                         <td><?= $no++; ?></td>
                                                         <td><?= $logistik->po_no; ?></td>
-                                                        <td><?= $logistik->po_date; ?></td>
+                                                        <td><?= date("d-m-Y", strtotime($logistik->po_date)); ?></td>
                                                         <td><?= $logistik->koders; ?></td>
                                                         <td class="text-center">
-                                                            <button class="btn btn-success" type="button" id="selecter_l" data-po_no="<?= $logistik->po_no; ?>">Pilih</button>
+                                                            <button class="btn btn-success" type="button" id="selecter_l" data-po_no_l="<?= $logistik->po_no; ?>">Pilih</button>
                                                         </td>
                                                     </tr>
                                                 <?php endforeach; ?>
@@ -492,6 +498,7 @@ $this->load->view('template/footer_tb');
         var cabang = $("#cabang").val();
         location.href = '/Penjualan_cabang/entri?cabang=' + cabang
     }
+
     $(document).ready(function() {
         $(document).on('click', '#selecter', function() {
             var po_no = $(this).data('po_no');
@@ -500,7 +507,7 @@ $this->load->view('template/footer_tb');
             getdatapo(po_no);
         });
         $(document).on('click', '#selecter_l', function() {
-            var po_no = $(this).data('po_no');
+            var po_no = $(this).data('po_no_l');
             $('#po_cabang').val(po_no);
             $('#modal-lookup').modal('hide');
             getdatapo_l(po_no);
@@ -519,7 +526,7 @@ $this->load->view('template/footer_tb');
             $('[id=sat1]').val('');
             $('[id=harga1]').val('');
             $('[id=disc1]').val('');
-            totalline(1);
+            // totalline(1);
         } else {
             $.ajax({
                 url: "<?php echo base_url(); ?>Penjualan_cabang/getpo/" + str,
@@ -532,27 +539,26 @@ $this->load->view('template/footer_tb');
                     }
 
                     for (i = 0; i <= data.length - 1; i++) {
+                        var selectElement = document.getElementById('gudang');
+                        var opt = document.createElement('option');
+                        opt.value = data[i].gudang;
+                        opt.innerHTML = data[i].namagudang;
+                        selectElement.removeChild(selectElement.lastChild);
+                        selectElement.appendChild(opt);
                         if (i > 0) {
                             tambah();
                         }
 
                         x = i + 1;
 
-                        var option = $("<option selected></option>").val(data[i].kodebarang).text(data[i]
-                            .namabarang);
+                        var option = $("<option selected></option>").val(data[i].kodebarang).text('[ ' + data[i].kodebarang + ' ] - [ ' + data[i].namabarang + ' ] - [ ' + data[i].satuan1 + ' ]');
                         $('#kode' + x).append(option).trigger('change');
-
-                        if (data[i].vat == 1) {
-                            document.getElementById("tax" + x).checked = true;
-                        }
-                        document.getElementById("qty" + x).value = data[i].qty_po
-                        document.getElementById("sat" + x).value = data[i].satuan;
-                        document.getElementById("harga" + x).value = data[i].price_po;
+                        $("#tax" + x).checked;
+                        document.getElementById("qty" + x).value = separateComma(Number(data[i].qty_po));
                         document.getElementById("disc" + x).value = data[i].discount;
                         document.getElementById("disc" + x).value = 0;
-
+                        totalline(x);
                     }
-
                 }
             });
         }
@@ -583,35 +589,66 @@ $this->load->view('template/footer_tb');
                     }
 
                     for (i = 0; i <= data.length - 1; i++) {
+                        var selectElement = document.getElementById('gudang');
+                        var opt = document.createElement('option');
+                        opt.value = data[i].gudang;
+                        opt.innerHTML = data[i].namagudang;
+                        selectElement.removeChild(selectElement.lastChild);
+                        selectElement.appendChild(opt);
                         if (i > 0) {
                             tambah();
                         }
 
                         x = i + 1;
 
-                        var option = $("<option selected></option>").val(data[i].kodebarang).text(data[i]
-                            .namabarang);
+                        var option = $("<option selected></option>").val(data[i].kodebarang).text('[ ' + data[i].kodebarang + ' ] - [ ' + data[i].namabarang + ' ] - [ ' + data[i].satuan1 + ' ]');
                         $('#kode' + x).append(option).trigger('change');
-
-                        if (data[i].vat == 1) {
-                            document.getElementById("tax" + x).checked = true;
-                        }
-                        document.getElementById("qty" + x).value = data[i].qty_po
+                        $("#tax" + x).checked;
+                        document.getElementById("qty" + x).value = separateComma(Number(data[i].qty_po));
                         document.getElementById("sat" + x).value = data[i].satuan;
-                        document.getElementById("harga" + x).value = data[i].price_po;
                         document.getElementById("disc" + x).value = data[i].discount;
                         document.getElementById("disc" + x).value = 0;
-
+                        totalline(x);
                     }
-
                 }
             });
         }
     }
 
+    function cekqty(id) {
+        var gudang = $("#gudang").val();
+        var kode = $("#kode" + id).val();
+        var qtyx = $("#qty" + id).val();
+        var qty = Number(qtyx.replace(/[^0-9\.]+/g, ""));
+        var param = "?gudang=" + gudang + "&kodebarang=" + kode;
+        $.ajax({
+            url: "<?= site_url('Penjualan_cabang/ceksaldo'); ?>" + param,
+            type: "POST",
+            dataType: "JSON",
+            success: function(data) {
+                saldo = Number(data.saldoakhir);
+                if (qty > saldo) {
+                    swal({
+                        title: "SALDO AKHIR",
+                        html: "Saat ini : " + separateComma(saldo),
+                        type: "warning",
+                        confirmButtonText: "OK"
+                    }).then((value) => {
+                        $("#qty" + id).val(separateComma(saldo));
+                        totalline(id);
+                    });
+                } else {
+                    $("#qty" + id).val(separateComma(qty));
+                    totalline(id);
+                }
+            }
+        });
+    }
+
     $('.select2_filter_koders').select2({
         dropdownParent: $("#modal-lookup .modal-body"),
     });
+
     var table_farmasi = $('#datatable_farmasi').DataTable({
         "columnDefs": [{
             "targets": [-1],
@@ -638,6 +675,7 @@ $this->load->view('template/footer_tb');
         "paging": true,
         "responsive": true,
     });
+
     var table_logistik = $('#datatable_logistik').DataTable({
         "columnDefs": [{
             "targets": [-1],
@@ -668,8 +706,18 @@ $this->load->view('template/footer_tb');
 
 <script>
     function lookup() {
-        $('#modal-lookup').modal('show');
-        $('.modal-title').text('PO CABANG');
+        var cust = $("#cust_id").val();
+        if (cust == null || cust == '') {
+            swal({
+                title: "PEMBELI",
+                html: "Pilih Pembeli Terlebih Dahulu",
+                type: "info",
+                confirmButtonText: "OK"
+            });
+        } else {
+            $('#modal-lookup').modal('show');
+            $('.modal-title').text('PO CABANG');
+        }
     }
 
 
@@ -686,33 +734,18 @@ $this->load->view('template/footer_tb');
         var td6 = x.insertCell(5);
         var td7 = x.insertCell(6);
         var td8 = x.insertCell(7);
-        // var td9 = x.insertCell(8);
-        // var td10 = x.insertCell(9);
-        // var td11 = x.insertCell(10);
-        // var td12 = x.insertCell(11);
-
-        var akun = "<select name='kode[]' id=kode" + idrow + " onchange='showbarangname(this.value," + idrow +
-            ")' class='select2_el_farmasi_barang form-control' ></select>";
+        var akun = "<select name='kode[]' id='kode" + idrow + "' onchange='showbarangname(this.value," + idrow + ")' class='select2_el_farmasi_barang_cbg form-control' ></select>";
         td1.innerHTML = akun;
-        td2.innerHTML = "<input name='qty[]'    id=qty" + idrow + " onchange='totalline(" + idrow +
-            ")' value='1'  type='text' class='form-control rightJustified'  >";
-        td3.innerHTML = "<input name='sat[]'    id=sat" + idrow + " type='text' class='form-control' >";
-        td4.innerHTML = "<input name='harga[]'  id=harga" + idrow + " onchange='totalline(" + idrow +
-            ") value='0'  type='text' class='form-control rightJustified'>";
-        td5.innerHTML = "<input name='disc[]'   id=disc" + idrow + " onchange='totalline(" + idrow +
-            ")' value='0'  type='text' class='form-control rightJustified'  >";
-        td6.innerHTML = "<input name='embalase[]'   id=embalase" + idrow + " onchange='totalline(" + idrow +
-            ")' value='0'  type='text' class='form-control rightJustified'  >";
-        td7.innerHTML = "<input type='checkbox' name='ppn[]'    id=ppn" + idrow + " onchange='totalline(" + idrow +
-            ")' class='form-control'>";
-        td8.innerHTML = "<input name='jumlah[]' id=jumlah" + idrow +
-            " type='text' class='form-control rightJustified' size='40%'>";
-        // td9.innerHTML = "<input name='expire[]'   id=expire" + idrow + " onchange='totalline(" + idrow +
-        //     ")' type='date' class='form-control'  >";
-        // td10.innerHTML = "<input name='aturan[]'   id=aturan" + idrow + " value=''  type='text' class='form-control'  >";
-        // td11.innerHTML = "<input name='norak[]'   id=norak" + idrow + " value=''  type='text' class='form-control'  >";
-
-        initailizeSelect2_farmasi_barang();
+        td2.innerHTML = "<input name='qty[]' id='qty" + idrow + "' onchange='totalline(" + idrow + ")' value='1'  type='text' class='form-control rightJustified'  >";
+        td3.innerHTML = "<input name='sat[]' id='sat" + idrow + "' type='text' class='form-control' >";
+        td4.innerHTML = "<input name='harga[]' id='harga" + idrow + "' onchange='totalline(" + idrow + ") value='0'  type='text' class='form-control rightJustified'>";
+        td5.innerHTML = "<input name='disc[]' id='disc" + idrow + "' onchange='totalline_x(" + idrow + ")' value='0'  type='text' class='form-control rightJustified'  >";
+        // td6.innerHTML = "<input name='embalase[]'   id=embalase" + idrow + " onchange='totalline(" + idrow +
+        //     ")' value='0'  type='text' class='form-control rightJustified'  >";
+        td6.innerHTML = "<input name='discrp[]'   id='discrp" + idrow + "' onchange='totalline(" + idrow + ")' value='0'  type='text' class='form-control rightJustified'  >";
+        td7.innerHTML = "<input type='checkbox' checked name='ppn[]' disabled id='ppn" + idrow + "' onchange='totalline(" + idrow + ")' class='form-control'>";
+        td8.innerHTML = "<input name='jumlah[]' id='jumlah" + idrow + "' type='text' class='form-control rightJustified' size='40%'>";
+        initailizeSelect2_farmasi_barang_cbg();
         idrow++;
     }
 
@@ -773,63 +806,82 @@ $this->load->view('template/footer_tb');
         var vid = id;
         $('#sat' + vid).val('');
         $('#harga' + vid).val(0);
-        var customer = $('#cust').val();
-        $.ajax({
-            url: "<?php echo base_url(); ?>penjualan_faktur/getinfobarang/?kode=" + str,
-            type: "GET",
-            dataType: "JSON",
-            success: function(data) {
-                console.log(data.hargajual);
-                //$('#namabarang'+vid).val(data.namabarang);
-                $('#sat' + vid).val(data.satuan1);
-                if (data.hargajual != 0) {
-                    $('#harga' + vid).val(formatCurrency1(data.hargajual));
-                } else {
-                    $('#harga' + vid).val(formatCurrency1(data.hargabeli));
-                }
-                totalline(vid);
-            }
-        });
-    }
-
-    function save() {
-        var tanggal = $('[name="tanggal"]').val();
         var gudang = $('[name="gudang"]').val();
-        var pembeli = $('[name="pembeli"]').val();
-        var cabang = $('[name="cabang"]').val();
-        var total = $('#_vtotal').text();
-
-        if (cabang == "" || gudang == "" || pembeli == "" || total == "0.00" || total == "") {
-            swal('PENJUALAN KE CABANG', 'Data Belum Lengkap/Belum ada transaksi ...', '');
+        var customer = $('#cust_id').val();
+        if (customer == '' || customer == null) {
+            swal({
+                title: "PEMBELI",
+                html: "Pilih Pembeli Terlebih Dahulu",
+                type: "info",
+                confirmButtonText: "OK"
+            });
+            $("#kode" + id).empty();
         } else {
             $.ajax({
-                url: '<?php echo site_url('penjualan_cabang/save/1/?totalnet=') ?>' + Number(parseInt(total.replaceAll(',', ''))),
-                data: $('#frmpenjualan').serialize(),
-                type: 'POST',
-
+                url: "<?= site_url('Penjualan_faktur/gethargapenjamin?cust_id=') ?>" + customer,
+                type: "POST",
+                dataType: "JSON",
                 success: function(data) {
-                    //document.getElementById("btnsimpan").disabled=true;
-                    document.getElementById("tersimpan").value = "OK";
-
-                    swal({
-                        title: "PENJUALAN KE CABANG",
-                        html: "<p> No. Bukti   : <b>" + data + "</b> </p>" +
-                            "Tanggal :  " + tanggal + "</b> </p>" + "Total:" + " " + total,
-                        type: "info",
-                        confirmButtonText: "OK"
-                    }).then((value) => {
-                        location.href = "<?php echo base_url() ?>penjualan_cabang";
+                    var hargapenjamin = Number(data.harga);
+                    $.ajax({
+                        url: "<?php echo base_url(); ?>penjualan_faktur/getinfobarang_cbg/?kode=" + str + "&gudang=" + gudang,
+                        type: "GET",
+                        dataType: "JSON",
+                        success: function(data) {
+                            var persen = Number(data.hargabelippn) * 5 / 100;
+                            var total = Number(data.hargabelippn) + persen + hargapenjamin;
+                            //$('#namabarang'+vid).val(data.namabarang);
+                            $('#sat' + vid).val(data.satuan1);
+                            $('#harga' + vid).val(separateComma(total.toFixed(0)));
+                            totalline(vid);
+                        }
                     });
-
-                },
-                error: function(data) {
-                    swal('PENJUALAN', 'Data gagal disimpan ...', '');
-
                 }
             });
         }
     }
 
+    function save() {
+        $("#btnsimpan").attr("disabled", true);
+        $("#btnsimpan").text("Proses");
+        var tanggal = $('[name="tanggal"]').val();
+        var gudang = $('[name="gudang"]').val();
+        var pembeli = $('[name="pembeli"]').val();
+        var cabang = $('[name="cabang"]').val();
+        var total = $('#_vtotal').text();
+        var diskon = $('#_vdiskon').text();
+        var ppn = $('#_vppn').text();
+
+        if (cabang == "" || gudang == "" || pembeli == "" || total == "0.00" || total == "") {
+            swal('PENJUALAN KE CABANG', 'Data Belum Lengkap/Belum ada transaksi ...', '');
+            $("#btnsimpan").attr("disabled", false);
+            $("#btnsimpan").text("Simpan");
+        } else {
+            $.ajax({
+                url: '<?php echo site_url('penjualan_cabang/save_x/?totalnet=') ?>' + Number(parseInt(total.replaceAll(',', ''))) + "&diskon=" + Number(parseInt(diskon.replaceAll(',', ''))) + "&ppn=" + Number(parseInt(ppn.replaceAll(',', ''))),
+                data: $('#frmpenjualan').serialize(),
+                type: 'POST',
+                success: function(data) {
+                    document.getElementById("tersimpan").value = "OK";
+                    swal({
+                        title: "PENJUALAN KE CABANG",
+                        html: "<p> No. Bukti   : <b>" + data + "</b> </p>" + "Tanggal :  " + tanggal + "</b> </p>" + "Total:" + " " + total,
+                        type: "info",
+                        confirmButtonText: "OK"
+                    }).then((value) => {
+                        $("#btnsimpan").attr("disabled", false);
+                        $("#btnsimpan").text("Simpan");
+                        location.href = "<?php echo base_url() ?>penjualan_cabang";
+                    });
+                },
+                error: function(data) {
+                    $("#btnsimpan").attr("disabled", false);
+                    $("#btnsimpan").text("Simpan");
+                    swal('PENJUALAN', 'Data gagal disimpan ...', '');
+                }
+            });
+        }
+    }
 
     function hapus() {
         if (idrow > 2) {
@@ -838,7 +890,6 @@ $this->load->view('template/footer_tb');
             total();
         }
     }
-
 
     function separateComma(val) {
         // remove sign if negative
@@ -869,14 +920,10 @@ $this->load->view('template/footer_tb');
         return sign < 0 ? '-' + result : result;
     }
 
-
-
-    function total() {
-        var ppn = $("#ppn2_").val() / 100;
-
+    function total1() {
+        var ppn = <?= $ppn + 5 / 100; ?>;
         var table = document.getElementById('datatable');
         var rowCount = table.rows.length;
-
         tjumlah = 0;
         tdiskon = 0;
         tppn = 0;
@@ -887,30 +934,25 @@ $this->load->view('template/footer_tb');
             jumlah = row.cells[1].children[0].value;
             harga = row.cells[3].children[0].value;
             diskon = row.cells[4].children[0].value;
-            embal = row.cells[5].children[0].value;
+            discrp = row.cells[5].children[0].value;
             var jumlah1 = Number(jumlah.replace(/[^0-9\.]+/g, ""));
             var harga1 = Number(harga.replace(/[^0-9\.]+/g, ""));
             var diskon1 = Number(diskon.replace(/[^0-9\.]+/g, ""));
-            var embal1 = Number(embal.replace(/[^0-9\.]+/g, ""));
+            var discrp1 = Number(discrp.replace(/[^0-9\.]+/g, ""));
 
             tjumlah = tjumlah + eval(jumlah1 * harga1);
-            tembal = tembal + eval(embal1);
+            tembal = tembal + eval(discrp1);
             diskon = eval((diskon1 / 100) * jumlah1 * harga1);
 
             tdiskon = tdiskon + diskon;
-
-
-
-            if (document.getElementById('ppn' + i).checked == true) {
-                tppn = tppn + (eval(jumlah1 * harga1) * ppn);
-            }
+            tppn = tppn + (eval(jumlah1 * harga1) * ppn);
         }
 
         document.getElementById("_vsubtotal").innerHTML = separateComma(tjumlah);
-        document.getElementById("_vembalase").innerHTML = separateComma(tembal);
+        document.getElementById("_vembalase").innerHTML = separateComma(discrp1);
         document.getElementById("_vdiskon").innerHTML = separateComma(tdiskon);
         document.getElementById("_vppn").innerHTML = separateComma(tppn);
-        document.getElementById("_vtotal").innerHTML = separateComma(tjumlah - tdiskon + tppn + tembal);
+        document.getElementById("_vtotal").innerHTML = separateComma(tjumlah - tdiskon + tppn);
 
         if (tjumlah > 0) {
             document.getElementById("btnsimpan").disabled = false;
@@ -920,24 +962,86 @@ $this->load->view('template/footer_tb');
 
     }
 
-    function totalline(id) {
+    function totalline1(id) {
 
         var table = document.getElementById('datatable');
         var row = table.rows[id];
         var harga = Number(row.cells[3].children[0].value.replace(/[^0-9\.]+/g, ""));
-        jumlah = row.cells[1].children[0].value * harga;
-        diskon = (row.cells[4].children[0].value / 100) * jumlah;
+        jumlah = Number(row.cells[1].children[0].value.replace(/[^0-9\.]+/g, "")) * harga;
+        diskon = (Number(row.cells[4].children[0].value.replace(/[^0-9\.]+/g, "")) / 100) * jumlah;
+        row.cells[5].children[0].value = separateComma(diskon.toFixed(0));
 
-        tot = (jumlah - diskon) + eval(row.cells[5].children[0].value);
+        tot = (jumlah - diskon);
 
-
+        var pjk = Number(<?= $ppn; ?>);
         if (document.getElementById('ppn' + id).checked == true) {
-            tot = tot * 1.1;
+            tot = tot * pjk;
         }
-
-        row.cells[7].children[0].value = formatCurrency1(tot);
+        row.cells[7].children[0].value = separateComma(tot.toFixed(0));
         total();
 
+    }
+
+    function totalline(id) {
+        var discrpx = $("#discrp" + id).val();
+        var discrp = Number(parseInt(discrpx.replaceAll(',', '')));
+        var qtyx = $("#qty" + id).val();
+        var qty = Number(parseInt(qtyx.replaceAll(',', '')));
+        var hargax = $("#harga" + id).val();
+        var harga = Number(parseInt(hargax.replaceAll(',', '')));
+        var jumlah = qty * harga - discrp;
+        $("#jumlah" + id).val(separateComma(jumlah));
+        $("#qty" + id).val(separateComma(qty));
+        $("#discrp" + id).val(separateComma(discrp));
+        $("#disc" + id).val(separateComma(0));
+        total();
+    }
+
+    function totalline_x(id) {
+        var qtyx = $("#qty" + id).val();
+        var qty = Number(parseInt(qtyx.replaceAll(',', '')));
+        var hargax = $("#harga" + id).val();
+        var harga = Number(parseInt(hargax.replaceAll(',', '')));
+        var discx = $("#disc" + id).val();
+        var disc = Number(parseInt(discx.replaceAll(',', '')));
+        var discrp = (qty * harga) * disc / 100;
+        var jumlah = qty * harga - discrp;
+        $("#jumlah" + id).val(separateComma(jumlah));
+        $("#qty" + id).val(separateComma(qty));
+        $("#discrp" + id).val(separateComma(discrp));
+        total();
+    }
+
+    function total() {
+        var ppn = <?= $ppn + 5 / 100; ?>;
+        var table = document.getElementById('datatable');
+        var rowCount = table.rows.length;
+        tjumlah = 0;
+        tdiskon = 0;
+        tppn = 0;
+        tembal = 0;
+        for (var i = 1; i < rowCount; i++) {
+            var row = table.rows[i];
+            var qtyx = $("#qty" + i).val();
+            var qty = Number(parseInt(qtyx.replaceAll(',', '')));
+            var hargax = $("#harga" + i).val();
+            var harga = Number(parseInt(hargax.replaceAll(',', '')));
+            var discrpx = $("#discrp" + i).val();
+            var discrp = Number(parseInt(discrpx.replaceAll(',', '')));
+            // var jumlahx = $("#jumlah"+i).val();
+            // var jumlah = Number(parseInt(jumlahx.replaceAll(',','')));
+            var jml = qty * harga;
+            var pajak = (jml - discrp) * ppn;
+            tjumlah += jml;
+            tdiskon += discrp;
+            tppn += pajak;
+        }
+        document.getElementById("_vsubtotal").innerHTML = separateComma(tjumlah.toFixed(0));
+        document.getElementById("_vdpp").innerHTML = separateComma(tjumlah.toFixed(0));
+        // document.getElementById("_vembalase").innerHTML = separateComma(discrp1);
+        document.getElementById("_vdiskon").innerHTML = separateComma(tdiskon.toFixed(0));
+        document.getElementById("_vppn").innerHTML = separateComma(tppn.toFixed(0));
+        document.getElementById("_vtotal").innerHTML = separateComma((tjumlah - tdiskon).toFixed(0));
     }
 
     function getinfopasien() {
@@ -959,7 +1063,6 @@ $this->load->view('template/footer_tb');
 
 
     }
-
 
     function getdataklinik() {
         var xhttp;

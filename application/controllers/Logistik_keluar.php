@@ -45,6 +45,15 @@ class Logistik_keluar extends CI_Controller
 		}
 	}
 
+	public function cekbarang()
+	{
+		$cabang = $this->session->userdata("unit");
+		$gudang = $this->input->get("gud");
+		$kodebarang = $this->input->get("kodebarang");
+		$data = $this->db->query("SELECT b.*, (SELECT satuan1 FROM tbl_logbarang WHERE kodebarang = b.kodebarang) AS satuan FROM tbl_apostocklog b WHERE gudang = '$gudang' AND kodebarang = '$kodebarang' AND koders = '$cabang'")->row();
+		echo json_encode($data);
+	}
+
 	// public function ajax_list( $param ){
 
 	// 	$dat   = explode("~",$param);
@@ -103,7 +112,6 @@ class Logistik_keluar extends CI_Controller
 	{
 		$cek 	= $this->session->userdata('level');
 		$unit 	= $this->session->userdata('unit');
-
 		if (!empty($cek)) {
 			$userid   = $this->session->userdata('username');
 			$nomorbukti = $this->input->post('hidenomorbukti');
@@ -114,105 +122,49 @@ class Logistik_keluar extends CI_Controller
 			$sat   = $this->input->post('sat');
 			$harga = str_replace(".00", "", $this->input->post('harga'));
 			$total   = str_replace(".00", "", $this->input->post('total'));
-
-
 			$jumdata  = count($kode);
-
-			$data_header = array(
+			if($param == 1){
+				$id_mutasi = urut_transaksi("PAKAI_LOG", 19);
+			} else {
+				$id_mutasi = $this->input->post('nomorbukti');
+			}
+			if($param == 2 || $param != 1){
+				$datamutasi = $this->db->get_where('tbl_pakaidlog', array('pakaino' => $id_mutasi))->result();
+				foreach ($datamutasi as $row) {
+					$_qty = $row->qty;
+					$_kode = $row->kodebarang;
+					$this->db->query("UPDATE tbl_apostocklog SET keluar=keluar- $_qty, saldoakhir= saldoakhir+ $_qty WHERE kodebarang = '$_kode' AND koders = '$unit' AND gudang = '$gudang_asal'");
+				}
+				$this->db->where('pakaino', $id_mutasi);
+				$this->db->delete('tbl_pakaihlog');
+				$this->db->where('pakaino', $id_mutasi);
+				$this->db->delete('tbl_pakaidlog');
+				$this->db->query("delete from tbl_apodlogistik where logno = '$id_mutasi'");
+			}
+			$data_header = [
 				'koders' => $unit,
-				'pakaino' => $nomorbukti,
+				'pakaino' => $id_mutasi,
 				'pakaidate' => $tanggal,
 				'gudang' => $gudang_asal,
 				'keterangan' => $this->input->post('ket'),
 				'username' => $userid,
-			);
-
-			if ($param == 1) {
-				$this->db->insert('tbl_pakaihlog', $data_header);
-
-				foreach ($kode as $kkey => $kval) {
-					$data_detail	= array(
-						"koders" => $unit,
-						"pakaino" => $nomorbukti,
-						"kodebarang" => $kval,
-						"satuan" => $sat[$kkey],
-						"qty" => $qty[$kkey],
-						"harga" => str_replace(",", "", $harga[$kkey]),
-						"total" => str_replace(",", "", $total[$kkey])
-					);
-
-					$this->db->query("UPDATE tbl_apostocklog SET keluar = keluar + " . $qty[$kkey] . ", saldoakhir = saldoakhir - " . $qty[$kkey] . " WHERE koders = '$unit' AND kodebarang = '$kval' AND gudang = '$gudang_asal'");
-
-					$this->db->insert('tbl_pakaidlog', $data_detail);
-
-					urut_transaksi("PAKAI_LOG", 19);
-				}
-			} else {
-				$id_mutasi = $this->input->post('nomorbukti');
-				$this->db->where('pakaino', $id_mutasi);
-				$this->db->delete('tbl_pakaihlog');
-
-				$this->db->where('pakaino', $id_mutasi);
-				$this->db->delete('tbl_pakaidlog');
-
-				$data = array(
-					'koders' => $unit,
-					'pakaino' => $id_mutasi,
-					'pakaidate' => $tanggal,
-					'gudang' => $gudang_asal,
-					'keterangan' => $this->input->post('ket'),
-					'username' => $userid,
+				'jampakai' => date('h:i:s')
+			];
+			$this->db->insert('tbl_pakaihlog', $data_header);
+			foreach ($kode as $kkey => $kval) {
+				$data_detail	= array(
+					"koders" => $unit,
+					"pakaino" => $id_mutasi,
+					"kodebarang" => $kval,
+					"satuan" => $sat[$kkey],
+					"qty" => $qty[$kkey],
+					"harga" => str_replace(",", "", $harga[$kkey]),
+					"total" => str_replace(",", "", $total[$kkey])
 				);
-				$this->db->insert('tbl_pakaihlog', $data);
-				foreach ($kode as $kkey => $kval) {
-					$data_detail	= array(
-						"koders" => $unit,
-						"pakaino" => $id_mutasi,
-						"kodebarang" => $kval,
-						"satuan" => $sat[$kkey],
-						"qty" => $qty[$kkey],
-						"harga" => str_replace(",", "", $harga[$kkey]),
-						"total" => str_replace(",", "", $total[$kkey])
-					);
-
-					$this->db->query("UPDATE tbl_apostocklog SET keluar = keluar - " . $qty[$kkey] . ", saldoakhir = saldoakhir + " . $qty[$kkey] . "
-				   WHERE koders = '$unit' AND kodebarang = '$kval' AND gudang = '$gudang_asal'");
-
-					$this->db->insert('tbl_pakaidlog', $data_detail);
-
-					urut_transaksi("PAKAI_LOG", 19);
-				}
-				//    $this->db->update('tbl_apohlogistik',$data_header, array('logno' => $id_mutasi));	
-				//    $this->db->update('tbl_pakaihlog');	
-				$this->db->query("delete from tbl_apodlogistik where logno = '$id_mutasi'");
+				$this->db->query("UPDATE tbl_apostocklog SET keluar = keluar + " . $qty[$kkey] . ", saldoakhir = saldoakhir - " . $qty[$kkey] . " WHERE koders = '$unit' AND kodebarang = '$kval' AND gudang = '$gudang_asal'");
+				$this->db->insert('tbl_pakaidlog', $data_detail);
 			}
-
-
-			// $nourut = 1;	
-			// for($i=0;$i<=$jumdata-1;$i++){
-			//     $_kode   = $kode[$i];
-			// 	$_harga  =  str_replace(',','',$harga[$i]);
-			// 	$_total  =  str_replace(',','',$total[$i]);
-
-			//     $datad = array(
-			// 	'koders' => $unit,
-			//     'logno' => $this->input->post('nomorbukti'),
-			// 	'kodebarang' => $_kode,
-			// 	'satuan' => $sat[$i],
-			// 	'qty' => $qty[$i],
-			// 	'harga' => $_harga,
-			// 	'totalharga' => $_total,				
-			// 	);
-
-
-
-			// 	if($_kode!=""){
-			// 	    $this->db->insert('tbl_apodlogistik', $datad);
-
-			// 	}
-			// }
-
-			echo $nomorbukti;
+			echo $id_mutasi;
 		} else {
 			header('location:' . base_url());
 		}
@@ -479,5 +431,53 @@ class Logistik_keluar extends CI_Controller
 		$pdf->Cell(170, 6, 'Total', 1, 0, 'C');
 		$pdf->Cell(19, 6, number_format($total, 2), 1, 0, 'R');
 		$pdf->Output();
+	}
+
+	public function cetak2($id){
+		$judul = 'PEMAKAIAN LOG';
+		$query = $this->db->query("SELECT a.*, b.*, (select namabarang from tbl_logbarang where kodebarang = b.kodebarang) as namabarang FROM tbl_pakaihlog a JOIN tbl_pakaidlog b ON a.pakaino=b.pakaino WHERE a.pakaino = '$id'")->result();
+		$profile = $this->M_global->_LoadProfileLap();
+		$unit = $this->session->userdata('unit');
+		$body       = '';
+		$date       = "";
+		$profile    = data_master('tbl_namers', array('koders' => $unit));
+		$kota       = $profile->kota;
+		$position   = 'L';
+		$body .= "<table style=\"border-collapse:collapse;font-family: tahoma; font-size:12px\" width=\"100%\" align=\"center\" border=\"1\" cellspacing=\"5\" cellpadding=\"5\">";
+		$body .= "<tr>
+								<td bgcolor=\"#cccccc\" style=\"text-align: center; font-weight: bold; padding: 10px;\">No</td>
+								<td bgcolor=\"#cccccc\" style=\"text-align: center; font-weight: bold; padding: 10px;\">No. Pakai</td>
+								<td bgcolor=\"#cccccc\" style=\"text-align: center; font-weight: bold; padding: 10px;\">Tanggal</td>
+								<td bgcolor=\"#cccccc\" style=\"text-align: center; font-weight: bold; padding: 10px;\">Keterangan</td>
+								<td bgcolor=\"#cccccc\" style=\"text-align: center; font-weight: bold; padding: 10px;\">Kode Barang</td>
+								<td bgcolor=\"#cccccc\" style=\"text-align: center; font-weight: bold; padding: 10px;\">Nama Barang</td>
+								<td bgcolor=\"#cccccc\" style=\"text-align: center; font-weight: bold; padding: 10px;\">Qty</td>
+								<td bgcolor=\"#cccccc\" style=\"text-align: center; font-weight: bold; padding: 10px;\">Satuan</td>
+								<td bgcolor=\"#cccccc\" style=\"text-align: center; font-weight: bold; padding: 10px;\">Harga Sat</td>
+								<td bgcolor=\"#cccccc\" style=\"text-align: center; font-weight: bold; padding: 10px;\">Jumlah</td>
+						</tr>";
+		$no = 1;
+		$total = 0;
+		foreach($query as $q){
+			$body .=  "<tr>
+										<td style=\"text-align: right;\">" . $no++ . "</td>
+										<td>$q->pakaino</td>
+										<td style=\"text-align: center;\">" . date("d-m-Y", strtotime($q->pakaidate)) . "</td>
+										<td>$q->keterangan</td>
+										<td>$q->kodebarang</td>
+										<td>$q->namabarang</td>
+										<td style=\"text-align: right;\">" . number_format($q->qty) . "</td>
+										<td>$q->satuan</td>
+										<td style=\"text-align: right;\">" . number_format($q->harga) . "</td>
+										<td width=\"15%\" style=\"text-align: right;\">" . number_format($q->total) . "</td>
+								</tr>";
+			$total += $q->total;
+		}
+		$body .= "<tr>
+								<td colspan=\"9\" style=\"text-align: center\">TOTAL</td>
+								<td style=\"text-align: right;\">".number_format($total)."</td>
+							</tr>";
+		$body .= "</table>";
+		$this->M_template_cetak->template($judul, $body, $position, $date, $cekpdf=1);
 	}
 }

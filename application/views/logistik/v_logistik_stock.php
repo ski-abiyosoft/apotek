@@ -69,6 +69,7 @@
                     <div class="table-toolbar">
 
                         <button class="btn btn-success" onclick="location.reload()"><i class="glyphicon glyphicon-refresh"></i> Refresh</button>
+                        <button class="btn btn-secondary" onclick="valid_all()" id="valid_a"><i class="fa fa-retweet"></i> Valid Semua</button>
 
 
                         <div class="btn-group pull-right">
@@ -94,18 +95,18 @@
                     <table id="table" class="table table-striped- table-bordered-" cellspacing="0" width="100%">
                         <thead class="breadcrumb header-custom">
                             <tr>
-                                <th style="color:#fff !important">Cabang</th>
-                                <th style="color:#fff !important">Kode Barang</th>
-                                <th style="color:#fff !important">Nama Barang</th>
-                                <!-- <th style="color:#fff !important">Saldo Awal</th>
-                                         <th style="color:#fff !important">Sesuai</th>
-                                         <th style="color:#fff !important">Terima</th>
-                                         <th style="color:#fff !important">Keluar</th>
-                                         <th style="color:#fff !important">Hasil SO</th> -->
-                                <th style="color:#fff !important">Saldo Akhir</th>
-                                <th style="color:#fff !important">Satuan</th>
-                                <th style="color:#fff !important">Gudang</th>
-                                <th style="color:#fff !important">Aksi</th>
+                                <th style="color:#fff !important" class='text-center'>Cabang</th>
+                                <th style="color:#fff !important" class='text-center'>Kode Barang</th>
+                                <th style="color:#fff !important" class='text-center'>Nama Barang</th>
+                                <!-- <th style="color:#fff !important" class='text-center'>Saldo Awal</th>
+                                         <th style="color:#fff !important" class='text-center'>Sesuai</th>
+                                         <th style="color:#fff !important" class='text-center'>Terima</th>
+                                         <th style="color:#fff !important" class='text-center'>Keluar</th>
+                                         <th style="color:#fff !important" class='text-center'>Hasil SO</th> -->
+                                <th style="color:#fff !important" class='text-center'>Saldo Akhir</th>
+                                <th style="color:#fff !important" class='text-center'>Satuan</th>
+                                <th style="color:#fff !important" class='text-center'>Gudang</th>
+                                <th style="color:#fff !important" class='text-center'>Aksi</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -126,6 +127,7 @@
                                                     <td class='text-center'>$lval->gudang</td>
                                                     <td class='text-center'>
                                                         <a class='btn btn-sm btn-primary' href='javascript:void(0)' title='Show' onclick='show(" . $lval->id . ")'><i class='glyphicon glyphicon-eye-open'></i> </a>
+                                                        <button class='btn btn-sm btn-secondary' type='button' title='Valid' onclick='valid(".$lval->id.")'><i class='glyphicon glyphicon-refresh'></i> </button>
                                                     </td>
                                                 </tr>
                                             ";
@@ -187,6 +189,85 @@
         function getstockgudang() {
             var gudang = $("#gudang").val();
             location.href = '/logistik_stock/?gudang=' + gudang;
+        }
+
+        function valid(id) {
+            $.ajax({
+                url: "<?= site_url('Logistik_stock/valid/') ?>" + id,
+                type: "POST",
+                dataType: "JSON",
+                success: function(data) {
+                    if (data.status == 1) {
+                        swal({
+                            title: "VALID DATA",
+                            html: "Berhasil dilakukan",
+                            type: "success",
+                            confirmButtonText: "OK"
+                        }).then((value) => {
+                            location.href = "<?= base_url() ?>Logistik_stock";
+                        });
+                    } else {
+                        swal({
+                            title: "VALID DATA",
+                            html: "Gagal dilakukan",
+                            type: "error",
+                            confirmButtonText: "OK"
+                        });
+                    }
+                }
+            });
+        }
+
+        function valid_all() {
+            var gudang = $('#gudang').val();
+            swal({
+                title: 'VALID SEMUA',
+                html: "Yakin Ingin Memvalidkan gudang ini ?",
+                type: 'question',
+                showCancelButton: true,
+                confirmButtonClass: 'btn btn-success',
+                cancelButtonClass: 'btn btn-success',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Ya',
+                cancelButtonText: 'Tidak'
+            }).then(function() {
+                $('#loading').modal({
+                    backdrop: 'static',
+                    keyboard: false,
+                    show: true
+                });
+                $.ajax({
+                    url: "<?= site_url('Logistik_stock/valid_all/') ?>" + gudang,
+                    type: "POST",
+                    dataType: "JSON",
+                    success: function(data) {
+                        if (data.status == 1) {
+
+                            swal({
+                                title: "VALID DATA",
+                                html: "Berhasil dilakukan",
+                                type: "success",
+                                confirmButtonText: "OK"
+                            }).then((value) => {
+                                location.href = "<?= base_url() ?>Logistik_stock";
+                            });
+                            $('#loading').modal('hide');
+                        } else {
+                            swal({
+                                title: "VALID DATA",
+                                html: "Gagal dilakukan",
+                                type: "error",
+                                confirmButtonText: "OK"
+                            });
+                            $('#loading').modal({
+                                backdrop: 'static',
+                                keyboard: false,
+                                show: false
+                            });
+                        }
+                    }
+                });
+            });
         }
 
         // var save_method; //for save method string

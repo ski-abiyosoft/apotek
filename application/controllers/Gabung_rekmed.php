@@ -34,74 +34,133 @@ class Gabung_rekmed extends CI_Controller
 
 	
 
-	function cetak_data()
+	function cetak_data($cekpdf=0)
 	{
 
-		$cekpdf   = 1;
+		// $cekpdf   = 0;
 		$position = 'L';
 		$date     = '-';
 		$body     = '';
 
 		$body.= "<table style=\"border-collapse:collapse;font-family: Times New Roman; font-size:12px\" width=\"100%\" align=\"center\" border=\"1\" cellspacing=\"1\" cellpadding=\"3\">
 			<tr>
-				<td style=\"border:0\" colspan=\"13\" align=\"center\"><br></td>                
+				<td style=\"border:0\" colspan=\"18\" align=\"center\"><br></td>                
 			</tr>
 			<tr>
-				<td bgcolor=\"#cccccc\" width=\"2%\" align=\"center\"><b>koders</b></td>
-				<td bgcolor=\"#cccccc\" width=\"2%\" align=\"center\"><b>rekmed</b></td>
-				<td bgcolor=\"#cccccc\" width=\"2%\" align=\"center\"><b>namapas</b></td>
-				<td bgcolor=\"#cccccc\" width=\"2%\" align=\"center\"><b>preposisi</b></td>
-				<td bgcolor=\"#cccccc\" width=\"2%\" align=\"center\"><b>tempatlahir</b></td>
-				<td bgcolor=\"#cccccc\" width=\"2%\" align=\"center\"><b>tgllahir</b></td>
-				<td bgcolor=\"#cccccc\" width=\"2%\" align=\"center\"><b>jkel</b></td>
-				<td bgcolor=\"#cccccc\" width=\"2%\" align=\"center\"><b>status</b></td>
-				<td bgcolor=\"#cccccc\" width=\"2%\" align=\"center\"><b>noidentitas</b></td>
-				<td bgcolor=\"#cccccc\" width=\"2%\" align=\"center\"><b>nocard</b></td>
-				<td bgcolor=\"#cccccc\" width=\"2%\" align=\"center\"><b>pendidikan</b></td>
-				<td bgcolor=\"#cccccc\" width=\"2%\" align=\"center\"><b>agama</b></td>
-				<td bgcolor=\"#cccccc\" width=\"2%\" align=\"center\"><b>pekerjaan</b></td>
-				<td bgcolor=\"#cccccc\" width=\"2%\" align=\"center\"><b>goldarah</b></td>
-				<td bgcolor=\"#cccccc\" width=\"2%\" align=\"center\"><b>alamat</b></td>
-				<td bgcolor=\"#cccccc\" width=\"2%\" align=\"center\"><b>alamat2</b></td>
-				<td bgcolor=\"#cccccc\" width=\"2%\" align=\"center\"><b>handphone</b></td>
-				<td bgcolor=\"#cccccc\" width=\"2%\" align=\"center\"><b>useredit</b></td>
+				<td bgcolor=\"#cccccc\" align=\"center\"><b>No</b></td>
+				<td bgcolor=\"#cccccc\" align=\"center\"><b>Koders</b></td>
+				<td bgcolor=\"#cccccc\" align=\"center\"><b>Rekmed</b></td>
+				<td bgcolor=\"#cccccc\" align=\"center\"><b>Namapas</b></td>
+				<td bgcolor=\"#cccccc\" align=\"center\"><b>Noidentitas</b></td>
+				<td bgcolor=\"#cccccc\" align=\"center\"><b>Preposisi</b></td>
+				<td bgcolor=\"#cccccc\" align=\"center\"><b>Tempatlahir</b></td>
+				<td bgcolor=\"#cccccc\" align=\"center\"><b>Tgllahir</b></td>
+				<td bgcolor=\"#cccccc\" align=\"center\"><b>Jkel</b></td>
+				<td bgcolor=\"#cccccc\" align=\"center\"><b>Status</b></td>
+				<td bgcolor=\"#cccccc\" align=\"center\"><b>idpas</b></td>
+				<td bgcolor=\"#cccccc\" align=\"center\"><b>Nocard</b></td>
+				<td bgcolor=\"#cccccc\" align=\"center\"><b>Pendidikan</b></td>
+				<td bgcolor=\"#cccccc\" align=\"center\"><b>suku</b></td>
+				<td bgcolor=\"#cccccc\" align=\"center\"><b>Agama</b></td>
+				<td bgcolor=\"#cccccc\" align=\"center\"><b>Alamat</b></td>
+				<td bgcolor=\"#cccccc\" align=\"center\"><b>Alamat2</b></td>
+				<td bgcolor=\"#cccccc\" align=\"center\"><b>Handphone</b></td>
+				<td bgcolor=\"#cccccc\" align=\"center\"><b>Lastnoreg</b></td>
 			</tr>";
 
-			$sql =
-				"SELECT*FROM tbl_pasien where namapas in (
-				select p.namapas from(
-				SELECT koders,namapas,tgllahir,noidentitas,count(*) from tbl_pasien
-				group by koders,namapas,tgllahir,noidentitas
-				having count(*)>1
-				)p
-				) order by namapas";
-
-			$query1    = $this->db->query($sql);
-
-			$lcno            = 0;
-			$nm              = 0;
-			$jam_m           = 0;
-			$jam_k           = 0;
-			$status_absen    = '';
-			$nm_stat	     = '';
+			$sql =$this->db->query(
+				"SELECT*FROM tbl_pasien where noidentitas in (
+					select p.noidentitas from(
+					SELECT noidentitas,count(*) from tbl_pasien -- where koders<>'abi'
+					group by noidentitas
+					having count(*)>1
+					)p
+					) order by noidentitas,namapas ")->result();
 
 
-			foreach ($query1->result() as $row) {
+			$lcno        = 0;
+			$koders      = '';
+			$rekmed      = '';
+			$namapas     = '';
+			$preposisi   = '';
+			$tempatlahir = '';
+			$tgllahir    = '';
+			$jkel        = '';
+			$status      = '';
+			$noidentitas = '';
+			$idpas       = '';
+			$nocard      = '';
+			$pendidikan  = '';
+			$suku        = '';
+			$agama       = '';
+			$alamat      = '';
+			$alamat2     = '';
+			$handphone   = '';
+			$phone       = '';
+			$lastnoreg   = '';
+
+
+
+			foreach ($sql as $row) {
 				$lcno           = $lcno + 1;
-				$namakary       = $row->namakary;
-				$status_absen   = $row->status_absen;
-				$nm_stat        = $row->nm_stat;
-				$jam_m          = $row->jam_m;
-				$jam_k          = $row->jam_k;
+				$koders         = $row->koders;
+				$rekmed         = $row->rekmed;
+				$namapas        = $row->namapas;
+				$preposisi      = $row->preposisi;
+				$tempatlahir    = $row->tempatlahir;
+				$tgllahir       = $row->tgllahir;
+				$jkel           = $row->jkel;
+				$status         = $row->status;
+				$noidentitas    = $row->noidentitas;
+				$idpas          = $row->idpas;
+				$nocard         = $row->nocard;
+				$pendidikan     = $row->pendidikan;
+				$suku           = $row->suku;
+				$agama          = $row->agama;
+				$alamat         = $row->alamat;
+				$alamat2        = $row->alamat2;
+				$handphone      = $row->handphone;
+				$phone          = $row->phone;
+				$lastnoreg      = $row->lastnoreg;
 
-					// $chari .= "<tr>
-					// <td width=\" 1%\" align=\"left\">$lcno.</td>
-					// <td width=\" 12%\" align=\"left\">$namakary</td>
-					// <td width=\" 15%\" align=\"left\">: $jam_m - $jam_k</td>
-					// <td width=\" 72%\" align=\"left\"></td>
-					// </tr>"; 
-				
-				
+
+				if($lcno % 2 == 0){
+					$bgg="#d2dfee";
+
+				}else{
+					$bgg="";
+					
+				}
+
+				if($cekpdf==2){
+					$noidentitas="'".$noidentitas;
+				}else{
+					$noidentitas=$noidentitas;
+				}
+
+				$body .= "<tr>
+
+						<td bgcolor=\"$bgg\" align=\"center\">$lcno</td>
+						<td bgcolor=\"$bgg\" align=\"center\">$koders</td>
+						<td bgcolor=\"$bgg\" align=\"center\">$rekmed</td>
+						<td bgcolor=\"$bgg\" align=\"center\">$namapas</td>
+						<td bgcolor=\"$bgg\" align=\"center\">$noidentitas</td>
+						<td bgcolor=\"$bgg\" align=\"center\">$preposisi</td>
+						<td bgcolor=\"$bgg\" align=\"center\">$tempatlahir</td>
+						<td bgcolor=\"$bgg\" align=\"center\">$tgllahir</td>
+						<td bgcolor=\"$bgg\" align=\"center\">$jkel</td>
+						<td bgcolor=\"$bgg\" align=\"center\">$status</td>
+						<td bgcolor=\"$bgg\" align=\"center\">$idpas</td>
+						<td bgcolor=\"$bgg\" align=\"center\">$nocard</td>
+						<td bgcolor=\"$bgg\" align=\"center\">$pendidikan</td>
+						<td bgcolor=\"$bgg\" align=\"center\">$suku</td>
+						<td bgcolor=\"$bgg\" align=\"center\">$agama</td>
+						<td bgcolor=\"$bgg\" align=\"center\">$alamat</td>
+						<td bgcolor=\"$bgg\" align=\"center\">$alamat2</td>
+						<td bgcolor=\"$bgg\" align=\"center\">$handphone</td>
+						<td bgcolor=\"$bgg\" align=\"center\">$lastnoreg</td>
+						</tr>"; 
+			
 			}
 
 

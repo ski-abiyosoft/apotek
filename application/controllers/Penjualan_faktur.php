@@ -743,6 +743,7 @@ class Penjualan_faktur extends CI_Controller{
 			$limit = $this->config->item('limit_data');
 			$d['nomor'] = urut_transaksi('URUT_BHP', 19);
 			$d['ppn'] = $this->db->get_where('tbl_pajak', ['kodetax' => 'PPN'])->row_array();
+			$d['atpakaix'] = $this->db->query("SELECT * from tbl_barangsetup where  apogroup='ATURANPAKAI' ")->result();
 			$this->load->view('penjualan/v_penjualan_faktur_add', $d);
 		} else {
 
@@ -881,6 +882,25 @@ class Penjualan_faktur extends CI_Controller{
 		echo json_encode($data);
 	}
 
+	public function getinfobarang_cbg(){
+		$cabang = $this->session->userdata("unit");
+		$kode = $this->input->get('kode');
+		$gudang = $this->input->get('gudang');
+		$cek = $this->db->query("SELECT * FROM tbl_barang WHERE kodebarang = '$kode'");
+		if($cek->num_rows() > 0){
+			$data = $cek->row();
+		} else {
+			$data = $this->db->query("SELECT * FROM tbl_logbarang WHERE kodebarang = '$kode'")->row();
+		} 
+		echo json_encode($data);
+	}
+
+	public function gethargapenjamin(){
+		$cust_id = $this->input->get("cust_id");
+		$data = $this->db->query("SELECT farmasirj AS harga FROM tbl_penjamin WHERE cust_id = '$cust_id'")->row();
+		echo json_encode($data);
+	}
+
 	public function getinfoakun($kode){
 		$data = $this->M_global->_data_akun($kode);
 		echo json_encode($data);
@@ -915,6 +935,7 @@ class Penjualan_faktur extends CI_Controller{
 		$cek      = $this->session->userdata('level');
 		$userid   = $this->session->userdata('username');
 		$cabang   = $this->session->userdata('unit');
+		$gudang			= $this->input->post("gudang");
 
 		$kode_cabang = $this->session->userdata('unit');
 		$nobukti  = temp_urut_transaksi('RESEP', $kode_cabang, 19);
@@ -982,10 +1003,8 @@ class Penjualan_faktur extends CI_Controller{
 				'totalrp'      => str_replace(',', '', $totp_1),
 				'cek_rm'      => $cek_rm,
 				'harga_manual'      => $harga_manual,
-
-
-
 			);
+
 			if ($param == 1) {
 				$this->db->insert('tbl_aporacik', $data);
 				// echo json_encode($dataxx);
@@ -1044,19 +1063,19 @@ class Penjualan_faktur extends CI_Controller{
 				// $hpp            = $this->M_global->_data_barang($_kodeo_1)->hpp;
 				$hpp1 = $this->db->get_where('tbl_barang', ['kodebarang' => $_kodeo_1])->row_array();
 				$hpp = $hpp1['hpp'];
-				$cekidnya = $this->db->query("SELECT * FROM tbl_apodetresep ORDER BY resepno DESC LIMIT 1")->result();
-				foreach ($cekidnya as $row) {
-					$idnya = $row->id;
-					if ($idnya == null) {
-						$idnya = 0;
-					} else {
-						$idnya = $idnya;
-					}
-					$id_nya = $idnya + 1;
-				}
+				// $cekidnya = $this->db->query("SELECT * FROM tbl_apodetresep ORDER BY resepno DESC LIMIT 1")->result();
+				// foreach ($cekidnya as $row) {
+				// 	$idnya = $row->id;
+				// 	if ($idnya == null) {
+				// 		$idnya = 0;
+				// 	} else {
+				// 		$idnya = $idnya;
+				// 	}
+				// 	$id_nya = $idnya + 1;
+				// }
 
 				$datad = array(
-					'Resepid'     => $id_nya,
+					// 'Resepid'     => $id_nya,
 					'koders'      => $cabang,
 					'hpp'      	  => $hpp,
 					'resepno'     => $noresepo,
@@ -1118,6 +1137,7 @@ class Penjualan_faktur extends CI_Controller{
 		$eresepstatus	= $this->input->post("eresepstatus");
 		$aturpakai		= $this->input->post("aturan_pakai");
 		$ketpakai		= $this->input->post("keterangan");
+		$gudang			= $this->input->post("gudang");
 
 		if($eresepstatus == 1){
 			$noeresep	= $this->input->post("noeresep");

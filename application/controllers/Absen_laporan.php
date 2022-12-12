@@ -44,10 +44,15 @@ function cetak_absen_h($cek = '', $thnn = '')
 	$tgll     = $this->M_cetak->tanggal_format_indonesia($tglh);
 	$_peri    = 'Tanggal ' . date('d-M-Y', strtotime($tglh)) ;
 
-	$dari   = '2022-02-14';
-	$tgl1   = strtotime($dari);
-	$tgl2   = strtotime($tglh);
-	$jarak  = ($tgl2 - $tgl1)/ 60 / 60 / 24;
+	$dari     = '2022-02-14';
+	$tgl1     = strtotime($dari);
+	$tgl2     = strtotime($tglh);
+	$jarakdiy = ($tgl2 - $tgl1)/ 60 / 60 / 24;
+
+	$darisby  = '2022-09-01';
+	$tgl1sby  = strtotime($darisby);
+	$tgl2sby  = strtotime($tglh);
+	$jaraksby = ($tgl2sby - $tgl1sby)/ 60 / 60 / 24;
 
 
 	$kop      = $this->M_cetak->kop('abi');
@@ -59,47 +64,47 @@ function cetak_absen_h($cek = '', $thnn = '')
 	$npwp     = $kop['npwp'];
 
 
-		$chari .= "<table style=\"border-collapse:collapse;font-family: Century Gothic; font-size:12px; color:#000;\" width=\"100%\"  border=\"1\" cellspacing=\"0\" cellpadding=\"0\">
-					
-		<thead>
-		<tr>
-			<td rowspan=\"6\" align=\"center\">
-			<img src=\"" . base_url() . "assets/img/abiyosoft.png\"  width=\"100\" height=\"50\" /></td>
+	$chari .= "<table style=\"border-collapse:collapse;font-family: Century Gothic; font-size:12px; color:#000;\" width=\"100%\"  border=\"1\" cellspacing=\"0\" cellpadding=\"0\">
+				
+	<thead>
+	<tr>
+		<td rowspan=\"6\" align=\"center\">
+		<img src=\"" . base_url() . "assets/img/abiyosoft.png\"  width=\"100\" height=\"50\" /></td>
 
-			<td colspan=\"20\"><b>
-				<tr><td align=\"center\" style=\"font-size:25px;color:#120292;\"><b>PT SISTEM KESEHATAN INDONESIA (SKI) DIY ABIYOSOFT</b></td></tr>
-				<tr><td align=\"center\" style=\"font-size:13px;\">Ideazone, Jalan Magelang St No.188, Karangwaru, Tegalrejo, Yogyakarta City</td></tr>
-				<tr><td align=\"center\" style=\"font-size:13px;\">Special Region of Yogyakarta 55242</td></tr>
-				<tr><td align=\"center\" style=\"font-size:13px;\">Wa :+6281389158889   |  E-mail :ski.abiyosoft@gmail.com | Website : https://abiyosoft.com/</td></tr>
+		<td colspan=\"20\"><b>
+			<tr><td align=\"center\" style=\"font-size:25px;color:#120292;\"><b>PT SISTEM KESEHATAN INDONESIA (SKI) DIY ABIYOSOFT</b></td></tr>
+			<tr><td align=\"center\" style=\"font-size:13px;\">Ideazone, Jalan Magelang St No.188, Karangwaru, Tegalrejo, Yogyakarta City</td></tr>
+			<tr><td align=\"center\" style=\"font-size:13px;\">Special Region of Yogyakarta 55242</td></tr>
+			<tr><td align=\"center\" style=\"font-size:13px;\">Wa :+6281389158889   |  E-mail :ski.abiyosoft@gmail.com | Website : https://abiyosoft.com/</td></tr>
 
-			</b></td>
-		</tr> 
-			
+		</b></td>
+	</tr> 
 		
-		</table>";
-
+	
+	</table>";
+	
+	
 		
-
 		$chari .= "<table style=\"border-collapse:collapse;font-family: Times New Roman; font-size:12px\" width=\"100%\" align=\"center\" border=\"0\" cellspacing=\"1\" cellpadding=\"3\">
 
-	<thead>
-		<tr>
-			<td colspan=\"4\" align=\"center\"><br></td>                
-		</tr>
-		<tr>
-			<td colspan=\"4\" ><b>#$jarak Daftar Kehadiran</b></td>  
-		</tr>
-		<tr>
-			<td colspan=\"4\" ><b>$hari, $tgll</b></td>  
-		</tr>
-		<tr>
-			<td colspan=\"4\" ><b>(Diisi pada jam awal memulai)</b></td>  
-		</tr>
-		<tr>
-			<td colspan=\"4\" ><b>--------------------------------</b></td>  
-		</tr>
-		
-	</thead>";
+		<thead>
+			<tr>
+				<td colspan=\"4\" align=\"center\"><br></td>                
+			</tr>
+			<tr>
+				<td colspan=\"4\" ><b>#$jarakdiy Daftar Kehadiran</b></td>  
+			</tr>
+			<tr>
+				<td colspan=\"4\" ><b>$hari, $tgll</b></td>  
+			</tr>
+			<tr>
+				<td colspan=\"4\" ><b>(Diisi pada jam awal memulai)</b></td>  
+			</tr>
+			<tr>
+				<td colspan=\"4\" ><b>--------------------------------</b></td>  
+			</tr>
+			
+		</thead>";
 
 		$sql =
 			"SELECT*,(select keterangan from tbl_setinghms s where s.kodeset=p.status_absen)nm_stat from(
@@ -107,7 +112,82 @@ function cetak_absen_h($cek = '', $thnn = '')
 			COALESCE((select status from tbl_absen_ski b where a.nik=b.nik and tgl_absen='$_tglh' and status_masuk='1' ),'-')status_absen,
 			COALESCE((select left(jam,5) from tbl_absen_ski b where a.nik=b.nik and tgl_absen='$_tglh' and status_masuk='1' ),'00:00')jam_m, 
 			COALESCE((select left(jam,5) from tbl_absen_ski b where a.nik=b.nik and tgl_absen='$_tglh' and status_masuk='2' ),'00:00')jam_k 
-			from tbl_kary_ski a where pos='DIY'
+			from tbl_kary_ski a where pos='DIY' and resign=0
+			)p
+			order by namakary ";
+
+		$query1    = $this->db->query($sql);
+
+		$lcno            = 0;
+		$nm              = 0;
+		$jam_m           = 0;
+		$jam_k           = 0;
+		$status_absen    = '';
+		$nm_stat	     = '';
+
+
+		foreach ($query1->result() as $row) {
+			$lcno           = $lcno + 1;
+			$namakary       = $row->namakary;
+			$status_absen   = $row->status_absen;
+			$nm_stat        = $row->nm_stat;
+			$jam_m          = $row->jam_m;
+			$jam_k          = $row->jam_k;
+
+			if($status_absen=='AB1'){
+				$chari .= "<tr>
+				<td width=\" 1%\" align=\"left\">$lcno.</td>
+				<td width=\" 12%\" align=\"left\">$namakary</td>
+				<td width=\" 15%\" align=\"left\">: $jam_m - $jam_k</td>
+				<td width=\" 72%\" align=\"left\"></td>
+				</tr>"; 
+			}else if($status_absen=='AB2'){
+				$chari .= "<tr>
+				<td width=\" 1%\" align=\"left\">$lcno.</td>
+				<td width=\" 12%\" align=\"left\">$namakary</td>
+				<td width=\" 15%\" align=\"left\">: $jam_m - $jam_k ( $nm_stat )</td>
+				<td width=\" 72%\" align=\"left\"></td>
+				</tr>"; 
+			}else{
+				$chari .= "<tr>
+				<td width=\" 1%\" align=\"left\">$lcno.</td>
+				<td width=\" 12%\" align=\"left\">$namakary</td>
+				<td width=\" 15%\" align=\"left\">: $nm_stat</td>
+				<td width=\" 72%\" align=\"left\"></td>
+				</tr>"; 
+			}
+			
+		}
+		
+
+		$chari .= "<table style=\"border-collapse:collapse;font-family: Times New Roman; font-size:12px\" width=\"100%\" align=\"center\" border=\"0\" cellspacing=\"1\" cellpadding=\"3\">
+
+		<thead>
+			<tr>
+				<td colspan=\"4\" align=\"center\"><br><br><br></td>                
+			</tr>
+			<tr>
+				<td colspan=\"4\" ><b>#$jaraksby Daftar Kehadiran</b></td>  
+			</tr>
+			<tr>
+				<td colspan=\"4\" ><b>$hari, $tgll</b></td>  
+			</tr>
+			<tr>
+				<td colspan=\"4\" ><b>RSU Bhakti Rahayu SBY</b></td>  
+			</tr>
+			<tr>
+				<td colspan=\"4\" ><b>--------------------------------</b></td>  
+			</tr>
+			
+		</thead>";
+
+		$sql =
+			"SELECT*,(select keterangan from tbl_setinghms s where s.kodeset=p.status_absen)nm_stat from(
+			SELECT a.*,
+			COALESCE((select status from tbl_absen_ski b where a.nik=b.nik and tgl_absen='$_tglh' and status_masuk='1' ),'-')status_absen,
+			COALESCE((select left(jam,5) from tbl_absen_ski b where a.nik=b.nik and tgl_absen='$_tglh' and status_masuk='1' ),'00:00')jam_m, 
+			COALESCE((select left(jam,5) from tbl_absen_ski b where a.nik=b.nik and tgl_absen='$_tglh' and status_masuk='2' ),'00:00')jam_k 
+			from tbl_kary_ski a where pos='sby' and resign=0
 			)p
 			order by namakary ";
 
@@ -154,31 +234,28 @@ function cetak_absen_h($cek = '', $thnn = '')
 			
 		}
 
+	$chari .= "</table>";
+
+	$data['prev'] = $chari;
+	$judul        = 'ABSENSI';
 
 
+	switch ($cek) {
+		case 0;
+			echo ("<title>ABSENSI</title>");
+			echo ($chari);
+			break;
 
-		$chari .= "</table>";
-
-		$data['prev'] = $chari;
-		$judul        = 'ABSENSI';
-
-
-		switch ($cek) {
-			case 0;
-				echo ("<title>ABSENSI</title>");
-				echo ($chari);
-				break;
-
-			case 1;
-				$this->M_cetak->mpdf('L', 'A3', $judul, $chari, 'LAPORAN-KASIR-07.PDF', 10, 10, 10, 2);
-				break;
-			case 2;
-				header("Cache-Control: no-cache, no-store, must-revalidate");
-				header("Content-Type: application/vnd-ms-excel");
-				header("Content-Disposition: attachment; filename= $judul.xls");
-				$this->load->view('app/master_cetak', $data);
-				break;
-		}
+		case 1;
+			$this->M_cetak->mpdf('L', 'A3', $judul, $chari, 'LAPORAN-KASIR-07.PDF', 10, 10, 10, 2);
+			break;
+		case 2;
+			header("Cache-Control: no-cache, no-store, must-revalidate");
+			header("Content-Type: application/vnd-ms-excel");
+			header("Content-Disposition: attachment; filename= $judul.xls");
+			$this->load->view('app/master_cetak', $data);
+			break;
+	}
 	
 }
 
@@ -220,6 +297,11 @@ function cetak_absen($cek_pdf = '', $thnn = '')
 		$phone     = $kop['phone'];
 		$whatsapp  = $kop['whatsapp'];
 		$npwp      = $kop['npwp'];
+		$jjkel     = $this->db->query("SELECT
+		count(jkel)as total,
+		count(case when jkel ='L' then jkel  end )as l,
+		count(case when jkel ='P' then jkel  end )as p
+		from tbl_kary_ski a where resign=0 ")->row();
 
 
 		$chari .= "<table style=\"border-collapse:collapse;font-family: Century Gothic; font-size:12px; color:#000;\" width=\"100%\"  border=\"1\" cellspacing=\"0\" cellpadding=\"0\">
@@ -267,17 +349,17 @@ function cetak_absen($cek_pdf = '', $thnn = '')
 				<td align=\"center\"></td>                
 				<td align=\"center\"><b>Total</b></td>                
 				<td align=\"center\">:</td>                
-				<td align=\"center\">10</td>                
+				<td align=\"center\">$jjkel->total</td>                
 				<td align=\"center\"></td>                
 				<td align=\"center\"><b>Laki- Laki</b></td>                
 				<td align=\"center\">:</td>                
-				<td align=\"center\">7</td>                
+				<td align=\"center\">$jjkel->l</td>                
 				<td align=\"center\"></td>                
 				<td align=\"center\"><b>Perempuan</b></td>                
 				<td align=\"center\">:</td>                
-				<td align=\"center\">3</td>                
+				<td align=\"center\">$jjkel->p</td>                
 			</tr>
-			
+			 
 			</table>";
 
 		$chari .= "<table style=\"border-collapse:collapse;font-family: Times New Roman; font-size:12px\" width=\"100%\" align=\"center\" border=\"1\" cellspacing=\"1\" cellpadding=\"3\">
@@ -293,14 +375,14 @@ function cetak_absen($cek_pdf = '', $thnn = '')
 			<td rowspan=\"3\" bgcolor=\"#cccccc\" width=\"5%\" align=\"center\"><b>NAMA LENGKAP</b></td>
 			<td rowspan=\"3\" bgcolor=\"#cccccc\" width=\"3%\" align=\"center\"><b>L/P</b></td>
 			<td rowspan=\"3\" bgcolor=\"#cccccc\" width=\"7%\" align=\"center\"><b>JAB/TFWT</b></td>
-			<td colspan=\"$harijum1\" bgcolor=\"#cccccc\" width=\"75%\" align=\"center\"> <b>$bull</b></td>
-			<td rowspan=\"3\" bgcolor=\"#cccccc\" width=\"2%\" align=\"center\"><b>Rkp</b></td>
+			<td colspan=\"$harijum1\" bgcolor=\"#cccccc\" width=\"70%\" align=\"center\"> <b>$bull</b></td>
+			<td colspan=\"4\" bgcolor=\"#cccccc\" width=\"7%\" align=\"center\"><b>Rkp</b></td>
 		</tr>
 		<tr>";
 		for ($i = 0; $i <= $harijum; $i++) {
 			$hariindo=$this->M_cetak->hari_indo($workDateA->format('D'));
 			if($hariindo=='Minggu'){
-				$bgg='#12d1ed';
+				$bgg='#67e2f3';
 			}else{
 				$bgg='#cccccc';
 
@@ -308,6 +390,11 @@ function cetak_absen($cek_pdf = '', $thnn = '')
 			$chari .="<td bgcolor=\"$bgg\" align=\"center\"> $hariindo </td>";
 			$workDateA->modify('+1 day');
 			}
+			$chari .="<td rowspan=\"2\" bgcolor=\"#cccccc\" align=\"center\"> H </td>";
+			$chari .="<td rowspan=\"2\" bgcolor=\"#cccccc\" align=\"center\"> S </td>";
+			$chari .="<td rowspan=\"2\" bgcolor=\"#cccccc\" align=\"center\"> I </td>";
+			$chari .="<td rowspan=\"2\" bgcolor=\"#cccccc\" align=\"center\"> A </td>";
+
 			$workDateA    = new DateTime( $tgl1 );
 
 		$chari .="
@@ -316,7 +403,7 @@ function cetak_absen($cek_pdf = '', $thnn = '')
 		for ($i = 0; $i <= $harijum; $i++) {
 			$hariindo=$this->M_cetak->hari_indo($workDateA->format('D'));
 			if($hariindo=='Minggu'){
-				$bgg='#12d1ed';
+				$bgg='#74eafb';
 			}else{
 				$bgg='#cccccc';
 
@@ -332,9 +419,17 @@ function cetak_absen($cek_pdf = '', $thnn = '')
 	</thead>";
 
 	$sql =
-	"SELECT a.*,
-	(select count(*)jum from tbl_absen_ski b where b.nik=a.nik and tgl_absen between '$tgl1' and '$tgl2' and status='ab1' and status_masuk='1')rekap
-	 from tbl_kary_ski a  where resign=0  order by namakary ";
+	"SELECT a.*, 
+	(select count(*)jum from tbl_absen_ski b where b.nik=a.nik 
+	and tgl_absen between '$tgl1' and '$tgl2' and status in ('ab1','ab2') and status_masuk='1')rekaph ,
+	(select count(*)jum from tbl_absen_ski b where b.nik=a.nik 
+	and tgl_absen between '$tgl1' and '$tgl2' and status='ab3' and status_masuk='1')rekaps ,
+	(select count(*)jum from tbl_absen_ski b where b.nik=a.nik 
+	and tgl_absen between '$tgl1' and '$tgl2' and status='ab4' and status_masuk='1')rekapi ,
+	(select count(*)jum from tbl_absen_ski b where b.nik=a.nik 
+	and tgl_absen between '$tgl1' and '$tgl2' and status='ab5' and status_masuk='1')rekapa 
+	from tbl_kary_ski a where resign=0 
+	order by namakary";
 
 	$query1   = $this->db->query($sql)->result();
 	$lcno     = 0;
@@ -347,7 +442,10 @@ function cetak_absen($cek_pdf = '', $thnn = '')
 		$namakary        = $row->namakary;
 		$jkel            = $row->jkel;
 		$jab             = $row->jab;
-		$rekap           = $row->rekap;
+		$rekaph          = $row->rekaph;
+		$rekaps          = $row->rekaps;
+		$rekapi          = $row->rekapi;
+		$rekapa          = $row->rekapa;
 		
 		
 
@@ -378,16 +476,16 @@ function cetak_absen($cek_pdf = '', $thnn = '')
 
 				$hariindo=$this->M_cetak->hari_indo($workDateC->format('D'));
 				if($hariindo=='Minggu'){
-					$bgg='#12d1ed';
+					$bgg='#74eafb';
 				}else if($hariindo<>'Minggu' && $query->status<>'AB1'){
-					$bgg='#f31a46';
+					$bgg='#fc456a';
 
 				}else{
 					$bgg='';
 				}
 
 				if($query->status<>'AB1'){
-					$chari .="<td bgcolor=\"$bgg\" align=\"center\">".$query->nm_stat."</td>";
+					$chari .="<td bgcolor=\"$bgg\" align=\"center\"><b>".$query->nm_stat."</b></td>";
 
 				}else{
 					$chari .="<td bgcolor=\"$bgg\" align=\"left\">".$query->jamm ." - ". $query->jamk."</td>";
@@ -398,7 +496,10 @@ function cetak_absen($cek_pdf = '', $thnn = '')
 			$workDateC    = new DateTime( $tgl1 );
 
 			$chari .="
-			<td rowspan=\"2\" align=\"center\">$rekap</td>
+			<td rowspan=\"2\" align=\"center\">$rekaph</td>
+			<td rowspan=\"2\" align=\"center\">$rekaps</td>
+			<td rowspan=\"2\" align=\"center\">$rekapi</td>
+			<td rowspan=\"2\" align=\"center\">$rekapa</td>
 			</tr>
 			
 			<tr>";
@@ -415,13 +516,13 @@ function cetak_absen($cek_pdf = '', $thnn = '')
 
 				$hariindo=$this->M_cetak->hari_indo($workDateD->format('D'));
 				if($hariindo=='Minggu'){
-					$bgg='#12d1ed';
+					$bgg='#74eafb';
 				}else{
 					$bgg='';
 
 				}
 
-				if($query->status=='AB1'){
+				if($query->status=='AB1' || $query->status=='AB2'){
 					$stat='1';
 				}else{
 					$stat='0';
@@ -442,7 +543,7 @@ function cetak_absen($cek_pdf = '', $thnn = '')
 			// $jum_sisa += $row->masuk - $row->keluar;
 	}
 
-		$jumrek=$harijum1+6;
+		$jumrek=$harijum1+10;
 		$chari .= "<tr>
 			<td bgcolor=\"#cccccc\" colspan=\"$jumrek\" align=\"center\"><b></b></td>
 			</tr>";

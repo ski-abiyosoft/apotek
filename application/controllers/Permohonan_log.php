@@ -326,7 +326,7 @@ class Permohonan_log extends CI_Controller
 			$tdisc  = 0;
 			$border = array('L', '', '', '', '', '', '', 'R');
 
-			$align  = array('C', 'L', 'L', 'R', 'L', 'R', 'L', 'L');
+			$align  = array('C', 'L', 'L', 'R', 'L', 'R', 'L', 'R');
 			$fc = array('0', '0', '0', '0', '0', '0', '0', '0');
 			$max = array(8, 8, 8, 8, 8, 8, 8, 8);
 			$pdf->SetFillColor(0, 0, 139);
@@ -340,11 +340,11 @@ class Permohonan_log extends CI_Controller
 					$no,
 					$db->kodebarang,
 					$db->namabarang,
-					$db->qtymohon,
+					number_format($db->qtymohon),
 					$db->satuan,
-					number_format($db->hargabeli, 2, ',', '.'),
+					number_format($db->hargabeli),
 					$db->keterangan,
-					$db->totalharga,
+					number_format($db->totalharga),
 				), $fc, $border, $align);
 				$no++;
 			}

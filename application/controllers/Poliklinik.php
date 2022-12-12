@@ -1286,10 +1286,10 @@ class Poliklinik extends CI_Controller {
 		$unit 		= $this->session->userdata('unit');
 		$kodepos	= $this->input->get("kodepos");
 
-		// $data = $this->db->query("SELECT * FROM daftar_tarif_nonbedah AS a
-		// WHERE a.koders = '$unit' 
-		// AND a.kodetarif = '$kode' 
-		// And a.kodepos = 'RADIO'")->row();
+		$data = $this->db->query("SELECT * FROM daftar_tarif_nonbedah AS a
+		WHERE a.koders = '$unit' 
+		AND a.kodetarif = '$kode' 
+		And a.kodepos = 'RADIO'")->row();
 		echo json_encode($data);
 	}
 
@@ -1398,6 +1398,29 @@ class Poliklinik extends CI_Controller {
 				"dokter"	=> $pl_nama_dokter,
 			));
 		}
+	}
+
+	public function get_icd_for_pcare($param){
+		
+		$query_icd	= $this->M_Poliklinik->get_icd_pcare($param);
+		$get_icd	= $query_icd->row();
+
+		if($query_icd){
+			$status		= "success";
+			$message	= "";
+			$icd_str	= $get_icd->str;
+		} else {
+			$status		= "error";
+			$message	= "ICD code not found";
+			$icd_str	= "";
+		}
+
+		echo json_encode(array(
+			"status"	=> $status,
+			"message"	=> $message,
+			"string"	=> $icd_str
+		));
+
 	}
 
 	// View
@@ -1663,6 +1686,8 @@ class Poliklinik extends CI_Controller {
 					$data_riwayat_pasien	= $riwayat_pasien->row();
 				}
 
+				$aturan_pakai	= $this->db->query("SELECT * FROM tbl_barangsetup WHERE apogroup = 'ATURANPAKAI'");
+
 				// VALUE
 				if(!empty($cek)){
 					$data	= [
@@ -1714,6 +1739,7 @@ class Poliklinik extends CI_Controller {
 						"total_erad"	=> $total_erad,
 						"status_kasir"	=> ($query_kasir == 0)? 0 : 1,
 						"riwayat_pasien"	=> $data_riwayat_pasien,
+						"aturan_pakai"	=> $aturan_pakai,
 					];
 					
 					$this->load->view("poliklinik/v_poliklinik_p_dokter_add", $data);
@@ -2223,32 +2249,6 @@ class Poliklinik extends CI_Controller {
 		}
 	}
 	
-	Public function bersihkan_ttd()
-	{
-		$files    =glob('ttd/*.png');
-		foreach ($files as $file) {
-			if (is_file($file))
-			unlink($file); // hapus file
-		}
-		
-		echo json_encode(array("status" => "1"));
-
-	}
-
-	Public function simpan_ttd()
-	{
-		$img              = $this->input->post('image');
-		$img              = str_replace('data:image/png;base64,', '', $img);
-		$img              = str_replace(' ', '+', $img);
-		$data             = base64_decode($img);
-		$image            = uniqid() . '.png';
-		$file             = './ttd/' .$image;
-		$success          = file_put_contents($file, $data);
-		
-		echo $image;
-
-	}
-
 	Public function bersihkan_ttd()
 	{
 		$files    =glob('ttd/*.png');

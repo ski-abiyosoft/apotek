@@ -132,13 +132,13 @@
                                             <td width="10%"><input name="qty[]" onchange="totalline(1)" value="1"
                                                     id="qty1" type="text" class="form-control rightJustified"></td>
                                             <td width="10%"><input name="sat[]" id="sat1" type="text"
-                                                    class="form-control " onkeypress="return tabE(this,event)"></td>
+                                                    class="form-control " onkeypress="return tabE(this,event)" readonly></td>
                                             <td width="10%"><input name="harga[]" onchange="totalline(1)" id="harga1"
                                                     type="text" class="form-control rightJustified"
-                                                    onkeypress="return tabE(this,event)"></td>
+                                                    onkeypress="return tabE(this,event)" readonly></td>
                                             <td width="15%"><input name="total[]" onchange="totalline(1)" id="total1"
                                                     type="text" class="form-control rightJustified"
-                                                    onkeypress="return tabE(this,event)"></td>
+                                                    onkeypress="return tabE(this,event)" readonly></td>
                                             <td width="10%"><input name="note[]" id="note1" type="text"
                                                     class="form-control " onkeypress="return tabE(this,event)"></td>
                                         </tr>
@@ -228,11 +228,11 @@ function tambah() {
     td1.innerHTML = akun;
     td2.innerHTML = "<input name='qty[]'    id='qty" + idrow + "' onchange='totalline(" + idrow +
         ")' value='1'  type='text' class='form-control rightJustified'  >";
-    td3.innerHTML = "<input name='sat[]'    id='sat" + idrow + "' type='text' class='form-control' >";
+    td3.innerHTML = "<input name='sat[]'    id='sat" + idrow + "' type='text' class='form-control'  readonly>";
     td4.innerHTML = "<input name='harga[]'  id='harga" + idrow + "' onchange='totalline(" + idrow +
-        ")' onkeyup='format_num(this.value)' type='text' class='form-control' >";
+        ")' onkeyup='format_num(this.value)' type='text' class='form-control'  readonly>";
     td5.innerHTML = "<input name='total[]'    id='total" + idrow + "' onchange='totalline(" + idrow +
-        ")' type='text' class='form-control rightJustified' >";
+        ")' type='text' class='form-control rightJustified'  readonly>";
     td6.innerHTML = "<input name='note[]'    id='note" + idrow + "' type='text' class='form-control' >";
     total();
     idrow++;

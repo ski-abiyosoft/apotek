@@ -3,6 +3,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 class M_Poliklinik extends CI_Model 
 {
     var $table = 'pasien_rajal';
+	protected $_icd	= "tbl_icdinb";
+	
 	public function __construct(){
         parent::__construct();
 		$this->load->database();
@@ -249,6 +251,18 @@ class M_Poliklinik extends CI_Model
 		$query = $this->db->query($sql);
 		return $query->num_rows();
 	}
+
+
+	// PCARE
+
+    public function get_icd_pcare($param){
+		$this->db->select("*");
+		$this->db->from($this->_icd);
+		$this->db->where("code", $param);
+		return $this->db->get();
+	}
+
+	// PCARE
 
 }
 

@@ -46,6 +46,52 @@ class Logistik_stock extends CI_Controller
 		}
 	}
 
+	function valid($id)
+	{
+		$saldo = 0;
+		$terima = 0;
+		$keluar = 0;
+		$cek = $this->M_KartuStock->logistikstok($id);
+		foreach ($cek as $c) {
+			$terima += $c->terima;
+			$keluar += $c->keluar;
+			$saldo += $c->terima - $c->keluar;
+		}
+		$data = [
+			'terima' => $terima,
+			'keluar' => $keluar,
+			'saldoakhir' => $saldo,
+		];
+		$this->db->update("tbl_apostocklog", $data, ["id" => $id]);
+		echo json_encode(['status' => 1]);
+	}
+
+	function valid_all($gudang)
+	{
+		$cabang = $this->session->userdata("unit");
+		$barangstok = $this->db->get_where("tbl_apostocklog", ["koders" => $cabang, "gudang" => $gudang]);
+		$no = 1;
+		foreach ($barangstok->result() as $bs) {
+			$nox = $no++;
+			$saldo = 0;
+			$terima = 0;
+			$keluar = 0;
+			$cek = $this->M_KartuStock->logistikstok($bs->id);
+			foreach ($cek as $c) {
+				$terima += $c->terima;
+				$keluar += $c->keluar;
+				$saldo += $c->terima - $c->keluar;
+			}
+			$data = [
+				'terima' => $terima,
+				'keluar' => $keluar,
+				'saldoakhir' => $saldo,
+			];
+			$this->db->update("tbl_apostocklog", $data, ["id" => $bs->id]);
+		}
+		echo json_encode(['status' => 1, 'no' => $nox]);
+	}
+
 	public function cetak($gudang)
 	{
 		$gudang = $gudang;

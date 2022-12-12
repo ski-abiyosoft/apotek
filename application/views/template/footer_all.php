@@ -38,6 +38,7 @@
    initailizeSelect2_rekening_vendor();
    initailizeSelect2_resepobat();
    initailizeSelect2_farmasi_barang();
+   initailizeSelect2_farmasi_barang_cbg();
    initailizeSelect2_farmasi_barang2();
    initailizeSelect2_poli_tindakan('');
    initailizeSelect2_farmasi_baranggud();
@@ -779,6 +780,39 @@
          },
          ajax: {
             url: "<?php echo base_url(); ?>app/search_farmasi_barang2",
+            type: "post",
+            dataType: 'json',
+            delay: 250,
+            data: function(params) {
+               return {
+                  searchTerm: params.term // search term
+               };
+            },
+
+            processResults: function(response) {
+               return {
+                  results: response
+               };
+            },
+            cache: true
+         }
+      });
+   }
+
+   function initailizeSelect2_farmasi_barang_cbg() {
+      $(".select2_el_farmasi_barang_cbg").select2({
+         allowClear: true,
+         multiple: false,
+         placeholder: '--- Pilih Barang ---',
+         //minimumInputLength: 2,
+         dropdownAutoWidth: true,
+         language: {
+            inputTooShort: function() {
+               return 'Ketikan Nomor minimal 2 huruf';
+            }
+         },
+         ajax: {
+            url: "<?php echo base_url(); ?>app/search_farmasi_barang_cbg",
             type: "post",
             dataType: 'json',
             delay: 250,

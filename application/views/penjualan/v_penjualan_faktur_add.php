@@ -8,7 +8,9 @@
 
         $heresep      = $this->db->query("SELECT * FROM tbl_orderperiksa WHERE orderno = '$noeresep' AND koders = '$cabang'")->row();
         $deresep      = $this->db->query("SELECT * FROM tbl_eresep WHERE orderno = '$noeresep' AND koders = '$cabang'")->result();
+        // $deracik      = $this->db->query("SELECT * FROM tbl_eracik WHERE orderno = '$noeresep' AND koders = '$cabang'")->row();
         $pasrsp       = $this->db->query("SELECT * FROM pasien_rajal WHERE noreg = '$heresep->noreg'")->row();
+
 
         if($pasrsp){
             $age_date     = new DateTime($pasrsp->tgllahir);
@@ -23,6 +25,13 @@
         }
 
         $umur			    = $age_interval->y .' Tahun '. $age_interval->m .' Bulan '. $age_interval->d .' Hari';
+    } else {
+        $noeresep     = '';
+        $cabang       = '';
+        $heresep      = '';
+        $deresep      = '';
+        $deracik      = '';
+        $pasrs        = '';
     }
 ?>
 
@@ -209,9 +218,10 @@
                                     <label class="col-md-3 control-label">Pembeli <font color="red">*</font></label>
                                     <div class="col-md-6">
                                         <select id="pembeli" name="pembeli" class="form-control select2_pembeli" onchange="getdataklinik()">
-                                            <option value="RAJAL">Rawat Jalan</option>
-                                            <option value="RANAP">Rawat Inap</option>
-                                            <option value="APOTIK">Apotik</option>
+                                            <!-- <option value="RAJAL">Rawat Jalan</option>
+                                            <option value="RANAP">Rawat Inap</option> -->
+                                            <option value="adr">Apotik Dengan Resep</option>
+                                            <option value="atr">Apotik Tanpa Resep</option>
                                         </select>
                                     </div>
                                 </div>
@@ -309,151 +319,6 @@
                     </div>
                     <?php } ?>
 
-
-
-
-
-
-                    
-                    <!-- <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label class="col-md-3 control-label">Pembeli <font color="red">*</font></label>
-                                <div class="col-md-6">
-                                    <select id="pembeli" name="pembeli" class="form-control select2_pembeli" onchange="getdataklinik()">
-                                        <option value="RAJAL">Rawat Jalan</option>
-                                        <option value="RANAP">Rawat Inap</option>
-                                        <option value="APOTIK">Apotik</option>
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label class="col-md-3 control-label">Resep Dari <font color="red">*</font></label>
-                                <div class="col-md-9">
-                                    <select id="dokter" name="dokter" class="form-control select2_el_dokter" data-placeholder="Pilih..." onkeypress="return tabE(this,event)">
-                                        <?php if(isset($_GET["eresep"])){ ?>
-                                            <option value="<?= $heresep->kodokter ?>" selected><?= $heresep->kodokter ." | ". data_master("tbl_dokter", array("kodokter" => $heresep->kodokter))->nadokter ?></option>
-                                        <?php } else { ?>
-                                        <?php } ?>
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <?php if(isset($_GET["eresep"])){ ?>
-                    <div class="row">
-                        <div class="col-sm-6">&nbsp;</div>
-                        <div class="col-sm-6">
-                          <div class="form-group">
-                              <label class="col-md-3 control-label">No. E-Resep <font color="red">*</font></label>
-                              <div class="col-md-6">
-                                  <input type="text" id="noeresep" name="noeresep" class="form-control" value="<?= $this->input->get("noresep") ?>" readonly>
-                              </div>
-                          </div>
-                        </div>
-                    </div>
-                    <?php } ?>
-
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label class="col-md-3 control-label">DEPO <font color="red">*</font></label>
-                                <div class="col-md-6">
-                                    <select id="gudang" name="gudang" class="form-control select2_el_farmasi_depo" data-placeholder="Pilih..." onkeypress="return tabE(this,event)">
-                                        <?php if(isset($_GET["eresep"])){ ?>
-                                            <option value="<?= $heresep->gudang ?>" selected><?= data_master("tbl_depo", array("depocode" => $heresep->gudang))->keterangan ?></option>
-                                        <?php } ?>
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label class="col-md-3 control-label">No. Resep <font color="red">*</font></label>
-                                <div class="col-md-6">
-                                    <input type="hidden" name="eresepstatus" value="<?= (isset($_GET["eresep"]))? 1 : 0 ?>">
-                                    <input type="text" id="noresep" name="noresep" class="form-control" readonly placeholder="AUTO">
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col-md-6" id="vnoreg">
-                            <div class="form-group">
-                                <label class="col-md-3 control-label">No. Registrasi <font color="red">*</font></label>
-                                <div class="col-md-6">
-                                    <select id="noreg" name="noreg" class="form-control select2_el_registrasiresep" onchange="getdataregistrasi()">
-                                        <?php if(isset($_GET["eresep"])){ ?>
-                                            <option value="<?= $heresep->noreg ?>" selected><?= $heresep->noreg ?></option>
-                                        <?php } ?>
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label class="col-md-3 control-label">Tanggal <font color="red">*</font></label>
-                                <div class="col-md-6">
-                                    <input id="tanggal" name="tanggal" class="form-control input-medium" type="date" value="<?php echo date('Y-m-d'); ?>" />
-                                </div>
-                                <div class="col-md-3">
-                                    <input type="time" class="form-control" name="jam" id="jam" value="<?= date('H:i:s'); ?>">
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label class="col-md-3 control-label">Member <font color="red">*</font></label>
-                                <div class="col-md-9">
-                                    <select id="pasien" name="pasien" class="form-control select2_el_pasien" onchange="getinfopasien()" data-placeholder="Pilih..." onkeypress="return tabE(this,event)">
-                                        <?php if(isset($_GET["eresep"])): $gpasraj = $this->db->query("SELECT * FROM tbl_pasien WHERE rekmed = '$heresep->rekmed'")->row(); ?>
-                                            <option value="<?= $heresep->rekmed ?>">
-                                                <?= $gpasraj->rekmed ." | ". $gpasraj->namapas ." | ". $gpasraj->alamat2 ." | ".  $gpasraj->noidentitas ." | ". $gpasraj->handphone ?>
-                                            </option>
-                                        <?php endif; ?>
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label class="col-md-3 control-label">Alamat Kirim <font color="red">*</font></label>
-                                <div class="col-md-9">
-                                    <input type="text" name="alamat" id="alamat" class="form-control">
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label class="col-md-3 control-label">Nama Pembeli <font color="red">*</font></label>
-                                <div class="col-md-6">
-                                    <input type="text" name="namapasien" id="namapasien" class="form-control">
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label class="col-md-3 control-label">No Handphone <font color="red">*</font></label>
-                                <div class="col-md-7">
-                                    <input type="text" name="phone" id="phone" class="form-control">
-                                </div>
-                                <div class="col-md-2">
-                                    <input type="checkbox" id="reg_cekhp" name="reg_cekhp" value="1" class="form-control">
-                                </div>
-                            </div>
-                        </div>
-                    </div> -->
-
                     <!-- HEADER END -->
 
                     <br>
@@ -550,407 +415,733 @@
 
                             <br>
                             
-              <div class="row">
-                <div class="col-xs-7">
-                  <div class="wells">
-
-
-                    <button id="btnsimpan" type="button" onclick="ceksave()" class="btn blue"><i class="fa fa-save"></i>
-                      <b>Posting Resep</b></button>
-
-                    <div class="btn-group">
-                      <button type="button" class="btn green" onclick="this.form.reset();location.reload();"><i
-                          class="fa fa-pencil-square-o"></i> <b>Data Baru</b></button>
-                    </div>
-                    <button id="btncetak" type="button" onclick="javascript:window.open(_urlcetak(),'_blank');"
-                      class="btn yellow"><i class="fa fa-print"></i> <b>Cetak</b></button>
-
-                    <a href="<?= base_url('penjualan_faktur') ?>" class="btn btn red"><i class="fa fa-undo"></i><b>
-                        KEMBALI </b></a>
-
-
-
-                    <h4><span id="error" style="display:none; color:#F00">Terjadi Kesalahan...
-                      </span> <span id="success" style="display:none; color:#0C0"><b>Data sudah
-                          disimpan...</b></span></h4>
-                  </div>
-                </div>
-                <div class="col-xs-5 invoice-block">
-                  <div class="well">
-                    <table id="tabeltotal">
-                      <tr>
-                        <td width="40%"><strong>SUB TOTAL</strong></td>
-                        <td width="1%"><strong>:</strong></td>
-                        <td width="59" align="right"><strong><span id="_vsubtotal"></span></strong></td>
-                      </tr>
-                      <tr>
-                        <td width="40%"><strong>DISKON</strong></td>
-                        <td width="1%"><strong>:</strong></td>
-                        <td width="59" align="right"><strong><span id="_vdiskon" data-type="currency"></span></strong>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td width="40%"><strong>DPP</strong></td>
-                        <td width="1%"><strong>:</strong></td>
-                        <td width="59" align="right"><strong><span id="_vdpp" data-type="currency"></span></strong></td>
-                      </tr>
-                      <tr>
-                        <td width="40%"><strong>PPN</strong></td>
-                        <td width="1%"><strong>:</strong></td>
-                        <td width="59" align="right"><strong><span id="_vppn" name="_vppn"></span></strong>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td width="40%"><strong>TOTAL ONGKOS RACIK</strong></td>
-                        <td width="1%"><strong>:</strong></td>
-                        <td width="59" align="right"><strong><span id="_vracik" name="_vracik"></span></strong>
-                        </td>
-                      </tr>
-
-                      <tr>
-                        <td width="40%"><strong>TOTAL</strong></td>
-                        <td width="1%"><strong>:</strong></td>
-                        <td width="59" align="right"><strong><span id="_vtotal"></span></strong>
-                        </td>
-                        <input type="hidden" id="ppn2_" name="ppn2_" value="<?= $ppn['prosentase']; ?>">
-                      </tr>
-                      <input type="hidden" id="tersimpan">
-                    </table>
-                  </div>
-                </div>
-              </div>
-
-            </div>
-            <!-- tab1-->
-
-            <div class="tab-pane" id="tab2" onclick="cek_tab()">
-              <div class="row">
-                <!-- harimas -->
-
-
-                <div class="col-md-12 form-body">
-                  <table class="table" border="0" width="100%">
-                    <tr bgcolor="#c7f2ff">
-
-                      <td width="10%" class="control-labelh rightJustified">RACIKAN KE
-
-                      </td>
-                      <td width="20%">
-                        <select id="cekracik" name="cekracik" class="form-control">
-
-                          <option value="1" selected>1</option>
-                          <option value="2">2</option>
-                          <option value="3">3</option>
-                          <option value="4">4</option>
-                        </select>
-                      </td>
-
-                      <td>&nbsp;</td>
-                      <!-- Diskon Resep -->
-
-
-                      <td>&nbsp;</td>
-                      <td>&nbsp;</td>
-                      <td>&nbsp;</td>
-                      <td>&nbsp;</td>
-                      <td>&nbsp;</td>
-
-                    </tr>
-
-
-                  </table>
-                </div>
-
-                <div class="col-md-12">
-                  <div class="portlet box purple" id="racik1">
-                    <div class="portlet-title">
-                      <div class="caption">
-                        <span class="title-white"><b>RACIKAN KE - 1</b></span>
-                      </div>
-
-                    </div>
-
-                    <div class="portlet-body form">
-                      <div class="form-body">
-                        <table class="table" border="0" width="100%">
-                          <tr>
-                            <td colspan="7">&nbsp;</td>
-                          </tr>
-                          <tr bgcolor="#c7f2ff">
-
-                            <td width="10%" class="control-labelh rightJustified">JENIS</td>
-                            <td width="20%" colspan="2">
-                              <select id="jenis_1" name="jenis_1" class="form-control">
-                                <?php
-                                                                $data = $this->db->query("SELECT * from tbl_barangsetup where  apogroup='JENISRACIK' ")->result();
-                                                                foreach ($data as $row) { ?>
-                                <option value="<?= $row->apocode; ?>">
-                                  <?= $row->aponame; ?></option>
-                                <?php } ?>
-                              </select>
-                            </td>
-
-                            <td width="15%" class="control-labelh rightJustified">NAMA
-                              RACIKAN</td>
-                            <td width="20%">
-                              <input type="text" class="form-control " name="namaracik_1" id="namaracik_1" value=""
-                                Placeholder="Nama">
-                            </td>
-                            <td> &nbsp; </td>
-                            <td width="15%" class="control-labelh rightJustified">CARA PAKAI
-                            </td>
-                            <td>
-                              <select name="carapakai" id="carapakai" class="form-control">
-                                <option value=""> --- PILIH ----</option>
-                                <option value="DIMINUM"> DIMINUM </option>
-                                <option value="DIOLES"> DIOLES </option>
-                                <option value="DITETES"> DITETES </option>
-                              </select>
-                            </td>
-                          </tr>
-                          <tr bgcolor="#c7f2ff">
-                            <td class="control-labelh rightJustified">JUMLAH</td>
-                            <td width="8%">
-                              <input type="number" class="form-control " name="jumracik_1" id="jumracik_1" value="">
-
-                            </td>
-
-                            <td width="12%">
-                              <select name="stajum_1" id="stajum_1" class="form-control">
-                                <?php
-                                                                $data = $this->db->query("SELECT * from tbl_barangsetup where  apogroup='KEMASANRACIK' ")->result();
-                                                                foreach ($data as $row) { ?>
-                                <option value="<?= $row->apocode; ?>">
-                                  <?= $row->aponame; ?></option>
-                                <?php } ?>
-                              </select>
-                            </td>
-
-                            <td class="control-labelh rightJustified">ATURAN PAKAI</td>
-                            <td>
-                              <select name="atpakai_1" id="atpakai_1" class="form-control">
-                                <?php
-                                                                $data = $this->db->query("SELECT * from tbl_barangsetup where  apogroup='ATURANPAKAI' ")->result();
-                                                                foreach ($data as $row) { ?>
-                                <option value="<?= $row->apocode; ?>">
-                                  <?= $row->aponame; ?></option>
-                                <?php } ?>
-                              </select>
-                            </td>
-                            <td>&nbsp;</td>
-
-                            <td class="control-labelh rightJustified" type="hidden" width="15%"></td>
-                            <td>
-                              <!-- <input type="text" class="form-control " name="atpakai_1"
-                                                                id="atpakai_1" value="<?= $header_r->aturanpakai; ?>"
-                                                                type="hidden"> -->
-
-                            </td>
-                          </tr>
-                          <tr>
-                            <td colspan="7">&nbsp;</td>
-                          </tr>
-
-                        </table>
-                        <table id="datatableobat_1"
-                          class="table table-hoverx table-stripedx table-borderedx table-condensed table-scrollable">
-                          <thead class="page-breadcrumb breadcrumb">
-                            <th class="title-white" width="5%" style="text-align: center">Hapus</th>
-                            <th class="title-white" width="20%" style="text-align: center">Kode Obat</th>
-                            <th class="title-white" width="20%" style="text-align: center">Nama Obat</th>
-                            <th class="title-white" width="5%" style="text-align: center">Satuan</th>
-                            <th class="title-white" width="10%" style="text-align: center">Qty Racik</th>
-                            <th class="title-white" width="10%" style="text-align: center">Qty Jual</th>
-                            <th class="title-white" width="10%" style="text-align: center">Harga Jual</th>
-                            <th class="title-white" width="10%" style="text-align: center">Uang R</th>
-                            <th class="title-white" width="15%" style="text-align: center">Total Harga</th>
-                          </thead>
-                          <tbody>
-                            <tr id="racik_no1">
-                              <td>
-                                <button type='button' onclick=hapusBarisIni_1(1) class='btn red'><i
-                                    class='fa fa-trash-o'>
-                              </td>
-                              <td>
-                                <select name="kodeo_1[]" id="kodeo1_1"
-                                  class="select2_el_farmasi_baranggud form-control input-large"
-                                  onchange="showbarangnameo_1(this.value, 1);cekstok_1(this.value, 1)">
-                                </select>
-                              </td>
-
-                              <td>
-                                <input name="namao_1[]" id="namao1_1" type="text" class="form-control "
-                                  onkeypress="return tabE(this,event)">
-                              </td>
-
-                              <td>
-                                <input name="sato_1[]" id="sato1_1" type="text" class="form-control "
-                                  onkeypress="return tabE(this,event)">
-                              </td>
-
-                              <td>
-                                <input name="qty_racik_1[]" id="qty_racik1_1" onchange="totallineo_1(1);totalo_1()"
-                                  value="1" type="text" class="form-control rightJustified">
-                              </td>
-
-                              <td>
-                                <input name="qty_jual_1[]" id="qty_jual1_1" onchange="totallineo_1(1);totalo_1()"
-                                  value="1" type="text" class="form-control rightJustified">
-                              </td>
-
-
-                              <td>
-                                <input name="hargaoju1[]" onchange="totallineo_1(1);" value="0" id="hargaoju1_1"
-                                  type="text" class="form-control rightJustified" readonly>
-                              </td>
-
-                              <td>
-                                <input name="uangr1[]" onchange="totallineo_1(1);" value="0" id="uangr1_1" type="text"
-                                  class="form-control rightJustified" readonly>
-                              </td>
-
-                              <td>
-                                <input name="total_hrg1[]" onchange="totallineo_1(1);" value="0" id="total_hrg1_1"
-                                  type="text" class="form-control rightJustified" readonly>
-                              </td>
-
-                            </tr>
-
-                          </tbody>
-                        </table>
-
-                        <table class="table" border="0" width="100%">
-
-                          <tr class="wells">
-                            <td colspan="2">
-                              <button type="button" onclick="tambaho_1()" class="btn green"><i class="fa fa-plus"></i>
-                              </button>
-                              <!-- <button type="button" onclick="hapuso_1()" class="btn red"><i class="fa fa-trash-o"></i></button> -->
-                            </td>
-                            <td class="control-labelh leftJustified">TOTAL</td>
-                            <td width="6%">&nbsp;</td>
-                            <td width="2%">&nbsp;</td>
-                            <td width="15%">
-                              <input type="text" class="form-control rightJustified" name="toto_1" id="toto_1" value=0
-                                readonly>
-                            </td>
-                          </tr>
-                          <tr>
-                            <td width="30%" rowspan="6" class="control-labelh leftJustified">
-                              &nbsp;&nbsp;&nbsp;&nbsp;
-                              Resep Manual Dari Dokter
-                              <textarea type="text" class="form-control " name="resman_1" id="resman_1" value="">
-													</textarea><br>
-
+                          <div class="row">
+                            <div class="col-xs-7">
                               <div class="wells">
-                                <button id="btnsimpan" type="button" onclick="saveracik_1()" class="btn blue"><i
-                                    class="fa fa-save"></i> <b>Posting
-                                    Racik</b></button>
-                                <!-- 													
-													<div class="btn-group">
-													<button type="button" class="btn green" onclick="this.form.reset();location.reload();"><i class="fa fa-pencil-square-o"></i> <b>Data Baru</b></button>    
-													</div> -->
-                                <!-- <button id="btncetak" type="button" onclick="javascript:window.open(_urlcetak(),'_blank');" class="btn yellow"><i class="fa fa-print"></i> <b>Cetak</b></button> -->
 
-                                <a href="<?= base_url('penjualan_faktur') ?>" class="btn btn red"><i
-                                    class="fa fa-undo"></i><b>
+
+                                <button id="btnsimpan" type="button" onclick="ceksave()" class="btn blue"><i class="fa fa-save"></i>
+                                  <b>Posting Resep</b></button>
+
+                                <div class="btn-group">
+                                  <button type="button" class="btn green" onclick="this.form.reset();location.reload();"><i
+                                      class="fa fa-pencil-square-o"></i> <b>Data Baru</b></button>
+                                </div>
+                                <button id="btncetak" type="button" onclick="javascript:window.open(_urlcetak(),'_blank');"
+                                  class="btn yellow"><i class="fa fa-print"></i> <b>Cetak</b></button>
+
+                                <a href="<?= base_url('penjualan_faktur') ?>" class="btn btn red"><i class="fa fa-undo"></i><b>
                                     KEMBALI </b></a>
 
-                                <h4><span id="error" style="display:none; color:#F00">Terjadi
-                                    Kesalahan... </span> <span id="success" style="display:none; color:#0C0"><b>Data
-                                      sudah
-                                      disimpan...</b></span>
-                                </h4>
+
+
+                                <h4><span id="error" style="display:none; color:#F00">Terjadi Kesalahan...
+                                  </span> <span id="success" style="display:none; color:#0C0"><b>Data sudah
+                                      disimpan...</b></span></h4>
                               </div>
+                            </div>
+                            <div class="col-xs-5 invoice-block">
+                              <div class="well">
+                                <table id="tabeltotal">
+                                  <tr>
+                                    <td width="40%"><strong>SUB TOTAL</strong></td>
+                                    <td width="1%"><strong>:</strong></td>
+                                    <td width="59" align="right"><strong><span id="_vsubtotal"></span></strong></td>
+                                  </tr>
+                                  <tr>
+                                    <td width="40%"><strong>DISKON</strong></td>
+                                    <td width="1%"><strong>:</strong></td>
+                                    <td width="59" align="right"><strong><span id="_vdiskon" data-type="currency"></span></strong>
+                                    </td>
+                                  </tr>
+                                  <tr>
+                                    <td width="40%"><strong>DPP</strong></td>
+                                    <td width="1%"><strong>:</strong></td>
+                                    <td width="59" align="right"><strong><span id="_vdpp" data-type="currency"></span></strong></td>
+                                  </tr>
+                                  <tr>
+                                    <td width="40%"><strong>PPN</strong></td>
+                                    <td width="1%"><strong>:</strong></td>
+                                    <td width="59" align="right"><strong><span id="_vppn" name="_vppn"></span></strong>
+                                    </td>
+                                  </tr>
+                                  <tr>
+                                    <td width="40%"><strong>TOTAL ONGKOS RACIK</strong></td>
+                                    <td width="1%"><strong>:</strong></td>
+                                    <td width="59" align="right"><strong><span id="_vracik" name="_vracik"></span></strong>
+                                    </td>
+                                  </tr>
+
+                                  <tr>
+                                    <td width="40%"><strong>TOTAL</strong></td>
+                                    <td width="1%"><strong>:</strong></td>
+                                    <td width="59" align="right"><strong><span id="_vtotal"></span></strong>
+                                    </td>
+                                    <input type="hidden" id="ppn2_" name="ppn2_" value="<?= $ppn['prosentase']; ?>">
+                                  </tr>
+                                  <input type="hidden" id="tersimpan">
+                                </table>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <!-- tab1-->
+
+                        <!-- tab2 -->
+                        <div class="tab-pane" id="tab2" onclick="cek_tab()">
+                          <div class="row">
+                            <div class="col-md-12 form-body">
+                              <table class="table" border="0" width="100%">
+                                <tr bgcolor="#c7f2ff">
+                                  <td width="10%" class="control-labelh rightJustified">RACIKAN KE</td>
+                                  <td width="20%">
+                                    <select id="cekracik" name="cekracik" class="form-control">
+                                      <option value="1" selected>1</option>
+                                      <option value="2">2</option>
+                                      <option value="3">3</option>
+                                      <option value="4">4</option>
+                                    </select>
+                                  </td>
+                                  <td>&nbsp;</td>
+                                  <td>&nbsp;</td>
+                                  <td>&nbsp;</td>
+                                  <td>&nbsp;</td>
+                                  <td>&nbsp;</td>
+                                  <td>&nbsp;</td>
+                                </tr>
+                              </table>
+                            </div>
+                            <div class="col-md-12">
+                                <div class="portlet box purple" id="racik1">
+                                    <div class="portlet-title">
+                                        <div class="caption">
+                                            <span class="title-white"><b>RACIKAN KE - 1</b></span>
+                                        </div>
+                                    </div>
+                                  <div class="portlet-body form">
+                                    <div class="form-body">
+                                      <table class="table" border="0" width="100%">
+                                        <tr>
+                                          <td colspan="7">&nbsp;</td>
+                                        </tr>
+                                        <tr bgcolor="#c7f2ff">
+                                          <td width="10%" class="control-labelh rightJustified">JENIS</td>
+                                          <td width="20%" colspan="2">
+                                            <select id="jenis_1" name="jenis_1" class="form-control">
+                                              <option value="">- PILIH JENIS OBAT -</option>
+                                              <?php
+                                              $data = $this->db->query("SELECT * from tbl_barangsetup where  apogroup='JENISRACIK' ")->result();
+                                              foreach ($data as $row) {
+                                              ?>
+                                                <?php 
+                                                // if ($heresep->jenispakai == $row->apocode) {
+                                                //   $cekjp = 'selected';
+                                                // } else {
+                                                //   $cekjp = '';
+                                                // }  
+                                                ?>
+                                                <option value="<?= $row->apocode; ?>"><?= $row->aponame; ?></option>
+                                              <?php } ?>
+                                            </select>
+                                          </td>
+                                          <td width="15%" class="control-labelh rightJustified">NAMA RACIKAN</td>
+                                          <td width="20%">
+                                            <?php if ($heresep) {
+                                              $racik1 = $heresep->racik1;
+                                            } else {
+                                              $racik1 = '';
+                                            }  ?>
+                                            <input type="text" class="form-control " name="namaracik_1" id="namaracik_1" Placeholder="Nama" value="<?= $racik1; ?>">
+                                          </td>
+                                          <td> &nbsp; </td>
+                                          <td width="15%" class="control-labelh rightJustified">CARA PAKAI</td>
+                                          <td>
+                                            <select name="carapakai" id="carapakai" class="form-control">
+                                              <option value=""> - PILIH CARA PAKAI -</option>
+                                              <option value="DIMINUM"> DIMINUM </option>
+                                              <option value="DIOLES"> DIOLES </option>
+                                              <option value="DITETES"> DITETES </option>
+                                            </select>
+                                          </td>
+                                        </tr>
+                                        <tr bgcolor="#c7f2ff">
+                                          <td class="control-labelh rightJustified">JUMLAH</td>
+                                          <td width="8%">
+                                            <?php if ($heresep) {
+                                              $qtyjadi_racik1 = $heresep->qtyjadi_racik1;
+                                            } else {
+                                              $qtyjadi_racik1 = '';
+                                            }  ?>
+                                            <input type="number" class="form-control " name="jumracik_1" id="jumracik_1" value="<?= $qtyjadi_racik1; ?>">
+                                          </td>
+                                          <td width="12%">
+                                            <select name="stajum_1" id="stajum_1" class="form-control">
+                                              <option value="">- PILIH KEMASAN -</option>
+                                              <?php
+                                              $data = $this->db->query("SELECT * from tbl_barangsetup where  apogroup='KEMASANRACIK' ")->result();
+                                              foreach ($data as $row) {
+                                              ?>
+                                                <?php 
+                                                // if ($heresep->kemasan_racik3 == $row->apocode) {
+                                                //   $cekkr = 'selected';
+                                                // } else {
+                                                //   $cekkr = '';
+                                                // } 
+                                                ?>
+                                                <option value="<?= $row->apocode; ?>">
+                                                  <?= $row->aponame; ?></option>
+                                              <?php } ?>
+                                            </select>
+                                          </td>
+                                          <td class="control-labelh rightJustified">ATURAN PAKAI</td>
+                                          <td>
+                                            <select name="atpakai_1" id="atpakai_1" class="form-control select2_atpakai">
+                                              <option value="">- PILIH ATURAN PAKAI -</option>
+                                              <?php
+                                              foreach ($atpakaix as $row) {
+                                              ?>
+                                                <?php if ($heresep) {
+                                                  $aturan_pakai_racik1 = $heresep->aturan_pakai_racik1;
+                                                } else {
+                                                  $aturan_pakai_racik1 = '';
+                                                }  ?>
+                                                <?php if ($aturan_pakai_racik1 == $row->apocode) {
+                                                  $cekatpakai = 'selected';
+                                                } else {
+                                                  $cekatpakai = '';
+                                                } ?>
+                                                <option value="<?= $row->apocode; ?>" <?= $cekatpakai; ?>><?= $row->aponame; ?></option>
+                                              <?php } ?>
+                                            </select>
+                                          </td>
+                                          <td>&nbsp;</td>
+                                          <td class="control-labelh rightJustified" type="hidden" width="15%"></td>
+                                          <td>
+                                          </td>
+                                        </tr>
+                                        <tr>
+                                          <td colspan="7">&nbsp;</td>
+                                        </tr>
+                                      </table>
+                                      <table id="datatableobat_1" class="table table-hoverx table-stripedx table-borderedx table-condensed table-scrollable">
+                                        <thead class="page-breadcrumb breadcrumb">
+                                          <th class="title-white" width="5%" style="text-align: center">Hapus</th>
+                                          <th class="title-white" width="20%" style="text-align: center">Kode Obat</th>
+                                          <th class="title-white" width="20%" style="text-align: center">Nama Obat</th>
+                                          <th class="title-white" width="5%" style="text-align: center">Satuan</th>
+                                          <th class="title-white" width="10%" style="text-align: center">Qty Racik</th>
+                                          <th class="title-white" width="10%" style="text-align: center">Qty Jual</th>
+                                          <th class="title-white" width="10%" style="text-align: center">Harga Jual</th>
+                                          <th class="title-white" width="10%" style="text-align: center">Uang R</th>
+                                          <th class="title-white" width="15%" style="text-align: center">Total Harga</th>
+                                        </thead>
+                                        <tbody>
+
+                                          <?php if(isset($_GET["eresep"])){
+                                              $no = 1;
+                                              $deracik1 = $this->db->query("SELECT * FROM tbl_eracik WHERE orderno = '$noeresep' AND koders = '$cabang' AND racikid = 'RACIK1'");
+                                              foreach($deracik1->result() as $dr){
+                                          ?>
+                                              <tr id="racik_tr<?= $no; ?>">
+                                                <td>
+                                                  <button type='button' onclick=hapusBarisIni_1(<?= $no; ?>) class='btn red'><i class='fa fa-trash-o'>
+                                                </td>
+                                                <td>
+                                                  <select name="kodeo_1[]" id="kodeo1_<?= $no; ?>" class="select2_el_farmasi_baranggud form-control input-large" onchange="showbarangnameo_1(this.value, <?= $no; ?>);cekstok_1(this.value, <?= $no; ?>)">
+                                                    <option value="<?= $dr->kodeobat ?>" selected>
+                                                      <?php
+                                                      $obtl = $this->db->query("SELECT * FROM tbl_barang WHERE kodebarang = '$dr->kodeobat'")->row();
+                                                      echo "[ " . $obtl->kodebarang . " ] - [ " . $obtl->namabarang . " ] - [ " . $obtl->satuan1 . " ] - [ " . number_format($obtl->hargajual, 0, ',', ',') . " ]";
+                                                      ?>
+                                                    </option>
+                                                  </select>
+                                                </td>
+                                                <td>
+                                                  <input name="namao_1[]" id="namao1_<?= $no; ?>" value="<?= $dr->namaobat; ?>" type="text" class="form-control " onkeypress="return tabE(this,event)">
+                                                </td>
+                                                <td>
+                                                  <input name="sato_1[]" id="sato1_<?= $no; ?>" value="<?= $dr->satuan; ?>" type="text" class="form-control " onkeypress="return tabE(this,event)">
+                                                </td>
+                                                <td>
+                                                  <input name="qty_racik_1[]" id="qty_racik1_<?= $no; ?>" onchange="totallineo_1(<?= $no; ?>);totalo_1()" value="<?= number_format($dr->qty_racik); ?>" type="text" class="form-control rightJustified">
+                                                </td>
+                                                <td>
+                                                  <input name="qty_jual_1[]" id="qty_jual1_<?= $no; ?>" onchange="totallineo_1(<?= $no; ?>);totalo_1()" value="<?= number_format($dr->qty_jual); ?>" type="text" class="form-control rightJustified">
+                                                </td>
+                                                <td>
+                                                  <input name="hargaoju1[]" onchange="totallineo_1(<?= $no; ?>);" value="<?= number_format($dr->harga); ?>" id="hargaoju1_<?= $no; ?>" type="text" class="form-control rightJustified" readonly>
+                                                </td>
+                                                <td>
+                                                  <input name="uangr1[]" onchange="totallineo_1(<?= $no; ?>);" value="0" id="uangr1_<?= $no; ?>" type="text" class="form-control rightJustified" readonly>
+                                                </td>
+                                                <td>
+                                                  <input name="total_hrg1[]" onchange="totallineo_1(<?= $no; ?>);" value="<?= number_format($dr->totalharga); ?>" id="total_hrg1_<?= $no; ?>" type="text" class="form-control rightJustified" readonly>
+                                                </td>
+                                              </tr>
+                                          <?php 
+                                              $no++; }
+                                              } else { 
+                                          ?>
+                                              <tr id="racik_tr1">
+                                                <td>
+                                                  <button type='button' onclick=hapusBarisIni_1(1) class='btn red'><i class='fa fa-trash-o'>
+                                                </td>
+                                                <td>
+                                                  <select name="kodeo_1[]" id="kodeo1_1" class="select2_el_farmasi_baranggud form-control input-large" onchange="showbarangnameo_1(this.value, 1);cekstok_1(this.value, 1)">
+                                                  </select>
+                                                </td>
+                                                <td>
+                                                  <input name="namao_1[]" id="namao1_1" type="text" class="form-control " onkeypress="return tabE(this,event)">
+                                                </td>
+                                                <td>
+                                                  <input name="sato_1[]" id="sato1_1" type="text" class="form-control " onkeypress="return tabE(this,event)">
+                                                </td>
+                                                <td>
+                                                  <input name="qty_racik_1[]" id="qty_racik1_1" onchange="totallineo_1(1);totalo_1()" value="1" type="text" class="form-control rightJustified">
+                                                </td>
+                                                <td>
+                                                  <input name="qty_jual_1[]" id="qty_jual1_1" onchange="totallineo_1(1);totalo_1()" value="1" type="text" class="form-control rightJustified">
+                                                </td>
+                                                <td>
+                                                  <input name="hargaoju1[]" onchange="totallineo_1(1);" value="0" id="hargaoju1_1" type="text" class="form-control rightJustified" readonly>
+                                                </td>
+                                                <td>
+                                                  <input name="uangr1[]" onchange="totallineo_1(1);" value="0" id="uangr1_1" type="text" class="form-control rightJustified" readonly>
+                                                </td>
+                                                <td>
+                                                  <input name="total_hrg1[]" onchange="totallineo_1(1);" value="0" id="total_hrg1_1" type="text" class="form-control rightJustified" readonly>
+                                                </td>
+                                              </tr>
+                                          <?php } ?>
+
+                                        </tbody>
+                                      </table>
+                                      <table class="table" border="0" width="100%">
+                                        <tr class="wells">
+                                          <td colspan="2">
+                                            <button type="button" onclick="tambaho_1()" class="btn green"><i class="fa fa-plus"></i></button>
+                                          </td>
+                                          <td class="control-labelh leftJustified">TOTAL</td>
+                                          <td width="6%">&nbsp;</td>
+                                          <td width="2%">&nbsp;</td>
+                                          <td width="15%">
+                                            <input type="text" class="form-control rightJustified" name="toto_1" id="toto_1" value=0 readonly>
+                                          </td>
+                                        </tr>
+                                        <tr>
+                                          <td width="30%" rowspan="6" class="control-labelh leftJustified">
+                                            Resep Manual Dari Dokter<br /><br />
+                                            <textarea type="text" class="form-control" name="resman_1" id="resman_1" value="" style="resize:none !important"><?= $heresep->manual_racik1 ?></textarea>
+                                            <br>
+                                            <div class="wells">
+                                              <button id="btnsimpan" type="button" onclick="saveracik_1()" class="btn blue">
+                                                <i class="fa fa-save"></i> <b>Posting Racik</b>
+                                              </button>
+                                              <a href="<?= base_url('penjualan_faktur') ?>" class="btn btn red">
+                                                <i class="fa fa-undo"></i><b> KEMBALI </b>
+                                              </a>
+                                              <h4>
+                                                <span id="error" style="display:none; color:#F00">Terjadi Kesalahan... </span>
+                                                <span id="success" style="display:none; color:#0C0"><b>Data sudah disimpan...</b></span>
+                                              </h4>
+                                            </div>
+                                          </td>
+                                          <td rowspan="6" width="30%">&nbsp;</td>
+                                        </tr>
+                                        <tr>
+                                          <td class="control-labelh leftJustified">DISKON</td>
+                                          <td>
+                                            <input type="text" class="form-control rightJustified" name="disknom_1" id="disknom_1" value="0" onchange="totalo_1()">
+                                          </td>
+                                          <td class="control-labelh leftJustified"><b>%</b></td>
+                                          <td>
+                                            <input type="text" class="form-control rightJustified" name="disk_1" id="disk_1" value="0" readonly>
+                                          </td>
+                                        </tr>
+                                        <tr>
+                                          <td class="control-labelh leftJustified">
+                                            <label for="ppn">PPN</label>
+                                          </td>
+                                          <td>
+                                            <input class='form-control' type="checkbox" name="cek_ppn" id="cek_ppn" onchange="cek_ppn2()" disabled>
+                                          </td>
+                                          <td>&nbsp;</td>
+                                          <td>
+                                            <input type="text" class="form-control rightJustified" name="ppn_1" id="ppn_1" value="0" readonly>
+                                          </td>
+                                        </tr>
+                                        <tr>
+                                          <td class="control-labelh leftJustified">ONGKOS RACIK
+                                          </td>
+                                          <td>&nbsp;</td>
+                                          <td>&nbsp;</td>
+                                          <td>
+                                            <input type="number" class="form-control rightJustified" name="ongra_1" id="ongra_1" value=0 onchange="totalo_1()" readonly>
+                                          </td>
+                                        </tr>
+                                        <tr>
+                                          <td class="control-labelh leftJustified">TOTAL+PPN
+                                          </td>
+                                          <td>&nbsp;</td>
+                                          <td>&nbsp;</td>
+                                          <td>
+                                            <input type="text" class="form-control rightJustified" name="totp_1" id="totp_1" value=0 readonly>
+                                            <input type="hidden" id="ppn_pajak" name="ppn_pajak" value="<?= $ppn['prosentase']; ?>">
+                                          </td>
+                                        </tr>
+                                        <tr>
+                                          <td width="10%" class="control-labelh leftJustified">TOTAL JUAL PASIEN</td>
+                                          <td width="6%">
+                                            <input type="checkbox" class="form-control" name="t_manual" id="t_manual" onclick="cekmanual()">
+                                          </td>
+                                          <td width="2%">
+                                            &nbsp;
+                                          </td>
+                                          <td width="15%">
+                                            <input type="text" class="form-control rightJustified" name="toto_11" id="toto_11" value="0" readonly onchange="t_jual_manual()">
+                                          </td>
+                                        </tr>
+                                        </tr>
+                                      </table>
+                                    </div>
+                                  </div>
+                                </div>
+                            </div>
+                          </div>
+                        </div>
+                        <!-- tab2 -->
+
+                        <div class="tab-pane" id="tab3" onclick="cek_tab()">
+                          <div class="row">
+                            <!-- harimas -->
 
 
-                            </td>
-                            <td rowspan="6" width="30%">&nbsp;</td>
-                          <tr>
-                            <td class="control-labelh leftJustified">DISKON
-                            </td>
-                            <td>
-                              <input type="text" class="form-control rightJustified" name="disknom_1" id="disknom_1"
-                                value="0" onchange="totalo_1()">
-                            </td>
-                            <td class="control-labelh leftJustified"><b>%</b></td>
-                            <td>
-                              <input type="text" class="form-control rightJustified" name="disk_1" id="disk_1" value="0"
-                                readonly>
-                            </td>
-                          </tr>
-                          <tr>
+                            <div class="col-md-12 form-body">
+                              <table class="table" border="0" width="100%">
+                                <tr bgcolor="#c7f2ff">
 
-                            <td class="control-labelh leftJustified">
+                                  <td width="10%" class="control-labelh rightJustified">RACIKAN KE
 
-                              <label for="ppn">PPN</label>
-                            </td>
-                            <td>
-                              <input class='form-control' type="checkbox" name="cek_ppn" id="cek_ppn"
-                                onchange="cek_ppn2()" disabled>
-                            </td>
-                            <td>&nbsp;</td>
+                                  </td>
+                                  <td width="20%">
+                                    <select id="cekracik" name="cekracik" class="form-control">
 
-                            <td>
-                              <input type="text" class="form-control rightJustified" name="ppn_1" id="ppn_1" value="0"
-                                readonly>
-                            </td>
-                          </tr>
-                          <tr>
-                            <td class="control-labelh leftJustified">ONGKOS RACIK
-                            </td>
-                            <td>&nbsp;</td>
-                            <td>&nbsp;</td>
-                            <td>
-                              <input type="number" class="form-control rightJustified" name="ongra_1" id="ongra_1"
-                                value=0 onchange="totalo_1()" readonly>
-                            </td>
-                          </tr>
-                          <tr>
-                            <td class="control-labelh leftJustified">TOTAL+PPN
-                            </td>
-                            <td>&nbsp;</td>
-                            <td>&nbsp;</td>
-                            <td>
-                              <input type="text" class="form-control rightJustified" name="totp_1" id="totp_1" value=0
-                                readonly>
-                              <input type="hidden" id="ppn_pajak" name="ppn_pajak" value="<?= $ppn['prosentase']; ?>">
-                            </td>
-                          </tr>
-                          <tr>
-                            <td width="10%" class="control-labelh leftJustified">TOTAL JUAL PASIEN</td>
-                            <td width="6%">
-                              <input type="checkbox" class="form-control" name="t_manual" id="t_manual"
-                                onclick="cekmanual()">
-                            </td>
-                            <td width="2%">
-                              &nbsp;
-                            </td>
-                            <td width="15%">
-                              <input type="text" class="form-control rightJustified" name="toto_11" id="toto_11"
-                                value="0" readonly onchange="t_jual_manual()">
-                            </td>
-                          </tr>
-                          </tr>
-                        </table>
+                                      <option value="1" selected>1</option>
+                                      <option value="2">2</option>
+                                      <option value="3">3</option>
+                                      <option value="4">4</option>
+                                    </select>
+                                  </td>
+
+                                  <td>&nbsp;</td>
+                                  <!-- Diskon Resep -->
+
+
+                                  <td>&nbsp;</td>
+                                  <td>&nbsp;</td>
+                                  <td>&nbsp;</td>
+                                  <td>&nbsp;</td>
+                                  <td>&nbsp;</td>
+
+                                </tr>
+
+
+                              </table>
+                            </div>
+
+                            <div class="col-md-12">
+                              <div class="portlet box purple" id="racik1">
+                                <div class="portlet-title">
+                                  <div class="caption">
+                                    <span class="title-white"><b>RACIKAN KE - 1</b></span>
+                                  </div>
+
+                                </div>
+
+                                <div class="portlet-body form">
+                                  <div class="form-body">
+                                    <table class="table" border="0" width="100%">
+                                      <tr>
+                                        <td colspan="7">&nbsp;</td>
+                                      </tr>
+                                      <tr bgcolor="#c7f2ff">
+
+                                        <td width="10%" class="control-labelh rightJustified">JENIS</td>
+                                        <td width="20%" colspan="2">
+                                          <select id="jenis_1" name="jenis_1" class="form-control">
+                                            <?php
+                                                $data = $this->db->query("SELECT * from tbl_barangsetup where apogroup ='JENISRACIK'")->result();
+                                                foreach ($data as $row) { 
+                                            ?>
+                                            <option value="<?= $row->apocode; ?>">
+                                              <?= $row->aponame; ?></option>
+                                            <?php } ?>
+                                          </select>
+                                        </td>
+
+                                        <td width="15%" class="control-labelh rightJustified">NAMA
+                                          RACIKAN</td>
+                                        <td width="20%">
+                                          <input type="text" class="form-control " name="namaracik_1" id="namaracik_1" value=""
+                                            Placeholder="Nama">
+                                        </td>
+                                        <td> &nbsp; </td>
+                                        <td width="15%" class="control-labelh rightJustified">CARA PAKAI
+                                        </td>
+                                        <td>
+                                          <select name="carapakai" id="carapakai" class="form-control">
+                                            <option value=""> --- PILIH ----</option>
+                                            <option value="DIMINUM"> DIMINUM </option>
+                                            <option value="DIOLES"> DIOLES </option>
+                                            <option value="DITETES"> DITETES </option>
+                                          </select>
+                                        </td>
+                                      </tr>
+                                      <tr bgcolor="#c7f2ff">
+                                        <td class="control-labelh rightJustified">JUMLAH</td>
+                                        <td width="8%">
+                                          <input type="number" class="form-control " name="jumracik_1" id="jumracik_1" value="">
+
+                                        </td>
+
+                                        <td width="12%">
+                                          <select name="stajum_1" id="stajum_1" class="form-control">
+                                            <?php
+                                                $data = $this->db->query("SELECT * from tbl_barangsetup where  apogroup='KEMASANRACIK' ")->result();
+                                                foreach ($data as $row) { 
+                                            ?>
+                                            <option value="<?= $row->apocode; ?>">
+                                              <?= $row->aponame; ?></option>
+                                            <?php } ?>
+                                          </select>
+                                        </td>
+
+                                        <td class="control-labelh rightJustified">ATURAN PAKAI</td>
+                                        <td>
+                                          <select name="atpakai_1" id="atpakai_1" class="form-control">
+                                            <?php
+                                                $data = $this->db->query("SELECT * from tbl_barangsetup where  apogroup='ATURANPAKAI' ")->result();
+                                                foreach ($data as $row) { 
+                                            ?>
+                                            <option value="<?= $row->apocode; ?>">
+                                              <?= $row->aponame; ?></option>
+                                            <?php } ?>
+                                          </select>
+                                        </td>
+                                        <td>&nbsp;</td>
+
+                                        <td class="control-labelh rightJustified" type="hidden" width="15%"></td>
+                                        <td>
+                                          <!-- <input type="text" class="form-control " name="atpakai_1"
+                                                                            id="atpakai_1" value="<?= $header_r->aturanpakai; ?>"
+                                                                            type="hidden"> -->
+
+                                        </td>
+                                      </tr>
+                                      <tr>
+                                        <td colspan="7">&nbsp;</td>
+                                      </tr>
+
+                                    </table>
+                                    <table id="datatableobat_1"
+                                      class="table table-hoverx table-stripedx table-borderedx table-condensed table-scrollable">
+                                      <thead class="page-breadcrumb breadcrumb">
+                                        <th class="title-white" width="5%" style="text-align: center">Hapus</th>
+                                        <th class="title-white" width="20%" style="text-align: center">Kode Obat</th>
+                                        <th class="title-white" width="20%" style="text-align: center">Nama Obat</th>
+                                        <th class="title-white" width="5%" style="text-align: center">Satuan</th>
+                                        <th class="title-white" width="10%" style="text-align: center">Qty Racik</th>
+                                        <th class="title-white" width="10%" style="text-align: center">Qty Jual</th>
+                                        <th class="title-white" width="10%" style="text-align: center">Harga Jual</th>
+                                        <th class="title-white" width="10%" style="text-align: center">Uang R</th>
+                                        <th class="title-white" width="15%" style="text-align: center">Total Harga</th>
+                                      </thead>
+                                      <tbody>
+                                        <tr id="racik_no1">
+                                          <td>
+                                            <button type='button' onclick=hapusBarisIni_1(1) class='btn red'><i
+                                                class='fa fa-trash-o'>
+                                          </td>
+                                          <td>
+                                            <select name="kodeo_1[]" id="kodeo1_1"
+                                              class="select2_el_farmasi_baranggud form-control input-large"
+                                              onchange="showbarangnameo_1(this.value, 1);cekstok_1(this.value, 1)">
+                                            </select>
+                                          </td>
+
+                                          <td>
+                                            <input name="namao_1[]" id="namao1_1" type="text" class="form-control "
+                                              onkeypress="return tabE(this,event)">
+                                          </td>
+
+                                          <td>
+                                            <input name="sato_1[]" id="sato1_1" type="text" class="form-control "
+                                              onkeypress="return tabE(this,event)">
+                                          </td>
+
+                                          <td>
+                                            <input name="qty_racik_1[]" id="qty_racik1_1" onchange="totallineo_1(1);totalo_1()"
+                                              value="1" type="text" class="form-control rightJustified">
+                                          </td>
+
+                                          <td>
+                                            <input name="qty_jual_1[]" id="qty_jual1_1" onchange="totallineo_1(1);totalo_1()"
+                                              value="1" type="text" class="form-control rightJustified">
+                                          </td>
+
+
+                                          <td>
+                                            <input name="hargaoju1[]" onchange="totallineo_1(1);" value="0" id="hargaoju1_1"
+                                              type="text" class="form-control rightJustified" readonly>
+                                          </td>
+
+                                          <td>
+                                            <input name="uangr1[]" onchange="totallineo_1(1);" value="0" id="uangr1_1" type="text"
+                                              class="form-control rightJustified" readonly>
+                                          </td>
+
+                                          <td>
+                                            <input name="total_hrg1[]" onchange="totallineo_1(1);" value="0" id="total_hrg1_1"
+                                              type="text" class="form-control rightJustified" readonly>
+                                          </td>
+
+                                        </tr>
+
+                                      </tbody>
+                                    </table>
+
+                                    <table class="table" border="0" width="100%">
+
+                                      <tr class="wells">
+                                        <td colspan="2">
+                                          <button type="button" onclick="tambaho_1()" class="btn green"><i class="fa fa-plus"></i>
+                                          </button>
+                                          <!-- <button type="button" onclick="hapuso_1()" class="btn red"><i class="fa fa-trash-o"></i></button> -->
+                                        </td>
+                                        <td class="control-labelh leftJustified">TOTAL</td>
+                                        <td width="6%">&nbsp;</td>
+                                        <td width="2%">&nbsp;</td>
+                                        <td width="15%">
+                                          <input type="text" class="form-control rightJustified" name="toto_1" id="toto_1" value=0
+                                            readonly>
+                                        </td>
+                                      </tr>
+                                      <tr>
+                                        <td width="30%" rowspan="6" class="control-labelh leftJustified">
+                                          &nbsp;&nbsp;&nbsp;&nbsp;
+                                          Resep Manual Dari Dokter
+                                          <textarea type="text" class="form-control " name="resman_1" id="resman_1" value="">
+                                      </textarea><br>
+
+                                          <div class="wells">
+                                            <button id="btnsimpan" type="button" onclick="saveracik_1()" class="btn blue"><i
+                                                class="fa fa-save"></i> <b>Posting
+                                                Racik</b></button>
+                                            <!-- 													
+                                      <div class="btn-group">
+                                      <button type="button" class="btn green" onclick="this.form.reset();location.reload();"><i class="fa fa-pencil-square-o"></i> <b>Data Baru</b></button>    
+                                      </div> -->
+                                            <!-- <button id="btncetak" type="button" onclick="javascript:window.open(_urlcetak(),'_blank');" class="btn yellow"><i class="fa fa-print"></i> <b>Cetak</b></button> -->
+
+                                            <a href="<?= base_url('penjualan_faktur') ?>" class="btn btn red"><i
+                                                class="fa fa-undo"></i><b>
+                                                KEMBALI </b></a>
+
+                                            <h4><span id="error" style="display:none; color:#F00">Terjadi
+                                                Kesalahan... </span> <span id="success" style="display:none; color:#0C0"><b>Data
+                                                  sudah
+                                                  disimpan...</b></span>
+                                            </h4>
+                                          </div>
+
+
+                                        </td>
+                                        <td rowspan="6" width="30%">&nbsp;</td>
+                                      <tr>
+                                        <td class="control-labelh leftJustified">DISKON
+                                        </td>
+                                        <td>
+                                          <input type="text" class="form-control rightJustified" name="disknom_1" id="disknom_1"
+                                            value="0" onchange="totalo_1()">
+                                        </td>
+                                        <td class="control-labelh leftJustified"><b>%</b></td>
+                                        <td>
+                                          <input type="text" class="form-control rightJustified" name="disk_1" id="disk_1" value="0"
+                                            readonly>
+                                        </td>
+                                      </tr>
+                                      <tr>
+
+                                        <td class="control-labelh leftJustified">
+
+                                          <label for="ppn">PPN</label>
+                                        </td>
+                                        <td>
+                                          <input class='form-control' type="checkbox" name="cek_ppn" id="cek_ppn"
+                                            onchange="cek_ppn2()" disabled>
+                                        </td>
+                                        <td>&nbsp;</td>
+
+                                        <td>
+                                          <input type="text" class="form-control rightJustified" name="ppn_1" id="ppn_1" value="0"
+                                            readonly>
+                                        </td>
+                                      </tr>
+                                      <tr>
+                                        <td class="control-labelh leftJustified">ONGKOS RACIK
+                                        </td>
+                                        <td>&nbsp;</td>
+                                        <td>&nbsp;</td>
+                                        <td>
+                                          <input type="number" class="form-control rightJustified" name="ongra_1" id="ongra_1"
+                                            value=0 onchange="totalo_1()" readonly>
+                                        </td>
+                                      </tr>
+                                      <tr>
+                                        <td class="control-labelh leftJustified">TOTAL+PPN
+                                        </td>
+                                        <td>&nbsp;</td>
+                                        <td>&nbsp;</td>
+                                        <td>
+                                          <input type="text" class="form-control rightJustified" name="totp_1" id="totp_1" value=0
+                                            readonly>
+                                          <input type="hidden" id="ppn_pajak" name="ppn_pajak" value="<?= $ppn['prosentase']; ?>">
+                                        </td>
+                                      </tr>
+                                      <tr>
+                                        <td width="10%" class="control-labelh leftJustified">TOTAL JUAL PASIEN</td>
+                                        <td width="6%">
+                                          <input type="checkbox" class="form-control" name="t_manual" id="t_manual"
+                                            onclick="cekmanual()">
+                                        </td>
+                                        <td width="2%">
+                                          &nbsp;
+                                        </td>
+                                        <td width="15%">
+                                          <input type="text" class="form-control rightJustified" name="toto_11" id="toto_11"
+                                            value="0" readonly onchange="t_jual_manual()">
+                                        </td>
+                                      </tr>
+                                      </tr>
+                                    </table>
+                                  </div>
+
+
+                                </div>
+                              </div>
+                            </div>
+
+
+                            <!-- end tab 2 harimas -->
+
+
+                          </div>
+                          <!--tab2-->
+
+
+                        </div>
+                        <!--tab-->
                       </div>
-
-
-                    </div>
-                  </div>
-                </div>
-
-
-                <!-- end tab 2 harimas -->
-
-
-              </div>
-              <!--tab2-->
-
-
-            </div>
-            <!--tab-->
-          </div>
 
 
         </div>
@@ -1015,17 +1206,22 @@ $(window).on("load", function() {
   opt.value = 'FARMASI';
   opt.innerHTML = 'FARMASI TUNAI';
   selectElement.appendChild(opt);
+
   <?php if(!isset($_GET["eresep"])): ?>
       $('#gudang').val('FARMASI');
   <?php endif; ?>
+
   initailizeSelect2_register(str);
   initailizeSelect2_registerresep(str);
+
   <?php if(!isset($_GET["eresep"])): ?>
       initailizeSelect2_farmasi_baranggud(gud);
   <?php else: ?>
       total();
+      totalo_1();
       initailizeSelect2_farmasi_baranggud("<?= $heresep->gudang ?>");
   <?php endif; ?>
+
   noresepauto();
 });
 
@@ -1070,8 +1266,8 @@ function noresepauto(str, id) {
     type: "GET",
     dataType: "JSON",
     success: function(data) {
-      // $('#noresep').val(data);
-      // $('#noresepo').val(data);
+      $('#noresep').val(data);
+      $('#noresepo').val(data);
     }
   });
 
@@ -1936,7 +2132,6 @@ function saveracik_1() {
 
 }
 
-
 // function save2()
 // {	       
 // 	var table = document.getElementById('datatable');
@@ -2276,8 +2471,6 @@ function getinfopasien() {
 
     }
   });
-
-
 }
 
 
@@ -2291,6 +2484,12 @@ function getdataklinik() {
     initailizeSelect2_register(str);
 
   }
+
+  if (pembeli == 'atr' ) {
+      $('#dokter').prop('disabled', true);
+    } else {
+      $('#dokter').prop('disabled', false);
+    }
 }
 
 function getbar() {

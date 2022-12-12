@@ -1550,7 +1550,7 @@ class M_global extends CI_Model
 
 		$sql = "SELECT po_no as id, concat(po_no,' | ',date_format(po_date,'%d-%m-%Y')) as text 
 			from tbl_apohpolog
-            where koders='$cabang' and vendor_id='$vendor' and closed=0 and (po_no like '%$str%') and po_no not in(SELECT po_no FROM tbl_apodterimalog) 
+            where setuju = 1 and koders='$cabang' and vendor_id='$vendor' and closed=0 and (po_no like '%$str%') and po_no not in(SELECT po_no FROM tbl_apodterimalog) 
 			ORDER BY po_date asc";
 		$query = $this->db->query($sql);
 

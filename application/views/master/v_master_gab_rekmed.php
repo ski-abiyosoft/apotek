@@ -54,29 +54,44 @@ $this->load->view('template/body');
 				<form id="frmlaporan" class="form-horizontal form-bordered1" method="post">
 						<table width="100%" border="0">
 							<tr>
-								<td colspan="2">
+								<td colspan="3">
 									&nbsp;
 								</td>
 							</tr>
 							<tr>
-								<td width="10%">&nbsp;</td>
-								<td width="90%">
-									<a class="btn btn-sm red print_laporan" onclick="urlcetak();">
+								
+							</tr>
+							<tr>
+								<td colspan="3">
+									&nbsp;
+								</td>
+							</tr>
+							<tr>
+								<td width="20%" align="center" >
+									<label class="control-label"><b>CETAK PASIEN DATA DOBEL </b></label> </td>
+								<td width="10%"><b>: &nbsp;&nbsp;</b> 
+									<a class="btn btn-sm blue print_laporan" onclick="urlcetak(0);">
 									<i title="CETAK PDF" class="fa fa-print"></i>
-									<b> CETAK DATA DOBEL </b>
+									<b> LAYAR </b>
+									</a>	
+								</td>
+								<td width="70%">
+									<a class="btn btn-sm green print_laporan" onclick="urlcetak(2);">
+									<i title="CETAK PDF" class="fa fa-file"></i>
+									<b> EXCEL </b>
 									</a>	
 								</td>
 							</tr>
 							<tr>
-								<td colspan="2" >&nbsp;</td>
+								<td colspan="3" >&nbsp;<br><br><br></td>
 							</tr>
 							<tr>
-								<td  colspan="2" align="center" >
+								<td  colspan="3" align="center" >
 									<label class="control-label"><U><b>PENGGABUNGAN REKMED DENGAN PASIEN YG SAMA</b></U></label>
 									<br><br></td>
 							</tr>
 							<tr>
-								<td colspan="2" >
+								<td colspan="3" >
 									<label class="col-md-3 control-label">REKMED 1</label>
 									<div class="col-md-2">
 
@@ -85,11 +100,11 @@ $this->load->view('template/body');
 									</div></td>
 							</tr>
 							<tr>
-								<td colspan="2" >
+								<td colspan="3" >
 									<label class="col-md-5 control-label"><b>DI GABUNG KE </b></label><br><br></td>
 							</tr>
 							<tr>
-								<td colspan="2" >
+								<td colspan="3" >
 									<label class="col-md-3 control-label">REKMED 2</label>
 									<div class="col-md-2">
 
@@ -99,17 +114,17 @@ $this->load->view('template/body');
 								</td>
 							</tr>
 							<tr>
-								<td colspan="2" >&nbsp;</td>
+								<td colspan="3" >&nbsp;</td>
 							</tr>
 							<tr>
-								<td  colspan="2" align="center">
-									<a class="btn btn-sm red print_laporan" onclick="gabb();" ><i title="CETAK PDF" class="fa fa-check"></i><b> GABUNG </b></a>
+								<td  colspan="3" align="center">
+									<a class="btn btn-sm red " onclick="gabb();" ><i title="CETAK PDF" class="fa fa-check"></i><b> GABUNG </b></a>
 
 								</td>
 							</tr>
 							
 							<tr>
-								<td colspan="2" >&nbsp;<br><br></td>
+								<td colspan="3" >&nbsp;<br><br></td>
 							</tr>
 						</table>
 						<!-- LAP HARIAN -->
@@ -149,18 +164,26 @@ $this->load->view('template/v_report');
 
 
 	}
-	function urlcetak() {
+	function urlcetak(cekpdf) {
 
 		var baseurl = "<?= base_url() ?>";
-		window.open(baseurl + 'gabung_rekmed/cetak_data', '_blank');
+		var var1    = baseurl+'gabung_rekmed/cetak_data/'+cekpdf;
 
+		window.open(var1,'_blank');
+
+	}
+
+	function alltrim(kata){
+		b = (kata.split(' ').join(''));
+		c = (b.replace( /\s/g, ""));
+		return c
 	}
 
 	
 	function gabb() {
 		
-		var rm1      = $('[name="rm1"]').val();
-		var rm2      = $('[name="rm2"]').val();
+		var rm1      = alltrim($('[name="rm1"]').val());
+		var rm2      = alltrim($('[name="rm2"]').val());
 
 		swal({
         title: 'GABUNG DATA',
@@ -188,7 +211,7 @@ $this->load->view('template/v_report');
 							type: "success",
 							confirmButtonText: "OK"
 						}).then((value) => {
-							// location.href = "<?= site_url('Master_dokter2') ?>";
+							location.href = "<?= site_url('Gabung_rekmed') ?>";
 						});
 					}else{
 						swal({

@@ -192,7 +192,7 @@ function cetak(param) {
         });
     } else {
         if (param == "pdf") {
-            window.open("/logistik_kartustock/cetak/?barang=" + kodebarang + "&gudang=" + gudang + "&cabang=" + cabang +
+            window.open("/logistik_kartustock/cetak2/?barang=" + kodebarang + "&gudang=" + gudang + "&cabang=" + cabang +
                 "&tgl1=" + tanggal1 + "&tgl2=" + tanggal2, "_blank");
         }
     }

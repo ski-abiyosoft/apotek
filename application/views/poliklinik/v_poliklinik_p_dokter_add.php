@@ -780,7 +780,7 @@
                                                                         </td>
 
                                                                         <td>
-                                                                            <select name="diag[]" id="diag1" class="select2_el_icdind form-control input-largex">
+                                                                            <select name="diag[]" id="diag1" class="select2_el_icdind form-control input-largex" onchange="pcare_diag_trigger(this.value)">
                                                                             </select>
 
                                                                         </td>
@@ -803,7 +803,7 @@
                                                                             </select>
                                                                         </td>
                                                                         <td>
-                                                                            <select name="diag[]" id="diag<?= $no ?>" class="select2_el_icdind form-control input-largex">
+                                                                            <select name="diag[]" id="diag<?= $no ?>" class="select2_el_icdind form-control input-largex" onchange="pcare_diag_trigger(this.value)">
                                                                                 <option value="<?= $dval->icdcode ?>" selected><?= $dval->nmdiag ?></option>
                                                                             </select>
                                                                         </td>
@@ -1280,7 +1280,23 @@
                                                                             </tr>
                                                                             <tr style="background:#87ceeb">
                                                                                 <td align="right" style="width:20%;font-weight:bold;">Aturan Pakai</td>
-                                                                                <td style="width:80%"><textarea type="text" style="width:100%;resize:none !important" class="form-control" name="aturan_pakai1" rows="2"><?= isset($orderperiksa->aturan_pakai_racik1)? $orderperiksa->aturan_pakai_racik1 : "" ?></textarea></td>
+                                                                                <!-- <td style="width:80%"><textarea type="text" style="width:100%;resize:none !important" class="form-control" name="aturan_pakai1" rows="2"><?= isset($orderperiksa->aturan_pakai_racik_racik1)? $orderperiksa->aturan_pakai_racik_racik1 : "" ?></textarea></td> -->
+                                                                                <td><select type="text" class="form-contol" name="aturan_pakai1">
+                                                                                    <option value="">- Pilih Aturan Pakai -</option>
+                                                                                    <?php
+                                                                                        foreach($aturan_pakai->result() as $ap){
+                                                                                            if(isset($orderperiksa->aturan_pakai_racik1)){
+                                                                                                if($ap->apocode== $orderperiksa->aturan_pakai_racik1){
+                                                                                                    echo "<option value='". $orderperiksa->aturan_pakai_racik1 ."' selected>". data_master("tbl_barangsetup", array("apocode" => $orderperiksa->aturan_pakai_racik1))->aponame ."</option>";
+                                                                                                } else {
+                                                                                                    echo "<option value='". $ap->apocode ."'>". $ap->aponame ."</option>";
+                                                                                                }
+                                                                                            } else {
+                                                                                                echo "<option value='". $ap->apocode ."'>". $ap->aponame ."</option>";
+                                                                                            }
+                                                                                        }
+                                                                                    ?>
+                                                                                </select></td>
                                                                             </tr>
                                                                         </tbody>
                                                                     </table>
@@ -1370,7 +1386,23 @@
                                                                             </tr>
                                                                             <tr style="background:#87ceeb">
                                                                                 <td align="right" style="width:20%;font-weight:bold;">Aturan Pakai</td>
-                                                                                <td style="width:80%"><textarea type="text" style="width:100%;resize:none !important" class="form-control" name="aturan_pakai2" rows="2"><?= isset($orderperiksa->aturan_pakai_racik2)? $orderperiksa->aturan_pakai_racik2 : "" ?></textarea></td>
+                                                                                <!-- <td style="width:80%"><textarea type="text" style="width:100%;resize:none !important" class="form-control" name="aturan_pakai2" rows="2"><?= isset($orderperiksa->aturan_pakai_racik_racik2)? $orderperiksa->aturan_pakai_racik_racik2 : "" ?></textarea></td> -->
+                                                                                <td><select type="text" class="form-contol" name="aturan_pakai2">
+                                                                                    <option value="">- Pilih Aturan Pakai -</option>
+                                                                                    <?php
+                                                                                        foreach($aturan_pakai->result() as $ap){
+                                                                                            if(isset($orderperiksa->aturan_pakai_racik2)){
+                                                                                                if($ap->apocode== $orderperiksa->aturan_pakai_racik2){
+                                                                                                    echo "<option value='". $orderperiksa->aturan_pakai_racik2 ."' selected>". data_master("tbl_barangsetup", array("apocode" => $orderperiksa->aturan_pakai_racik2))->aponame ."</option>";
+                                                                                                } else {
+                                                                                                    echo "<option value='". $ap->apocode ."'>". $ap->aponame ."</option>";
+                                                                                                }
+                                                                                            } else {
+                                                                                                echo "<option value='". $ap->apocode ."'>". $ap->aponame ."</option>";
+                                                                                            }
+                                                                                        }
+                                                                                    ?>
+                                                                                </select></td>
                                                                             </tr>
                                                                         </tbody>
                                                                     </table>
@@ -1460,7 +1492,23 @@
                                                                             </tr>
                                                                             <tr style="background:#87ceeb">
                                                                                 <td align="right" style="width:20%;font-weight:bold;">Aturan Pakai</td>
-                                                                                <td style="width:80%"><textarea type="text" style="width:100%;resize:none !important" class="form-control" name="aturan_pakai3" rows="2"><?= isset($orderperiksa->aturan_pakai_racik3)? $orderperiksa->aturan_pakai_racik3 : "" ?></textarea></td>
+                                                                                <!-- <td style="width:80%"><textarea type="text" style="width:100%;resize:none !important" class="form-control" name="aturan_pakai3" rows="2"><?= isset($orderperiksa->aturan_pakai_racik_racik3)? $orderperiksa->aturan_pakai_racik_racik3 : "" ?></textarea></td> -->
+                                                                                <td><select type="text" class="form-contol" name="aturan_pakai3">
+                                                                                    <option value="">- Pilih Aturan Pakai -</option>
+                                                                                    <?php
+                                                                                        foreach($aturan_pakai->result() as $ap){
+                                                                                            if(isset($orderperiksa->aturan_pakai_racik3)){
+                                                                                                if($ap->apocode== $orderperiksa->aturan_pakai_racik3){
+                                                                                                    echo "<option value='". $orderperiksa->aturan_pakai_racik3 ."' selected>". data_master("tbl_barangsetup", array("apocode" => $orderperiksa->aturan_pakai_racik3))->aponame ."</option>";
+                                                                                                } else {
+                                                                                                    echo "<option value='". $ap->apocode ."'>". $ap->aponame ."</option>";
+                                                                                                }
+                                                                                            } else {
+                                                                                                echo "<option value='". $ap->apocode ."'>". $ap->aponame ."</option>";
+                                                                                            }
+                                                                                        }
+                                                                                    ?>
+                                                                                </select></td>
                                                                             </tr>
                                                                         </tbody>
                                                                     </table>
@@ -2212,6 +2260,48 @@
 <!-- <script src="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/js/i18n/defaults-*.min.js"></script> -->
 
 <script>
+    // PCARE JS //
+
+    function error_alert(message){
+        return swal({
+            title: "POLIKLINIK",
+            html: message,
+            type: "error",
+            confirmButtonText: "Tutup", 
+            confirmButtonColor: "red"
+        });
+    }
+
+    function pcare_diag_trigger(param){
+        if(param == "" || param == null){
+            console.error("ICD error : failed to trigger icd diagnostics for pcare, undefined icd code");
+        } else {
+
+            $.ajax({
+                url: "/poliklinik/get_icd_for_pcare/"+ param,
+                type: "GET",
+                dataType: "JSON",
+                success: function(res){
+                    if(res.status == "success"){
+                        $("#jenis_diagnosa1").val(param);
+                        $("#diagnosa1").val(res.string);
+                    } else 
+                    if(res.status == "error"){
+                        error_alert(res.message);
+                    } else {
+                        error_alert("results have been issued<br />but undefined result status");
+                    }
+                },
+                error: function(jqXHR, textStatus, errorThrown){
+                    error_alert("failed to trigger icd diagnostics for pcare (client)");
+                }
+            })
+
+        }
+    }
+
+    // PCARE JS //
+    
     <?php if(isset($_GET["tab"])){ if($_GET["tab"] == "elab" || $_GET["tab"] == "rad" || $_GET["tab"] == "erm"){ ?>
         var $target = $('html,body'); 
         $target.animate({scrollTop: $target.height()}, 1000);
@@ -2365,11 +2455,7 @@
 	clearButton2.addEventListener("click", function (event) {
 		signaturePad2.clear();
 	});
-<<<<<<< HEAD
     
-=======
-
->>>>>>> 33d0c84f972c8626bdc0eab0b0b839a47b6dacb4
     // INITIALIZE
     $(window).on("load", function(){
         console.log($("#testeresep").serialize());
@@ -2964,7 +3050,7 @@
         table.append("<tr id='diagnosa_tr"+ idrowDiag +"'>"+
         "<td><button type='button' onclick=hapusBaris_diagnosa("+idrowDiag+") class='btn red  justify'><i class='fa fa-trash-o'></i></button></td>"+
         "<td><select name='jenis_diag[]' id=jenis_diag"+idrowDiag+" class='select2_el_jnsicd form-control input-largex' onchange='getdiag(this.value,"+idrowDiag+")'></select></td>"+
-        "<td><select name='diag[]' id=diag"+idrowDiag+" class='select2_el_icdind form-control input-largex'> </select></td>"+
+        "<td><select name='diag[]' id=diag"+idrowDiag+" class='select2_el_icdind form-control input-largex' onchange='pcare_diag_trigger(this.value)'> </select></td>"+
         "<td><input name='utama[]' id=utama"+idrowDiag+" type='checkbox' class='form-control' onclick='cekutm(this.value,"+idrowDiag+")'>"+
         "<input name='utama_hide[]' id='utama_hide"+idrowDiag+"' type='hidden' class='form-control'></td>"+
         "</tr>");

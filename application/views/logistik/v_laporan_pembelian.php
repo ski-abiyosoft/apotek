@@ -120,10 +120,14 @@ $this->load->view('template/body');
                                         <!-- <a class="btn btn-sm blue print_laporan" onclick="javascript:_urlcetak('0');" target="_blank">
                                         <i title="CETAK PDF" class="glyphicon glyphicon-file"></i><b> LAYAR </b>
                                    </a> -->
-                                        <a class=" btn btn-sm red print_laporan  print_laporan" id="cetak" href="#report" data-toggle="modal">Cetak PDF</a>
-                                        <a class="btn btn-sm green print_laporan" onclick="exp()"><i title=" CETAK PDF" class="fa fa-download"></i>
-                                             <b> EXCEL </b>
-                                        </a>
+                                        <!-- <a class=" btn btn-sm red print_laporan  print_laporan" id="cetak" href="#report" data-toggle="modal">Cetak PDF</a>
+                                        <a class="btn btn-sm green print_laporan" onclick="exp()"><i title=" CETAK PDF" class="fa fa-download"></i><b> EXCEL </b></a> -->
+                                        <button type="button" class="btn btn-sm red" onclick="cetakx()">
+                                             <i title=" CETAK PDF" class="fa fa-print"></i><b> CETAK </b>
+                                        </button>
+                                        <button type="button" class="btn btn-sm green " onclick="exp()">
+                                             <i title=" EXPORT PDF" class="fa fa-download"></i><b> EXCEL </b>
+                                        </button>
                                         <br />
                                         <h4>
                                              <div class="err" id="resultss"></div>
@@ -179,32 +183,45 @@ $this->load->view('template/v_report');
           }
      }
 
-     $('.print_laporan').on("click", function() {
-          var idlap = document.getElementById('idlap').value;
-          var cabang = document.getElementById('cabang').value;
-          var tanggal1 = document.getElementById('tanggal1').value;
-          var tanggal2 = document.getElementById('tanggal2').value;
-          var vendor = document.getElementById('vendor').value;
-          $('.modal-title').text('CETAK LAPORAN PEMBELIAN BARANG');
-          $("#simkeureport").html('<iframe src="<?php echo base_url(); ?>Laporan_pembelian_log/cetak?idlap=' + idlap + '&cabang=' + cabang + '&tanggal1=' + tanggal1 + '&tanggal2=' + tanggal2 + '&vendor=' + vendor + '" frameborder="no" width="100%" height="520"></iframe>');
-     });
+     // $('.print_laporan').on("click", function() {
+     //      var idlap = document.getElementById('idlap').value;
+     //      var cabang = document.getElementById('cabang').value;
+     //      var tanggal1 = document.getElementById('tanggal1').value;
+     //      var tanggal2 = document.getElementById('tanggal2').value;
+     //      var vendor = document.getElementById('vendor').value;
+     //      $('.modal-title').text('CETAK LAPORAN PEMBELIAN BARANG');
+     //      $("#simkeureport").html('<iframe src="<?php echo base_url(); ?>Laporan_pembelian_log/cetak2?idlap=' + idlap + '&cabang=' + cabang + '&tanggal1=' + tanggal1 + '&tanggal2=' + tanggal2 + '&vendor=' + vendor + '" frameborder="no" width="100%" height="520"></iframe>');
+     // });
 
-     function exp() {
-          var idlap = document.getElementById('idlap').value;
-          var cabang = document.getElementById('cabang').value;
-          var tanggal1 = document.getElementById('tanggal1').value;
-          var tanggal2 = $('#tanggal2').val();
-          var vendor = document.getElementById('vendor').value;
-          location.href = '<?= site_url('Pembelian_farmasi_laporan/excel/?idlap=') ?>' + idlap + '&cabang=' + cabang + '&tgl1=' + tanggal1 + '&tgl2=' + tanggal2 + '&vendor=' + vendor;
+     // function exp() {
+     //      var idlap = document.getElementById('idlap').value;
+     //      var cabang = document.getElementById('cabang').value;
+     //      var tanggal1 = document.getElementById('tanggal1').value;
+     //      var tanggal2 = $('#tanggal2').val();
+     //      var vendor = document.getElementById('vendor').value;
+     //      location.href = '<?= site_url('Pembelian_farmasi_laporan/excel/?idlap=') ?>' + idlap + '&cabang=' + cabang + '&tgl1=' + tanggal1 + '&tgl2=' + tanggal2 + '&vendor=' + vendor;
+     // }
+
+     function cetakx() {
+          var laporan = document.getElementById('idlap').value;
+          if (laporan != '') {
+               var idlap = document.getElementById('idlap').value;
+               var cabang = document.getElementById('cabang').value;
+               var tanggal1 = document.getElementById('tanggal1').value;
+               var tanggal2 = document.getElementById('tanggal2').value;
+               var vendor = document.getElementById('vendor').value;
+               var baseurl = "<?php echo base_url() ?>";
+               var urlnya = baseurl + 'laporan_pembelian_log/cetak2/?idlap=' + idlap + '&cabang=' + cabang + '&tgl1=' + tanggal1 + '&tgl2=' + tanggal2 + '&vendor=' + vendor + "&pdf=1";
+               window.open(urlnya, '_blank');
+          }
      }
 
      function exp() {
           var idlap = document.getElementById('idlap').value;
           var cabang = document.getElementById('cabang').value;
           var tanggal1 = document.getElementById('tanggal1').value;
-          var tanggal2 = $('#tanggal2').val();
+          var tanggal2 = document.getElementById('tanggal2').value;
           var vendor = document.getElementById('vendor').value;
-          location.href = '<?= site_url('Laporan_pembelian_log/excel/?idlap=') ?>' + idlap + '&cabang=' + cabang +
-               '&tgl1=' + tanggal1 + '&tgl2=' + tanggal2 + '&vendor=' + vendor;
+          location.href = '<?= site_url('laporan_pembelian_log/cetak2/?idlap=') ?>' + idlap + '&cabang=' + cabang + '&tgl1=' + tanggal1 + '&tgl2=' + tanggal2 + '&vendor=' + vendor + "&pdf=2";
      }
 </script>
