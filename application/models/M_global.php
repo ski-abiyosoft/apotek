@@ -1987,6 +1987,23 @@ class M_global extends CI_Model
 		return $query->result();
 	}
 
+	function getfarmasibarang_cbg($str){
+		$unit = $this->session->userdata("unit");
+		if($str == ""){
+			$limm = "LIMIT 10";
+			$kondisi = "";
+		} else {
+			$limm = "";
+			$kondisi = "WHERE semua.kodebarang LIKE '%$str%' OR semua.namabarang LIKE '%$str%'";
+		}
+		$data = $this->db->query("SELECT semua.kodebarang AS id, concat(' [ kode : ', kodebarang ,' ] ',' - ',' [ nama : ', namabarang ,' ] ',' - ',' [ satuan : ', satuan1 ,' ] ',' - ',' [ barang : ', statusnya ,' ] ') AS text FROM (
+			SELECT kodebarang, namabarang, satuan1, 'Farmasi' as statusnya FROM tbl_barang
+			UNION ALL
+			SELECT kodebarang, namabarang, satuan1, 'Logistik' as statusnya FROM tbl_logbarang
+		) AS semua $kondisi $limm");
+		return $data->result();
+	}
+
 	function getpoli_tindakan($str, $kodpos)
 	{
 
