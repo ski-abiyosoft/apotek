@@ -52,7 +52,7 @@
 			<div class="row">
 				<div class="col-md-12">
 					<div class="portlet">
-                        <!-- <div class="portlet-title">
+                        <div class="portlet-title">
 							<div class="caption">Daftar E-RESEP</div>
 						</div>
 						<div class="portlet-body">
@@ -106,7 +106,7 @@
 							</table>
 						</div>
                         
-                        <hr /> -->
+                        <hr />
 
 						<div class="portlet-title">
 							<div class="caption">

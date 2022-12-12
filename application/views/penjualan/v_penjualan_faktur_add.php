@@ -218,10 +218,9 @@
                                     <label class="col-md-3 control-label">Pembeli <font color="red">*</font></label>
                                     <div class="col-md-6">
                                         <select id="pembeli" name="pembeli" class="form-control select2_pembeli" onchange="getdataklinik()">
-                                            <!-- <option value="RAJAL">Rawat Jalan</option>
-                                            <option value="RANAP">Rawat Inap</option> -->
-                                            <option value="adr">Apotik Dengan Resep</option>
-                                            <option value="atr">Apotik Tanpa Resep</option>
+                                            <option value="RAJAL">Rawat Jalan</option>
+                                            <option value="RANAP">Rawat Inap</option>
+                                            <option value="APOTIK">Apotik</option>
                                         </select>
                                     </div>
                                 </div>
