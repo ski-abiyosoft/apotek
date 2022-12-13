@@ -68,7 +68,8 @@ $this->load->view('template/body');
                       <font color="red">*</font>
                     </label>
                     <div class="col-md-9">
-                      <select id="supp" name="supp" class="form-control select2_el_vendor" data-placeholder="Pilih..." onkeypress="return tabE(this,event)" onchange="getpo()" readonly>
+                      <input type="hidden" id="supp" name="supp" value="<?= $header->vendor_id; ?>">
+                      <select id="suppx" name="suppx" class="form-control select2_el_vendor" data-placeholder="Pilih..." onkeypress="return tabE(this,event)" onchange="getpo()" disabled>
                         <?php
                         if ($header->vendor_id) {
                           $data = data_master("tbl_vendor", array('vendor_id' => $header->vendor_id))->vendor_name;
@@ -85,7 +86,8 @@ $this->load->view('template/body');
                   <div class="form-group">
                     <label class="col-md-3 control-label">Nomor PO#</label>
                     <div class="col-md-9">
-                      <select id="nomorpo" name="nomorpo" class="form-control select2_el_farmasi_po" data-placeholder="Pilih..." onkeypress="return tabE(this,event)" onchange="getdatapo(this.value)">
+                      <input type="hidden" name="nomorpo" id="nomorpo" value="<?= $header->po_no; ?>">
+                      <select id="nomorpox" name="nomorpox" class="form-control select2_el_farmasi_po" data-placeholder="Pilih..." onkeypress="return tabE(this,event)" onchange="getdatapo(this.value)" disabled>
                         <?php
                         if ($header->po_no) {
                           $data = data_master("tbl_barangdterima", array('po_no' => $header->po_no))->po_no;
@@ -122,7 +124,8 @@ $this->load->view('template/body');
                       <font color="red">*</font>
                     </label>
                     <div class="col-md-4">
-                      <select id="gudang" name="gudang" class="form-control select2_el_farmasi_depo" data-placeholder="Pilih..." onkeypress="return tabE(this,event)">
+                      <input type="hidden" name="gudang" id="gudang" value="<?= $header->gudang; ?>">
+                      <select id="gudangx" name="gudangx" class="form-control select2_el_farmasi_depo" data-placeholder="Pilih..." onkeypress="return tabE(this,event)" disabled>
                         <?php
                         if ($header->gudang) {
                           $data = data_master("tbl_depo", array('depocode' => $header->gudang))->keterangan;
@@ -1022,8 +1025,7 @@ $this->load->view('template/footer');
             swal('BAPB', 'Data Belum Lengkap/Belum ada transaksi ...', '');
           } else {
             $.ajax({
-              url: '<?= site_url() ?>farmasi_bapb/update_one/?terimano=' +
-                noterima,
+              url: '<?= site_url() ?>farmasi_bapb/update_one/?terimano=' +noterima,
               data: $('#frmpembelian').serialize(),
               type: 'POST',
               dataType: 'JSON',
@@ -1066,18 +1068,8 @@ $this->load->view('template/footer');
                     }
                     // console.log('kode : '+kode+', qty : '+qty+', sat : '+sat+', harga : '+harga+', disc : '+disc+', discrp : '+discrp+', vat : '+vat+', jumlah : '+jumlah+', expire : '+expire+', po : '+po+', pajak : '+pj+', vatrp : '+vatrp);
                     $.ajax({
-                      url: '<?= site_url() ?>farmasi_bapb/update_multi/?kode=' +
-                        kode + '&qty=' + qty + '&sat=' +
-                        sat + '&harga=' +
-                        harga + '&disc=' + disc +
-                        '&discrp=' + discrp +
-                        '&vat=' + vat + '&jumlah=' +
-                        jumlah + '&expire=' +
-                        expire + '&po=' + po +
-                        '&vatrp=' + vatrp +
-                        '&terimano=' + noterima,
-                      data: $('#frmpembelian')
-                        .serialize(),
+                      url: '<?= site_url() ?>farmasi_bapb/update_multi/?kode=' + kode + '&qty=' + qty + '&sat=' + sat + '&harga=' + harga + '&disc=' + disc + '&discrp=' + discrp + '&vat=' + vat + '&jumlah=' + jumlah + '&expire=' + expire + '&po=' + po + '&vatrp=' + vatrp + '&terimano=' + noterima,
+                      data: $('#frmpembelian').serialize(),
                       type: 'POST',
                       dataType: 'JSON',
                     });
@@ -1085,29 +1077,18 @@ $this->load->view('template/footer');
                     diskontotal += discrp;
                   }
                   $.ajax({
-                    url: '<?= site_url() ?>farmasi_bapb/update_one_u/?totvatrp=' +
-                      totvatrp + '&totaltagihan=' +
-                      Number(parseInt(total
-                        .replaceAll(',', ''))) +
-                      '&ppnrp=' + Number(parseInt(
-                        ppn_123.replaceAll(',', '')
-                      )) + '&terimano=' +
-                      noterima + '&diskontotal=' +
-                      diskontotal,
+                    url: '<?= site_url() ?>farmasi_bapb/update_one_u/?totvatrp=' + totvatrp + '&totaltagihan=' + Number(parseInt(total.replaceAll(',', ''))) + '&ppnrp=' + Number(parseInt(ppn_123.replaceAll(',', ''))) + '&terimano=' + noterima + '&diskontotal=' + diskontotal,
                     data: $('#frmpembelian').serialize(),
                     type: 'POST',
                     dataType: 'JSON',
                   });
                   swal({
                     title: "BAPB",
-                    html: "<p> No. Bukti : <b>" + data
-                      .nomor + "</b></p>" + "Tanggal : " +
-                      tanggal + "<br> Total : " + total,
+                    html: "<p> No. Bukti : <b>" + data.nomor + "</b></p>" + "Tanggal : " +tanggal + "<br> Total : " + total,
                     type: "success",
                     confirmButtonText: "OK"
                   }).then((value) => {
-                    location.href =
-                      "<?php echo base_url() ?>farmasi_bapb";
+                    location.href = "<?php echo base_url() ?>farmasi_bapb";
                   });
                 }
               }

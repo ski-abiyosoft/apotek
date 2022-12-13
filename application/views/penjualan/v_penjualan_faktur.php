@@ -155,12 +155,12 @@
                                          <th class="title-white" style="text-align: center">Cab.</th>
 										 <th class="title-white" style="text-align: center" width="150">User ID</th>
 									     <th class="title-white" style="text-align: center">No. Resep</th>
-										 <th class="title-white" style="text-align: center">No. Register</th>
+										 <!-- <th class="title-white" style="text-align: center">No. Register</th> -->
 										 <th class="title-white" style="text-align: center">Rekmed</th>
 										 <th class="title-white" style="text-align: center">Nama Pasien</th>
 										 <th class="title-white" style="text-align: center">Tanggal</th>
 										 <th class="title-white" style="text-align: center">Jumlah Rp</th>
-										 <th class="title-white" style="text-align: center">No. Kwitansi</th>
+										 <!-- <th class="title-white" style="text-align: center">No. Kwitansi</th> -->
                                          <th class="title-white" style="text-align: center">Status</th>
                                          <th class="title-white" style="text-align: center">Action</th>
 										 <!-- <th>&nbsp;</th>
@@ -182,12 +182,12 @@
 									     <td align="center"><?php echo $row->koders;?></td>	
 									     <td align="center"><?php echo $row->username;?></td>										 
                                          <td align="center"><?php echo $row->resepno;?></td>										 
-										 <td align="center"><?php echo $row->noreg;?></td>										 
+										 <!-- <td align="center"><?php echo $row->noreg;?></td>										  -->
 										 <td align="center"><?php echo $row->rekmed;?></td>										 
 										 <td align="center"><?php echo $row->namapas;?></td>										 
                                          <td align="center"><?php echo date('d-m-Y',strtotime($row->tglresep));?></td>										 
                                          <td align="right"><?php echo number_format($row->poscredit,0,',','.');?></td>
-										 <td><?php echo $row->nokwitansi;?></td>
+										 <!-- <td><?php echo $row->nokwitansi;?></td> -->
                                          
                                          <td style="text-align: center"><?php
                                                  if ($row->keluar=='0')

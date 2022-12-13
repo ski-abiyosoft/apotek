@@ -1137,7 +1137,7 @@ class Kasir_obat extends CI_Controller
 			$pdf->ln(5);
 
 			foreach ($query_kartu_card as $cckey => $ccval) {
-				$query_nama_bank	= $this->db->query("SELECT * FROM tbl_edc WHERE bankcode = $ccval->kodebank")->row();
+				$query_nama_bank	= $this->db->query("SELECT * FROM tbl_edc WHERE bankcode = '$ccval->kodebank'")->result();
 				switch ($ccval->cardtype) {
 					case 1:
 						$cardType = "DEBIT NO";
@@ -1156,7 +1156,9 @@ class Kasir_obat extends CI_Controller
 				$nocard_length	= count($ccval->nocard) - 4;
 				$nocard			= substr($ccval->nocard, 0, $nocard_length) . "XXXX";
 
-				$pdf->FancyRow(array("Bank Penerbit", ":", $query_nama_bank->namabank), $fc, 0, $align, $style, $size);
+				foreach($query_nama_bank as $qnm){
+					$pdf->FancyRow(array("Bank Penerbit", ":", $qnm->namabank), $fc, 0, $align, $style, $size);
+				}
 				$pdf->FancyRow(array($cardType, ":", $nocard), $fc, 0, $align, $style, $size);
 				$pdf->FancyRow(array("Approval Code", ":", $ccval->nootorisasi), $fc, 0, $align, $style, $size);
 				$pdf->FancyRow(array("Nominal", ":", "Rp " . number_format($ccval->jumlahbayar, 0, ',', '.')), $fc, 0, $align, $style, $size);

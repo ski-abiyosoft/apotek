@@ -63,9 +63,12 @@ if($datpas){
                                         <label class="col-md-3 control-label">Pembeli <font color="red">*</font></label>
                                         <div class="col-md-6">
                                              <select id="pembeli" name="pembeli" class="form-control select2_pembeli" onchange="getdataklinik()" disabled>
+                                                  <option <?= ($posting->kodepel=='atr'?'selected':'')?> value="atr">Apotik Tanpa Resep</option>
+                                                  <option <?= ($posting->kodepel=='adr'?'selected':'')?> value="adr">Apotik Dengan Resep</option>
                                                   <option <?= ($posting->kodepel=='RAJAL'?'selected':'')?> value="RAJAL">Rawat Jalan</option>
                                                   <option <?= ($posting->kodepel=='RANAP'?'selected':'')?> value="RANAP">Rawat Inap</option>
                                                   <option <?= ($posting->kodepel=='APOTIK'?'selected':'')?> value="APOTIK">Apotik</option>
+                                                  
                                                   
                                                   <!-- <option <?= ($posting->kodepel=='KULIT'?'selected':'')?> value="KULIT">Kulit
                                                   </option>

@@ -174,8 +174,8 @@ class Penjualan_faktur extends CI_Controller{
 			$pdf->SetFillColor(230, 230, 230);
 			$pdf->setfont('Arial', '', 9);
 			$pdf->FancyRow(array('No. Resep', ':', $header->resepno, 'Tanggal Resep', ':', date('d M Y', strtotime($header->tglresep)),), $fc, $border);
-			$pdf->FancyRow(array('Nama Pasien', ':', $posting->namapas, 'No. Registrasi', ':', $header->noreg), $fc, $border);
-			$pdf->FancyRow(array('No. Member', ':', $header->rekmed, 'Alamat Kirim', ':', $data_pasien->alamat), $fc, $border);
+			$pdf->FancyRow(array('Nama Pasien', ':', $posting->namapas, 'Alamat Kirim', ':', $data_pasien->alamat), $fc, $border);
+			$pdf->FancyRow(array('No. Member', ':', $header->rekmed), $fc, $border);
 			$pdf->ln(10);
 
 			$pdf->SetWidths(array(10, 20, 40, 20, 10, 25, 25, 25, 15));
@@ -1139,15 +1139,18 @@ class Penjualan_faktur extends CI_Controller{
 		$ketpakai		= $this->input->post("keterangan");
 		$gudang			= $this->input->post("gudang");
 
-		if($eresepstatus == 1){
-			$noeresep	= $this->input->post("noeresep");
-		} else {
+		// if($eresepstatus == 1){
+		// 	$noeresep	= $this->input->post("noeresep");
+		// } else {
 			$noeresep	= "";
-		}
+		// }
 
 		$ppn_pajak_insx = $this->db->get_where('tbl_pajak', ['kodetax' => 'PPN'])->row_array();
 		$ppn_pajak_ins = $ppn_pajak_insx['prosentase'] / 100;
 		if (!empty($cek)) {
+			if($dokter==''){
+				$dokter='';
+			}
 
 			switch ($pembeli) {
 				case "KULIT":
@@ -1201,6 +1204,10 @@ class Penjualan_faktur extends CI_Controller{
 				$jenispas = 8;
 			} else if($pembeli == 'RANAP'){
 				$jenispas = 9;
+			} else if($pembeli == 'adr'){
+				$jenispas = 10;
+			} else if($pembeli == 'atr'){
+				$jenispas = 11;
 			}
 
 			if ($param == 1) {
@@ -1390,7 +1397,8 @@ class Penjualan_faktur extends CI_Controller{
 				'noreg'     => $noreg,
 				'rekmed'    => $rekmed,
 				'namapas'   => $this->input->post('namapasien'),
-				'umurpas'   => $this->input->post('umurpas'),
+				'umurpas'   => '-',
+				// 'umurpas'   => $this->input->post('umurpas'),
 				//'gudang'  => $this->input->post('gudang'),
 				'gudang'    => $gudang,
 				'posting'   => 1,

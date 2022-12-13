@@ -2,14 +2,13 @@
     $this->load->view('template/header');
     $this->load->view('template/body');
 
-    if(isset($_GET["eresep"]) && isset($_GET["noresep"])){
         $noeresep     = $this->input->get("noresep");
         $cabang       = $this->session->userdata("unit");
 
         $heresep      = $this->db->query("SELECT * FROM tbl_orderperiksa WHERE orderno = '$noeresep' AND koders = '$cabang'")->row();
         $deresep      = $this->db->query("SELECT * FROM tbl_eresep WHERE orderno = '$noeresep' AND koders = '$cabang'")->result();
         // $deracik      = $this->db->query("SELECT * FROM tbl_eracik WHERE orderno = '$noeresep' AND koders = '$cabang'")->row();
-        $pasrsp       = $this->db->query("SELECT * FROM pasien_rajal WHERE noreg = '$heresep->noreg'")->row();
+        $pasrsp       = $this->db->query("SELECT * FROM pasien_rajal WHERE noreg = '-'")->row();
 
 
         if($pasrsp){
@@ -25,14 +24,6 @@
         }
 
         $umur			    = $age_interval->y .' Tahun '. $age_interval->m .' Bulan '. $age_interval->d .' Hari';
-    } else {
-        $noeresep     = '';
-        $cabang       = '';
-        $heresep      = '';
-        $deresep      = '';
-        $deracik      = '';
-        $pasrs        = '';
-    }
 ?>
 
 <div class="row">
@@ -94,7 +85,7 @@
                                 <div class="form-group">
                                     <label class="col-md-3 control-label">Resep Dari <font color="red">*</font></label>
                                     <div class="col-md-9">
-                                        <select id="dokter" name="dokter" class="form-control select2_el_dokter" data-placeholder="Pilih..." onkeypress="return tabE(this,event)"></select>
+                                        <input type="text" id="dokter" name="dokter" class="form-control" placeholder="dr ..">
                                     </div>
                                 </div>
                             </div>
@@ -132,7 +123,7 @@
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label class="col-md-3 control-label">Alamat Kirim <font color="red">*</font></label>
+                                    <label class="col-md-3 control-label">Alamat <font color="red">*</font></label>
                                     <div class="col-md-9">
                                         <input type="text" name="alamat" id="alamat" class="form-control">
                                     </div>
@@ -143,9 +134,20 @@
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label class="col-md-3 control-label">Nama Pembeli <font color="red">*</font></label>
+                                    <!-- <label class="col-md-3 control-label">Nama Pembeli <font color="red">*</font></label>
                                     <div class="col-md-6">
                                         <input type="text" name="namapasien" id="namapasien" class="form-control">
+                                    </div>
+                                    <div class="form-group"> -->
+                                    <label class="col-md-3 control-label">Member <font color="red">*</font></label>
+                                    <div class="col-md-9">
+                                        <select id="pasien" name="pasien" class="form-control select2_el_pasien" onchange="getinfopasien()" data-placeholder="Pilih..." onkeypress="return tabE(this,event)">
+                                            <!-- <?php $gpasraj = $this->db->query("SELECT * FROM tbl_pasien WHERE rekmed = '$heresep->rekmed'")->row(); ?> -->
+                                            <!-- <option value="<?= $heresep->rekmed ?>">
+                                                <?= $gpasraj->rekmed ." | ". $gpasraj->namapas ." | ". $gpasraj->alamat2 ." | ".  $gpasraj->noidentitas ." | ". $gpasraj->handphone ?>
+                                            </option> -->
+                                            <input type="hidden" name="namapasien" id="namapasien" class="form-control">
+                                        </select>
                                     </div>
                                 </div>
                             </div>
@@ -575,7 +577,8 @@
                                         <tr>
                                           <td width="30%" rowspan="6" class="control-labelh leftJustified">
                                             Resep Manual Dari Dokter<br /><br />
-                                            <textarea type="text" class="form-control" name="resman_1" id="resman_1" value="" style="resize:none !important"><?= $heresep->manual_racik1 ?></textarea>
+                                            <textarea type="text" class="form-control" name="resman_1" id="resman_1" value="" style="resize:none !important">-</textarea>
+                                            <!-- <textarea type="text" class="form-control" name="resman_1" id="resman_1" value="" style="resize:none !important"><?= $heresep->manual_racik1 ?></textarea> -->
                                             <br>
                                             <div class="wells">
                                               <button id="btnsimpan" type="button" onclick="saveracik_1()" class="btn blue">
@@ -2078,19 +2081,23 @@ function saveracik_1() {
 // }	
 
 function save() {
-  var table = document.getElementById('datatable');
-  var rowCount = table.rows.length;
+  var table       = document.getElementById('datatable');
+  var rowCount    = table.rows.length;
   // console.log(rowCount);
-  var tanggal = $('[name="tanggal"]').val();
-  var pasien = $('[name="pasien"]').val();
-  var gudang = $('[name="gudang"]').val();
-  var pembeli = $('[name="pembeli"]').val();
-  var nohp = $('#phone').val();
-  var cekhp = $('#reg_cekhp').is(':checked');
-  var jumlahtotv = $('#_vtotal').text();
-  var jumlahtot = Number(parseInt(jumlahtotv.replaceAll(',', '')));
-  var racikanxx = $('#totp_1').val();
-  var racikan = Number(parseInt(racikanxx.replaceAll(',', '')));
+  var tanggal     = $('[name="tanggal"]').val();
+  var pasien      = $('[name="pasien"]').val();
+  var gudang      = $('[name="gudang"]').val();
+  var pembeli     = $('[name="pembeli"]').val();
+  var noresep     = $('[name="noresep"]').val();
+  var nohp        = $('#phone').val();
+  var cekhp       = $('#reg_cekhp').is(':checked');
+  var jumlahtotv  = $('#_vtotal').text();
+  var jumlahtot   = Number(parseInt(jumlahtotv.replaceAll(',', '')));
+  var racikanxx   = $('#totp_1').val();
+  var racikan     = Number(parseInt(racikanxx.replaceAll(',', '')));var tanggal     = $('[name="tanggal"]').val();
+  var namapasien  = $('[name="namapasien"]').val();
+  var dokter      = $('[name="dokter"]').val();
+
   if (document.getElementById('t_manual').checked == true) {
     var h_manual = 1;
     var totalx = $('#toto_11').val();
@@ -2111,6 +2118,31 @@ function save() {
     });
     return;
   }
+
+  if (pembeli == 'atr' && dokter == '') {
+    dokter = '-';
+  }else if (pembeli == 'adr' && dokter == '') {
+    swal({
+      title: "Dokter Resep ",
+      html: "<p>Masih Kosong</p>" +
+        "Silahkan di Isi",
+      type: "error",
+      confirmButtonText: "OK"
+    });
+    return;
+  }
+  
+  
+  // if (namapasien == '') {
+  //   swal({
+  //     title: "Nama Pasien",
+  //     html: "<p> Masih Kosong</b> </p>" +
+  //       "CEK LAGI",
+  //     type: "error",
+  //     confirmButtonText: "OK"
+  //   });
+  //   return;
+  // }
 
   if (!cekhp) {
     swal({
@@ -2143,17 +2175,14 @@ function save() {
     }
 
   } else {
-    // alert(pasien);
-    // alert(gudang);
-    // alert(pembeli);
-    // console.log($('#frmpenjualan').serialize());
+    
     var params = '?vtotal=' + jumlahtot + "&racikan=" + total;
-    // console.log(params)
+    
     $.ajax({
-      //  url: '<?php echo site_url('penjualan_faktur/save/1') ?>',
+      
       url: '<?php echo site_url('penjualan_faktur/save/1') ?>' + params,
       data: $('#frmpenjualan').serialize(),
-      // data:{tab2:$('#frmpenjualan').serialize(),},		
+      
       dataType: "JSON",
       type: 'POST',
 
@@ -2227,22 +2256,41 @@ function save() {
 }
 
 function bayar() {
-  var table = document.getElementById('datatable');
-  var rowCount = table.rows.length;
+  var table       = document.getElementById('datatable');
+  var rowCount    = table.rows.length;
   // console.log(rowCount);
-  var tanggal = $('[name="tanggal"]').val();
-  var gudang = $('[name="gudang"]').val();
-  var pembeli = $('[name="pembeli"]').val();
+  var tanggal     = $('[name="tanggal"]').val();
+  var gudang      = $('[name="gudang"]').val();
+  var pembeli     = $('[name="pembeli"]').val();
+  var namapasien  = $('[name="namapasien"]').val();
+  var dokter      = $('[name="dokter"]').val();
+  var nohp        = $('#phone').val();
+
   if (document.getElementById('t_manual').checked == true) {
     var totalxx = $('#toto_11').val();
   } else {
     var totalxx = $('#_vtotal').text();
   }
   var total = Number(parseInt(totalxx.replaceAll(',', '')));
-  var nohp = $('#phone').val();
   var cekhp = $('#reg_cekhp').is(':checked');
   // console.log(total)
 
+  if (pembeli == 'atr' && dokter == '') {
+    dokter = '-';
+  }
+  
+  
+  if (namapasien == '') {
+    swal({
+      title: "Nama Pasien",
+      html: "<p> Masih Kosong</b> </p>" +
+        "CEK LAGI",
+      type: "error",
+      confirmButtonText: "OK"
+    });
+    return;
+  }
+  
   if (nohp == '') {
     swal({
       title: "No Hp Masih Kosong",
@@ -2301,6 +2349,9 @@ function bayar() {
 function getinfopasien() {
   var xhttp;
   var vid = $('#pasien').val();
+  // if(vid=''){
+  //   vid='00123';
+  // }
   // console.log(vid);
   $.ajax({
     url: "<?php echo base_url(); ?>pasien/getinfopasien/?id=" + vid,
@@ -2329,7 +2380,7 @@ function getdataklinik() {
 
   }
 
-  if (pembeli == 'atr' ) {
+  if (str == 'atr' ) {
       $('#dokter').prop('disabled', true);
     } else {
       $('#dokter').prop('disabled', false);
