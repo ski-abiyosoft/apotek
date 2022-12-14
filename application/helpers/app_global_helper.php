@@ -472,4 +472,12 @@ function sumTime($time1, $time2) {
 
 }
 
+function get_jenis_bayar () {
+	return (object) [
+		1 => "Cek/Giro",
+		2 => "Transfer",
+		3 => "Tunai",
+	];
+}
+
 ?>

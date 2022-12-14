@@ -360,6 +360,90 @@ $this->load->view('template/body');
 										</div>
 									</div> -->
                             </div>
+                            <div class="row" style="margin-bottom: 20px;">
+                                <div class="col-md-12">
+                                    <table border="0" width="70%">
+                                        <tr>
+                                            <td width="15%"><b>Jenis Bayar</b></td>
+                                            <td width="5%" style="text-align:center;">
+                                                <input type="radio" id="j_umum" checked name="j_jaminan" class="form-control" onclick="cek_umum()">
+                                            </td>
+                                            <td width="15%">UMUM</td>
+                                            <td width="5%" style="text-align:center;">
+                                                <input type="radio" id="j_jaminan" name="j_jaminan" class="form-control" onclick="cek_jaminan()">
+                                            </td>
+                                            <td width="15%">JAMINAN</td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="row" style="margin-bottom: 20px;" id="show_jaminan">
+                                <div class="col-md-12" style="border: 1px solid black;border-collapse: collapse;">
+                                    <h5><b>Jaminan</b></h5>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label for="no_jaminan" class="col-md-5 control-label">No Kartu <span class="text-danger">*</span></label>
+                                                <div class="col-md-7">
+                                                    <input type="text" class="form-control" name="no_jaminan" id="no_jaminan" placeholder="No Kartu Penjamin">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label class="col-md-5 control-label">Penjamin</label>
+                                                <div class="col-md-7">
+                                                    <input type="hidden" id="vpenjaminx">
+                                                    <select class="form-control select2_el_penjamin" style="width:100%;" id="vpenjamin" name="vpenjamin" onchange="getjaminan1(this.value)">
+                                                        <option value="">--- Pilih ---</option>
+                                                        <?php $penjamin = $this->db->get("tbl_penjamin")->result();
+                                                        foreach ($penjamin as $row) { ?>
+                                                            <option value="<?= $row->cust_id; ?>"><?= $row->cust_nama; ?></option>
+                                                        <?php } ?>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label class="col-md-5 control-label">Tercover Rp</label>
+                                                <div class="col-md-7">
+                                                    <input id="tercover_rp" name="tercover_rp" class="form-control input-medium" type="text" style="text-align: right" value="0" onchange="terkofer()" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label class="col-md-5 control-label">COB</label>
+                                                <div class="col-md-7">
+                                                    <input type="hidden" id="vpenjamin2x">
+                                                    <select class="form-control select2_el_penjamin" style="width:100%;" id="vpenjamin2" name="vpenjamin2" onchange="getjaminan2(this.value)">
+                                                        <option value="">--- Pilih ---</option>
+                                                        <?php $penjamin = $this->db->get_where("tbl_penjamin", array("cust_id" => 'BPJS'))->result();
+                                                        foreach ($penjamin as $row) {
+                                                            $selected = ($row->cust_id == $data->cust_nama ? 'selected' : '');
+                                                        ?>
+                                                            <option <?= $selected; ?> value="<?= $row->cust_id; ?>"><?= $row->cust_nama; ?></option>
+                                                        <?php } ?>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label class="col-md-5 control-label">Tercover Rp</label>
+                                                <div class="col-md-7">
+                                                    <input id="tercover_rp2" name="tercover_rp2" class="form-control input-medium" type="text" style="text-align: right" value="0" onchange="terkofer()" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                             <div class="row">
                                 <div class="col-md-12">
                                     <div class="portlet ">
@@ -683,7 +767,66 @@ $this->load->view('template/v_periode');
 
 
 <script>
+    function getjaminan1(param) {
+        $.ajax({
+            url: "<?= site_url('Kasir_obat/getjaminan1/') ?>" + param,
+            type: "POST",
+            dataType: "JSON",
+            success: function(data) {
+                console.log(data);
+                $("#vpenjaminx").val(data.cust_nama);
+            }
+        });
+    }
+
+    function getjaminan2(param) {
+        $.ajax({
+            url: "<?= site_url('Kasir_obat/getjaminan2/') ?>" + param,
+            type: "POST",
+            dataType: "JSON",
+            success: function(data) {
+                console.log(data);
+                $("#vpenjamin2x").val(data.cust_nama);
+            }
+        });
+    }
+
+    function cek_umum() {
+        if (document.getElementById('j_umum').checked == true) {
+            $("#show_jaminan").hide();
+            $("#tercover_rp").val(0);
+            $("#tercover_rp2").val(0);
+            total_net();
+        }
+    }
+
+    function cek_jaminan() {
+        if (document.getElementById('j_jaminan').checked == true) {
+            $("#show_jaminan").show();
+        }
+    }
+
+    function terkofer() {
+        var tercover = $("#tercover_rp").val();
+        var tercover2 = $("#tercover_rp2").val();
+        var totalrpx = $("#reseprp").val();
+        var totalrp = Number(parseInt(totalrpx.replaceAll(',', '')));
+        var trp = Number(parseInt(tercover.replaceAll(',', '')));
+        var trp2 = Number(parseInt(tercover2.replaceAll(',', '')));
+        total_cover = trp + trp2;
+        hasil = totalrp - total_cover;
+        $("#tercover_rp").val(formatCurrency1(trp));
+        $("#tercover_rp2").val(formatCurrency1(trp2));
+        $("#totalnet").val(formatCurrency1(hasil));
+        // console.log(hasil)
+        total_net();
+    }
+
     $('#histori_form').hide();
+
+    $(document).ready(function() {
+        $("#show_jaminan").hide();
+    });
 
     $(window).on("load", function() {
         $(".vouchercode").hide();
@@ -975,6 +1118,23 @@ $this->load->view('template/v_periode');
         var uangmuka = $('#uangmuka').val();
         var nuangmuka = Number(uangmuka.replace(/[^0-9\.]+/g, ""));
 
+        if (document.getElementById("j_umum").checked == true && document.getElementById("j_jaminan").checked == false) {
+            jaminan = 0;
+        } else if (document.getElementById("j_jaminan").checked == true && document.getElementById("j_umum").checked == false) {
+            jaminan = 1;
+        }
+        var vpenjaminx = $("#vpenjaminx").val();
+        var vpenjamin2x = $("#vpenjamin2x").val();
+        var tercover = $("#tercover_rp").val();
+        var tercoverx = Number(parseInt(tercover.replaceAll(',', '')));
+        var tercover2 = $("#tercover_rp2").val();
+        var totalrpx = $("#reseprp").val();
+        var totalrp = Number(parseInt(totalrpx.replaceAll(',', '')));
+        var trp = Number(parseInt(tercover.replaceAll(',', '')));
+        var trp2 = Number(parseInt(tercover2.replaceAll(',', '')));
+        total_cover = trp + trp2;
+        hasil = totalrp - total_cover;
+
         var terimadari = $('#terimadari').val();
         var nohp = $('#hpno').val();
         var cekhp = $('#reg_cekhp').is(':checked');
@@ -1023,7 +1183,7 @@ $this->load->view('template/v_periode');
 
         } else {
             $.ajax({
-                url: '<?php echo site_url('kasir_obat/ajax_add_bayar') ?>',
+                url: '<?php echo site_url('kasir_obat/ajax_add_bayar?jaminan=') ?>' + jaminan + '&hasil=' + hasil,
                 data: $('#frmkonsul').serialize(),
                 type: 'POST',
                 dataType: 'json',
@@ -1032,11 +1192,15 @@ $this->load->view('template/v_periode');
                     document.getElementById("btnsimpan_bayar").disabled = true;
                     //document.getElementById("tersimpan_bayar").value="OK";
 
+                    if (jaminan == 1) {
+                        alertj = "<br>Penjamin : " + vpenjaminx + ", Dengan Biaya : " + tercover + "<br>COB : " + vpenjamin2x + ", Dengan Biaya : " + tercover2;
+                    } else {
+                        alertj = "";
+                    }
+
                     swal({
                         title: "KWITANSI PEMBAYARAN",
-                        html: "<p> No. Bukti   : <b>" + data.nomor + "</b> </p>" +
-                            "<p>Biaya Terbentuk Rp " + formatCurrency1(data.total).split(".00").join(
-                                "") + "</p>",
+                        html: "<p> No. Bukti   : <b>" + data.nomor + "</b> </p>" + "<p>Biaya Terbentuk Rp " + formatCurrency1(data.total).split(".00").join("") + "</p>" + alertj,
                         type: "info",
                         confirmButtonText: "OK"
                     }).then((value) => {
@@ -1241,6 +1405,18 @@ $this->load->view('template/v_periode');
         $('#hpno').val(hp);
         $('.nav-pills a[href="#tab2"]').tab('show');
         total_net();
+        $.ajax({
+            url: "<?= site_url('Kasir_obat/get_pas/') ?>" + rekmed,
+            dataType: "JSON",
+            type: "POST",
+            success: function(data) {
+                if (data.nocard != '' || data.nocard != null || data.nocard != 'null') {
+                    $("#no_jaminan").val(data.nocard);
+                } else {
+                    $("#no_jaminan").val('');
+                }
+            }
+        });
     }
 
     function total_net() {
@@ -1273,8 +1449,17 @@ $this->load->view('template/v_periode');
         var vvoucherrp2 = Number(voucherrp2.replace(/[^0-9\.]+/g, ""));
         var vvoucherrp3 = Number(voucherrp3.replace(/[^0-9\.]+/g, ""));
 
-        var totalnet = eval(totalsemua) - eval(vdiskonrp) - eval(vuangmukapakai) - eval(vrefundrp) - eval(vretur) -
-            selisih - eval(vvoucherrp1) - eval(vvoucherrp2) - eval(vvoucherrp3);
+        var tercover = $("#tercover_rp").val();
+        var tercover2 = $("#tercover_rp2").val();
+        var totalrpx = $("#reseprp").val();
+        var totalrp = Number(parseInt(totalrpx.replaceAll(',', '')));
+        var trp = Number(parseInt(tercover.replaceAll(',', '')));
+        var trp2 = Number(parseInt(tercover2.replaceAll(',', '')));
+        total_cover = trp + trp2;
+        hasil = totalrp - total_cover;
+
+        // var totalnet = eval(totalsemua) - eval(vdiskonrp) - eval(vuangmukapakai) - eval(vrefundrp) - eval(vretur) - selisih - eval(vvoucherrp1) - eval(vvoucherrp2) - eval(vvoucherrp3);
+        var totalnet = eval(hasil) - eval(vdiskonrp) - eval(vuangmukapakai) - eval(vrefundrp) - eval(vretur) - selisih - eval(vvoucherrp1) - eval(vvoucherrp2) - eval(vvoucherrp3);
 
         $('#totalnet').val(formatCurrency1(totalnet));
 

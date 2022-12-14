@@ -164,11 +164,11 @@ $this->load->view('template/body');
                   <div class="form-group">
                     <label class="col-md-3 control-label">No. Faktur</label>
                     <div class="col-md-4">
-                      <input type="text" name="nofaktur" id="nofaktur" class="form-control" value="<?= $header->invoice_no; ?>">
+                      <input type="text" name="nofaktur" id="nofaktur" class="form-control" value="<?= $header->invoice_no; ?>" placeholder="No Faktur">
                     </div>
                     <label class="col-md-2 control-label">SJ No.</label>
                     <div class="col-md-3">
-                      <input type="text" class="form-control" placeholder="" name="nomorsj" id="nomorsj" value="<?= $header->sj_no; ?>">
+                      <input type="text" class="form-control" placeholder="No Surat Jalan" name="nomorsj" id="nomorsj" value="<?= $header->sj_no; ?>">
                     </div>
 
                   </div>
@@ -266,6 +266,17 @@ $this->load->view('template/body');
                       <input type="text" name="kemasan" id="kemasan" class="form-control" value="<?= $header->bkemasan; ?>">
                     </div>
 
+                  </div>
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="col-md-5">
+                  <div class="form-group">
+                    <label class="col-md-3 control-label">Alasan <font color="red">*</font></label>
+                    <div class="col-md-9">
+                      <input type="text" name="alasan_ubah" id="alasan_ubah" class="form-control" value="<?= $header->alasan; ?>" onchange="total()">
+                    </div>
                   </div>
                 </div>
               </div>
@@ -376,7 +387,7 @@ $this->load->view('template/body');
               <div class="wells">
 
                 <div class="btn-group">
-                  <button type="button" onclick="savey()" class="btn blue"><i class="fa fa-save"></i>
+                  <button type="button" onclick="savey()" id="btn_update" class="btn blue"><i class="fa fa-save"></i>
                     <b>Simpan </b></button>
                 </div>
 
@@ -655,6 +666,13 @@ $this->load->view('template/footer');
     var materai = Number(parseInt(tmateraix.replaceAll(',', '')));
     var vtotal = $('#_vtotal').text();
     var xtotal = parseInt(vtotal.replaceAll(',', ''));
+    var alasan_ubah = $("#alasan_ubah").val();
+    // alert(alasan_ubah);
+    if (alasan_ubah == '' || alasan_ubah == null) {
+      $("#btn_update").attr('disabled', true);
+    } else {
+      $("#btn_update").attr('disabled', false);
+    }
     if (xtotal >= '5000000') {
       $('#materai').val('10000').change();
     }
@@ -814,7 +832,7 @@ $this->load->view('template/footer');
 
   function changeqty(id) {
     var qtyx = $("#qty" + id).val();
-    var qty = Number(parseInt(qtyx.replaceAll(',','')));
+    var qty = Number(parseInt(qtyx.replaceAll(',', '')));
     var discx = $("#disc" + id).val();
     var disc = Number(parseInt(discx.replaceAll(',', '')));
     var kode = $("#kode" + id).val();
@@ -900,6 +918,7 @@ $this->load->view('template/footer');
   }
 
   function savey() {
+    var alasan_ubah = $('[name="alasan_ubah"]').val();
     var supp = $('[name="supp"]').val();
     var matt = $('[name="materai"]').val();
     var nomorpo = $('[name="nomorpo"]').val();
@@ -915,6 +934,15 @@ $this->load->view('template/footer');
     var table = document.getElementById('datatable');
     var rowCount = table.rows.length;
     var jfalse = 0;
+    if (alasan_ubah == '' || alasan_ubah == null) {
+      swal({
+        title: "Alasan Ubah",
+        html: "<p>TIDAK BOLEH KOSONG !</p>",
+        type: "error",
+        confirmButtonText: "OK"
+      });
+      return;
+    }
     for (var i = 1; i < rowCount; i++) {
       var row = table.rows[i];
       var taxz = $('#tax' + i).is(':checked');
@@ -1025,7 +1053,7 @@ $this->load->view('template/footer');
             swal('BAPB', 'Data Belum Lengkap/Belum ada transaksi ...', '');
           } else {
             $.ajax({
-              url: '<?= site_url() ?>farmasi_bapb/update_one/?terimano=' +noterima,
+              url: '<?= site_url() ?>farmasi_bapb/update_one/?terimano=' + noterima,
               data: $('#frmpembelian').serialize(),
               type: 'POST',
               dataType: 'JSON',
@@ -1084,7 +1112,7 @@ $this->load->view('template/footer');
                   });
                   swal({
                     title: "BAPB",
-                    html: "<p> No. Bukti : <b>" + data.nomor + "</b></p>" + "Tanggal : " +tanggal + "<br> Total : " + total,
+                    html: "<p> No. Bukti : <b>" + data.nomor + "</b></p>" + "Tanggal : " + tanggal + "<br> Total : " + total,
                     type: "success",
                     confirmButtonText: "OK"
                   }).then((value) => {
@@ -1174,15 +1202,20 @@ $this->load->view('template/footer');
   }
 
   function total() {
-    var tmateraix = $("#materai").val();
     var vtotal = $('#_vtotal').text();
     var xtotal = parseInt(vtotal.replaceAll(',', ''));
-    // if (xtotal >= '5000000') {
-    //     $('#materai').val('10000').change();
-    // }
+    if (xtotal >= '5000000') {
+      $('#materai').val('10000').change();
+    }
+    var tmateraix = $("#materai").val();
     var table = document.getElementById('datatable');
     var rowCount = table.rows.length;
-
+    var alasan_ubah = $("#alasan_ubah").val();
+    if (alasan_ubah == '' || alasan_ubah == null) {
+      $("#btn_update").attr('disabled', true);
+    } else {
+      $("#btn_update").attr('disabled', false);
+    }
     tjumlah = 0;
     tdiskon = 0;
     tppn = 0;

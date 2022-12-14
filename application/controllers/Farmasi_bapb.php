@@ -614,6 +614,7 @@ class Farmasi_bapb extends CI_Controller
 		$gudang   = $this->input->post('gudang');
 		$faktur   = $this->input->post('nofaktur');
 		$terimano   = $this->input->get('terimano');
+		$alasan_ubah   = $this->input->post('alasan_ubah');
 		$tanggal  = date('Y-m-d');
 		$jam      = date('H:i:s');
 		$nomorpo  = $this->input->post('nomorpo');
@@ -638,6 +639,7 @@ class Farmasi_bapb extends CI_Controller
 		$this->db->set('diskontotal', $this->input->post('diskonrp'));
 		$this->db->set('term', $this->input->post('pembayaran'));
 		$this->db->set('jenisbeli', $jenisbeli);
+		$this->db->set('alasan', $alasan_ubah);
 		$this->db->set('userid', $userid);
 		$this->db->set('ppn', $ppn['prosentase']);
 		$this->db->set('jamterima', $jam);
@@ -1058,6 +1060,7 @@ class Farmasi_bapb extends CI_Controller
 			$border = array('L', '', '', '', '', 'R');
 			$pdf->FancyRow(array('', '', $header->alamat, 'Tgl Faktur', ':', date('d-m-Y', strtotime($header->terima_date))), $fc, $border);
 			$pdf->FancyRow(array('', '', '', 'Tgl Penerimaan', ':', date('d-m-Y', strtotime($header->terima_date))), $fc, $border);
+			$pdf->FancyRow(array('', '', '', 'Tgl Jatuh Tempo', ':', date('d-m-Y', strtotime($header->due_date))), $fc, $border);
 			$pdf->FancyRow(array('', '', '', 'No. Faktur', ':', $header->invoice_no), $fc, $border);
 			$pdf->FancyRow(array('', '', '', 'No. Surat Jalan', ':', $header->sj_no), $fc, $border);
 			$border = array('LB', 'B', 'B', 'B', 'B', 'BR');

@@ -43,7 +43,7 @@ class Keuangan_keluar extends CI_Controller {
 			}			
 			$d['unit']  = $this->db->query($qp);
 			
-			$d['jenis_pembayaran'] = $this->M_keuangan_keluar->getJenisPembayaran();
+			$d['jenis_pembayaran'] = get_jenis_bayar();
 			
 			$this->load->view('keuangan/v_keuangan_keluar_add',$d);
 			} else

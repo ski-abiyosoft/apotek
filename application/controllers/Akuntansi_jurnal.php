@@ -51,14 +51,10 @@ class Akuntansi_jurnal extends CI_Controller {
 			} else {
 			  $qp ="select koders, namars from tbl_namers order by koders"; 		
 			}
+
+			$nobukti = urldecode($nojurnal);
 			
-			$datajurnal = $this->db->query("select * from tbl_jurnalh where id = '$nojurnal'")->row();
-			if($datajurnal){
-			  $nobukti = $datajurnal->nobukti;	
-			} else {
-			  $nobukti = '';	
-			}
-			$qjurnalh ="select * from tbl_jurnalh where id = '$nojurnal'"; 					
+			$qjurnalh ="select * from tbl_jurnalh where nobukti = '$nobukti'"; 					
 			$qjurnald ="select tbl_jurnald.*, tbl_accounting.acname, tbl_accostcentre.namadep 
 			from tbl_jurnald inner join tbl_accounting on tbl_jurnald.accountno=tbl_accounting.accountno 
 			left outer join tbl_accostcentre on tbl_jurnald.depid=tbl_accostcentre.depid	

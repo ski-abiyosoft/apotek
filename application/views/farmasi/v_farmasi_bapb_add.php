@@ -203,13 +203,13 @@ $this->load->view('template/body');
                       <font color="red">*</font>
                     </label>
                     <div class="col-md-4">
-                      <input type="text" name="nofaktur" id="nofaktur" class="form-control" value="">
+                      <input type="text" name="nofaktur" id="nofaktur" class="form-control" value="" placeholder="No Faktur">
                     </div>
                     <label class="col-md-2 control-label">SJ No.
                       <font color="red">*</font>
                     </label>
                     <div class="col-md-3">
-                      <input type="text" class="form-control" placeholder="" name="nomorsj" id="nomorsj" value="">
+                      <input type="text" class="form-control" placeholder="No Surat Jalan" name="nomorsj" id="nomorsj" value="">
                     </div>
 
                   </div>
@@ -284,9 +284,9 @@ $this->load->view('template/body');
 
                     <thead class="page-breadcrumb breadcrumb">
                       <th class="title-white" width="5%" style="text-align: center">Delete</th>
-                      <th class="title-white" width="15%" style="text-align: center">Nama Barang
+                      <th class="title-white" width="10%" style="text-align: center">Nama Barang
                       </th>
-                      <th class="title-white" width="5%" style="text-align: center">Qty</th>
+                      <th class="title-white" width="10%" style="text-align: center">Qty</th>
                       <th class="title-white" width="5%" style="text-align: center">Satuan</th>
                       <th class="title-white" width="10%" style="text-align: center">Harga</th>
                       <th class="title-white" width="5%" style="text-align: center">Disc %</th>
@@ -336,7 +336,7 @@ $this->load->view('template/body');
                         </td>
 
                         <td>
-                          <input name="jumlah[]" id="jumlah1" type="text" class="form-control rightJustified" size="40%">
+                          <input name="jumlah[]" id="jumlah1" type="text" class="form-control rightJustified" readonly>
                         </td>
                         <td>
                           <input name="expire[]" onchange="totalline(1);total()" value="" id="expire1" type="date" class="form-control">
@@ -461,7 +461,7 @@ $this->load->view('template/footer');
 
 <script>
   $("#btnsave").attr("disabled", true);
-  
+
   function cekmtr() {
     var tmateraix = $("#materai").val();
     var tmaterai = parseInt(tmateraix.replaceAll(',', ''));
@@ -973,7 +973,7 @@ $this->load->view('template/footer');
                   }
                   // console.log('kode : '+kode+', qty : '+qty+', sat : '+sat+', harga : '+harga+', disc : '+disc+', discrp : '+discrp+', vat : '+vat+', jumlah : '+jumlah+', expire : '+expire+', po : '+po+', pajak : '+pj+', vatrp : '+vatrp);
                   $.ajax({
-                    url: '<?= site_url() ?>farmasi_bapb/save_multi/?kode=' + kode + '&qty=' + qty + '&sat=' + sat + '&harga=' + harga + '&disc=' + disc+ '&discrp=' + discrp + '&vat=' + vat + '&jumlah=' + jumlah + '&expire=' + expire + '&po=' + po + '&vatrp=' + vatrp + '&terima_no=' + terima_no,
+                    url: '<?= site_url() ?>farmasi_bapb/save_multi/?kode=' + kode + '&qty=' + qty + '&sat=' + sat + '&harga=' + harga + '&disc=' + disc + '&discrp=' + discrp + '&vat=' + vat + '&jumlah=' + jumlah + '&expire=' + expire + '&po=' + po + '&vatrp=' + vatrp + '&terima_no=' + terima_no,
                     data: $('#frmpembelian').serialize(),
                     type: 'POST',
                     dataType: 'JSON',
@@ -1261,13 +1261,12 @@ $this->load->view('template/footer');
   }
 
   function total() {
-    var tmateraix = $("#materai").val();
-
     var vtotal = $('#_vtotal').text();
     var xtotal = parseInt(vtotal.replaceAll(',', ''));
-    // if (xtotal >= '5000000') {
-    //     $('#materai').val('10000').change();
-    // }
+    if (xtotal >= '5000000') {
+      $('#materai').val('10000').change();
+    }
+    var tmateraix = $("#materai").val();
     var table = document.getElementById('datatable');
     var rowCount = table.rows.length;
 

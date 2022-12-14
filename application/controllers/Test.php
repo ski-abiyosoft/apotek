@@ -6,7 +6,7 @@ class Test extends CI_Controller
     public function __construct()
     {
         parent::__construct();
-        $this->load->library('accounting');
+        $this->load->library('dpsAccounting/Services/cash_disbursement_service');
         $this->load->model('M_piutang', 'piutang', TRUE);
         $this->load->model('M_cetak', 'pdf');
         $this->load->model('M_rs', 'rs');
@@ -22,8 +22,6 @@ class Test extends CI_Controller
         return $this->output
             ->set_content_type('application/json')
             ->set_status_header(200)
-            ->set_output(json_encode($this->piutang->get_ar_aging_data((object) [
-                'todate' => '2022-01-31'
-            ])));
+            ->set_output(json_encode($this->cash_disbursement_service->test()));
     }
 }

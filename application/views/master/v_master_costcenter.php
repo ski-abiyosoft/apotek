@@ -73,7 +73,6 @@
                                          <th style="text-align: center">Kode</th>
                                          <th style="text-align: center">Nama Departemen</th>
                                          <th style="text-align: center;width:12%;">Aksi</th>
-
                                      </tr>
                                 </thead>
                                 <tbody>
@@ -98,73 +97,19 @@ var save_method; //for save method string
 var table;
 
 $(document).ready(function() {
-
     //datatables
-    table = $('#table').DataTable({ 
-
+    $('#table').DataTable({ 
         "processing": true, //Feature control the processing indicator.
         "serverSide": true, //Feature control DataTables' server-side processing mode.
-        "order": [], //Initial no order.
-
-        // Load data for the table's content from an Ajax source
-        "ajax": {
-            "url": "<?php echo site_url('master_costcenter/ajax_list')?>",
-            "type": "POST"
-        },
-		
-		"oLanguage": {
-                    "sEmptyTable": "Tidak ada data",
-                    "sInfoEmpty": "Tidak ada data",
-                    "sInfoFiltered": " - Dipilih dari _MAX_ data",
-                    "sSearch": "Pencarian Data : ",
-                    "sInfo": " Jumlah _TOTAL_ Data (_START_ - _END_)",
-                    "sLengthMenu": "_MENU_ Baris",
-                    "sZeroRecords": "Tida ada data",
-                    "oPaginate": {
-                        "sPrevious": "Sebelumnya",
-                        "sNext": "Berikutnya"
-                    }
-                },
-				
-		"aLengthMenu": [
-                    [5, 15, 20, -1],
-                    [5, 15, 20, "Semua"] // change per page values here
-                ],		
-
-        //Set column definition initialisation properties.
-        "columnDefs": [
-        { 
-            "targets": [ -1 ], //last column
-            "orderable": false, //set not orderable
-        },
-        ],
-
+        aaSorting: [[0, "asc"]],
+        bSort: true,
+        sAjaxSource: `<?= base_url("api/cost_centers/all") ?>`,
+        aoColumns: [
+            {mData: "depid"},
+            {mData: "namadep"},
+            {mData: "id"}
+        ]
     });
-
-    //datepicker
-    $('.datepicker').datepicker({
-        autoclose: true,
-        format: "yyyy-mm-dd",
-        todayHighlight: true,
-        orientation: "top auto",
-        todayBtn: true,
-        todayHighlight: true,  
-    });
-
-    //set input/textarea/select event when change value, remove class error and remove text help block 
-    $("input").change(function(){
-        $(this).parent().parent().removeClass('has-error');
-        $(this).next().empty();
-    });
-    $("textarea").change(function(){
-        $(this).parent().parent().removeClass('has-error');
-        $(this).next().empty();
-    });
-    $("select").change(function(){
-        $(this).parent().parent().removeClass('has-error');
-        $(this).next().empty();
-    });
-
 });
 
 

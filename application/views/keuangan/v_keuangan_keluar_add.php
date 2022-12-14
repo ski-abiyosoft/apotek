@@ -1,4 +1,4 @@
-<?php 
+    <?php 
 	$this->load->view('template/header');
     $this->load->view('template/body');    	  
 
@@ -77,19 +77,14 @@
 
                         </div>
                     </div>
-                    <!--/span-->
-                    <?php 
-                                    // print_r($jenis_pembayaran);
-                                ?>
                     <div class="col-md-2">
                         <div class="form-group">
                             <label class="col-md-4 control-label">Jenis<font color="red">*</font></label>
                             <div class="col-md-8">
                                 <select name="jenis" id="jenis" class="form-control rightJustified">
-                                    <option value="" disabled selected>Pilih Jenis</option>
                                     <?php
-                                        foreach($jenis_pembayaran as $key){
-                                            echo "<option value='".$key->id."'>".$key->jenis."</option>";
+                                        foreach($jenis_pembayaran as $key => $value){
+                                            echo "<option value='".$key."'>".$value."</option>";
                                         }
                                     ?>
                                 </select>

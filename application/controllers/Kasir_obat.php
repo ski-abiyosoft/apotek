@@ -34,6 +34,16 @@ class Kasir_obat extends CI_Controller
 		}
 	}
 
+	public function getjaminan1($param){
+		$data = $this->db->get_where("tbl_penjamin", ["cust_id" => $param])->row();
+		echo json_encode($data);
+	}
+
+	public function getjaminan2($param){
+		$data = $this->db->get_where("tbl_penjamin", ["cust_id" => $param])->row();
+		echo json_encode($data);
+	}
+
 	public function entri()
 	{
 		$cabang = $this->session->userdata('unit');
@@ -42,12 +52,17 @@ class Kasir_obat extends CI_Controller
 
 		if (!empty($cek)) {
 			$resep = $this->db->query("SELECT (SELECT handphone FROM tbl_pasien b where a.rekmed=b.rekmed)hp,a.* from tbl_apoposting a where keluar=0 and koders='$cabang'")->result();
-			//  AND resepno NOT IN (SELECT resepno FROM tbl_apodresep) and a.tglresep = '$tanggal'
+			//  AND resepno NOT IN (SELECT resepno FROM tbl_apodresep) and a.tglresep = '$tanggal']
 			$data['resep'] = $resep;
 			$this->load->view('klinik/v_kasirobat_add', $data);
 		} else {
 			header('location:' . base_url());
 		}
+	}
+
+	public function get_pas($rekmed){
+		$data = $this->db->get_where("tbl_pasien", ['rekmed' => $rekmed])->row();
+		echo json_encode($data);
 	}
 
 	public function filter($param)
@@ -201,7 +216,15 @@ class Kasir_obat extends CI_Controller
 		$tanggal = date('Y-m-d');
 		$jam     = date('H:i:s');
 
+		$kwitansi = urut_transaksi('URUTKWT', 19);
+
 		$noreg = $this->input->post('noreg');
+		$tercover_rp1    = $this->input->post('tercover_rp');
+		$tercover_rp2   = $this->input->post('tercover_rp2');
+		$jaminan  = $this->input->get('jaminan');
+		$jaminan1  = $this->input->post('vpenjamin');
+		$jaminan2  = $this->input->post('vpenjamin2');
+		$no_jaminan  = $this->input->post('no_jaminan');
 		$noresep = $this->input->post('noresep');
 		$fakturpajak = $this->input->post('fakturpajak');
 		$totalresep = str_replace(',', '', $this->input->post('reseprp'));
@@ -226,13 +249,45 @@ class Kasir_obat extends CI_Controller
 			$fakturpajak = '';
 		}
 
-		$kwitansi = urut_transaksi('URUTKWT', 19);
-
 		//$this->_validate();
 		if ($totalresep > 0) {
 			$ttlresep = (int)$totalresep;
 		} else {
 			$ttlresep = 0 - (int)$totalresep;
+		}
+
+		$pas = $this->db->get_where('tbl_pasien', ['rekmed' => $this->input->post('rekmed')])->row();
+		if ($jaminan == 1) {
+			$data_pap = [
+				'koders' => $cabang,
+				'noreg' => $noreg,
+				'rekmed' => $this->input->post('rekmed'),
+				'tglposting' => $tanggal,
+				'tgljatuhtempo' => $tanggal,
+				'cust_id' => $jaminan1,
+				'cust_id2' => $jaminan2,
+				'nokwitansi' => $kwitansi,
+				'bayarcash' => $bayarcash,
+				'adm' => 0,
+				'totalpoli' => 0,
+				'totalradio' => 0,
+				'totallab' => 0,
+				'totalbedah' => 0,
+				'totalresep' => $totalresep,
+				'jumlahhutang' => str_replace(',', '', $tercover_rp1),
+				'nilaiklaim2' => str_replace(',', '',$tercover_rp2),
+				'username' => $userid,
+				'namapas' => $pas->namapas,
+				'nik' => $pas->noidentitas,
+			];
+			$insert = $this->db->insert('tbl_pap', $data_pap);
+			if($insert) {
+				if($pas->nocard == '' || $pas->nocard == null){
+					$this->db->set('nocard', $no_jaminan);
+					$this->db->where('rekmed', $this->input->post('pasien'));
+					$this->db->update('tbl_pasien');
+				}
+			}
 		}
 		$data = array(
 			'koders' => $cabang,
@@ -1193,7 +1248,7 @@ class Kasir_obat extends CI_Controller
 
 			$pdf->AliasNbPages();
 			$pdf->setTitle($nokwitansi);
-			$pdf->output('./uploads/obat/' . $nokwitansi . '.PDF', 'F');
+			// $pdf->output('./uploads/obat/' . $nokwitansi . '.PDF', 'F');
 			$pdf->output($nokwitansi . '.PDF', 'I');
 		} else {
 
