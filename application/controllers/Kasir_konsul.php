@@ -182,6 +182,7 @@ class Kasir_konsul extends CI_Controller
 		$kode = $this->input->get('noreg');
 		// $barang = $this->db->query("SELECT a.kodetarif, b.tindakan, a.kodokter, a.koperawat, (SELECT nadokter FROM tbl_dokter WHERE kodokter=a.koperawat AND koders = '$unit' limit 1) as naperawat, (SELECT nadokter FROM tbl_dokter WHERE kodokter=a.kodokter AND koders = '$unit' limit 1) as nadokter FROM tbl_dpoli a LEFT JOIN tbl_tarifh b ON a.kodetarif = b.kodetarif WHERE a.noreg = '$kode' AND a.koders='$unit'")->result();
 		$barang = $this->db->query("SELECT 
+			a.*,
 			a.kodetarif, 
 			b.tindakan, 
 			a.kodokter, 
@@ -1345,7 +1346,7 @@ class Kasir_konsul extends CI_Controller
 									</table>";
 			$query_kartu_card	= $this->db->query("SELECT * FROM tbl_kartukredit WHERE nokwitansi = '$nokwitansi'")->result();
 			foreach ($query_kartu_card as $cckey => $ccval) {
-				$query_nama_bank	= $this->db->query("SELECT * FROM tbl_edc WHERE bankcode = $ccval->kodebank")->row();
+				$query_nama_bank	= $this->db->query("SELECT * FROM tbl_edc WHERE bankcode = '$ccval->kodebank' ")->row();
 				switch ($ccval->cardtype) {
 					case 1:
 						$cardType = "DEBIT NO";
@@ -1386,8 +1387,9 @@ class Kasir_konsul extends CI_Controller
 												</tr> 
 										</table>";
 			}
-			if ($kasir->kembalikeuangmuka > 0) {
-				$kembalikeuangmuka = number_format($kasir->uangmuka, 2);
+			if ($kasir->kembalikeuangmuka > 0) { 
+				// $kembalikeuangmuka = number_format($kasir->uangmuka, 2);
+				$kembalikeuangmuka = number_format($kasir->kembali, 2);
 				$chari .= "
 											<table style=\"border-collapse:collapse;font-family: tahoma; font-size:12px\" width=\"40%\" align=\"left\" border=\"0\">
 													<tr>

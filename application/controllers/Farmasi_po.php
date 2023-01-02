@@ -86,10 +86,11 @@ class Farmasi_po extends CI_Controller
 
 	public function ajax_list($param)
 	{
-		$lvx = $this->session->userdata('user_level');
-		$level = $this->session->userdata('level');
-		$akses = $this->M_global->cek_menu_akses($level, 3101);
-		$dat   = explode("~", $param);
+		$lvx    = $this->session->userdata('user_level');
+		$level  = $this->session->userdata('level');
+		$akses  = $this->M_global->cek_menu_akses($level, 3101);
+		$lock   = $this->M_global->close_app();
+		$dat    = explode("~", $param);
 		if ($dat[0] == 1) {
 			$bulan = date('m');
 			$tahun = date('Y');
@@ -125,7 +126,7 @@ class Farmasi_po extends CI_Controller
 			$row[] = '<span "font-weight:bold;"><b>' . $rd->nama . '</b></span>';
 			$row[] = '<span "font-weight:bold;"><b>' . $status . '</b></span>';
 
-			if ($akses->uedit == 1 && $akses->udel == 1) {
+			if ($akses->uedit == 1 && $akses->udel == 1 && $lock == 0) {
 				$email = $this->db->get_where('tbl_vendor', ['vendor_id' => $rd->vendor_id])->row_array();
 				if ($rd->setuju == 0) {
 					if ($lvx >= 2) {
@@ -161,9 +162,9 @@ class Farmasi_po extends CI_Controller
 						';
 					}
 				}
-			} else if ($akses->uedit == 1 && $akses->udel == 0) {
+			} else if ($akses->uedit == 1 && $akses->udel == 0 && $lock == 0) {
 				$row[] = '<a class="btn btn-sm btn-primary" href="' . base_url("farmasi_po/edit/" . $rd->id . "") . '" title="Edit" ><i class="glyphicon glyphicon-edit"></i> </a> ';
-			} else if ($akses->uedit == 0 && $akses->udel == 1) {
+			} else if ($akses->uedit == 0 && $akses->udel == 1 && $lock == 0) {
 				$row[] = '<a class="btn btn-sm btn-danger" href="javascript:void(0)" title="Hapus" onclick="delete_data(' . "'" . $rd->id . "'" . ')"><i class="glyphicon glyphicon-trash"></i> </a>';
 			} else {
 				$row[] = '';

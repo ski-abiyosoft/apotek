@@ -1192,7 +1192,7 @@ $this->load->view('template/footer_tb');
       success: function(data) {
         console.log(data)
         var feemedis = Number(parseInt((data.feemedispoli).replaceAll(',','')));
-        var bhp = Number(parseInt((data.bhp).replaceAll(',','')));
+        var bhp = Number(parseInt((data.obatpoli).replaceAll(',','')));
         var tarifrs = Number(parseInt((data.tarifrspoli).replaceAll(',','')));
         var tarifdr = Number(parseInt((data.tarifdrpoli).replaceAll(',','')));
         $('#harga' + vid).val(formatCurrency1(data.totaljasa));

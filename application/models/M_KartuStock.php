@@ -1591,4 +1591,104 @@ class M_KartuStock extends CI_Model
 			gudang = '$brg->gudang' order by tanggal, jam asc";
 		return $this->db->query($mutasi)->result();
 	}
+
+	public function cek_jeda($cabang, $dari, $depo, $kodebarang){
+		if ($depo != "") {
+				$kondisi = "gudang = '$depo'";
+		} else {
+				$kondisi = "gudang = '$depo'";
+		}
+		$jam = date("H:i:s");
+		$awalx = $this->db->get_where("tbl_periode", ["koders" => $cabang])->row();
+		$awal = $awalx->apoperiode;
+		// $dari = date('Y-m-d', strtotime("-1 day", strtotime($darix)));
+		// $y = "CALL sal_awal_persediaan('$cabang', '$dari', '$depo', '$kodebarang')";
+		$y = "SELECT *, (total_masuk - total_keluar) AS saldo, hpp, ((total_masuk - total_keluar) * hpp) AS total FROM 
+		(      
+			SELECT p.*, (pembelian + move_in + produksi_jadi + so + retur_beli) AS total_masuk, 
+			(jual + mutasi_out + retur_jual + produksi_bahan + bhp + expire) AS total_keluar 
+			FROM ( 
+						SELECT a.kodebarang, 
+						(SELECT namabarang FROM tbl_barang WHERE kodebarang = a.kodebarang) AS namabarang, 
+						(SELECT satuan1 FROM tbl_barang WHERE kodebarang = a.kodebarang) AS satuan, 
+						(SELECT hpp FROM tbl_barang WHERE kodebarang = a.kodebarang) AS hpp, 
+						IFNULL( 
+								( SELECT qty FROM ( SELECT dt.kodebarang, SUM(dt.qty_terima) AS qty, ht.gudang, ht.koders 
+								FROM tbl_barangdterima dt JOIN tbl_baranghterima ht ON dt.terima_no = ht.terima_no 
+								WHERE ht.gudang = '$depo' AND ht.koders = '$cabang' AND ht.terima_date BETWEEN '2022-01-01' AND '$dari' GROUP BY dt.kodebarang 
+								) AS beli 
+						WHERE beli.kodebarang=a.kodebarang ) ,0) AS pembelian, 
+						IFNULL( 
+								( SELECT qty FROM ( SELECT dm.kodebarang, SUM(dm.qtymove) AS qty, hm.dari, hm.koders 
+								FROM tbl_apodmove dm JOIN tbl_apohmove hm ON dm.moveno = hm.moveno 
+								WHERE hm.dari = '$depo' AND hm.koders = '$cabang' AND hm.movedate BETWEEN '2022-01-01' AND '$dari' GROUP BY dm.kodebarang 
+								) AS move_i 
+						WHERE move_i.kodebarang=a.kodebarang ) ,0) AS move_in, 
+						IFNULL( 
+								( SELECT qty FROM ( SELECT kodebarang, SUM(qtyjadi) AS qty, gudang, koders 
+								FROM tbl_apohproduksi 
+								WHERE gudang = '$depo' AND koders = '$cabang' AND tglproduksi BETWEEN '2022-01-01' AND '$dari' GROUP BY kodebarang 
+								) AS prod_jadi 
+						WHERE prod_jadi.kodebarang=a.kodebarang ) ,0) AS produksi_jadi, 
+						IFNULL( 
+								( SELECT qty FROM ( SELECT kodebarang, SUM(sesuai) AS qty, gudang, koders 
+								FROM tbl_aposesuai 
+								WHERE gudang = '$depo' AND koders = '$cabang' AND tglso BETWEEN '2022-01-01' AND '$dari' GROUP BY kodebarang 
+								) AS so_ 
+						WHERE so_.kodebarang=a.kodebarang ) ,0) AS so, 
+						IFNULL( 
+								( SELECT qty FROM ( SELECT dr.kodebarang, SUM(dr.qty_retur) AS qty, hr.gudang, hr.koders 
+								FROM tbl_barangdreturbeli dr JOIN tbl_baranghreturbeli hr ON dr.retur_no = hr.retur_no 
+								WHERE hr.gudang = '$depo' AND hr.koders = '$cabang' AND hr.retur_date BETWEEN '2022-01-01' AND '$dari' GROUP BY dr.kodebarang 
+								) AS ret 
+						WHERE ret.kodebarang=a.kodebarang ) ,0) AS retur_beli, 
+						IFNULL( 
+								( SELECT SUM(qty) AS qty FROM ( SELECT d.kodebarang, SUM(d.qty) AS qty, h.gudang, h.koders 
+								FROM tbl_apodresep d JOIN tbl_apohresep h ON d.resepno = h.resepno 
+								WHERE h.gudang = '$depo' AND h.koders = '$cabang' AND h.tglresep BETWEEN '2022-01-01' AND '$dari' GROUP BY d.kodebarang 
+								UNION ALL 
+								SELECT d.kodebarang, SUM(d.qtyr) AS qty, h.gudang, h.koders 
+								FROM tbl_apodetresep d JOIN tbl_apohresep h ON d.resepno = h.resepno 
+								WHERE h.gudang = '$depo' AND h.koders = '$cabang' AND h.tglresep BETWEEN '2022-01-01' AND '$dari' GROUP BY d.kodebarang 
+								) xx 
+						WHERE xx.kodebarang=a.kodebarang GROUP BY xx.kodebarang ) ,0) AS jual, 
+						IFNULL( 
+								( SELECT qty FROM ( SELECT dm.kodebarang, SUM(dm.qtymove) AS qty, hm.ke, hm.koders 
+								FROM tbl_apodmove dm JOIN tbl_apohmove hm ON dm.moveno = hm.moveno 
+								WHERE hm.ke = '$depo' AND hm.koders = '$cabang' AND hm.movedate BETWEEN '2022-01-01' AND '$dari' GROUP BY dm.kodebarang 
+								) AS move_o 
+						WHERE move_o.kodebarang=a.kodebarang ) ,0) AS mutasi_out, 
+						IFNULL( 
+								( SELECT qty FROM ( SELECT dm.kodebarang, SUM(dm.qtyretur) AS qty, hm.gudang, hm.koders 
+								FROM tbl_apodreturjual dm JOIN tbl_apohreturjual hm ON dm.returno = hm.returno 
+								WHERE hm.gudang = '$depo' AND hm.koders = '$cabang' AND hm.tglretur BETWEEN '2022-01-01' AND '$dari' GROUP BY dm.kodebarang 
+								) AS retur_j 
+						WHERE retur_j.kodebarang=a.kodebarang ) ,0) AS retur_jual, 
+						IFNULL( 
+								( SELECT qty FROM ( SELECT tbl_apodproduksi.kodebarang, SUM(tbl_apodproduksi.qty) AS qty, 
+								tbl_apohproduksi.gudang, tbl_apodproduksi.koders 
+								FROM tbl_apodproduksi JOIN tbl_apohproduksi ON tbl_apohproduksi.prdno = tbl_apodproduksi.prdno 
+								WHERE tbl_apohproduksi.gudang = '$depo' AND tbl_apodproduksi.koders = '$cabang' 
+								AND tbl_apohproduksi.tglproduksi BETWEEN '2022-01-01' AND '$dari' GROUP BY kodebarang 
+								) AS prod_jadi 
+						WHERE prod_jadi.kodebarang=a.kodebarang ) ,0) AS produksi_bahan, 
+						IFNULL( 
+								( SELECT qty FROM ( SELECT tbl_apodpakai.kodeobat AS kodebarang, SUM(tbl_apodpakai.qty) AS qty, 
+								tbl_apohpakai.gudang, tbl_apohpakai.koders 
+								FROM tbl_apodpakai JOIN tbl_apohpakai ON tbl_apohpakai.nobhp = tbl_apodpakai.nobhp 
+								WHERE tbl_apohpakai.gudang = '$depo' AND tbl_apohpakai.koders = '$cabang' 
+								AND tbl_apohpakai.tglbhp BETWEEN '2022-01-01' AND '$dari' GROUP BY kodebarang 
+								) AS prod_jadi 
+						WHERE prod_jadi.kodebarang=a.kodebarang ) ,0) AS bhp, 
+						IFNULL( 
+								( SELECT qty FROM ( SELECT dm.kodebarang, SUM(dm.qty) AS qty, hm.gudang, hm.koders 
+								FROM tbl_apodex dm JOIN tbl_apohex hm ON dm.ed_no = hm.ed_no 
+								WHERE hm.gudang = '$depo' AND hm.koders = '$cabang' AND hm.tgl_ed BETWEEN '2022-01-01' AND '$dari' GROUP BY dm.kodebarang 
+								) AS expi 
+						WHERE expi.kodebarang=a.kodebarang ) ,0) AS expire 
+					FROM tbl_barangstock a WHERE a.gudang = '$depo' AND a.koders = '$cabang'  AND a.kodebarang = '$kodebarang'
+			) p
+		) z";
+		return $this->db->query($y)->row();
+	}
 }

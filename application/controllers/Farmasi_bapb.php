@@ -325,6 +325,7 @@ class Farmasi_bapb extends CI_Controller
 		$user_level   = $this->session->userdata('user_level');
 		$level        = $this->session->userdata('level');
 		$akses        = $this->M_global->cek_menu_akses($level, 3102);
+		$lock         = $this->M_global->close_app();
 		$dat          = explode("~", $param);
 		if ($dat[0] == 1) {
 			$bulan = date('m');
@@ -362,7 +363,7 @@ class Farmasi_bapb extends CI_Controller
 				$row[] = '
 				<a target="_blank" class="btn btn-sm btn-warning" href="' . base_url("farmasi_bapb/cetak/?id=" . $rd->terima_no . "") . '" title="Cetak" ><i class="glyphicon glyphicon-print"></i> </a>';
 			}else{
-				if ($akses->uedit == 1 && $akses->udel == 1) {
+				if ($akses->uedit == 1 && $akses->udel == 1 && $lock == 0) {
 					$row[] = '
 					<a class="btn btn-sm btn-primary" href="' . base_url("farmasi_bapb/edit/" . $rd->terima_no . "") . '" title="Edit" ><i class="glyphicon glyphicon-edit"></i> </a>
 					<a target="_blank" class="btn btn-sm btn-warning" href="' . base_url("farmasi_bapb/cetak/?id=" . $rd->terima_no . "") . '" title="Cetak" ><i class="glyphicon glyphicon-print"></i> </a>

@@ -30,7 +30,7 @@ class M_template_cetak extends CI_Model {
                          <td rowspan=\"6\" align=\"center\">
                               <img src=\"" . base_url() . "assets/img_user/$avatar\"  width=\"70\" height=\"70\" />
                          </td>
-                         <td colspan=\"20\">
+                         <td colspan=\"20\" style=\"100%\">
                               <b>
                                    <tr>
                                         <td style=\"font-size:10px;border-bottom: none;\"><b><br>$namars</b></td>
@@ -105,6 +105,7 @@ class M_template_cetak extends CI_Model {
                     echo ("<title>$judul</title>");
                     $this->M_cetak->mpdf('L', 'A4', $judul, $chari, '.PDF', 10, 10, 10, 2);
                     break;
+
                case 2;
                     header("Cache-Control: no-cache, no-store, must-revalidate");
                     header("Content-Type: application/vnd-ms-excel");

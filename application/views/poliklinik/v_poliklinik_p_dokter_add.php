@@ -275,7 +275,7 @@
                                         $polipas        = isset($ttv->kodepos)? $ttv->kodepos : $data_pas->kodepos;
                                         // $kodokter       = isset($ttv->kodokter)? ($ttv->kodokter == "")? $data_pas->kodokter : $ttv->kodokter : $data_pas->kodokter;
                                         $unit           = $this->session->userdata("unit");
-                                        echo data_master("dokter", array("kodokter" => $kodokter, "koders" => $unit, "kopoli" => $polipas))->nadokter;
+                                        echo data_master("dokter", array("kodokter" => $kodokter, "koders" => $unit, "kopoli" => $polipas, "status" => 'ON'))->nadokter;
                                     // }
                                 ?>
                             </b></h3>
@@ -288,7 +288,7 @@
                                         $polipas        = isset($ttv->kodepos)? $ttv->kodepos : $data_pas->kodepos;
                                         $unit           = $this->session->userdata("unit");
 
-                                        $query_drpoli   = $this->db->query("SELECT * FROM dokter WHERE koders = '$unit' AND kopoli = '$polipas'")->result();
+                                        $query_drpoli   = $this->db->query("SELECT * FROM dokter WHERE koders = '$unit' AND kopoli = '$polipas' AND status = 'ON'")->result();
                                         foreach($query_drpoli as $drpval){
                                             // if(isset($ttv->kodokter)){
                                             //     if($ttv->kodokter == ""){
@@ -2607,7 +2607,7 @@
                 // Masalah Total
                 // var totalharga=eval(data.tarifrspoli)+eval(data.tarifdrpoli)+eval(data.feemedispoli)+eval(data.bhppoli);
                 // var totalharga  = data.cost;
-                var totalharga=eval(data.tarifrspoli)+eval(data.tarifdrpoli)+eval(data.feemedispoli)+eval(data.bhppoli);
+                var totalharga=eval(data.tarifrspoli)+eval(data.tarifdrpoli)+eval(data.feemedispoli)+eval(data.obatpoli);
                 $('#hrg' + vid).val(formatCurrency1(totalharga));
                 $('#dokter' + vid).html("<option value='"+ kodokter +"'>"+ nadokter +"</option>");
             }
@@ -2697,7 +2697,7 @@
     function show_tindakan_elab(str, id) {
         var vid       = id;
         $.ajax({
-            url: "<?php echo base_url();?>Poliklinik/getpoli_tin/?kode=" + str,
+            url: "<?php echo base_url();?>Poliklinik/getpoli_tin/"+ str +"/LABOR",
             type: "GET",
             dataType: "JSON",
             success: function(data) {
@@ -2713,7 +2713,7 @@
     function show_tindakan_emed(str, id) {
         var vid       = id;
         $.ajax({
-            url: "<?php echo base_url();?>Poliklinik/getpoli_tin/?kode=" + str,
+            url: "<?php echo base_url();?>Poliklinik/getpoli_tin/0/0",
             type: "GET",
             dataType: "JSON",
             success: function(data) {
@@ -2729,7 +2729,7 @@
     function show_tindakan_erad(str,id){
         var vid       = id;
         $.ajax({
-            url: "<?php echo base_url();?>Poliklinik/getpoli_tin/?kode=" + str,
+            url: "<?php echo base_url();?>Poliklinik/getpoli_tin/"+ str +"/RADIO",
             type: "GET",
             dataType: "JSON",
             success: function(data) {
@@ -3101,7 +3101,7 @@
             '<input type="hidden" id="elabtin_tarifrs'+ param  + idrowElab +'" name="elabtin_tarifrs[]" value="">'+
             '<input type="hidden" id="elabtin_tarifdr'+ param  + idrowElab +'" name="elabtin_tarifdr[]" value="">'+
         '</td>'+
-        "<td><select type='text' class='form-control input-medium' name='elabtin_kode[]' id='elabtin_kode"+ param + idrowElab +"' data-live-search='true' data-width='100%' onkeypress='return tabE(this,event)' onchange='show_tindakan_elab(this.value, "+ param + idrowElab +")'><option value='>--- Pilih Tindakan ---</option><?php foreach($list_elab as $leval): ?><option value='<?= $leval->kodeid ?>'><?= $leval->text ?></opiton><?php endforeach; ?></select></td>"+
+        "<td><select type='text' class='form-control input-medium' name='elabtin_kode[]' id='elabtin_kode"+ param + idrowElab +"' data-live-search='true' data-width='100%' onkeypress='return tabE(this,event)' onchange='show_tindakan_elab(this.value, "+ param + idrowElab +")'><option value='-'>--- Pilih Tindakan ---</option><?php foreach($list_elab as $leval): ?><option value='<?= $leval->kodeid ?>'><?= $leval->text ?></opiton><?php endforeach; ?></select></td>"+
         '<td><input type="text" class="form-control" name="elabtin_harga[]" id="elabtin_harga'+ param + idrowElab +'" readonly></td>'+
         '<td><input type="text" class="form-control" name="elabtin_catatan[]" id="elabtin_catatan'+ param + idrowElab +'"></td>'+
         '</tr>');

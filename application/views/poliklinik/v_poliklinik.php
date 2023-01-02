@@ -968,7 +968,7 @@ function closemod() {
     // alert('aaa');
 }
 
-function add_list(id)
+function add_list(id, rekmed)
 {
     var select = id;
     $('#loading').modal('show');
@@ -976,7 +976,7 @@ function add_list(id)
         url: "<?= site_url('Poliklinik/get_detail');?>",
         type: "POST",
         dataType: "JSON",
-        data: {ceknoreg:select},
+        data: {ceknoreg:select, cekrekmed:rekmed},
         success: function(data) {
             var namapase = data.namapas;   
             var norege = data.noreg;   

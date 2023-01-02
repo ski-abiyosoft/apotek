@@ -232,7 +232,7 @@
 				</div>
 				
 				<div class="col-md-6">
-					<div class="form-group">
+					<div class="form-group" id="nocardx">
 						<label class="col-md-3 control-label">No. Kartu <font color="red">*</font></label>
 						<div class="col-md-8">
 							<input type="text" class="form-control" id="nocard" name="nocard" value="<?= $data->nobpjs; ?>" maxlength="13">
@@ -845,31 +845,33 @@ var poliklinik = $("#poliklinik1").val();
 var jenispasien = document.getElementById('jenispasien').value;
 var penjamin = document.getElementById('vpenjamin').value;
 if(jenispasien != 'PAS1'){
-	$('#penjamin').show();
+	// $('#penjamin').show();
 	$('#card').show();
 	$('#sep').show();
 	$('#rujukan').show();
 	$('#vpenjamin').val(penjamin).change();
+	$('#nocardx').show();
 } else {
-	$('#penjamin').hide();
+	// $('#penjamin').hide();
 	$('#card').hide();
 	$('#sep').hide();
 	$('#rujukan').hide();
+	$('#nocardx').hide();
 }
 
-$('#penjamin').hide();
+$('#penjamin').show();
 $('#card').hide();
 $('#sep').hide();
 $('#rujukan').hide();
 
 if(jenispasien != 'PAS1'){
-	$('#penjamin').show();
+	// $('#penjamin').show();
 	$('#card').show();
 	$('#sep').show();
 	$('#rujukan').show();
 	// $('#vpenjamin').val("BPJS").change();
 } else {
-	$('#penjamin').hide();
+	// $('#penjamin').hide();
 	$('#card').hide();
 	$('#rujukan').hide();
 	$('#sep').hide();
@@ -1020,11 +1022,13 @@ function getRuang(){
 		$('#sep').show(200);
 		$('#rujukan').show(200);
 		$('#vpenjamin').val("BPJS").change();
+		$('#nocardx').show();
 	} else {
 		$('#penjamin').hide(200);
 		$('#card').hide(200);
 		$('#sep').hide(200);
 		$('#rujukan').hide(200);
+		$('#nocardx').hide();
 	}
 }
 

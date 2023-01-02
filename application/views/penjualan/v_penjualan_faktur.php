@@ -1,61 +1,61 @@
 
     <?php 
-	  $this->load->view('template/header');
-      $this->load->view('template/body');    	  
-	?>	
+    $this->load->view('template/header');
+    $this->load->view('template/body');    	  
+    ?>	
 
-	
-	<!-- <link href="<?php echo base_url('css/font_css.css')?>" rel="stylesheet" type="text/css"/> -->
-	<link href="<?php echo base_url('assets/plugins/uniform/css/uniform.default.css')?>" rel="stylesheet" type="text/css"/>
-	<link href="<?php echo base_url('assets/plugins/select2/select2.css')?>" rel="stylesheet" type="text/css" />
-	<link href="<?php echo base_url('assets/plugins/select2/select2-metronic.css')?>" rel="stylesheet" type="text/css" />
-	<link href="<?php echo base_url('assets/plugins/data-tables/DT_bootstrap.css')?>" rel="stylesheet" />
-	<link href="<?php echo base_url('assets/css/custom.css')?>" rel="stylesheet" type="text/css"/>
-	<link href="<?php echo base_url('assets/plugins/bootstrap-datepicker/css/datepicker.css')?>" rel="stylesheet" type="text/css"/>
-	<style>
+    
+    <!-- <link href="<?php echo base_url('css/font_css.css')?>" rel="stylesheet" type="text/css"/> -->
+    <link href="<?php echo base_url('assets/plugins/uniform/css/uniform.default.css')?>" rel="stylesheet" type="text/css"/>
+    <link href="<?php echo base_url('assets/plugins/select2/select2.css')?>" rel="stylesheet" type="text/css" />
+    <link href="<?php echo base_url('assets/plugins/select2/select2-metronic.css')?>" rel="stylesheet" type="text/css" />
+    <link href="<?php echo base_url('assets/plugins/data-tables/DT_bootstrap.css')?>" rel="stylesheet" />
+    <link href="<?php echo base_url('assets/css/custom.css')?>" rel="stylesheet" type="text/css"/>
+    <link href="<?php echo base_url('assets/plugins/bootstrap-datepicker/css/datepicker.css')?>" rel="stylesheet" type="text/css"/>
+    <style>
         .toolbar {
             float: left;
         }
     </style>
-			<div class="row">
-				<div class="col-md-12">
-					<h3 class="page-title">
+            <div class="row">
+                <div class="col-md-12">
+                    <h3 class="page-title">
                     <span class="title-unit">
                             &nbsp;<?php echo $this->session->userdata('unit'); ?> 
                         </span>
-                      - 
-                      <span class="title-web">Farmasi <small>Penjualan Resep</small>
-					</h3>
-                         <ul class="page-breadcrumb breadcrumb">
+                    - 
+                    <span class="title-web">Farmasi <small>Penjualan Resep</small>
+                    </h3>
+                        <ul class="page-breadcrumb breadcrumb">
 
-						<li>
-							<i style="color:white;" class="fa fa-home"></i>
-							<a class="title-white" href="<?php echo base_url();?>dashboard">
-                               Awal
-							</a>
-							<i style="color:white;" class="fa fa-angle-right"></i>
-						</li>
-						<li>
-							<a class="title-white" href="">
-                               Farmasi
-							</a>
-							<i style="color:white;" class="fa fa-angle-right"></i>
-						</li>
-						<li>
-							<a class="title-white" href="<?php echo base_url();?>penjualan_faktur">
-                               Data Penjualan
-							</a>
-						</li>
-					</ul>
-				</div>
-			</div>
-			<div class="row">
-				<div class="col-md-12">
-					<div class="portlet">
+                        <li>
+                            <i style="color:white;" class="fa fa-home"></i>
+                            <a class="title-white" href="<?php echo base_url();?>dashboard">
+                            Awal
+                            </a>
+                            <i style="color:white;" class="fa fa-angle-right"></i>
+                        </li>
+                        <li>
+                            <a class="title-white" href="">
+                            Farmasi
+                            </a>
+                            <i style="color:white;" class="fa fa-angle-right"></i>
+                        </li>
+                        <li>
+                            <a class="title-white" href="<?php echo base_url();?>penjualan_faktur">
+                            Data Penjualan
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="portlet">
                         <div class="portlet-title">
-							<div class="caption">Daftar E-RESEP</div>
-						</div>
-						<div class="portlet-body">
+                            <div class="caption">Daftar E-RESEP</div>
+                        </div>
+                        <div class="portlet-body">
                             <div class="btn-group pull-right" style="margin-bottom:15px">
                                 <button class="btn dropdown-toggle" data-toggle="dropdown">Data <i class="fa fa-angle-down"></i></button>
                                 <ul class="dropdown-menu pull-right">
@@ -64,7 +64,7 @@
                                     </li>										
                                 </ul>
                             </div>
-							<table class="table table-striped table-hover table-bordered" id="datatable-eresep">
+                            <table class="table table-striped table-hover table-bordered" id="datatable-eresep">
                                 <thead>
                                     <tr class="page-breadcrumb breadcrumb title-white">
                                         <th>Proses</th>
@@ -85,11 +85,11 @@
                                             $cek =  $this->session->userdata('user_level'); 
                                             if($cek==0){?> 
                                                 <td class="text-center">
-                                                    <button type="button" class="btn btn-primary btn-xs" >proses</button>
+                                                    <button id="proses" type="button" class="btn btn-primary btn-xs" >proses</button>
                                                 </td>
                                             <?php }else{ ?>
                                                 <td class="text-center">
-                                                    <button type="button" class="btn btn-primary btn-xs" onclick="window.open('/penjualan_faktur/entri/?eresep=true&noresep=<?= $rval->orderno ?>', '_blank')">proses</button>
+                                                    <button id="proses" type="button" class="btn btn-primary btn-xs" onclick="window.open('/penjualan_faktur/entri/?eresep=true&noresep=<?= $rval->orderno ?>', '_blank')">proses</button>
                                                 </td>
                                             <?php } ?>
                                             <td class="text-center"><?= $rval->koders ?></td>
@@ -103,32 +103,32 @@
                                         </tr>
                                     <?php } ?>
                                 </tbody>
-							</table>
-						</div>
+                            </table>
+                        </div>
                         
                         <hr />
 
-						<div class="portlet-title">
-							<div class="caption">
-								Daftar  Faktur Penjualan -
-								<span><b>
-								<?php 
-								   echo $periode;?></b>
+                        <div class="portlet-title">
+                            <div class="caption">
+                                Daftar  Faktur Penjualan -
+                                <span><b>
+                                <?php 
+                                echo $periode;?></b>
                                 </span>
-							</div>
+                            </div>
 
-						</div>
-						<div class="portlet-body">
-							<div class="table-toolbar">
-								
-								<div class="btn-group">
+                        </div>
+                        <div class="portlet-body">
+                            <div class="table-toolbar">
+                                
+                                <div class="btn-group">
                                     <?php if($akses->uadd){?>
                                         <?php 
                                         $cek =  $this->session->userdata('user_level'); 
                                         if($cek==0){?> 
                                         <?php }else{ ?>
 
-                                            <a href="<?php echo base_url()?>penjualan_faktur/entri/" class="btn btn-success">
+                                            <a id="tambah" href="<?php echo base_url()?>penjualan_faktur/entri/" class="btn btn-success">
                                             <i class="fa fa-plus"></i>
                                             <b>Transaksi Baru</b>
                                             </a>
@@ -136,91 +136,91 @@
                                         <?php } ?>
 
                                     <?php } ?>	
-								</div>	
-								
-								<div class="btn-group pull-right">
-									<button class="btn dropdown-toggle" data-toggle="dropdown">Data <i class="fa fa-angle-down"></i>
-									</button>
-									<ul class="dropdown-menu pull-right">
-										<li>											
-											<a data-toggle="modal" href="#lupperiode">Ganti Periode Data</a>										
-										</li>										
-									</ul>
-								</div>
+                                </div>	
+                                
+                                <div class="btn-group pull-right">
+                                    <button class="btn dropdown-toggle" data-toggle="dropdown">Data <i class="fa fa-angle-down"></i>
+                                    </button>
+                                    <ul class="dropdown-menu pull-right">
+                                        <li>											
+                                            <a data-toggle="modal" href="#lupperiode">Ganti Periode Data</a>										
+                                        </li>										
+                                    </ul>
+                                </div>
 
-							</div>
-							<table class="table table-striped table-hover table-bordered" id="keuangan-keluar-list">
+                            </div>
+                            <table class="table table-striped table-hover table-bordered" id="keuangan-keluar-list">
                             <thead>
-                                     <tr class="page-breadcrumb breadcrumb">
-                                         <th class="title-white" style="text-align: center">Cab.</th>
-										 <th class="title-white" style="text-align: center" width="150">User ID</th>
-									     <th class="title-white" style="text-align: center">No. Resep</th>
-										 <th class="title-white" style="text-align: center">No. Register</th>
-										 <th class="title-white" style="text-align: center">Rekmed</th>
-										 <th class="title-white" style="text-align: center">Nama Pasien</th>
-										 <th class="title-white" style="text-align: center">Tanggal</th>
-										 <th class="title-white" style="text-align: center">Jumlah Rp</th>
-										 <th class="title-white" style="text-align: center">No. Kwitansi</th>
-                                         <th class="title-white" style="text-align: center">Status</th>
-                                         <th class="title-white" style="text-align: center">Action</th>
-										 <!-- <th>&nbsp;</th>
-                                         <th>&nbsp;</th>                                          -->
-                                     </tr>
-                                     </thead>
+                                    <tr class="page-breadcrumb breadcrumb">
+                                        <th class="title-white" style="text-align: center">Cab.</th>
+                                        <th class="title-white" style="text-align: center" width="150">User ID</th>
+                                        <th class="title-white" style="text-align: center">No. Resep</th>
+                                        <th class="title-white" style="text-align: center">No. Register</th>
+                                        <th class="title-white" style="text-align: center">Rekmed</th>
+                                        <th class="title-white" style="text-align: center">Nama Pasien</th>
+                                        <th class="title-white" style="text-align: center">Tanggal</th>
+                                        <th class="title-white" style="text-align: center">Jumlah Rp</th>
+                                        <th class="title-white" style="text-align: center">No. Kwitansi</th>
+                                        <th class="title-white" style="text-align: center">Status</th>
+                                        <th class="title-white" style="text-align: center">Action</th>
+                                        <!-- <th>&nbsp;</th>
+                                        <th>&nbsp;</th>                                          -->
+                                    </tr>
+                                    </thead>
 
                                     
-                                     <tbody>
-                                     <?php
-                                      
-                                       $nomor = 1;
-                                       foreach ($keu as $row)
-                                       {   
-									     
-									     ?>
+                                    <tbody>
+                                    <?php
+                                    
+                                    $nomor = 1;
+                                    foreach ($keu as $row)
+                                    {   
+                                        
+                                        ?>
 
-                                     <tr class="show1" id="row_<?php echo $row->resepno;?>">
-									     <td align="center"><?php echo $row->koders;?></td>	
-									     <td align="center"><?php echo $row->username;?></td>										 
-                                         <td align="center"><?php echo $row->resepno;?></td>										 
-										 <td align="center"><?php echo $row->noreg;?></td>										 
-										 <td align="center"><?php echo $row->rekmed;?></td>										 
-										 <td align="center"><?php echo $row->namapas;?></td>										 
-                                         <td align="center"><?php echo date('d-m-Y',strtotime($row->tglresep));?></td>										 
-                                         <td align="right"><?php echo number_format($row->poscredit,0,',','.');?></td>
-										 <td><?php echo $row->nokwitansi;?></td>
-                                         
-                                         <td style="text-align: center"><?php
-                                                 if ($row->keluar=='0')
-                                                 { ?>
-										           <span class="label label-sm label-warning">
-											          Belum Lunas
-										           </span>
-										           <?php
-                                                 }else
-                                                 if ($row->keluar=='1')
-                                                 { ?>
-                                                   <span class="label label-sm label-success">
-                                                     Lunas
-										           </span>
+                                    <tr class="show1" id="row_<?php echo $row->resepno;?>">
+                                        <td align="center"><?php echo $row->koders;?></td>	
+                                        <td align="center"><?php echo $row->username;?></td>										 
+                                        <td align="center"><?php echo $row->resepno;?></td>										 
+                                        <td align="center"><?php echo $row->noreg;?></td>										 
+                                        <td align="center"><?php echo $row->rekmed;?></td>										 
+                                        <td align="center"><?php echo $row->namapas;?></td>										 
+                                        <td align="center"><?php echo date('d-m-Y',strtotime($row->tglresep));?></td>										 
+                                        <td align="right"><?php echo number_format($row->poscredit,0,',','.');?></td>
+                                        <td><?php echo $row->nokwitansi;?></td>
+                                        
+                                        <td style="text-align: center"><?php
+                                                if ($row->keluar=='0')
+                                                { ?>
+                                                <span class="label label-sm label-warning">
+                                                    Belum Lunas
+                                                </span>
+                                                <?php
+                                                }else
+                                                if ($row->keluar=='1')
+                                                { ?>
+                                                <span class="label label-sm label-success">
+                                                    Lunas
+                                                </span>
 
-										           <?php
-												 } ?> 
-                                                 
-                                         </td>
-										
+                                                <?php
+                                                } ?> 
+                                                
+                                        </td>
+                                        
                                         <td style="text-align: center">
                                             <?php
-                                               if ($row->keluar=='0')
-                                                 { ?>
-											 <a class="btn btn-sm btn-primary" href="<?php echo base_url()?>penjualan_faktur/edit/<?php echo $row->resepno;?>">
-                                             <i class="glyphicon glyphicon-edit" title="Edit"></i></a>
+                                            if ($row->keluar=='0')
+                                                { ?>
+                                            <a class="btn btn-sm btn-primary" href="<?php echo base_url()?>penjualan_faktur/edit/<?php echo $row->resepno;?>">
+                                            <i class="glyphicon glyphicon-edit" title="Edit"></i></a>
                                             <?php }?>
                                             <?php
                                             if ($row->keluar=='1')
                                                 { ?>
-											 <a class="btn btn-sm btn-info" href="<?php echo base_url()?>penjualan_faktur/edit/<?php echo $row->resepno;?>/1"><i class="glyphicon glyphicon-eye-open"></i></a>
+                                            <a class="btn btn-sm btn-info" href="<?php echo base_url()?>penjualan_faktur/edit/<?php echo $row->resepno;?>/1"><i class="glyphicon glyphicon-eye-open"></i></a>
                                             <?php }?>
-                                           <?php
+                                        <?php
                                             if ($row->keluar=='0')
                                                 { ?>
                                                 <!-- <a class="btn btn-sm btn-danger" href="<?php echo base_url()?>penjualan_faktur/delete/<?php echo $row->resepno;?>/1" title="Delete"> -->
@@ -231,32 +231,32 @@
                                                 <i class="glyphicon glyphicon-print"></i></a>
                                             <?php }?>
                                         </td>
-                                         
-                                     </tr>
-                                     <?php
-                                          $nomor++;
-                                     } ?>
+                                        
+                                    </tr>
+                                    <?php
+                                        $nomor++;
+                                    } ?>
 
 
-                                     </tbody>
+                                    </tbody>
                                     
 
-							</table>
-						</div>
+                            </table>
+                        </div>
                         <br /><br />
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
 <?php
-  $this->load->view('template/footero');
-  $this->load->view('template/v_report');
-  $this->load->view('template/v_periode'); 
+$this->load->view('template/footero');
+$this->load->view('template/v_report');
+$this->load->view('template/v_periode'); 
 ?>
-	
+    
 
 <script src="<?php echo base_url('assets/plugins/jquery-migrate-1.2.1.min.js')?>" type="text/javascript"></script>
 <script src="<?php echo base_url('assets/plugins/bootstrap/js/bootstrap.min.js')?>" type="text/javascript"></script>
@@ -272,6 +272,25 @@
 <script src="<?php echo base_url('assets/plugins/bootstrap-datepicker/js/bootstrap-datepicker.js')?>" type="text/javascript"></script>
 
 <script>
+close_app(); 
+function close_app() 
+{
+    $.ajax({
+        url         : '<?php echo base_url(); ?>lock_so/close_app',
+        type        : "POST",
+        dataType    : "json",
+        success:function(data){
+                if (data == 1) {
+                    $('#tambah').attr('disabled',true);
+                    $('button[id="proses"]').attr('disabled',true);
+                }else{
+                    $('#tambah').attr('disabled',false);
+                    $('button[id="proses"]').attr('disabled',false);
+                }
+            }                                     
+    });
+        
+}  
 
 function currencyFormat (num) {
     //return "Rp" + num.toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,")
@@ -282,16 +301,16 @@ function cekhapus(noresep)
 {
 
     swal({
-		title: "Hapus Resep : <b>"+noresep+"</b>  ?",
-		text: "",
-		type: 'info',
-		showCancelButton: true,
-		confirmButtonClass: 'btn btn-success',
-		cancelButtonClass: 'btn btn-success',
-		confirmButtonColor: '#227dff',
-		cancelButtonColor: '#d33',
-		confirmButtonText: 'Ya',     
-		cancelButtonText: 'TIDAK',     
+        title: "Hapus Resep : <b>"+noresep+"</b>  ?",
+        text: "",
+        type: 'info',
+        showCancelButton: true,
+        confirmButtonClass: 'btn btn-success',
+        cancelButtonClass: 'btn btn-success',
+        confirmButtonColor: '#227dff',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Ya',     
+        cancelButtonText: 'TIDAK',     
     }).then(function () {
             $.ajax( {
                 dataType: 'html',
@@ -305,10 +324,10 @@ function cekhapus(noresep)
                         type: "success",
                         confirmButtonText: "OK" 
                     }).then((value) => {
-						// bayar();
+                        // bayar();
                         // var table = $('#keuangan-keluar-list').dataTable();
                         // table.ajax.reload();
-						location.href = "<?php echo base_url()?>penjualan_faktur";
+                        location.href = "<?php echo base_url()?>penjualan_faktur";
                         return;
                     });
                 },
@@ -318,19 +337,19 @@ function cekhapus(noresep)
                 }
             } );
     }, function (dismiss) {
-		if (dismiss === 'cancel') {
-			return;
-		}
-	});
+        if (dismiss === 'cancel') {
+            return;
+        }
+    });
 }
 
 function _urlcetak(nobukti)
 {
-	var baseurl = "<?php echo base_url()?>";
-	var ctk=baseurl+'penjualan_faktur/cetak/?nobukti='+nobukti;	
-	window.open(ctk,'_blank');
+    var baseurl = "<?php echo base_url()?>";
+    var ctk=baseurl+'penjualan_faktur/cetak/?nobukti='+nobukti;	
+    window.open(ctk,'_blank');
 }
-	
+    
 var TableEditable = function () {
 
     return {
@@ -375,7 +394,7 @@ var TableEditable = function () {
                         'bSortable': true,
                         'aTargets': [0]
                     },
-					
+                    
                 ]
                     });
 
@@ -473,14 +492,14 @@ var TableEditable = function () {
 }();
 
 $(document).ready(function() {
-		
-		$('.print_laporan').on("click", function(){
-		$('.modal-title').text('penjualan');
-		
-		var param=this.id;				
-				
-		$("#simkeureport").html('<iframe src="<?php echo base_url();?>penjualan_faktur/cetak/'+param+'" frameborder="no" width="100%" height="420"></iframe>');
-		});
+        
+        $('.print_laporan').on("click", function(){
+        $('.modal-title').text('penjualan');
+        
+        var param=this.id;				
+                
+        $("#simkeureport").html('<iframe src="<?php echo base_url();?>penjualan_faktur/cetak/'+param+'" frameborder="no" width="100%" height="420"></iframe>');
+        });
 
         $("#datatable-eresep").DataTable({
             "aLengthMenu": [
@@ -511,26 +530,26 @@ $(document).ready(function() {
         $('#datatable-eresep_wrapper .dataTables_filter input').addClass("form-control input-medium input-inline"); // modify table search input
         $('#datatable-eresep_wrapper .dataTables_length select').addClass("form-control input-small  input-inline"); // modify table per page dropdown
         $('#datatable-eresep_wrapper .dataTables_length').attr("style", "float:left;margin-top:50px");
-	});
-	
+    });
+    
 function filterdata()
 {
-	var tgl1 = document.getElementById("tanggal1").value;
-	var tgl2 = document.getElementById("tanggal2").value;
-	var str  = '2~'+tgl1+'~'+tgl2; 
-	location.href = "<?php echo base_url();?>penjualan_faktur/filter/"+str;
+    var tgl1 = document.getElementById("tanggal1").value;
+    var tgl2 = document.getElementById("tanggal2").value;
+    var str  = '2~'+tgl1+'~'+tgl2; 
+    location.href = "<?php echo base_url();?>penjualan_faktur/filter/"+str;
 }
 
 function filterdataEresep(){
     var tgl1 = document.getElementById("tanggale1").value;
-	var tgl2 = document.getElementById("tanggale2").value;
+    var tgl2 = document.getElementById("tanggale2").value;
     var str         = tgl1 +"~"+ tgl2;
     location.href   = "<?php echo base_url();?>penjualan_faktur/?filter-eresep="+str;
 }
 
 jQuery(document).ready(function() {       
-   TableEditable.init();
+TableEditable.init();
 //    ComponentsPickers.init();
-  
+
 });
 </script>

@@ -45,13 +45,25 @@ class M_global extends CI_Model
 
 
 	public function cek_menu_akses($level, $modul)
-
 	{
 
 		$query = $this->db->get_where('ms_modul_grupd', array('nomor_grup' => $level, 'nomor_modul' => $modul));
 
 		return $query->row();
 	}
+
+	function close_app()
+	{
+		$cabang   = $this->session->userdata('unit');
+		$tgl      = date('Y-m-d');
+		// $tgl      = '2022-12-25';
+		$sql      = $this->db->query("SELECT status from ms_close_app WHERE koders = '$cabang' and statustgl='$tgl' ")->row();
+		if($sql){
+			return $sql->status;
+		}else{
+			return 0;
+		}
+    }
 
 
 	public function _periodebulan2()
@@ -472,7 +484,7 @@ class M_global extends CI_Model
 
 		$sql = "
 
-		    select tbl_tarifh.kodetarif, tbl_tarif.cost as harga, tindakan, tbl_tarif.bhppoli as bhp, tbl_tarif.tarifrspoli, tbl_tarif.tarifdrpoli, tbl_tarif.feemedispoli, (tbl_tarif.tarifrspoli + tbl_tarif.tarifdrpoli + tbl_tarif.feemedispoli + tbl_tarif.bhppoli) as totaljasa
+		    select tbl_tarifh.kodetarif, tbl_tarif.cost as harga, tindakan, tbl_tarif.obatpoli as obatpoli, tbl_tarif.bhppoli as bhp, tbl_tarif.tarifrspoli, tbl_tarif.tarifdrpoli, tbl_tarif.feemedispoli, (tbl_tarif.tarifrspoli + tbl_tarif.tarifdrpoli + tbl_tarif.feemedispoli + tbl_tarif.bhppoli + tbl_tarif.obatpoli) as totaljasa
 
 			from tbl_tarifh inner join tbl_tarif
 
@@ -1706,7 +1718,7 @@ class M_global extends CI_Model
 		$query	= $this->db->query("SELECT a.kodokter AS id, CONCAT(a.kodokter ,' - ', a.nadokter) AS text 
 		FROM dokter AS a 
 		WHERE a.koders = '$unit' 
-		AND a.kopoli = '$poli' 
+		AND a.kopoli = '$poli' AND a.status='ON'
 		AND (a.kodokter LIKE '%$str%' OR a.nadokter LIKE '%$str%') 
 		ORDER BY a.nadokter");
 		// $query = $this->db->query("SELECT kodokter as id, concat(kodokter,' | ',nadokter) as text from tbl_dokter where jenispegawai =1 and (kodokter like '%$str%' or nadokter like '$str%' or alamat like '$str%') order by nadokter");

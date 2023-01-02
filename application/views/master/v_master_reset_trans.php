@@ -12,7 +12,7 @@ $this->load->view('template/body');
 				&nbsp;<?php echo $this->session->userdata('unit'); ?>
 			</span>
 			&nbsp;-
-			<span class="title-web">ABSEN <small>Gabung Rekmed</small>
+			<span class="title-web">RESET <small>RESET NO TRANSAKSI</small>
 		</h3>
 		<ul class="page-breadcrumb breadcrumb">
 
@@ -25,13 +25,13 @@ $this->load->view('template/body');
 			</li>
 			<li>
 				<a class="title-white" href="#">
-					Absen
+					RESET
 				</a>
 				<i style="color:white;" class="fa fa-angle-right"></i>
 			</li>
 			<li>
 				<a class="title-white" href="#">
-					Gabung Rekmed
+					Reset No transaksi
 				</a>
 			</li>
 		</ul>
@@ -45,7 +45,7 @@ $this->load->view('template/body');
 		<div class="portlet box blue">
 			<div class="portlet-title">
 				<div class="caption">
-					<i class="fa fa-reorder"></i><b>Gabung RekmedGabung Rekmed</b>
+					<i class="fa fa-reorder"></i><b>RESET NO TRANSAKSI</b>
 				</div>
 
 			</div>
@@ -67,58 +67,17 @@ $this->load->view('template/body');
 								</td>
 							</tr>
 							<tr>
-								<td width="20%" align="center" >
-									<label class="control-label"><b>CETAK PASIEN DATA DOBEL </b></label> </td>
-								<td width="10%"><b>: &nbsp;&nbsp;</b> 
-									<a class="btn btn-sm blue print_laporan" onclick="urlcetak(0);">
-									<i title="CETAK PDF" class="fa fa-print"></i>
-									<b> LAYAR </b>
-									</a>	
-								</td>
-								<td width="70%">
-									<a class="btn btn-sm green print_laporan" onclick="urlcetak(2);">
-									<i title="CETAK PDF" class="fa fa-file"></i>
-									<b> EXCEL </b>
-									</a>	
-								</td>
-							</tr>
-							<tr>
-								<td colspan="3" >&nbsp;<br><br><br></td>
-							</tr>
-							<tr>
 								<td  colspan="3" align="center" >
-									<label class="control-label"><U><b>PENGGABUNGAN REKMED DENGAN PASIEN YG SAMA</b></U></label>
+									<h3><b>RESET NO TRAKSAKSI -> ALL RSBR</b></h3>
 									<br><br></td>
-							</tr>
-							<tr>
-								<td colspan="3" >
-									<label class="col-md-3 control-label">REKMED 1</label>
-									<div class="col-md-2">
-
-										<input id="rm1" name="rm1" class="form-control input-medium" type="text" value="" placeholder="" />
-
-									</div></td>
-							</tr>
-							<tr>
-								<td colspan="3" >
-									<label class="col-md-5 control-label"><b>DI GABUNG KE </b></label><br><br></td>
-							</tr>
-							<tr>
-								<td colspan="3" >
-									<label class="col-md-3 control-label">REKMED 2</label>
-									<div class="col-md-2">
-
-										<input id="rm2" name="rm2" class="form-control input-medium" type="text" value="" placeholder="" />
-
-									</div>
-								</td>
 							</tr>
 							<tr>
 								<td colspan="3" >&nbsp;</td>
 							</tr>
 							<tr>
 								<td  colspan="3" align="center">
-									<a class="btn btn-sm red " onclick="gabb();" ><i title="CETAK PDF" class="fa fa-check"></i><b> GABUNG </b></a>
+									<button type="button" id="ress" onclick="resett();" class="btn btn-danger" readonly> <i title="RESET" class="fa fa-check"></i>
+									<b>RESET NO TRANSAKSI</b></button>
 
 								</td>
 							</tr>
@@ -149,6 +108,7 @@ $this->load->view('template/v_report');
 
 <script>
 	cabb();
+	cek_button();
 
 	function cabb() {
 		$.ajax({
@@ -161,13 +121,46 @@ $this->load->view('template/v_report');
 
 			}
 		});
-
-
 	}
+	
+	function cek_button() {
+		$.ajax({
+			url: "<?php echo base_url(); ?>reset_transaksi/cek_button",
+			type: "GET",
+			dataType: "JSON",
+			success: function(data) {
+				// if(data.tgl=='12-31'){
+					
+				// }else{
+				// 	document.getElementById("ress").disabled = true;
+
+				// }
+				if(data.jam > '23:01:00'){
+					document.getElementById("ress").disabled = false;
+				}else{
+					document.getElementById("ress").disabled = true;
+				}
+	// 			var waktuMulai = $('#waktuMulai').val(),
+    //       waktuSelesai = $('#waktuSelesai').val(),
+    //    hours = waktuSelesai.split(':')[0] - waktuMulai.split(':')[0],
+    //       minutes = waktuSelesai.split(':')[1] - waktuMulai.split(':')[1];
+ 
+    //   if (waktuMulai <= "12:00:00" && waktuSelesai >= "13:00:00"){
+    //     a = 1;
+    //   }else {
+    //     a = 0;
+    //   }
+				// alert(data.jam);
+				// alert(data.tgl);
+
+			}
+		});
+	}
+
 	function urlcetak(cekpdf) {
 
 		var baseurl = "<?= base_url() ?>";
-		var var1    = baseurl+'gabung_rekmed/cetak_data/'+cekpdf;
+		var var1    = baseurl+'reset_transaksi/cetak_data/'+cekpdf;
 
 		window.open(var1,'_blank');
 
@@ -180,42 +173,39 @@ $this->load->view('template/v_report');
 	}
 
 	
-	function gabb() {
+	function resett() {
 		
-		var rm1      = alltrim($('[name="rm1"]').val());
-		var rm2      = alltrim($('[name="rm2"]').val());
 
 		swal({
-        title: 'GABUNG DATA',
-        html: 'Yakin Ingin Gabung Data Ini ??' ,
-        type: 'question',
-        showCancelButton: true,
-        confirmButtonClass: 'btn btn-success',
-        cancelButtonClass: 'btn btn-success',
-        cancelButtonColor: '#d33',
-        confirmButtonText: 'Ya, update',
-        cancelButtonText: 'Batal'
+        title               : 'RESET DATA',
+        html                : 'Yakin Ingin RESET Data Ini ??' ,
+        type                : 'question',
+        showCancelButton    : true,
+        confirmButtonClass  : 'btn btn-success',
+        cancelButtonClass   : 'btn btn-success',
+        cancelButtonColor   : '#d33',
+        confirmButtonText   : 'Ya, update',
+        cancelButtonText    : 'Batal'
 		}).then(function() {
 
 			$.ajax({
 				type        : 'POST',
 				dataType    : 'json',
-				data        : {rm1:rm1, rm2:rm2},
-				url         : '<?= base_url('gabung_rekmed')?>/gabdat',
+				url         : '<?= base_url('reset_transaksi')?>/res_dat',
 				success: function(data) {
 					
 					if(data.status==1){
 						swal({
-							title: "GABUNG DATA " ,
-							html: "Berhasil diupdate",
+							title: "RESET DATA " ,
+							html: "Berhasil ",
 							type: "success",
 							confirmButtonText: "OK"
 						}).then((value) => {
-							location.href = "<?= site_url('Gabung_rekmed') ?>";
+							location.href = "<?= site_url('reset_transaksi') ?>";
 						});
 					}else{
 						swal({
-                            title: "GABUNG DATA",
+                            title: "RESET DATA",
                             html: "Gagal dilakukan !<br>Cek Lagi",
                             type: "error",
                             confirmButtonText: "Ok"

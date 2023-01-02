@@ -70,7 +70,7 @@ $this->load->view('template/body');
               if($cek==0){?> 
               <?php }else{ ?>
 
-                <a href="<?php echo base_url() ?>penjualan_cabang/entri" class="btn btn-success">
+                <a id="tambah" href="<?php echo base_url() ?>penjualan_cabang/entri" class="btn btn-success">
                   <i class="fa fa-plus"></i>
                   Data Baru
                 </a>
@@ -215,6 +215,23 @@ $this->load->view('template/v_periode');
   type="text/javascript"></script>
 
 <script>
+  close_app();
+  function close_app() 
+  {
+      $.ajax({
+          url         : '<?php echo base_url(); ?>lock_so/close_app',
+          type        : "POST",
+          dataType    : "json",
+          success:function(data){
+                  if (data == 1) {
+                      $('#tambah').attr('disabled',true);
+                  }else{
+                      $('#tambah').attr('disabled',false);
+                  }
+              }                                     
+      });
+          
+  }  
 function Batalkan(id) {
   // alert(id);
   // return;

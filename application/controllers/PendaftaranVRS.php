@@ -69,6 +69,12 @@ class PendaftaranVRS extends CI_Controller {
 		echo json_encode($data);
 	}
 	
+	function namaprovinsi_all()
+	{
+		$data = $this->db->query("select * from tbl_propinsi")->result();
+		echo json_encode($data);
+	}
+	
 	function namakota()
 	{        
 		$kode = $this->input->get('kode');
@@ -666,46 +672,8 @@ class PendaftaranVRS extends CI_Controller {
 		$wn = '';
 		$iklinik = '';
 		$cek = $this->db->query('select * from tbl_pasien where rekmed = "'.$normori.'"')->row_array();
-		$ceknik = $this->db->query("SELECT * FROM tbl_pasien WHERE noidentitas = '$noidentitas'")->num_rows();
-		if($ceknik < 1){
-			$cekpasien = $this->db->query('select * from tbl_pasien where namapas = "'.$namapasien.'" and tempatlahir = "'.$tempatlahir.'" and tgllahir like "%'.$tgllahir.'%"')->num_rows();
-			if($cekpasien > 0){
-				$this->db->set('idpas', $identitas);
-				$this->db->set('noidentitas', $noidentitas);
-				$this->db->set('namapanggilan', $namapanggilan);
-				$this->db->set('namakeluarga', $namakeluarga);
-				$this->db->set('jkel', $jeniskelamin);
-				$this->db->set('status', $status);
-				$this->db->set('suku', $suku);
-				$this->db->set('wn', $suku);
-				$this->db->set('agama', $agama);
-				$this->db->set('pendidikan', $pendidikan);
-				$this->db->set('goldarah', $goldarah);
-				$this->db->set('hoby', $hoby);
-				$this->db->set('pekerjaan', $pekerjaan);
-				$this->db->set('alamat', $alamat1);
-				$this->db->set('rt', $rt);
-				$this->db->set('rw', $rw);
-				$this->db->set('alamat2', $alamat2);
-				$this->db->set('handphone', $handphone);
-				$this->db->set('propinsi', $propinsi);
-				$this->db->set('phone', $phone);
-				$this->db->set('kabupaten', $kabupaten);
-				$this->db->set('email', $email);
-				$this->db->set('kecamatan', $kecamatan);
-				$this->db->set('fb', $fb);
-				$this->db->set('kelurahan', $kelurahan);
-				$this->db->set('twit', $twit);
-				$this->db->set('kodepos', $kodepos1);
-				$this->db->set('ig', $ig);
-				$this->db->set('koders', $cabang);
-				$this->db->where('namapas', $namapasien);
-				$this->db->where('tempatlahir', $tempatlahir);
-				$this->db->where('tgllahir', $tgllahir);
-				$this->db->update('tbl_pasien');
-				echo json_encode(['status' => 1]);
-			} else {
-				$datapasien = [
+		if($noidentitas == '-'){
+			$datapasien = [
 					'koders' => $cabang,
 					'rekmed' => $norm,
 					'namapas' => $namapasien,
@@ -757,9 +725,102 @@ class PendaftaranVRS extends CI_Controller {
 				$this->db->insert('tbl_pasien', $datapasien);
 				history_log(0 ,'PENDAFTARAN PASIEN' ,'ADD' ,$norm ,'-');
 				echo json_encode(['status' => 0, 'norm' => $norm]);
-			}
 		} else {
-			echo json_encode(['status' => 2]);
+			$ceknik = $this->db->query("SELECT * FROM tbl_pasien WHERE noidentitas = '$noidentitas'")->num_rows();
+			if($ceknik < 1){
+				$cekpasien = $this->db->query('select * from tbl_pasien where namapas = "'.$namapasien.'" and tempatlahir = "'.$tempatlahir.'" and tgllahir like "%'.$tgllahir.'%"')->num_rows();
+				if($cekpasien > 0){
+					$this->db->set('idpas', $identitas);
+					$this->db->set('noidentitas', $noidentitas);
+					$this->db->set('namapanggilan', $namapanggilan);
+					$this->db->set('namakeluarga', $namakeluarga);
+					$this->db->set('jkel', $jeniskelamin);
+					$this->db->set('status', $status);
+					$this->db->set('suku', $suku);
+					$this->db->set('wn', $suku);
+					$this->db->set('agama', $agama);
+					$this->db->set('pendidikan', $pendidikan);
+					$this->db->set('goldarah', $goldarah);
+					$this->db->set('hoby', $hoby);
+					$this->db->set('pekerjaan', $pekerjaan);
+					$this->db->set('alamat', $alamat1);
+					$this->db->set('rt', $rt);
+					$this->db->set('rw', $rw);
+					$this->db->set('alamat2', $alamat2);
+					$this->db->set('handphone', $handphone);
+					$this->db->set('propinsi', $propinsi);
+					$this->db->set('phone', $phone);
+					$this->db->set('kabupaten', $kabupaten);
+					$this->db->set('email', $email);
+					$this->db->set('kecamatan', $kecamatan);
+					$this->db->set('fb', $fb);
+					$this->db->set('kelurahan', $kelurahan);
+					$this->db->set('twit', $twit);
+					$this->db->set('kodepos', $kodepos1);
+					$this->db->set('ig', $ig);
+					$this->db->set('koders', $cabang);
+					$this->db->where('namapas', $namapasien);
+					$this->db->where('tempatlahir', $tempatlahir);
+					$this->db->where('tgllahir', $tgllahir);
+					$this->db->update('tbl_pasien');
+					echo json_encode(['status' => 1]);
+				} else {
+					$datapasien = [
+						'koders' => $cabang,
+						'rekmed' => $norm,
+						'namapas' => $namapasien,
+						'namadepan' => $namadepan,
+						'namabelakang' => $namabelakang,
+						'preposisi' => $preposisi,
+						'namakeluarga' => $namakeluarga,
+						'namapanggilan' => $namapanggilan,
+						'tempatlahir' => $tempatlahir,
+						'tgllahir' => $tgllahir,
+						'jkel' => $jeniskelamin,
+						'status' => $status,
+						'noidentitas' => $noidentitas,
+						'idpas' => $identitas,
+						'nocard' => $nocard,
+						'pendidikan' => $pendidikan,
+						'suku' => $suku,
+						'agama' => $agama,
+						'pekerjaan' => $pekerjaan,
+						'goldarah' => $goldarah,
+						'hoby' => $hoby,
+						'alamat' => $alamat1,
+						'alamat2' => $alamat2,
+						'propinsi' => $propinsi,
+						'kabupaten' => $kabupaten,
+						'kecamatan' => $kecamatan,
+						'kelurahan' => $kelurahan,
+						'handphone' => $handphone,
+						'phone' => $phone,
+						'email' => $email,
+						'twit' => $twit,
+						'fb' => $fb,
+						'ig' => $ig,
+						'orhub' => $orhub,
+						'alamathub' => $alamathub,
+						'emailhub' => $emailhub,
+						'phonehub' => $phonehub,
+						'hphub' => $hphub,
+						'lastnoreg' => $lastnoreg,
+						'ada' => $ada,
+						'blokir' => $blokir,
+						'ketblokir' => $ketblokir,
+						'alergi' => $alergi,
+						'rt' => $rt,
+						'rw' => $rw,
+						'kodepos' => $kodepos1,
+						'wn' => $suku,
+					];
+					$this->db->insert('tbl_pasien', $datapasien);
+					history_log(0 ,'PENDAFTARAN PASIEN' ,'ADD' ,$norm ,'-');
+					echo json_encode(['status' => 0, 'norm' => $norm]);
+				}
+			} else {
+				echo json_encode(['status' => 2]);
+			}
 		}
 	}
 	
@@ -809,8 +870,7 @@ class PendaftaranVRS extends CI_Controller {
 		
 		$cekdata=$this->db->query("SELECT*from tbl_pasien where rekmed='$norm'")->row();
 		if($cekdata->ada==1){
-			echo json_encode(['status' => 2, 'noreg' => $noreg, 'nm' => $cekdata->namapas]);
-			
+			echo json_encode(['status' => 2, 'noreg' => $noreg, 'nm' => $cekdata->namapas]);			
 		}else{
 		
 			// husain change
@@ -1721,7 +1781,7 @@ class PendaftaranVRS extends CI_Controller {
 
 		$data = $this->db->query(
 			"(SELECT*from dokter where koders='$cabang' and kopoli='$poli' and nadokter='-' and koders='$cabang' limit 1) union all
-			SELECT*from dokter where koders='$cabang' and kopoli='$poli' and nadokter <> '-' and koders='$cabang'
+			SELECT*from dokter where koders='$cabang' and kopoli='$poli' and nadokter <> '-' and koders='$cabang' and status='on'
 			order by nadokter")->result();
 
 		

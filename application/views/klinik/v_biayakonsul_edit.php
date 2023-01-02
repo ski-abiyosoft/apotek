@@ -540,11 +540,11 @@ date_default_timezone_set("Asia/Jakarta");
                                             <td width="15%"><b>Jenis Bayar</b></td>
                                             <?php if($register->jenispas) : ?>
                                             <td width="5%" style="text-align:center;">
-                                            <input type="radio" id="j_umum" name="j_jaminan" <?php if($register->jenispas == 'PAS1') { echo 'checked'; } else { echo ''; } ?> class="form-control" onclick="cek_umum()">
+                                            <input type="radio" id="j_umum" name="j_jaminan" <?php if($register->jenispas == 'PAS1') { echo 'checked'; } else { echo ''; } ?> class="form-control" onclick="cek_umum()"  disabled>
                                             </td>
                                             <td width="15%">UMUM</td>
                                             <td width="5%" style="text-align:center;">
-                                            <input type="radio" id="j_jaminan" name="j_jaminan" <?php if($register->jenispas != 'PAS1') { echo 'checked'; } else { echo ''; } ?> class="form-control" onclick="cek_jaminan()">
+                                            <input type="radio" id="j_jaminan" name="j_jaminan" <?php if($register->jenispas != 'PAS1') { echo 'checked'; } else { echo ''; } ?> class="form-control" onclick="cek_jaminan()" disabled>
                                             </td>
                                             <td width="15%">JAMINAN</td>
                                             <?php endif; ?>

@@ -102,6 +102,18 @@ class M_stockopname extends CI_Model
 		$this->db->from($this->table);
 		return $this->db->count_all_results();
 	}
+	
+	public function count_all2()
+	{
+		$this->db->query("SELECT * FROM ms_close_app ORDER BY koders");
+		return $this->db->count_all_results();
+	}
+
+	function count_filtered2()
+	{
+		$query = $this->db->query("SELECT * FROM ms_close_app ORDER BY koders");
+		return $query->nuM_rows();
+	}
 
 	public function get_by_id($id)
 	{

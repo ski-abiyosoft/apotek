@@ -399,8 +399,7 @@
                       <option value="K_PELAJAR">K_PELAJAR</option>
                       <option value="KMAHASISWA">KMAHASISWA</option>
                     </select>
-                    <input type="text" class="form-control input-medium" name="lupnoidentitas" id="lupnoidentitas"
-                      value="">
+                    <input type="text" class="form-control input-medium" name="lupnoidentitas" id="lupnoidentitas" value="">
                   </div>
                 </div>
               </div>
@@ -1140,14 +1139,60 @@ function ktp() {
   var ktp = document.getElementById('lupidentitas').value;
   if (ktp == "KTP") {
     $('#lupnoidentitas').on('change', function() {
-      var noktp = this.value;
-      var prov = noktp.substring(0, 2);
-      var kotakab = noktp.substring(0, 4);
-      var kec = noktp.substring(0, 6);
-      getprov(prov);
-      getkot(kotakab);
-      getkec(kec);
-      $('#lupkecamatan').click();
+      if($("#lupnoidentitas").val() != "") {
+        if($("#lupnoidentitas").val() == "-"){
+          $.ajax({
+            url: "<?php echo base_url();?>PendaftaranVRS/namaprovinsi_all/",
+            type: "POST",
+            dataType: "JSON",
+            success: function(data) {
+              var opt = data;
+              var lupprovinsi = $("#lupprovinsi");
+              lupprovinsi.empty();
+              $(opt).each(function() {
+                console.log(this.namaprop);
+                var option = $("<option/>");
+                option.html(this.namaprop);
+                option.val(this.kodeprop);
+                lupprovinsi.append(option);
+              });
+              $("#kabkota").val("").change();
+              $("#lupkecamatan").val("").change();
+              $("#lupkelurahan").val("").change();
+            }
+          });
+        } else {
+          var noktp = this.value;
+          var prov = noktp.substring(0, 2);save
+          var kotakab = noktp.substring(0, 4);
+          var kec = noktp.substring(0, 6);
+          getprov(prov);
+          getkot(kotakab);
+          getkec(kec);
+          $('#lupkecamatan').click();
+        }
+      } else {
+        $.ajax({
+          url: "<?php echo base_url();?>PendaftaranVRS/namaprovinsi_all/",
+          type: "POST",
+          dataType: "JSON",
+          success: function(data) {
+            var opt = data;
+            var lupprovinsi = $("#lupprovinsi");
+            lupprovinsi.empty();
+            $(opt).each(function() {
+              console.log(this.namaprop);
+              var option = $("<option/>");
+              option.html(this.namaprop);
+              option.val(this.kodeprop);
+              lupprovinsi.append(option);
+            });
+            $("#kabkota").val("").change();
+            $("#lupkecamatan").val("").change();
+            $("#lupkelurahan").val("").change();
+          }
+        });
+      }
     });
   }
 }
@@ -1851,6 +1896,13 @@ function save_pasien() {
           dangerMode: true,
           confirmButtonText: "OK"
         }).then((value) => {
+          $("#noidentitas").val("");
+          $("#namapasien").val("");
+          var date = '<?= date("Y-m-d"); ?>';
+          console.log(date);
+          $('#umur123').val(hitung_usia(date));
+          $("#jeniskelamin").val('');
+          $("#hp").val('');
           $('#modal_form').modal('show');
         });
       }
@@ -2032,71 +2084,87 @@ function register() {
   //   confirmButtonText: "OK"
   // });
 
-  var noregz = $("#noreg").val();
-  url = "<?php echo site_url('PendaftaranVRS/tambah_pasien_register_rawat_jalan?noreg=')?>"+noregz;
-  $.ajax({
-    url: url,
-    type: "POST",
-    data: ($('#frmpasien').serialize()),
-    dataType: "JSON",
-    success: function(data) {
-      // script originial
-      if(data.status == 0){
-        swal({
-          title: "DATA PASIEN",
-          html: "Data berhasil teregistrasi",
-          type: "success",
-          confirmButtonText: "OK" 
-        }).then((value) => {
-          $('#modal_form').modal('hide');
-          $("#btnsimpaneditpasien").attr('disabled', true);
-          $("#noreg").val(data.noreg);
-        });
-      } else if(data.status == 2){
-        swal({
-            title: "PASIEN",
-            html: "Pasien atas nama : <b>"+data.nm+"</b><br>"+
-            "SUDAH TERDAFTAR, SILAHKAN CEK DI LIST",
-            type: "error",
-            confirmButtonText: "OK"
+  if(norm == "" || norm == null){
+    $('#modal_form').modal('hide');
+    swal({
+      title: "No. RM",
+      html: " Tidak Boleh Kosong .!!!",
+      type: "error",
+      confirmButtonText: "OK"
+    }).then((value) => {
+      // $('#modal_form').modal('show');      
+      $('#btnSave').text('save');
+      $('#btnSave').attr('disabled', false);
+    });
+    return;
+  }
+  if(norm != "" || norm != null && poliklinik != "" || poliklinik != null && dokter != "" || dokter != null && ruang != "" || ruang != null && tanggal != "" || tanggal != null && jam != "" || jam != null && jenispasien != "" || jenispasien != null) {
+    var noregz = $("#noreg").val();
+    url = "<?php echo site_url('PendaftaranVRS/tambah_pasien_register_rawat_jalan?noreg=')?>"+noregz;
+    $.ajax({
+      url: url,
+      type: "POST",
+      data: ($('#frmpasien').serialize()),
+      dataType: "JSON",
+      success: function(data) {
+        // script originial
+        if(data.status == 0){
+          swal({
+            title: "DATA PASIEN",
+            html: "Data berhasil teregistrasi",
+            type: "success",
+            confirmButtonText: "OK" 
           }).then((value) => {
-            // window.location.reload();
-            return;
+            $('#modal_form').modal('hide');
+            $("#btnsimpaneditpasien").attr('disabled', true);
+            $("#noreg").val(data.noreg);
           });
-      }else{
-        swal({
-          title: "DATA PASIEN",
-          html: "Data gagal teregistrasi",
-          type: "error",
-          confirmButtonText: "OK" 
-        }).then((value) => {
-          $('#modal_form').modal('hide');
-        });
+        } else if(data.status == 2){
+          swal({
+              title: "PASIEN",
+              html: "Pasien atas nama : <b>"+data.nm+"</b><br>"+
+              "SUDAH TERDAFTAR, SILAHKAN CEK DI LIST",
+              type: "error",
+              confirmButtonText: "OK"
+            }).then((value) => {
+              // window.location.reload();
+              return;
+            });
+        }else{
+          swal({
+            title: "DATA PASIEN",
+            html: "Data gagal teregistrasi",
+            type: "error",
+            confirmButtonText: "OK" 
+          }).then((value) => {
+            $('#modal_form').modal('hide');
+          });
+        }
+        // husain change
+        // if (data.status == 0) {
+        //   swal({
+        //     title: "DATA PASIEN",
+        //     html: "Data berhasil teregistrasi",
+        //     type: "success",
+        //     confirmButtonText: "OK"
+        //   }).then((value) => {
+        //     $('#modal_form').modal('hide');
+        //   });
+        //   $("#noreg").val(data.noreg);
+        //   $("#btnsimpaneditpasien").attr('disabled', true);
+        // } else {
+        //   swal({
+        //     title: "DATA PASIEN",
+        //     html: "Data gagal teregistrasi",
+        //     type: "error",
+        //     confirmButtonText: "OK"
+        //   }).then((value) => {
+        //     $('#modal_form').modal('hide');
+        //   });
+        // }
       }
-      // husain change
-      // if (data.status == 0) {
-      //   swal({
-      //     title: "DATA PASIEN",
-      //     html: "Data berhasil teregistrasi",
-      //     type: "success",
-      //     confirmButtonText: "OK"
-      //   }).then((value) => {
-      //     $('#modal_form').modal('hide');
-      //   });
-      //   $("#noreg").val(data.noreg);
-      //   $("#btnsimpaneditpasien").attr('disabled', true);
-      // } else {
-      //   swal({
-      //     title: "DATA PASIEN",
-      //     html: "Data gagal teregistrasi",
-      //     type: "error",
-      //     confirmButtonText: "OK"
-      //   }).then((value) => {
-      //     $('#modal_form').modal('hide');
-      //   });
-      // }
-    }
-  });
+    });
+  }
 
 }
 

@@ -79,7 +79,7 @@
                             if($cek==0){?> 
                             <?php }else{ ?>
 
-                                <a href="<?php echo base_url()?>penjualan_retur/entri" class="btn btn-success">
+                                <a id="tambah" href="<?php echo base_url()?>penjualan_retur/entri" class="btn btn-success">
                                     <i class="fa fa-plus"></i>
                                     <b>Transaksi Baru</b>
                                 </a>
@@ -138,11 +138,11 @@
                                     <?php 
                                     $cek =  $this->session->userdata('user_level'); 
                                     if($cek==0){?> 
-                                        <a type="button" class="btn btn-sm btn-primary" title="Edit"><i class="glyphicon glyphicon-edit"></i></a>
-                                        <a type="button" class="btn btn-sm btn-danger" href="javascript:"><i class="glyphicon glyphicon-trash"></i></a>
+                                        <a id="edd" type="button" class="btn btn-sm btn-primary" title="Edit"><i class="glyphicon glyphicon-edit"></i></a>
+                                        <a id="dell" type="button" class="btn btn-sm btn-danger" href="javascript:"><i class="glyphicon glyphicon-trash"></i></a>
                                     <?php }else{ ?>
-                                        <a type="button" class="btn btn-sm btn-primary" href="<?php echo base_url('penjualan_retur/edit/').$row->returno; ?>" title="Edit"><i  class="glyphicon glyphicon-edit"></i></a>
-                                        <a type="button" class="delete btn btn-sm btn-danger" href="javascript:"><i class="glyphicon glyphicon-trash"></i></a>
+                                        <a id="edd" type="button" class="btn btn-sm btn-primary" href="<?php echo base_url('penjualan_retur/edit/').$row->returno; ?>" title="Edit"><i  class="glyphicon glyphicon-edit"></i></a>
+                                        <a id="dell" type="button" class="delete btn btn-sm btn-danger" href="javascript:"><i class="glyphicon glyphicon-trash"></i></a>
                                     <?php } ?>
                                 <?php endif;?>
                             </td>
@@ -186,6 +186,29 @@
     type="text/javascript"></script>
 
 <script>
+
+close_app(); 
+function close_app() 
+{
+    $.ajax({
+        url         : '<?php echo base_url(); ?>lock_so/close_app',
+        type        : "POST",
+        dataType    : "json",
+        success:function(data){
+                if (data == 1) {
+                    $('#tambah').attr('disabled',true);
+                    $('[id="edd"]').attr('disabled',true);
+                    $('[id="dell"]').attr('disabled',true);
+                }else{
+                    $('#tambah').attr('disabled',false);
+                    $('[id="edd"]').attr('disabled',false);
+                    $('[id="dell"]').attr('disabled',false);
+                }
+            }                                     
+    });
+        
+}  
+
 function currencyFormat(num) {
     //return "Rp" + num.toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,")
     return "" + num.toFixed(0).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,")

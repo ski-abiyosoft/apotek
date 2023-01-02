@@ -54,7 +54,7 @@
               if($cek==0){?> 
               <?php }else{ ?>
 
-                <a href="<?= base_url() ?>pembelian_retur/entri" class="btn btn-success">
+                <a id="tambah" href="<?= base_url() ?>pembelian_retur/entri" class="btn btn-success">
                 <i class="fa fa-plus"></i>
                   Transaksi Baru
                 </a>
@@ -99,6 +99,24 @@
 
 <script>
   var table;
+  close_app();
+  function close_app() 
+  {
+      $.ajax({
+          url         : '<?php echo base_url(); ?>lock_so/close_app',
+          type        : "POST",
+          dataType    : "json",
+          success:function(data){
+                  if (data == 1) {
+                      $('#tambah').attr('disabled',true);
+                  }else{
+                      $('#tambah').attr('disabled',false);
+                  }
+              }                                     
+      });
+          
+  }  
+
   table = $('#datatable').DataTable({
     destroy: true,
     "processing": true,

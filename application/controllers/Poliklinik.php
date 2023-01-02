@@ -143,7 +143,7 @@ class Poliklinik extends CI_Controller {
 				'<i class="fa fa-solid fa-address-card"></i>';
 					
 			}else{
-				$row[] = '<i class="fa fa-solid fa-address-card" onclick="add_list('."'".$unit->noreg."'".');" data-toggle="modal"></i>';
+				$row[] = '<i class="fa fa-solid fa-address-card" onclick="add_list('."'".$unit->noreg."'".', '."'".$unit->rekmed."'".');" data-toggle="modal"></i>';
 			}
 			// $row[] = $periksa_perawat;
 			// $row[] = $periksa_dokter;
@@ -388,8 +388,8 @@ class Poliklinik extends CI_Controller {
 					'tarifrs'     	=> $datatarif->tarifrspoli,
 					'tarifdr'     	=> $datatarif->tarifdrpoli,
 					'paramedis'		=> $datatarif->feemedispoli,
-					'obatpoli'		=> $datatarif->bhppoli,
-					// 'obatpoli'		=> $datatarif->obatpoli,
+					// 'obatpoli'		=> $datatarif->bhppoli,
+					'obatpoli'		=> $datatarif->obatpoli,
 					'bahan'       	=> 0,
 					'koperawat'   	=> $_perawat,
 				);
@@ -1253,9 +1253,10 @@ class Poliklinik extends CI_Controller {
 
 	public function get_detail(){
 		$ceknoreg   = $this->input->post('ceknoreg');
+		$cekrekmed	= $this->input->post('cekrekmed');
 		$koders     = $this->session->userdata('unit');
 
-		$data = $this->db->query("SELECT *FROM pasien_rajal where koders='$koders' and noreg='$ceknoreg'")->row();
+		$data = $this->db->query("SELECT *FROM pasien_rajal where koders='$koders' and noreg='$ceknoreg' and rekmed = '$cekrekmed'")->row();
 		echo json_encode($data);
     }
 
