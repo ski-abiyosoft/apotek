@@ -7,7 +7,7 @@ class Penjualan_cabang extends CI_Controller
 	{
 		parent::__construct();
 		$this->session->set_userdata('menuapp', '4000');
-		$this->session->set_userdata('submenuapp', '7008');
+		$this->session->set_userdata('submenuapp', '4400');
 		$this->load->helper('simkeu_nota1');
 		$this->load->helper('simkeu_nota');
 		$this->load->model('M_farmasi_po');
@@ -38,7 +38,7 @@ class Penjualan_cabang extends CI_Controller
 			$periode = 'Periode ' . $nbulan . '-' . $this->M_global->_periodetahun();
 			$d['keu'] = $this->db->query($q1)->result();
 			$level = $this->session->userdata('level');
-			$akses = $this->M_global->cek_menu_akses($level, 3202);
+			$akses = $this->M_global->cek_menu_akses($level, 4400);
 			$d['akses'] = $akses;
 			$d['periode'] = $periode;
 			$this->load->view('penjualan/v_penjualan_faktur_cabang2', $d);

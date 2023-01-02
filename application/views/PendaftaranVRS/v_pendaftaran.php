@@ -1,7 +1,10 @@
 <?php 
      $this->load->view('template/header');
      $this->load->view('template/body');    	  
-?>	
+
+     $error    = $this->session->flashdata("error");
+?>
+
 <div class="row">
 <div class="col-md-12">
      <h3 class="page-title">
@@ -805,3 +808,15 @@ swal({
 }	
 
 </script>
+
+<?php if(isset($error)): ?>
+<script>
+     swal({
+          title: "Bridging PCare",
+          html: "<?= $error ?>",
+          type: "error",
+          confirmButtonText: "Tutup",
+          confirmButtonColor: "red"
+     });
+</script>
+<?php endif; ?>

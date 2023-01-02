@@ -212,32 +212,33 @@
                         </div>
                         </table>
                         <div class="portlet-body">
-                            <table id="tableraj" class="table table-striped table-bordered table-hover" style="overflow: auto;" width="100%">
-                            <!-- <table id="tableraj" class="table table-striped table-bordered table-hover" style="overflow: auto; white-space: nowrap; display: inline-block;cellspacing:0;" width="100%"> -->
-
-                                <thead class="page-breadcrumb breadcrumb">
-                                <tr>
-                                    <th class="title-white" style="text-align: center">E-MR</th>
-                                    <!-- <th class="title-white" style="text-align: center">Diperiksa Perawat</th> -->
-                                    <!-- <th class="title-white" style="text-align: center">Diperiksa Dokter</th> -->
-                                    <th class="title-white" style="text-align: center">No antri</th>
-                                    <th class="title-white" style="text-align: center">Status</th>
-                                    <th class="title-white" style="text-align: center">No REG</th>
-                                    <th class="title-white" style="text-align: center">No RM</th>
-                                    <th class="title-white" style="text-align: center">Tanggal Daftar</th>
-                                    <th class="title-white" style="text-align: center">Nama Pasien</th>
-                                    <th class="title-white" style="text-align: center">Poliklinik</th>
-                                    <th class="title-white" style="text-align: center">Dokter</th>
-                                    <th class="title-white" style="text-align: center">Pembayaran</th>
-                                    <th class="title-white" style="text-align: center">No Kartu</th>
-                                    <!-- <th class="title-white">&nbsp;</th>
-                                    <th class="title-white">&nbsp;</th>
-                                    <th class="title-white">&nbsp;</th> -->
-                                </tr>
-                                </thead>
-                                <tbody>
-                                </tbody>
-                            </table>
+                            <div class="table-responsive">
+                                <table id="tableraj" class="table table-striped table-bordered table-hover">
+                                    <thead class="page-breadcrumb breadcrumb">
+                                        <tr>
+                                            <th class="title-white" style="text-align: center">E-MR</th>
+                                            <!-- <th class="title-white" style="text-align: center">Diperiksa Perawat</th> -->
+                                            <!-- <th class="title-white" style="text-align: center">Diperiksa Dokter</th> -->
+                                            <th class="title-white" style="text-align: center">No antri</th>
+                                            <th class="title-white" style="text-align: center">Status</th>
+                                            <th class="title-white" style="text-align: center">No REG</th>
+                                            <th class="title-white" style="text-align: center">No RM</th>
+                                            <th class="title-white" style="text-align: center">Tanggal Daftar</th>
+                                            <th class="title-white" style="text-align: center">Nama Pasien</th>
+                                            <th class="title-white" style="text-align: center">Poliklinik</th>
+                                            <th class="title-white" style="text-align: center">Dokter</th>
+                                            <th class="title-white" style="text-align: center">Pembayaran</th>
+                                            <th class="title-white" style="text-align: center">No Kartu</th>
+                                            <th class="title-white" style="text-align: center">Bridging PCare</th>
+                                            <!-- <th class="title-white">&nbsp;</th>
+                                            <th class="title-white">&nbsp;</th>
+                                            <th class="title-white">&nbsp;</th> -->
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                     </div>
                 </div>

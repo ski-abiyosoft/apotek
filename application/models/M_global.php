@@ -53,7 +53,19 @@ class M_global extends CI_Model
 		return $query->row();
 	}
 
-
+	function close_app()
+	{
+		$cabang   = $this->session->userdata('unit');
+		$tgl      = date('Y-m-d');
+		// $tgl      = '2022-12-25';
+		$sql      = $this->db->query("SELECT status from ms_close_app WHERE koders = '$cabang' and statustgl='$tgl' ")->row();
+		if($sql){
+			return $sql->status;
+		}else{
+			return 0;
+		}
+    }
+	
 	public function _periodebulan2()
 
 	{

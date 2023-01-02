@@ -1667,4 +1667,24 @@
 
         });
     }
+
+    async function getRequest(path = "", method = "GET", data = {}) {
+        let base_url = <?php echo "'" . site_url('/') . "'" ?>;
+        return await $.ajax({
+            url: base_url + path,
+            type: method,
+            dataType: "JSON",
+            data: data,
+            success: function(res) {
+                let data;
+                try {
+                    data = JSON.parse(res)
+                } catch (e) {
+                    data = res
+                }
+
+                return data;
+            }
+        });
+    }
 </script>

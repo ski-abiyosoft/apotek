@@ -135,42 +135,89 @@
 		?> -->
 
           <ul class="nav ">
-            <li class="dropdown user">
-              <a class="navbar-brand" href="<?php echo base_url();?>dashboard">
-                <img src="<?php echo base_url();?>assets/img_user/<?php echo $this->session->userdata('avatar_cabang');?>" width="45" class="img-responsive" />
-              </a>
+            
+            <table border="0" width="100%">
+              <tr>
+                <td width="7%">
+                  <li class="dropdown user">
+                    <a class="navbar-brand" href="<?php echo base_url();?>dashboard">
+                      <img src="<?php echo base_url();?>assets/img_user/<?php echo $this->session->userdata('avatar_cabang');?>" width="45" class="img-responsive" />
+                    </a>
 
-            </li>
+                  </li>
+                </td>
+                <td width="73%">
+                  
+                  <li class="navbar-nav ">
+                    <label class="control-label" 
+                      style="font-weight: bold;
+                            font-size:20px;
+                            color:white;
+                            width:auto;
+                            text-shadow: 0 0 5px #0083c4, 0 0 7px #0083c4, 0 0 8px #0083c4, 0 0 8px #0083c4, 0 0 8px #0083c4;
+                            " for="">
+                        <?php
+                            $cabang   = $this->session->userdata('unit');
+                            $tgl      = date('Y-m-d');
+                            // $tgl      = '2022-12-25';
+                            $sql      = $this->db->query("SELECT status from ms_close_app WHERE koders = '$cabang' and statustgl='$tgl' ")->row();
 
-            <li class="navbar-nav pull-right dropdown user">
-              <!-- navbar-nav pull-right -->
-              <a href="#" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
-                <img alt="" src="<?php echo base_url();?>assets/puser/<?php echo $this->session->userdata('photo');?>"
-                  width="40" />
+                            if($sql){
+                              $cek_lock= $sql->status;
+                            }else{
+                              $cek_lock= 0;
+                            }
 
-                <span class="username" style="color:#fff;">
-                  &nbsp;&nbsp; <b><?php echo ucwords($this->session->userdata('username'));?></b>
-                </span>
-                <i class="fa fa-angle-down"></i>
-              </a>
+                            if($cek_lock == 0){
+                                
+                            } else {?>
 
-              <ul class="dropdown-menu" width="40%">
-                <li>
-                  <a href="<?php echo base_url();?>master_user_profile">
-                    <i class="fa fa-user"></i> Profil
-                  </a>
-                </li>
-                <li class="divider">
-                </li>
-                <li>
-                  <a href="<?php echo base_url()?>app/logout">
-                    <i class="fa fa-power-off"></i> Keluar
-                  </a>
-                </li>
-                <li class="divider">
-                </li>
-              </ul>
-            </li>
+                              <marquee behavior="" direction=""><b>
+                              Cabang <?php echo $this->session->userdata('unit');?> Sedang Melakukan SO / Adjustment,  &nbsp; &nbsp; Beberapa Menu Farmasi Akan di Lock Terlebih Dahulu Sampai SO / Adjustment Selesai.. Terimakasih
+                              </marquee>
+                        <?php  }  ?>
+
+                       </b>
+                    </label>
+                      
+                  </li>
+                </td>
+                <td width="20%">
+                  <li class="navbar-nav pull-right dropdown user">
+                    <!-- navbar-nav pull-right -->
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
+                      <img alt="" src="<?php echo base_url();?>assets/puser/<?php echo $this->session->userdata('photo');?>"
+                        width="40" />
+
+                      <span class="username" style="color:#fff;">
+                        &nbsp;&nbsp; <b><?php echo ucwords($this->session->userdata('username'));?></b>
+                      </span>
+                      <i class="fa fa-angle-down"></i>
+                    </a>
+
+                    <ul class="dropdown-menu" width="40%">
+                      <li>
+                        <a href="<?php echo base_url();?>master_user_profile">
+                          <i class="fa fa-user"></i> Profil
+                        </a>
+                      </li>
+                      <li class="divider">
+                      </li>
+                      <li>
+                        <a href="<?php echo base_url()?>app/logout">
+                          <i class="fa fa-power-off"></i> Keluar
+                        </a>
+                      </li>
+                      <li class="divider">
+                      </li>
+                    </ul>
+                  </li>
+                </td>
+              </tr>
+            </table>
+
+
+           
 
           </ul>
         </div>

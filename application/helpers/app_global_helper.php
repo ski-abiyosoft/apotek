@@ -155,6 +155,17 @@ function urut_transaksi_igd($trkode, $lebar){
 	return $kode_transaksi;	
 }
 
+function urut_faktur_pajak($trkode, $lebar){
+$CI =& get_instance();
+$CI->db->query("UPDATE tbl_urutrs set nourut=nourut+1 where kode_urut='$trkode'");
+$data_urut = $CI->db->query("SELECT * from tbl_urutrs where kode_urut='$trkode'")->row();
+$nomor_urut = $data_urut->nourut;
+$date = date("Y");
+$urut = trim($date);
+$kode_transaksi = $urut.str_pad( $nomor_urut, $lebar, '0', STR_PAD_LEFT );
+return $kode_transaksi;	
+}
+
 function urut_tarif($trkode, $lebar){
 	$CI =& get_instance();
 	$CI->db->query("UPDATE tbl_urutrs set nourut=nourut+1 where kode_urut='$trkode'");
@@ -460,5 +471,46 @@ function sumTime($time1, $time2) {
 
 
 }
+
+/**
+ * Method for finding PPK code from BPJS
+ * 
+ * @param string $koders
+ * @return string
+ */
+function get_kdppk (string $koders): string {
+    $CI = &get_instance();
+
+    $result = $CI->db->select("koders")->where("kode_rs", $koders)->get("tbl_bpjsset")->row();
+
+    if (isset($result->koders)) {
+        return $result->koders;
+    }
+
+    return "";
+}
+
+/**
+ * Function for parsing local date formated into ISO string formatted for database insert purpose.
+ * 
+ * @param string $date
+ * @return string
+ */
+function parse_local_date (string $date_local): string {
+	$arrayDate 	= explode("-", $date_local);
+
+	return implode("-", array_reverse($arrayDate));
+}
+
+/**
+ * Method for checking srting is valid JSON or not
+ * 
+ * @param string $string
+ * @return bool
+ */
+function isJson(string $string): bool {
+	json_decode($string);
+	return json_last_error() === JSON_ERROR_NONE;
+ }
 
 ?>

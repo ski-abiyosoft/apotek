@@ -6,10 +6,12 @@ class Test extends CI_Controller
     public function __construct()
     {
         parent::__construct();
-        $this->load->library('accounting');
-        $this->load->model('M_piutang', 'piutang', TRUE);
-        $this->load->model('M_cetak', 'pdf');
-        $this->load->model('M_rs', 'rs');
+        // $this->load->library('dpsPcare/Services/Pcare_dokter', ["kdppk" => $this->session->userdata("kdppk")]);
+        // $this->load->library('dpsPcare/Services/Pcare_peserta', ["kdppk" => $this->session->userdata("kdppk")]);
+        // $this->load->library('dpsPcare/Services/Pcare_poli', ["kdppk" => $this->session->userdata("kdppk")]);
+        // $this->load->library('dpsPcare/Services/Pcare_status_pulang', ["kdppk" => $this->session->userdata("kdppk")]);
+        $this->load->library('dpsPcare/Services/Pcare_kesadaran', ["kdppk" => $this->session->userdata("kdppk")]);
+        $this->load->library('dpsPcare/Services/Pcare_pendaftaran', ["kdppk" => $this->session->userdata("kdppk")]);
     }
     
     public function index()
@@ -22,8 +24,28 @@ class Test extends CI_Controller
         return $this->output
             ->set_content_type('application/json')
             ->set_status_header(200)
-            ->set_output(json_encode($this->piutang->get_ar_aging_data((object) [
-                'todate' => '2022-01-31'
-            ])));
+            ->set_output(json_encode([
+                "status" => $this->pcare_pendaftaran->sync_data("26-12-2022")
+            ]));
+    }
+
+    public function peserta (string $noKartu)
+    {
+        $result = $this->pcare_peserta->get_peserta($noKartu);
+        
+        return $this->output
+            ->set_content_type('application/json')
+            ->set_status_header(200)
+            ->set_output(json_encode($result));
+    }
+
+    public function delete_pendaftaran (int $id) 
+    {
+        $result = $this->pcare_pendaftaran->delete_pendaftaran($id);
+
+        return $this->output
+            ->set_content_type('application/json')
+            ->set_status_header($result->status)
+            ->set_output(json_encode($result->data));
     }
 }

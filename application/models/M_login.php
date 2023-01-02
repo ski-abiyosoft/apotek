@@ -47,7 +47,7 @@ class M_login extends CI_Model {
 			'lastlogin'      => $this->details->lastlogin,
 			'menuapp'        => '',
 			'submenuapp'     => '',
-							
+			"kdppk"			 => get_kdppk($cabang)
 		) );
 	}
 

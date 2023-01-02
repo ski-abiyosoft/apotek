@@ -766,12 +766,13 @@
       });
    }
 
-   function initailizeSelect2_farmasi_barang() {
+   function initailizeSelect2_farmasi_barang(modal = null) {
       $(".select2_el_farmasi_barang").select2({
          allowClear: true,
          multiple: false,
          placeholder: '--- Pilih Barang ---',
          //minimumInputLength: 2,
+         dropdownParent: $(modal),
          dropdownAutoWidth: true,
          language: {
             inputTooShort: function() {
@@ -898,12 +899,13 @@
       });
    }
 
-   function initailizeSelect2_farmasi_barangdata() {
+   function initailizeSelect2_farmasi_barangdata(modal = null) {
       $(".select2_el_farmasi_barangdata").select2({
          allowClear: true,
          multiple: false,
          placeholder: '--- Pilih Barang ---',
          //minimumInputLength: 2,
+         dropdownParent: $(modal),
          dropdownAutoWidth: true,
          language: {
             inputTooShort: function() {

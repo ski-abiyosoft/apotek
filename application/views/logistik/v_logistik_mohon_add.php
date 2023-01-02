@@ -179,14 +179,12 @@
                     <div class="row">
                         <div class="col-xs-12">
                             <div class="well">
-                                <button type="button" onclick="save()" class="btn blue"><i class="fa fa-save"></i>
-                                    Simpan</button>
+                                <button type="button" onclick="save()" class="btn blue"><i class="fa fa-save"></i> Simpan</button>
 
                                 <div class="btn-group">
-                                    <button type="button" class="btn green"
-                                        onclick="this.form.reset();location.reload();"><i
-                                            class="fa fa-pencil-square-o"></i> Data Baru</button>
+                                    <button type="button" class="btn green" onclick="this.form.reset();location.reload();"><i class="fa fa-pencil-square-o"></i> Data Baru</button>
                                 </div>
+                                <a type="button" class="btn red" href="<?= site_url('Permohonan_log'); ?>"><i class="fa fa-arrow-left"></i> Kembali</a>
                                 <h4><span id="error" style="display:none; color:#F00">Terjadi Kesalahan... </span> <span
                                         id="success" style="display:none; color:#0C0">Data sudah disimpan...</span></h4>
                             </div>

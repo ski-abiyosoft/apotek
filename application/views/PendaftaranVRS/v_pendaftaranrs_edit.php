@@ -1029,8 +1029,8 @@ function get_pcare(vpenjamin) {
 function vpcare()
 {
     // var nampasdet = document.getElementById("nampasdet").value;
-    var noregdet  = 'ABI2022000000546';
-    var rekmeddet = '000459';
+    var noregdet  = '<?= $this->input->get("noreg") ?>';
+    var rekmeddet = '<?= $this->input->get("rekmed") ?>';
     url="<?php echo base_url()?>PendaftaranVRS/pcare_rj/?noreg="+noregdet+"&rekmed="+rekmeddet
     
     window.open(url,'_blank');

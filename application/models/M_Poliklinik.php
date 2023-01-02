@@ -4,7 +4,7 @@ class M_Poliklinik extends CI_Model
 {
     var $table = 'pasien_rajal';
 	protected $_icd	= "tbl_icdinb";
-	
+
 	public function __construct(){
         parent::__construct();
 		$this->load->database();
@@ -251,7 +251,6 @@ class M_Poliklinik extends CI_Model
 		$query = $this->db->query($sql);
 		return $query->num_rows();
 	}
-
 
 	// PCARE
 

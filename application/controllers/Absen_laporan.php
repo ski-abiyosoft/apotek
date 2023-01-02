@@ -62,177 +62,53 @@ function cetak_absen_h($cek = '', $thnn = '')
 	$phone    = $kop['phone'];
 	$whatsapp = $kop['whatsapp'];
 	$npwp     = $kop['npwp'];
-
-
-	$chari .= "<table style=\"border-collapse:collapse;font-family: Century Gothic; font-size:12px; color:#000;\" width=\"100%\"  border=\"1\" cellspacing=\"0\" cellpadding=\"0\">
-				
+	
+	$chari .= "<table style=\"border-collapse:collapse;font-family: Tahoma; font-size:11px\" width=\"100%\" align=\"center\" border=\"1\" cellspacing=\"1\" cellpadding=\"3\">
 	<thead>
-	<tr>
-		<td rowspan=\"6\" align=\"center\">
-		<img src=\"" . base_url() . "assets/img/abiyosoft.png\"  width=\"100\" height=\"50\" /></td>
-
-		<td colspan=\"20\"><b>
-			<tr><td align=\"center\" style=\"font-size:25px;color:#120292;\"><b>PT SISTEM KESEHATAN INDONESIA (SKI) DIY ABIYOSOFT</b></td></tr>
-			<tr><td align=\"center\" style=\"font-size:13px;\">Ideazone, Jalan Magelang St No.188, Karangwaru, Tegalrejo, Yogyakarta City</td></tr>
-			<tr><td align=\"center\" style=\"font-size:13px;\">Special Region of Yogyakarta 55242</td></tr>
-			<tr><td align=\"center\" style=\"font-size:13px;\">Wa :+6281389158889   |  E-mail :ski.abiyosoft@gmail.com | Website : https://abiyosoft.com/</td></tr>
-
-		</b></td>
-	</tr> 
+		<tr>
+				<td style=\"border:0\" align=\"center\"><br></td>
+		</tr>
+		<tr>
+				<td width=\"3%\" bgcolor=\"#cccccc\" align=\"center\" rowspan=\"2\"><br><b>No</b></td>
+				<td width=\"4%\" bgcolor=\"#cccccc\" align=\"center\" rowspan=\"2\"><br><b>Nama Barang/<b></td>
+				<td width=\"4%\" bgcolor=\"#cccccc\" align=\"center\" rowspan=\"2\"><br><b>Satuan</b></td>
+				<td width=\"4%\" bgcolor=\"#cccccc\" align=\"center\" rowspan=\"2\"><br><b>Saldo Akhir</b></td>
+				<td width=\"24%\" bgcolor=\"#cccccc\" align=\"center\" colspan=\"2\"><br><b>Fisik</b></td>
+				<td width=\"24%\" bgcolor=\"#cccccc\" align=\"center\" colspan=\"2\"><br><b>Kartu Stock</b></td>
+				<td width=\"4%\" bgcolor=\"#cccccc\" align=\"center\" rowspan=\"2\"><br><b>Keterangan</b></td>
+		</tr>
+		<tr>
+				<td width=\"4%\" bgcolor=\"#cccccc\" align=\"center\"><br><b>abi</b></td>
+				<td width=\"4%\" bgcolor=\"#cccccc\" align=\"center\"><br><b>RGN</b></td>
+				<td width=\"4%\" bgcolor=\"#cccccc\" align=\"center\"><br><b>abi</b></td>
+				<td width=\"4%\" bgcolor=\"#cccccc\" align=\"center\"><br><b>RGN</b></td>
+		</tr>
+	</thead>";
+	$y = "CALL sal_awal_persediaan('KAG', '2022-09-23','2022-09-24', 'FARMASI')	";
 		
+	$query = $this->db->query($y)->result();
+
 	
-	</table>";
-	
-	
-		
-		$chari .= "<table style=\"border-collapse:collapse;font-family: Times New Roman; font-size:12px\" width=\"100%\" align=\"center\" border=\"0\" cellspacing=\"1\" cellpadding=\"3\">
 
-		<thead>
-			<tr>
-				<td colspan=\"4\" align=\"center\"><br></td>                
-			</tr>
-			<tr>
-				<td colspan=\"4\" ><b>#$jarakdiy Daftar Kehadiran</b></td>  
-			</tr>
-			<tr>
-				<td colspan=\"4\" ><b>$hari, $tgll</b></td>  
-			</tr>
-			<tr>
-				<td colspan=\"4\" ><b>(Diisi pada jam awal memulai)</b></td>  
-			</tr>
-			<tr>
-				<td colspan=\"4\" ><b>--------------------------------</b></td>  
-			</tr>
-			
-		</thead>";
+	foreach ($query as $q) {
+		$kodebarang   = $q->kodebarang;
+		$namabarang   = $q->namabarang;
+		$satuan       = $q->satuan;
 
-		$sql =
-			"SELECT*,(select keterangan from tbl_setinghms s where s.kodeset=p.status_absen)nm_stat from(
-			SELECT a.*,
-			COALESCE((select status from tbl_absen_ski b where a.nik=b.nik and tgl_absen='$_tglh' and status_masuk='1' ),'-')status_absen,
-			COALESCE((select left(jam,5) from tbl_absen_ski b where a.nik=b.nik and tgl_absen='$_tglh' and status_masuk='1' ),'00:00')jam_m, 
-			COALESCE((select left(jam,5) from tbl_absen_ski b where a.nik=b.nik and tgl_absen='$_tglh' and status_masuk='2' ),'00:00')jam_k 
-			from tbl_kary_ski a where pos='DIY' and resign=0
-			)p
-			order by namakary ";
+		$chari .= "
+		<tr>
+				<td align=\"center\">" . $kodebarang . "</td>
+				<td align=\"left\">$namabarang</td>
+				<td align=\"right\">$satuan</td>
+				<td align=\"right\">$satuan</td>
+				<td align=\"right\"></td>
+				<td align=\"right\"></td>
+				<td align=\"right\"></td>
+				<td align=\"right\"></td>
+				<td align=\"right\"></td>
+		</tr>";
 
-		$query1    = $this->db->query($sql);
-
-		$lcno            = 0;
-		$nm              = 0;
-		$jam_m           = 0;
-		$jam_k           = 0;
-		$status_absen    = '';
-		$nm_stat	     = '';
-
-
-		foreach ($query1->result() as $row) {
-			$lcno           = $lcno + 1;
-			$namakary       = $row->namakary;
-			$status_absen   = $row->status_absen;
-			$nm_stat        = $row->nm_stat;
-			$jam_m          = $row->jam_m;
-			$jam_k          = $row->jam_k;
-
-			if($status_absen=='AB1'){
-				$chari .= "<tr>
-				<td width=\" 1%\" align=\"left\">$lcno.</td>
-				<td width=\" 12%\" align=\"left\">$namakary</td>
-				<td width=\" 15%\" align=\"left\">: $jam_m - $jam_k</td>
-				<td width=\" 72%\" align=\"left\"></td>
-				</tr>"; 
-			}else if($status_absen=='AB2'){
-				$chari .= "<tr>
-				<td width=\" 1%\" align=\"left\">$lcno.</td>
-				<td width=\" 12%\" align=\"left\">$namakary</td>
-				<td width=\" 15%\" align=\"left\">: $jam_m - $jam_k ( $nm_stat )</td>
-				<td width=\" 72%\" align=\"left\"></td>
-				</tr>"; 
-			}else{
-				$chari .= "<tr>
-				<td width=\" 1%\" align=\"left\">$lcno.</td>
-				<td width=\" 12%\" align=\"left\">$namakary</td>
-				<td width=\" 15%\" align=\"left\">: $nm_stat</td>
-				<td width=\" 72%\" align=\"left\"></td>
-				</tr>"; 
-			}
-			
-		}
-		
-
-		$chari .= "<table style=\"border-collapse:collapse;font-family: Times New Roman; font-size:12px\" width=\"100%\" align=\"center\" border=\"0\" cellspacing=\"1\" cellpadding=\"3\">
-
-		<thead>
-			<tr>
-				<td colspan=\"4\" align=\"center\"><br><br><br></td>                
-			</tr>
-			<tr>
-				<td colspan=\"4\" ><b>#$jaraksby Daftar Kehadiran</b></td>  
-			</tr>
-			<tr>
-				<td colspan=\"4\" ><b>$hari, $tgll</b></td>  
-			</tr>
-			<tr>
-				<td colspan=\"4\" ><b>RSU Bhakti Rahayu SBY</b></td>  
-			</tr>
-			<tr>
-				<td colspan=\"4\" ><b>--------------------------------</b></td>  
-			</tr>
-			
-		</thead>";
-
-		$sql =
-			"SELECT*,(select keterangan from tbl_setinghms s where s.kodeset=p.status_absen)nm_stat from(
-			SELECT a.*,
-			COALESCE((select status from tbl_absen_ski b where a.nik=b.nik and tgl_absen='$_tglh' and status_masuk='1' ),'-')status_absen,
-			COALESCE((select left(jam,5) from tbl_absen_ski b where a.nik=b.nik and tgl_absen='$_tglh' and status_masuk='1' ),'00:00')jam_m, 
-			COALESCE((select left(jam,5) from tbl_absen_ski b where a.nik=b.nik and tgl_absen='$_tglh' and status_masuk='2' ),'00:00')jam_k 
-			from tbl_kary_ski a where pos='sby' and resign=0
-			)p
-			order by namakary ";
-
-		$query1    = $this->db->query($sql);
-
-		$lcno            = 0;
-		$nm              = 0;
-		$jam_m           = 0;
-		$jam_k           = 0;
-		$status_absen    = '';
-		$nm_stat	     = '';
-
-
-		foreach ($query1->result() as $row) {
-			$lcno           = $lcno + 1;
-			$namakary       = $row->namakary;
-			$status_absen   = $row->status_absen;
-			$nm_stat        = $row->nm_stat;
-			$jam_m          = $row->jam_m;
-			$jam_k          = $row->jam_k;
-
-			if($status_absen=='AB1'){
-				$chari .= "<tr>
-				<td width=\" 1%\" align=\"left\">$lcno.</td>
-				<td width=\" 12%\" align=\"left\">$namakary</td>
-				<td width=\" 15%\" align=\"left\">: $jam_m - $jam_k</td>
-				<td width=\" 72%\" align=\"left\"></td>
-				</tr>"; 
-			}else if($status_absen=='AB2'){
-				$chari .= "<tr>
-				<td width=\" 1%\" align=\"left\">$lcno.</td>
-				<td width=\" 12%\" align=\"left\">$namakary</td>
-				<td width=\" 15%\" align=\"left\">: $jam_m - $jam_k ( $nm_stat )</td>
-				<td width=\" 72%\" align=\"left\"></td>
-				</tr>"; 
-			}else{
-				$chari .= "<tr>
-				<td width=\" 1%\" align=\"left\">$lcno.</td>
-				<td width=\" 12%\" align=\"left\">$namakary</td>
-				<td width=\" 15%\" align=\"left\">: $nm_stat</td>
-				<td width=\" 72%\" align=\"left\"></td>
-				</tr>"; 
-			}
-			
-		}
+	}
 
 	$chari .= "</table>";
 

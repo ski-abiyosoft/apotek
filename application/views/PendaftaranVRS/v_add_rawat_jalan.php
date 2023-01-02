@@ -273,12 +273,12 @@
       </div>
       <div class="row">
         <div class="col-md-12">
-          <button class="btn blue" style="float: right" onclick="vpcare();"  id="pcare" name="pcare"> 
-            <i class="fa fa-check-square"></i> Briging PCare
+          <button type="button" class="btn blue" style="float: right" onclick="vpcare();"  id="pcare" name="pcare"> 
+            <i class="fa fa-check-square"></i> Bridging PCare
           </button><br><br>
         </div>
         <div class="col-md-12">
-          <button class="btn green" style="float: right"><i class="fa fa-check-square"></i> Briging
+          <button type="button" class="btn green" style="float: right"><i class="fa fa-check-square"></i> Bridging
             Vclaim</button>
         </div>
       </div>
@@ -1144,14 +1144,60 @@ function ktp() {
   var ktp = document.getElementById('lupidentitas').value;
   if (ktp == "KTP") {
     $('#lupnoidentitas').on('change', function() {
-      var noktp = this.value;
-      var prov = noktp.substring(0, 2);
-      var kotakab = noktp.substring(0, 4);
-      var kec = noktp.substring(0, 6);
-      getprov(prov);
-      getkot(kotakab);
-      getkec(kec);
-      $('#lupkecamatan').click();
+      if($("#lupnoidentitas").val() != "") {
+        if($("#lupnoidentitas").val() == "-"){
+          $.ajax({
+            url: "<?php echo base_url();?>PendaftaranVRS/namaprovinsi_all/",
+            type: "POST",
+            dataType: "JSON",
+            success: function(data) {
+              var opt = data;
+              var lupprovinsi = $("#lupprovinsi");
+              lupprovinsi.empty();
+              $(opt).each(function() {
+                console.log(this.namaprop);
+                var option = $("<option/>");
+                option.html(this.namaprop);
+                option.val(this.kodeprop);
+                lupprovinsi.append(option);
+              });
+              $("#kabkota").val("").change();
+              $("#lupkecamatan").val("").change();
+              $("#lupkelurahan").val("").change();
+            }
+          });
+        } else {
+          var noktp = this.value;
+          var prov = noktp.substring(0, 2);save
+          var kotakab = noktp.substring(0, 4);
+          var kec = noktp.substring(0, 6);
+          getprov(prov);
+          getkot(kotakab);
+          getkec(kec);
+          $('#lupkecamatan').click();
+        }
+      } else {
+        $.ajax({
+          url: "<?php echo base_url();?>PendaftaranVRS/namaprovinsi_all/",
+          type: "POST",
+          dataType: "JSON",
+          success: function(data) {
+            var opt = data;
+            var lupprovinsi = $("#lupprovinsi");
+            lupprovinsi.empty();
+            $(opt).each(function() {
+              console.log(this.namaprop);
+              var option = $("<option/>");
+              option.html(this.namaprop);
+              option.val(this.kodeprop);
+              lupprovinsi.append(option);
+            });
+            $("#kabkota").val("").change();
+            $("#lupkecamatan").val("").change();
+            $("#lupkelurahan").val("").change();
+          }
+        });
+      }
     });
   }
 }
@@ -1909,7 +1955,7 @@ function get_pcare(vpenjamin) {
 function vpcare()
 {
     // var nampasdet = document.getElementById("nampasdet").value;
-    var noregdet  = 'ABI2022000000546';
+    var noregdet  = $('#noreg').val();
     var rekmeddet = '000459';
     url="<?php echo base_url()?>PendaftaranVRS/pcare_rj/?noreg="+noregdet+"&rekmed="+rekmeddet
     
@@ -2068,16 +2114,51 @@ function register() {
     success: function(data) {
       // script originial
       if(data.status == 0){
-        swal({
-          title: "DATA PASIEN",
-          html: "Data berhasil teregistrasi",
-          type: "success",
-          confirmButtonText: "OK" 
-        }).then((value) => {
+        if(vpenjamin == "BPJS"){
+          //
+        } else {
+          // swal({
+          //   title: "DATA PASIEN",
+          //   html: "Data berhasil teregistrasi",
+          //   type: "success",
+          //   confirmButtonText: "OK" 
+          // }).then((value) => {
+          //   $('#modal_form').modal('hide');
+          //   $("#btnsimpaneditpasien").attr('disabled', true);
+          //   $("#noreg").val(data.noreg);
+          // });
+
+          swal({
+            title: "DATA PASIEN",
+            html: "Data berhasil teregistrasi",
+            type: "success",
+            confirmButtonText: "Bridging PCare",
+            cancelButtonText: "Ok",
+            confirmButtonColor: "blue",
+            cancelButtonColor: "green",
+            showCancelButton: true,
+            allowOutsideClick: false
+          }).then(function() {
+              url="<?php echo base_url()?>PendaftaranVRS/pcare_rj/?noreg="+data.noreg+"&rekmed="+norm
+              
+              window.open(url,'_blank');
+              window.focus();
+          }, function(dismiss) {
+            // dismiss can be 'cancel', 'overlay',
+            // 'close', and 'timer'
+            if (dismiss === 'cancel') {
+              
+              $('#modal_form').modal('hide');
+              $("#btnsimpaneditpasien").attr('disabled', true);
+              $("#noreg").val(data.noreg);
+            }
+          });
+          
           $('#modal_form').modal('hide');
           $("#btnsimpaneditpasien").attr('disabled', true);
           $("#noreg").val(data.noreg);
-        });
+
+        }
       } else if(data.status == 2){
         swal({
             title: "PASIEN",
