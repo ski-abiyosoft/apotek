@@ -119,35 +119,21 @@
                                 <tbody>
                                     <?php $no=1; foreach($detail as $row): ?>
                                     <tr>
-                                        <td width="30%">
-                                            <select name="kode[]" id="kode<?= $no;?>"
-                                                class="select2_el_log_baranggud form-control"
-                                                onchange="showbarangname(this.value, <?= $no ?>)">
-                                                <?php if($row->kodebarng): $barang = data_master('tbl_logbarang', array('kodebarang' => $row->kodebarng));?>
-                                                <option value="<?= $row->kodebarng;?>">
-                                                    [<?= $barang->kodebarang.'] - ['.$barang->namabarang.'] - ['.$barang->satuan1 .'] - ['. number_format($barang->hargabelippn, 0, '.', ',');?>]
-                                                </option>
-                                                <?php endif; ?>
-                                            </select>
-                                        </td>
+                                            <td width="30%">
+                                                <select name="kode[]" id="kode<?= $no; ?>" class="select2_el_log_baranggud form-control" onchange="showbarangname(this.value, <?= $no ?>)">
+                                                    <?php if ($row->kodebarng) : $barang = data_master('tbl_logbarang', array('kodebarang' => $row->kodebarng)); ?>
+                                                        <option value="<?= $row->kodebarng; ?>">
+                                                            [<?= $barang->kodebarang . '] - [' . $barang->namabarang . '] - [' . $barang->satuan1 . '] - [' . number_format($barang->hargabelippn, 0, '.', ','); ?>]
+                                                        </option>
+                                                    <?php endif; ?>
+                                                </select>
+                                            </td>
 
-                                        <td width="10%"><input name="qty[]" onchange="totalline(<?= $no;?>)"
-                                                value="<?= str_replace(".00", "", $row->qtymohon);?>" id="qty<?= $no;?>"
-                                                type="text" class="form-control rightJustified"></td>
-                                        <td width="10%"><input name="sat[]" id="sat<?= $no;?>" type="text"
-                                                value="<?= $row->satuan;?>" class="form-control "
-                                                onkeypress="return tabE(this,event)"></td>
-                                        <td width="10%"><input name="harga[]" onchange="totalline(<?= $no;?>)"
-                                                value="<?= number_format($row->harga, 2, '.', ',');?>"
-                                                id="harga<?= $no;?>" type="text" class="form-control rightJustified"
-                                                onkeypress="return tabE(this,event)"></td>
-                                        <td width="15%"><input name="total[]" onchange="totalline(<?= $no;?>)"
-                                                value="<?= number_format($row->totalharga, 2, '.', ',');?>"
-                                                id="total<?= $no;?>" type="text" class="form-control rightJustified"
-                                                onkeypress="return tabE(this,event)"></td>
-                                        <td width="10%"><input name="note[]" id="note<?= $no;?>" type="text"
-                                                value="<?= $row->keterangan;?>" class="form-control "
-                                                onkeypress="return tabE(this,event)"></td>
+                                            <td width="10%"><input name="qty[]" onchange="totalline(<?= $no; ?>)" value="<?= number_format($row->qtymohon); ?>" id="qty<?= $no; ?>" type="text" class="form-control rightJustified"></td>
+                                            <td width="10%"><input name="sat[]" id="sat<?= $no; ?>" type="text" value="<?= $row->satuan; ?>" class="form-control " onkeypress="return tabE(this,event)" readonly></td>
+                                            <td width="10%"><input name="harga[]" onchange="totalline(<?= $no; ?>)" value="<?= number_format($row->harga); ?>" id="harga<?= $no; ?>" type="text" class="form-control rightJustified" onkeypress="return tabE(this,event)" readonly></td>
+                                            <td width="15%"><input name="total[]" onchange="totalline(<?= $no; ?>)" value="<?= number_format($row->totalharga); ?>" id="total<?= $no; ?>" type="text" class="form-control rightJustified" onkeypress="return tabE(this,event)" readonly></td>
+                                            <td width="10%"><input name="note[]" id="note<?= $no; ?>" type="text" value="<?= $row->keterangan; ?>" class="form-control " onkeypress="return tabE(this,event)"></td>
                                     </tr>
                                     <?php $no++; endforeach; ?>
                                 </tbody>

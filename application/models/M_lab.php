@@ -22,6 +22,7 @@ class M_lab extends CI_Model{
 
     function get_list_eorder($date = ""){
         $unit   = $this->session->userdata("unit");
+        $daten  = date("Y-m-d");
 
         if($date != ""){
             $query_res  = $this->db->query("SELECT 
@@ -76,6 +77,7 @@ class M_lab extends CI_Model{
                 LEFT JOIN tbl_dokter AS c ON a.kodokter = c.kodokter
                 WHERE a.lab = '1' 
                 AND a.labok = '0' 
+                AND a.tglorder LIKE '%$daten%' 
                 AND a.koders = '$unit'
                 ORDER BY a.id DESC");
                 // AND c.koders = '$unit'
@@ -89,9 +91,9 @@ class M_lab extends CI_Model{
         $dnow   = date("Y-m-d");
 
         if($date != ""){
-            $query_res  = $this->db->query("SELECT * FROM tbl_hlab WHERE tgllab BETWEEN '$date->start' AND '$date->end'");
+            $query_res  = $this->db->query("SELECT * FROM tbl_hlab WHERE tgllab BETWEEN '$date->start' AND '$date->end' ORDER BY id DESC");
         } else {
-            $query_res  = $this->db->query("SELECT * FROM tbl_hlab WHERE tgllab LIKE '%$dnow%'");
+            $query_res  = $this->db->query("SELECT * FROM tbl_hlab WHERE tgllab LIKE '%$dnow%' ORDER BY id DESC");
         }
 
         return $query_res;

@@ -2188,72 +2188,124 @@ class Pembelian_farmasi_laporan extends CI_Controller
 				$query = $this->db->query("SELECT a.terima_no,a.terima_date,a.invoice_no,a.sj_no,b.kodebarang, a.materai, b.discountrp, c.namabarang, b.qty_terima, b.satuan, b.price, (b.totalrp + b.vatrp + a.materai) as totalnet, (b.qty_terima * b.price) as totalrp, b.discount, b.vat, b.vatrp As vatrp1, b.po_no FROM tbl_baranghterima a JOIN tbl_barangdterima b ON b.terima_no = a.terima_no JOIN tbl_barang c ON c.kodebarang = b.kodebarang JOIN tbl_vendor d ON d.vendor_id = a.vendor_id WHERE $vendor a.koders='$unit' AND a.terima_date BETWEEN '$tanggal1' AND '$tanggal2' ORDER BY a.terima_date, a.terima_no")->result();
 				$body .= "<table style=\"border-collapse:collapse;font-family: tahoma; font-size:12px\" width=\"100%\" align=\"center\" border=\"1\">
                     <thead>
-											<tr>
-												<td style=\"text-align: center; font-weight: bold; padding: 10px;\">No</td>
-												<td style=\"text-align: center; font-weight: bold; padding: 10px;\">No. BAPB</td>
-												<td style=\"text-align: center; font-weight: bold; padding: 10px;\">PO No</td>
-												<td style=\"text-align: center; font-weight: bold; padding: 10px;\">Tanggal</td>
-												<td style=\"text-align: center; font-weight: bold; padding: 10px;\">No. Invoice / SJ</td>
-												<td style=\"text-align: center; font-weight: bold; padding: 10px;\">Kode Barang</td>
-												<td style=\"text-align: center; font-weight: bold; padding: 10px;\">Nama Barang</td>
-												<td style=\"text-align: center; font-weight: bold; padding: 10px;\">Satuan</td>
-												<td style=\"text-align: center; font-weight: bold; padding: 10px;\">Qty</td>
-												<td style=\"text-align: center; font-weight: bold; padding: 10px;\">Harga set</td>
-												<td style=\"text-align: center; font-weight: bold; padding: 10px;\">Total</td>
-												<td style=\"text-align: center; font-weight: bold; padding: 10px;\">Diskon</td>
-												<td style=\"text-align: center; font-weight: bold; padding: 10px;\">Vat Rp</td>
-												<td style=\"text-align: center; font-weight: bold; padding: 10px;\">Total Net</td>
-											</tr>
-										</thead>";
-				$no = 1;
-				$tqty = 0;
-				$thargaset = 0;
-				$ttotal = 0;
-				$tdiskon = 0;
-				$tvatrp = 0;
-				$ttotalnet = 0;
+						<tr>
+							<td style=\"text-align: center; font-weight: bold; padding: 10px;\">No</td>
+							<td style=\"text-align: center; font-weight: bold; padding: 10px;\">No. BAPB</td>
+							<td style=\"text-align: center; font-weight: bold; padding: 10px;\">PO No</td>
+							<td style=\"text-align: center; font-weight: bold; padding: 10px;\">Tanggal</td>
+							<td style=\"text-align: center; font-weight: bold; padding: 10px;\">No. Invoice / SJ</td>
+							<td style=\"text-align: center; font-weight: bold; padding: 10px;\">Kode Barang</td>
+							<td style=\"text-align: center; font-weight: bold; padding: 10px;\">Nama Barang</td>
+							<td style=\"text-align: center; font-weight: bold; padding: 10px;\">Satuan</td>
+							<td style=\"text-align: center; font-weight: bold; padding: 10px;\">Qty</td>
+							<td style=\"text-align: center; font-weight: bold; padding: 10px;\">Harga set</td>
+							<td style=\"text-align: center; font-weight: bold; padding: 10px;\">Total</td>
+							<td style=\"text-align: center; font-weight: bold; padding: 10px;\">Diskon</td>
+							<td style=\"text-align: center; font-weight: bold; padding: 10px;\">Vat Rp</td>
+							<td style=\"text-align: center; font-weight: bold; padding: 10px;\">Total Net</td>
+						</tr>
+					</thead>";
+				$no           = 1;
+				$tqty         = 0;
+				$thargaset    = 0;
+				$ttotal       = 0;
+				$tdiskon      = 0;
+				$tvatrp       = 0;
+				$ttotalnet    = 0;
+
 				foreach($query as $q) {
-				if($q->po_no == ''){
-					$po_no = '-';
-				} else {
-					$po_no = $q->po_no;
+					if($q->po_no == ''){
+						$po_no = '-';
+					} else {
+						$po_no = $q->po_no;
+					}
+				
+				if($cekpdf==2){
+					$body .="
+					<tbody>
+						<tr>
+							<td style=\"text-align: right;\">" . $no++ . "</td>
+							<td>$q->terima_no</td>
+							<td>$po_no</td>
+							<td style=\"text-align: center;\">" . date("d-m-Y", strtotime($q->terima_date)) . "</td>
+							<td>$q->sj_no</td>
+							<td>$q->kodebarang</td>
+							<td>$q->namabarang</td>
+							<td>$q->satuan</td>
+							<td style=\"text-align: right;\">$q->qty_terima</td>
+							<td style=\"text-align: right;\">$q->price</td>
+							<td style=\"text-align: right;\">$q->totalrp</td>
+							<td style=\"text-align: right;\">$q->discountrp</td>
+							<td style=\"text-align: right;\">$q->vatrp1</td>
+							<td style=\"text-align: right;\">$q->totalnet</td>
+						</tr>
+					</tbody>";
+					$tqty        += $q->qty_terima;
+					$thargaset   += $q->price;
+					$ttotal      += $q->totalrp;
+					$tdiskon     += $q->discountrp;
+					$tvatrp      += $q->vatrp1;
+					$ttotalnet   += $q->totalnet;
+					
+				}else{
+					$body .="
+					<tbody>
+						<tr>
+							<td style=\"text-align: right;\">" . $no++ . "</td>
+							<td>$q->terima_no</td>
+							<td>$po_no</td>
+							<td style=\"text-align: center;\">" . date("d-m-Y", strtotime($q->terima_date)) . "</td>
+							<td>$q->sj_no</td>
+							<td>$q->kodebarang</td>
+							<td>$q->namabarang</td>
+							<td>$q->satuan</td>
+							<td style=\"text-align: right;\">" . number_format($q->qty_terima) . "</td>
+							<td style=\"text-align: right;\">" . number_format($q->price) . "</td>
+							<td style=\"text-align: right;\">" . number_format($q->totalrp) . "</td>
+							<td style=\"text-align: right;\">" . number_format($q->discountrp) . "</td>
+							<td style=\"text-align: right;\">" . number_format($q->vatrp1) . "</td>
+							<td style=\"text-align: right;\">" . number_format($q->totalnet) . "</td>
+						</tr>
+					</tbody>";
+					$tqty        += $q->qty_terima;
+					$thargaset   += $q->price;
+					$ttotal      += $q->totalrp;
+					$tdiskon     += $q->discountrp;
+					$tvatrp      += $q->vatrp1;
+					$ttotalnet   += $q->totalnet;
+
 				}
-				$body .= 		"<tbody>
-											<tr>
-												<td style=\"text-align: right;\">" . $no++ . "</td>
-												<td>$q->terima_no</td>
-												<td>$po_no</td>
-												<td style=\"text-align: center;\">" . date("d-m-Y", strtotime($q->terima_date)) . "</td>
-												<td>$q->sj_no</td>
-												<td>$q->kodebarang</td>
-												<td>$q->namabarang</td>
-												<td>$q->satuan</td>
-												<td style=\"text-align: right;\">" . number_format($q->qty_terima) . "</td>
-												<td style=\"text-align: right;\">" . number_format($q->price) . "</td>
-												<td style=\"text-align: right;\">" . number_format($q->totalrp) . "</td>
-												<td style=\"text-align: right;\">" . number_format($q->discountrp) . "</td>
-												<td style=\"text-align: right;\">" . number_format($q->vatrp1) . "</td>
-												<td style=\"text-align: right;\">" . number_format($q->totalnet) . "</td>
-											</tr>
-										</tbody>";
-					$tqty += $q->qty_terima;
-					$thargaset += $q->price;
-					$ttotal += $q->totalrp;
-					$tdiskon += $q->discountrp;
-					$tvatrp += $q->vatrp1;
-					$ttotalnet += $q->totalnet;
+				
 				};
-				$body .= 	"<tfoot>
-										<tr>
-											<td style=\"text-align: center;\" colspan=\"8\">TOTAL</td>
-											<td style=\"text-align: right;\">".number_format($tqty)."</td>
-											<td style=\"text-align: right;\">".number_format($thargaset)."</td>
-											<td style=\"text-align: right;\">".number_format($ttotal)."</td>
-											<td style=\"text-align: right;\">".number_format($tdiskon)."</td>
-											<td style=\"text-align: right;\">".number_format($tvatrp)."</td>
-											<td style=\"text-align: right;\">".number_format($ttotalnet)."</td>
-										</tr>
-									</tfoot>";
+
+				if($cekpdf==2){
+					$body .= "
+					<tfoot>
+						<tr>
+							<td style=\"text-align: center;\" colspan=\"8\">TOTAL</td>
+							<td style=\"text-align: right;\">$tqty</td>
+							<td style=\"text-align: right;\">$thargaset</td>
+							<td style=\"text-align: right;\">$ttotal</td>
+							<td style=\"text-align: right;\">$tdiskon</td>
+							<td style=\"text-align: right;\">$tvatrp</td>
+							<td style=\"text-align: right;\">$ttotalnet</td>
+						</tr>
+					</tfoot>";
+				}else{
+					$body .= "
+					<tfoot>
+						<tr>
+							<td style=\"text-align: center;\" colspan=\"8\">TOTAL</td>
+							<td style=\"text-align: right;\">".number_format($tqty)."</td>
+							<td style=\"text-align: right;\">".number_format($thargaset)."</td>
+							<td style=\"text-align: right;\">".number_format($ttotal)."</td>
+							<td style=\"text-align: right;\">".number_format($tdiskon)."</td>
+							<td style=\"text-align: right;\">".number_format($tvatrp)."</td>
+							<td style=\"text-align: right;\">".number_format($ttotalnet)."</td>
+						</tr>
+					</tfoot>";
+
+				}
 				$body .=	"</table>";
 			} else if($idlap == 102){
 				$position = 'L';
@@ -2266,47 +2318,82 @@ class Pembelian_farmasi_laporan extends CI_Controller
 				$query = $this->db->query("SELECT a.terima_date , a.sj_no, a.vatrp , a.materai , a.koders, a.terima_no, (sum(c.discountrp)) as diskontotal, b.vendor_name, b.vendor_id, (sum(c.qty_terima * c.price)) as totalrp, c.vat, a.vatrp, (sum(c.totalrp) + a.vatrp + a.materai) as totalnet FROM tbl_baranghterima AS a JOIN tbl_vendor AS b ON a.vendor_id = b.vendor_id JOIN tbl_barangdterima AS c ON a.terima_no = c.terima_no WHERE $vendor a.koders = '$unit' AND a.terima_date BETWEEN '$tanggal1' AND '$tanggal2' group by a.terima_no")->result();
 				$body .= "<table style=\"border-collapse:collapse;font-family: tahoma; font-size:12px\" width=\"100%\" align=\"center\" border=\"1\">
                     <thead>
-											<tr>
-												<td style=\"text-align: center; font-weight: bold; padding: 10px;\">No</td>
-												<td style=\"text-align: center; font-weight: bold; padding: 10px;\">Supplier</td>
-												<td style=\"text-align: center; font-weight: bold; padding: 10px;\">No. BAPB</td>
-												<td style=\"text-align: center; font-weight: bold; padding: 10px;\">Tanggal</td>
-												<td style=\"text-align: center; font-weight: bold; padding: 10px;\">No. Invoice / SJ</td>
-												<td style=\"text-align: center; font-weight: bold; padding: 10px;\">Total</td>
-												<td style=\"text-align: center; font-weight: bold; padding: 10px;\">Diskon</td>
-												<td style=\"text-align: center; font-weight: bold; padding: 10px;\">Vat Rp</td>
-												<td style=\"text-align: center; font-weight: bold; padding: 10px;\">Materai</td>
-												<td style=\"text-align: center; font-weight: bold; padding: 10px;\">Total Net</td>
-											</tr>
-										</thead>";
-				$no = 1;
-				$ttotalrp = 0;
-				$tdiskontotal = 0;
-				$tvatrp = 0;
-				$tmaterai = 0;
-				$ttotalnet = 0;
+						<tr>
+							<td style=\"text-align: center; font-weight: bold; padding: 10px;\">No</td>
+							<td style=\"text-align: center; font-weight: bold; padding: 10px;\">Supplier</td>
+							<td style=\"text-align: center; font-weight: bold; padding: 10px;\">No. BAPB</td>
+							<td style=\"text-align: center; font-weight: bold; padding: 10px;\">Tanggal</td>
+							<td style=\"text-align: center; font-weight: bold; padding: 10px;\">No. Invoice / SJ</td>
+							<td style=\"text-align: center; font-weight: bold; padding: 10px;\">Total</td>
+							<td style=\"text-align: center; font-weight: bold; padding: 10px;\">Diskon</td>
+							<td style=\"text-align: center; font-weight: bold; padding: 10px;\">Vat Rp</td>
+							<td style=\"text-align: center; font-weight: bold; padding: 10px;\">Materai</td>
+							<td style=\"text-align: center; font-weight: bold; padding: 10px;\">Total Net</td>
+						</tr>
+					</thead>";
+				$no             = 1;
+				$ttotalrp       = 0;
+				$tdiskontotal   = 0;
+				$tvatrp         = 0;
+				$tmaterai       = 0;
+				$ttotalnet      = 0;
 				foreach ($query as $q) {
-					$body .= 		"<tbody>
-											<tr>
-												<td style=\"text-align: right;\">" . $no++ . "</td>
-												<td>$q->vendor_name</td>
-												<td>$q->terima_no</td>
-												<td style=\"text-align: center;\">" . date("d-m-Y", strtotime($q->terima_date)) . "</td>
-												<td>$q->sj_no</td>
-												<td style=\"text-align: right;\">" . number_format($q->totalrp) . "</td>
-												<td style=\"text-align: right;\">" . number_format($q->diskontotal) . "</td>
-												<td style=\"text-align: right;\">" . number_format($q->vatrp) . "</td>
-												<td style=\"text-align: right;\">" . number_format($q->materai) . "</td>
-												<td style=\"text-align: right;\">" . number_format($q->totalnet) . "</td>
-											</tr>
-										</tbody>";
-					$ttotalrp += $q->totalrp;
-					$tdiskontotal += $q->diskontotal;
-					$tvatrp += $q->vatrp;
-					$tmaterai += $q->materai;
-					$ttotalnet += $q->totalnet;
+					
+					if($cekpdf==2){
+						$body .="
+						<tbody>
+							<tr>
+								<td style=\"text-align: right;\">" . $no++ . "</td>
+								<td>$q->vendor_name</td>
+								<td>$q->terima_no</td>
+								<td style=\"text-align: center;\">" . date("d-m-Y", strtotime($q->terima_date)) . "</td>
+								<td>$q->sj_no</td>
+								<td style=\"text-align: right;\">$q->totalrp</td>
+								<td style=\"text-align: right;\">$q->diskontotal</td>
+								<td style=\"text-align: right;\">$q->vatrp</td>
+								<td style=\"text-align: right;\">$q->materai</td>
+								<td style=\"text-align: right;\">$q->totalnet</td>
+							</tr>
+						</tbody>";
+					}else{
+						$body .="
+						<tbody>
+							<tr>
+								<td style=\"text-align: right;\">" . $no++ . "</td>
+								<td>$q->vendor_name</td>
+								<td>$q->terima_no</td>
+								<td style=\"text-align: center;\">" . date("d-m-Y", strtotime($q->terima_date)) . "</td>
+								<td>$q->sj_no</td>
+								<td style=\"text-align: right;\">" . number_format($q->totalrp) . "</td>
+								<td style=\"text-align: right;\">" . number_format($q->diskontotal) . "</td>
+								<td style=\"text-align: right;\">" . number_format($q->vatrp) . "</td>
+								<td style=\"text-align: right;\">" . number_format($q->materai) . "</td>
+								<td style=\"text-align: right;\">" . number_format($q->totalnet) . "</td>
+							</tr>
+						</tbody>";
+					}
+					
+					$ttotalrp        += $q->totalrp;
+					$tdiskontotal    += $q->diskontotal;
+					$tvatrp          += $q->vatrp;
+					$tmaterai        += $q->materai;
+					$ttotalnet       += $q->totalnet;
 				};
-				$body .= 	"<tfoot>
+
+				if($cekpdf==2){
+					$body .= 	"<tfoot>
+										<tr>
+											<td style=\"text-align: center;\" colspan=\"5\">TOTAL</td>
+											<td style=\"text-align: right;\">$ttotalrp</td>
+											<td style=\"text-align: right;\">$tdiskontotal</td>
+											<td style=\"text-align: right;\">$tvatrp</td>
+											<td style=\"text-align: right;\">$tmaterai</td>
+											<td style=\"text-align: right;\">$ttotalnet</td>
+										</tr>
+									</tfoot>";
+					$body .=	"</table>";
+				}else{
+					$body .= 	"<tfoot>
 										<tr>
 											<td style=\"text-align: center;\" colspan=\"5\">TOTAL</td>
 											<td style=\"text-align: right;\">" . number_format($ttotalrp) . "</td>
@@ -2316,7 +2403,9 @@ class Pembelian_farmasi_laporan extends CI_Controller
 											<td style=\"text-align: right;\">" . number_format($ttotalnet) . "</td>
 										</tr>
 									</tfoot>";
-				$body .=	"</table>";
+					$body .=	"</table>";
+				}
+				
 				$body .= "<table style=\"border-collapse:collapse;font-family: tahoma; font-size:12px\" width=\"100%\" align=\"center\" border=\"0\">
                     <tr>
 											<td> &nbsp; </td>
@@ -2384,48 +2473,73 @@ class Pembelian_farmasi_laporan extends CI_Controller
 				$vendorx = $this->db->query("SELECT b.kodebarang, (SELECT namabarang FROM tbl_barang WHERE kodebarang = b.kodebarang) AS namabarang, b.satuan, b.qty_terima, b.totalrp, h.vendor_id, (b.totalrp / b.qty_terima ) AS ratarata, b.koders, (SELECT vendor_name FROM tbl_vendor WHERE vendor_id = h.vendor_id) AS vendor_name FROM tbl_barangdterima AS b JOIN tbl_baranghterima h ON b.terima_no = h.terima_no WHERE $vendor b.koders = '$unit' AND h.terima_date BETWEEN '$tanggal1' AND '$tanggal2' group by h.vendor_id")->result();
 				$body .= "<table style=\"border-collapse:collapse;font-family: tahoma; font-size:12px\" width=\"100%\" align=\"center\" border=\"1\">
                     <thead>
-											<tr>
-												<td style=\"text-align: center; font-weight: bold; padding: 10px;\">No</td>
-												<td style=\"text-align: center; font-weight: bold; padding: 10px;\">Kode Barang</td>
-												<td style=\"text-align: center; font-weight: bold; padding: 10px;\">Nama Barang</td>
-												<td style=\"text-align: center; font-weight: bold; padding: 10px;\">Satuan</td>
-												<td style=\"text-align: center; font-weight: bold; padding: 10px;\">Qty</td>
-												<td style=\"text-align: center; font-weight: bold; padding: 10px;\">Harga rata-rata</td>
-												<td width=\"15%\" style=\"text-align: center; font-weight: bold; padding: 10px;\">Total</td>
-											</tr>
-										</thead>";
+						<tr>
+							<td style=\"text-align: center; font-weight: bold; padding: 10px;\">No</td>
+							<td style=\"text-align: center; font-weight: bold; padding: 10px;\">Kode Barang</td>
+							<td style=\"text-align: center; font-weight: bold; padding: 10px;\">Nama Barang</td>
+							<td style=\"text-align: center; font-weight: bold; padding: 10px;\">Satuan</td>
+							<td style=\"text-align: center; font-weight: bold; padding: 10px;\">Qty</td>
+							<td style=\"text-align: center; font-weight: bold; padding: 10px;\">Harga rata-rata</td>
+							<td width=\"15%\" style=\"text-align: center; font-weight: bold; padding: 10px;\">Total</td>
+						</tr>
+					</thead>";
 				$totalsemua = 0;
 				foreach($vendorx as $v) {
-				$body .= 		"<tbody>
-											<tr>
-												<td colspan=\"7\">SUPPLIER : $v->vendor_name</td>
-											</tr>";
-					$no = 1;
-					$tqty_terima = 0;
-					$tratarata = 0;
-					$ttotal = 0;
-					$query = $this->db->query("SELECT b.kodebarang, (SELECT namabarang FROM tbl_barang WHERE kodebarang = b.kodebarang) AS namabarang, b.satuan, b.qty_terima, b.totalrp, (b.totalrp / b.qty_terima ) AS ratarata, b.koders, (SELECT vendor_name FROM tbl_vendor WHERE vendor_id = h.vendor_id) AS vendor_name FROM tbl_barangdterima AS b JOIN tbl_baranghterima h ON b.terima_no = h.terima_no WHERE $vendor b.koders = '$unit' AND h.terima_date BETWEEN '$tanggal1' AND '$tanggal2' AND vendor_id = '$v->vendor_id'")->result();
+				$body .="<tbody>
+					<tr>
+						<td colspan=\"7\">SUPPLIER : $v->vendor_name</td>
+					</tr>";
+					$no            = 1;
+					$tqty_terima   = 0;
+					$tratarata     = 0;
+					$ttotal        = 0;
+					$query         = $this->db->query("SELECT b.kodebarang, (SELECT namabarang FROM tbl_barang WHERE kodebarang = b.kodebarang) AS namabarang, b.satuan, b.qty_terima, b.totalrp, (b.totalrp / b.qty_terima ) AS ratarata, b.koders, (SELECT vendor_name FROM tbl_vendor WHERE vendor_id = h.vendor_id) AS vendor_name FROM tbl_barangdterima AS b JOIN tbl_baranghterima h ON b.terima_no = h.terima_no WHERE $vendor b.koders = '$unit' AND h.terima_date BETWEEN '$tanggal1' AND '$tanggal2' AND vendor_id = '$v->vendor_id'")->result();
 					foreach($query as $q){
 						$total = $q->ratarata * $q->qty_terima;
-						$body .= 			"<tr>
-														<td style=\"text-align: right;\">" . $no++ . "</td>
-														<td>$q->kodebarang</td>
-														<td>$q->namabarang</td>
-														<td>$q->satuan</td>
-														<td style=\"text-align: right;\">" . number_format($q->qty_terima) . "</td>
-														<td style=\"text-align: right;\">" . number_format($q->ratarata) . "</td>
-														<td width=\"15%\" style=\"text-align: right;\">" . number_format($total) . "</td>
-													</tr>";
-						$tqty_terima += $q->qty_terima;
-						$tratarata += $q->ratarata;
-						$ttotal += $total;
+						
+						if($cekpdf==2){
+							$body .="<tr>
+								<td style=\"text-align: right;\">" . $no++ . "</td>
+								<td>$q->kodebarang</td>
+								<td>$q->namabarang</td>
+								<td>$q->satuan</td>
+								<td style=\"text-align: right;\">$q->qty_terima</td>
+								<td style=\"text-align: right;\">$q->ratarata</td>
+								<td width=\"15%\" style=\"text-align: right;\">$total</td>
+							</tr>";
+						}else{
+							$body .="<tr>
+								<td style=\"text-align: right;\">" . $no++ . "</td>
+								<td>$q->kodebarang</td>
+								<td>$q->namabarang</td>
+								<td>$q->satuan</td>
+								<td style=\"text-align: right;\">" . number_format($q->qty_terima) . "</td>
+								<td style=\"text-align: right;\">" . number_format($q->ratarata) . "</td>
+								<td width=\"15%\" style=\"text-align: right;\">" . number_format($total) . "</td>
+							</tr>";
+						}
+						
+						$tqty_terima    += $q->qty_terima;
+						$tratarata      += $q->ratarata;
+						$ttotal         += $total;
 					}
-					$body .= 				"<tr>
-														<td colspan=\"4\">SUBTOTAL SUPLIER</td>
-														<td style=\"text-align: right; font-weight: bold; color:red;\">".number_format($tqty_terima)."</td>
-														<td style=\"text-align: right; font-weight: bold; color:red;\">".number_format($tratarata). "</td>
-														<td width=\"15%\" style=\"text-align: right; font-weight: bold; color:red;\">".number_format($ttotal)."</td>
-													</tr>";
+					
+					if($cekpdf==2){
+						$body .="<tr>
+						<td colspan=\"4\">SUBTOTAL SUPLIER</td>
+						<td style=\"text-align: right; font-weight: bold; color:red;\">$tqty_terima</td>
+						<td style=\"text-align: right; font-weight: bold; color:red;\">$tratarata</td>
+						<td width=\"15%\" style=\"text-align: right; font-weight: bold; color:red;\">$ttotal</td>
+					</tr>";
+					}else{
+						$body .="<tr>
+						<td colspan=\"4\">SUBTOTAL SUPLIER</td>
+						<td style=\"text-align: right; font-weight: bold; color:red;\">".number_format($tqty_terima)."</td>
+						<td style=\"text-align: right; font-weight: bold; color:red;\">".number_format($tratarata). "</td>
+						<td width=\"15%\" style=\"text-align: right; font-weight: bold; color:red;\">".number_format($ttotal)."</td>
+					</tr>";
+					}
+					
 					$totalsemua += $ttotal;
 				}
 				$body .=	"</table>";
@@ -2451,28 +2565,28 @@ class Pembelian_farmasi_laporan extends CI_Controller
 				$query = $this->db->query("SELECT a.vatrp, b.vat, a.materai, b.discountrp, b.qty_terima , b.discountrp, b.totalrp, (b.totalrp / b.qty_terima ) AS ratarata, c.vendor_name , c.vendor_id, a.terima_date FROM tbl_baranghterima as a JOIN tbl_barangdterima AS b ON a.terima_no = b.terima_no JOIN tbl_vendor AS c ON a.vendor_id = c.vendor_id WHERE $vendor a.koders = '$unit' and a.terima_date between '$tanggal1' and '$tanggal2'")->result();
 				$body .= "<table style=\"border-collapse:collapse;font-family: tahoma; font-size:12px\" width=\"100%\" align=\"center\" border=\"1\">
                     <thead>
-											<tr>
-												<td style=\"text-align: center; font-weight: bold; padding: 10px;\">No</td>
-												<td style=\"text-align: center; font-weight: bold; padding: 10px;\">Supplier</td>
-												<td style=\"text-align: center; font-weight: bold; padding: 10px;\">Tanggal</td>
-												<td style=\"text-align: center; font-weight: bold; padding: 10px;\">Qty</td>
-												<td style=\"text-align: center; font-weight: bold; padding: 10px;\">Total</td>
-												<td style=\"text-align: center; font-weight: bold; padding: 10px;\">Diskon</td>
-												<td style=\"text-align: center; font-weight: bold; padding: 10px;\">Vat Rp</td>
-												<td style=\"text-align: center; font-weight: bold; padding: 10px;\">Materai</td>
-												<td style=\"text-align: center; font-weight: bold; padding: 10px;\">Total Net</td>
-											</tr>
-										</thead>";
-				$no = 1;
-				$tqty_terima = 0;
-				$ttotalrp = 0;
-				$ttotalrp2 = 0;
-				$tdiscountrp = 0;
-				$tvatrp = 0;
-				$tmaterai = 0;
-				$ttotalrp = 0;
-				$sql = $this->db->get_where("tbl_pajak", ["kodetax" => "PPN"])->row();
-				$pajak = $sql->prosentase / 100;
+						<tr>
+							<td style=\"text-align: center; font-weight: bold; padding: 10px;\">No</td>
+							<td style=\"text-align: center; font-weight: bold; padding: 10px;\">Supplier</td>
+							<td style=\"text-align: center; font-weight: bold; padding: 10px;\">Tanggal</td>
+							<td style=\"text-align: center; font-weight: bold; padding: 10px;\">Qty</td>
+							<td style=\"text-align: center; font-weight: bold; padding: 10px;\">Total</td>
+							<td style=\"text-align: center; font-weight: bold; padding: 10px;\">Diskon</td>
+							<td style=\"text-align: center; font-weight: bold; padding: 10px;\">Vat Rp</td>
+							<td style=\"text-align: center; font-weight: bold; padding: 10px;\">Materai</td>
+							<td style=\"text-align: center; font-weight: bold; padding: 10px;\">Total Net</td>
+						</tr>
+					</thead>";
+				$no             = 1;
+				$tqty_terima    = 0;
+				$ttotalrp       = 0;
+				$ttotalrp2      = 0;
+				$tdiscountrp    = 0;
+				$tvatrp         = 0;
+				$tmaterai       = 0;
+				$ttotalrp       = 0;
+				$sql            = $this->db->get_where("tbl_pajak", ["kodetax" => "PPN"])->row();
+				$pajak          = $sql->prosentase / 100;
 				foreach ($query as $q) {
 					if ($q->vat == 1) {
 						$vatrp = ($q->totalrp * $pajak);
@@ -2480,88 +2594,124 @@ class Pembelian_farmasi_laporan extends CI_Controller
 						$vatrp = 0;
 					}
 					$totalrp = ($q->totalrp + $q->discountrp);
-					$body .= 		"<tbody>
-											<tr>
-												<td style=\"text-align: right;\">" . $no++ . "</td>
-												<td>$q->vendor_name</td>
-												<td>" . date("d-m-Y", strtotime($q->terima_date)) . "</td>
-												<td style=\"text-align: right;\">" . number_format($q->qty_terima) . "</td>
-												<td style=\"text-align: right;\">" . number_format($totalrp) . "</td>
-												<td style=\"text-align: right;\">" . number_format($q->discountrp) . "</td>
-												<td style=\"text-align: right;\">" . number_format($vatrp) . "</td>
-												<td style=\"text-align: right;\">" . number_format($q->materai) . "</td>
-												<td style=\"text-align: right;\">" . number_format($q->totalrp + $q->vatrp + $q->materai) . "</td>
-											</tr>
-										</tbody>";
-					$tqty_terima += $q->qty_terima;
-					$ttotalrp += $totalrp;
-					$tdiscountrp += $q->discountrp;
-					$tvatrp += $vatrp;
-					$tmaterai += $q->materai;
-					$ttotalrp2 += ($q->totalrp + $q->vatrp + $q->materai);
+					
+					if($cekpdf==2){
+						$body .="<tbody>
+								<tr>
+									<td style=\"text-align: right;\">" . $no++ . "</td>
+									<td>$q->vendor_name</td>
+									<td>" . date("d-m-Y", strtotime($q->terima_date)) . "</td>
+									<td style=\"text-align: right;\">$q->qty_terima</td>
+									<td style=\"text-align: right;\">$totalrp</td>
+									<td style=\"text-align: right;\">$q->discountrp</td>
+									<td style=\"text-align: right;\">$vatrp</td>
+									<td style=\"text-align: right;\">$q->materai</td>
+									<td style=\"text-align: right;\">$q->totalrp + $q->vatrp + $q->materai</td>
+								</tr>
+							</tbody>";
+					}else{
+						$body .="<tbody>
+								<tr>
+									<td style=\"text-align: right;\">" . $no++ . "</td>
+									<td>$q->vendor_name</td>
+									<td>" . date("d-m-Y", strtotime($q->terima_date)) . "</td>
+									<td style=\"text-align: right;\">" . number_format($q->qty_terima) . "</td>
+									<td style=\"text-align: right;\">" . number_format($totalrp) . "</td>
+									<td style=\"text-align: right;\">" . number_format($q->discountrp) . "</td>
+									<td style=\"text-align: right;\">" . number_format($vatrp) . "</td>
+									<td style=\"text-align: right;\">" . number_format($q->materai) . "</td>
+									<td style=\"text-align: right;\">" . number_format($q->totalrp + $q->vatrp + $q->materai) . "</td>
+								</tr>
+							</tbody>";
+					}
+					
+					$tqty_terima   += $q->qty_terima;
+					$ttotalrp      += $totalrp;
+					$tdiscountrp   += $q->discountrp;
+					$tvatrp        += $vatrp;
+					$tmaterai      += $q->materai;
+					$ttotalrp2     += ($q->totalrp + $q->vatrp + $q->materai);
 				}
-				$body .= 	"<tfoot>
-										<tr>
-											<td style=\"text-align: center;\" colspan=\"3\">TOTAL</td>
-											<td style=\"text-align: right;\">" . number_format($tqty_terima) . "</td>
-											<td style=\"text-align: right;\">" . number_format($ttotalrp) . "</td>
-											<td style=\"text-align: right;\">" . number_format($tdiscountrp) . "</td>
-											<td style=\"text-align: right;\">" . number_format($tvatrp) . "</td>
-											<td style=\"text-align: right;\">" . number_format($tmaterai) . "</td>
-											<td style=\"text-align: right;\">" . number_format($ttotalrp2) . "</td>
-										</tr>
-									</tfoot>";
+				
+				if($cekpdf==2){
+					$body .= 	"
+					<tfoot>
+						<tr>
+							<td style=\"text-align: center;\" colspan=\"3\">TOTAL</td>
+							<td style=\"text-align: right;\">$tqty_terima</td>
+							<td style=\"text-align: right;\">$ttotalrp</td>
+							<td style=\"text-align: right;\">$tdiscountrp</td>
+							<td style=\"text-align: right;\">$tvatrp</td>
+							<td style=\"text-align: right;\">$tmaterai</td>
+							<td style=\"text-align: right;\">$ttotalrp2</td>
+						</tr>
+					</tfoot>";
+				}else{
+					$body .= 	"
+					<tfoot>
+						<tr>
+							<td style=\"text-align: center;\" colspan=\"3\">TOTAL</td>
+							<td style=\"text-align: right;\">" . number_format($tqty_terima) . "</td>
+							<td style=\"text-align: right;\">" . number_format($ttotalrp) . "</td>
+							<td style=\"text-align: right;\">" . number_format($tdiscountrp) . "</td>
+							<td style=\"text-align: right;\">" . number_format($tvatrp) . "</td>
+							<td style=\"text-align: right;\">" . number_format($tmaterai) . "</td>
+							<td style=\"text-align: right;\">" . number_format($ttotalrp2) . "</td>
+						</tr>
+					</tfoot>";
+				}
+				
 				$body .=	"</table>";
 				$body .= "<table style=\"border-collapse:collapse;font-family: tahoma; font-size:12px\" width=\"100%\" align=\"center\" border=\"0\">
-										<tr>
-											<td> &nbsp; </td>
-										</tr> 
-									</table>";
+							<tr>
+								<td> &nbsp; </td>
+							</tr> 
+						</table>";
 				$body .= "<table style=\"border-collapse:collapse;font-family: tahoma; font-size:12px\" width=\"100%\" align=\"center\" border=\"0\">
-										<tr>
-											<td style=\"text-align:center;\"><i>HOSPITAL MANAGEMENT SYSTEM</i></td>
-										</tr> 
-										<tr>
-											<td style=\"text-align:center;\">$kota ," . date("d-m-Y") . "</td>
-										</tr> 
-									</table>";
+							<tr>
+								<td style=\"text-align:center;\"><i>HOSPITAL MANAGEMENT SYSTEM</i></td>
+							</tr> 
+							<tr>
+								<td style=\"text-align:center;\">$kota ," . date("d-m-Y") . "</td>
+							</tr> 
+						</table>";
 				$body .= "<table style=\"border-collapse:collapse;font-family: tahoma; font-size:12px\" width=\"100%\" align=\"center\" border=\"0\">
-										<tr>
-											<td> &nbsp; </td>
-										</tr> 
-									</table>";
+							<tr>
+								<td> &nbsp; </td>
+							</tr> 
+						</table>";
 				$body .= "<table style=\"border-collapse:collapse;font-family: tahoma; font-size:12px\" width=\"70%\" align=\"center\" border=\"1\">
-										<tr>
-											<td style=\"text-align:center;\" width=\"33%\">Diketahui oleh,</td>
-											<td style=\"text-align:center;\" width=\"33%\">Diserahkan oleh,</td>
-											<td style=\"text-align:center;\" width=\"33%\">Dibuat oleh,</td>
-										</tr> 
-										<tr>
-											<td width=\"33%\" style=\"text-align:center; border-bottom:none; border-top:none;\">&nbsp;</td>
-											<td width=\"33%\" style=\"text-align:center; border-bottom:none; border-top:none;\">&nbsp;</td>
-											<td width=\"33%\" style=\"text-align:center; border-bottom:none; border-top:none;\">&nbsp;</td>
-										</tr> 
-										<tr>
-											<td width=\"33%\" style=\"text-align:center; border-bottom:none; border-top:none;\">&nbsp;</td>
-											<td width=\"33%\" style=\"text-align:center; border-bottom:none; border-top:none;\">&nbsp;</td>
-											<td width=\"33%\" style=\"text-align:center; border-bottom:none; border-top:none;\">&nbsp;</td>
-										</tr> 
-										<tr>
-											<td width=\"33%\" style=\"text-align:center; border-bottom:none; border-top:none;\">&nbsp;</td>
-											<td width=\"33%\" style=\"text-align:center; border-bottom:none; border-top:none;\">&nbsp;</td>
-											<td width=\"33%\" style=\"text-align:center; border-bottom:none; border-top:none;\">&nbsp;</td>
-										</tr> 
-										<tr>
-											<td width=\"33%\" style=\"text-align:center;\">2</td>
-											<td width=\"33%\" style=\"text-align:center;\">&nbsp;</td>
-											<td width=\"33%\" style=\"text-align:center;\">HARYANTO</td>
-										</tr> 
-										<tr>
-											<td width=\"33%\" style=\"text-align:center;\">Kepala Apoteker</td>
-											<td width=\"33%\" style=\"text-align:center;\">&nbsp;</td>
-											<td width=\"33%\" style=\"text-align:center;\">PENANGGUNG JAWAB ADMINISTRASI</td>
-										</tr> 
-									</table>";
+							<tr>
+								<td style=\"text-align:center;\" width=\"33%\">Diketahui oleh,</td>
+								<td style=\"text-align:center;\" width=\"33%\">Diserahkan oleh,</td>
+								<td style=\"text-align:center;\" width=\"33%\">Dibuat oleh,</td>
+							</tr> 
+							<tr>
+								<td width=\"33%\" style=\"text-align:center; border-bottom:none; border-top:none;\">&nbsp;</td>
+								<td width=\"33%\" style=\"text-align:center; border-bottom:none; border-top:none;\">&nbsp;</td>
+								<td width=\"33%\" style=\"text-align:center; border-bottom:none; border-top:none;\">&nbsp;</td>
+							</tr> 
+							<tr>
+								<td width=\"33%\" style=\"text-align:center; border-bottom:none; border-top:none;\">&nbsp;</td>
+								<td width=\"33%\" style=\"text-align:center; border-bottom:none; border-top:none;\">&nbsp;</td>
+								<td width=\"33%\" style=\"text-align:center; border-bottom:none; border-top:none;\">&nbsp;</td>
+							</tr> 
+							<tr>
+								<td width=\"33%\" style=\"text-align:center; border-bottom:none; border-top:none;\">&nbsp;</td>
+								<td width=\"33%\" style=\"text-align:center; border-bottom:none; border-top:none;\">&nbsp;</td>
+								<td width=\"33%\" style=\"text-align:center; border-bottom:none; border-top:none;\">&nbsp;</td>
+							</tr> 
+							<tr>
+								<td width=\"33%\" style=\"text-align:center;\">2</td>
+								<td width=\"33%\" style=\"text-align:center;\">&nbsp;</td>
+								<td width=\"33%\" style=\"text-align:center;\">HARYANTO</td>
+							</tr> 
+							<tr>
+								<td width=\"33%\" style=\"text-align:center;\">Kepala Apoteker</td>
+								<td width=\"33%\" style=\"text-align:center;\">&nbsp;</td>
+								<td width=\"33%\" style=\"text-align:center;\">PENANGGUNG JAWAB ADMINISTRASI</td>
+							</tr> 
+						</table>";
 			} else if ($idlap == 105){
 				$position = 'L';
 				if ($vendorx != '') {
@@ -2573,45 +2723,76 @@ class Pembelian_farmasi_laporan extends CI_Controller
 				$query = $this->db->query("SELECT b.kodebarang , (select namabarang from tbl_barang where kodebarang = b.kodebarang) as namabarang , h.vendor_id, b.satuan , sum(b.qty_terima) as qty_terima, (b.totalrp / b.qty_terima ) AS ratarata, b.koders, h.vendor_id , (select vendor_name from tbl_vendor where vendor_id=h.vendor_id) as vendor_name FROM tbl_barangdterima AS b JOIN tbl_baranghterima h ON b.terima_no = h.terima_no JOIN tbl_vendor AS c ON h.vendor_id = c.vendor_id WHERE $vendor b.koders = '$unit' and h.terima_date between '$tanggal1' and '$tanggal2' GROUP BY b.kodebarang")->result();
 				$body .= "<table style=\"border-collapse:collapse;font-family: tahoma; font-size:12px\" width=\"100%\" align=\"center\" border=\"1\">
                     <thead>
-											<tr>
-												<td style=\"text-align: center; font-weight: bold; padding: 10px;\">No</td>
-												<td style=\"text-align: center; font-weight: bold; padding: 10px;\">Kode Barang</td>
-												<td style=\"text-align: center; font-weight: bold; padding: 10px;\">Nama Barang</td>
-												<td style=\"text-align: center; font-weight: bold; padding: 10px;\">Satuan</td>
-												<td style=\"text-align: center; font-weight: bold; padding: 10px;\">Qty</td>
-												<td style=\"text-align: center; font-weight: bold; padding: 10px;\">Harga rata-rata</td>
-												<td style=\"text-align: center; font-weight: bold; padding: 10px;\">Total</td>
-											</tr>
-										</thead>";
+						<tr>
+							<td style=\"text-align: center; font-weight: bold; padding: 10px;\">No</td>
+							<td style=\"text-align: center; font-weight: bold; padding: 10px;\">Kode Barang</td>
+							<td style=\"text-align: center; font-weight: bold; padding: 10px;\">Nama Barang</td>
+							<td style=\"text-align: center; font-weight: bold; padding: 10px;\">Satuan</td>
+							<td style=\"text-align: center; font-weight: bold; padding: 10px;\">Qty</td>
+							<td style=\"text-align: center; font-weight: bold; padding: 10px;\">Harga rata-rata</td>
+							<td style=\"text-align: center; font-weight: bold; padding: 10px;\">Total</td>
+						</tr>
+					</thead>";
 				$no = 1;
 				$tqty_terima = 0;
 				$tratarata = 0;
 				$ttotal = 0;
 				foreach($query as $q){
 					$total = $q->qty_terima * $q->ratarata;
-					$body .= 		"<tbody>
-											<tr>
-												<td style=\"text-align: right;\">" . $no++ . "</td>
-												<td>$q->kodebarang</td>
-												<td>$q->namabarang</td>
-												<td>$q->satuan</td>
-												<td style=\"text-align: right;\">" . number_format($q->qty_terima) . "</td>
-												<td style=\"text-align: right;\">" . number_format($q->ratarata) . "</td>
-												<td style=\"text-align: right;\">" . number_format($total) . "</td>
-											</tr>
-										</tbody>";
-					$tqty_terima += $q->qty_terima;
-					$tratarata += $q->ratarata;
-					$ttotal += $total;
+					
+					if($cekpdf==2){
+						$body .="<tbody>
+								<tr>
+									<td style=\"text-align: right;\">" . $no++ . "</td>
+									<td>$q->kodebarang</td>
+									<td>$q->namabarang</td>
+									<td>$q->satuan</td>
+									<td style=\"text-align: right;\">$q->qty_terima</td>
+									<td style=\"text-align: right;\">$q->ratarata</td>
+									<td style=\"text-align: right;\">$total</td>
+								</tr>
+							</tbody>";
+					}else{
+						$body .="<tbody>
+								<tr>
+									<td style=\"text-align: right;\">" . $no++ . "</td>
+									<td>$q->kodebarang</td>
+									<td>$q->namabarang</td>
+									<td>$q->satuan</td>
+									<td style=\"text-align: right;\">" . number_format($q->qty_terima) . "</td>
+									<td style=\"text-align: right;\">" . number_format($q->ratarata) . "</td>
+									<td style=\"text-align: right;\">" . number_format($total) . "</td>
+								</tr>
+							</tbody>";
+					}
+					
+					$tqty_terima   += $q->qty_terima;
+					$tratarata     += $q->ratarata;
+					$ttotal        += $total;
 				}
-				$body .= 	"<tfoot>
-										<tr>
-											<td style=\"text-align: center;\" colspan=\"4\">TOTAL</td>
-											<td style=\"text-align: right;\">" . number_format($tqty_terima) . "</td>
-											<td style=\"text-align: right;\">" . number_format($tratarata) . "</td>
-											<td style=\"text-align: right;\">" . number_format($ttotal) . "</td>
-										</tr>
-									</tfoot>";
+				
+				if($cekpdf==2){
+					$body .= 	"
+					<tfoot>
+						<tr>
+							<td style=\"text-align: center;\" colspan=\"4\">TOTAL</td>
+							<td style=\"text-align: right;\">$tqty_terima</td>
+							<td style=\"text-align: right;\">$tratarata</td>
+							<td style=\"text-align: right;\">$ttotal</td>
+						</tr>
+					</tfoot>";
+				}else{
+					$body .= 	"
+					<tfoot>
+						<tr>
+							<td style=\"text-align: center;\" colspan=\"4\">TOTAL</td>
+							<td style=\"text-align: right;\">" . number_format($tqty_terima) . "</td>
+							<td style=\"text-align: right;\">" . number_format($tratarata) . "</td>
+							<td style=\"text-align: right;\">" . number_format($ttotal) . "</td>
+						</tr>
+					</tfoot>";
+				}
+				
 				$body .=	"</table>";
 			} else if ($idlap == 106){
 				$position = 'P';
@@ -2622,24 +2803,26 @@ class Pembelian_farmasi_laporan extends CI_Controller
 				}
 				$judul = '06 LAPORAN STATUS ORDER PEMBELIAN';
 				$query = $this->db->query("SELECT a.terima_date , a.koders,  b.price, b.satuan , b.qty_terima, b.po_no, c.vendor_id , c.vendor_name, d.kodebarang ,d.namabarang FROM tbl_baranghterima AS a JOIN  tbl_barangdterima AS b ON a.terima_no = b.terima_no JOIN tbl_vendor AS c ON a.vendor_id = c.vendor_id JOIN tbl_barang AS d ON b.kodebarang = d.kodebarang WHERE $vendor  a.koders = '$unit'  and a.terima_date between '$tanggal1' and '$tanggal2'")->result();
-				$body .= "<table style=\"border-collapse:collapse;font-family: tahoma; font-size:12px\" width=\"100%\" align=\"center\" border=\"1\">
+				
+				$body .= "
+				<table style=\"border-collapse:collapse;font-family: tahoma; font-size:12px\" width=\"100%\" align=\"center\" border=\"1\">
                     <thead>
-											<tr>
-												<td style=\"text-align: center; font-weight: bold; padding: 10px;\">No</td>
-												<td style=\"text-align: center; font-weight: bold; padding: 10px;\">PO No.</td>
-												<td style=\"text-align: center; font-weight: bold; padding: 10px;\">Tanggal</td>
-												<td style=\"text-align: center; font-weight: bold; padding: 10px;\">Kode Barang</td>
-												<td style=\"text-align: center; font-weight: bold; padding: 10px;\">Nama Barang</td>
-												<td style=\"text-align: center; font-weight: bold; padding: 10px;\">Satuan</td>
-												<td style=\"text-align: center; font-weight: bold; padding: 10px;\">Qty</td>
-												<td style=\"text-align: center; font-weight: bold; padding: 10px;\">Harga sat</td>
-												<td style=\"text-align: center; font-weight: bold; padding: 10px;\">Total</td>
-											</tr>
-										</thead>";
-				$no = 1;
-				$tqty_terima = 0;
-				$tprice = 0;
-				$ttotal = 0;
+						<tr>
+							<td style=\"text-align: center; font-weight: bold; padding: 10px;\">No</td>
+							<td style=\"text-align: center; font-weight: bold; padding: 10px;\">PO No.</td>
+							<td style=\"text-align: center; font-weight: bold; padding: 10px;\">Tanggal</td>
+							<td style=\"text-align: center; font-weight: bold; padding: 10px;\">Kode Barang</td>
+							<td style=\"text-align: center; font-weight: bold; padding: 10px;\">Nama Barang</td>
+							<td style=\"text-align: center; font-weight: bold; padding: 10px;\">Satuan</td>
+							<td style=\"text-align: center; font-weight: bold; padding: 10px;\">Qty</td>
+							<td style=\"text-align: center; font-weight: bold; padding: 10px;\">Harga sat</td>
+							<td style=\"text-align: center; font-weight: bold; padding: 10px;\">Total</td>
+						</tr>
+					</thead>";
+				$no             = 1;
+				$tqty_terima    = 0;
+				$tprice         = 0;
+				$ttotal         = 0;
 				foreach($query as $q){
 					$total = $q->price * $q->qty_terima;
 					if($q->po_no == ''){
@@ -2647,31 +2830,66 @@ class Pembelian_farmasi_laporan extends CI_Controller
 					} else {
 						$po_no = $q->po_no;
 					}
-					$body .= 		"<tbody>
-											<tr>
-												<td style=\"text-align: right;\">" . $no++ . "</td>
-												<td>$po_no</td>
-												<td style=\"text-align: center;\">" . date("d-m-Y", strtotime($q->terima_date)) . "</td>
-												<td>$q->kodebarang</td>
-												<td>$q->namabarang</td>
-												<td>$q->satuan</td>
-												<td style=\"text-align: right;\">" . number_format($q->qty_terima) . "</td>
-												<td style=\"text-align: right;\">" . number_format($q->price) . "</td>
-												<td style=\"text-align: right;\">" . number_format($total) . "</td>
-											</tr>
-										</tbody>";
-					$tqty_terima += $q->qty_terima;
-					$tprice += $q->price;
-					$ttotal += $total;
+
+					
+					if($cekpdf==2){
+						$body .="<tbody>
+								<tr>
+									<td style=\"text-align: right;\">" . $no++ . "</td>
+									<td>$po_no</td>
+									<td style=\"text-align: center;\">" . date("d-m-Y", strtotime($q->terima_date)) . "</td>
+									<td>$q->kodebarang</td>
+									<td>$q->namabarang</td>
+									<td>$q->satuan</td>
+									<td style=\"text-align: right;\">$q->qty_terima</td>
+									<td style=\"text-align: right;\">$q->price</td>
+									<td style=\"text-align: right;\">$total</td>
+								</tr>
+							</tbody>";
+					}else{
+						$body .="<tbody>
+								<tr>
+									<td style=\"text-align: right;\">" . $no++ . "</td>
+									<td>$po_no</td>
+									<td style=\"text-align: center;\">" . date("d-m-Y", strtotime($q->terima_date)) . "</td>
+									<td>$q->kodebarang</td>
+									<td>$q->namabarang</td>
+									<td>$q->satuan</td>
+									<td style=\"text-align: right;\">" . number_format($q->qty_terima) . "</td>
+									<td style=\"text-align: right;\">" . number_format($q->price) . "</td>
+									<td style=\"text-align: right;\">" . number_format($total) . "</td>
+								</tr>
+							</tbody>";
+					}
+					
+					$tqty_terima   += $q->qty_terima;
+					$tprice        += $q->price;
+					$ttotal        += $total;
 				}
-				$body .= 	"<tfoot>
-										<tr>
-											<td style=\"text-align: center;\" colspan=\"6\">TOTAL</td>
-											<td style=\"text-align: right;\">" . number_format($tqty_terima) . "</td>
-											<td style=\"text-align: right;\">" . number_format($tprice) . "</td>
-											<td style=\"text-align: right;\">" . number_format($ttotal) . "</td>
-										</tr>
-									</tfoot>";
+
+				
+				if($cekpdf==2){
+					$body .="
+					<tfoot>
+						<tr>
+							<td style=\"text-align: center;\" colspan=\"6\">TOTAL</td>
+							<td style=\"text-align: right;\">$tqty_terima</td>
+							<td style=\"text-align: right;\">$tprice</td>
+							<td style=\"text-align: right;\">$ttotal</td>
+						</tr>
+					</tfoot>";
+				}else{
+					$body .="
+					<tfoot>
+						<tr>
+							<td style=\"text-align: center;\" colspan=\"6\">TOTAL</td>
+							<td style=\"text-align: right;\">" . number_format($tqty_terima) . "</td>
+							<td style=\"text-align: right;\">" . number_format($tprice) . "</td>
+							<td style=\"text-align: right;\">" . number_format($ttotal) . "</td>
+						</tr>
+					</tfoot>";
+				}
+				
 				$body .=	"</table>";
 			} else if ($idlap == 107){
 				$position = 'L';
@@ -2685,25 +2903,25 @@ class Pembelian_farmasi_laporan extends CI_Controller
 					WHERE a.koders = '$unit' AND a.retur_date BETWEEN '$tanggal1' AND '$tanggal2' GROUP BY a.vendor_id")->result();
 				$body .= "<table style=\"border-collapse:collapse;font-family: tahoma; font-size:12px\" width=\"100%\" align=\"center\" border=\"1\">
                     <thead>
-											<tr>
-												<td style=\"text-align: center; font-weight: bold; padding: 10px;\">No</td>
-												<td style=\"text-align: center; font-weight: bold; padding: 10px;\">Retur No.</td>
-												<td style=\"text-align: center; font-weight: bold; padding: 10px;\">Tanggal</td>
-												<td style=\"text-align: center; font-weight: bold; padding: 10px;\">No. BAPB</td>
-												<td style=\"text-align: center; font-weight: bold; padding: 10px;\">PO No.</td>
-												<td style=\"text-align: center; font-weight: bold; padding: 10px;\">Kode Barang</td>
-												<td style=\"text-align: center; font-weight: bold; padding: 10px;\">Nama Barang</td>
-												<td style=\"text-align: center; font-weight: bold; padding: 10px;\">Satuan</td>
-												<td style=\"text-align: center; font-weight: bold; padding: 10px;\">Qty</td>
-												<td style=\"text-align: center; font-weight: bold; padding: 10px;\">Harga sat</td>
-												<td style=\"text-align: center; font-weight: bold; padding: 10px;\">Total</td>
-											</tr>
-										</thead>";
+						<tr>
+							<td style=\"text-align: center; font-weight: bold; padding: 10px;\">No</td>
+							<td style=\"text-align: center; font-weight: bold; padding: 10px;\">Retur No.</td>
+							<td style=\"text-align: center; font-weight: bold; padding: 10px;\">Tanggal</td>
+							<td style=\"text-align: center; font-weight: bold; padding: 10px;\">No. BAPB</td>
+							<td style=\"text-align: center; font-weight: bold; padding: 10px;\">PO No.</td>
+							<td style=\"text-align: center; font-weight: bold; padding: 10px;\">Kode Barang</td>
+							<td style=\"text-align: center; font-weight: bold; padding: 10px;\">Nama Barang</td>
+							<td style=\"text-align: center; font-weight: bold; padding: 10px;\">Satuan</td>
+							<td style=\"text-align: center; font-weight: bold; padding: 10px;\">Qty</td>
+							<td style=\"text-align: center; font-weight: bold; padding: 10px;\">Harga sat</td>
+							<td style=\"text-align: center; font-weight: bold; padding: 10px;\">Total</td>
+						</tr>
+					</thead>";
 				foreach($vendor as $v){
-					$body .= 		"<tbody>
-											<tr>
-												<td colspan=\"7\">SUPPLIER : $v->vendor_name</td>
-											</tr>";
+					$body .="<tbody>
+						<tr>
+							<td colspan=\"7\">SUPPLIER : $v->vendor_name</td>
+						</tr>";
 					$query = $this->db->query("SELECT 
 					a.retur_no, 
 					a.retur_date, 
@@ -2719,54 +2937,94 @@ class Pembelian_farmasi_laporan extends CI_Controller
 					FROM tbl_baranghreturbeli a 
 					JOIN tbl_barangdreturbeli b ON a.retur_no=b.retur_no 
 					WHERE a.koders = '$unit' AND a.retur_date BETWEEN '$tanggal1' AND '$tanggal2' AND a.vendor_id='$v->vendor_id'")->result();
-					$no = 1;
-					$tqty_retur = 0;
-					$tprice = 0;
-					$ttotalrp = 0;
-					$totalsemua = 0;
+					$no            = 1;
+					$tqty_retur    = 0;
+					$tprice        = 0;
+					$ttotalrp      = 0;
+					$totalsemua    = 0;
 					foreach($query as $q){
 						if($q->po_no == ''){
 							$po_no = '-';
 						} else {
 							$po_no = $q->po_no;
 						}
-						$body .= 			"<tr>
-														<td style=\"text-align: right;\">" . $no++ . "</td>
-														<td>$q->retur_no</td>
-														<td style=\"text-align: center;\">" . date("d-m-Y", strtotime($q->retur_date)) . "</td>
-														<td>$q->terima_no</td>
-														<td>$po_no</td>
-														<td>$q->kodebarang</td>
-														<td>$q->namabarang</td>
-														<td>$q->satuan</td>
-														<td style=\"text-align: right;\">" . number_format($q->qty_retur) . "</td>
-														<td style=\"text-align: right;\">" . number_format($q->price) . "</td>
-														<td width=\"15%\" style=\"text-align: right;\">" . number_format($q->totalrp) . "</td>
-													</tr>";
-					$tqty_retur += $q->qty_retur;
-					$tprice += $q->price;
-					$ttotalrp += $q->totalrp;
+						
+					if($cekpdf==2){
+						$body .="<tr>
+									<td style=\"text-align: right;\">" . $no++ . "</td>
+									<td>$q->retur_no</td>
+									<td style=\"text-align: center;\">" . date("d-m-Y", strtotime($q->retur_date)) . "</td>
+									<td>$q->terima_no</td>
+									<td>$po_no</td>
+									<td>$q->kodebarang</td>
+									<td>$q->namabarang</td>
+									<td>$q->satuan</td>
+									<td style=\"text-align: right;\">$q->qty_retur</td>
+									<td style=\"text-align: right;\">$q->price</td>
+									<td width=\"15%\" style=\"text-align: right;\">$q->totalrp</td>
+								</tr>";
+					}else{
+						$body .="<tr>
+									<td style=\"text-align: right;\">" . $no++ . "</td>
+									<td>$q->retur_no</td>
+									<td style=\"text-align: center;\">" . date("d-m-Y", strtotime($q->retur_date)) . "</td>
+									<td>$q->terima_no</td>
+									<td>$po_no</td>
+									<td>$q->kodebarang</td>
+									<td>$q->namabarang</td>
+									<td>$q->satuan</td>
+									<td style=\"text-align: right;\">" . number_format($q->qty_retur) . "</td>
+									<td style=\"text-align: right;\">" . number_format($q->price) . "</td>
+									<td width=\"15%\" style=\"text-align: right;\">" . number_format($q->totalrp) . "</td>
+								</tr>";
 					}
-					$body .= 				"<tr>
-														<td colspan=\"8\">SUBTOTAL</td>
-														<td style=\"text-align: right; font-weight: bold; color:red;\">" . number_format($tqty_retur) . "</td>
-														<td style=\"text-align: right; font-weight: bold; color:red;\">" . number_format($tprice) . "</td>
-														<td width=\"15%\" style=\"text-align: right; font-weight: bold; color:red;\">" . number_format($ttotalrp) . "</td>
-													</tr>";
+						
+					$tqty_retur    += $q->qty_retur;
+					$tprice        += $q->price;
+					$ttotalrp      += $q->totalrp;
+					}
+					
+					if($cekpdf==2){
+						$body .="<tr>
+								<td colspan=\"8\">SUBTOTAL</td>
+								<td style=\"text-align: right; font-weight: bold; color:red;\">$tqty_retur</td>
+								<td style=\"text-align: right; font-weight: bold; color:red;\">$tprice</td>
+								<td width=\"15%\" style=\"text-align: right; font-weight: bold; color:red;\">$ttotalrp</td>
+							</tr>";
+					}else{
+						$body .="<tr>
+								<td colspan=\"8\">SUBTOTAL</td>
+								<td style=\"text-align: right; font-weight: bold; color:red;\">" . number_format($tqty_retur) . "</td>
+								<td style=\"text-align: right; font-weight: bold; color:red;\">" . number_format($tprice) . "</td>
+								<td width=\"15%\" style=\"text-align: right; font-weight: bold; color:red;\">" . number_format($ttotalrp) . "</td>
+							</tr>";
+					}
+					
 					$totalsemua += $ttotalrp;
 				}
-				$body .=	"</table>";
+				$body .="</table>";
 				$body .= "<table style=\"border-collapse:collapse;font-family: tahoma; font-size:12px\" width=\"100%\" align=\"center\" border=\"0\">
                     <tr>
-											<td> &nbsp; </td>
-										</tr> 
+						<td> &nbsp; </td>
+					</tr> 
                   </table>";
-				$body .= "<table style=\"border-collapse:collapse;font-family: tahoma; font-size:12px\" width=\"100%\" align=\"center\" border=\"1\"> 
+
+				if($cekpdf==2){
+					$body .= "<table style=\"border-collapse:collapse;font-family: tahoma; font-size:12px\" width=\"100%\" align=\"center\" border=\"1\"> 
                     <tr>
-											<td colspan=\"6\">TOTAL</td>
-											<td width=\"15%\" style=\"text-align: right; font-weight: bold; color:red;\">" . number_format($totalsemua) . "</td>
-										</tr> 
+						<td colspan=\"6\">TOTAL</td>
+						<td width=\"15%\" style=\"text-align: right; font-weight: bold; color:red;\">$totalsemua</td>
+					</tr> 
                   </table>";
+				}else{
+					$body .= "<table style=\"border-collapse:collapse;font-family: tahoma; font-size:12px\" width=\"100%\" align=\"center\" border=\"1\"> 
+                    <tr>
+						<td colspan=\"6\">TOTAL</td>
+						<td width=\"15%\" style=\"text-align: right; font-weight: bold; color:red;\">" . number_format($totalsemua) . "</td>
+					</tr> 
+                  </table>";
+				}
+				
 			} else if ($idlap == 108) {
 				$position = 'L';
 				if ($vendorx != '') {
@@ -2834,82 +3092,128 @@ class Pembelian_farmasi_laporan extends CI_Controller
 					WHERE $vendor retur_date BETWEEN '$tanggal1' AND '$tanggal2'")->result();
 				$body .= "<table style=\"border-collapse:collapse;font-family: tahoma; font-size:12px\" width=\"100%\" align=\"center\" border=\"1\">
                     <thead>
-											<tr>
-												<td style=\"text-align: center; font-weight: bold; padding: 10px;\">No</td>
-												<td style=\"text-align: center; font-weight: bold; padding: 10px;\">Rekanan</td>
-												<td style=\"text-align: center; font-weight: bold; padding: 10px;\">No. Faktur</td>
-												<td style=\"text-align: center; font-weight: bold; padding: 10px;\">Obat</td>
-												<td style=\"text-align: center; font-weight: bold; padding: 10px;\">Alkes Rutin</td>
-												<td style=\"text-align: center; font-weight: bold; padding: 10px;\">Alk. Investasi</td>
-												<td style=\"text-align: center; font-weight: bold; padding: 10px;\">Bahan Kimia</td>
-												<td style=\"text-align: center; font-weight: bold; padding: 10px;\">Gas Medik</td>
-												<td style=\"text-align: center; font-weight: bold; padding: 10px;\">Pemeliharaan</td>
-												<td style=\"text-align: center; font-weight: bold; padding: 10px;\">Sewa</td>
-												<td style=\"text-align: center; font-weight: bold; padding: 10px;\">Pelengkap</td>
-												<td style=\"text-align: center; font-weight: bold; padding: 10px;\">Lain-lain</td>
-												<td style=\"text-align: center; font-weight: bold; padding: 10px;\">Materai</td>
-												<td style=\"text-align: center; font-weight: bold; padding: 10px;\">Jumlah</td>
-											</tr>
-										</thead>";
-				$no = 1;
-				$tobat = 0;
-				$talkes_rutin = 0;
+					<tr>
+						<td style=\"text-align: center; font-weight: bold; padding: 10px;\">No</td>
+						<td style=\"text-align: center; font-weight: bold; padding: 10px;\">Rekanan</td>
+						<td style=\"text-align: center; font-weight: bold; padding: 10px;\">No. Faktur</td>
+						<td style=\"text-align: center; font-weight: bold; padding: 10px;\">Obat</td>
+						<td style=\"text-align: center; font-weight: bold; padding: 10px;\">Alkes Rutin</td>
+						<td style=\"text-align: center; font-weight: bold; padding: 10px;\">Alk. Investasi</td>
+						<td style=\"text-align: center; font-weight: bold; padding: 10px;\">Bahan Kimia</td>
+						<td style=\"text-align: center; font-weight: bold; padding: 10px;\">Gas Medik</td>
+						<td style=\"text-align: center; font-weight: bold; padding: 10px;\">Pemeliharaan</td>
+						<td style=\"text-align: center; font-weight: bold; padding: 10px;\">Sewa</td>
+						<td style=\"text-align: center; font-weight: bold; padding: 10px;\">Pelengkap</td>
+						<td style=\"text-align: center; font-weight: bold; padding: 10px;\">Lain-lain</td>
+						<td style=\"text-align: center; font-weight: bold; padding: 10px;\">Materai</td>
+						<td style=\"text-align: center; font-weight: bold; padding: 10px;\">Jumlah</td>
+					</tr>
+				</thead>";
+				$no             = 1;
+				$tobat          = 0;
+				$talkes_rutin   = 0;
 				$talk_investasi = 0;
-				$tbahan_kimia = 0;
-				$tgas_medik = 0;
-				$tpemeliharaan = 0;
-				$tsewa = 0;
-				$tpelengkapan = 0;
-				$tlain2 = 0;
-				$tmaterai = 0;
-				$tjumlah = 0;
+				$tbahan_kimia   = 0;
+				$tgas_medik     = 0;
+				$tpemeliharaan  = 0;
+				$tsewa          = 0;
+				$tpelengkapan   = 0;
+				$tlain2         = 0;
+				$tmaterai       = 0;
+				$tjumlah        = 0;
 				foreach($query as $q){
-					$body .= 		"<tbody>
-											<tr>
-												<td style=\"text-align: right;\">" . $no++ . "</td>
-												<td>$q->rekanan</td>
-												<td>$q->no_faktur</td>
-												<td style=\"text-align: right;\">" . number_format($q->obat) . "</td>
-												<td style=\"text-align: right;\">" . number_format($q->alkes_rutin) . "</td>
-												<td style=\"text-align: right;\">" . number_format($q->alk_investasi) . "</td>
-												<td style=\"text-align: right;\">" . number_format($q->bahan_kimia) . "</td>
-												<td style=\"text-align: right;\">" . number_format($q->gas_medik) . "</td>
-												<td style=\"text-align: right;\">" . number_format($q->pemeliharaan) . "</td>
-												<td style=\"text-align: right;\">" . number_format($q->sewa) . "</td>
-												<td style=\"text-align: right;\">" . number_format($q->pelengkapan) . "</td>
-												<td style=\"text-align: right;\">" . number_format($q->lain2) . "</td>
-												<td style=\"text-align: right;\">" . number_format($q->materai) . "</td>
-												<td style=\"text-align: right;\">" . number_format($q->jumlah) . "</td>
-											</tr>
-										</tbody>";
-					$tobat += $q->obat;
-					$talkes_rutin += $q->alkes_rutin;
-					$talk_investasi += $q->alk_investasi;
-					$tbahan_kimia += $q->bahan_kimia;
-					$tgas_medik += $q->gas_medik;
-					$tpemeliharaan += $q->pemeliharaan;
-					$tsewa += $q->sewa;
-					$tpelengkapan += $q->pelengkapan;
-					$tlain2 += $q->lain2;
-					$tmaterai += $q->materai;
-					$tjumlah += $q->jumlah;
+					
+					if($cekpdf==2){
+						$body .="<tbody>
+						<tr>
+							<td style=\"text-align: right;\">" . $no++ . "</td>
+							<td>$q->rekanan</td>
+							<td>$q->no_faktur</td>
+							<td style=\"text-align: right;\">$q->obat</td>
+							<td style=\"text-align: right;\">$q->alkes_rutin</td>
+							<td style=\"text-align: right;\">$q->alk_investasi</td>
+							<td style=\"text-align: right;\">$q->bahan_kimia</td>
+							<td style=\"text-align: right;\">$q->gas_medik</td>
+							<td style=\"text-align: right;\">$q->pemeliharaan</td>
+							<td style=\"text-align: right;\">$q->sewa</td>
+							<td style=\"text-align: right;\">$q->pelengkapan</td>
+							<td style=\"text-align: right;\">$q->lain2</td>
+							<td style=\"text-align: right;\">$q->materai</td>
+							<td style=\"text-align: right;\">$q->jumlah</td>
+						</tr>
+					</tbody>";
+					}else{
+						$body .="<tbody>
+						<tr>
+							<td style=\"text-align: right;\">" . $no++ . "</td>
+							<td>$q->rekanan</td>
+							<td>$q->no_faktur</td>
+							<td style=\"text-align: right;\">" . number_format($q->obat) . "</td>
+							<td style=\"text-align: right;\">" . number_format($q->alkes_rutin) . "</td>
+							<td style=\"text-align: right;\">" . number_format($q->alk_investasi) . "</td>
+							<td style=\"text-align: right;\">" . number_format($q->bahan_kimia) . "</td>
+							<td style=\"text-align: right;\">" . number_format($q->gas_medik) . "</td>
+							<td style=\"text-align: right;\">" . number_format($q->pemeliharaan) . "</td>
+							<td style=\"text-align: right;\">" . number_format($q->sewa) . "</td>
+							<td style=\"text-align: right;\">" . number_format($q->pelengkapan) . "</td>
+							<td style=\"text-align: right;\">" . number_format($q->lain2) . "</td>
+							<td style=\"text-align: right;\">" . number_format($q->materai) . "</td>
+							<td style=\"text-align: right;\">" . number_format($q->jumlah) . "</td>
+						</tr>
+					</tbody>";
+					}
+					
+					$tobat           += $q->obat;
+					$talkes_rutin    += $q->alkes_rutin;
+					$talk_investasi  += $q->alk_investasi;
+					$tbahan_kimia    += $q->bahan_kimia;
+					$tgas_medik      += $q->gas_medik;
+					$tpemeliharaan   += $q->pemeliharaan;
+					$tsewa           += $q->sewa;
+					$tpelengkapan    += $q->pelengkapan;
+					$tlain2          += $q->lain2;
+					$tmaterai        += $q->materai;
+					$tjumlah         += $q->jumlah;
 				}
-				$body .= 	"<tfoot>
-										<tr>
-											<td style=\"text-align: center;\" colspan=\"3\">TOTAL</td>
-											<td style=\"text-align: right;\">" . number_format($tobat) . "</td>
-											<td style=\"text-align: right;\">" . number_format($talkes_rutin) . "</td>
-											<td style=\"text-align: right;\">" . number_format($talk_investasi) . "</td>
-											<td style=\"text-align: right;\">" . number_format($tbahan_kimia) . "</td>
-											<td style=\"text-align: right;\">" . number_format($tgas_medik) . "</td>
-											<td style=\"text-align: right;\">" . number_format($tpemeliharaan) . "</td>
-											<td style=\"text-align: right;\">" . number_format($tsewa) . "</td>
-											<td style=\"text-align: right;\">" . number_format($tpelengkapan) . "</td>
-											<td style=\"text-align: right;\">" . number_format($tlain2) . "</td>
-											<td style=\"text-align: right;\">" . number_format($tmaterai) . "</td>
-											<td style=\"text-align: right;\">" . number_format($tjumlah) . "</td>
-										</tr>
-									</tfoot>";
+				
+				if($cekpdf==2){
+					$body .="
+					<tfoot>
+						<tr>
+							<td style=\"text-align: center;\" colspan=\"3\">TOTAL</td>
+							<td style=\"text-align: right;\">$tobat</td>
+							<td style=\"text-align: right;\">$talkes_rutin</td>
+							<td style=\"text-align: right;\">$talk_investasi</td>
+							<td style=\"text-align: right;\">$tbahan_kimia</td>
+							<td style=\"text-align: right;\">$tgas_medik</td>
+							<td style=\"text-align: right;\">$tpemeliharaan</td>
+							<td style=\"text-align: right;\">$tsewa</td>
+							<td style=\"text-align: right;\">$tpelengkapan</td>
+							<td style=\"text-align: right;\">$tlain2</td>
+							<td style=\"text-align: right;\">$tmaterai</td>
+							<td style=\"text-align: right;\">$tjumlah</td>
+						</tr>
+					</tfoot>";
+				}else{
+					$body .="
+					<tfoot>
+						<tr>
+							<td style=\"text-align: center;\" colspan=\"3\">TOTAL</td>
+							<td style=\"text-align: right;\">" . number_format($tobat) . "</td>
+							<td style=\"text-align: right;\">" . number_format($talkes_rutin) . "</td>
+							<td style=\"text-align: right;\">" . number_format($talk_investasi) . "</td>
+							<td style=\"text-align: right;\">" . number_format($tbahan_kimia) . "</td>
+							<td style=\"text-align: right;\">" . number_format($tgas_medik) . "</td>
+							<td style=\"text-align: right;\">" . number_format($tpemeliharaan) . "</td>
+							<td style=\"text-align: right;\">" . number_format($tsewa) . "</td>
+							<td style=\"text-align: right;\">" . number_format($tpelengkapan) . "</td>
+							<td style=\"text-align: right;\">" . number_format($tlain2) . "</td>
+							<td style=\"text-align: right;\">" . number_format($tmaterai) . "</td>
+							<td style=\"text-align: right;\">" . number_format($tjumlah) . "</td>
+						</tr>
+					</tfoot>";
+				}
+				
 				$body .=	"</table>";
 				$body .= "<table style=\"border-collapse:collapse;font-family: tahoma; font-size:12px\" width=\"100%\" align=\"center\" border=\"0\">
 										<tr>
@@ -2922,43 +3226,43 @@ class Pembelian_farmasi_laporan extends CI_Controller
 										</tr> 
 									</table>";
 				$body .= "<table style=\"border-collapse:collapse;font-family: tahoma; font-size:12px\" width=\"70%\" align=\"center\" border=\"1\">
-										<tr>
-											<td style=\"text-align:center; border-top:none; border-bottom:none; border-left:none; border-right:none;\">Petugas,</td>
-											<td style=\"text-align:center; border-top:none; border-bottom:none; border-left:none; border-right:none;\">Mengetahui,</td>
-											<td style=\"text-align:center; border-top:none; border-bottom:none; border-left:none; border-right:none;\">Disetujui,</td>
-											<td style=\"text-align:center; border-top:none; border-bottom:none; border-left:none; border-right:none;\">Diterima oleh,</td>
-										</tr> 
-										<tr>
-											<td style=\"text-align:center; border-top:none; border-bottom:none; border-left:none; border-right:none;\"> &nbsp; </td>
-											<td style=\"text-align:center; border-top:none; border-bottom:none; border-left:none; border-right:none;\"> &nbsp; </td>
-											<td style=\"text-align:center; border-top:none; border-bottom:none; border-left:none; border-right:none;\"> &nbsp; </td>
-											<td style=\"text-align:center; border-top:none; border-bottom:none; border-left:none; border-right:none;\"> &nbsp; </td>
-										</tr> 
-										<tr>
-											<td style=\"text-align:center; border-top:none; border-bottom:none; border-left:none; border-right:none;\"> &nbsp; </td>
-											<td style=\"text-align:center; border-top:none; border-bottom:none; border-left:none; border-right:none;\"> &nbsp; </td>
-											<td style=\"text-align:center; border-top:none; border-bottom:none; border-left:none; border-right:none;\"> &nbsp; </td>
-											<td style=\"text-align:center; border-top:none; border-bottom:none; border-left:none; border-right:none;\"> &nbsp; </td>
-										</tr> 
-										<tr>
-											<td style=\"text-align:center; border-top:none; border-bottom:none; border-left:none; border-right:none;\"> &nbsp; </td>
-											<td style=\"text-align:center; border-top:none; border-bottom:none; border-left:none; border-right:none;\"> &nbsp; </td>
-											<td style=\"text-align:center; border-top:none; border-bottom:none; border-left:none; border-right:none;\"> &nbsp; </td>
-											<td style=\"text-align:center; border-top:none; border-bottom:none; border-left:none; border-right:none;\"> &nbsp; </td>
-										</tr> 
-										<tr>
-											<td style=\"text-align:center; border-top:none; border-bottom:none; border-left:none; border-right:none;\">----------------------------</td>
-											<td style=\"text-align:center; border-top:none; border-bottom:none; border-left:none; border-right:none;\">----------------------------</td>
-											<td style=\"text-align:center; border-top:none; border-bottom:none; border-left:none; border-right:none;\">----------------------------</td>
-											<td style=\"text-align:center; border-top:none; border-bottom:none; border-left:none; border-right:none;\">----------------------------</td>
-										</tr> 
-										<tr>
-											<td style=\"text-align:center; border-top:none; border-bottom:none; border-left:none; border-right:none;\">HARYANTO</td>
-											<td style=\"text-align:center; border-top:none; border-bottom:none; border-left:none; border-right:none;\">(Sie Farmasi)</td>
-											<td style=\"text-align:center; border-top:none; border-bottom:none; border-left:none; border-right:none;\">(Ka. Bid. Farmasi)</td>
-											<td style=\"text-align:center; border-top:none; border-bottom:none; border-left:none; border-right:none;\">(Keuangan)</td>
-										</tr> 
-									</table>";
+							<tr>
+								<td style=\"text-align:center; border-top:none; border-bottom:none; border-left:none; border-right:none;\">Petugas,</td>
+								<td style=\"text-align:center; border-top:none; border-bottom:none; border-left:none; border-right:none;\">Mengetahui,</td>
+								<td style=\"text-align:center; border-top:none; border-bottom:none; border-left:none; border-right:none;\">Disetujui,</td>
+								<td style=\"text-align:center; border-top:none; border-bottom:none; border-left:none; border-right:none;\">Diterima oleh,</td>
+							</tr> 
+							<tr>
+								<td style=\"text-align:center; border-top:none; border-bottom:none; border-left:none; border-right:none;\"> &nbsp; </td>
+								<td style=\"text-align:center; border-top:none; border-bottom:none; border-left:none; border-right:none;\"> &nbsp; </td>
+								<td style=\"text-align:center; border-top:none; border-bottom:none; border-left:none; border-right:none;\"> &nbsp; </td>
+								<td style=\"text-align:center; border-top:none; border-bottom:none; border-left:none; border-right:none;\"> &nbsp; </td>
+							</tr> 
+							<tr>
+								<td style=\"text-align:center; border-top:none; border-bottom:none; border-left:none; border-right:none;\"> &nbsp; </td>
+								<td style=\"text-align:center; border-top:none; border-bottom:none; border-left:none; border-right:none;\"> &nbsp; </td>
+								<td style=\"text-align:center; border-top:none; border-bottom:none; border-left:none; border-right:none;\"> &nbsp; </td>
+								<td style=\"text-align:center; border-top:none; border-bottom:none; border-left:none; border-right:none;\"> &nbsp; </td>
+							</tr> 
+							<tr>
+								<td style=\"text-align:center; border-top:none; border-bottom:none; border-left:none; border-right:none;\"> &nbsp; </td>
+								<td style=\"text-align:center; border-top:none; border-bottom:none; border-left:none; border-right:none;\"> &nbsp; </td>
+								<td style=\"text-align:center; border-top:none; border-bottom:none; border-left:none; border-right:none;\"> &nbsp; </td>
+								<td style=\"text-align:center; border-top:none; border-bottom:none; border-left:none; border-right:none;\"> &nbsp; </td>
+							</tr> 
+							<tr>
+								<td style=\"text-align:center; border-top:none; border-bottom:none; border-left:none; border-right:none;\">----------------------------</td>
+								<td style=\"text-align:center; border-top:none; border-bottom:none; border-left:none; border-right:none;\">----------------------------</td>
+								<td style=\"text-align:center; border-top:none; border-bottom:none; border-left:none; border-right:none;\">----------------------------</td>
+								<td style=\"text-align:center; border-top:none; border-bottom:none; border-left:none; border-right:none;\">----------------------------</td>
+							</tr> 
+							<tr>
+								<td style=\"text-align:center; border-top:none; border-bottom:none; border-left:none; border-right:none;\">HARYANTO</td>
+								<td style=\"text-align:center; border-top:none; border-bottom:none; border-left:none; border-right:none;\">(Sie Farmasi)</td>
+								<td style=\"text-align:center; border-top:none; border-bottom:none; border-left:none; border-right:none;\">(Ka. Bid. Farmasi)</td>
+								<td style=\"text-align:center; border-top:none; border-bottom:none; border-left:none; border-right:none;\">(Keuangan)</td>
+							</tr> 
+						</table>";
 			}
 			$this->M_template_cetak->template($judul, $body, $position, $date, $cekpdf);
 		} else {

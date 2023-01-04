@@ -272,7 +272,7 @@ class Logistik_bapb extends CI_Controller
 			$subtot = 0;
 			$tdisc  = 0;
 			$border = array('L', '', '', '', '', '', '', '', 'R');
-			$align  = array('L', 'L', 'L', 'R', 'R', 'R', 'R', 'R', 'L');
+			$align  = array('C', 'C', 'C', 'R', 'C', 'R', 'R', 'R', 'C');
 			$style = array('', '', '', '', '', '', '', '', '');
 			$size  = array('8', '8', '8', '8', '8', '8', '8', '8', '8');
 			$max   = array(2, 2, 2, 2, 2, 2, 2, 2, 2);
@@ -296,11 +296,11 @@ class Logistik_bapb extends CI_Controller
 					$no,
 					$db->kodebarang,
 					$db->namabarang,
-					$db->qty_terima,
+					number_format($db->qty_terima,0),
 					$db->satuan,
-					number_format($db->price, 2, ',', '.'),
-					number_format($db->discountrp, 2),
-					number_format($db->totalrp, 2, ',', '.'),
+					number_format($db->price, 0, ',', '.'),
+					number_format($db->discountrp, 0),
+					number_format($db->totalrp, 0, ',', '.'),
 					$db->po_no
 				), $fc,  $border, $align, $style, $size, $max);
 				$no++;
@@ -314,19 +314,19 @@ class Logistik_bapb extends CI_Controller
 			$border = array('T', 'T', 'T', 'T', 'T', 'T', 'T');
 			$align  = array('L', 'C', 'C', 'C', 'R', 'R');
 			$style = array('', 'B', '', '', '', '');
-			$judul = array('', '', '', '', 'TOTAL', number_format($tot, 2, ',', '.'), '');
+			$judul = array('', '', '', '', 'TOTAL', number_format($tot, 0, ',', '.'), '');
 			$pdf->FancyRow2(4, $judul, $fc,  $border, $align, $style, $size, $max);
-			$judul = array('', 'Form Rangkap 2', '', '', 'Discount', number_format($diskon, 2, ',', '.'));
+			$judul = array('', 'Form Rangkap 2', '', '', 'Discount', number_format($diskon, 0, ',', '.'));
 			$border = array('', 'LTR', '', '', '', '');
 			$pdf->FancyRow2(4, $judul, $fc,  $border, $align, $style, $size, $max);
 			$border = array('T', 'LTR', 'T', 'T', 'T', 'T');
-			$judul = array('', 'Merah : untuk supplier', '', '', 'PPN', number_format($ppnrp, 2, ',', '.'));
+			$judul = array('', 'Merah : untuk supplier', '', '', 'PPN', number_format($ppnrp, 0, ',', '.'));
 			$border = array('', 'LR', '', '', '', '');
 			$pdf->FancyRow2(4, $judul, $fc,  $border, $align, $style, $size, $max);
-			$judul = array('', 'Putih : untuk keuangan', '', '', 'Materai', number_format($materai, 2, ',', '.'));
+			$judul = array('', 'Putih : untuk keuangan', '', '', 'Materai', number_format($materai, 0, ',', '.'));
 			//$border = array('','LRB','','','');
 			$pdf->FancyRow2(4, $judul, $fc,  $border, $align, $style, $size, $max);
-			$judul = array('', '', '', '', 'Total Net', number_format($totalnet, 2, ',', '.'), '');
+			$judul = array('', '', '', '', 'Total Net', number_format($totalnet, 0, ',', '.'), '');
 			$border = array('', 'T', '', '', 'B', 'B', 'B',);
 			$style = array('', 'B', '', '', 'B', 'B', '');
 			$pdf->FancyRow2(4, $judul, $fc,  $border, $align, $style, $size, $max);
@@ -679,6 +679,7 @@ class Logistik_bapb extends CI_Controller
 					'kursrate'    => $this->input->post('rate'),
 					'userid'      => $userid,
 					'vatrp'      => 0,
+					'jamterima'   => date('h:i:s'),
 				);
 				$this->db->insert('tbl_apohterimalog', $data);
 			}
@@ -721,17 +722,19 @@ class Logistik_bapb extends CI_Controller
 			$ppn = $this->db->get_where('tbl_pajak', ['kodetax' => 'PPN'])->row_array();
 			$cekq = $this->db->query('select * from tbl_logbarang where kodebarang = "' . $kode . '"')->result();
 			foreach ($cekq as $cq) {
-				if ($cq->vat == 1) {
-					$hargabarang = $harga;
-					$hargappn = $harga * $ppn['prosentase'] / 100 + $harga;
-				} else {
-					$hargabarang = $harga;
-					$hargappn = $harga;
+				if($harga > $cq->hargabeli){
+					if ($cq->vat == 1) {
+						$hargabarang = $harga;
+						$hargappn = $harga * $ppn['prosentase'] / 100 + $harga;
+					} else {
+						$hargabarang = $harga;
+						$hargappn = $harga;
+					}
+					$this->db->set('hargabeli', $hargabarang);
+					$this->db->set('hargabelippn', $hargappn);
+					$this->db->where('kodebarang', $kode);
+					$this->db->update('tbl_logbarang');
 				}
-				$this->db->set('hargabeli', $hargabarang);
-				$this->db->set('hargabelippn', $hargappn);
-				$this->db->where('kodebarang', $kode);
-				$this->db->update('tbl_logbarang');
 			}
 			$sql = $this->db->query('select terima_no from tbl_apohterimalog where koders = "' . $cabang . '" and gudang = "' . $gudang . '" order by id desc limit 1')->result();
 			foreach ($sql as $s) {
@@ -766,7 +769,7 @@ class Logistik_bapb extends CI_Controller
 						}
 						$this->db->query("UPDATE tbl_apostocklog set terima=$terima, saldoakhir=$saldoakhir where kodebarang='$kode' and koders='$cabang' and gudang='$gudang'");
 						if ($po_no != "") {
-							$this->db->query("UPDATE tbl_apodpolog set qty_terima = qty_terima + $qty WHERE kodebarang = '$kode' and po_no = '$nomorpo' and koders='$cabang'");
+							$this->db->query("UPDATE tbl_apodpolog set qty_terima = qty_terima + $qty WHERE kodebarang = '$kode' and po_no = '$po_no' and koders='$cabang'");
 						}
 					} else {
 						$datastock = array(

@@ -1984,7 +1984,7 @@ class Laporan_persediaan extends CI_Controller
                                         $namabarang             = $q->namabarang;
                                         $satuan                 = $q->satuan; 
                                         $saldoawal              = $bs->saldoawal + ($q->jeda_total_masuk
-                                        - $q->jeda_total_keluar);
+                                         - $q->jeda_total_keluar);
                                         $salawal                = round($saldoawal);
                                         $pembelian              = round($q->pembelian);
                                         $mutasi_in              = round($q->move_in);

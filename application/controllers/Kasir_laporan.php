@@ -232,7 +232,6 @@ class Kasir_laporan extends CI_Controller
 				// from tbl_kasir where jenisbayar=1
 				// and koders='$unit' and tglbayar between '$_tgl1' and '$_tgl2' and totalpoli>0
 				// ";
-
 				$query =
 					"SELECT 'RAWAT JALAN' as keterangan, sum(jumlah) as jumlah, sum(nilai) as nilai FROM (
 						SELECT * FROM (

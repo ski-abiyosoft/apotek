@@ -75,7 +75,7 @@
               if($cek==0){?> 
               <?php }else{ ?>
 
-                <button class="btn btn-primary" id="proses" type="button" onclick="saveas()" style="margin-top: 23.5px;">Proses</button>
+                <!-- <button class="btn btn-primary" id="proses" type="button" onclick="saveas()" style="margin-top: 23.5px;">Proses</button> -->
 
               <?php } ?>
             </div>
@@ -273,7 +273,8 @@ var calendar = $('#calendar').fullCalendar({
         document.getElementById("hp").innerHTML = hp;
         $("#info").show("500");
       }
-    })
+    }),
+    ondblclick = function() {hapusdata(id)}
   },
 });
 
@@ -287,6 +288,46 @@ function modal(){
   $('#dari').attr('readonly', true);
   $('#sampai').attr('readonly', true);
   $('#quota').attr('readonly', true);
+}
+
+function hapusdata(id) {
+  swal({
+    title: 'HAPUS DATA',
+    html: 'Yakin Ingin Menghapus Jadwal Ini ?',
+    type: 'question',
+    showCancelButton: true,
+    confirmButtonClass: 'btn btn-success',
+    cancelButtonClass: 'btn btn-danger',
+    cancelButtonColor: '#d33',
+    confirmButtonText: 'Ya, hapus',
+    cancelButtonText: 'Tidak'
+  }).then(function() {
+    $.ajax({
+      url: "<?php echo site_url('Jadwal_dokter/hapusdata') ?>",
+      type: 'POST',
+      data:{id:id},
+      dataType: "json",
+      success: function(data) {
+        if(data.status == 1){
+          swal({
+            title: "Jadwal Dokter",
+            html: "Berhasil Dihapus",
+            type: "success",
+            confirmButtonText: "OK"
+          }).then((value) => {
+            location.href = "<?= site_url('Jadwal_dokter') ?>";
+          });
+        } else {
+          swal({
+            title: "Jadwal Dokter",
+            html: "Gagal Dihapus",
+            type: "error",
+            confirmButtonText: "OK"
+          });
+        }
+      }
+    });
+  });
 }
 
 function update(){
@@ -429,12 +470,15 @@ function saveas2(){
           });
         } else {
           swal({
-            title: "Jadwal Dokter",
-            text: "Ingin mengubah data ini?",
-            icon: "warning",
-            buttons: true,
-            buttons: false,
-            dangerMode: true,
+            title: 'Jadwal Dokter',
+            html: 'Ingin merubah jadwal ini ?',
+            type: 'question',
+            showCancelButton: true,
+            confirmButtonClass: 'btn btn-success',
+            cancelButtonClass: 'btn btn-success',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Ya, ubah',
+            cancelButtonText: 'Tidak'
           }).then((value) => {
             swal({
               title: "Jadwal Dokter",

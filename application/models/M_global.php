@@ -64,8 +64,7 @@ class M_global extends CI_Model
 			return 0;
 		}
     }
-
-
+	
 	public function _periodebulan2()
 
 	{
@@ -1562,7 +1561,7 @@ class M_global extends CI_Model
 
 		$sql = "SELECT po_no as id, concat(po_no,' | ',date_format(po_date,'%d-%m-%Y')) as text 
 			from tbl_apohpolog
-            where koders='$cabang' and vendor_id='$vendor' and closed=0 and (po_no like '%$str%') and po_no not in(SELECT po_no FROM tbl_apodterimalog) 
+            where setuju = 1 and koders='$cabang' and vendor_id='$vendor' and closed=0 and (po_no like '%$str%') and po_no not in(SELECT po_no FROM tbl_apodterimalog) 
 			ORDER BY po_date asc";
 		$query = $this->db->query($sql);
 
@@ -1997,6 +1996,23 @@ class M_global extends CI_Model
 		}
 
 		return $query->result();
+	}
+
+	function getfarmasibarang_cbg($str){
+		$unit = $this->session->userdata("unit");
+		if($str == ""){
+			$limm = "LIMIT 10";
+			$kondisi = "";
+		} else {
+			$limm = "";
+			$kondisi = "WHERE semua.kodebarang LIKE '%$str%' OR semua.namabarang LIKE '%$str%'";
+		}
+		$data = $this->db->query("SELECT semua.kodebarang AS id, concat(' [ kode : ', kodebarang ,' ] ',' - ',' [ nama : ', namabarang ,' ] ',' - ',' [ satuan : ', satuan1 ,' ] ',' - ',' [ barang : ', statusnya ,' ] ') AS text FROM (
+			SELECT kodebarang, namabarang, satuan1, 'Farmasi' as statusnya FROM tbl_barang
+			UNION ALL
+			SELECT kodebarang, namabarang, satuan1, 'Logistik' as statusnya FROM tbl_logbarang
+		) AS semua $kondisi $limm");
+		return $data->result();
 	}
 
 	function getpoli_tindakan($str, $kodpos)

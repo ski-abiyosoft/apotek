@@ -135,7 +135,8 @@
 		?> -->
 
           <ul class="nav ">
-          <table border="0" width="100%">
+            
+            <table border="0" width="100%">
               <tr>
                 <td width="7%">
                   <li class="dropdown user">
@@ -214,6 +215,9 @@
                 </td>
               </tr>
             </table>
+
+
+           
 
           </ul>
         </div>

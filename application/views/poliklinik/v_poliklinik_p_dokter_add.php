@@ -17,6 +17,8 @@
 <link href="<?php echo base_url('assets/bootstrap-datepicker/css/bootstrap-datepicker3.min.css')?>" rel="stylesheet">
 
 <style>
+     fieldset span{font-size: 14px; font-weight: normal;}
+     fieldset div{margin-bottom: 10px;}
     .dropdownitem {cursor:pointer}
     .activerbtn {background:green !important; color:#fff !important}
     .racikanFilter {display:none}
@@ -425,7 +427,7 @@
                             <div class="form-group">
                                 <label class="control-label col-md-4" style="color:green"><b>No Kartu BPJS</b></label>
                                 <div class="col-md-8">
-                                    <input type="" class="form-control" value="<?= isset($ttv->noreg)? data_master("tbl_regist", array("noreg" => $ttv->noreg, "koders" => $ttv->koders))->nobpjs : "" ?>" disabled>
+                                    <input type="" class="form-control" value="<?= isset($ttv->noreg)? data_master("tbl_regist", array("noreg" => $ttv->noreg, "koders" => $ttv->koders))->nobpjs : $data_regist->nobpjs ?>" disabled>
                                 </div>
                             </div>
                         </div>
@@ -436,11 +438,11 @@
                     <div class="row" style="margin:20px 50px 20px 50px !important">
                         <div class="col-sm-4">
                             <label style="color:green;font-weight:bold;display:block;padding-bottom:5px">Riwayat Keluarga</label>
-                            <textarea style="resize:none" name="" placeholder="Front Dulu" class="form-control" rows="4" disabled></textarea>
+                            <textarea style="resize:none" name="riwayat_keluarga" class="form-control" rows="4"><?= $riwayat_pasien->riwayat_keluarga ?></textarea>
                         </div>
                         <div class="col-sm-4">
                             <label style="color:green;font-weight:bold;display:block;padding-bottom:5px">Riwayat Penyakit</label>
-                            <textarea style="resize:none" name="" placeholder="Front Dulu" class="form-control" rows="4" disabled></textarea>
+                            <textarea style="resize:none" name="riwayat_penyakit" class="form-control" rows="4"><?= $riwayat_pasien->riwayat_penyakit ?></textarea>
                         </div>
                         <div class="col-sm-4">
                             <label style="color:green;font-weight:bold;display:block;padding-bottom:5px">Kesimpulan Pemeriksaan Fisik</label>
@@ -451,7 +453,7 @@
                     <br />
 
                     <div class="row">
-                        <table  border="0" style="width:100%">
+                        <table  border="0" style="width:100%;margin:auto">
                             <tr>
                                 <td align="center" width="5%">&nbsp;</td>
                                 <td align="center" width="2%">&nbsp;</td>
@@ -507,7 +509,6 @@
                                 <td align="center">&nbsp;</td>
                                 <td align="center">&nbsp;</td>
                                 <td rowspan="3" >&nbsp;</td>
-                                
                             </tr>
                             <tr>
                                 <td align="center" >&nbsp;</td>
@@ -675,6 +676,16 @@
                                                         <b>e-ELEKTROMEDIS</b>
                                                     </a>
                                                 </li>
+                                                <li class="<?= $tab8 ?? "" ?>" id="erm">
+                                                    <a href="<?= "/poliklinik/pemeriksaan_dokter/". $_SERVER["QUERY_STRING"] ?>#tab8" data-toggle="tab" onclick="get_pendaftaran_pcare('<?= $this->input->get('noreg') ?>')">
+                                                        <b>P-CARE KUNJUNGAN PASIEN</b>
+                                                    </a>
+                                                </li>
+                                                <li class="<?= $tab9 ?? "" ?>" id="erm">
+                                                    <a href="<?= "/poliklinik/pemeriksaan_dokter/". $_SERVER["QUERY_STRING"] ?>#tab9" data-toggle="tab">
+                                                        <b>RIWAYAT P-CARE</b>
+                                                    </a>
+                                                </li>
                                                 <li class="" id="hispas">
                                                     <a href="<?= "/poliklinik/pemeriksaan_dokter/". $_SERVER["QUERY_STRING"] ?>#tab6" data-toggle="tab">
                                                         <b>HISTORY PASIEN</b>
@@ -780,7 +791,7 @@
                                                                         </td>
 
                                                                         <td>
-                                                                            <select name="diag[]" id="diag1" class="select2_el_icdind form-control input-largex">
+                                                                            <select name="diag[]" id="diag1" class="select2_el_icdind form-control input-largex" onchange="pcare_diag_trigger(this.value)">
                                                                             </select>
 
                                                                         </td>
@@ -803,7 +814,7 @@
                                                                             </select>
                                                                         </td>
                                                                         <td>
-                                                                            <select name="diag[]" id="diag<?= $no ?>" class="select2_el_icdind form-control input-largex">
+                                                                            <select name="diag[]" id="diag<?= $no ?>" class="select2_el_icdind form-control input-largex" onchange="pcare_diag_trigger()">
                                                                                 <option value="<?= $dval->icdcode ?>" selected><?= $dval->nmdiag ?></option>
                                                                             </select>
                                                                         </td>
@@ -1110,7 +1121,7 @@
                                                         <div class="table-responsive">
                                                             <table id="datatable_obatterapi" class="table table-bordered table-striped">
                                                                 <thead class="page-breadcrumb breadcrumb">
-                                                                    <tr style="text-center">
+                                                                    <tr class="text-center">
                                                                         <th class="title-white" style="width:2%">Delete</th>
                                                                         <th class="title-white" style="width:2%">Kronis</th>
                                                                         <th class="title-white" style="width:25%">Nama Obat & Terapi</th>
@@ -1622,8 +1633,7 @@
                                                                                                     <input type="hidden" id="elabtin_tarifrs<?= $noelab2 . $noelablist ?>" name="elabtin_tarifrs[]" value="<?= $elval->tarifrs ?>">
                                                                                                     <input type="hidden" id="elabtin_tarifdr<?= $noelab2 . $noelablist ?>" name="elabtin_tarifdr[]" value="<?= $elval->tarifdr ?>">
                                                                                                 <td>
-                                                                                                    <select type="text" class="form-control selectpicker input-medium" name="elabtin_kode[]" id="elabtin_kode<?= $noelab2 . $noelablist ?>" data-live-search="true" data-width="100%" onkeypress="return tabE(this,event)" onchange="show_tindakan_elab(this.value, <?= $noelab2 . $noelablist ?>)">
-                                                                                                        <option value="-">--- Pilih Tindakan ---</option>
+                                                                                                    <select type="text" class="form-control selectpicker input-medium" name="elabtin_kode[]" id="elabtin_kode<?= $noelab2 . $noelablist ?>" data-title="Pilih Tarif" data-live-search="true" data-width="100%" onkeypress="return tabE(this,event)" onchange="show_tindakan_elab(this.value, <?= $noelab2 . $noelablist ?>)">
                                                                                                         <?php foreach($list_elab as $leval): ?>
                                                                                                             <?php if($leval->kodeid == $elval->kodetarif){ ?>
                                                                                                                 <option value="<?= $leval->kodeid ?>" selected><?= $leval->text ?></opiton>
@@ -2147,7 +2157,12 @@
                                                                                     echo "-";
                                                                                 } else {
                                                                                     // $dhdok  = data_master("tbl_dokter", array("kodokter" => $dhval->kodokter, "koders" => $dhval->koders))->nadokter;
-                                                                                    echo data_master("dokter", array("kodokter" => $dhval->kodokter, "koders" => $dhval->koders, "kopoli" => $dhval->kodepos))->nadokter;
+                                                                                    $check_dokter__hispas = $this->db->query("SELECT * FROM dokter WHERE kodokter = '$dhval->kodokter' AND koders = '$dhval->koders' AND kopoli = '$dhval->kodepos'")->num_rows();
+                                                                                    if($check_dokter__hispas == 0){
+                                                                                        echo "-";
+                                                                                    } else {
+                                                                                        echo data_master("dokter", array("kodokter" => $dhval->kodokter, "koders" => $dhval->koders, "kopoli" => $dhval->kodepos))->nadokter;
+                                                                                    }
                                                                                 }                                                                                
                                                                             ?>
                                                                         </td>
@@ -2164,6 +2179,437 @@
                                                             </tbody>
                                                         </table>
                                                     </div>
+                                                </div>
+                                                <div class="tab-pane" id="tab8">
+                                                   <div class="alert alert-danger">
+                                                      <p><b><i class="fa fa-exclamation-triangle fa-fw"></i>&nbsp; Perlu Diketahui</b></p>
+                                                      <br />
+                                                      Sebelum melakukan bridging, lakukan pemeriksaan perawat dan dokter delebih dahulu
+                                                   </div>
+                                                   <h4><strong>P-Care Bridging System - Abiyosoft | PENDAFTARAN</strong></h4>
+                                                   <hr stle="margin-bottom: 1rem;" />
+                                                   <form name="pcare_form" id="pcare_form">
+                                                      <input type="hidden" name="kdProviderPelayanan" id="kdProviderPelayanan" value="">
+                                                      <fieldset name="data_diri">
+                                                         <p style="font-weight: bold; font-size: 16px;">Data Diri Pasien</p>
+                                                         <hr stle="margin-bottom: 1rem;" />
+                                                         <div style="display: grid; grid-template-columns: 1fr 10px 3fr;">
+                                                            <label class="form-label">Faskes</label>
+                                                            <span>:</span>
+                                                            <div class="" style="margin:0px !important">
+                                                               <input type="text" class="form-control" name="kodeRs" id="kodeRs" value="" readonly>
+                                                            </div>
+                                                         </div>
+                                                         <div style="display: grid; grid-template-columns: 1fr 10px 3fr;">
+                                                            <label class="form-label">No Registrasi</label>
+                                                            <span>:</span>
+                                                            <div class="" style="margin:0px !important">
+                                                               <input type="text" class="form-control" name="noReg" id="noReg" value="" readonly>
+                                                            </div>
+                                                         </div>
+                                                         <div style="display: grid; grid-template-columns: 1fr 10px 3fr;">
+                                                            <label class="form-label">No. Kartu BPJS</label>
+                                                            <span>:</span>
+                                                            <!-- <span><?= isset($ttv->nobpjs)? $ttv->nobpjs : $data_regist->nobpjs ?></span> -->
+                                                            <div class="" style="margin:0px !important">
+                                                               <input type="text" class="form-control" name="noKartu" id="noKartu" value="" readonly>
+                                                            </div>
+                                                         </div>
+                                                         <div style="display: grid; grid-template-columns: 1fr 10px 3fr;">
+                                                            <label class="form-label">Nama Peserta</label>
+                                                            <span>:</span>
+                                                            <!-- <span><?= $data_regist->namapas ?></span> -->
+                                                            <div class="" style="margin:0px !important">
+                                                               <input type="text" class="form-control" id="namaPeserta" value="" readonly>
+                                                            </div>
+                                                         </div>
+                                                         <div style="display: grid; grid-template-columns: 1fr 10px 3fr;">
+                                                            <label class="form-label">Status Peserta</label>
+                                                            <span>:</span>
+                                                            <div class="" style="margin:0px !important">
+                                                               <input type="text" class="form-control" id="status" value="" readonly>
+                                                            </div>
+                                                         </div>
+                                                         <div style="display: grid; grid-template-columns: 1fr 10px 3fr;">
+                                                            <label class="form-label">Tanggal Lahir</label>
+                                                            <span>:</span>
+                                                            <div class="" style="margin:0px !important">
+                                                               <input type="text" class="form-control" id="tglLahir" value="" readonly>
+                                                            </div>
+                                                         </div>
+                                                         <div style="display: grid; grid-template-columns: 1fr 10px 3fr;">
+                                                            <label class="form-label">Jenis Kelamin</label>
+                                                            <span>:</span>
+                                                            <div class="" style="margin:0px !important">
+                                                               <input type="text" class="form-control" id="sex" value="" readonly>
+                                                            </div>
+                                                         </div>
+                                                         <div style="display: grid; grid-template-columns: 1fr 10px 3fr;">
+                                                            <label class="form-label">PPK Umum</label>
+                                                            <span>:</span>
+                                                            <div class="" style="margin:0px !important">
+                                                               <input type="text" class="form-control" id="ppkUmum" value="" readonly>
+                                                            </div>
+                                                         </div>
+                                                         <div style="display: grid; grid-template-columns: 1fr 10px 3fr;">
+                                                            <label class="form-label">No. HP</label>
+                                                            <span>:</span>
+                                                            <div class="" style="margin:0px !important">
+                                                               <input type="text" class="form-control" id="noHp" value="" readonly>
+                                                            </div>
+                                                         </div>
+                                                         <div style="display: grid; grid-template-columns: 1fr 10px 3fr;">
+                                                            <label class="form-label">No. Rekmed.</label>
+                                                            <span>:</span>
+                                                            <div class="" style="margin:0px !important">
+                                                               <input type="text" class="form-control" id="rekmed" value="" readonly>
+                                                            </div>
+                                                         </div>
+                                                      </fieldset>
+                                                      <fieldset name="data_diri">
+                                                         <p style="font-weight: bold; font-size: 16px;">Hasil Pemeriksaan</p>
+                                                         <hr stle="margin-bottom: 1rem;" />
+                                                         <!-- <div style="display: grid; grid-template-columns: 1fr 3fr; gap: 20px;">
+                                                            <label class="form-label" for="pcare_date">Tanggal</label>
+                                                            <div style="display: grid; grid-template-columns: 3fr 1fr 3fr; gap: 20px;">
+                                                               <input class="form-control" name="pcare_date" id="pcare_date" type="date" value="<?= date('Y-m-d') ?>">
+                                                               <label class="form-label" for="pcare_time">Jam</label>
+                                                               <input class="form-control" type="time" name="pcare_time" id="pcare_time" value="<?= date('H:i:s') ?>">
+                                                            </div>
+                                                         </div> -->
+                                                         <div style="display: grid; grid-template-columns: 1fr 3fr; gap: 20px;">
+                                                            <label class="form-label" for="tglDaftar">Tanggal Daftar</label>
+                                                            <input class="form-control" name="tglDaftar" id="tglDaftar" type="date">
+                                                         </div>
+                                                         <div style="display: grid; grid-template-columns: 1fr 3fr; gap: 20px;">
+                                                            <label class="form-label" for="tglPulang">Tanggal Pulang</label>
+                                                            <input class="form-control" name="tglPulang" id="tglPulang" type="date" value="<?= date("Y-m-d") ?>">
+                                                         </div>
+                                                         <div style="display: grid; grid-template-columns: 1fr 3fr; gap: 20px;">
+                                                            <label class="form-label" for="noKunjungan">Nomor Kunjungan</label>
+                                                            <input class="form-control" name="noKunjungan" id="noKunjungan" type="text" readonly>
+                                                         </div>
+                                                         <div style="display: grid; grid-template-columns: 1fr 3fr; gap: 20px;">
+                                                            <label class="form-label" for="noUrut">Nomor P-Care Antri</label>
+                                                            <input class="form-control" name="noUrut" id="noUrut" type="text" value="123" readonly>
+                                                         </div>
+                                                         <div style="display: grid; grid-template-columns: 1fr 3fr; gap: 20px;">
+                                                            <label class="form-label">Jenis Kunjungan</label>
+                                                            <div style="display: grid; grid-template-columns: 1fr 1fr 1fr;">
+                                                               <label for="kunjungan_sakit" style="display: flex; align-items: center; gap: 10px;">
+                                                                  <input type="radio" name="kunjSakit" id="sakit" value="1" style="transform: scale(1.3);" checked>
+                                                                  Kunjungan Sakit
+                                                               </label>
+                                                               <label for="kunjungan_sehat" style="display: flex; align-items: center; gap: 10px;">
+                                                                  <input type="radio" name="kunjSakit" id="sehat" value="2" style="transform: scale(1.3);">
+                                                                  Kunjungan sehat
+                                                               </label>
+                                                            </div>
+                                                         </div>
+                                                         <div style="display: grid; grid-template-columns: 1fr 3fr; gap: 20px;">
+                                                            <label class="form-label">Perawatan</label>
+                                                            <div style="display: grid; grid-template-columns: 1fr 1fr 1fr;">
+                                                               <label for="rawat_jalan" style="display: flex; align-items: center; gap: 10px;">
+                                                                  <input type="radio" name="kdTkp" id="rawat_jalan" value="10" style="transform: scale(1.3);" checked>
+                                                                  Rawat jalan
+                                                               </label>
+                                                               <label for="rawat_inap" style="display: flex; align-items: center; gap: 10px;">
+                                                                  <input type="radio" name="kdTkp" id="rawat_inap" value="20" style="transform: scale(1.3);">
+                                                                  Rawat Inap
+                                                               </label>
+                                                               <label for="promotif_preventif" style="display: flex; align-items: center; gap: 10px;">
+                                                                  <input type="radio" name="kdTkp" id="promotif_preventif" value="50" style="transform: scale(1.3);">
+                                                                  Promotif Preventif
+                                                               </label>
+                                                            </div>
+                                                         </div>
+                                                         <div style="display: grid; grid-template-columns: 1fr 3fr; gap: 20px;">
+                                                            <label class="form-label" for="pcare_poli_dok">Poli Tujuan</label>
+                                                            <div>
+                                                                  <!-- <select type="text" class="form-control" id="pcare_poli_dok" name="pcare_poli_dok" readonly>
+                                                                     <option value="<?= $data_pas->kodepos ?>"><?= data_master("tbl_namapos", array("kodepos" => $data_pas->kodepos))->namapost ?></option>
+                                                                  </select> -->
+                                                                  <!-- <input readonly value="<?= isset($ttv->kodepos)? data_master("tbl_namapos", array("kodepos" => $ttv->kodepos))->namapost : data_master("tbl_namapos", array("kodepos" => $data_pas->kodepos))->namapost ?>" id="poli_dok" name="poli_dok" class="form-control" type="text">
+                                                                  <span class="help-block"></span> -->
+                                                                  <select type="text" class="form-control" name="kdPoli" id="kdPoli">
+                                                                     <?php foreach($pcare_poli->result() as $pp): ?>
+                                                                        <option value="<?= $pp->kdPoli ?>"><?= $pp->nmPoli ?></option>
+                                                                     <?php endforeach; ?>
+                                                                  </select>
+                                                            </div>
+                                                         </div>
+                                                         <div style="display: grid; grid-template-columns: 1fr 3fr; gap: 20px;">
+                                                            <label class="form-label" for="keluhan">Keluhan Awal</label>
+                                                            <textarea name="keluhan" id="keluhan" class="form-control" rows="3"></textarea>
+                                                         </div>
+                                                         <div style="display: grid; grid-template-columns: 1fr 3fr; gap: 20px;">
+                                                            <label class="form-label" for="anamnesa">Anamnesa</label>
+                                                            <textarea name="anamnesa" id="anamnesa" class="form-control" rows="3"></textarea>
+                                                         </div>
+                                                         <div style="display: grid; grid-template-columns: 1fr 3fr; gap: 20px;">
+                                                            <label class="form-label" for="pcare_alergi">Alergi</label>
+                                                            <div style="display: grid; grid-template-columns: 1fr 3fr;">
+                                                               <label class="form-label" for="makanan" style="display: flex; align-items: center; gap: 10px;">
+                                                                  <input type="checkbox" name="pcare_alergi_makanan" id="makanan" value="1" style="transform: scale(1.4)">
+                                                                  Makanan
+                                                               </label>
+                                                               <select class="form-control" name="alergi" id="alergi">
+                                                                  <?php for ($i = 0; $i < 10; $i++): ?>
+                                                                     <option value="1">Alergi <?= $i ?></option>
+                                                                  <?php endfor; ?>
+                                                               </select>
+                                                            </div>
+                                                         </div>
+                                                         <div style="display: grid; grid-template-columns: 1fr 3fr; gap: 20px;">
+                                                            <label class="form-label" for="prognosa">Prognosa</label>
+                                                            <select class="form-control" name="prognosa" id="prognosa">
+                                                               <?php for ($i = 0; $i < 10; $i++): ?>
+                                                                  <option value="1">Prognosa <?= $i ?></option>
+                                                               <?php endfor; ?>
+                                                            </select>
+                                                         </div>
+                                                         <div style="display: grid; grid-template-columns: 1fr 3fr; gap: 20px;">
+                                                            <label class="form-label" for="terapi">Terapi Obat</label>
+                                                            <textarea class="form-control" name="terapi" id="terapi" rows="2"></textarea>
+                                                         </div>
+                                                         <div style="display: grid; grid-template-columns: 1fr 3fr; gap: 20px;">
+                                                            <label class="form-label" for="terapinon">Terapi Non Obat</label>
+                                                            <textarea class="form-control" name="terapinon" id="terapinon" rows="2"></textarea>
+                                                         </div>
+                                                         <div style="display: grid; grid-template-columns: 1fr 3fr; gap: 20px;">
+                                                            <label class="form-label" for="bmhp">BMHP</label>
+                                                            <textarea class="form-control" name="bmhp" id="bmhp" rows="2"></textarea>
+                                                         </div>
+                                                         <div style="display: grid; grid-template-columns: 1fr 3fr; gap: 20px;">
+                                                            <label class="form-label" for="pcare_diagnosa">Diagnosa</label>
+                                                            <div style="display: grid; grid-template-columns: 1fr 3fr; gap: 10px;" id="icd_result">
+                                                               <!-- <input class="form-control" type="text" name="pcare_jenis_diagnosa[]" id="jenis_diagnosa1" readonly value="Diagnosa">
+                                                               <input class="form-control" type="text" name="pcare_diagnosa[]" id="diagnosa1" readonly value="Patah Hati">
+                                                               <input class="form-control" type="text" name="pcare_jenis_diagnosa[]" id="jenis_diagnosa2" readonly value="Diagnosa">
+                                                               <input class="form-control" type="text" name="pcare_diagnosa[]" id="diagnosa2" readonly value="Sakit Rindu"> -->
+                                                            </div>
+                                                         </div>
+                                                         <div style="display: grid; grid-template-columns: 1fr 3fr; gap: 20px;">
+                                                            <label class="form-label" for="kdSadar">Kesadaran</label>
+                                                            <select class="form-control" name="kdSadar" id="kdSadar">
+                                                               <?php foreach($pcare_sadar->result() as $psa): ?>
+                                                                  <option value="<?= $psa->kdSadar ?>"><?= $psa->nmSadar ?></option>
+                                                               <?php endforeach; ?>
+                                                            </select>
+                                                         </div>
+                                                         <div style="display: grid; grid-template-columns: 1fr 3fr; gap: 20px;">
+                                                            <label class="form-label" for="tinggiBadan">Tinggi Badan</label>
+                                                            <div style="display: grid; grid-template-columns: 3fr 1fr 3fr; gap: 20px;">
+                                                               <div style="display: flex; gap: 10px;">
+                                                                  <input 
+                                                                     class="form-control" 
+                                                                     name="tinggiBadan" 
+                                                                     id="tinggiBadan" 
+                                                                     type="number" 
+                                                                     value="175">
+                                                                  cm
+                                                               </div>
+                                                               <label class="form-label" for="beratBadan">Berat Badan</label>
+                                                               <div style="display: flex; gap: 10px;">
+                                                                  <input 
+                                                                     class="form-control" 
+                                                                     name="beratBadan" 
+                                                                     id="beratBadan" 
+                                                                     type="number" 
+                                                                     value="70">
+                                                                  Kg
+                                                               </div>
+                                                            </div>
+                                                         </div>
+                                                         <div style="display: grid; grid-template-columns: 1fr 3fr; gap: 20px;">
+                                                            <label class="form-label" for="lingkarPerut">Lingkar Perut</label>
+                                                            <div style="display: grid; grid-template-columns: 3fr 1fr 3fr; gap: 20px;">
+                                                               <div style="display: flex; gap: 10px;">
+                                                                  <input 
+                                                                     class="form-control" 
+                                                                     name="lingkarPerut" 
+                                                                     id="lingkarPerut" 
+                                                                     type="number">
+                                                                  cm
+                                                               </div>
+                                                               <label class="form-label" for="imt">IMT</label>
+                                                               <div style="display: flex; gap: 10px;">
+                                                                  <input 
+                                                                     class="form-control" 
+                                                                     name="imt" 
+                                                                     id="imt" 
+                                                                     type="number" 
+                                                                     value="0.5">
+                                                                  Kg/m
+                                                               </div>
+                                                            </div>
+                                                         </div>
+                                                         <p style="font-weight: bold; font-size: 16px;">Tekanan Darah</p>
+                                                         <div style="display: grid; grid-template-columns: 1fr 3fr; gap: 20px;">
+                                                            <label class="form-label" for="sistole">Sistole</label>
+                                                            <div style="display: grid; grid-template-columns: 3fr 1fr 3fr; gap: 20px;">
+                                                               <div style="display: flex; gap: 10px;">
+                                                                  <input 
+                                                                     class="form-control" 
+                                                                     name="sistole" 
+                                                                     id="sistole" 
+                                                                     type="number" max="250" min="40" 
+                                                                     placeholder="40-250">
+                                                                  mm/Hg
+                                                               </div>
+                                                               <label class="form-label" for="diastole">Diastole</label>
+                                                               <div style="display: flex; gap: 10px;">
+                                                                  <input 
+                                                                     class="form-control" 
+                                                                     name="diastole" 
+                                                                     id="diastole" 
+                                                                     type="number" max="180" min="30" 
+                                                                     placeholder="30-180">
+                                                                  mm/Hg
+                                                               </div>
+                                                            </div>
+                                                         </div>
+                                                         <div style="display: grid; grid-template-columns: 1fr 3fr; gap: 20px;">
+                                                            <label class="form-label" for="respRate">Respitore Rate</label>
+                                                            <div style="display: grid; grid-template-columns: 3fr 1fr 3fr; gap: 20px;">
+                                                               <div style="display: flex; gap: 10px;">
+                                                                  <input 
+                                                                     class="form-control" 
+                                                                     name="respRate" 
+                                                                     id="respRate" 
+                                                                     type="number">
+                                                                  /menit
+                                                               </div>
+                                                               <label class="form-label" for="heartRate">Heart Rate</label>
+                                                               <div style="display: flex; gap: 10px;">
+                                                                  <input 
+                                                                     class="form-control" 
+                                                                     name="heartRate" 
+                                                                     id="heartRate" 
+                                                                     type="number" max="160" min="30" 
+                                                                     placeholder="30-160">
+                                                                  bpm
+                                                               </div>
+                                                            </div>
+                                                         </div>
+                                                         <div style="display: grid; grid-template-columns: 1fr 3fr; gap: 20px;">
+                                                            <label class="form-label" for="pcare_tenaga_medis">Kasus KKL?</label>
+                                                            <div style="display: grid; grid-template-columns: 1fr 1fr 1fr;">
+                                                               <label for="kkl_true" style="display: flex; align-items: center; gap: 10px;">
+                                                                  <input type="radio" id="kkl_true" value="1" style="transform: scale(1.3);">
+                                                                  Ya
+                                                               </label>
+                                                               <label for="kkl_false" style="display: flex; align-items: center; gap: 10px;">
+                                                                  <input type="radio" id="kkl_false" value="0" style="transform: scale(1.3);" checked>
+                                                                  Tidak
+                                                               </label>
+                                                            </div>
+                                                         </div>
+                                                         <div style="display: grid; grid-template-columns: 1fr 3fr; gap: 20px;">
+                                                            <label class="form-label" for="kdDokter">Tenaga Medis</label>
+                                                            <select class="form-control" name="kdDokter" id="kdDokter">
+                                                               <?php foreach($pcare_dr->result() as $pd): ?>
+                                                                  <option value="<?= $pd->kdDokter ?>"><?= $pd->nmDokter ?></option>
+                                                               <?php endforeach; ?>
+                                                            </select>
+                                                         </div>
+                                                         <div style="display: grid; grid-template-columns: 1fr 3fr; gap: 20px;">
+                                                            <label class="form-label" for="pcare_pelayan_non_kapitas">Pelayan Non-Kapitas</label>
+                                                            <select class="form-control" id="pcare_pelayan_non_kapitas">
+                                                               <?php for ($i = 0; $i < 10; $i++): ?>
+                                                                  <option value="1">Pelayan <?= $i ?></option>
+                                                               <?php endfor; ?>
+                                                            </select>
+                                                         </div>
+                                                         <div style="display: grid; grid-template-columns: 1fr 3fr; gap: 20px;">
+                                                            <label class="form-label" for="kdStatusPulang">Status Pulang</label>
+                                                            <select class="form-control" name="kdStatusPulang" id="kdStatusPulang">
+                                                               <?php foreach($pcare_sp->result() as $ps): ?>
+                                                                  <option value="<?= $ps->kdStatusPulang ?>"><?= $ps->nmStatusPulang ?></option>
+                                                               <?php endforeach; ?>
+                                                            </select>
+                                                         </div>
+                                                      </fieldset>
+                                                   </form>
+                                                   <div style="display: flex; gap: 20px; align-items: center; justify-content: space-between; max-width: 80%; margin: 10px auto;">
+                                                      <button class="btn green" type="button" onclick="save_pcare()">
+                                                         <i class="fa fa-floppy-o"></i> Simpan
+                                                      </button>
+                                                      <button class="btn red" type="button">
+                                                         <i class="fa fa-undo"></i> Batal
+                                                      </button>
+                                                      <button class="btn green" type="button">
+                                                         <i class="fa fa-bookmark"></i> SPP
+                                                      </button>
+                                                      <button class="btn green" type="button">
+                                                         <i class="fa fa-address-book"></i> Kunjungan
+                                                      </button>
+                                                      <button class="btn green" type="button">
+                                                         <i class="fa fa-book"></i> Riwayat
+                                                      </button>
+                                                      <button class="btn green" type="button">
+                                                         <i class="fa fa-hand-o-right"></i> Rujukan
+                                                      </button>
+                                                   </div>
+                                                   <p style="font-weight: bold; font-size: 16px; margin-top: 20px;">Hasil Bridging</p>
+                                                   <hr stle="margin-bottom: 1rem;" />
+                                                   <div style="width: 80%; margin: 10px auto; padding: 10px; border: 1px solid black;" id="bridging_result">
+                                                   </div>
+                                                </div>
+                                                <div class="tab-pane" id="tab9">
+                                                   <h4><strong>P-Care Bridging System - Abiyosoft | RIWAYAT KUNJUNGAN</strong></h4>
+                                                   <hr stle="margin-bottom: 1rem;" />
+                                                   <form name="filter_pcare_records">
+                                                      <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px;">
+                                                            <div style="display: flex; gap: 8px; align-items: center;">
+                                                               <label for="pcare_faskes">Faskes</label>
+                                                               <select class="form-control" name="pcare_faskes" id="pcare_faskes">
+                                                                  <?php for ($i = 0; $i < 2; $i++): ?>
+                                                                     <option value="1">Bakti Rahayu <?= $i ?></option>
+                                                                  <?php endfor; ?>
+                                                               </select>
+                                                            </div>
+                                                            <div style="display: flex; gap: 8px; align-items: center;">
+                                                               <label for="faskes">Tanggal</label>
+                                                               <input class="form-control" type="date" name="pcare_tanggal" id="pcare_tanggal" value="<?= date('Y-m-d') ?>">
+                                                            </div>
+                                                         <button class="btn blue" type="button"> <i class="fa fa-refresh"></i> Proses</button>
+                                                      </div>
+                                                   </form>
+                                                   <table class="table" style="margin-top: 20px; font-weight: normal;">
+                                                      <thead>
+                                                         <tr class="breadcrumb">
+                                                            <th>No</th>
+                                                            <th>Tanggal Kunjungan</th>
+                                                            <th>No. Kartu</th>
+                                                            <th>Nama Peserta</th>
+                                                            <th>Kelamin</th>
+                                                            <th>Usia</th>
+                                                            <th>Poli</th>
+                                                            <th>Sumber</th>
+                                                            <th>Status</th>
+                                                            <th>Aksi</th>
+                                                         </tr>
+                                                      </thead>
+                                                      <tbody>
+                                                         <tr>
+                                                            <td>A1</td>
+                                                            <td>03/12/2022</td>
+                                                            <td>14045</td>
+                                                            <td>John Doe</td>
+                                                            <td>L</td>
+                                                            <td>45</td>
+                                                            <td>POLI UMUM</td>
+                                                            <td>BRIDGING</td>
+                                                            <td>BARU</td>
+                                                            <td>
+                                                               <button class="btn btn-sm red">
+                                                                  <i class="fa fa-trash"></i> Delete
+                                                               </button>
+                                                            </td>
+                                                         </tr>
+                                                      </tbody>
+                                                   </table>
                                                 </div>
                                             </div>
                                         </div>
@@ -2208,6 +2654,255 @@
 <!-- <script src="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/js/i18n/defaults-*.min.js"></script> -->
 
 <script>
+
+    // PCARE JS //
+
+    function error_alert(message){
+        return swal({
+            title: "POLIKLINIK",
+            html: message,
+            type: "error",
+            confirmButtonText: "Tutup", 
+            confirmButtonColor: "red"
+        });
+    }
+
+    function pcare_diag_trigger(param){
+        if(param == "" || param == null){
+            console.error("ICD error : failed to trigger icd diagnostics for pcare, undefined icd code");
+        } else {
+
+            $.ajax({
+                url: "/poliklinik/get_icd_for_pcare/"+ param,
+                type: "GET",
+                dataType: "JSON",
+                success: function(res){
+                    if(res.status == "success"){
+                        $("#jenis_diagnosa1").val(param);
+                        $("#diagnosa1").val(res.string);
+                    } else 
+                    if(res.status == "error"){
+                        error_alert(res.message);
+                    } else {
+                        error_alert("results have been issued<br />but undefined result status");
+                    }
+                },
+                error: function(jqXHR, textStatus, errorThrown){
+                    error_alert("failed to trigger icd diagnostics for pcare (client)");
+                }
+            })
+
+        }
+    }
+
+    function get_pendaftaran_pcare(param){
+        $.ajax({
+            url: "/poliklinik/pcare_get_data_pas/"+ param,
+            type: "GET",
+            dataType: "JSON",
+            success: (res) => {
+                if(res.status == "success"){
+                    $("#icd_result").html("");
+                    $.each(res.data_diag, function(i, k){
+                        $("#icd_result").append(""+
+                            "<input class='form-control' type='text' name='kdDiag[]' id='kdDiag"+ i +"' value='"+ k.icd_code +"' readonly>"+
+                            "<input class='form-control' type='text' name='nmDiag[]' id='nmDiag"+ i +"' value='"+ k.icd_name +"' readonly>"+
+                        "");
+                    });
+
+                    $("#keluhan").val(res.data_pas.keluhan_awal);
+                    $("#anamnesa").val(res.data_pas.keluhan_awal);
+                    $('#beratBadan').val(res.data_pas.berat_badan);
+                    $('#tinggiBadan').val(res.data_pas.tinggi_badan);
+                    imt_trigger(res.data_pas.tinggi_badan, res.data_pas.berat_badan);
+                } else 
+                if(res.status == "empty"){
+                    error_alert("PCare Diagnosa", res.message);
+                    $("#icd_result").html(""+
+                        "<input class='form-control' type='text' value='"+ res.message +"' readonly>"+
+                    "");
+                } else {
+                    error_alert("PCare Diagnosa", "Undefined status result");
+                    $("#icd_result").html(""+
+                        "<input class='form-control' type='text' value='Undefined status result' readonly>"+
+                    "");
+                }
+            },
+            error: (jqXHR) => {
+                //
+            }
+        });
+
+        $.ajax({
+            url: "/api/pcare/get_detail_pendaftaran/"+ param,
+            type: "GET",
+            dataType: "JSON",
+            success: (res) => {
+                console.log(res);
+                $("#kodeRs").val(res.kodeRs);
+                $("#tglDaftar").val(res.tglDaftar);
+                $("#noReg").val('<?= $data_regist->noreg ?>');
+                $("#noKartu").val(res.noKartuPeserta);
+                $("#namaPeserta").val(res.namaPeserta);
+                $("#status").val(res.status);
+                $("#tglLahir").val('<?= date("d-m-Y", strtotime($data_regist->tgllahir)) ?>');
+                $("#sex").val('<?= $data_regist->jkel == "P" ? "Pria" : "Wanita" ?>');
+                $("#ppkUmum").val(res.kodeRs);
+                $("#noHp").val('<?= $data_regist->handphone ?>');
+                $("#rekmed").val('<?= $data_regist->rekmed ?>');
+                $("#kdProviderPelayanan").val(res.kdProviderPelayanan);
+                $("#bridging_result").append("<p><i class='fa fa-check-circle fa-fw text-success'></i>&nbsp; Berhasil mengambil data</p>");
+            },
+            error: (jqXHR) => {
+                console.error(jqXHR.responseJSON);
+            }
+        });
+    }
+
+    $('#beratBadan, #tinggiBadan').on("keyup", function(){
+        var vberat    = $('#beratBadan').val();
+        var vtinggi   = $('#tinggiBadan').val();
+
+        if(vberat== null){
+            var vberat=0;
+        }else{
+            var vberat=vberat;
+        }
+
+        if(vtinggi== null){
+            var vtinggi=0;
+        }else{
+            var vtinggi=vtinggi;
+        }
+
+        // alert(vberat2);
+        
+        var tbb   = eval(vtinggi)/100;
+        var bmi   = vberat/(tbb*tbb);   
+
+        if(bmi>0){
+            bmi2=Math.ceil(bmi);
+        }else{
+            bmi2=0;
+        }
+        
+        if(bmi>1 && bmi<18.5){
+            bmi_res='Under Weight';
+        }else if(bmi>18.5 && bmi<=25){
+            bmi_res='Normal Weight';
+        }else if(bmi>25 && bmi<=30){
+            bmi_res='Over Weight';
+        }else if(bmi>30 && bmi<1000){
+            bmi_res='Obese';
+        }else{
+            bmi_res='';
+        }
+
+        $('[name="imt"]').val(bmi2);
+        // $('[name="imt"]').val(bmi_res);
+        
+        // console.log(bmi2 +" - "+ bmi_res);
+    });
+
+    function imt_trigger(vtinggi, vberat){
+        if(vberat== null){
+            var vberat=0;
+        }else{
+            var vberat=vberat;
+        }
+
+        if(vtinggi== null){
+            var vtinggi=0;
+        }else{
+            var vtinggi=vtinggi;
+        }
+
+        // alert(vberat2);
+        
+        var tbb   = eval(vtinggi)/100;
+        var bmi   = vberat/(tbb*tbb);   
+
+        if(bmi>0){
+            bmi2=Math.ceil(bmi);
+        }else{
+            bmi2=0;
+        }
+        
+        if(bmi>1 && bmi<18.5){
+            bmi_res='Under Weight';
+        }else if(bmi>18.5 && bmi<=25){
+            bmi_res='Normal Weight';
+        }else if(bmi>25 && bmi<=30){
+            bmi_res='Over Weight';
+        }else if(bmi>30 && bmi<1000){
+            bmi_res='Obese';
+        }else{
+            bmi_res='';
+        }
+
+        $('[name="imt"]').val(bmi2);
+    }
+
+    $("#sistole").change(function() {
+        var max = parseInt($(this).attr('max'));
+        var min = parseInt($(this).attr('min'));
+        if ($(this).val() > max)
+        {
+            $(this).val(max);
+        }
+        else if ($(this).val() < min)
+        {
+            $(this).val(min);
+        }       
+    }); 
+
+    $("#diastole").change(function() {
+        var max = parseInt($(this).attr('max'));
+        var min = parseInt($(this).attr('min'));
+        if ($(this).val() > max)
+        {
+            $(this).val(max);
+        }
+        else if ($(this).val() < min)
+        {
+            $(this).val(min);
+        }       
+    }); 
+
+    $("#heartRate").change(function() {
+        var max = parseInt($(this).attr('max'));
+        var min = parseInt($(this).attr('min'));
+        if ($(this).val() > max)
+        {
+            $(this).val(max);
+        }
+        else if ($(this).val() < min)
+        {
+            $(this).val(min);
+        }       
+    }); 
+
+    function save_pcare(){
+        var post_form = $("#pcare_form").serialize();
+
+        console.log(post_form);
+
+        $.ajax({
+            url: "/api/pcare/create_kunjungan/",
+            data: post_form,
+            type: "POST",
+            dataType: "JSON",
+            success: (res) => {
+                console.log(res);
+            },
+            error: (jqXHR) => {
+                console.error(jqXHR.responseJSON);
+            }
+        });
+    }
+
+    // PCARE JS //
+
     <?php if(isset($_GET["tab"])){ if($_GET["tab"] == "elab" || $_GET["tab"] == "rad" || $_GET["tab"] == "erm"){ ?>
         var $target = $('html,body'); 
         $target.animate({scrollTop: $target.height()}, 1000);
@@ -2244,7 +2939,7 @@
         var postt   = $("#testeresep").serialize();
         console.log(postt);
     });
-
+    
     var wrapper    = document.getElementById("signature-pad"),
     clearButton    = wrapper.querySelector("[data-action=clear]"),
     saveButton     = wrapper.querySelector("[data-action=save]"),
@@ -2257,8 +2952,7 @@
     canvas2       = wrapper.querySelector("canvas"),
     signaturePad2;
 
-    function _urlcetak()
-    {	
+    function _urlcetak(){	
         var unit    = '<?= $this->session->userdata('unit') ?>';
         var noreg   = '<?= $this->input->get('noreg') ?>';
         var rekmed  = '<?= $this->input->get('rekmed') ?>';
@@ -2305,8 +2999,7 @@
 
     }
 
-    function _urlcetak2()
-    {	
+    function _urlcetak2(){	
         var unit    = '<?= $this->session->userdata('unit') ?>';
         var noreg   = '<?= $this->input->get('noreg') ?>';
         var rekmed  = '<?= $this->input->get('rekmed') ?>';
@@ -2361,7 +3054,7 @@
 	clearButton2.addEventListener("click", function (event) {
 		signaturePad2.clear();
 	});
-
+    
     // INITIALIZE
     $(window).on("load", function(){
         console.log($("#testeresep").serialize());
@@ -2492,6 +3185,7 @@
             $('[name="tekanan1"]').prop("readonly", true);
         }
         $('#umur').val(usia);
+        $('#pcare_umur').val(usia);
         $('#tgl_dok').val(tglmasuk);
         initailizeSelect2_poli_tindakan(kodpos);
     });
@@ -2600,7 +3294,7 @@
         var kodepos     = $("#poli_dok").val();
         
         $.ajax({
-            url: "<?php echo base_url();?>Poliklinik/getpoli_tin/"+ str +"/"+ kodepos,
+            url: "<?php echo base_url();?>Poliklinik/getpoli_tin/"+ str +"/?kodepos="+ kodepos,
             type: "GET",
             dataType: "JSON",
             success: function(data) {
@@ -2695,9 +3389,10 @@
     }
 
     function show_tindakan_elab(str, id) {
-        var vid       = id;
+        var vid     = id;
+        var kodepos = $("#poli_dok").val();
         $.ajax({
-            url: "<?php echo base_url();?>Poliklinik/getpoli_tin/"+ str +"/LABOR",
+            url: "<?php echo base_url();?>Poliklinik/getpoli_lab/"+ str +"/?kopoli="+ kodepos,
             type: "GET",
             dataType: "JSON",
             success: function(data) {
@@ -2712,8 +3407,10 @@
 
     function show_tindakan_emed(str, id) {
         var vid       = id;
+        var kodepos     = $("#poli_dok").val();
+
         $.ajax({
-            url: "<?php echo base_url();?>Poliklinik/getpoli_tin/0/0",
+            url: "<?php echo base_url();?>Poliklinik/getpoli_med/"+ str +"/?kodepos=" + kodepos,
             type: "GET",
             dataType: "JSON",
             success: function(data) {
@@ -2728,8 +3425,10 @@
 
     function show_tindakan_erad(str,id){
         var vid       = id;
+        var kodepos     = $("#poli_dok").val();
+
         $.ajax({
-            url: "<?php echo base_url();?>Poliklinik/getpoli_tin/"+ str +"/RADIO",
+            url: "<?php echo base_url();?>Poliklinik/getpoli_rad/"+ str +"/?kodepos=" + kodepos,
             type: "GET",
             dataType: "JSON",
             success: function(data) {
@@ -2951,7 +3650,7 @@
         table.append("<tr id='diagnosa_tr"+ idrowDiag +"'>"+
         "<td><button type='button' onclick=hapusBaris_diagnosa("+idrowDiag+") class='btn red  justify'><i class='fa fa-trash-o'></i></button></td>"+
         "<td><select name='jenis_diag[]' id=jenis_diag"+idrowDiag+" class='select2_el_jnsicd form-control input-largex' onchange='getdiag(this.value,"+idrowDiag+")'></select></td>"+
-        "<td><select name='diag[]' id=diag"+idrowDiag+" class='select2_el_icdind form-control input-largex'> </select></td>"+
+        "<td><select name='diag[]' id=diag"+idrowDiag+" class='select2_el_icdind form-control input-largex' onchange='pcare_diag_trigger(this.value)'> </select></td>"+
         "<td><input name='utama[]' id=utama"+idrowDiag+" type='checkbox' class='form-control' onclick='cekutm(this.value,"+idrowDiag+")'>"+
         "<input name='utama_hide[]' id='utama_hide"+idrowDiag+"' type='hidden' class='form-control'></td>"+
         "</tr>");

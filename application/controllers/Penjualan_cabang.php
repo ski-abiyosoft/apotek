@@ -6,8 +6,8 @@ class Penjualan_cabang extends CI_Controller
 	public function __construct()
 	{
 		parent::__construct();
-		$this->session->set_userdata('menuapp', '3000');
-		$this->session->set_userdata('submenuapp', '3202');
+		$this->session->set_userdata('menuapp', '4000');
+		$this->session->set_userdata('submenuapp', '4400');
 		$this->load->helper('simkeu_nota1');
 		$this->load->helper('simkeu_nota');
 		$this->load->model('M_farmasi_po');
@@ -20,28 +20,28 @@ class Penjualan_cabang extends CI_Controller
 		$unit = $this->session->userdata('unit');
 
 		if (!empty($cek)) {
-
+			$kondisi = date("Y-m");
 			$q1 =
-				"select tbl_apoposting.*
-				from
+				"SELECT tbl_apoposting.*
+				FROM
 				   tbl_apoposting inner join tbl_apohresep on
 				   tbl_apoposting.resepno=tbl_apohresep.resepno
-				  
-				where
+				WHERE
 				   tbl_apoposting.koders = '$unit' and
-				   tbl_apohresep.jenisjual=2
-				order by
+				   tbl_apohresep.jenisjual=2 and
+					 tbl_apohresep.tglresep like '%$kondisi%' and
+					 tbl_apoposting.poscredit > 0
+				ORDER BY
 				   tbl_apoposting.tglresep, tbl_apoposting.resepno desc";
-
 			$bulan  = $this->M_global->_periodebulan();
 			$nbulan = $this->M_global->_namabulan($bulan);
 			$periode = 'Periode ' . $nbulan . '-' . $this->M_global->_periodetahun();
 			$d['keu'] = $this->db->query($q1)->result();
 			$level = $this->session->userdata('level');
-			$akses = $this->M_global->cek_menu_akses($level, 3202);
+			$akses = $this->M_global->cek_menu_akses($level, 4400);
 			$d['akses'] = $akses;
 			$d['periode'] = $periode;
-			$this->load->view('penjualan/v_penjualan_faktur_cabang', $d);
+			$this->load->view('penjualan/v_penjualan_faktur_cabang2', $d);
 		} else {
 
 			header('location:' . base_url());
@@ -83,7 +83,7 @@ class Penjualan_cabang extends CI_Controller
 				$akses = $this->M_global->cek_menu_akses($level, 3202);
 				$d['akses'] = $akses;
 				$d['periode'] = $periode;
-				$this->load->view('penjualan/v_penjualan_faktur_cabang', $d);
+				$this->load->view('penjualan/v_penjualan_faktur_cabang2', $d);
 			}
 		} else {
 
@@ -113,6 +113,8 @@ class Penjualan_cabang extends CI_Controller
 			$racikan 	   = $this->db->query($queryr)->row_array();
 			$header        = $this->db->query($queryh)->row();
 			$posting       = $this->db->query($queryb)->row();
+			$penjamin = $this->db->query("SELECT farmasirj AS harga FROM tbl_penjamin WHERE cust_id = '$header->gudang'")->row();
+			$hargapenjamin = $penjamin->farmasirj;
 
 			$kop = $this->M_cetak->kop($unit);
 			$namars = $kop['namars'];
@@ -132,6 +134,9 @@ class Penjualan_cabang extends CI_Controller
 																							<td width=\"20%\" style=\"text-align:center;\"><img src=\"" . base_url() . "assets/img/logo.png\"  width=\"70\" height=\"70\" /></td>
 																							<td width=\"80%\" style=\"text-align:left;\">
 																								<table width=\"100%\">
+																									<tr>
+																										<td style=\"font-size:10px;border-bottom: none;\"><b><br>$namars</b></td>
+																									</tr>
 																									<tr>
 																										<td><b>$alamat</b></td>
 																									</tr>
@@ -198,16 +203,23 @@ class Penjualan_cabang extends CI_Controller
                                         <td width=\"20%\" align=\"center\"><b>TOTAL RP</b></td>
                                    </tr>
                               </thead>";
-															$no = 1;
-															$cekdpp = 0;
-															$jumlahObat = 0;
-															$Totdisc = 0;
-															$Totdiscx = 0;
-															$ttlharga = 0;
-															$td = 0;
-															$query_ppn = $this->db->query("SELECT * FROM tbl_pajak where kodetax='PPN'")->result();
-															$cekppn2 = $query_ppn[0]->prosentase / 100;
+			$no = 1;
+			$cekdpp = 0;
+			$jumlahObat = 0;
+			$Totdisc = 0;
+			$Totdiscx = 0;
+			$ttlharga = 0;
+			$td = 0;
+			$tpricing = 0;
+			$query_ppn = $this->db->query("SELECT * FROM tbl_pajak where kodetax='PPN'")->row();
+			$cekppn2 = ($query_ppn->prosentase / 100)  + 5 / 100;
 			foreach ($detil as $db1) {
+				$cekbarangx = $this->db->get_where("tbl_barang", ["kodebarang" => $db1->kodebarang]);
+				if($cekbarangx->num_rows() > 0){
+					$cekbarang = $cekbarangx->row();
+				} else {
+					$cekbarang = $this->db->get_where("tbl_logbarang", ["kodebarang" => $db1->kodebarang])->row();
+				}
 				$diskon = (int)$db1->qty * (int)$db1->price * (int)$db1->discount / 100;
 				$diskonx = $db1->discrp;
 				$ttlrp = $db1->qty * $db1->price - $diskonx;
@@ -218,19 +230,22 @@ class Penjualan_cabang extends CI_Controller
 				$ttlharga +=  $db1->qty * $db1->price;
 				$tot      = ($ttlharga - $Totdisc);
 				$ppn      = ($ttlharga - $Totdisc) * $cekppn2;
-				$td += $ttlrp;
+				$td += $ttlrp + $diskonx;
 				$chari .= "<tbody><tr>
 																<td style=\"text-align:center;\">" . $no++ . "</td>
 																<td style=\"text-align:left;\">$db1->namabarang</td>
-																<td style=\"text-align:right;\">" . number_format($db1->qty,0) . "</td>
-																<td style=\"text-align:right;\">" . number_format($db1->price,0) . "</td>
-																<td style=\"text-align:right;\">" . number_format($db1->totalrp,0) . "</td>
+																<td style=\"text-align:right;\">" . number_format($db1->qty, 0) . "</td>
+																<td style=\"text-align:right;\">" . number_format($db1->price, 0) . "</td>
+																<td style=\"text-align:right;\">" . number_format($db1->qty * $db1->price - $diskonx, 0) . "</td>
 													 </tr></tbody>";
+				$testing = $db1->qty * $db1-> price - $diskonx;
+				$tpricing += $testing * $cekppn2;
 			}
 			$chari .= "</table>";
-			$tr=0;
-			$totaluangr=0;
-			$ttlhargax=0;
+			$tr = 0;
+			$totaluangr = 0;
+			$ttlhargax = 0;
+			$tprice = 0;
 			if ($racikan != null && $rck != null) {
 				foreach ($rck as $rck) {
 					$diskon = $rck->qty * $rck->price * $racikan['diskon'] / 100;
@@ -249,6 +264,8 @@ class Penjualan_cabang extends CI_Controller
 														 </table>";
 					$ongkos = ($racikan['ongkosracik']);
 					$cekdpp += 111 / 100;
+					$coba = $rck->price * 5 / 100;
+					$tprice += $coba;
 					$jumlahObat +=  $rck->qty;
 					$Totdisc  += $diskon;
 					$ttlhargax +=   $rck->qty * $rck->price;
@@ -257,29 +274,29 @@ class Penjualan_cabang extends CI_Controller
 			}
 			$diskonracik = $racikan['diskonrp'];
 			$ppnxx = $racikan['ppnrp'];
-			$dpp_done = $td / (111 / 100);
-			$ppn_done = $dpp_done * $cekppn2;
+			$dpp_done = $td;
+			$ppn_done = $tpricing;
 			$chari .= "
 														 <table style=\"border-collapse:collapse;font-family: tahoma; font-size:12px\" width=\"100%\" align=\"center\" border=\"0\">
 																	<tr>
 																		<td width=\"80%\" style=\"text-align:right;\"><b>Jumlah Rp</b></td>
-																		<td width=\"20%\" style=\"text-align:right;\">".number_format($ttlharga,0)."</td>
+																		<td width=\"20%\" style=\"text-align:right;\">" . number_format($ttlharga, 0) . "</td>
 																	</tr> 
 																	<tr>
 																		<td width=\"80%\" style=\"text-align:right;\"><b>Diskon Rp</b></td>
-																		<td width=\"20%\" style=\"text-align:right;\">".number_format($Totdiscx,0)."</td>
+																		<td width=\"20%\" style=\"text-align:right;\">" . number_format($Totdiscx, 0) . "</td>
 																	</tr> 
 																	<tr>
 																		<td width=\"80%\" style=\"text-align:right;\"><b>DPP Rp</b></td>
-																		<td width=\"20%\" style=\"text-align:right;\">".number_format($dpp_done,0)."</td>
+																		<td width=\"20%\" style=\"text-align:right;\">" . number_format($dpp_done, 0) . "</td>
 																	</tr> 
 																	<tr>
 																		<td width=\"80%\" style=\"text-align:right;\"><b>PPN Rp</b></td>
-																		<td width=\"20%\" style=\"text-align:right;\">".number_format($ppn_done,0)."</td>
+																		<td width=\"20%\" style=\"text-align:right;\">" . number_format($ppn_done, 0) . "</td>
 																	</tr> 
 																	<tr>
 																		<td width=\"80%\" style=\"text-align:right;\"><b>Total Rp</b></td>
-																		<td width=\"20%\" style=\"text-align:right;\">".number_format($td,0)."</td>
+																		<td width=\"20%\" style=\"text-align:right;\">" . number_format($td - $Totdiscx, 0) . "</td>
 																	</tr> 
 														 </table>";
 			$chari .= "
@@ -327,7 +344,7 @@ class Penjualan_cabang extends CI_Controller
 																		<td width=\"20%\" style=\"text-align:center;\">...........................</td>
                               </tr> 
                               <tr>
-																		<td width=\"80%\" style=\"text-align:left;\">Cetak : ".date('d-m-Y')." jam ".date('H:i:s')."</td>
+																		<td width=\"80%\" style=\"text-align:left;\">Cetak : " . date('d-m-Y') . " jam " . date('H:i:s') . "</td>
                                   	<td width=\"20%\" style=\"text-align:right;\"> &nbsp; </td>
                               </tr> 
                          </table>";
@@ -340,8 +357,11 @@ class Penjualan_cabang extends CI_Controller
 		}
 	}
 
-	public function cetakjalan(){
+	public function cetakjalan()
+	{
 		$resepno = $this->input->get('id');
+		$stockx = $this->input->get('stock');
+		$hargax = $this->input->get('harga');
 		$cek = $this->session->userdata('level');
 		$unit = $this->session->userdata('unit');
 		$user = $this->session->userdata('username');
@@ -436,7 +456,8 @@ class Penjualan_cabang extends CI_Controller
                                    <td> &nbsp; </td>
                               </tr> 
                          </table>";
-			$chari .= "
+			if ($stockx == 1 && $hargax == 1) {
+				$chari .= "
                          <table style=\"border-collapse:collapse;font-family: Tahoma; font-size:11px\" width=\"100%\" align=\"center\" border=\"1\" cellspacing=\"1\" cellpadding=\"3\">
                               <thead>
                                    <tr>
@@ -447,15 +468,70 @@ class Penjualan_cabang extends CI_Controller
                                         <td width=\"15%\" align=\"center\"><b>KETERANGAN</b></td>
                                    </tr>
                               </thead>";
-															$no = 1;
-															foreach($detail as $d){
-				$chari .= "<tbody><tr>
-																<td style=\"text-align:center;\">" . $no++ . "</td>
-																<td style=\"text-align:left;\">$d->namabarang [ $d->kodebarang ]</td>
-																<td style=\"text-align:left;\">$d->satuan</td>
-																<td style=\"text-align:right;\">" . number_format($d->qty) . "</td>
-																<td style=\"text-align:right;\">$d->price</td>
-													 </tr></tbody>";
+			} else if ($stockx == 2 && $hargax == 1) {
+				$chari .= "
+																							<table style=\"border-collapse:collapse;font-family: Tahoma; font-size:11px\" width=\"100%\" align=\"center\" border=\"1\" cellspacing=\"1\" cellpadding=\"3\">
+																									 <thead>
+																												<tr>
+																														 <td width=\"5%\" align=\"center\"><b>NO</b></td>
+																														 <td width=\"15%\" align=\"center\"><b>NAMA & JENIS BARANG</b></td>
+																														 <td width=\"10%\" align=\"center\"><b>KEMASAN</b></td>
+																														 <td width=\"15%\" align=\"center\"><b>KETERANGAN</b></td>
+																												</tr>
+																									 </thead>";
+			} else if ($stockx == 1 && $hargax == 2) {
+				$chari .= "
+																							<table style=\"border-collapse:collapse;font-family: Tahoma; font-size:11px\" width=\"100%\" align=\"center\" border=\"1\" cellspacing=\"1\" cellpadding=\"3\">
+																									 <thead>
+																												<tr>
+																														 <td width=\"5%\" align=\"center\"><b>NO</b></td>
+																														 <td width=\"15%\" align=\"center\"><b>NAMA & JENIS BARANG</b></td>
+																														 <td width=\"10%\" align=\"center\"><b>KEMASAN</b></td>
+																														<td width=\"10%\" align=\"center\"><b>BANYAKNYA</b></td>
+																												</tr>
+																									 </thead>";
+			} else if ($stockx == 2 && $hargax == 2) {
+				$chari .= "
+																							<table style=\"border-collapse:collapse;font-family: Tahoma; font-size:11px\" width=\"100%\" align=\"center\" border=\"1\" cellspacing=\"1\" cellpadding=\"3\">
+																									 <thead>
+																												<tr>
+																														 <td width=\"5%\" align=\"center\"><b>NO</b></td>
+																														 <td width=\"15%\" align=\"center\"><b>NAMA & JENIS BARANG</b></td>
+																														 <td width=\"10%\" align=\"center\"><b>KEMASAN</b></td>
+																												</tr>
+																									 </thead>";
+			}
+			$no = 1;
+			foreach ($detail as $d) {
+				if ($stockx == 1 && $hargax == 1) {
+					$chari .= "<tbody><tr>
+																													<td style=\"text-align:center;\">" . $no++ . "</td>
+																													<td style=\"text-align:left;\">$d->namabarang [ $d->kodebarang ]</td>
+																													<td style=\"text-align:left;\">$d->satuan</td>
+																													<td style=\"text-align:right;\">" . number_format($d->qty) . "</td>
+																													<td style=\"text-align:right;\">" . number_format($d->price) . "</td>
+																										 </tr></tbody>";
+				} else if ($stockx == 1 && $hargax == 2) {
+					$chari .= "<tbody><tr>
+																													<td style=\"text-align:center;\">" . $no++ . "</td>
+																													<td style=\"text-align:left;\">$d->namabarang [ $d->kodebarang ]</td>
+																													<td style=\"text-align:left;\">$d->satuan</td>
+																													<td style=\"text-align:right;\">" . number_format($d->qty) . "</td>
+																										 </tr></tbody>";
+				} else if ($stockx == 2 && $hargax == 2) {
+					$chari .= "<tbody><tr>
+																													<td style=\"text-align:center;\">" . $no++ . "</td>
+																													<td style=\"text-align:left;\">$d->namabarang [ $d->kodebarang ]</td>
+																													<td style=\"text-align:left;\">$d->satuan</td>
+																										 </tr></tbody>";
+				} else if ($stockx == 2 && $hargax == 1) {
+					$chari .= "<tbody><tr>
+																													<td style=\"text-align:center;\">" . $no++ . "</td>
+																													<td style=\"text-align:left;\">$d->namabarang [ $d->kodebarang ]</td>
+																													<td style=\"text-align:left;\">$d->satuan</td>
+																													<td style=\"text-align:right;\">" . number_format($d->price) . "</td>
+																										 </tr></tbody>";
+				}
 			}
 			$chari .= "</table>";
 			$chari .= "
@@ -483,7 +559,7 @@ class Penjualan_cabang extends CI_Controller
                                    <td style=\"text-align:center; border-top: none;\">Barang diterima dengan kondisi baik</td>
                               </tr> 
                          </table>";
-										$chari .= "</td>
+			$chari .= "</td>
                                    <td style=\"text-align:center; border-left: none; border-top: none; border-bottom: none;\">&nbsp;</td>
                               </tr> 
                          </table>";
@@ -659,7 +735,7 @@ class Penjualan_cabang extends CI_Controller
 		$cek = $this->session->userdata('level');
 		$uid = $this->session->userdata('unit');
 		$cbg = $this->input->get('cabang');
-		if (!empty($cek)) {
+		// if (!empty($cek)) {
 			$page              = $this->uri->segment(3);
 			$limit             = $this->config->item('limit_data');
 			$d['nomor']        = urut_transaksi('URUT_JUALCABANG', 19);
@@ -673,51 +749,66 @@ class Penjualan_cabang extends CI_Controller
 				$d['apohpolog']    = $this->db->query("select * from tbl_apohpolog where internalpo = 1 and internalproses = 0")->result();
 			}
 			$d['namers']       = $this->db->get('tbl_namers')->result();
-			$d['ppn'] = $this->db->get_where('tbl_pajak', ['kodetax' => 'PPN'])->row_array();
+			$ppxx = $this->db->get_where('tbl_pajak', ['kodetax' => 'PPN'])->row();
+			$ppx = $ppxx->prosentase / 100;
+			$d['ppn'] = $ppx;
 			$this->load->view('penjualan/v_penjualan_faktur_add_cabang', $d);
-		} else {
-			header('location:' . base_url());
-		}
+		// } else {
+		// 	header('location:' . base_url());
+		// }
 	}
 
 	public function getpo($po)
 	{
-		$data = $this->db->query("SELECT a.*, b.namabarang, b.satuan1 FROM tbl_barangdpo a LEFT JOIN tbl_barang b ON b.kodebarang=a.kodebarang WHERE po_no = '$po'")->result();
+		$cabang = $this->session->userdata("unit");
+		$data = $this->db->query("SELECT a.*, (SELECT gudang FROM tbl_baranghpo WHERE po_no = a.po_no) AS gudang, (SELECT keterangan FROM tbl_depo WHERE depocode = (SELECT gudang FROM tbl_baranghpo WHERE po_no = a.po_no)) AS namagudang, b.namabarang, b.satuan1, IFNULL(((SELECT saldoakhir from tbl_barangstock where kodebarang = a.kodebarang and koders = '$cabang' and gudang = c.gudang)),0) as saldo FROM tbl_barangdpo a JOIN tbl_baranghpo c ON c.po_no=a.po_no LEFT JOIN tbl_barang b ON b.kodebarang=a.kodebarang WHERE a.po_no = '$po'")->result();
 		echo json_encode($data);
 	}
 
 	public function getpo_l($po)
 	{
-		$data = $this->db->query("SELECT a.*, b.namabarang, b.satuan1 FROM tbl_apodpolog a LEFT JOIN tbl_logbarang b ON b.kodebarang=a.kodebarang WHERE po_no = '$po'")->result();
+		$cabang = $this->session->userdata("unit");
+		$data = $this->db->query("SELECT a.*, (SELECT gudang FROM tbl_apohpolog WHERE po_no = a.po_no) AS gudang, b.namabarang, b.satuan1, (SELECT keterangan FROM tbl_depo WHERE depocode = (SELECT gudang FROM tbl_apohpolog WHERE po_no = a.po_no)) AS namagudang, IFNULL(((SELECT saldoakhir from tbl_apostocklog where kodebarang = a.kodebarang and koders = '$cabang' and gudang = c.gudang)),0) as saldo FROM tbl_apodpolog a JOIN tbl_apohpolog c ON c.po_no=a.po_no LEFT JOIN tbl_logbarang b ON b.kodebarang=a.kodebarang WHERE a.po_no = '$po'")->result();
 		echo json_encode($data);
 	}
 
 	public function hapus($nomor)
 	{
 		$cek = $this->session->userdata('level');
-		// $hmutasi = $this->db->query("select * from tbl_apohresep where resepno = '$nomor'")->row();	
-		// $cabang  = $hmutasi->koders;
-		// $gudang  = $hmutasi->gudang;
 		if (!empty($cek)) {
-
-			//    $datamutasi = $this->db->get_where('tbl_apodresep', array('resepno' => $nomor))->result();
-			$hmutasi = $this->db->query("select * from tbl_apohresep where resepno = '$nomor'")->row();
-			$cabang  = $hmutasi->koders;
-			$gudang  = $hmutasi->gudang;
-
-			$datamutasi = $this->db->get_where('tbl_apodresep', array('resepno' => $nomor))->result();
+			$unit			= $this->session->userdata("unit");
+			$hmutasi 	= $this->db->query("select * from tbl_apohresep where resepno = '$nomor'")->row();
+			$cabang  	= $hmutasi->koders;
+			$gudang  	= $hmutasi->gudang;
+			$data_bhterima 	= $this->db->get_where("tbl_baranghpo", ['po_no' => $hmutasi->pono]);
+			if ($data_bhterima->num_rows() > 0) {
+				$this->db->set("internalproses", 0);
+				$this->db->set("cek", 0);
+				$this->db->where("po_no", $hmutasi->pono);
+				$this->db->update("tbl_baranghpo");
+			} else {
+				$this->db->set("internalproses", 0);
+				$this->db->set("cek", 0);
+				$this->db->where("po_no", $hmutasi->pono);
+				$this->db->update("tbl_apohpolog");
+			}
+			$datamutasi 		= $this->db->get_where('tbl_apodresep', ['resepno' => $nomor])->result();
 			foreach ($datamutasi as $row) {
 				$_qty = $row->qty;
 				$_kode = $row->kodebarang;
-				$this->db->query("update tbl_barangstock set keluar=keluar- $_qty, saldoakhir= saldoakhir+ $_qty where kodebarang = '$_kode' and koders = '$cabang' and gudang = '$gudang'");
+				$cek = $this->db->get_where("tbl_barangstock", ["kodebarang" => $_kode, "gudang" => $gudang, "koders" => $unit]);
+				if ($cek->num_rows() > 0) {
+					$this->db->query("UPDATE tbl_barangstock set keluar=keluar- $_qty, saldoakhir= saldoakhir+ $_qty where kodebarang = '$_kode' and koders = '$unit' and gudang = '$gudang'");
+				} else {
+					$this->db->query("UPDATE tbl_apostocklog set keluar=keluar- $_qty, saldoakhir= saldoakhir+ $_qty where kodebarang = '$_kode' and koders = '$unit' and gudang = '$gudang'");
+				}
 			}
-
-			$this->db->delete('tbl_apohresep', array('resepno' => $nomor));
 			$this->db->delete('tbl_apodresep', array('resepno' => $nomor));
-
+			$this->db->delete('tbl_apohresep', array('resepno' => $nomor));
+			$this->db->delete('tbl_apoposting', array('resepno' => $nomor));
+			$this->db->delete('tbl_pap', array('noreg' => $nomor));
 			echo json_encode(array("status" => 1, "nomor" => $nomor));
 		} else {
-
 			header('location:' . base_url());
 		}
 	}
@@ -737,6 +828,200 @@ class Penjualan_cabang extends CI_Controller
 		echo json_encode($query);
 	}
 
+	public function ceksaldo()
+	{
+		$gudang = $this->input->get("gudang");
+		$kodebarang = $this->input->get("kodebarang");
+		$cabang = $this->session->userdata("unit");
+		$data = $this->db->get_where("tbl_barangstock", ["kodebarang" => $kodebarang, "gudang" => $gudang, "koders" => $cabang]);
+		if ($data->num_rows() < 1 || empty($data->row()) || $data->row() == null || $data->row() == '') {
+			$datax = $this->db->get_where("tbl_apostocklog", ["kodebarang" => $kodebarang, "gudang" => $gudang, "koders" => $cabang]);
+		} else {
+			$datax = $data;
+		}
+		echo json_encode($datax->row());
+	}
+
+	public function save_x()
+	{
+		$cek = $this->session->userdata('level');
+		// if (!empty($cek)) {
+			$userid        = $this->session->userdata('username');
+			$unit          = $this->session->userdata('unit');
+			$cabang        = $unit;
+			$gudang        = $this->input->post('gudang');
+			$po_no         = $this->input->post('po_cabang');
+			$tgl           = $this->input->post('tanggal');
+			$jam           = $this->input->post('jam');
+			$cust_id       = $this->input->post('cust_id');
+			$diskon       = $this->input->get('diskon');
+			$ppn       = $this->input->get('ppn');
+			$fakturpajak   = urut_faktur_pajak("URUT_FAKTUR_PAJAK", 4);
+			$noprimary  = urut_transaksi('URUT_JUALCABANG', 19);
+			$datax 		= [
+				'internalproses' 		=> 1,
+				'cek' 							=> 1
+			];
+			$where_po = ['po_no' 	=> $po_no];
+			$cek_baranghpo 	= $this->db->get_where('tbl_baranghpo', ['po_no' => $po_no]);
+			if ($cek_baranghpo->num_rows() > 0) {
+				$this->db->update('tbl_baranghpo', $datax, $where_po);
+				$tujuan = $cek_baranghpo->row();
+			} else {
+				$cek_apohpolog 	= $this->db->get_where('tbl_apohpolog', ['po_no' => $po_no]);
+				if ($cek_apohpolog->num_rows() > 0) {
+					$this->db->update('tbl_apohpolog', $datax, $where_po);
+					$tujuan = $cek_apohpolog->row();
+				}
+			}
+			$kode  		= $this->input->post('kode');
+			$qty   		= $this->input->post('qty');
+			$sat   		= $this->input->post('sat');
+			$harga 		= $this->input->post('harga');
+			$ppn   		= $this->input->post('ppn');
+			$disc  		= $this->input->post('disc');
+			$discrp  	= $this->input->post('discrp');
+			$jumlah 	= $this->input->post('jumlah');
+			$exp   		= $this->input->post('tanggal');
+			// $exp   = date("Y-m-d");
+			$aturan   = $this->input->post('aturan');
+			$norak   	= $this->input->post('norak');
+			$jumdata  = count($kode);
+			$tot 			= 0;
+			$tdisc 		= 0;
+			$tothpp 	= 0;
+			for ($i = 0; $i <= $jumdata - 1; $i++) {
+				$_kode        = $kode[$i];
+				$_qty         = str_replace(',', '', $qty[$i]);
+				$_exp         = $exp[$i];
+				$_sat         = $sat[$i];
+				$_aturan      = $aturan[$i];
+				$_norak       = $norak[$i];
+				$tot          = $tot + str_replace(',', '', $jumlah[$i]);
+				$_jumlah      = str_replace(',', '', $jumlah[$i]);
+				$_harga       = str_replace(',', '', $harga[$i]);
+				$_discrp       = str_replace(',', '', $discrp[$i]);
+				$vjum         = $_qty * $_harga;
+				$vdisc        = $vjum * ($disc[$i] / 100);
+				$tdisc        = $tdisc + $vdisc;
+				$hpp          = $this->M_global->_data_barang($_kode)->hpp;
+				$namabarang   = $this->M_global->_data_barang($_kode)->namabarang;
+				$tothpp       = $tothpp + ($hpp * $_qty);
+				$pajak        = $this->db->get_where("tbl_pajak", ['kodetax' => 'PPN'])->row()->prosentase / 100;
+				$_ppn 	= 1;
+				$_ppnrp = $vjum * $pajak;
+				$jual = [
+					'koders'    	=> $cabang,
+					'resepno'   	=> $noprimary,
+					'kodebarang' 	=> $_kode,
+					'namabarang' 	=> $namabarang,
+					'qty' 				=> $_qty,
+					'satuan' 			=> $_sat,
+					'ppn' 				=> $_ppn,
+					'ppnrp' 			=> $_ppnrp,
+					'hpp' 				=> $hpp,
+					'price' 			=> $_harga,
+					'discount' 		=> $disc[$i],
+					'discrp' 			=> $_discrp,
+					'totalrp' 		=> $_jumlah,
+					'exp_date' 		=> $_exp,
+					'atpakai' 		=> $_aturan,
+					'rakno'  			=> $_norak,
+				];
+				$this->db->insert('tbl_apodresep', $jual);
+				if ($cek_baranghpo->num_rows() > 0){
+					$farmasi = $cek_baranghpo->row();
+					$barangstok = $this->db->query("SELECT * FROM tbl_barangstock WHERE koders = '$cabang' AND gudang = '$farmasi->gudang' AND kodebarang = '$_kode'");
+					if($barangstok->num_rows() > 0){
+						$this->db->query("UPDATE tbl_barangstock SET keluar = keluar+$_qty, saldoakhir = saldoakhir-$_qty WHERE kodebarang = '$_kode' AND koders = '$cabang'  AND gudang = '$farmasi->gudang'");
+					} else {
+						$datastock = array(
+							'koders'       => $cabang,
+							'kodebarang'   => $_kode,
+							'gudang'       => $farmasi->gudang,
+							'saldoawal'    => 0,
+							'keluar'       => $_qty,
+							'saldoakhir'   => 0-(int)$_qty,
+							'tglso'        => $this->input->post('tanggal'),
+							'lasttr'       => $this->input->post('tanggal'),
+						);
+						$this->db->insert('tbl_barangstock', $datastock);
+					}
+				} else {
+					$logistik 	= $this->db->get_where('tbl_apohpolog', ['po_no' => $po_no])->row();
+					$log_stok = $this->db->query("SELECT * FROM tbl_apostocklog WHERE koders = '$cabang' AND gudang = '$logistik->gudang' AND kodebarang = '$_kode'");
+					if($log_stok->num_rows() > 0){
+						$this->db->query("UPDATE tbl_apostocklog SET keluar = keluar+$_qty, saldoakhir = saldoakhir-$_qty WHERE kodebarang = '$_kode' AND koders = '$cabang'  AND gudang = '$logistik->gudang'");
+					} else {
+						$datastock = array(
+							'koders'       => $cabang,
+							'kodebarang'   => $_kode,
+							'gudang'       => $logistik->gudang,
+							'saldoawal'    => 0,
+							'keluar'       => $_qty,
+							'saldoakhir'   => 0-(int)$_qty,
+							'tglso'        => $this->input->post('tanggal'),
+						);
+						$this->db->insert('tbl_apostocklog', $datastock);
+					}
+				}
+			}
+			$pajak = 1;
+			$data = [
+				'koders' 				=> $cabang,
+				'resepno' 			=> $noprimary,
+				'antrino'  			=> 1,
+				'cust_id'  			=> $cust_id,
+				'jenisjual'  		=> 2,
+				'kodepel'  			=> $this->input->post('pembeli'),
+				'rekmed'  			=> $this->input->post('cabang'),
+				'pro'  					=> $this->input->post('namapasien'),
+				'tglresep'   		=> date('Y-m-d', strtotime($this->input->post('tanggal'))),
+				'jam' 					=> date('H:i:s', strtotime($this->input->post('jam'))),
+				'gudang'  			=> $this->input->post('gudang'),
+				'pajak'  				=> $pajak,
+				'fakturpajak'  	=> $fakturpajak,
+				'username' 			=> $userid,
+				'pono' 					=> $this->input->post('po_cabang'),
+			];
+
+			$this->db->insert('tbl_apohresep', $data);
+
+			//posting
+
+			$data = [
+				'koders' 		=> $cabang,
+				'resepno' 	=> $noprimary,
+				'tglresep'  => date('Y-m-d', strtotime($this->input->post('tanggal'))),
+				'rekmed'  	=> $tujuan->koders,
+				'namapas' 	=> $this->input->post('namapasien'),
+				'gudang'  	=> $this->input->post('gudang'),
+				'posting' 	=> 1,
+				'poscredit' => $this->input->get('totalnet'),
+				'username' 	=> $userid,
+				'diskonrp' 	=> $diskon,
+				'kodepel'		=> $this->input->post('pembeli'),
+			];
+			$data_pap = [
+				'noreg' 				=> $noprimary,
+				'koders' 				=> $unit,
+				'rekmed' 				=> $tujuan->koders,
+				'tglposting' 		=> date('Y-m-d', strtotime($this->input->post('tanggal'))),
+				'cust_id' 			=> $this->input->post('cust_id'),
+				'jumlahhutang' 	=> $this->input->get('totalnet'),
+				'asal' 					=> 'POLI',
+				'namapas' 			=> $this->input->post('namapasien'),
+				'username' 			=> $userid,
+			];
+
+			$this->db->insert('tbl_apoposting', $data);
+			$this->db->insert('tbl_pap', $data_pap);
+			echo json_encode($noprimary);
+		// } else {
+		// 	header('location:' . base_url());
+		// }
+	}
+
 	public function save($param)
 	{
 		$hasil = 0;
@@ -749,7 +1034,8 @@ class Penjualan_cabang extends CI_Controller
 
 			if ($param == 1) {
 				$datax = [
-					'internalproses' => 1
+					'internalproses' => 1,
+					'cek' => 1
 				];
 				$where_po = [
 					'po_no' => $this->input->post('po_cabang')
@@ -812,7 +1098,6 @@ class Penjualan_cabang extends CI_Controller
 
 				$vjum  = $qty[$i] * $_harga;
 				$vdisc = $vjum * ($disc[$i] / 100);
-				//$tot   = $tot + $vjum;
 				$tdisc = $tdisc + $vdisc;
 
 				$hpp   = $this->M_global->_data_barang($_kode)->hpp;
@@ -881,112 +1166,6 @@ class Penjualan_cabang extends CI_Controller
 
 			);
 
-			/*
-			$profile = $this->M_global->_LoadProfileLap();			
-			$akun_penjualan = $profile->akun_penjualan;
-			$akun_kas       = $profile->akun_kas;
-			$akun_piutang   = $profile->akun_piutang;
-			$akun_ppn       = $profile->akun_ppn;
-			$akun_hpp       = $profile->akun_hpp;
-			$akun_persediaan= $profile->akun_persediaan;
-			$akun_diskon    = $profile->akun_diskonjual;
-				
-			if($this->input->post('pembayaran')=='T')	{
-				$akun_debet = $akun_kas;
-			} else {
-				$akun_debet = $akun_piutang;
-			}
-			
-		
-			
-			$this->M_global->_rekamjurnal(
-			date('Y-m-d',strtotime($this->input->post('tanggal'))),
-			$this->input->post('nomorbukti'),
-			'JJ',
-			$this->input->post('kodesd'),
-			1,
-			$akun_debet,
-			'Penjualan',
-			'Penjualan',
-			$tot+$tppn-$tdisc+$totbiaya,
-			0
-			);
-			
-			
-			if($tdisc>0){
-			$this->M_global->_rekamjurnal(
-			date('Y-m-d',strtotime($this->input->post('tanggal'))),
-			$this->input->post('nomorbukti'),
-			'JJ',
-			$this->input->post('kodesd'),
-			$itembiaya++,
-			$akun_diskon,
-			'Penjualan',
-			'Diskon Penjualan',
-			$tdisc,
-			0
-			);	
-			}
-			
-			if($tppn>0){
-			$this->M_global->_rekamjurnal(
-			date('Y-m-d',strtotime($this->input->post('tanggal'))),
-			$this->input->post('nomorbukti'),
-			'JJ',
-			$this->input->post('kodesd'),
-			$itembiaya++,
-			$akun_ppn,
-			'Penjualan',
-			'PPN Penjualan',
-			0,
-			$tppn			
-			);	
-			}
-						
-			$this->M_global->_rekamjurnal(
-			date('Y-m-d',strtotime($this->input->post('tanggal'))),
-			$this->input->post('nomorbukti'),
-			'JJ',
-			$this->input->post('kodesd'),
-			$itembiaya++,
-			$akun_penjualan,
-			'Penjualan',
-			'Penjualan',
-			0,
-			$tot+$totbiaya			
-			);
-			
-			
-			//jurnal persediaan
-			
-			$this->M_global->_rekamjurnal(
-			date('Y-m-d',strtotime($this->input->post('tanggal'))),
-			$this->input->post('nomorbukti'),
-			'JJ',
-			$this->input->post('kodesd'),
-			$itembiaya++,
-			$akun_hpp,
-			'Penjualan',
-			'HPP Penjualan',
-			$tothpp,
-			0			
-			);
-			
-			$this->M_global->_rekamjurnal(
-			date('Y-m-d',strtotime($this->input->post('tanggal'))),
-			$this->input->post('nomorbukti'),
-			'JJ',
-			$this->input->post('kodesd'),
-			$itembiaya++,
-			$akun_persediaan,
-			'Penjualan',
-			'HPP Penjualan',
-			0,
-			$tothpp			
-			);
-			
-			*/
-
 			if ($param == 1) {
 				$this->db->insert('tbl_apohresep', $data);
 			} else {
@@ -1030,7 +1209,7 @@ class Penjualan_cabang extends CI_Controller
 				$this->db->update('tbl_apoposting', $data, array('resepno' => $nobukti));
 				$this->db->update('tbl_pap', $data_pap, array('noreg' => $nobukti));
 			}
-			echo $nobukti;
+			echo json_encode($nobukti);
 		} else {
 			header('location:' . base_url());
 		}
@@ -1041,20 +1220,177 @@ class Penjualan_cabang extends CI_Controller
 		$cek = $this->session->userdata('level');
 		if (!empty($cek)) {
 			$unit = $this->session->userdata('unit');
-
 			$posting = $this->db->get_where('tbl_apoposting', array('resepno' => $nomor));
 			$header = $this->db->get_where('tbl_apohresep', array('resepno' => $nomor));
 			$detil = $this->db->query("SELECT tbl_apodresep.*, (SELECT namabarang FROM tbl_barang WHERE kodebarang=tbl_apodresep.kodebarang) AS namabarang FROM tbl_apodresep WHERE resepno = '$nomor'");
-			// $detil  = $this->db->select('tbl_apodresep.*, tbl_barang.namabarang')->join('tbl_barang', 'tbl_barang.kodebarang=tbl_apodresep.kodebarang')->get_where('tbl_apodresep', array('resepno' => $nomor));
 			$d['baranghpo']    = $this->db->query('select * from tbl_baranghpo')->result();
 			$d['apohpolog']    = $this->db->query('select * from tbl_apohpolog')->result();
 			$d['header']  = $header->row();
 			$d['detil']   = $detil->result();
 			$d['posting'] = $posting->row();
 			$d['jumdata'] = $detil->num_rows();
-			$this->load->view('penjualan/v_penjualan_faktur_edit_cabang', $d);
+			$ppxx = $this->db->get_where('tbl_pajak', ['kodetax' => 'PPN'])->row();
+			$ppx = $ppxx->prosentase / 100;
+			$d['ppn'] = $ppx;
+			$this->load->view('penjualan/v_penjualan_faktur_edit_cabang2', $d);
 		} else {
 			header('location:' . base_url());
 		}
+	}
+
+	public function update_data(){
+		$unit					= $this->session->userdata("unit");
+		$userid       = $this->session->userdata('username');
+		$nomor 				= $this->input->post("noresep");
+		$hmutasi 			= $this->db->query("select * from tbl_apohresep where resepno = '$nomor'")->row();
+		$cabang  			= $hmutasi->koders;
+		$gudang  			= $hmutasi->gudang;
+		$datamutasi 	= $this->db->get_where('tbl_apodresep', ['resepno' => $nomor])->result();
+		$data_bhterima 	= $this->db->get_where("tbl_baranghpo", ['po_no' => $hmutasi->pono]);
+		if ($data_bhterima->num_rows() > 0) {
+			$this->db->set("internalproses", 0);
+			$this->db->set("cek", 0);
+			$this->db->where("po_no", $hmutasi->pono);
+			$this->db->update("tbl_baranghpo");
+		} else {
+			$this->db->set("internalproses", 0);
+			$this->db->set("cek", 0);
+			$this->db->where("po_no", $hmutasi->pono);
+			$this->db->update("tbl_apohpolog");
+		}
+		foreach ($datamutasi as $row) {
+			$_qty 	= $row->qty;
+			$_kode 	= $row->kodebarang;
+			$cek = $this->db->get_where("tbl_barangstock", ["kodebarang" => $_kode, "gudang" => $gudang, "koders" => $unit]);
+			if($cek->num_rows() > 0){
+				$this->db->query("UPDATE tbl_barangstock set keluar=keluar- $_qty, saldoakhir= saldoakhir+ $_qty where kodebarang = '$_kode' and koders = '$unit' and gudang = '$gudang'");
+			} else {
+				$this->db->query("UPDATE tbl_apostocklog set keluar=keluar- $_qty, saldoakhir= saldoakhir+ $_qty where kodebarang = '$_kode' and koders = '$unit' and gudang = '$gudang'");
+			}
+		}
+		$this->db->delete('tbl_apodresep', array('resepno' => $nomor));
+		$this->db->delete('tbl_apohresep', array('resepno' => $nomor));
+		$this->db->delete('tbl_apoposting', array('resepno' => $nomor));
+		$this->db->delete('tbl_pap', array('noreg' => $nomor));
+
+		$gudang        	= $this->input->post('gudang');
+		$po_no         	= $this->input->post('po_cabang');
+		$tgl           	= $this->input->post('tanggal');
+		$jam           	= $this->input->post('jam');
+		$cust_id       	= $this->input->post('cust_id');
+		$diskon       	= $this->input->get('diskon');
+		$ppn       			= $this->input->get('ppn');
+		$fakturpajak   	= $this->input->post("fakturpajak");
+		$noprimary  		= $nomor;
+		$tujuan					= $this->input->post("cabang");
+		$kode  					= $this->input->post('kode');
+		$qty   					= $this->input->post('qty');
+		$sat   					= $this->input->post('sat');
+		$harga 					= $this->input->post('harga');
+		$ppn   					= $this->input->post('ppn');
+		$disc  					= $this->input->post('disc');
+		$discrp  				= $this->input->post('discrp');
+		$jumlah 				= $this->input->post('jumlah');
+		$exp   					= $this->input->post('tanggal');
+		// $exp   = date("Y-m-d");
+		$aturan   			= $this->input->post('aturan');
+		$norak   				= $this->input->post('norak');
+		$jumdata  			= count($kode);
+		$tot 						= 0;
+		$tdisc 					= 0;
+		$tothpp 				= 0;
+		for ($i = 0; $i <= $jumdata - 1; $i++) {
+			$_kode        = $kode[$i];
+			$_qty         = str_replace(',', '', $qty[$i]);
+			$_exp         = $exp[$i];
+			$_sat         = $sat[$i];
+			$_aturan      = $aturan[$i];
+			$_norak       = $norak[$i];
+			$tot          = $tot + str_replace(',', '', $jumlah[$i]);
+			$_jumlah      = str_replace(',', '', $jumlah[$i]);
+			$_harga       = str_replace(',', '', $harga[$i]);
+			$_discrp      = str_replace(',', '', $discrp[$i]);
+			$vjum         = $qty[$i] * $_harga;
+			$vdisc        = $vjum * ($disc[$i] / 100);
+			$tdisc        = $tdisc + $vdisc;
+			$hpp          = $this->M_global->_data_barang($_kode)->hpp;
+			$namabarang   = $this->M_global->_data_barang($_kode)->namabarang;
+			$tothpp       = $tothpp + ($hpp * $qty[$i]);
+			$pajak        = $this->db->get_where("tbl_pajak", ['kodetax' => 'PPN'])->row()->prosentase / 100;
+			$_ppn 	= 1;
+			$_ppnrp = $vjum * $pajak;
+			$jual = [
+				'koders'    	=> $cabang,
+				'resepno'   	=> $noprimary,
+				'kodebarang' 	=> $_kode,
+				'namabarang' 	=> $namabarang,
+				'qty' 				=> $_qty,
+				'satuan' 			=> $_sat,
+				'ppn' 				=> $_ppn,
+				'ppnrp' 			=> $_ppnrp,
+				'hpp' 				=> $hpp,
+				'price' 			=> $_harga,
+				'discount' 		=> $disc[$i],
+				'discrp' 			=> $_discrp,
+				'totalrp' 		=> $_jumlah,
+				'exp_date' 		=> $_exp,
+				'atpakai' 		=> $_aturan,
+				'rakno'  			=> $_norak,
+			];
+			$this->db->insert('tbl_apodresep', $jual);
+				$barangstok = $this->db->query("SELECT * FROM tbl_barangstock WHERE koders = '$unit' AND gudang = '$gudang' AND kodebarang = '$_kode'");
+				if ($barangstok->num_rows() > 0) {
+					$this->db->query("UPDATE tbl_barangstock SET keluar = keluar+$_qty, saldoakhir = saldoakhir-$_qty WHERE kodebarang = '$_kode' AND koders = '$unit'  AND gudang = '$gudang'");
+				} else {
+					$this->db->query("UPDATE tbl_apostocklog SET keluar = keluar+$_qty, saldoakhir = saldoakhir-$_qty WHERE kodebarang = '$_kode' AND koders = '$unit'  AND gudang = '$gudang'");
+				}
+		}
+		$pajak = 1;
+		$data = [
+			'koders' 				=> $cabang,
+			'resepno' 			=> $noprimary,
+			'antrino'  			=> 1,
+			'cust_id'  			=> $cust_id,
+			'jenisjual'  		=> 2,
+			'kodepel'  			=> $this->input->post('pembeli'),
+			'rekmed'  			=> $this->input->post('cabang'),
+			'pro'  					=> $this->input->post('namapasien'),
+			'tglresep'   		=> date('Y-m-d', strtotime($this->input->post('tanggal'))),
+			'jam' 					=> date('H:i:s', strtotime($this->input->post('jam'))),
+			'gudang'  			=> $this->input->post('gudang'),
+			'pajak'  				=> $pajak,
+			'fakturpajak'  	=> $fakturpajak,
+			'username' 			=> $userid,
+			'pono' 					=> $po_no,
+		];
+		$this->db->insert('tbl_apohresep', $data);
+		//posting
+		$data = [
+			'koders' 		=> $cabang,
+			'resepno' 	=> $noprimary,
+			'tglresep'  => date('Y-m-d', strtotime($this->input->post('tanggal'))),
+			'rekmed'  	=> $tujuan,
+			'namapas' 	=> $this->input->post('namapasien'),
+			'gudang'  	=> $this->input->post('gudang'),
+			'posting' 	=> 1,
+			'poscredit' => $this->input->get('totalnet'),
+			'username' 	=> $userid,
+			'diskonrp' 	=> $diskon,
+			'kodepel'		=> $this->input->post('pembeli'),
+		];
+		$data_pap = [
+			'noreg' 				=> $noprimary,
+			'koders' 				=> $unit,
+			'rekmed' 				=> $tujuan,
+			'tglposting' 		=> date('Y-m-d', strtotime($this->input->post('tanggal'))),
+			'cust_id' 			=> $this->input->post('cust_id'),
+			'jumlahhutang' 	=> $this->input->get('totalnet'),
+			'asal' 					=> 'POLI',
+			'namapas' 			=> $this->input->post('namapasien'),
+			'username' 			=> $userid,
+		];
+		$this->db->insert('tbl_apoposting', $data);
+		$this->db->insert('tbl_pap', $data_pap);
+		echo json_encode($nomor);
 	}
 }

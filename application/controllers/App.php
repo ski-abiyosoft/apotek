@@ -530,6 +530,12 @@ class App extends CI_Controller
 		echo json_encode($this->M_global->getfarmasibarang2($q));
 	}
 
+	function search_farmasi_barang_cbg()
+	{
+		$q = $this->input->post('searchTerm');
+		echo json_encode($this->M_global->getfarmasibarang_cbg($q));
+	}
+
 	function search_poli_tindakan()
 	{
 		$q = $this->input->post('searchTerm');

@@ -172,7 +172,7 @@
           <div class="form-group">
             <label class="col-md-3 control-label">Jenis Pasien <font color="red">*</font></label>
             <div class="col-md-9">
-              <select class="form-control select2_el_jenispasien" style="width:100%;" id="jenispasien" name="jenispasien" onChange="getRuang()">
+              <select class="form-control select2_el_jenispasien" style="width:100%;" id="jenispasien" name="jenispasien" onchange="getRuang()">
                 <option value="">--- Pilih ---</option>
                 <?php $jenis = $this->db->get_where("tbl_setinghms", array("lset" => 'JPAS'))->result();
 								foreach($jenis as $row){ 
@@ -199,7 +199,7 @@
           <div class="form-group">
             <label class="col-md-3 control-label">Penjamin <font color="red"></font></label>
             <div class="col-md-9">
-              <select class="form-control select2_el_penjamin" style="width:100%;" id="vpenjamin" name="vpenjamin">
+              <select class="form-control select2_el_penjamin" style="width:100%;" id="vpenjamin" name="vpenjamin" onchange="get_pcare(this.value)">
                 <option value="">--- Pilih ---</option>
                 <?php $penjamin = $this->db->get_where("tbl_penjamin", array("cust_id" => 'BPJS'))->result();
 								foreach($penjamin as $row){ 
@@ -273,7 +273,12 @@
       </div>
       <div class="row">
         <div class="col-md-12">
-          <button class="btn green" style="float: right"><i class="fa fa-check-square"></i> Briging
+          <button type="button" class="btn blue" style="float: right" onclick="vpcare();"  id="pcare" name="pcare"> 
+            <i class="fa fa-check-square"></i> Bridging PCare
+          </button><br><br>
+        </div>
+        <div class="col-md-12">
+          <button type="button" class="btn green" style="float: right"><i class="fa fa-check-square"></i> Bridging
             Vclaim</button>
         </div>
       </div>
@@ -737,7 +742,6 @@
 
 <input type="hidden" name="now" id="now" value="<?= date('Y-m-d'); ?>">
 <script>
-
 // husaina add
 function cekruang(){
 
@@ -1943,6 +1947,28 @@ $(".select2_dokter_igd").select2({
   }
 });
 
+document.getElementById('pcare').style.visibility="hidden";
+
+function get_pcare(vpenjamin) {
+  
+  if (vpenjamin == "BPJS") {
+    document.getElementById('pcare').style.visibility="visible";
+  } else {
+    document.getElementById('pcare').style.visibility="hidden";
+  }
+}
+
+function vpcare()
+{
+    // var nampasdet = document.getElementById("nampasdet").value;
+    var noregdet  = $('#noreg').val();
+    var rekmeddet = '000459';
+    url="<?php echo base_url()?>PendaftaranVRS/pcare_rj/?noreg="+noregdet+"&rekmed="+rekmeddet
+    
+    window.open(url,'_blank');
+    window.focus();
+}
+
 function getRuang() {
   var jenispasien = document.getElementById('jenispasien').value;
   if (jenispasien != 'PAS1') {
@@ -2084,62 +2110,72 @@ function register() {
   //   confirmButtonText: "OK"
   // });
 
-  if(norm == "" || norm == null){
-    $('#modal_form').modal('hide');
-    swal({
-      title: "No. RM",
-      html: " Tidak Boleh Kosong .!!!",
-      type: "error",
-      confirmButtonText: "OK"
-    }).then((value) => {
-      // $('#modal_form').modal('show');      
-      $('#btnSave').text('save');
-      $('#btnSave').attr('disabled', false);
-    });
-    return;
-  }
-  if(norm != "" || norm != null && poliklinik != "" || poliklinik != null && dokter != "" || dokter != null && ruang != "" || ruang != null && tanggal != "" || tanggal != null && jam != "" || jam != null && jenispasien != "" || jenispasien != null) {
-    var noregz = $("#noreg").val();
-    url = "<?php echo site_url('PendaftaranVRS/tambah_pasien_register_rawat_jalan?noreg=')?>"+noregz;
-    $.ajax({
-      url: url,
-      type: "POST",
-      data: ($('#frmpasien').serialize()),
-      dataType: "JSON",
-      success: function(data) {
-        // script originial
-        if(data.status == 0){
+  var noregz = $("#noreg").val();
+  url = "<?php echo site_url('PendaftaranVRS/tambah_pasien_register_rawat_jalan?noreg=')?>"+noregz;
+  $.ajax({
+    url: url,
+    type: "POST",
+    data: ($('#frmpasien').serialize()),
+    dataType: "JSON",
+    success: function(data) {
+      // script originial
+      if(data.status == 0){
+        if(vpenjamin == "BPJS"){
+          //
+        } else {
+          // swal({
+          //   title: "DATA PASIEN",
+          //   html: "Data berhasil teregistrasi",
+          //   type: "success",
+          //   confirmButtonText: "OK" 
+          // }).then((value) => {
+          //   $('#modal_form').modal('hide');
+          //   $("#btnsimpaneditpasien").attr('disabled', true);
+          //   $("#noreg").val(data.noreg);
+          // });
+
           swal({
             title: "DATA PASIEN",
             html: "Data berhasil teregistrasi",
             type: "success",
-            confirmButtonText: "OK" 
-          }).then((value) => {
-            $('#modal_form').modal('hide');
-            $("#btnsimpaneditpasien").attr('disabled', true);
-            $("#noreg").val(data.noreg);
+            confirmButtonText: "Bridging PCare",
+            cancelButtonText: "Ok",
+            confirmButtonColor: "blue",
+            cancelButtonColor: "green",
+            showCancelButton: true,
+            allowOutsideClick: false
+          }).then(function() {
+              url="<?php echo base_url()?>PendaftaranVRS/pcare_rj/?noreg="+data.noreg+"&rekmed="+norm
+              
+              window.open(url,'_blank');
+              window.focus();
+          }, function(dismiss) {
+            // dismiss can be 'cancel', 'overlay',
+            // 'close', and 'timer'
+            if (dismiss === 'cancel') {
+              
+              $('#modal_form').modal('hide');
+              $("#btnsimpaneditpasien").attr('disabled', true);
+              $("#noreg").val(data.noreg);
+            }
           });
-        } else if(data.status == 2){
-          swal({
-              title: "PASIEN",
-              html: "Pasien atas nama : <b>"+data.nm+"</b><br>"+
-              "SUDAH TERDAFTAR, SILAHKAN CEK DI LIST",
-              type: "error",
-              confirmButtonText: "OK"
-            }).then((value) => {
-              // window.location.reload();
-              return;
-            });
-        }else{
-          swal({
-            title: "DATA PASIEN",
-            html: "Data gagal teregistrasi",
+          
+          $('#modal_form').modal('hide');
+          $("#btnsimpaneditpasien").attr('disabled', true);
+          $("#noreg").val(data.noreg);
+
+        }
+      } else if(data.status == 2){
+        swal({
+            title: "PASIEN",
+            html: "Pasien atas nama : <b>"+data.nm+"</b><br>"+
+            "SUDAH TERDAFTAR, SILAHKAN CEK DI LIST",
             type: "error",
             confirmButtonText: "OK" 
           }).then((value) => {
             $('#modal_form').modal('hide');
           });
-        }
+      }
         // husain change
         // if (data.status == 0) {
         //   swal({
@@ -2164,7 +2200,7 @@ function register() {
         // }
       }
     });
-  }
+    // }
 
 }
 

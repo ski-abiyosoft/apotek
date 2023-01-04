@@ -139,7 +139,7 @@ $this->load->view('template/body');
                                                 }
                                             ?>
                                         </td>
-                                        <td><?= $data->total_biaya_pasien ?></td>
+                                        <td><?= $data->totalrp_pasien ?></td>
                                     </tr>
                                 <?php } ?>
                             </tbody>
@@ -205,7 +205,7 @@ $this->load->view('template/body');
                                     <td><?= $data->diagnosa ?></td>
                                     <td><?= $data->nadokter ?></td>
                                     <td><?= $data->tindakan ?></td>
-                                    <td><?= $data->total_biaya ?></td>
+                                    <td><?= $data->totalrp ?></td>
                                 </tr>
                             <?php } ?>
                         </tbody>
@@ -420,9 +420,9 @@ $this->load->view('template/footer');
                         $name = 'Pasien Luar';
                     }
 
-                    $total_biaya = intval($omsetLab[0]->total_biaya_pasien) + intval($omsetLab[0]->total_biaya_pasien); 
+                    $totalrp = intval($omsetLab[0]->totalrp_pasien) + intval($omsetLab[0]->totalrp_pasien); 
 
-                    $percent = (intval($data->total_biaya_pasien) / $total_biaya) * 100;
+                    $percent = (intval($data->totalrp_pasien) / $totalrp) * 100;
                 ?>
                 {
                     name: '<?php echo $name;?>',

@@ -13,10 +13,14 @@ class Poliklinik extends CI_Controller {
 	}
 	
 	public function index(){
-		$cek = $this->session->userdata('username');
-		$unit= $this->session->userdata('unit');
-		if(!empty($cek))
-		{
+		$cek 	= $this->session->userdata('username');
+		$unit	= $this->session->userdata('unit');
+		if(!empty($cek)){
+
+			$average_wait	= $this->db->query("SELECT jam, jamkeluar
+			FROM tbl_rekammedisrs 
+			WHERE koders = '$unit'");
+
 			$data=[
 				$id = $this->uri->segment(3),
 				$bulan  			= $this->M_global->_periodebulan(),
@@ -30,6 +34,7 @@ class Poliklinik extends CI_Controller {
 				'total_pasien'  	=> $this->M_Poliklinik->total_pasien(),
 				'diperiksa_perawat' => $this->M_Poliklinik->diperiksa_perawat()->num_rows(),
 				'diperiksa_dokter'  => $this->M_Poliklinik->diperiksa_dokter()->num_rows(),
+				'atime'				=> $average_wait->result(),
 				'periode'			=> $periode,
 				// 'naDokter'			=> $this->M_Poliklinik->naDokter(),
 				'menu'				=> 'e-HMS',
@@ -148,7 +153,7 @@ class Poliklinik extends CI_Controller {
 			// $row[] = $periksa_perawat;
 			// $row[] = $periksa_dokter;
 			$sebut   = trim($this->M_global->penyebut($unit->antrino));
-			$row[]   = '<button class="btn btn-primary btn-sm" onclick="playAudio('."'".strtolower($unit->kodepos)."',"."'".strtolower($unit->antrino1)."',"."'".$unit->antrino."',"."'".$sebut."'".')" type="button"><b>'.$unit->antrino1.'.'.$unit->antrino.' | call </b><i class="fa fa-volume-off"></i></button>';
+			$row[]   = '<button class="btn btn-primary btn-sm" onclick="playAudio('."'".strtolower($unit->kodepos)."',"."'".strtolower($unit->antrino1)."',"."'".$unit->antrino."',"."'".$sebut."'".'); cekpanggilan('."'". $unit->noreg."'".')" type="button"><b>'.$unit->antrino1.'.'.$unit->antrino.' | call </b><i class="fa fa-volume-off"></i></button>';
 			$row[]   = $status_kasir;
 			$row[]   = $unit->noreg;
 			$row[]   = $unit->rekmed;
@@ -158,6 +163,7 @@ class Poliklinik extends CI_Controller {
 			$row[]   = $unit->nadokter;
 			$row[]   = $jpas;
 			$row[]   = $unit->nobpjs;
+			$row[]	 = ($unit->nobpjs == "" ? "" : "<a href='". base_url("pcare/". $unit->noreg) ."' target='_blank'><button type='button' class='btn btn-primary btn-xs'>Bridging</button></a>");
 						//saya mengganti line 120 semula $unit->id
 
 
@@ -173,6 +179,26 @@ class Poliklinik extends CI_Controller {
 				);
 		//output to json format
 		echo json_encode($output);
+	}
+
+	public function cekpanggil(){
+		$noreg = $this->input->get("noreg");
+		$ceklast = $this->db->query("SELECT lastno FROM tbl_regist WHERE cekpanggil = 1 ORDER BY lastno DESC LIMIT 1");
+		if ($ceklast->num_rows() < 1) {
+			$last = 1;
+		} else {
+			$cl = $ceklast->row();
+			$last = (int)$cl->lastno + 1;
+		}
+		$this->db->query("UPDATE tbl_regist SET cekpanggil = 1, lastno = '$last' WHERE noreg = '$noreg'");
+		$data = $this->db->query("SELECT * FROM tbl_regist WHERE cekpanggil = 1 ORDER BY lastno DESC LIMIT 1");
+		if($data->num_rows() > 0){
+			$dt = $data->row();
+			$dat = $dt->antrino1.".".$dt->antrino;
+		} else {
+			$dat = "-.0";
+		}
+		echo json_encode($dat);
 	}
 
 	public function ajax_add_per($param){
@@ -203,8 +229,9 @@ class Poliklinik extends CI_Controller {
 			'tdarah1'      	=> $this->input->post('tekanan1'),
 			'dead'         	=> $this->input->post('doa_hidden'),
 			'pfisik'       	=> $pfisik,
-			'tglkeluar'    	=> date('Y-m-d'),
+			// 'tglkeluar'    	=> date('Y-m-d'),
 			'jam'          	=> date('H:i:s'),
+			'jamdikonsul'	=> date('H:i:s'),
 			'alergi'		=> $this->input->post('alergi_per'),
 
 			// 'coba'  => $this->input->post('tgl_l_per'),
@@ -267,8 +294,8 @@ class Poliklinik extends CI_Controller {
 			'koders'       	=> $cabang,
 			'noreg'        	=> $noreg_dok,
 			'rekmed'       	=> $rekmed_dok,
-			'tglperiksa'   	=> $this->input->post('tgl_dok'),
-			'tglkonsul'    	=> $this->input->post('tgl_dok'),
+			// 'tglperiksa'   	=> $this->input->post('tgl_dok'),
+			// 'tglkonsul'    	=> $this->input->post('tgl_dok'),
 			'kodepos'      	=> $poli_dok,
 			'keluhanawal'  	=> $this->input->post('kelawal'),
 			'pfisik'       	=> $this->input->post('pemeriksaan'),
@@ -279,7 +306,7 @@ class Poliklinik extends CI_Controller {
 			'tindu'        	=> $this->input->post('tindu'),
 			'anjuran'      	=> $this->input->post('anjuran'),
 			'tglkeluar'    	=> date('Y-m-d'),
-			'jam'          	=> date('H:i:s'),
+			'jamkeluar'		=> date('H:i:s'),
 			'nyeri'			=> $this->input->post('ceknyeri'),
 			'alergi'		=> $this->input->post('alergi_dok'),
 			'ijinsakit'		=> $this->input->post('sakitselama'),
@@ -420,7 +447,7 @@ class Poliklinik extends CI_Controller {
 				}
 			}
 
-			// -- ALKES --//
+			//-- ALKES --//
 			$c_bbn       = $this->input->post('bbn_hide');
 			$c_kdalkes   = $this->input->post('kdalkes');
 			$c_satalkes  = $this->input->post('satalkes');
@@ -428,42 +455,44 @@ class Poliklinik extends CI_Controller {
 			$c_hrgalkes  = $this->input->post('hrgalkes');
 			$c_totalkes  = $this->input->post('totalkes');
 
-			$this->db->query("DELETE from tbl_alkestransaksi WHERE notr = '$noreg_dok' and koders='$cabang'");
+			if(isset($c_kdalkes)){
+				$this->db->query("DELETE from tbl_alkestransaksi WHERE notr = '$noreg_dok' and koders='$cabang'");
 
-			$jumdataalkes = count($c_kdalkes);
-			for($i=0;$i<=$jumdataalkes-1;$i++){
-				$_c_hrgalkes   = str_replace(',','',$c_hrgalkes[$i]);
-				$_c_totalkes   = str_replace(',','',$c_totalkes[$i]);
+				$jumdataalkes = count($c_kdalkes);
+				for($i=0;$i<=$jumdataalkes-1;$i++){
+					$_c_hrgalkes   = str_replace(',','',$c_hrgalkes[$i]);
+					$_c_totalkes   = str_replace(',','',$c_totalkes[$i]);
 
-				$data_alkes = array(
-					'koders'       => $cabang,
-					'notr'         => $noreg_dok,
-					'kodeobat'     => $c_kdalkes[$i],
-					'qty'          => $c_qtyalkes[$i],
-					'satuan'       => $c_satalkes[$i],
-					'harga'        => $_c_hrgalkes,
-					'totalharga'   => $_c_totalkes,
-					'tgltransaksi' => $tanggal,
-					'gudang'	   => $gudang_bhp,
-					'dibebankan'   => $c_bbn[$i],
-				);
+					$data_alkes = array(
+						'koders'       => $cabang,
+						'notr'         => $noreg_dok,
+						'kodeobat'     => $c_kdalkes[$i],
+						'qty'          => $c_qtyalkes[$i],
+						'satuan'       => $c_satalkes[$i],
+						'harga'        => $_c_hrgalkes,
+						'totalharga'   => $_c_totalkes,
+						'tgltransaksi' => $tanggal,
+						'gudang'	   => $gudang_bhp,
+						'dibebankan'   => $c_bbn[$i],
+					);
 
-				if($c_kdalkes[$i]!=""){
-					// Lose Stock
-					$check_stock	= $this->db->query("SELECT * FROM tbl_barangstock WHERE kodebarang = '". $c_kdalkes[$i] ."' AND koders = '$cabang' AND gudang = '$gudang_bhp'");
+					if($c_kdalkes[$i]!=""){
+						// Lose Stock
+						$check_stock	= $this->db->query("SELECT * FROM tbl_barangstock WHERE kodebarang = '". $c_kdalkes[$i] ."' AND koders = '$cabang' AND gudang = '$gudang_bhp'");
 
-					if($check_stock->num_rows() == 0){
-						$this->db->query("INSERT INTO tbl_barangstock (koders,kodebarang,gudang,keluar,saldoakhir) 
-						VALUES ('$cabang', '". $c_kdalkes[$i] ."', '$gudang_bhp', '". $c_qtyalkes[$i] ."', '". $c_qtyalkes[$i] ."')");
-					} else {
-						$this->db->query("UPDATE tbl_barangstock SET keluar = keluar+". $c_qtyalkes[$i] .", saldoakhir = saldoakhir-". $c_qtyalkes[$i] ." WHERE kodebarang = '". $c_kdalkes[$i] ."' AND koders = '$cabang'  AND gudang = '$gudang_bhp'");
+						if($check_stock->num_rows() == 0){
+							$this->db->query("INSERT INTO tbl_barangstock (koders,kodebarang,gudang,keluar,saldoakhir) 
+							VALUES ('$cabang', '". $c_kdalkes[$i] ."', '$gudang_bhp', '". $c_qtyalkes[$i] ."', '". $c_qtyalkes[$i] ."')");
+						} else {
+							$this->db->query("UPDATE tbl_barangstock SET keluar = keluar+". $c_qtyalkes[$i] .", saldoakhir = saldoakhir-". $c_qtyalkes[$i] ." WHERE kodebarang = '". $c_kdalkes[$i] ."' AND koders = '$cabang'  AND gudang = '$gudang_bhp'");
+						}
+
+						// $this->db->query("UPDATE tbl_barangstock SET keluar = keluar+". $c_qtyalkes[$i] .", saldoakhir = saldoakhir-". $c_qtyalkes[$i] ." WHERE kodebarang = '". $c_kdalkes[$i] ."' AND koders = '$cabang'  AND gudang = '$gudang_bhp'");
+
+						$insert_detil = $this->db->insert('tbl_alkestransaksi',$data_alkes);
 					}
 
-					// $this->db->query("UPDATE tbl_barangstock SET keluar = keluar+". $c_qtyalkes[$i] .", saldoakhir = saldoakhir-". $c_qtyalkes[$i] ." WHERE kodebarang = '". $c_kdalkes[$i] ."' AND koders = '$cabang'  AND gudang = '$gudang_bhp'");
-
-					$insert_detil = $this->db->insert('tbl_alkestransaksi',$data_alkes);
 				}
-
 			}
 
 			// -- ERESEP -- //
@@ -485,36 +514,38 @@ class Poliklinik extends CI_Controller {
 				urut_transaksi("ERESEP", 20);
 			}
 
-			$this->db->query("DELETE from tbl_eresep WHERE noreg = '$noreg_dok' and koders='$cabang'");
-			$jumdataer			= count($er_obat);
-			for($er=0;$er<=$jumdataer-1;$er++){
-				$nama_obat		= data_master("tbl_barang", array("kodebarang" => $er_obat[$er]))->namabarang;
-				$totalharga		= str_replace(",", "", $er_totalharga[$er]);
+			if(isset($er_obat)){
+				$this->db->query("DELETE from tbl_eresep WHERE noreg = '$noreg_dok' and koders='$cabang'");
+				$jumdataer			= count($er_obat);
+				for($er=0;$er<=$jumdataer-1;$er++){
+					$nama_obat		= data_master("tbl_barang", array("kodebarang" => $er_obat[$er]))->namabarang;
+					$totalharga		= str_replace(",", "", $er_totalharga[$er]);
 
-				$data_eresep_add	= array(
-					"koders"		=> $cabang,
-					"noreg"			=> $noreg_dok,
-					"orderno"		=> $orderno,
-					"kodeobat"		=> $er_obat[$er],
-					"namaobat"		=> $nama_obat,
-					"satuan"		=> $er_satuan[$er],
-					"qty"			=> $er_jmlobat[$er],
-					"qty_perhari"	=> $er_jmlhobathari[$er],
-					"jml_hari"		=> $er_jmlhari[$er],
-					"qty_minum"		=> $er_qtymin[$er],
-					"harga"			=> $er_harga[$er],
-					"totalharga"	=> $totalharga,
-					"aturanpakai"	=> $er_aturan[$er],
-					"gudang"		=> $gudang,
-					"resepno"		=> $orderno,
-					"namauser"		=> $userid,
-					"qtyawal"		=> $er_jmlobat[$er],
-					"keterangan"	=> $er_keterangan[$er],
-					"kronis"		=> $er_kronishide[$er],
-					// "validfarmasi"	=> $er_validfar[$er],
-				);
+					$data_eresep_add	= array(
+						"koders"		=> $cabang,
+						"noreg"			=> $noreg_dok,
+						"orderno"		=> $orderno,
+						"kodeobat"		=> $er_obat[$er],
+						"namaobat"		=> $nama_obat,
+						"satuan"		=> $er_satuan[$er],
+						"qty"			=> $er_jmlobat[$er],
+						"qty_perhari"	=> $er_jmlhobathari[$er],
+						"jml_hari"		=> $er_jmlhari[$er],
+						"qty_minum"		=> $er_qtymin[$er],
+						"harga"			=> $er_harga[$er],
+						"totalharga"	=> $totalharga,
+						"aturanpakai"	=> $er_aturan[$er],
+						"gudang"		=> $gudang,
+						"resepno"		=> $orderno,
+						"namauser"		=> $userid,
+						"qtyawal"		=> $er_jmlobat[$er],
+						"keterangan"	=> $er_keterangan[$er],
+						"kronis"		=> $er_kronishide[$er],
+						// "validfarmasi"	=> $er_validfar[$er],
+					);
 
-				$this->db->insert("tbl_eresep", $data_eresep_add);
+					$this->db->insert("tbl_eresep", $data_eresep_add);
+				}
 			}
 
 			// -- RACIKAN -- //
@@ -544,79 +575,85 @@ class Poliklinik extends CI_Controller {
 			$this->db->query("DELETE FROM tbl_eracik WHERE racikid = 'RACIK2' AND noreg = '$noreg_dok' AND koders = '$cabang'");
 			$this->db->query("DELETE FROM tbl_eracik WHERE racikid = 'RACIK3' AND noreg = '$noreg_dok' AND koders = '$cabang'");
 
-			$jumracik1	= count($ra_kodeobat1);
-			for($ra1 = 0; $ra1 <= $jumracik1-1; $ra1++){
-				$nama_obat_ra1	= data_master("tbl_barang", array("kodebarang" => $ra_kodeobat1[$ra1]))->namabarang;
-				$harga_ra1		= str_replace(",", "", $ra_harga1[$ra1]);
-				$totalharga_ra1 = str_replace(",", "", $ra_totalharga1[$ra1]);
+			if(isset($ra_kodeobat1)){
+				$jumracik1	= count($ra_kodeobat1);
+				for($ra1 = 0; $ra1 <= $jumracik1-1; $ra1++){
+					$nama_obat_ra1	= data_master("tbl_barang", array("kodebarang" => $ra_kodeobat1[$ra1]))->namabarang;
+					$harga_ra1		= str_replace(",", "", $ra_harga1[$ra1]);
+					$totalharga_ra1 = str_replace(",", "", $ra_totalharga1[$ra1]);
 
-				$data_racik1	= array(
-					"koders"		=> $cabang,
-					"orderno"		=> $orderno,
-					"racikid"		=> "RACIK1",
-					"noreg"			=> $noreg_dok,
-					"kodeobat"		=> $ra_kodeobat1[$ra1],
-					"namaobat"		=> $nama_obat_ra1,
-					"satuan"		=> $ra_satuan1[$ra1],
-					"qty_racik"		=> $ra_qtyracik1[$ra1],
-					"qty_jual"		=> $ra_qtyjual1[$ra1],
-					"harga"			=> $harga_ra1,
-					"totalharga"	=> $totalharga_ra1,
-					"aturanpakai"	=> $ra_aturanpakai1,
-					"proses"		=> 1,
-				);
+					$data_racik1	= array(
+						"koders"		=> $cabang,
+						"orderno"		=> $orderno,
+						"racikid"		=> "RACIK1",
+						"noreg"			=> $noreg_dok,
+						"kodeobat"		=> $ra_kodeobat1[$ra1],
+						"namaobat"		=> $nama_obat_ra1,
+						"satuan"		=> $ra_satuan1[$ra1],
+						"qty_racik"		=> $ra_qtyracik1[$ra1],
+						"qty_jual"		=> $ra_qtyjual1[$ra1],
+						"harga"			=> $harga_ra1,
+						"totalharga"	=> $totalharga_ra1,
+						"aturanpakai"	=> $ra_aturanpakai1,
+						"proses"		=> 1,
+					);
 
-				$this->db->insert("tbl_eracik", $data_racik1);
+					$this->db->insert("tbl_eracik", $data_racik1);
+				}
 			}
 
-			$jumracik2	= count($ra_kodeobat2);
-			for($ra2 = 0; $ra2 <= $jumracik2-1; $ra2++){
-				$nama_obat_ra2	= data_master("tbl_barang", array("kodebarang" => $ra_kodeobat2[$ra2]))->namabarang;
-				$harga_ra2		= str_replace(",", "", $ra_harga2[$ra2]);
-				$totalharga_ra2 = str_replace(",", "", $ra_totalharga2[$ra2]);
+			if(isset($ra_kodeobat2)){
+				$jumracik2	= count($ra_kodeobat2);
+				for($ra2 = 0; $ra2 <= $jumracik2-1; $ra2++){
+					$nama_obat_ra2	= data_master("tbl_barang", array("kodebarang" => $ra_kodeobat2[$ra2]))->namabarang;
+					$harga_ra2		= str_replace(",", "", $ra_harga2[$ra2]);
+					$totalharga_ra2 = str_replace(",", "", $ra_totalharga2[$ra2]);
 
-				$data_racik2	= array(
-					"koders"		=> $cabang,
-					"orderno"		=> $orderno,
-					"racikid"		=> "RACIK2",
-					"noreg"			=> $noreg_dok,
-					"kodeobat"		=> $ra_kodeobat2[$ra2],
-					"namaobat"		=> $nama_obat_ra2,
-					"satuan"		=> $ra_satuan2[$ra2],
-					"qty_racik"		=> $ra_qtyracik2[$ra2],
-					"qty_jual"		=> $ra_qtyjual2[$ra2],
-					"harga"			=> $harga_ra2,
-					"totalharga"	=> $totalharga_ra2,
-					"aturanpakai"	=> $ra_aturanpakai2,
-					"proses"		=> 1,
-				);
+					$data_racik2	= array(
+						"koders"		=> $cabang,
+						"orderno"		=> $orderno,
+						"racikid"		=> "RACIK2",
+						"noreg"			=> $noreg_dok,
+						"kodeobat"		=> $ra_kodeobat2[$ra2],
+						"namaobat"		=> $nama_obat_ra2,
+						"satuan"		=> $ra_satuan2[$ra2],
+						"qty_racik"		=> $ra_qtyracik2[$ra2],
+						"qty_jual"		=> $ra_qtyjual2[$ra2],
+						"harga"			=> $harga_ra2,
+						"totalharga"	=> $totalharga_ra2,
+						"aturanpakai"	=> $ra_aturanpakai2,
+						"proses"		=> 1,
+					);
 
-				$query_insert_racik = $this->db->insert("tbl_eracik", $data_racik2);
+					$query_insert_racik = $this->db->insert("tbl_eracik", $data_racik2);
+				}
 			}
 
-			$jumracik3	= count($ra_kodeobat3);
-			for($ra3 = 0; $ra3 <= $jumracik3-1; $ra3++){
-				$nama_obat_ra3	= data_master("tbl_barang", array("kodebarang" => $ra_kodeobat3[$ra3]))->namabarang;
-				$harga_ra3		= str_replace(",", "", $ra_harga3[$ra3]);
-				$totalharga_ra3 = str_replace(",", "", $ra_totalharga3[$ra3]);
+			if(isset($ra_kodeobat3)){
+				$jumracik3	= count($ra_kodeobat3);
+				for($ra3 = 0; $ra3 <= $jumracik3-1; $ra3++){
+					$nama_obat_ra3	= data_master("tbl_barang", array("kodebarang" => $ra_kodeobat3[$ra3]))->namabarang;
+					$harga_ra3		= str_replace(",", "", $ra_harga3[$ra3]);
+					$totalharga_ra3 = str_replace(",", "", $ra_totalharga3[$ra3]);
 
-				$data_racik3	= array(
-					"koders"		=> $cabang,
-					"orderno"		=> $orderno,
-					"racikid"		=> "RACIK3",
-					"noreg"			=> $noreg_dok,
-					"kodeobat"		=> $ra_kodeobat3[$ra3],
-					"namaobat"		=> $nama_obat_ra3,
-					"satuan"		=> $ra_satuan3[$ra3],
-					"qty_racik"		=> $ra_qtyracik3[$ra3],
-					"qty_jual"		=> $ra_qtyjual3[$ra3],
-					"harga"			=> $harga_ra3,
-					"totalharga"	=> $totalharga_ra3,
-					"aturanpakai"	=> $ra_aturanpakai3,
-					"proses"		=> 1,
-				);
+					$data_racik3	= array(
+						"koders"		=> $cabang,
+						"orderno"		=> $orderno,
+						"racikid"		=> "RACIK3",
+						"noreg"			=> $noreg_dok,
+						"kodeobat"		=> $ra_kodeobat3[$ra3],
+						"namaobat"		=> $nama_obat_ra3,
+						"satuan"		=> $ra_satuan3[$ra3],
+						"qty_racik"		=> $ra_qtyracik3[$ra3],
+						"qty_jual"		=> $ra_qtyjual3[$ra3],
+						"harga"			=> $harga_ra3,
+						"totalharga"	=> $totalharga_ra3,
+						"aturanpakai"	=> $ra_aturanpakai3,
+						"proses"		=> 1,
+					);
 
-				$query_insert_racik = $this->db->insert("tbl_eracik", $data_racik3);
+					$query_insert_racik = $this->db->insert("tbl_eracik", $data_racik3);
+				}
 			}
 
 			// -- ORDER PERIKSA -- //
@@ -694,6 +731,30 @@ class Poliklinik extends CI_Controller {
 			}
 
 			// -- HEADER -- //
+
+			// Riwayat Pasien //
+
+			$riwayat_penyakit	= $this->input->post("riwayat_penyakit");
+			$riwayat_keluarga	= $this->input->post("riwayat_keluarga");
+
+			$check_riwayat		= $this->db->query("SELECT * FROM tbl_pasien_catatan WHERE rekmed = '$rekmed_dok'")->num_rows();
+
+			if($check_riwayat == 0){
+				$data_insert_riwayat	= [
+					"rekmed"			=> $rekmed_dok,
+					"riwayat_penyakit"	=> $riwayat_penyakit,
+					"riwayat_keluarga"	=> $riwayat_keluarga
+				];
+
+				$this->db->insert("tbl_pasien_catatan", $data_insert_riwayat);
+			} else {
+				$data_update_riwayat	= [
+					"riwayat_penyakit"	=> $riwayat_penyakit,
+					"riwayat_keluarga"	=> $riwayat_keluarga
+				];
+
+				$this->db->update("tbl_pasien_catatan", $data_update_riwayat, array("rekmed" => $rekmed_dok));
+			}
 
 			if ($param == 0) {
 				/* tbl_rekammedisrs */
@@ -1199,9 +1260,11 @@ class Poliklinik extends CI_Controller {
 		$unit   = $this->input->post('cekunit');
 		$koders = $this->session->userdata('unit');
 
-		$data = $this->db->query(
-			"SELECT d.kodokter, d.nadokter from tbl_drpoli p join tbl_dokter d on p.kodokter=d.kodokter where p.kopoli = '$unit' and koders = '$koders' "
-			)->result();
+		$data	= $this->db->query("SELECT * FROM dokter WHERE koders = '$koders' AND kopoli = '$unit'")->result();
+
+		// $data = $this->db->query(
+		// 	"SELECT d.kodokter, d.nadokter from tbl_drpoli p join tbl_dokter d on p.kodokter=d.kodokter where p.kopoli = '$unit' and koders = '$koders' "
+		// 	)->result();
 		echo json_encode($data);
     }
 
@@ -1217,13 +1280,47 @@ class Poliklinik extends CI_Controller {
 		echo json_encode(array("jarak" => $jarak));
     }
 
-	public function getpoli_tin($kode, $kodepos){
-		$unit = $this->session->userdata('unit');
+	public function getpoli_tin($kode){
+		$unit 		= $this->session->userdata('unit');
+		$kodepos	= $this->input->get("kodepos");
 
 		$data = $this->db->query("SELECT * FROM daftar_tarif_nonbedah AS a
 		WHERE a.koders = '$unit' 
 		AND a.kodetarif = '$kode' 
 		And a.kodepos = '$kodepos'")->row();
+		echo json_encode($data);
+	}
+
+	public function getpoli_lab($kode){
+		$unit 		= $this->session->userdata('unit');
+		$kodepos	= $this->input->get("kodepos");
+
+		$data = $this->db->query("SELECT * FROM daftar_tarif_nonbedah AS a
+		WHERE a.koders = '$unit' 
+		AND a.kodetarif = '$kode' 
+		And a.kodepos = 'LABOR'")->row();
+		echo json_encode($data);
+	}
+
+	public function getpoli_rad($kode){
+		$unit 		= $this->session->userdata('unit');
+		$kodepos	= $this->input->get("kodepos");
+
+		$data = $this->db->query("SELECT * FROM daftar_tarif_nonbedah AS a
+		WHERE a.koders = '$unit' 
+		AND a.kodetarif = '$kode' 
+		And a.kodepos = 'RADIO'")->row();
+		echo json_encode($data);
+	}
+
+	public function getpoli_med($kode){
+		$unit 		= $this->session->userdata('unit');
+		$kodepos	= $this->input->get("kodepos");
+
+		$data = $this->db->query("SELECT * FROM daftar_tarif_nonbedah AS a
+		WHERE a.koders = '$unit' 
+		AND a.kodetarif = '$kode' 
+		And a.kodepos = 'RADIO'")->row();
 		echo json_encode($data);
 	}
 
@@ -1256,7 +1353,7 @@ class Poliklinik extends CI_Controller {
 		$cekrekmed	= $this->input->post('cekrekmed');
 		$koders     = $this->session->userdata('unit');
 
-		$data = $this->db->query("SELECT *FROM pasien_rajal where koders='$koders' and noreg='$ceknoreg' and rekmed = '$cekrekmed'")->row();
+		$data = $this->db->query("SELECT * FROM pasien_rajal where koders='$koders' and noreg='$ceknoreg' and rekmed = '$cekrekmed'  ")->row();
 		echo json_encode($data);
     }
 
@@ -1335,6 +1432,76 @@ class Poliklinik extends CI_Controller {
 		}
 	}
 
+	public function get_icd_for_pcare($param){
+		
+		$query_icd	= $this->M_Poliklinik->get_icd_pcare($param);
+		$get_icd	= $query_icd->row();
+
+		if($query_icd){
+			$status		= "success";
+			$message	= "";
+			$icd_str	= $get_icd->str;
+		} else {
+			$status		= "error";
+			$message	= "ICD code not found";
+			$icd_str	= "";
+		}
+
+		echo json_encode(array(
+			"status"	=> $status,
+			"message"	=> $message,
+			"string"	=> $icd_str
+		));
+
+	}
+
+	public function pcare_get_data_pas($noreg){
+		$trx		= $this->db->get_where("tbl_icdtr", ["noreg" => $noreg]);
+		$ins		= $this->db->get_Where("tbl_rekammedisrs", ["noreg" => $noreg]);
+
+		$res		= [];
+		$keluhan_awal = $tinggi_badan = $berat_badan = "";
+
+		switch(true){
+			case ($trx == false) : 
+				$status		= "error";
+				$message	= "Gagal memuat diagnosa";
+				break;
+			case ($ins == false) : 
+				$status		= "error";
+				$message	= "Gagal memuat data pasien";
+				break;
+			default : 
+				$data_pas	= $ins->row();
+
+				$status		= "success";
+				$message	= "";
+
+				$keluhan_awal	= $data_pas->keluhanawal;
+				$tinggi_badan	= $data_pas->tinggibadan;
+				$berat_badan	= str_replace(".00", "", $data_pas->beratbadan);
+
+				foreach($trx->result() as $t){
+					$res[]	= [
+						"icd_code"	=> $t->icdcode,
+						"icd_name"	=> data_master("tbl_icdinb", ["code" => $t->icdcode])->str
+					];
+				}
+				break;
+		}
+
+		echo json_encode([
+			"status"	=> $status,
+			"message"	=> $message,
+			"data_diag"	=> $res,
+			"data_pas"	=> [
+				"keluhan_awal"	=> $keluhan_awal,
+				"tinggi_badan"	=> $tinggi_badan,
+				"berat_badan"	=> $berat_badan
+			]
+		], JSON_UNESCAPED_SLASHES);
+	}
+
 	// View
 
 	public function pemeriksaan_perawat(){
@@ -1402,6 +1569,8 @@ class Poliklinik extends CI_Controller {
 				// $ttv = $this->db->query("SELECT '-' as id ,'-' as koders ,'-' as noreg ,'-' as rekmed ,'-' as tglperiksa ,'-' as tglkeluar ,'-' as jam ,'-' as tujuan ,'-' as kodepos ,'-' as koderuang ,'-' as keluhanawal ,'-' as pfisik ,'-' as diagnosa ,'-' as simpul ,'-' as anjuran ,'-' as resep ,'-' as kodeicd ,'-' as kodeicd2 ,'-' as kodeicd3 ,'-' as keadaan_pulang ,'-' as ketpulang ,'-' as kodokter ,'-' as tglkonsul ,'-' as rcounter ,'0' as nadi ,'-' as nadi2 ,'-' as nafas ,'-' as tdarah ,'-' as tdarah1 ,'-' as suhu ,'-' as tinggibadan ,'-' as beratbadan ,'-' as bmi ,'-' as bmiresult ,'-' as tglkembali ,'-' as jamkembali ,'-' as nojanji ,'-' as dikonsulkepoli ,'-' as dikonsuldr ,'-' as jamdikonsul ,'-' as tgldikonsul ,'-' as noregkonsul ,'-' as surat1 ,'-' as surat2 ,'-' as surat3 ,'-' as surat4 ,'-' as alasanpulang ,'-' as urutkonsul ,'-' as oksigen ,'-' as kejiwaan ,'-' as lokalis ,'-' as rencana ,'-' as eye ,'-' as verbal ,'-' as movement ,'-' as nyeri ,'-' as urutin ,'-' as rmutama ,'-' as diagu ,'-' as diags ,'-' as tindu ,'-' as tinds ,'-' as asal ,'-' as gambar1 ,'-' as gambar2 ,'-' as pasienvk ,'-' as dead from tbl_rekammedisrs limit 1")->row();
 				$ttv = $this->db->query("SELECT * FROM tbl_rekammedisrs WHERE noreg = '$ceknoreg' and rekmed = '$rekmed' and koders='$koders'")->row();
 
+				$data_regist	= $this->db->query("SELECT * FROM pasien_rajal WHERE noreg = '$ceknoreg' AND rekmed = '$rekmed'");
+
 				// ICDTR //
 				$icd = $this->db->query("SELECT * FROM tbl_icdtr WHERE noreg = '$ceknoreg' and koders='$koders'")->num_rows();
 				if ($icd > 0) {
@@ -1467,20 +1636,20 @@ class Poliklinik extends CI_Controller {
 
 				// RACIKAN //
 				$query_racikan1	= $this->db->query("SELECT CONCAT(' [ ', kodeobat ,' ] ',' - ',' [ ', namaobat ,' ] ',' - ',' [ ', satuan ,' ] ',' - ',' [ ', harga ,' ]') as namaobatr1, tbl_eracik.*  
-				FROM tbl_eracik 
-				WHERE racikid = 'RACIK1' 
-				AND noreg = '$ceknoreg' 
-				AND koders = '$koders'");
+					FROM tbl_eracik 
+					WHERE racikid = 'RACIK1' 
+					AND noreg = '$ceknoreg' 
+					AND koders = '$koders'");
 				$query_racikan2	= $this->db->query("SELECT CONCAT(' [ ', kodeobat ,' ] ',' - ',' [ ', namaobat ,' ] ',' - ',' [ ', satuan ,' ] ',' - ',' [ ', harga ,' ]') as namaobatr2, tbl_eracik.*  
-				FROM tbl_eracik 
-				WHERE racikid = 'RACIK2' 
-				AND noreg = '$ceknoreg' 
-				AND koders = '$koders'");
+					FROM tbl_eracik 
+					WHERE racikid = 'RACIK2' 
+					AND noreg = '$ceknoreg' 
+					AND koders = '$koders'");
 				$query_racikan3	= $this->db->query("SELECT CONCAT(' [ ', kodeobat ,' ] ',' - ',' [ ', namaobat ,' ] ',' - ',' [ ', satuan ,' ] ',' - ',' [ ', harga ,' ]') as namaobatr3, tbl_eracik.*  
-				FROM tbl_eracik 
-				WHERE racikid = 'RACIK3' 
-				AND noreg = '$ceknoreg' 
-				AND koders = '$koders'");
+					FROM tbl_eracik 
+					WHERE racikid = 'RACIK3' 
+					AND noreg = '$ceknoreg' 
+					AND koders = '$koders'");
 
 				$racik1_row	= $query_racikan1->num_rows();
 				$racik2_row	= $query_racikan2->num_rows();
@@ -1535,7 +1704,12 @@ class Poliklinik extends CI_Controller {
 				}
 
 				//E_LAB
-				$query_list	= $this->db->query("SELECT CONCAT('[ ', kodetarif ,' ] - [ ', tindakan ,' ]') AS text, kodetarif AS kodeid FROM daftar_tarif_nonbedah WHERE kodepos = 'LABOR' ORDER BY tindakan ASC")->result();
+				$query_list	= $this->db->query("SELECT CONCAT('[ ', kodetarif ,' ] - [ ', tindakan ,' ]') AS text,
+				kodetarif AS kodeid
+				FROM daftar_tarif_nonbedah
+				WHERE kodepos = 'LABOR' 
+				AND koders = '$koders' 
+				ORDER BY tindakan ASC")->result();
 
 				$query_orderelab	= $this->db->query("SELECT * FROM tbl_orderperiksa WHERE koders = '$koders' AND noreg = '$ceknoreg' AND orderno LIKE '%EL%'");
 				if($query_orderelab->num_rows() == 0){
@@ -1576,7 +1750,28 @@ class Poliklinik extends CI_Controller {
 					$total_erad		= $query_ordererad->num_rows();
 				}
 
+				// STATUS CLOSE BILL
+
 				$query_kasir		= $this->db->query("SELECT * FROM tbl_kasir WHERE noreg = '$ceknoreg' AND koders = '$koders' ")->num_rows();
+
+				// RIWAYAT PASIEN
+
+				$riwayat_pasien	= $this->db->query("SELECT * FROM tbl_pasien_catatan WHERE rekmed = '$rekmed'");
+
+				if($riwayat_pasien->num_rows() == 0){
+					$data_riwayat_pasien	= (object) [
+						"riwayat_penyakit"	=> "-",
+						"riwayat_keluarga"	=> "-"
+					];
+				} else {
+					$data_riwayat_pasien	= $riwayat_pasien->row();
+				}
+
+				// PCARE
+				$pcarepoli			= $this->db->get_where("bpjs_pcare_poli", ["poliSakit" => "1"]);
+				$pcaredr			= $this->db->get("bpjs_pcare_dokter");
+				$pcarestatuspulang	= $this->db->get("bpjs_pcare_status_pulang");
+				$pcarekesadaran     = $this->db->get("bpjs_pcare_kesadaran");
 
 				// VALUE
 				if(!empty($cek)){
@@ -1628,6 +1823,12 @@ class Poliklinik extends CI_Controller {
 						"data_ordererad"	=> $data_ordererad,
 						"total_erad"	=> $total_erad,
 						"status_kasir"	=> ($query_kasir == 0)? 0 : 1,
+						"riwayat_pasien"	=> $data_riwayat_pasien,
+						"data_regist"	=> $data_regist->row(),
+						"pcare_poli"	=> $pcarepoli,
+						"pcare_dr"		=> $pcaredr,
+						"pcare_sp"		=> $pcarestatuspulang,
+						"pcare_sadar"   => $pcarekesadaran,								
 					];
 					
 					$this->load->view("poliklinik/v_poliklinik_p_dokter_add", $data);
@@ -2136,7 +2337,7 @@ class Poliklinik extends CI_Controller {
 			echo json_encode(array("status" => false));
 		}
 	}
-
+	
 	Public function bersihkan_ttd()
 	{
 		$files    =glob('ttd/*.png');
@@ -2162,4 +2363,5 @@ class Poliklinik extends CI_Controller {
 		echo $image;
 
 	}
+
 }

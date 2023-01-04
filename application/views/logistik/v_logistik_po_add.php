@@ -87,7 +87,8 @@ $this->load->view('template/body');
                                             <font color="red">*</font>
                                         </label>
                                         <div class="col-md-9">
-                                            <select id="supp" name="supp" class="form-control select2_el_vendor" data-placeholder="Pilih..." onkeypress="return tabE(this,event)">
+                                            <select id="supp" name="supp" class="form-control select2_el_vendor"
+                                                data-placeholder="Pilih..." onkeypress="return tabE(this,event)">
                                             </select>
                                         </div>
                                     </div>
@@ -100,7 +101,9 @@ $this->load->view('template/body');
                                         <div class="col-md-9">
                                             <!-- <select id="gudang" name="gudang" class="form-control select2_el_logistik_depo" data-placeholder="Pilih..." onkeypress="return tabE(this,event)" onchange="cekbarang(1)">
                                             </select> -->
-                                            <select id="gudang" name="gudang" class="form-control select2_el_logistik_depo" data-placeholder="Pilih..." onkeypress="return tabE(this,event)">
+                                            <select id="gudang" name="gudang"
+                                                class="form-control select2_el_logistik_depo"
+                                                data-placeholder="Pilih..." onkeypress="return tabE(this,event)">
                                             </select>
                                         </div>
 
@@ -114,7 +117,8 @@ $this->load->view('template/body');
                                     <div class="form-group">
                                         <label class="col-md-3 control-label">Tanggal PO</label>
                                         <div class="col-md-4">
-                                            <input id="tanggal" name="tanggal" class="form-control input-medium" type="date" value="<?php echo date('Y-m-d'); ?>" readonly />
+                                            <input id="tanggal" name="tanggal" class="form-control input-medium"
+                                                type="date" value="<?php echo date('Y-m-d'); ?>" readonly />
                                         </div>
                                     </div>
                                 </div>
@@ -125,7 +129,8 @@ $this->load->view('template/body');
                                             <font color="red">*</font>
                                         </label>
                                         <div class="col-md-4">
-                                            <input type="text" class="form-control" placeholder="" name="noref" id="noref" value="">
+                                            <input type="text" class="form-control" placeholder="" name="noref"
+                                                id="noref" value="">
                                         </div>
                                         <label class="col-md-2 control-label">Inter PO</label>
                                         <div class="col-md-3">
@@ -141,7 +146,9 @@ $this->load->view('template/body');
                                     <div class="form-group">
                                         <label class="col-md-3 control-label">Tanggal Kirim</label>
                                         <div class="col-md-4">
-                                            <input id="tanggalkirim" name="tanggalkirim" class="form-control input-medium" type="date" value="<?php echo date('Y-m-d'); ?>" />
+                                            <input id="tanggalkirim" name="tanggalkirim"
+                                                class="form-control input-medium" type="date"
+                                                value="<?php echo date('Y-m-d'); ?>" />
                                         </div>
 
                                     </div>
@@ -188,7 +195,8 @@ $this->load->view('template/body');
                                     <div class="form-group">
                                         <label class="col-md-3 control-label">Nomor PO #</label>
                                         <div class="col-md-4">
-                                            <input type="text" class="form-control input-medium" name="nomorbukti" id="nomorbukti" value="<?= $nomorpo; ?>" readonly>
+                                            <input type="text" class="form-control input-medium" name="nomorbukti"
+                                                id="nomorbukti" value="<?= $nomorpo; ?>" readonly>
                                         </div>
 
                                     </div>
@@ -203,7 +211,8 @@ $this->load->view('template/body');
                             <div class="row">
                                 <div class="col-md-12">
 
-                                    <table id="datatable" class="table table-hoverx table-stripedx table-borderedx table-condensed table-scrollable">
+                                    <table id="datatable"
+                                        class="table table-hoverx table-stripedx table-borderedx table-condensed table-scrollable">
 
                                         <thead class="breadcrumb">
                                             <th class="title-white" width="5%" style="text-align: center">DEL</th>
@@ -223,10 +232,13 @@ $this->load->view('template/body');
                                         <tbody>
                                             <tr>
                                                 <td>
-                                                    <button type='button' onclick=hapusBarisIni(1) class='btn red'><i class='fa fa-trash-o'>
+                                                    <button type='button' onclick=hapusBarisIni(1) class='btn red'><i
+                                                            class='fa fa-trash-o'>
                                                 </td>
                                                 <td>
-                                                    <select name="kode[]" id="kode1" class="select2_el_log_barangdata form-control input-largex" onchange="showbarangname(this.value, 1)">
+                                                    <select name="kode[]" id="kode1"
+                                                        class="select2_el_log_barangdata form-control input-largex"
+                                                        onchange="showbarangname(this.value, 1)">
                                                     </select>
                                                 </td>
 
@@ -237,13 +249,17 @@ $this->load->view('template/body');
 														</td> -->
 
                                                 <td>
-                                                    <input name="qty[]" onchange="totalline(1);total()" value="1" id="qty1" type="text" class="form-control rightJustified">
+                                                    <input name="qty[]" onchange="totalline(1);total();" value="1"
+                                                        id="qty1" type="text" class="form-control rightJustified">
                                                 </td>
                                                 <td>
-                                                    <input name="sat[]" id="sat1" type="text" class="form-control " onkeypress="return tabE(this,event)" readonly>
+                                                    <input name="sat[]" id="sat1" type="text" class="form-control "
+                                                        onkeypress="return tabE(this,event)" readonly>
                                                 </td>
                                                 <td>
-                                                    <input name="harga[]" onchange="totalline(1);total()" value="0" id="harga1" type="text" class="form-control rightJustified" readonly>
+                                                    <input name="harga[]" onchange="totalline(1);total()" value="0"
+                                                        id="harga1" type="text" class="form-control rightJustified"
+                                                        readonly>
                                                 </td>
                                                 <!-- <td  >
 															<input name="disc[]"   onchange="totalline(1);total()" value="0" id="disc1" type="text" class="form-control rightJustified "  >
@@ -253,7 +269,8 @@ $this->load->view('template/body');
 														</td> -->
 
                                                 <td>
-                                                    <input name="jumlah[]" id="jumlah1" type="text" class="form-control rightJustified" size="40%" readonly>
+                                                    <input name="jumlah[]" id="jumlah1" type="text"
+                                                        class="form-control rightJustified" size="40%" readonly>
                                                 </td>
 
                                             </tr>
@@ -264,7 +281,8 @@ $this->load->view('template/body');
                                     <div class="row">
                                         <div class="col-xs-9">
                                             <div class="wells">
-                                                <button type="button" onclick="tambah()" class="btn green"><i class="fa fa-plus"></i> </button>
+                                                <button type="button" onclick="tambah()" class="btn green"><i
+                                                        class="fa fa-plus"></i> </button>
                                                 <!-- <button type="button" onclick="hapus()" class="btn red"><i class="fa fa-trash-o"></i></button> -->
                                             </div>
                                         </div>
@@ -303,13 +321,17 @@ $this->load->view('template/body');
                                     <b>Simpan</b></button>
 
                                 <div class="btn-group">
-                                    <button type="button" class="btn green" onclick="this.form.reset();location.reload();"><i class="fa fa-pencil-square-o"></i> Data Baru</button>
+                                    <button type="button" class="btn green"
+                                        onclick="this.form.reset();location.reload();"><i
+                                            class="fa fa-pencil-square-o"></i> Data Baru</button>
                                 </div>
 
                                 <div class="btn-group">
-                                    <a class="btn red" href="<?php echo base_url('logistik_po') ?>"><i class="fa fa-undo"></i><b> KEMBALI </b></a>
+                                    <a class="btn red" href="<?php echo base_url('logistik_po') ?>"><i
+                                            class="fa fa-undo"></i><b> KEMBALI </b></a>
                                 </div>
-                                <h4><span id="error" style="display:none; color:#F00">Terjadi Kesalahan... </span> <span id="success" style="display:none; color:#0C0">Data sudah disimpan...</span></h4>
+                                <h4><span id="error" style="display:none; color:#F00">Terjadi Kesalahan... </span> <span
+                                        id="success" style="display:none; color:#0C0">Data sudah disimpan...</span></h4>
                             </div>
                         </div>
 
@@ -360,321 +382,354 @@ $this->load->view('template/footer');
 
 <!-- -- Tambahan easyui -- -->
 <script type="text/javascript">
-    var idrow = 2;
-    var rowCount;
-    var arr = [1];
-    // cekbarang(1);
+var idrow = 2;
+var rowCount;
+var arr = [1];
+// cekbarang(1);
 
-    // function cekbarang(cek = '') {
-    //     // var tanggal   = $('[name="tanggal"]').val();]
-    //     var gud = $('#gudang').val();
-    //     $("#kode" + cek).select2({
-    //         allowClear: true,
-    //         multiple: false,
-    //         placeholder: '--- Pilih Barang ---',
-    //         //minimumInputLength: 2,
-    //         dropdownAutoWidth: true,
-    //         language: {
-    //             inputTooShort: function() {
-    //                 return 'Ketikan Nomor minimal 5 huruf';
-    //             }
-    //         },
-    //         ajax: {
-    //             url: "<?php echo base_url(); ?>app/search_log_baranggud/?gud=" + gud,
-    //             // url: "<?php echo base_url(); ?>app/search_log_barang",
-    //             type: "post",
-    //             dataType: 'json',
-    //             delay: 250,
-    //             data: function(params) {
-    //                 return {
-    //                     searchTerm: params.term // search term
-    //                 };
-    //             },
+// function cekbarang(cek = '') {
+//     // var tanggal   = $('[name="tanggal"]').val();]
+//     var gud = $('#gudang').val();
+//     $("#kode" + cek).select2({
+//         allowClear: true,
+//         multiple: false,
+//         placeholder: '--- Pilih Barang ---',
+//         //minimumInputLength: 2,
+//         dropdownAutoWidth: true,
+//         language: {
+//             inputTooShort: function() {
+//                 return 'Ketikan Nomor minimal 5 huruf';
+//             }
+//         },
+//         ajax: {
+//             url: "<?php echo base_url(); ?>app/search_log_baranggud/?gud=" + gud,
+//             // url: "<?php echo base_url(); ?>app/search_log_barang",
+//             type: "post",
+//             dataType: 'json',
+//             delay: 250,
+//             data: function(params) {
+//                 return {
+//                     searchTerm: params.term // search term
+//                 };
+//             },
 
-    //             processResults: function(response) {
-    //                 return {
-    //                     results: response
-    //                 };
-    //             },
-    //             cache: true
-    //         }
-    //     });
+//             processResults: function(response) {
+//                 return {
+//                     results: response
+//                 };
+//             },
+//             cache: true
+//         }
+//     });
 
-    // };
+// };
 
-    function tambah() {
+function tambah() {
 
-        var gud = $('#gudang').val();
-        var table = document.getElementById('datatable');
-        rowCount = table.rows.length;
-        arr.push(idrow);
+    var gud = $('#gudang').val();
+    var table = document.getElementById('datatable');
+    rowCount = table.rows.length;
+    arr.push(idrow);
 
-        var x = document.getElementById('datatable').insertRow(rowCount);
-        var td0 = x.insertCell(0);
-        var td1 = x.insertCell(1);
-        var td2 = x.insertCell(2);
-        var td3 = x.insertCell(3);
-        var td4 = x.insertCell(4);
-        var td5 = x.insertCell(5);
-        var button = "<button type='button' onclick=hapusBarisIni(" + idrow + ") class='btn red'><i class='fa fa-trash-o'>"
-        // var td6=x.insertCell(5);
-        // var td7=x.insertCell(6);
-        // cekbarang(idrow);
-        // alert(idrow);
-        td0.innerHTML = button;
-        var akun = "<select name='kode[]' id=kode" + idrow + " class='select2_el_log_barangdata form-control input-largex' onchange='showbarangname(this.value, " + idrow + ")'></select>";
-        td1.innerHTML = akun;
+    var x = document.getElementById('datatable').insertRow(rowCount);
+    var td0 = x.insertCell(0);
+    var td1 = x.insertCell(1);
+    var td2 = x.insertCell(2);
+    var td3 = x.insertCell(3);
+    var td4 = x.insertCell(4);
+    var td5 = x.insertCell(5);
+    var button = "<button type='button' onclick=hapusBarisIni(" + idrow + ") class='btn red'><i class='fa fa-trash-o'>"
+    // var td6=x.insertCell(5);
+    // var td7=x.insertCell(6);
+    // cekbarang(idrow);
+    // alert(idrow);
+    td0.innerHTML = button;
+    var akun = "<select name='kode[]' id=kode" + idrow +
+        " class='select2_el_log_barangdata form-control input-largex' onchange='showbarangname(this.value, " + idrow +
+        ")'></select>";
+    td1.innerHTML = akun;
 
-        td2.innerHTML = "<input name='qty[]' id=qty" + idrow + " onchange='totalline(" + idrow +
-            ")' value='1'  type='text' class='form-control rightJustified'  >";
+    td2.innerHTML = "<input name='qty[]' id=qty" + idrow + " onchange='totalline(" + idrow + ")' value='1'  type='text' class='form-control rightJustified'  >";
 
-        td3.innerHTML = "<input name='sat[]' id=sat" + idrow + " type='text' class='form-control'  readonly>";
+    td3.innerHTML = "<input name='sat[]' id=sat" + idrow + " type='text' class='form-control'  readonly>";
 
-        td4.innerHTML = "<input name='harga[]' id=harga" + idrow + " onchange='totalline(" + idrow +
-            ") value='0'  type='text' class='form-control rightJustified' readonly>";
+    td4.innerHTML = "<input name='harga[]' id=harga" + idrow + " onchange='totalline(" + idrow +
+        ") value='0'  type='text' class='form-control rightJustified' readonly>";
 
-        /*td5.innerHTML="<input name='disc[]' id=disc"+idrow+" onchange='totalline("+idrow+")' value='0'  type='text' class='form-control rightJustified'  >";
-        
-        td6.innerHTML="<input type='checkbox' name='tax[]' id=tax"+idrow+" onchange='totalline("+idrow+")' class='form-control'>";
-        */
+    /*td5.innerHTML="<input name='disc[]' id=disc"+idrow+" onchange='totalline("+idrow+")' value='0'  type='text' class='form-control rightJustified'  >";
+    
+    td6.innerHTML="<input type='checkbox' name='tax[]' id=tax"+idrow+" onchange='totalline("+idrow+")' class='form-control'>";
+    */
 
-        td5.innerHTML = "<input name='jumlah[]' id=jumlah" + idrow +
-            " type='text' class='form-control rightJustified' size='40%' readonly>";
-
-
-        // initailizeSelect2_farmasi_barang();
-        // initailizeSelect2_farmasi_baranggud(gud);
-        // cekbarang(idrow);
-        initailizeSelect2_log_barangdata();
-        idrow++;
-    }
+    td5.innerHTML = "<input name='jumlah[]' id=jumlah" + idrow +
+        " type='text' class='form-control rightJustified' size='40%' readonly>";
 
 
-    // function listbarang(str) {
-    // 	// alert(str); 
-    // 	var option = "<option value=''>--- Pilih Poli ---</option>"
-    //     $('#kode1').empty();	
-    // 	$.ajax({
-    // 		url: '<?php echo base_url() ?>farmasi_po/getlistbarang/'+str,
-    // 		type: 'GET',
-    // 		dataType: 'json',
-    // 		success:function(data){				
-    // 			if(data.message == "Success"){						
-    // 				$.each(data.data, function(index, val) {
-    // 					option += "<option value='"+val.text+"'>"+val.text+"</option>";
-    // 				});
+    // initailizeSelect2_farmasi_barang();
+    // initailizeSelect2_farmasi_baranggud(gud);
+    // cekbarang(idrow);
+    initailizeSelect2_log_barangdata();
+    idrow++;
+}
 
-    // 				$('#kode1').html(option);
-    // 			}
-    // 		}
-    // 	});	
-
-
-    // }
-
-    function showbarangname(str, id) {
-
-        var xhttp;
-        var vid = id;
+function cekqty(id) {
+    if (document.getElementById("ipo").checked == true) {
         var gudang = $("#gudang").val();
+        var qty = $("#qty" + id).val();
+        var kode = $("#kode" + id).val();
+        param = "?gudang=" + gudang + "&kode=" + kode;
         $.ajax({
-            url: "<?php echo base_url(); ?>logistik_po/getinfobarang/?kode=" + str + '&gudang=' + gudang,
-            type: "GET",
+            url: "<?= site_url('Logistik_po/cekstock') ?>" + param,
+            type: "POST",
             dataType: "JSON",
             success: function(data) {
-                $('#sat' + vid).val(data.satuan1);
-                $('#harga' + vid).val(formatCurrency1(data.hargabeli));
-                totalline(vid);
-            }
-        });
-
-
-    }
-
-    function save() {
-        var tanggal = $('[name="tanggal"]').val();
-        var noref = $('#noref').val();
-        var supp = $('#supp').val();
-        var tanggal = $('[name="tanggal"]').val();
-        var nomor = $('[name="nomorbukti"]').val();
-        var total = $('#_vtotal').text();
-        var gud = $('#gudang').val();
-        if (document.getElementById('ipo').checked == true) {
-            ipo = 1;
-        } else {
-            ipo = 0;
-        }
-
-
-        if (supp == '' || supp == null) {
-            swal({
-                title: "Nama Vendor",
-                html: " Tidak Boleh Kosong .!!!",
-                type: "error",
-                confirmButtonText: "OK"
-            });
-            return;
-        }
-
-        // if (gud == '' || gud == null) {
-        //     swal({
-        //         title: "GUDANG",
-        //         html: " Harus Di Pilih .!!!",
-        //         type: "error",
-        //         confirmButtonText: "OK"
-        //     });
-        //     return;
-        // }
-
-        if (noref == '' || noref == null) {
-            swal({
-                title: "No Ref",
-                html: " Tidak Boleh Kosong .!!!",
-                type: "error",
-                confirmButtonText: "OK"
-            });
-            return;
-        }
-
-        if (nomor == "" || total == "0.00" || total == "") {
-            swal('PURCHASE ORDER', 'Data Belum Lengkap/Belum ada transaksi ...', '');
-        } else {
-
-            $.ajax({
-                url: "<?php echo site_url('Logistik_po/ajax_add/1?ipo=') ?>" + ipo,
-                data: $('#frmpembelian').serialize(),
-                type: 'POST',
-                success: function(data) {
-                    data1 = JSON.parse(data);
+                qty_data = Number(data.saldoakhir);
+                if (qty > qty_data) {
                     swal({
-                        title: "PURCHASE ORDER",
-                        html: "<p> No. Bukti   : <b>" + data1.nomor + "</b> </p>" +
-                            "Tanggal :  " + tanggal + '<br> Total : ' + total,
-                        type: "info",
+                        title: "QTY",
+                        html: "Tidak boleh lebih dari Saldo akhir !<br>Saldo akhir saat ini : " +
+                            qty_data,
+                        type: "warning",
                         confirmButtonText: "OK"
                     }).then((value) => {
-                        location.href = "<?php echo base_url() ?>logistik_po";
+                        $('#qty' + id).val(separateComma(qty_data));
+                        totalline(id);
                     });
-
-                },
-                error: function(data) {
-                    swal('PESANAN PEMBELIAN', 'Data gagal disimpan ...', '');
+                } else {
+                    $('#qty' + id).val(separateComma(qty));
+                    totalline(id);
                 }
-            });
-        }
-    }
-
-    function hapus() {
-        if (idrow > 2) {
-            var x = document.getElementById('datatable').deleteRow(idrow - 1);
-            idrow--;
-            total();
-        }
-    }
-
-    function separateComma(val) {
-        // remove sign if negative
-        var sign = 1;
-        if (val < 0) {
-            sign = -1;
-            val = -val;
-        }
-        // trim the number decimal point if it exists
-        let num = val.toString().includes('.') ? val.toString().split('.')[0] : val.toString();
-        let len = num.toString().length;
-        let result = '';
-        let count = 1;
-
-        for (let i = len - 1; i >= 0; i--) {
-            result = num.toString()[i] + result;
-            if (count % 3 === 0 && count !== 0 && i !== 0) {
-                result = ',' + result;
             }
-            count++;
-        }
+        });
+    }
+}
 
-        // add number after decimal point
-        if (val.toString().includes('.')) {
-            result = result + '.' + val.toString().split('.')[1];
+
+// function listbarang(str) {
+// 	// alert(str); 
+// 	var option = "<option value=''>--- Pilih Poli ---</option>"
+//     $('#kode1').empty();	
+// 	$.ajax({
+// 		url: '<?php echo base_url() ?>farmasi_po/getlistbarang/'+str,
+// 		type: 'GET',
+// 		dataType: 'json',
+// 		success:function(data){				
+// 			if(data.message == "Success"){						
+// 				$.each(data.data, function(index, val) {
+// 					option += "<option value='"+val.text+"'>"+val.text+"</option>";
+// 				});
+
+// 				$('#kode1').html(option);
+// 			}
+// 		}
+// 	});	
+
+
+// }
+
+function showbarangname(str, id) {
+
+    var xhttp;
+    var vid = id;
+    var gudang = $("#gudang").val();
+    $.ajax({
+        url: "<?php echo base_url(); ?>logistik_po/getinfobarang/?kode=" + str + '&gudang=' + gudang,
+        type: "GET",
+        dataType: "JSON",
+        success: function(data) {
+            $('#sat' + vid).val(data.satuan1);
+            $('#harga' + vid).val(separateComma(data.hargabeli));
+            totalline(vid);
         }
-        // return result with - sign if negative
-        return sign < 0 ? '-' + result : result;
+    });
+
+
+}
+
+function save() {
+    var tanggal = $('[name="tanggal"]').val();
+    var noref = $('#noref').val();
+    var supp = $('#supp').val();
+    var tanggal = $('[name="tanggal"]').val();
+    var nomor = $('[name="nomorbukti"]').val();
+    var total = $('#_vtotal').text();
+    var gud = $('#gudang').val();
+    if (document.getElementById('ipo').checked == true) {
+        ipo = 1;
+    } else {
+        ipo = 0;
     }
 
-    function hapusBarisIni(param) {
-        // console.log(param);
-        console.log(param);
-        console.log(arr.indexOf(param))
-        var x = document.getElementById('datatable').deleteRow(arr.indexOf(param) + 1);
-        arr.splice(arr.indexOf(param), 1);
 
-        rowCount--;
-        console.log('rowCount ' + rowCount);
+    if (supp == '' || supp == null) {
+        swal({
+            title: "Nama Vendor",
+            html: " Tidak Boleh Kosong .!!!",
+            type: "error",
+            confirmButtonText: "OK"
+        });
+        return;
+    }
+
+    // if (gud == '' || gud == null) {
+    //     swal({
+    //         title: "GUDANG",
+    //         html: " Harus Di Pilih .!!!",
+    //         type: "error",
+    //         confirmButtonText: "OK"
+    //     });
+    //     return;
+    // }
+
+    if (noref == '' || noref == null) {
+        swal({
+            title: "No Ref",
+            html: " Tidak Boleh Kosong .!!!",
+            type: "error",
+            confirmButtonText: "OK"
+        });
+        return;
+    }
+
+    if (nomor == "" || total == "0.00" || total == "") {
+        swal('PURCHASE ORDER', 'Data Belum Lengkap/Belum ada transaksi ...', '');
+    } else {
+
+        $.ajax({
+            url: "<?php echo site_url('Logistik_po/ajax_add/1?ipo=') ?>" + ipo,
+            data: $('#frmpembelian').serialize(),
+            type: 'POST',
+            success: function(data) {
+                data1 = JSON.parse(data);
+                swal({
+                    title: "PURCHASE ORDER",
+                    html: "<p> No. Bukti   : <b>" + data1.nomor + "</b> </p>" +
+                        "Tanggal :  " + tanggal + '<br> Total : ' + total,
+                    type: "info",
+                    confirmButtonText: "OK"
+                }).then((value) => {
+                    location.href = "<?php echo base_url() ?>logistik_po";
+                });
+
+            },
+            error: function(data) {
+                swal('PESANAN PEMBELIAN', 'Data gagal disimpan ...', '');
+            }
+        });
+    }
+}
+
+function hapus() {
+    if (idrow > 2) {
+        var x = document.getElementById('datatable').deleteRow(idrow - 1);
+        idrow--;
         total();
     }
+}
 
-    function total() {
+function separateComma(val) {
+    // remove sign if negative
+    var sign = 1;
+    if (val < 0) {
+        sign = -1;
+        val = -val;
+    }
+    // trim the number decimal point if it exists
+    let num = val.toString().includes('.') ? val.toString().split('.')[0] : val.toString();
+    let len = num.toString().length;
+    let result = '';
+    let count = 1;
 
-        var table = document.getElementById('datatable');
-        var rowCount = table.rows.length;
-
-        tjumlah = 0;
-        tdiskon = 0;
-        tppn = 0;
-        for (var i = 1; i < rowCount; i++) {
-            var row = table.rows[i];
-
-            jumlah = row.cells[2].children[0].value;
-            harga = row.cells[4].children[0].value;
-            diskon = row.cells[5].children[0].value;
-
-
-            var jumlah1 = Number(jumlah.replace(/[^0-9\.]+/g, ""));
-            var harga1 = Number(harga.replace(/[^0-9\.]+/g, ""));
-            var diskon1 = Number(diskon.replace(/[^0-9\.]+/g, ""));
-
-            tjumlah = tjumlah + eval(jumlah1 * harga1);
-
-            // diskon      = eval((diskon1/100)*jumlah1*harga1);
-
-            // tdiskon  = tdiskon + diskon;
-
-            // if(document.getElementById('tax'+i).checked==true){
-            // 	tppn = tppn + (eval(jumlah1*harga1)*0.1);
-            // } 
-
-
-
+    for (let i = len - 1; i >= 0; i--) {
+        result = num.toString()[i] + result;
+        if (count % 3 === 0 && count !== 0 && i !== 0) {
+            result = ',' + result;
         }
+        count++;
+    }
 
-        //tppn = 0;
-        document.getElementById("_vsubtotal").innerHTML = separateComma(tjumlah.toFixed(0));
-        document.getElementById("_vdiskon").innerHTML = separateComma(tdiskon.toFixed(0));
-        document.getElementById("_vppn").innerHTML = separateComma(tppn.toFixed(0));
-        document.getElementById("_vtotal").innerHTML = separateComma((tjumlah - tdiskon + tppn).toFixed(0));
+    // add number after decimal point
+    if (val.toString().includes('.')) {
+        result = result + '.' + val.toString().split('.')[1];
+    }
+    // return result with - sign if negative
+    return sign < 0 ? '-' + result : result;
+}
+
+function hapusBarisIni(param) {
+    // console.log(param);
+    console.log(param);
+    console.log(arr.indexOf(param))
+    var x = document.getElementById('datatable').deleteRow(arr.indexOf(param) + 1);
+    arr.splice(arr.indexOf(param), 1);
+
+    rowCount--;
+    console.log('rowCount ' + rowCount);
+    total();
+}
+
+function total() {
+
+    var table = document.getElementById('datatable');
+    var rowCount = table.rows.length;
+
+    tjumlah = 0;
+    tdiskon = 0;
+    tppn = 0;
+    for (var i = 1; i < rowCount; i++) {
+        var row = table.rows[i];
+
+        jumlah = row.cells[2].children[0].value;
+        harga = row.cells[4].children[0].value;
+        diskon = row.cells[5].children[0].value;
+
+
+        var jumlah1 = Number(jumlah.replace(/[^0-9\.]+/g, ""));
+        var harga1 = Number(harga.replace(/[^0-9\.]+/g, ""));
+        var diskon1 = Number(diskon.replace(/[^0-9\.]+/g, ""));
+
+        tjumlah = tjumlah + eval(jumlah1 * harga1);
+
+        // diskon      = eval((diskon1/100)*jumlah1*harga1);
+
+        // tdiskon  = tdiskon + diskon;
+
+        // if(document.getElementById('tax'+i).checked==true){
+        // 	tppn = tppn + (eval(jumlah1*harga1)*0.1);
+        // } 
+
 
 
     }
 
-    function totalline(id) {
-        var table = document.getElementById('datatable');
-        var row = table.rows[arr.indexOf(id) + 1];
-        var harga = Number(row.cells[4].children[0].value.replace(/[^0-9\.]+/g, ""));
-        jumlah = row.cells[2].children[0].value * harga;
-        //    diskon       = (row.cells[4].children[0].value/100)* jumlah;
-        //    tot          = jumlah;
+    //tppn = 0;
+    document.getElementById("_vsubtotal").innerHTML = separateComma(tjumlah.toFixed(0));
+    document.getElementById("_vdiskon").innerHTML = separateComma(tdiskon.toFixed(0));
+    document.getElementById("_vppn").innerHTML = separateComma(tppn.toFixed(0));
+    document.getElementById("_vtotal").innerHTML = separateComma((tjumlah - tdiskon + tppn).toFixed(0));
 
 
-        //    if(document.getElementById('tax'+id).checked==true){	  
-        // 	  tot = tot*1.1;
-        //    } 
+}
 
-        row.cells[5].children[0].value = formatCurrency1(jumlah);
-        total();
+function totalline(id) {
+    var table = document.getElementById('datatable');
+    var row = table.rows[arr.indexOf(id) + 1];
+    var harga = Number(row.cells[4].children[0].value.replace(/[^0-9\.]+/g, ""));
+    jumlah = row.cells[2].children[0].value * harga;
+    //    diskon       = (row.cells[4].children[0].value/100)* jumlah;
+    //    tot          = jumlah;
+
+
+    //    if(document.getElementById('tax'+id).checked==true){	  
+    // 	  tot = tot*1.1;
+    //    } 
+
+    row.cells[5].children[0].value = separateComma(jumlah);
+    total();
 
 
 
-    }
+}
 </script>
 
 

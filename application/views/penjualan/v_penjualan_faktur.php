@@ -98,7 +98,7 @@
                                             <td><?= $rval->noreg ?></td>
                                             <td><?= $rval->rekmed ?></td>
                                             <td><?= $rval->namapas ?></td>
-                                            <td><?= data_master("dokter", array("kodokter" => $rval->kodokter, "koders" => $rval->koders, "kopoli" => $rval->kodepos))->nadokter ?></td>
+                                            <td><?= $rval->kodepos == "" ? "-" : data_master("dokter", array("kodokter" => $rval->kodokter, "koders" => $rval->koders, "kopoli" => $rval->kodepos))->nadokter ?></td>
                                             <td><?= $rval->keterangan ?></td>
                                         </tr>
                                     <?php } ?>
@@ -108,12 +108,12 @@
                         
                         <hr />
 
-                        <div class="portlet-title">
-                            <div class="caption">
-                                Daftar  Faktur Penjualan -
-                                <span><b>
-                                <?php 
-                                echo $periode;?></b>
+						<div class="portlet-title">
+							<div class="caption">
+								Daftar  Faktur Penjualan 
+								<span><b>
+								<?php 
+								//    echo $periode;?></b>
                                 </span>
                             </div>
 

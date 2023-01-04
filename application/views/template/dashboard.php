@@ -739,6 +739,60 @@ min-height: 300px;
 	</div>
 </div>
 
+<!-- das_man -->
+<div class="row" id="das_man">
+	<div class="col-md-12">
+		<div class="row" style="margin-bottom: 10px;">
+			<div class="col-md-12">
+				<div style="font-weight: bold;">
+					<h3 class="page-title">
+						<span style="padding: 10px; background-color: #ffb848; color: white">
+							DASHBOARD MANAGEMENT
+						</span>
+					</h3>
+				</div>
+			</div>
+		</div>
+		<hr>
+		<form method="POST" id="form_diag">
+			<div class="row">
+				<div class="col-md-3">
+					<div class="row">
+						<label for="dari" class="col-md-3">Dari</label>
+						<div class="col-md-9">
+							<?php if ($dari != '' || $dari != null) {
+								$darix = $dari;
+							} else {
+								$darix = date("Y-m-d");
+							}
+							?>
+							<input type="date" name="dari3" id="dari3" value="<?= $darix; ?>" class="form-control">
+						</div>
+					</div>
+				</div>
+				<div class="col-md-3">
+					<div class="row">
+						<label for="sampai" class="col-md-3">Sampai</label>
+						<div class="col-md-9">
+							<?php if ($sampai != '' || $sampai != null) {
+								$sampaix = $sampai;
+							} else {
+								$sampaix = date("Y-m-d");
+							}
+							?>
+							<input type="date" name="sampai3" id="sampai3" value="<?= $sampaix; ?>" class="form-control">
+						</div>
+					</div>
+				</div>
+				<div class="col-md-6">
+					<button type="button" class="btn btn-primary" onclick="getdata(3);">Proses</button>
+				</div>
+			</div>
+			<hr>
+		</form>
+	</div>
+</div>
+
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <!-- master -->
@@ -752,6 +806,10 @@ min-height: 300px;
 			fokus = 'lap_pen';
 			var dari = $("#dari2").val();
 			var sampai = $("#sampai2").val();
+		} else if (id == 3) {
+			fokus = 'das_man';
+			var dari = $("#dari3").val();
+			var sampai = $("#sampai3").val();
 		}
 		if (dari != '' && sampai != '') {
 			param = "?dari=" + dari + "&sampai=" + sampai + "&fokus=" + fokus;

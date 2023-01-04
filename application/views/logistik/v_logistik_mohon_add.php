@@ -132,13 +132,13 @@
                                             <td width="10%"><input name="qty[]" onchange="totalline(1)" value="1"
                                                     id="qty1" type="text" class="form-control rightJustified"></td>
                                             <td width="10%"><input name="sat[]" id="sat1" type="text"
-                                                    class="form-control " onkeypress="return tabE(this,event)"></td>
+                                                    class="form-control " onkeypress="return tabE(this,event)" readonly></td>
                                             <td width="10%"><input name="harga[]" onchange="totalline(1)" id="harga1"
                                                     type="text" class="form-control rightJustified"
-                                                    onkeypress="return tabE(this,event)"></td>
+                                                    onkeypress="return tabE(this,event)" readonly></td>
                                             <td width="15%"><input name="total[]" onchange="totalline(1)" id="total1"
                                                     type="text" class="form-control rightJustified"
-                                                    onkeypress="return tabE(this,event)"></td>
+                                                    onkeypress="return tabE(this,event)" readonly></td>
                                             <td width="10%"><input name="note[]" id="note1" type="text"
                                                     class="form-control " onkeypress="return tabE(this,event)"></td>
                                         </tr>
@@ -179,14 +179,12 @@
                     <div class="row">
                         <div class="col-xs-12">
                             <div class="well">
-                                <button type="button" onclick="save()" class="btn blue"><i class="fa fa-save"></i>
-                                    Simpan</button>
+                                <button type="button" onclick="save()" class="btn blue"><i class="fa fa-save"></i> Simpan</button>
 
                                 <div class="btn-group">
-                                    <button type="button" class="btn green"
-                                        onclick="this.form.reset();location.reload();"><i
-                                            class="fa fa-pencil-square-o"></i> Data Baru</button>
+                                    <button type="button" class="btn green" onclick="this.form.reset();location.reload();"><i class="fa fa-pencil-square-o"></i> Data Baru</button>
                                 </div>
+                                <a type="button" class="btn red" href="<?= site_url('Permohonan_log'); ?>"><i class="fa fa-arrow-left"></i> Kembali</a>
                                 <h4><span id="error" style="display:none; color:#F00">Terjadi Kesalahan... </span> <span
                                         id="success" style="display:none; color:#0C0">Data sudah disimpan...</span></h4>
                             </div>
@@ -228,11 +226,11 @@ function tambah() {
     td1.innerHTML = akun;
     td2.innerHTML = "<input name='qty[]'    id='qty" + idrow + "' onchange='totalline(" + idrow +
         ")' value='1'  type='text' class='form-control rightJustified'  >";
-    td3.innerHTML = "<input name='sat[]'    id='sat" + idrow + "' type='text' class='form-control' >";
+    td3.innerHTML = "<input name='sat[]'    id='sat" + idrow + "' type='text' class='form-control'  readonly>";
     td4.innerHTML = "<input name='harga[]'  id='harga" + idrow + "' onchange='totalline(" + idrow +
-        ")' onkeyup='format_num(this.value)' type='text' class='form-control' >";
+        ")' onkeyup='format_num(this.value)' type='text' class='form-control'  readonly>";
     td5.innerHTML = "<input name='total[]'    id='total" + idrow + "' onchange='totalline(" + idrow +
-        ")' type='text' class='form-control rightJustified' >";
+        ")' type='text' class='form-control rightJustified'  readonly>";
     td6.innerHTML = "<input name='note[]'    id='note" + idrow + "' type='text' class='form-control' >";
     total();
     idrow++;

@@ -285,25 +285,6 @@ $this->load->view('template/v_report');
      });
 
      function exp() {
-          // var laporan = document.getElementById('laporan').value;
-          // var dari = document.getElementById('dari').value;
-          // var sampai = document.getElementById('sampai').value;
-          // if (document.getElementById('depoall').checked === true) {
-          //      var da = 1;
-          // } else {
-          //      var da = 0;
-          // }
-          // var depo = document.getElementById('depo').value;
-          // if (laporan != '') {
-          //      location.href = '<?= site_url('Laporan_persediaan/excel/?laporan=') ?>' + laporan + '&dari=' + dari + '&sampai=' + sampai + '&da=' + da + '&depo=' + depo;
-          // } else {
-          //      swal({
-          //           title: "LAPORAN",
-          //           html: " Tidak Boleh Kosong .!!!",
-          //           type: "error",
-          //           confirmButtonText: "OK"
-          //      });
-          // }
 
           var laporan   = document.getElementById('laporan').value;
           var depo      = document.getElementById('depo').value;
@@ -337,8 +318,7 @@ $this->load->view('template/v_report');
 
                     url = baseurl + 'Laporan_persediaan/cetak2/' + param;
                     window.open(url, '');
-
-                    // $("#simkeureport").html('<iframe src="<?php echo base_url(); ?>Laporan_persediaan/cetak?dari=' + dari + '&sampai=' + sampai + '&da=' + da + '&depo=' + depo + '&laporan=' + laporan + '&keperluan=' + keperluan + '&pdf=2'+'" frameborder="no" width="100%" height="520"></iframe>');
+                    
                } else if (laporan == 5){
                     swal({
                          title: "LAPORAN PEMUSNAHAN BARANG",

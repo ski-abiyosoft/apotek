@@ -162,7 +162,7 @@ $this->load->view('template/body');
                                                 <th class="title-white" width="5%" style="text-align: center">
                                                     Tax
                                                 </th>
-                                                <th class="title-white" width="5%" style="text-align: center"></th>
+                                                <!-- <th class="title-white" width="5%" style="text-align: center"></th> -->
                                                 <th class="title-white" width="5%" style="text-align: center">
                                                     Diskon
                                                 </th>
@@ -195,11 +195,11 @@ $this->load->view('template/body');
                                                     <td>
                                                         <input type="checkbox" name="tax[]" value='0' id="tax1" class="form-control" onchange="totalline(1);total();">
                                                     </td>
-                                                    <td>
+                                                    <!-- <td>
                                                         <a class="btn default" id="lupharga1" data-toggle="modal" href="#lupharga" onclick="getidharga(this.id)">
                                                             <i class="fa fa-search"></i>
                                                         </a>
-                                                    </td>
+                                                    </td> -->
                                                     <td>
                                                         <input name="disc[]" onchange="totalline(1);total();cekdisc(1)" value="0" id="disc1" type="text" class="form-control rightJustified ">
                                                     </td>
@@ -369,12 +369,12 @@ $this->load->view('template/footer');
         td3.innerHTML = "<input name='sat[]'    id=sat" + idrow + " type='text' class='form-control' readonly >";
         td4.innerHTML = "<input name='harga[]'  id=harga" + idrow + " onchange='totalline(" + idrow + ")' value='0'  type='text' class='form-control rightJustified' readonly>";
         td5.innerHTML = "<input name='tax[]'  id=tax" + idrow + " onchange='totalline(" + idrow + ");total()' value='0' type='checkbox' class='form-control rightJustified'>";
-        td6.innerHTML = "<a class='btn default' id=lupharga" + idrow + " data-toggle='modal' href='#lupharga' onclick='getidharga(this.id)'><i class='fa fa-search'></i></a> ";
-        td7.innerHTML = "<input name='disc[]'   id=disc" + idrow + " onchange='totalline(" + idrow + ");cekdisc(" + idrow + ")' value='0'  type='text' class='form-control rightJustified'  >";
-        td8.innerHTML = "<input name='discrp[]'   id=discrp" + idrow + " onchange='totalline(" + idrow + "); cekdiscrp(" + idrow + ")' value='0'  type='text' class='form-control rightJustified'  >";
-        td9.innerHTML = "<input name='jumlah[]' id=jumlah" + idrow + " type='text' class='form-control rightJustified'>";
+        td6.innerHTML = "<input name='disc[]'   id=disc" + idrow + " onchange='totalline(" + idrow + ");cekdisc(" + idrow + ")' value='0'  type='text' class='form-control rightJustified'  >";
+        td7.innerHTML = "<input name='discrp[]'   id=discrp" + idrow + " onchange='totalline(" + idrow + "); cekdiscrp(" + idrow + ")' value='0'  type='text' class='form-control rightJustified'  >";
+        td8.innerHTML = "<input name='jumlah[]' id=jumlah" + idrow + " type='text' class='form-control rightJustified'>";
         initailizeSelect2_log_baranggud(gud);
         idrow++;
+        // td6.innerHTML = "<a class='btn default' id=lupharga" + idrow + " data-toggle='modal' href='#lupharga' onclick='getidharga(this.id)'><i class='fa fa-search'></i></a> ";
     }
 
     function cekqty(id) {
@@ -386,11 +386,11 @@ $this->load->view('template/footer');
         var disc = Number(parseInt(discx.replaceAll(',', '')));
         var discrp = qty * harga * disc / 100;
         var jumlah = qty * harga - discrp;
-        $('#discrp' + id).val(formatCurrency1(discrp));
+        $('#discrp' + id).val(separateComma(discrp));
         $('#qty').val(qty.toFixed(0));
         // separateComma(diskon.toFixed(0))
         $('#qty' + id).val(separateComma(qty.toFixed(0)));
-        $('#jumlah' + id).val(formatCurrency1(jumlah));
+        $('#jumlah' + id).val(separateComma(jumlah));
         total();
     }
 
@@ -483,7 +483,7 @@ $this->load->view('template/footer');
                 var discrpx = $('#discrp' + id).val();
                 var discrp = Number(parseInt(discrpx.replaceAll(',', '')));
                 var jumlah = Number(parseInt(qty.replaceAll(',', ''))) * data.hargabelippn - discrp;
-                $('#jumlah' + id).val(formatCurrency1(jumlah));
+                $('#jumlah' + id).val(separateComma(jumlah));
                 totalline(id);
             }
         });
@@ -500,7 +500,7 @@ $this->load->view('template/footer');
     //         dataType: "JSON",
     //         success: function(data) {
     //             $('#sat' + vid).val(data.satuan1);
-    //             $('#harga' + vid).val(formatCurrency1(data.hargabeli));
+    //             $('#harga' + vid).val(separateComma(data.hargabeli));
     //             totalline(vid);
     //         }
     //     });
@@ -672,13 +672,13 @@ $this->load->view('template/footer');
         var qty = Number(parseInt(qtyx.replaceAll(',', '')));
         var hargax = $("#harga" + id).val();
         var harga = Number(parseInt(hargax.replaceAll(',', '')));
-        var discrpx = $("#discrp" + id).val();
-        var discrp = Number(parseInt(discrpx.replaceAll(',', '')));
-        $("#disc" + id).val(0);
-        $("#discrp" + id).val(formatCurrency1(discrp));
+        var discx = $("#disc" + id).val();
+        var disc = Number(parseInt(discx.replaceAll(',', '')));
         var subtotal = qty * harga;
-        var jumlah = subtotal - discrp;
-        $('#jumlah' + id).val(formatCurrency1(jumlah));
+        var diskon = subtotal * disc / 100;
+        $("#discrp" + id).val(separateComma(diskon));
+        var jumlah = subtotal - diskon;
+        $('#jumlah' + id).val(separateComma(jumlah));
         total();
     }
 
@@ -690,10 +690,10 @@ $this->load->view('template/footer');
         var discrpx = $("#discrp" + id).val();
         var discrp = Number(parseInt(discrpx.replaceAll(',', '')));
         $("#disc" + id).val(0);
-        $("#discrp" + id).val(formatCurrency1(discrp));
+        $("#discrp" + id).val(separateComma(discrp));
         tot = qty * harga - discrp;
         // console.log(tot)
-        $('#jumlah' + id).val(formatCurrency1(tot));
+        $('#jumlah' + id).val(separateComma(tot));
         // total();
     }
 
@@ -775,10 +775,10 @@ $this->load->view('template/footer');
     //     }
 
 
-    //     document.getElementById("_vsubtotal").innerHTML = formatCurrency1(tjumlah);
-    //     document.getElementById("_vdiskon").innerHTML = formatCurrency1(tdiskon);
-    //     document.getElementById("_vppn").innerHTML = formatCurrency1(tppn);
-    //     document.getElementById("_vtotal").innerHTML = formatCurrency1(tjumlah - tdiskon + tppn);
+    //     document.getElementById("_vsubtotal").innerHTML = separateComma(tjumlah);
+    //     document.getElementById("_vdiskon").innerHTML = separateComma(tdiskon);
+    //     document.getElementById("_vppn").innerHTML = separateComma(tppn);
+    //     document.getElementById("_vtotal").innerHTML = separateComma(tjumlah - tdiskon + tppn);
 
 
     // }
@@ -819,9 +819,9 @@ $this->load->view('template/footer');
             var diskon1 = Number(diskon.replace(/[^0-9\.]+/g, ""));
             var diskon2 = Number(diskonrp.replace(/[^0-9\.]+/g, ""));
             var subtotal1 = Number(subtotal.replace(/[^0-9\.]+/g, ""));
-            // row.cells[3].children[0].value = (formatCurrency1(harga1));
-            // row.cells[7].children[0].value = (formatCurrency1(jumlah1 * harga1 * diskon1/100));
-            // row.cells[8].children[0].value = (formatCurrency1(jumlah1 * harga1 - diskon2));
+            // row.cells[3].children[0].value = (separateComma(harga1));
+            // row.cells[7].children[0].value = (separateComma(jumlah1 * harga1 * diskon1/100));
+            // row.cells[8].children[0].value = (separateComma(jumlah1 * harga1 - diskon2));
             // var subtotal1 = jumlah1 * harga1;
 
 
@@ -925,14 +925,14 @@ $this->load->view('template/footer');
                         $('#kode' + x).append(option).trigger('change');
 
                         document.getElementById("kode" + x).value = data[i].kodebarang;
-                        document.getElementById("qty" + x).value = formatCurrency1(data[i].qty_terima);
+                        document.getElementById("qty" + x).value = separateComma(Number(data[i].qty_terima));
                         document.getElementById("sat" + x).value = data[i].satuan;
-                        document.getElementById("harga" + x).value = formatCurrency1(data[i].price);
+                        document.getElementById("harga" + x).value = separateComma(Number(data[i].price));
                         // document.getElementById("disc" + x).value = data[i].discount;
                         document.getElementById("disc" + x).value = data[i].discount;
-                        document.getElementById("discrp" + x).value = formatCurrency1(data[i].discountrp);
+                        document.getElementById("discrp" + x).value = separateComma(Number(data[i].discountrp));
                         jumlah = data[i].qty_terima * data[i].price - data[i].discountrp;
-                        document.getElementById("jumlah" + x).value = formatCurrency1(jumlah);
+                        document.getElementById("jumlah" + x).value = separateComma(jumlah);
                         if (data[i].vat == 1) {
                             document.getElementById("tax" + x).checked = true;
                         }

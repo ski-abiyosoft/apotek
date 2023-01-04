@@ -1,6 +1,13 @@
 <?php
     $this->load->view("template/header");
     $this->load->view("template/body");
+
+    $error  = $this->session->flashdata("error");
+
+    if(isset($error)){
+        echo "<script>alert('". $error ."')</script>";
+    }
+
 ?>
 
 <!-- <link href="<?php echo base_url('assets/datatables/css/dataTables.bootstrap.css') ?>" rel="stylesheet">
@@ -42,7 +49,7 @@
             $filterdate2_start  = $extract_date[1];
             $filterdate2_end    = $extract_date[2];
         } else {
-            header("locatio:/Lab/");
+            header("locatio:/ro2/");
         }
     } else {
         $filterdate1_start  = date("Y-m-d");
@@ -121,8 +128,9 @@
             &nbsp;<span class="title-web"><?= $modul; ?> <small> <?= $title; ?></small>
         </h3>
         <ul class="page-breadcrumb breadcrumb">
-            <li><i class="fa fa-home" style="color:#fff"></i>&nbsp;<a href="<?php echo base_url(); ?>dashboard" class="title-white">Awal</a>&nbsp;<i class="fa fa-angle-right" style="color:#fff"></i></li>
-            <li><a href="#" class="title-white"><?= $modul; ?> </a></li>
+            <li><i class="fa fa-home" style="color:#fff"></i>&nbsp;<a href="<?php echo base_url(); ?>dashboard" class="title-white">Awal</a>&nbsp;<i class="fa fa-angle-right" style="color:#fff"></i>&nbsp;</li>
+            <li><a href="#" class="title-white"><?= $modul; ?>&nbsp;<i class="fa fa-angle-right" style="color:#fff"></i></a></li>
+            <li><a href="#" class="title-white"><?= $submodul; ?></a></li>
         </ul>
     </div>
 </div>
@@ -143,7 +151,7 @@
                         <div class="visual"><i class="fa fa-printx"></i></div>
                         <div class="details">
                             <div class="number">
-                                20 <small style="font-size:12px !important">Order</small></div>
+                                <?= number_format($total_eorder, 0, ',', '.') ?> <small style="font-size:12px !important">Order</small></div>
                             <div class="desc" style="font-weight:bold;font-size:14px !important">BELUM DIPROSES</div>
                         </div>
                         <a data-toggle="modal" class="more" href="">
@@ -156,7 +164,7 @@
                         <div class="visual"><i class="fa fa-printx"></i></div>
                         <div class="details">
                             <div class="number">
-                                30 <small style="font-size:12px !important">Order</small></div>
+                                <?= number_format($total_order, 0, ',', '.') ?> <small style="font-size:12px !important">Order</small></div>
                             <div class="desc" style="font-weight:bold;font-size:14px !important">SUDAH DIPROSES</div>
                         </div>
                         <a data-toggle="modal" class="more" href="">
@@ -169,7 +177,7 @@
                         <div class="visual"><i class="fa fa-printx"></i></div>
                         <div class="details">
                             <div class="number">
-                                10 <small style="font-size:12px !important">Photo</small></div>
+                                0 <small style="font-size:12px !important">Photo</small></div>
                             <div class="desc" style="font-weight:bold;font-size:14px !important">SELESAI ISI HASIL</div>
                         </div>
                         <a data-toggle="modal" class="more" href="">
@@ -182,7 +190,7 @@
                         <div class="visual"><i class="fa fa-printx"></i></div>
                         <div class="details">
                             <div class="number">
-                                10 <small style="font-size:12px !important">Photo</small></div>
+                                0 <small style="font-size:12px !important">Photo</small></div>
                             <div class="desc" style="font-weight:bold;font-size:14px !important">BELUM ISI HASIL</div>
                         </div>
                         <a data-toggle="modal" class="more" href="">
@@ -196,6 +204,7 @@
             <br /><br />
 
             <!-- ========================================================================================= TABLE ========================================================================================= -->
+            
             <!-- E-Order Radiologi List -->
             <div class="portlet-body">
                 <div class="table-toolbar">
@@ -238,10 +247,10 @@
                                     if($extract_convert_start[0] == $extract_convert_end[0]){
                                         $periode    = $month_start ." ". $extract_convert_start[1];
                                     } else {
-                                        $periode    = $month_start ."  <font style='font-size:12px'>s/d</font>   ". $month_end ." ". $extract_convert_start[1] ."&emsp;<a href='/lab/'>Lihat Semua</a>";
+                                        $periode    = $month_start ."  <font style='font-size:12px'>s/d</font>   ". $month_end ." ". $extract_convert_start[1] ."&emsp;<a href='/ro2/'>Lihat Semua</a>";
                                     }
                                 } else {
-                                    $periode    = $month_start ." ". $extract_convert_start[1] ."  <font style='font-size:12px'>s/d</font>   ". $month_end ." ". $extract_convert_end[1] ."&emsp;<a href='/lab/'>Lihat Semua</a>";
+                                    $periode    = $month_start ." ". $extract_convert_start[1] ."  <font style='font-size:12px'>s/d</font>   ". $month_end ." ". $extract_convert_end[1] ."&emsp;<a href='/ro2/'>Lihat Semua</a>";
                                 }
                                 
                                 echo "&nbsp;&nbsp;-&nbsp;&nbsp;Periode ". $periode;
@@ -252,7 +261,7 @@
                     ?>
                     </b></h4>
                 </div>
-
+                
                 <!-- FILTER DATE -->
                 <div style="display:block;position:relative;margin-bottom:30px">
                     &nbsp;
@@ -268,12 +277,49 @@
                             <th style="text-align: center" class="title-white">Tanggal dan Jam Order</th>
                             <th style="text-align: center" class="title-white">No Mr</th>
                             <th style="text-align: center" class="title-white">Nama Pasien</th>
-                            <th style="text-align: center" class="title-white">Pemeriksa</th>
+                            <th style="text-align: center" class="title-white">Pemeriksaan</th>
                             <th style="text-align: center" class="title-white">Asal</th>
                             <th style="text-align: center" class="title-white">Permintaan Dari Dr</th>
                         </tr>
                     </thead>
                     <tbody>
+                        <?php foreach($eorder as $eo){ ?>
+                            <div id="<?= $eo->orderno ?>" class="modal fade" role="dialog">
+                                <div class="modal-dialog">
+
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                            <h4 class="modal-title">Detail Pemeriksaan No Order : <b><?= $eo->orderno ?></b></h4>
+                                        </div>
+                                        <div class="modal-body">
+                                            <ul>
+                                            <?php
+                                                $modal_erad_list    = $this->db->query("SELECT * FROM tbl_eradio WHERE notr = '$eo->orderno' AND noreg = '$eo->noreg'")->result();
+                                                foreach($modal_erad_list as $melval){
+                                                    echo "<li>". $melval->kodetarif ." - ". $melval->tindakan ." - Rp ". number_format($melval->tarifrs + $melval->tarifdr, 0, ',', '.') ." - Ket : ". $melval->keterangan ."</li>";
+                                                }
+                                            ?>
+                                            </ul>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                            
+                            <tr>
+                                <td>
+                                    <button type="button" class="btn blue btn-xs" onclick="location.href='/ro2/eorder/<?= $eo->orderno ?>'">Proses</button>
+                                </td>
+                                <td><?= $eo->orderno ?></td>
+                                <td><?= date("d/m/Y", strtotime($eo->tglorder)) ." ". $eo->jamorder ?></td>
+                                <td><?= $eo->rekmed ?></td>
+                                <td><?= data_master("tbl_pasien", array("rekmed" => $eo->rekmed))->namapas ?></td>
+                                <td><button type="button" class="btn btn-info btn-xs" data-toggle="modal" data-target="#<?= $eo->orderno ?>">Detail Pemeriksaan</button></td>
+                                <td><?= data_master("tbl_namapos", array("kodepos" => $eo->asal))->namapost ?></td>
+                                <td><?= ($eo->asal == "")? "" : data_master("dokter", array("koders" => $eo->koders, "kodokter" => $eo->kodokter, "kopoli" => $eo->asal))->nadokter ?></td>
+                            </tr>
+                        <?php } ?>
                     </tbody>
                 </table>
             </div>
@@ -321,10 +367,10 @@
                                     if($extract_convert_start[0] == $extract_convert_end[0]){
                                         $periode    = $month_start ." ". $extract_convert_start[1];
                                     } else {
-                                        $periode    = $month_start ."  <font style='font-size:12px'>s/d</font>   ". $month_end ." ". $extract_convert_start[1] ."&emsp;<a href='/lab/'>Lihat Semua</a>";
+                                        $periode    = $month_start ."  <font style='font-size:12px'>s/d</font>   ". $month_end ." ". $extract_convert_start[1] ."&emsp;<a href='/ro2/'>Lihat Semua</a>";
                                     }
                                 } else {
-                                    $periode    = $month_start ." ". $extract_convert_start[1] ."  <font style='font-size:12px'>s/d</font>   ". $month_end ." ". $extract_convert_end[1] ."&emsp;<a href='/lab/'>Lihat Semua</a>";
+                                    $periode    = $month_start ." ". $extract_convert_start[1] ."  <font style='font-size:12px'>s/d</font>   ". $month_end ." ". $extract_convert_end[1] ."&emsp;<a href='/ro2/'>Lihat Semua</a>";
                                 }
                                 
                                 echo "&nbsp;&nbsp;-&nbsp;&nbsp;Periode ". $periode;
@@ -338,7 +384,7 @@
                 
                 <!-- FILTER DATE -->
                 <div style="display:block;position:relative;margin-bottom:10px">
-                    <button class="btn green" type="button" onclick="location.href='/lab/addDataPemeriksaan'"><i class="fa fa-plus"></i>&nbsp; Tambah Transaksi</button>
+                    <button class="btn green" type="button" onclick="location.href='/ro2/create'"><i class="fa fa-plus"></i>&nbsp; Tambah Transaksi</button>
                     <button class="btn btn-secondary pull-right" type="button" style="float:right" data-toggle="modal" data-target="#filterdate2">Filter Periode</button>
                 </div>
                 <!-- FILTER DATE -->
@@ -358,6 +404,22 @@
                         </tr>
                     </thead>
                     <tbody>
+                        <?php foreach($order as $o){ ?>
+                            <tr>
+                                <td><button type="button" class="btn blue btn-xs" onclick="location.href='/ro2/update/<?= $o->noradio ?>'">Edit</button></td>
+                                <td>
+                                    <button type="button" class="btn btn-success btn-xs">Isi</button>
+                                    <button type="button" class="btn btn-success btn-xs">Serahkan</button>
+                                </td>
+                                <td><?= $o->noradio ?></td>
+                                <td><?= $o->orderno ?></td>
+                                <td><?= date("d/m/Y", strtotime($o->tglradio)) ." ". $o->jam ?></td>
+                                <td><?= $o->rekmed ?></td>
+                                <td><?= $o->namapas ?></td>
+                                <td></td>
+                                <td><?= ($o->asal == "")? "-" : data_master("dokter", array("koders" => $o->koders, "kodokter" => $o->drpengirim, "kopoli" => $o->asal))->nadokter ?></td>
+                            </tr>
+                        <?php } ?>
                     </tbody>
                 </table>
 

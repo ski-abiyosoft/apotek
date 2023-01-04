@@ -265,16 +265,16 @@ $this->load->view('template/body');
                                     <table id="datatable" class="table table-hoverx table-stripedx table-borderedx table-condensed table-scrollable">
 
                                         <thead class="page-breadcrumb breadcrumb">
-                                            <th class="title-white" width="20%" style="text-align: center">Nama Barang
+                                            <th class="title-white" width="15%" style="text-align: center">Nama Barang
                                             </th>
-                                            <th class="title-white" width="5%" style="text-align: center">Qty</th>
+                                            <th class="title-white" width="10%" style="text-align: center">Qty</th>
                                             <th class="title-white" width="10%" style="text-align: center">Satuan</th>
                                             <th class="title-white" width="10%" style="text-align: center">Harga</th>
                                             <th class="title-white" width="5%" style="text-align: center">Diskon</th>
                                             <th class="title-white" width="10%" style="text-align: center">Diskon Rp
                                             </th>
                                             <th class="title-white" width="5%" style="text-align: center">Tax</th>
-                                            <th class="title-white" width="15%" style="text-align: center">Total Harga
+                                            <th class="title-white" width="10%" style="text-align: center">Total Harga
                                             </th>
                                             <th class="title-white" width="10%" style="text-align: center">Expire</th>
                                             <th class="title-white" width="10%" style="text-align: center">PO No</th>
@@ -287,7 +287,7 @@ $this->load->view('template/body');
                                             foreach ($detil as $row) {
                                             ?>
                                                 <tr>
-                                                    <td width="20%">
+                                                    <td width="15%">
                                                         <select name="kode[]" id="kode<?php echo $no; ?>" class="select2_el_log_baranggud form-control input-largex" onchange="showbarangname(this.value, 1)">
                                                             <option value="<?= $row->kodebarang; ?>">
                                                                 <?= $row->namabarang; ?>
@@ -295,7 +295,7 @@ $this->load->view('template/body');
                                                         </select>
                                                     </td>
 
-                                                    <td width="5%"><input name="qty[]" onchange="totalline(<?= $no; ?>);total();cekqty(<?= $no; ?>);changeqty(<?= $no; ?>)" value="<?= number_format($row->qty_terima); ?>" id="qty<?= $no; ?>" type="text" class="form-control rightJustified"></td>
+                                                    <td width="10%"><input name="qty[]" onchange="totalline(<?= $no; ?>);total();cekqty(<?= $no; ?>);changeqty(<?= $no; ?>)" value="<?= number_format($row->qty_terima); ?>" id="qty<?= $no; ?>" type="text" class="form-control rightJustified"></td>
                                                     <td width="10%"><input name="sat[]" id="sat<?= $no; ?>" value="<?= $row->satuan; ?>" type="text" class="form-control " onkeypress="return tabE(this,event)"></td>
                                                     <td width="10%"><input name="harga[]" onchange="totalline(<?= $no; ?>);total();cekharga(<?= $no; ?>);" value="<?= number_format($row->price); ?>" id="harga<?= $no; ?>" type="text" class="form-control rightJustified"></td>
                                                     <td width="5%"><input name="disc[]" onchange="totalline(<?= $no; ?>);total();cekdisc(<?= $no; ?>)" value="<?= $row->discount; ?>" id="disc<?= $no; ?>" type="text" class="form-control rightJustified "></td>
@@ -303,7 +303,7 @@ $this->load->view('template/body');
                                                     <td><input type="checkbox" name="tax[]" <?= ($row->vat == 1 ? 'checked' : '') ?> id="tax<?= $no; ?>" class="form-control" onchange="totalline(<?= $no; ?>);total()">
                                                     </td>
 
-                                                    <td width="15%"><input name="jumlah[]" value="<?= number_format($row->totalrp); ?>" id="jumlah<?= $no; ?>" type="text" class="form-control rightJustified" size="40%"></td>
+                                                    <td width="10%"><input name="jumlah[]" value="<?= number_format($row->totalrp); ?>" id="jumlah<?= $no; ?>" type="text" class="form-control rightJustified" size="40%"></td>
                                                     <td width="10%"><input name="expire[]" onchange="totalline(<?= $no; ?>);total()" value="<?= date('Y-m-d', strtotime($row->exp_date)); ?>" id="expire<?= $no; ?>" type="date" class="form-control"></td>
                                                     <td width="10%"><input name="po[]" onchange="totalline(<?= $no; ?>);total()" value="<?= $row->po_no; ?>" id="po<?= $no; ?>" type="text" class="form-control"></td>
                                                 </tr>
@@ -492,7 +492,8 @@ $this->load->view('template/footer');
     }
 
     function changeqty(id) {
-        var qty = $("#qty" + id).val();
+        var qtyx = $("#qty" + id).val();
+        var qty = Number(parseInt(qtyx.replaceAll(',', '')));
         var discx = $("#disc" + id).val();
         var disc = Number(parseInt(discx.replaceAll(',', '')));
         var kode = $("#kode" + id).val();
