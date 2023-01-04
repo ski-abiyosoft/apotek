@@ -20,6 +20,24 @@ class App extends CI_Controller
 			if ($this->agent->is_referral()) {
 				redirect($this->agent->referrer());
 			}else {
+				redirect(base_url('Dashboard'));
+			}
+		}
+		
+		$this->load->view('login/v_login_page', $d);
+	}
+	
+	public function home()
+	{
+		$qry = "SELECT koders FROM tbl_namers ORDER BY kodeurut";
+		$d['data'] = $this->db->query($qry)->result();
+
+		$this->load->library('user_agent');
+		
+		if (key_exists('username', $this->session->userdata())) {
+			if ($this->agent->is_referral()) {
+				redirect($this->agent->referrer());
+			}else {
 				redirect(base_url('/home'));
 			}
 		}
@@ -88,7 +106,7 @@ class App extends CI_Controller
 		if ($userid && $password && $this->M_login->validate_user($userid, $password, $cabang)) {
 			if ($this->M_login->cek_cabang($userid, $cabang) > 0) {
 				$loggedinuserid = $this->session->username;
-				redirect(base_url('home'));
+				redirect(base_url());
 			} else {
 				$this->session->set_flashdata("ntf0", "hak akses tidak sesuai dengan cabang " . $cabang . ", Silahkan pilih cabang sesuai hak akses");
 				$this->index();

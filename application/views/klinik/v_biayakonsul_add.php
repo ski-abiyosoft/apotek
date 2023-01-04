@@ -1325,6 +1325,11 @@ $this->load->view('template/footer_tb');
     var tidak         = $('#tidakadapromo').is(':checked');
     var totalnetx     = $('#totalnet').val();
     var totaltunairp  = $('#totaltunairp').val();
+    var totaltunairpx  = $('#totaltunairp').val();
+    var totaltunairp = parseInt(totaltunairpx.replaceAll(',', ''));
+    var kembalirpx = $('#kembalirp').val();
+    var kembalirp = parseInt(kembalirpx.replaceAll(',', ''));
+    var byrnya = totaltunairp - kembalirp;
     var totalnet      = parseInt(totalnetx.replaceAll(',', ''));
     if (ada) {
       var statuspromo = 'ada';
@@ -1513,7 +1518,7 @@ $this->load->view('template/footer_tb');
                   //document.getElementById("tersimpan_bayar").value="OK";
                   swal({
                     title: "KWITANSI PEMBAYARAN",
-                    html: "<p> No. Bukti : <b>" + data.nomor + "</b> </p><br>" + abc + "<br> CS : " + totaltunairp + vc1 + vc2 + vc3,
+                    html: "<p> No. Bukti : <b>" + data.nomor + "</b> </p><br>" + abc + "<br> CS : " + formatCurrency1(byrnya) + vc1 + vc2 + vc3,
                     // html: "<p> No. Bukti : <b>" + data.nomor + "</b> </p>",
                     type: "info",
                     confirmButtonText: "OK"
@@ -1542,7 +1547,7 @@ $this->load->view('template/footer_tb');
                 //document.getElementById("tersimpan_bayar").value="OK";
                 swal({
                   title: "KWITANSI PEMBAYARAN",
-                  html: "<p> No. Bukti : <b>" + data.nomor + "</b> </p><br>" + abc + "<br> CS : " + totaltunairp + vc1 + vc2 + vc3,
+                  html: "<p> No. Bukti : <b>" + data.nomor + "</b> </p><br>" + abc + "<br> CS : " + formatCurrency1(byrnya) + vc1 + vc2 + vc3,
                   // html: "<p> No. Bukti : <b>" + data.nomor + "</b> </p>",
                   type: "info",
                   confirmButtonText: "OK"
@@ -1732,7 +1737,7 @@ $this->load->view('template/footer_tb');
                 //document.getElementById("tersimpan_bayar").value="OK";
                 swal({
                   title: "KWITANSI PEMBAYARAN",
-                  html: "<p> No. Bukti : <b>" + data.nomor + "</b> </p><br> DP : " + currencyFormat(Number(uangmukapakai).toFixed(2)) + "<br>" + abc + "<br> CS : " + totaltunairp + vc1 + vc2 + vc3,
+                  html: "<p> No. Bukti : <b>" + data.nomor + "</b> </p><br> DP : " + currencyFormat(Number(uangmukapakai).toFixed(2)) + "<br>" + abc + "<br> CS : " + formatCurrency1(byrnya) + vc1 + vc2 + vc3,
                   // html: "<p> No. Bukti : <b>" + data.nomor + "</b> </p>",
                   type: "info",
                   confirmButtonText: "OK"
