@@ -58,4 +58,51 @@
             echo json_encode($data, JSON_UNESCAPED_SLASHES);
         }
 
+        public function pcare_get_data_pas($noreg){
+            $trx		= $this->db->get_where("tbl_icdtr", ["noreg" => $noreg]);
+            $ins		= $this->db->get_Where("tbl_rekammedisrs", ["noreg" => $noreg]);
+    
+            $res		= [];
+            $keluhan_awal = $tinggi_badan = $berat_badan = "";
+    
+            switch(true){
+                case ($trx == false) : 
+                    $status		= "error";
+                    $message	= "Gagal memuat diagnosa";
+                    break;
+                case ($ins == false) : 
+                    $status		= "error";
+                    $message	= "Gagal memuat data pasien";
+                    break;
+                default : 
+                    $data_pas	= $ins->row();
+    
+                    $status		= "success";
+                    $message	= "";
+    
+                    $keluhan_awal	= $data_pas->keluhanawal;
+                    $tinggi_badan	= $data_pas->tinggibadan;
+                    $berat_badan	= str_replace(".00", "", $data_pas->beratbadan);
+    
+                    foreach($trx->result() as $t){
+                        $res[]	= [
+                            "icd_code"	=> $t->icdcode,
+                            "icd_name"	=> data_master("tbl_icdinb", ["code" => $t->icdcode])->str
+                        ];
+                    }
+                    break;
+            }
+    
+            echo json_encode([
+                "status"	=> $status,
+                "message"	=> $message,
+                "data_diag"	=> $res,
+                "data_pas"	=> [
+                    "keluhan_awal"	=> $keluhan_awal,
+                    "tinggi_badan"	=> $tinggi_badan,
+                    "berat_badan"	=> $berat_badan
+                ]
+            ], JSON_UNESCAPED_SLASHES);
+        }
+
     }

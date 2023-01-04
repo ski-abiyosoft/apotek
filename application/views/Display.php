@@ -11,7 +11,9 @@
   <script src="https://code.jquery.com/jquery-3.6.3.min.js" integrity="sha256-pvPw+upLPUjgMXY0G+8O0xUf+/Im1MZjXxxgOcBQBXU=" crossorigin="anonymous"></script>
 </head>
 
-<body style="background-image: linear-gradient(#0d6efd, #0000); height: 100%; background-position: center; background-repeat: no-repeat; background-size: cover;">
+<!-- background-image: linear-gradient(#0000, #0d6efd);  -->
+
+<body style="height: 100%; background-position: center; background-repeat: no-repeat; background-size: cover;">
 
   <!-- responsive -->
   <style>
@@ -84,10 +86,10 @@
   </style>
 
   <main style="height: 100%; overflow: hidden;" id="bodyx">
-    <div class="row justify-content-center mt-5">
-      <div class="col-11">
-        <div class="card shadow mb-3 border-primary p-3">
-          <div class="card-body">
+    <div class="row">
+      <div class="col p-4">
+        <div class="row">
+          <div class="col-12">
             <div class="row justify-content-center" style="color: #0a4ba5;">
               <div class="col-3 text-center">
                 <img src="<?= base_url('assets/img_user/abiyosoft.png'); ?>" width="100%">
@@ -101,21 +103,7 @@
             </div>
             <hr class="text-primary">
             <div class="row">
-              <div class="col-3" style="color: #0a4ba5;">
-                <div class="row" style="height: 450px;">
-                  <div class="col">
-                    <h2>Tips</h2>
-                    <p style="text-align: justify;">Usahakan mendaftar via mobile JKN dan reservasi agar mendapat layanan yang cepat</p>
-                  </div>
-                </div>
-                <hr>
-                <div class="row">
-                  <div class="col">
-                    <button type="button" class="btn btn-dark w-100" onclick="modalx()"><i class="fa fa-cogs"></i> Pengaturan</button>
-                  </div>
-                </div>
-              </div>
-              <div class="col-9">
+              <div class="col-12">
                 <div class="row">
                   <div class="col-4">
                     <div class="card shadow mb-4 text-white border-0" style="background-color: #0a3a24;">
@@ -123,14 +111,19 @@
                         <div class="h4 text-center fw-bold">DAFTAR ANTRIAN</div>
                       </div>
                     </div>
-                    <div style="overflow-y: scroll; overflow: auto; height: 450px; padding: 10px;">
+                    <div style="overflow-y: scroll; overflow: auto; height: 425px; padding: 10px; margin-bottom: 20px;">
                       <?php foreach ($dokter as $d) : ?>
                         <div class="card shadow mb-4">
                           <div class="card-body text-center">
                             <div class="h5 fw-bold"><?= $d->nadokter; ?></div>
                             <hr>
                             <?php foreach ($sql as $s) : ?>
-                              <div class="h6"><?= $s->noantri; ?></div>
+                              <?php $sql2 = $this->db->get_where("tbl_pasien", ["rekmed" => $s->rekmed])->row(); ?>
+                              <?php if ($sql2) : ?>
+                                <div style="font-size: 14px;"><?= "<b>" . $s->noantri . "</b> - " . $sql2->namapas; ?></div>
+                              <?php else : ?>
+                                <div style="font-size: 14px;"><b>-</b> - 0</div>
+                              <?php endif; ?>
                             <?php endforeach; ?>
                           </div>
                         </div>
@@ -148,43 +141,62 @@
                       </div>
                     </div>
                     <div class="row">
-                      <?php $no = 1;
-                      foreach ($dokter_show as $ds) : ?>
-                        <?php $no++; ?>
-                        <?php
-                        if ($no == 1) {
-                          $color = '#0d6efd';
-                          $textcolor = 'white';
-                        } else if ($no == 2) {
-                          $color = '#f9cb9c;';
-                          $textcolor = 'black';
-                        } else if ($no == 3) {
-                          $color = '#198754';
-                          $textcolor = 'white';
-                        } else if ($no == 4) {
-                          $color = '#6c757d';
-                          $textcolor = 'white';
-                        } else {
-                          $color = '';
-                          $textcolor = '';
-                        }
-                        ?>
-                        <div class="col-6 mb-4">
-                          <div class="card shadow text-center h-100" style="background-color: <?= $color; ?>; color: <?= $textcolor; ?>;">
-                            <div class="card-header h-100">
-                              <div class="h3 my-auto d-flex justify-content-center"><?= $ds->nadokter; ?></div>
-                            </div>
-                            <div class="card-body">
-                              <div class="h6">Belum Datang</div>
-                            </div>
+                      <div class="col-6 mb-4">
+                        <div class="card shadow text-center h-100" style="background-color: #0d6efd; color: white;">
+                          <div class="card-header h-100">
+                            <div class="h4">Nadokter</div>
+                          </div>
+                          <div class="card-body">
+                            <div class="h6" id="antrinonya">Belum Datang</div>
                           </div>
                         </div>
-                      <?php endforeach; ?>
+                      </div>
+                      <div class="col-6 mb-4">
+                        <div class="card shadow text-center h-100" style="background-color: #f9cb9c; color: black;">
+                          <div class="card-header h-100">
+                            <div class="h4">Nadokter</div>
+                          </div>
+                          <div class="card-body">
+                            <div class="h6" id="antrinonya">Belum Datang</div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="col-6 mb-4">
+                        <div class="card shadow text-center h-100" style="background-color: #198754; color: white;">
+                          <div class="card-header h-100">
+                            <div class="h4">Nadokter</div>
+                          </div>
+                          <div class="card-body">
+                            <div class="h6" id="antrinonya">Belum Datang</div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="col-6 mb-4">
+                        <div class="card shadow text-center h-100" style="background-color: #6c757d; color: white;">
+                          <div class="card-header h-100">
+                            <div class="h4">Nadokter</div>
+                          </div>
+                          <div class="card-body">
+                            <div class="h6" id="antrinonya">Belum Datang</div>
+                          </div>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-4 p-3">
+            <button type="button" class="btn btn-dark text-white" style="width: 100%;" onclick="modalx()"><i class="fa fa-cogs"></i> Pengaturan</button>
+          </div>
+          <div class="col-8 p-3">
+            <?php $cbg = $this->db->get_where("tbl_namers", ["koders" => $cabang])->row(); ?>
+            <marquee class="h3 fw-bold" style="color: #0a4ba5;">(<?= $cabang; ?>) - <?= $cbg->namars; ?></marquee>
           </div>
         </div>
       </div>
@@ -198,16 +210,84 @@
           <h5 class="modal-title">Pengaturan</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" onclick="tutup()"></button>
         </div>
-        <div class="modal-body">
-          <p>Modal body text goes here.</p>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" onclick="tutup()">Close</button>
-          <button type="button" class="btn btn-primary">Save changes</button>
-        </div>
+        <form method="POST" id="form-dokter">
+          <div class="modal-body">
+            <div class="table-responsive">
+              <table id="datatable" class="table table-striped table-bordered table-hover">
+                <thead>
+                  <tr>
+                    <th>Aksi</th>
+                    <th>Dokter 1</th>
+                    <th>Dokter 2</th>
+                    <th>Dokter 3</th>
+                    <th>Dokter 4</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>
+                      <button type="button" class="btn btn-success">Pilih</button>
+                    </td>
+                    <td>
+                      <select name="dokter1" id="dokter1" class="form-control">
+                        <option value="">Pilih...</option>
+                        <?php foreach ($dkr as $dk) : ?>
+                          <option value="<?= $dk->kodokter; ?>"><?= $dk->nadokter; ?></option>
+                        <?php endforeach; ?>
+                      </select>
+                    </td>
+                    <td>
+                      <select name="dokter2" id="dokter2" class="form-control">
+                        <option value="">Pilih...</option>
+                        <?php foreach ($dkr as $dk) : ?>
+                          <option value="<?= $dk->kodokter; ?>"><?= $dk->nadokter; ?></option>
+                        <?php endforeach; ?>
+                      </select>
+                    </td>
+                    <td>
+                      <select name="dokter3" id="dokter3" class="form-control">
+                        <option value="">Pilih...</option>
+                        <?php foreach ($dkr as $dk) : ?>
+                          <option value="<?= $dk->kodokter; ?>"><?= $dk->nadokter; ?></option>
+                        <?php endforeach; ?>
+                      </select>
+                    </td>
+                    <td>
+                      <select name="dokter4" id="dokter4" class="form-control">
+                        <option value="">Pilih...</option>
+                        <?php foreach ($dkr as $dk) : ?>
+                          <option value="<?= $dk->kodokter; ?>"><?= $dk->nadokter; ?></option>
+                        <?php endforeach; ?>
+                      </select>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" onclick="tutup()">Tutup</button>
+            <button type="button" class="btn btn-primary" onclick="save()"><i class="fa fa-save"></i> Simpan</button>
+          </div>
+        </form>
       </div>
     </div>
   </div>
+
+  <script>
+    function save() {
+      var dokter1 = $("#dokter1").val();
+      var dokter2 = $("#dokter2").val();
+      var dokter3 = $("#dokter3").val();
+      var dokter4 = $("#dokter4").val();
+      var param = "?dokter1=" + dokter1 + "&dokter2=" + dokter2 + "&dokter3=" + dokter3 + "&dokter4=" + dokter4;
+      $.ajax({
+        url: "<?= site_url('Display/set_dokter'); ?>"+param,
+        type: "POST",
+        dataType: "JSON",
+      });
+    }
+  </script>
 
   <script>
     function modalx() {
@@ -219,6 +299,22 @@
       $("#bodyx").css("filter", "none");
       $("#modal-config").hide();
     }
+  </script>
+
+  <script>
+    setInterval(function() {
+      $.ajax({
+        url: "<?= site_url('Poliklinik/cekpanggil/'); ?>",
+        dataType: "JSON",
+        data: {},
+        success: function(x) {
+          document.getElementById('antrinonya').innerHTML = x;
+        },
+        error: function(x) {
+          document.getElementById('antrinonya').innerHTML = 90;
+        }
+      });
+    }, 2000);
   </script>
 
   <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js" integrity="sha384-oBqDVmMz9ATKxIep9tiCxS/Z9fNfEXiDAYTujMAeBAsjFuCZSmKbSSUnQlmh/jp3" crossorigin="anonymous"></script>

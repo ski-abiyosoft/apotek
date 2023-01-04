@@ -480,6 +480,5 @@
 
 
 <?php  
-    $this->load->view('template/footer');
     $this->load->view('template/v_report');
 ?>

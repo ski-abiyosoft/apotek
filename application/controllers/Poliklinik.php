@@ -153,7 +153,7 @@ class Poliklinik extends CI_Controller {
 			// $row[] = $periksa_perawat;
 			// $row[] = $periksa_dokter;
 			$sebut   = trim($this->M_global->penyebut($unit->antrino));
-			$row[]   = '<button class="btn btn-primary btn-sm" onclick="playAudio('."'".strtolower($unit->kodepos)."',"."'".strtolower($unit->antrino1)."',"."'".$unit->antrino."',"."'".$sebut."'".')" type="button"><b>'.$unit->antrino1.'.'.$unit->antrino.' | call </b><i class="fa fa-volume-off"></i></button>';
+			$row[]   = '<button class="btn btn-primary btn-sm" onclick="playAudio('."'".strtolower($unit->kodepos)."',"."'".strtolower($unit->antrino1)."',"."'".$unit->antrino."',"."'".$sebut."'".'); cekpanggilan('."'". $unit->noreg."'".')" type="button"><b>'.$unit->antrino1.'.'.$unit->antrino.' | call </b><i class="fa fa-volume-off"></i></button>';
 			$row[]   = $status_kasir;
 			$row[]   = $unit->noreg;
 			$row[]   = $unit->rekmed;
@@ -179,6 +179,26 @@ class Poliklinik extends CI_Controller {
 				);
 		//output to json format
 		echo json_encode($output);
+	}
+
+	public function cekpanggil(){
+		$noreg = $this->input->get("noreg");
+		$ceklast = $this->db->query("SELECT lastno FROM tbl_regist WHERE cekpanggil = 1 ORDER BY lastno DESC LIMIT 1");
+		if ($ceklast->num_rows() < 1) {
+			$last = 1;
+		} else {
+			$cl = $ceklast->row();
+			$last = (int)$cl->lastno + 1;
+		}
+		$this->db->query("UPDATE tbl_regist SET cekpanggil = 1, lastno = '$last' WHERE noreg = '$noreg'");
+		$data = $this->db->query("SELECT * FROM tbl_regist WHERE cekpanggil = 1 ORDER BY lastno DESC LIMIT 1");
+		if($data->num_rows() > 0){
+			$dt = $data->row();
+			$dat = $dt->antrino1.".".$dt->antrino;
+		} else {
+			$dat = "-.0";
+		}
+		echo json_encode($dat);
 	}
 
 	public function ajax_add_per($param){

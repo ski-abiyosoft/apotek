@@ -20,7 +20,7 @@ class App extends CI_Controller
 			if ($this->agent->is_referral()) {
 				redirect($this->agent->referrer());
 			}else {
-				redirect(base_url('/home'));
+				redirect(base_url('Dashboard'));
 			}
 		}
 		
@@ -88,7 +88,7 @@ class App extends CI_Controller
 		if ($userid && $password && $this->M_login->validate_user($userid, $password, $cabang)) {
 			if ($this->M_login->cek_cabang($userid, $cabang) > 0) {
 				$loggedinuserid = $this->session->username;
-				redirect(base_url('home'));
+				redirect(base_url(''));
 			} else {
 				$this->session->set_flashdata("ntf0", "hak akses tidak sesuai dengan cabang " . $cabang . ", Silahkan pilih cabang sesuai hak akses");
 				$this->index();

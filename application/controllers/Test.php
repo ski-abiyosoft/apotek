@@ -10,7 +10,7 @@ class Test extends CI_Controller
         // $this->load->library('dpsPcare/Services/Pcare_peserta', ["kdppk" => $this->session->userdata("kdppk")]);
         // $this->load->library('dpsPcare/Services/Pcare_poli', ["kdppk" => $this->session->userdata("kdppk")]);
         // $this->load->library('dpsPcare/Services/Pcare_status_pulang', ["kdppk" => $this->session->userdata("kdppk")]);
-        $this->load->library('dpsPcare/Services/Pcare_kesadaran', ["kdppk" => $this->session->userdata("kdppk")]);
+        // $this->load->library('dpsPcare/Services/Pcare_kesadaran', ["kdppk" => $this->session->userdata("kdppk")]);
         $this->load->library('dpsPcare/Services/Pcare_pendaftaran', ["kdppk" => $this->session->userdata("kdppk")]);
     }
     
@@ -25,7 +25,7 @@ class Test extends CI_Controller
             ->set_content_type('application/json')
             ->set_status_header(200)
             ->set_output(json_encode([
-                "status" => $this->pcare_pendaftaran->sync_data("26-12-2022")
+                "data" => $this->pcare_pendaftaran->get_pendaftaran_provider("22-12-2023")
             ]));
     }
 

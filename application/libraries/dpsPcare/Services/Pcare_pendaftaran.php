@@ -152,6 +152,8 @@ class Pcare_pendaftaran extends Pcare_service
             ];
         }
 
+        // return $result;
+
         // If internal server error
         if ($result->status >= 500) {
             return $result;
@@ -182,7 +184,7 @@ class Pcare_pendaftaran extends Pcare_service
                 $offset    = $i * $limit;
                 $result    = $this->get_pendaftaran_provider($tglDaftar, $offset, $limit);
                 
-                if ($result->data) {
+                if (isset($result->data)) {
                     $result_data = json_decode($result->data);
 
                     foreach ($result_data->list as $data) {

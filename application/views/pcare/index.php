@@ -183,7 +183,7 @@
                                         <div class="form-group" style="padding-left: 50px;">
                                             <label class="col-md-3" style="margin-top: 5px;padding-left: 12px;">No Kartu BPJS</label>
                                             <div class="col-md-8">
-                                                <input value="" id="noKartuPeserta" name="noKartuPeserta" class="form-control" type="text" readonly>
+                                                <input value="<?= $noreg ? data_master("tbl_regist", ["noreg" => $noreg])->nobpjs : "" ?>" id="noKartuPeserta" name="noKartuPeserta" class="form-control" type="text" readonly>
                                             </div>
                                         </div>
                                     </div>
@@ -545,14 +545,10 @@
                                     Sebelum melakukan bridging, lakukan pemeriksaan perawat dan dokter delebih dahulu
                                 </div>
 
-                                <h4><strong>P-Care Bridging System - Abiyosoft | PENDAFTARAN</strong></h4>
-                                <hr stle="margin-bottom: 1rem;" />
-
                                 <form name="pcare_form" id="pcare_form">
                                     <input type="hidden" name="kdProviderPelayanan" id="kdProviderPelayanan" value="">
                                     <fieldset name="data_diri">
                                         <p style="font-weight: bold; font-size: 16px;">Data Diri Pasien</p>
-                                        <hr stle="margin-bottom: 1rem;" />
                                         <div style="display: grid; grid-template-columns: 1fr 10px 3fr;">
                                             <label class="form-label">Faskes</label>
                                             <span>:</span>
@@ -627,7 +623,6 @@
                                     </fieldset>
                                     <fieldset name="data_diri">
                                         <p style="font-weight: bold; font-size: 16px;">Hasil Pemeriksaan</p>
-                                        <hr stle="margin-bottom: 1rem;" />
                                         <div style="display: grid; grid-template-columns: 1fr 3fr; gap: 20px;">
                                             <label class="form-label" for="tglDaftar">Tanggal Daftar</label>
                                             <input class="form-control" name="tglDaftar" id="tglDaftar" type="date">
@@ -898,7 +893,7 @@
 
                                 <p style="font-weight: bold; font-size: 16px; margin-top: 20px;">Hasil Bridging</p>
                                 <hr stle="margin-bottom: 1rem;" />
-                                <div style="width: 80%; margin: 10px auto; padding: 10px; border: 1px solid black;" id="bridging_result">
+                                <div style="width: 80%; margin: 10px auto; padding: 10px; border: 1px solid black;" id="bridging_result_kunjungan">
                                 </div>
                             </div>
                             <!-- TAB KUNJUNGAN -->
@@ -922,22 +917,7 @@
     <?php endif; ?>
     
     $(document).ready(function() {
-
-        // var doaa         = 1;
-        // var birthDate   = new Date(tgllahire);
-        // var usia        = hitung_usia(birthDate);
-        // if(doaa==1){
-        //     $('[name="nadi"]').prop("readonly", true);
-        //     $('[name="nafas"]').prop("readonly", true);
-        //     $('[name="oksi"]').prop("readonly", true);
-        //     $('[name="suhu"]').prop("readonly", true);
-        //     $('[name="tekanan"]').prop("readonly", true);
-        //     $('[name="tekanan1"]').prop("readonly", true);
-        // }
-        // $('#umur').val(usia);
-
         show_table();
-
     });
 
     function filterData(){
@@ -1023,7 +1003,7 @@
                     $("#sex").val(data.sex).change();
                     $("#noHp").val(data.noHP);
                     $("#kdPoli").val("");
-                    $("#bridging_result").append("<p class='text-success'>[GET]&emsp;&emsp;Berhasil mengambil data bridging</p>");
+                    $("#bridging_result").append("<p class='text-success'>[GET]&emsp;&emsp;Berhasil mengambil data bridging : <b>Pendaftaran</b></p>");
                     $('#bridging_result').animate({scrollTop: $('#bridging_result').height()}, 1000);
                 }
 
@@ -1042,6 +1022,8 @@
 
                 $("#bridging_result").append("<p class='text-danger'>[GET]&emsp;&emsp;Gagal mengambil data bridging : <b>"+ jqXHR.responseJSON.message +"</b></p>");
                 $('#bridging_result').animate({scrollTop: $('#bridging_result').height()}, 1000);
+                $("#bridging_result").append("<p class='text-danger'>[GET]&emsp;&emsp;Gagal mengambil data bridging</p>");
+                $('#bridging_result').animate({scrollTop: $('#bridging_result').height()}, 1000);
             }
         });
     }
@@ -1053,7 +1035,6 @@
             dataType: "JSON",
             success: (res) => {
                 if(res.status_rekmed == true){
-                    $("#pcare_kunjungan").attr("style", "display:show");
                     $("#rekmed").val(res.data_rekmed.rekmed);
                     $("#noReg").val(res.data_rekmed.noreg);
                     if(res.status_pcare == false){
@@ -1086,8 +1067,10 @@
                 }
 
                 if(res.status_pcare == true){
+                    get_pendaftaran_pcare('<?= $noreg ?>');
                     $("#pcare_kunjungan").attr("style", "display:show");
                     $("#status").val(res.data_pcare.status);
+
                     switch(res.data_pcare.kunjSakit){
                         case "1" : 
                             $("#k_sakit").prop("checked", true);
@@ -1135,11 +1118,12 @@
                     $("#diastole").val(res.data_pcare.diastole);
                     $("#respRate").val(res.data_pcare.respRate);
                     $("#heartRate").val(res.data_pcare.heartRate);
+                    $("#lingkarPerut").val(res.data_pcare.lingkarPerut);
 
-                    $("#bridging_result").append("<p class='text-info'>[INFO]&emsp;Status bridging : <b>Update Data</b>");
+                    $("#bridging_result").append("<p class='text-info'>[INFO]&emsp;Status bridging : <b>Update Data Pendaftaran</b>");
                     $('#bridging_result').animate({scrollTop: $('#bridging_result').height()}, 1000);
 
-                    $("#bridging_result").append("<p class='text-success'>[GET]&emsp;&emsp;Berhasil mengambil data pendaftaran</p>");
+                    $("#bridging_result").append("<p class='text-success'>[GET]&emsp;&emsp;Berhasil mengambil data : <b>Pendaftaran</b></p>");
                     $('#bridging_result').animate({scrollTop: $('#bridging_result').height()}, 1000);
                 }
             },
@@ -1151,7 +1135,7 @@
     
     function get_pendaftaran_pcare(param){
         $.ajax({
-            url: "/poliklinik/pcare_get_data_pas/"+ param,
+            url: "/pcare/pcare_get_data_pas/"+ param,
             type: "GET",
             dataType: "JSON",
             success: (res) => {
@@ -1184,6 +1168,27 @@
             },
             error: (jqXHR) => {
                 //
+            }
+        });
+
+        $.ajax({
+            url: "/api/pcare/get_detail_pendaftaran/"+ param,
+            type: "GET",
+            dataType: "JSON",
+            success: (res) => {
+                console.log(res);
+                $("#kodeRs").val(res.kodeRs);
+                $("#tglDaftar").val(res.tglDaftar);
+                $("#noReg").val(res.noReg);
+                $("#noKartu").val(res.noKartuPeserta);
+                $("#namaPeserta").val(res.namaPeserta);
+                $("#status").val(res.status);
+                $("#ppkUmum").val(res.kodeRs);
+                $("#kdProviderPelayanan").val(res.kdProviderPelayanan);
+                $("#bridging_result_kunjungan").append("<p class='text-success'>[GET]&emsp;&emsp;Berhasil mengambil data bridging : <b>Kunjungan</b></p>");
+            },
+            error: (jqXHR) => {
+                console.error(jqXHR.responseJSON);
             }
         });
     }
