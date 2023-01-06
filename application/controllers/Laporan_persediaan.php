@@ -2061,7 +2061,7 @@ class Laporan_persediaan extends CI_Controller
                          }
                     }
                }
-               $this->M_template_cetak->template($judul, $body, $position, $date, 1);
+               $this->M_template_cetak->template($judul, $body, $position, $date, $cekpdf);
           } else {
                header('location:' . base_url());
           }

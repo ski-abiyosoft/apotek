@@ -3,7 +3,7 @@
     $this->load->view('template/body');    	  
 ?>
 
-<div class="row">
+<div class="row">ss
     <div class="col-md-12">
         <h3 class="page-title">
             <span class="title-unit">

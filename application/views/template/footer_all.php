@@ -899,13 +899,12 @@
       });
    }
 
-   function initailizeSelect2_farmasi_barangdata(modal = null) {
+   function initailizeSelect2_farmasi_barangdata() {
       $(".select2_el_farmasi_barangdata").select2({
          allowClear: true,
          multiple: false,
          placeholder: '--- Pilih Barang ---',
          //minimumInputLength: 2,
-         dropdownParent: $(modal),
          dropdownAutoWidth: true,
          language: {
             inputTooShort: function() {

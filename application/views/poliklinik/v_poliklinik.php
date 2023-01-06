@@ -1146,7 +1146,7 @@ function closemod() {
             }).then(function() {
                 var param = "?noreg="+noreg;
                 $.ajax({
-                    url: "<?= site_url('Poliklinik/cekpanggil'); ?>" + param,
+                    url: "<?= site_url('Poliklinik/cekpanggil/0/'); ?>" + param,
                     type: "POST",
                     dataType: "JSON",
                 });

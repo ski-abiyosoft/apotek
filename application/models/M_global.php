@@ -2055,8 +2055,7 @@ class M_global extends CI_Model
 			$limm = "";
 		}
 		if ($unit != "") {
-			$query = $this->db->query("
-			SELECT tbl_barang.kodebarang AS id, 
+			$query = $this->db->query("SELECT tbl_barang.kodebarang AS id, 
 			CONCAT(' 
 				[ ', tbl_barang.kodebarang ,' ] ',' - ',' 
 				[ ', tbl_barang.namabarang ,' ] ',' - ',' 
@@ -2067,8 +2066,7 @@ class M_global extends CI_Model
 			WHERE (tbl_barang.kodebarang like '%$str%' OR tbl_barang.namabarang like '%$str%' OR tbl_barang.satuan1 like '%$str%' OR tbl_barang.hargajual like '%$str%') order by tbl_barang.kodebarang $limm
 			");
 		} else {
-			$query = $this->db->query("
-			SELECT kodebarang AS id, 
+			$query = $this->db->query("SELECT kodebarang AS id, 
 			CONCAT(' 
 				[ ', kodebarang ,' ] ',' - ',' 
 				[ ', namabarang ,' ] ',' - ',' 

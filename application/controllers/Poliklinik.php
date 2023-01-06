@@ -181,8 +181,15 @@ class Poliklinik extends CI_Controller {
 		echo json_encode($output);
 	}
 
-	public function cekpanggil(){
+	public function cekpanggil($param_id){
+		// $now = date("Y-m-d");
+		$now = "2022-11-01";
 		$noreg = $this->input->get("noreg");
+		$dokter_display = $this->db->query("SELECT * FROM dokter_display WHERE id = '$param_id'")->row();
+		$kodokter1 = $dokter_display->kodokter1;
+		$kodokter2 = $dokter_display->kodokter2;
+		$kodokter3 = $dokter_display->kodokter3;
+		$kodokter4 = $dokter_display->kodokter4;
 		$ceklast = $this->db->query("SELECT lastno FROM tbl_regist WHERE cekpanggil = 1 ORDER BY lastno DESC LIMIT 1");
 		if ($ceklast->num_rows() < 1) {
 			$last = 1;
@@ -190,15 +197,44 @@ class Poliklinik extends CI_Controller {
 			$cl = $ceklast->row();
 			$last = (int)$cl->lastno + 1;
 		}
-		$this->db->query("UPDATE tbl_regist SET cekpanggil = 1, lastno = '$last' WHERE noreg = '$noreg'");
-		$data = $this->db->query("SELECT * FROM tbl_regist WHERE cekpanggil = 1 ORDER BY lastno DESC LIMIT 1");
-		if($data->num_rows() > 0){
-			$dt = $data->row();
-			$dat = $dt->antrino1.".".$dt->antrino;
+		$this->db->query("UPDATE tbl_regist SET cekpanggil = 1, lastno = '$last' WHERE noreg = '$noreg' AND cekpanggil = 0");
+		$data1 = $this->db->query("SELECT * FROM tbl_regist WHERE kodokter = '$kodokter1' AND cekpanggil = 1 AND tglmasuk = '$now' AND lastno > 0 ORDER BY lastno DESC LIMIT 1");
+		if($data1->num_rows() > 0){
+			$dt1 = $data1->result();
+			foreach($dt1 as $d1){
+				$dat1 = $d1->antrino1.".".$d1->antrino;
+			}
 		} else {
-			$dat = "-.0";
+			$dat1 = "-";
 		}
-		echo json_encode($dat);
+		$data2 = $this->db->query("SELECT * FROM tbl_regist WHERE kodokter = '$kodokter2' AND cekpanggil = 1 AND tglmasuk = '$now' AND lastno > 0 ORDER BY lastno DESC LIMIT 1");
+		if($data2->num_rows() > 0){
+			$dt2 = $data2->row();
+			$dat2 = $dt2->antrino1.".".$dt2->antrino;
+		} else {
+			$dat2 = "-";
+		}
+		$data3 = $this->db->query("SELECT * FROM tbl_regist WHERE kodokter = '$kodokter3' AND cekpanggil = 1 AND tglmasuk = '$now' AND lastno > 0 ORDER BY lastno DESC LIMIT 1");
+		if($data3->num_rows() > 0){
+			$dt3 = $data3->row();
+			$dat3 = $dt3->antrino1.".".$dt3->antrino;
+		} else {
+			$dat3 = "-";
+		}
+		$data4 = $this->db->query("SELECT * FROM tbl_regist WHERE kodokter = '$kodokter4' AND cekpanggil = 1 AND tglmasuk = '$now' AND lastno > 0 ORDER BY lastno DESC LIMIT 1");
+		if($data4->num_rows() > 0){
+			$dt4 = $data4->row();
+			$dat4 = $dt4->antrino1.".".$dt4->antrino;
+		} else {
+			$dat4 = "-";
+		}
+		$data_now = [
+			'antri1' => $dat1,
+			'antri2' => $dat2,
+			'antri3' => $dat3,
+			'antri4' => $dat4,
+		];
+		echo json_encode($data_now);
 	}
 
 	public function ajax_add_per($param){
