@@ -492,7 +492,6 @@ class Kasir_laporan extends CI_Controller
 					</tr>";
 					
 					$total += $db->totalsemua;
-					$no++;
 				}
 
 				if($cekpdf == 3){

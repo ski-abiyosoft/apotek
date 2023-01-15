@@ -1,41 +1,48 @@
 <?php if (!defined('BASEPATH')) exit('No direct script access allowed');
 
-class Absen_laporan extends CI_Controller
-{
+	class Absen_laporan extends CI_Controller
+	{
 
 
 
 
-public function __construct()
-{
-	parent::__construct();
+	public function __construct()
+	{
+		parent::__construct();
 
-	$this->load->model('M_global', 'M_global');
-	$this->load->model('M_cetak');
-	$this->load->helper('simkeu_rpt');
-	$this->session->set_userdata('menuapp', '6000');
-	$this->session->set_userdata('submenuapp', '6102');
-}
-
-public function index()
-{
-	$cek = $this->session->userdata('level');
-	if (!empty($cek)) {
-		$unit = $this->session->userdata('unit');
-		$this->load->helper('url');
-		$d['cabang'] = $this->db->get('tbl_namers')->result();
-		$d['bulan']  = $this->db->query("SELECT*FROM ms_bln order by id")->result();
-
-		$this->load->view('master/v_master_absen_lap', $d);
-	} else {
-		header('location:' . base_url());
+		$this->load->model('M_global', 'M_global');
+		$this->load->model('M_cetak');
+		$this->load->helper('simkeu_rpt');
+		$this->session->set_userdata('menuapp', '6000');
+		$this->session->set_userdata('submenuapp', '6102');
 	}
-}
 
+	public function index()
+	{
+		$cek = $this->session->userdata('level');
+		if (!empty($cek)) {
+			$unit = $this->session->userdata('unit');
+			$this->load->helper('url');
+			$d['cabang'] = $this->db->get('tbl_namers')->result();
+			$d['bulan']  = $this->db->query("SELECT*FROM ms_bln order by id")->result();
 
+			$this->load->view('master/v_master_absen_lap', $d);
+		} else {
+			header('location:' . base_url());
+		}
+	}
 
-function cetak_absen_h($cek = '', $thnn = '')
-{
+	
+
+	function cetak_absen_h($cek = '', $thnn = '')
+	{
+
+		$chari    = '';
+		$tglh     = $this->input->get('tglh');
+		$_tglh    = date('Y-m-d', strtotime($tglh));
+		$hari     = $this->M_cetak->hari_indo($tglh);
+		$tgll     = $this->M_cetak->tanggal_format_indonesia($tglh);
+		$_peri    = 'Tanggal ' . date('d-M-Y', strtotime($tglh)) ;
 
 		$dari     = '2022-02-14';
 		$tgl1     = strtotime($dari);
@@ -47,15 +54,14 @@ function cetak_absen_h($cek = '', $thnn = '')
 		$tgl2sby  = strtotime($tglh);
 		$jaraksby = ($tgl2sby - $tgl1sby)/ 60 / 60 / 24;
 
-	$dari     = '2022-02-14';
-	$tgl1     = strtotime($dari);
-	$tgl2     = strtotime($tglh);
-	$jarakdiy = ($tgl2 - $tgl1)/ 60 / 60 / 24;
 
-	$darisby  = '2022-09-01';
-	$tgl1sby  = strtotime($darisby);
-	$tgl2sby  = strtotime($tglh);
-	$jaraksby = ($tgl2sby - $tgl1sby)/ 60 / 60 / 24;
+		$kop      = $this->M_cetak->kop('abi');
+		$namars   = $kop['namars'];
+		$alamat   = $kop['alamat'];
+		$alamat2  = $kop['alamat2'];
+		$phone    = $kop['phone'];
+		$whatsapp = $kop['whatsapp'];
+		$npwp     = $kop['npwp'];
 
 
 		$chari .= "<table style=\"border-collapse:collapse;font-family: Century Gothic; font-size:12px; color:#000;\" width=\"100%\"  border=\"1\" cellspacing=\"0\" cellpadding=\"0\">
@@ -64,13 +70,11 @@ function cetak_absen_h($cek = '', $thnn = '')
 		<tr>
 			<td rowspan=\"6\" align=\"center\">
 			<img src=\"" . base_url() . "assets/img/abiyosoft.png\"  width=\"100\" height=\"50\" /></td>
-
 			<td colspan=\"20\"><b>
 				<tr><td align=\"center\" style=\"font-size:25px;color:#120292;\"><b>PT SISTEM KESEHATAN INDONESIA (SKI) DIY ABIYOSOFT</b></td></tr>
 				<tr><td align=\"center\" style=\"font-size:13px;\">Ideazone, Jalan Magelang St No.188, Karangwaru, Tegalrejo, Yogyakarta City</td></tr>
 				<tr><td align=\"center\" style=\"font-size:13px;\">Special Region of Yogyakarta 55242</td></tr>
 				<tr><td align=\"center\" style=\"font-size:13px;\">Wa :+6281389158889   |  E-mail :ski.abiyosoft@gmail.com | Website : https://abiyosoft.com/</td></tr>
-
 			</b></td>
 		</tr> 
 			
@@ -80,7 +84,6 @@ function cetak_absen_h($cek = '', $thnn = '')
 		
 			
 			$chari .= "<table style=\"border-collapse:collapse;font-family: Times New Roman; font-size:12px\" width=\"100%\" align=\"center\" border=\"0\" cellspacing=\"1\" cellpadding=\"3\">
-
 			<thead>
 				<tr>
 					<td colspan=\"4\" align=\"center\"><br></td>                
@@ -155,7 +158,6 @@ function cetak_absen_h($cek = '', $thnn = '')
 			
 
 			$chari .= "<table style=\"border-collapse:collapse;font-family: Times New Roman; font-size:12px\" width=\"100%\" align=\"center\" border=\"0\" cellspacing=\"1\" cellpadding=\"3\">
-
 			<thead>
 				<tr>
 					<td colspan=\"4\" align=\"center\"><br><br><br></td>                
@@ -194,7 +196,6 @@ function cetak_absen_h($cek = '', $thnn = '')
 			$status_absen    = '';
 			$nm_stat	     = '';
 
-			$workDateA    = new DateTime( $tgl1 );
 
 			foreach ($query1->result() as $row) {
 				$lcno           = $lcno + 1;
@@ -254,10 +255,35 @@ function cetak_absen_h($cek = '', $thnn = '')
 		
 	}
 
-			$chari .="<td bgcolor=\"$bgg\" align=\"center\"><b> ".$workDateA->format('d') ."/".$workDateA->format('m')." </b></td>";
-			$workDateA->modify('+1 day');
-		}
+	function cetak_absen($cek_pdf = '', $thnn = '')
+	{
+
+		$chari        = '';
+		$cekk         = $this->session->userdata('level');
+		$unit         = $this->session->userdata('unit');
+		$unit         = $this->session->userdata('unit');
+		$profile      = $this->M_global->_LoadProfileLap();
+		$nama_usaha   = $profile->nama_usaha;
+		$motto        = '';
+		$alamat       = '';
+		$cek_pdf      = $this->input->get('cek');
+		$tgl1         = $this->input->get('tgl1');
+		$tgl2         = $this->input->get('tgl2');
+		$_tgl1        = date('d', strtotime($tgl1));
+		$bull         = $this->M_cetak->getBulan(date('m', strtotime($tgl1)));
+		$_tgl2        = date('d', strtotime($tgl2));
+		$_peri        = 'Dari ' . date('d-m-Y', strtotime($tgl1)) . ' s/d ' . date('d-m-Y', strtotime($tgl2));
+
+		$dtStart      = new DateTime($tgl1);
+		$dtEnd        = new DateTime($tgl2);
+		$interval     = $dtStart->diff($dtEnd);
+		$nDays        = intval($interval->format('%a'));
 		$workDateA    = new DateTime( $tgl1 );
+		$workDateC    = new DateTime( $tgl1 );
+		$workDateD    = new DateTime( $tgl1 );
+		$harijum      = $nDays;
+		$harijum1     = $nDays+1;
+
 		
 		if (!empty($cekk)) {
 			$kop       = $this->M_cetak->kop($unit);
@@ -280,27 +306,32 @@ function cetak_absen_h($cek = '', $thnn = '')
 			<tr>
 				<td rowspan=\"6\" align=\"center\">
 				<img src=\"" . base_url() . "assets/img/abiyosoft.png\"  width=\"100\" height=\"50\" /></td>
-
 				<td colspan=\"20\"><b>
 					<tr><td align=\"center\" style=\"font-size:25px;color:#120292;\"><b>PT SISTEM KESEHATAN INDONESIA (SKI) DIY ABIYOSOFT</b></td></tr>
 					<tr><td align=\"center\" style=\"font-size:13px;\">Ideazone, Jalan Magelang St No.188, Karangwaru, Tegalrejo, Yogyakarta City</td></tr>
 					<tr><td align=\"center\" style=\"font-size:13px;\">Special Region of Yogyakarta 55242</td></tr>
 					<tr><td align=\"center\" style=\"font-size:13px;\">Wa :+6281389158889   |  E-mail :ski.abiyosoft@gmail.com | Website : https://abiyosoft.com/</td></tr>
-
 				</b></td>
 			</tr> 
 				
 			
 			</table>";
 
-			$chari .= 
-			"<tr>
-			<td rowspan=\"2\" align=\"center\">$lcno</td>
-			<td rowspan=\"2\" align=\"center\">$nik</td>
-			<td rowspan=\"2\" align=\"left\">$namakary</td>
-			<td rowspan=\"2\" align=\"center\">$jkel</td>
-			<td rowspan=\"2\" align=\"left\">$jab</td>";
-			for ($i = 0; $i <= $harijum; $i++) {
+			$chari .= "<table style=\"border-collapse:collapse;font-family: tahoma; font-size:12px\" width=\"100%\" align=\"center\" border=\"0\" cellspacing=\"1\" cellpadding=\"3\">
+						
+				<tr>
+					<td colspan=\"21\" style=\"text-align:center;font-size:22px;border-bottom: none;color:#120292;\"><b><br></b></td>
+				</tr> 
+				<tr>
+					<td colspan=\"21\" style=\"text-align:center;font-size:22px;border-bottom: none;\"><b>DAFTAR TINGKAT KEHADIRAN KARYAWAN/PEGAWAI </b></td>
+				</tr> 
+				<tr>
+					<td colspan=\"21\" style=\"text-align:center;font-size:15px;border-bottom: none;\"><b>UNIT KERJA SISTEM KLINIK INDONESIA DIY </b></td>
+				</tr> 
+					
+				<tr>
+					<td colspan=\"21\" style=\"text-align:center;font-size:15px;border-top: none;\">$_peri<br><br></td>
+				</tr>
 				
 				</table>";
 
@@ -325,7 +356,7 @@ function cetak_absen_h($cek = '', $thnn = '')
 				 
 				</table>";
 
-
+			$chari .= "<table style=\"border-collapse:collapse;font-family: Times New Roman; font-size:12px\" width=\"100%\" align=\"center\" border=\"1\" cellspacing=\"1\" cellpadding=\"3\">
 		<thead>
 			
 			<tr>
@@ -348,15 +379,9 @@ function cetak_absen_h($cek = '', $thnn = '')
 				}else{
 					$bgg='#cccccc';
 
-				}else{
-					$bgg='';
 				}
-
-				if($query->status<>'AB1'){
-					$chari .="<td bgcolor=\"$bgg\" align=\"center\"><b>".$query->nm_stat."</b></td>";
-
-				}else{
-					$chari .="<td bgcolor=\"$bgg\" align=\"left\">".$query->jamm ." - ". $query->jamk."</td>";
+				$chari .="<td bgcolor=\"$bgg\" align=\"center\"> $hariindo </td>";
+				$workDateA->modify('+1 day');
 				}
 				$chari .="<td rowspan=\"2\" bgcolor=\"#cccccc\" align=\"center\"> H </td>";
 				$chari .="<td rowspan=\"2\" bgcolor=\"#cccccc\" align=\"center\"> S </td>";
@@ -366,14 +391,8 @@ function cetak_absen_h($cek = '', $thnn = '')
 				$workDateA    = new DateTime( $tgl1 );
 
 			$chari .="
-			<td rowspan=\"2\" align=\"center\">$rekaph</td>
-			<td rowspan=\"2\" align=\"center\">$rekaps</td>
-			<td rowspan=\"2\" align=\"center\">$rekapi</td>
-			<td rowspan=\"2\" align=\"center\">$rekapa</td>
 			</tr>
-			
 			<tr>";
-			
 			for ($i = 0; $i <= $harijum; $i++) {
 				$hariindo=$this->M_cetak->hari_indo($workDateA->format('D'));
 				if($hariindo=='Minggu'){
@@ -381,10 +400,6 @@ function cetak_absen_h($cek = '', $thnn = '')
 				}else{
 					$bgg='#cccccc';
 
-				if($cek>0){
-					$query = $this->db->query("SELECT * from tbl_absen_ski b where  tgl_absen = '$workDateD_' AND NIK='$nik' and status_masuk='1' ")->row();
-				}else{ 
-					$query = $this->db->query("SELECT * from tbl_absen_ski b where NIK='123' ")->row();
 				}
 
 				$chari .="<td bgcolor=\"$bgg\" align=\"center\"><b> ".$workDateA->format('d') ."/".$workDateA->format('m')." </b></td>";
@@ -409,13 +424,10 @@ function cetak_absen_h($cek = '', $thnn = '')
 		from tbl_kary_ski a where resign=0 
 		order by namakary";
 
-				}
+		$query1   = $this->db->query($sql)->result();
+		$lcno     = 0;
+		$nm       = 0;
 
-				if($query->status=='AB1' || $query->status=='AB2'){
-					$stat='1';
-				}else{
-					$stat='0';
-				}
 
 		foreach ($query1 as $row) {
 			$lcno            = $lcno + 1;
@@ -428,13 +440,7 @@ function cetak_absen_h($cek = '', $thnn = '')
 			$rekapi          = $row->rekapi;
 			$rekapa          = $row->rekapa;
 			
-				$workDateD->modify('+1 day');
-			}
 			
-			$workDateD    = new DateTime( $tgl1 );
-			$chari .="
-			</tr>
-			";
 
 				$chari .= 
 				"<tr>
@@ -535,60 +541,55 @@ function cetak_absen_h($cek = '', $thnn = '')
 				<td bgcolor=\"#cccccc\" colspan=\"$jumrek\" align=\"center\"><b></b></td>
 				</tr>";
 
-		$jumrek=$harijum1+10;
-		$chari .= "<tr>
-			<td bgcolor=\"#cccccc\" colspan=\"$jumrek\" align=\"center\"><b></b></td>
-			</tr>";
 
 
+			$chari .= "</table>";
 
-		$chari .= "</table>";
-
-		$data['prev'] = $chari;
-		$judul        = 'ABSENSI';
+			$data['prev'] = $chari;
+			$judul        = 'ABSENSI';
 
 
-		switch ($cek_pdf) {
-			case 0;
-				echo ("<title>ABSENSI</title>");
-				echo ($chari);
-				break;
+			switch ($cek_pdf) {
+				case 0;
+					echo ("<title>ABSENSI</title>");
+					echo ($chari);
+					break;
 
-			case 1;
-				$this->M_cetak->mpdf('L', 'A3', $judul, $chari, 'LAPORAN-ABSEN_SKI.PDF', 10, 10, 10, 2);
-				break;
-			case 2;
-				header("Cache-Control: no-cache, no-store, must-revalidate");
-				header("Content-Type: application/vnd-ms-excel");
-				header("Content-Disposition: attachment; filename= $judul.xls");
-				$this->load->view('app/master_cetak', $data);
-				break;
+				case 1;
+					$this->M_cetak->mpdf('L', 'A3', $judul, $chari, 'LAPORAN-ABSEN_SKI.PDF', 10, 10, 10, 2);
+					break;
+				case 2;
+					header("Cache-Control: no-cache, no-store, must-revalidate");
+					header("Content-Type: application/vnd-ms-excel");
+					header("Content-Disposition: attachment; filename= $judul.xls");
+					$this->load->view('app/master_cetak', $data);
+					break;
+			}
+		} else {
+
+			header('location:' . base_url());
 		}
-	} else {
-
-		header('location:' . base_url());
 	}
-}
 
 
-public function export()
-{
-	$cek = $this->session->userdata('level');
-	if (!empty($cek)) {
-		$page = $this->uri->segment(3);
-		$limit = $this->config->item('limit_data');
-		$d['master_bank'] = $this->db->get("ms_bank");
-		$d['nama_usaha'] = $this->config->item('nama_perusahaan');
-		$d['alamat'] = $this->config->item('alamat_perusahaan');
-		$d['motto'] = $this->config->item('motto');
+	public function export()
+	{
+		$cek = $this->session->userdata('level');
+		if (!empty($cek)) {
+			$page = $this->uri->segment(3);
+			$limit = $this->config->item('limit_data');
+			$d['master_bank'] = $this->db->get("ms_bank");
+			$d['nama_usaha'] = $this->config->item('nama_perusahaan');
+			$d['alamat'] = $this->config->item('alamat_perusahaan');
+			$d['motto'] = $this->config->item('motto');
 
-		$this->load->view('master/bank/v_master_bank_exp', $d);
-	} else {
+			$this->load->view('master/bank/v_master_bank_exp', $d);
+		} else {
 
-		header('location:' . base_url());
+			header('location:' . base_url());
+		}
 	}
-}
-}
+	}
 
-/* End of file akuntansi_jurnal.php */
-/* Location: ./application/controllers/akuntansi_jurnal.php */
+	/* End of file akuntansi_jurnal.php */
+	/* Location: ./application/controllers/akuntansi_jurnal.php */

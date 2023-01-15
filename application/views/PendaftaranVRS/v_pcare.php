@@ -1,16 +1,7 @@
 <?php 
     $this->load->view('template/header');
-    $this->load->view('template/body');    
-    date_default_timezone_set("Asia/Jakarta");
-
-    $fill_perawat   = $this->session->flashdata("isi_perawat");
-
-    if(isset($fill_perawat)){
-        echo "<script>alert('$fill_perawat')</script>";
-    }
-
-    
-?>	
+    $this->load->view('template/body');
+?>
 
 <div class="row">
     <div class="col-md-12">
@@ -24,21 +15,15 @@
         <ul class="page-breadcrumb breadcrumb">
             <li>
                 <i style="color:white;" class="fa fa-home"></i>
-                <a class="title-white" href="<?php echo base_url();?>dashboard">
-                    Awal
-                </a>
+                <a class="title-white" href="<?php echo base_url();?>dashboard">Awal</a>
                 <i style="color:white;" class="fa fa-angle-right"></i>
             </li>
             <li>
-                <a class="title-white" href="<?php echo base_url('PendaftaranVRS');?>">
-                    Pendaftaran VRS
-                                            </a>
+                <a class="title-white" href="<?php echo base_url('PendaftaranVRS');?>">Pendaftaran VRS</a>
                 <i style="color:white;" class="fa fa-angle-right"></i>
             </li>
             <li>							
-                <a class="title-white" href="">
-                    Briging Pendaftaran Pasien
-                </a>
+                <a class="title-white" href="">Briging Pendaftaran Pasien</a>
             </li>
         </ul>
     </div>
@@ -48,18 +33,25 @@
     <div class="row">
         <div class="col-md-12">
             <div class="portlet box blue">
+
                 <div class="portlet-title">
                     <div class="caption">
                         <i class="fa fa-reorder"></i><b>P-CARE BRIGING SYSTEM - ABIYOSOFT</b>
                     </div>
                 </div> 
+
                 <div class="portlet-body">	                        
                     <div class="form-body">  
                         <div class="tabbable tabbable-custom tabbable-full-width">
                             <ul class="nav nav-tabs">
-                                <li class="active" id="reservasi">
+                                <li class="active" id="pcare_pendaftaran">
                                     <a href="#tab1" data-toggle="tab">
                                         Pendaftaran
+                                    </a>
+                                </li>
+                                <li id="pcare_kunjungan" style="display:none">
+                                    <a href="#tab3" data-toggle="tab">
+                                        Kunjungan
                                     </a>
                                 </li>
                                 <li class="" id="rj">
@@ -71,7 +63,32 @@
                         </div>
 
                         <div class="tab-content">
+                            <!-- TAB TAB PENDAFTARAN -->
                             <div class="tab-pane active" id="tab1">
+                                <?php if($noreg == ""): ?>
+                                    <div class="row">
+                                        <div class="col-sm-8">
+                                            <div style="padding-left:50px" class="form-group">
+                                                <label style="margin-top:5px;padding-left:12px" class="col-sm-3">Status Bridging</label>
+                                                <div class="col-sm-8">
+                                                    <div class="alert alert-warning">Bridging Mandiri</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                <?php else: ?>
+                                    <div class="row">
+                                        <div class="col-sm-8">
+                                            <div style="padding-left:50px" class="form-group">
+                                                <label style="margin-top:5px;padding-left:12px" class="col-sm-3">Status Bridging</label>
+                                                <div class="col-sm-8">
+                                                    <div class="alert alert-info">Bridging Pasien Terdaftar : <b><?= $noreg ?></b></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                <?php endif; ?>
+
                                 <div class="row">
                                     <div class="col-md-8">
                                         <div class="form-group" style="padding-left: 50px;">
@@ -93,7 +110,7 @@
                                         <div class="form-group" style="padding-left: 50px;">
                                             <label class="col-md-3" style="margin-top: 5px;padding-left: 12px;">Tanggal</label>
                                             <div class="col-md-8">
-                                                <input readonly value="<?= date('Y-m-d', strtotime($data_pas->tglmasuk)); ?>" id="tglDaftar" name="tglDaftar" class="form-control" type="date">
+                                                <input readonly value="<?= date("Y-m-d") ?>" id="tglDaftar" name="tglDaftar" class="form-control" type="date">
                                                 <span class="help-block"></span>
                                             </div>
                                         </div>
@@ -109,26 +126,13 @@
                                                         <label class="col-md-3" style="margin-top: 5px;padding-left: 12px;">Pendaftaran</label>
                                                     </td>
                                                     <td width="2%">
-                                                        <input style="transform: scale(1.3); margin: -7px 10px 0px 15px;" type="radio" id="tipe1" name="tipe_daftar" 
-                                                        value="1" <?php 
-                                                        if(!empty($data_pas->namapas)){ 
-                                                            if($data_pas->namapas == 1){ ?> checked="checked" <?php 
-                                                            } else{
-
-                                                            ?> checked="checked" <?php 
-                                                            }
-                                                        } ?>>
+                                                        <input style="transform: scale(1.3); margin: -7px 10px 0px 15px;" type="radio" id="tipe1" name="tipe_daftar" value="1" <?= $noreg ? "checked" : "" ?>>
                                                     </td>
                                                     <td width="10%">
                                                         <label class="col-md-3" for="tipe1" style="margin-top: 5px;padding-left: 12px;">Baru</label>
                                                     </td>
                                                     <td width="2%">
-                                                        <input style="transform: scale(1.3); margin: -7px 10px 0px 15px;" type="radio" id="tipe2" name="tipe_daftar" value="2" <?php 
-                                                        if(!empty($data_pas->namapas)){
-                                                            if($data_pas->namapas == 2){
-                                                                ?> checked="checked" <?php 
-                                                            }
-                                                        } ?>>
+                                                        <input style="transform: scale(1.3); margin: -7px 10px 0px 15px;" type="radio" id="tipe2" name="tipe_daftar" value="2" <?= !$noreg ? "checked" : "" ?>>
                                                     </td>
                                                     <td >
                                                         <label class="col-md-3" for="tipe2" style="margin-top: 5px;padding-left: 12px;">Rujukan</label>
@@ -139,26 +143,13 @@
                                                         <label class="col-md-3" style="margin-top: 5px;padding-left: 12px;">Searching</label>
                                                     </td>
                                                     <td width="2%">
-                                                        <input style="transform: scale(1.3); margin: -7px 10px 0px 15px;" type="radio" id="cari1" name="jenis_kartu" 
-                                                        value="noka" <?php 
-                                                        if(!empty($data_pas->namapas)){ 
-                                                            if($data_pas->namapas == 1){ ?> checked="checked" <?php 
-                                                            } else{
-
-                                                            ?> checked="checked" <?php 
-                                                            }
-                                                        } ?>>
+                                                        <input style="transform: scale(1.3); margin: -7px 10px 0px 15px;" type="radio" id="cari1" name="jenis_kartu" value="noka" checked>
                                                     </td>
                                                     <td width="8%">
                                                         <label for="cari1" style="margin-top: 5px;padding-left: 12px;">No. Kartu</label>
                                                     </td>
                                                     <td width="2%">
-                                                        <input style="transform: scale(1.3); margin: -7px 10px 0px 15px;" type="radio" id="cari2" name="jenis_kartu" value="nik" <?php 
-                                                        if(!empty($data_pas->namapas)){
-                                                            if($data_pas->namapas == $data_pas->namapas){
-                                                                ?> checked="checked" <?php 
-                                                            }
-                                                        } ?>>
+                                                        <input style="transform: scale(1.3); margin: -7px 10px 0px 15px;" type="radio" id="cari2" name="jenis_kartu" value="nik">
                                                     </td>
                                                     <td width="10%">
                                                         <label for="cari2" style="margin-top: 5px;padding-left: 12px;">NIK</label>
@@ -170,7 +161,8 @@
                                                         <label class="col-md-3" style="margin-top: 5px;padding-left: 12px;">Cari</label>
                                                     </td>
                                                     <td colspan="4" width="20%">
-                                                        <input placeholder="cari..." id="carii" name="no_kartu" class="form-control" type="text" value="<?= $data_pas->nobpjs ?>">
+                                                        <input type="hidden" id="noreg" value="<?= $noreg ?>">
+                                                        <input placeholder="cari..." id="carii" name="no_kartu" class="form-control" type="text" value="<?= $noreg ? data_master("tbl_regist", ["noreg" => $noreg])->nobpjs : "" ?>">
                                                         <span class="help-block"></span>
                                                     </td>
                                                     <td width="%"> &nbsp;
@@ -191,8 +183,7 @@
                                         <div class="form-group" style="padding-left: 50px;">
                                             <label class="col-md-3" style="margin-top: 5px;padding-left: 12px;">No Kartu BPJS</label>
                                             <div class="col-md-8">
-                                                <!-- <input value="<?= $data_pas->nobpjs ?>" id="nobpjss" name="nobpjss" class="form-control" type="text" readonly> -->
-                                                <input value="" id="noKartuPeserta" name="noKartuPeserta" class="form-control" type="text" readonly>
+                                                <input value="<?= $noreg ? data_master("tbl_regist", ["noreg" => $noreg])->nobpjs : "" ?>" id="noKartuPeserta" name="noKartuPeserta" class="form-control" type="text" readonly>
                                             </div>
                                         </div>
                                     </div>
@@ -203,13 +194,11 @@
                                         <div class="form-group" style="padding-left: 50px;">
                                             <label class="col-md-3" style="margin-top: 5px;padding-left: 12px;">Nama Peserta</label>
                                             <div class="col-md-8">
-                                                <!-- <input value="<?= $data_pas->namapas ?>" id="namapas" name="namapas" class="form-control" type="text" readonly> -->
                                                 <input type="text" class="form-control" name="namaPeserta" id="namaPeserta" value="" readonly>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-
 
                                 <div class="row">
                                     <div class="col-md-8">
@@ -240,13 +229,6 @@
                                         <div class="form-group" style="padding-left: 50px;">
                                             <label class="col-md-3" style="margin-top: 5px;padding-left: 12px;">Jenis Kelamin</label>
                                             <div class="col-md-8">
-                                                <!-- <input 
-                                                <?php 
-                                                if($data_pas->jkel=='W' || $data_pas->jkel=='w'){
-                                                    ?> value="Wanita"<?php
-                                                }else{
-                                                    ?> value="Pria"<?php 
-                                                }  ?> id="jkel" name="jkel" class="form-control" type="text" readonly> -->
                                                 <select type="text" class="form-control" name="sex" id="sex">
                                                     <option value="">- Pilih Jenis Kelamin -</option>
                                                     <option value="L">Pria</option>
@@ -263,14 +245,6 @@
                                             <label class="col-md-3" style="margin-top: 5px;padding-left: 12px;">PPK Umum</label>
                                             <div class="col-md-8">
                                                 <select type="text" class="form-control" id="ppkUmum" name="ppkUmum">
-                                                    <!-- <option value="<?= $data_pas->kodepos ?>"><?= data_master("tbl_namapos", array("kodepos" => $data_pas->kodepos))->namapost ?></option> -->
-                                                    <!-- <option value="" selected>- Pilih Poli -</option> -->
-                                                    <!-- <?php
-                                                        foreach($pcare_poli->result() as $pp){
-                                                            $poliname   = data_master("tbl_namapos", array("kodepos" => $data_pas->kodepos))->namapost;
-                                                    ?>
-                                                        <option value="<?= $pp->kdPoli ?>"><?= $pp->nmPoli ?></option>
-                                                    <?php } ?> -->
                                                 </select>
                                             </div>
                                         </div>
@@ -283,7 +257,6 @@
                                             <label class="col-md-3" style="margin-top: 5px;padding-left: 12px;">No HP</label>
                                             <div class="col-md-8">
                                                 <input readonly value="" id="noHp" name="noHp" class="form-control"  type="text">
-                                                
                                             </div>
                                         </div>
                                     </div>
@@ -295,7 +268,6 @@
                                             <label class="col-md-3" style="margin-top: 5px;padding-left: 12px;">No RM</label>
                                             <div class="col-md-8">
                                                 <input readonly value="" id="rekmed" name="rekmed" class="form-control"  type="text">
-                                                
                                             </div>
                                         </div>
                                     </div>
@@ -312,24 +284,13 @@
                                                         <label style="margin-top: 5px;padding-left: 12px;">Jenis Kunjungan</label>
                                                     </td>
                                                     <td width="2%">
-                                                        <input style="transform: scale(1.3); margin: -7px 10px 0px 15px;" type="radio" id="k_sakit" name="kunjSakit" value="1" <?php 
-                                                        if(!empty($data_pas->namapas)){ 
-                                                            if($data_pas->namapas == $data_pas->namapas){ ?> checked="checked" <?php 
-                                                            } else{
-
-                                                            ?> checked="checked" <?php 
-                                                            }
-                                                        } ?>></td>
+                                                        <input style="transform: scale(1.3); margin: -7px 10px 0px 15px;" type="radio" id="k_sakit" name="kunjSakit" value="1">
+                                                    </td>
                                                     <td width="18%">
                                                         <label for="k_sakit" style="margin-top: 5px;padding-left: 12px;">Kunjungan Sakit</label>
                                                     </td>
                                                     <td width="2%">
-                                                        <input style="transform: scale(1.3); margin: -7px 10px 0px 15px;" type="radio" id="k_sehat" name="kunjSakit" value="0" <?php 
-                                                        if(!empty($data_pas->namapas)){
-                                                            if($data_pas->namapas == 2){
-                                                                ?> checked="checked" <?php 
-                                                            }
-                                                        } ?>>
+                                                        <input style="transform: scale(1.3); margin: -7px 10px 0px 15px;" type="radio" id="k_sehat" name="kunjSakit" value="0">
                                                     </td>
                                                     <td>
                                                         <label for="k_sehat" style="margin-top: 5px;padding-left: 12px;">Kunjungan Sehat</label>
@@ -341,35 +302,18 @@
                                                         <label style="margin-top: 5px;padding-left: 12px;">Perawatan</label>
                                                     </td>
                                                     <td width="2%">
-                                                        <input style="transform: scale(1.3); margin: -7px 10px 0px 15px;" type="radio" id="rajal" name="kdTkp" value="10" <?php 
-                                                        if(!empty($data_pas->namapas)){ 
-                                                            if($data_pas->namapas == 1){ ?> checked="checked" <?php 
-                                                            } else{
-
-                                                            ?> checked="checked" <?php 
-                                                            }
-                                                        } ?>></td>
+                                                        <input style="transform: scale(1.3); margin: -7px 10px 0px 15px;" type="radio" id="rajal" name="kdTkp" value="10"></td>
                                                     <td width="18%">
                                                         <label for="rajal_" style="margin-top: 5px;padding-left: 12px;">Rawat Jalan</label>
                                                     </td>
                                                     <td width="2%">
-                                                        <input style="transform: scale(1.3); margin: -7px 10px 0px 15px;" type="radio" id="ranap" name="kdTkp" value="20" <?php 
-                                                        if(!empty($data_pas->namapas)){
-                                                            if($data_pas->namapas == 2){
-                                                                ?> checked="checked" <?php 
-                                                            }
-                                                        } ?>>
+                                                        <input style="transform: scale(1.3); margin: -7px 10px 0px 15px;" type="radio" id="ranap" name="kdTkp" value="20">
                                                     </td>
                                                     <td width="18%">
                                                         <label for="ranap" style="margin-top: 5px;padding-left: 12px;">Rawat Inap</label>
                                                     </td>
                                                     <td width="2%">
-                                                        <input style="transform: scale(1.3); margin: -7px 10px 0px 15px;" type="radio" id="propre" name="kdTkp" value="50" <?php 
-                                                        if(!empty($data_pas->namapas)){
-                                                            if($data_pas->namapas == 2){
-                                                                ?> checked="checked" <?php 
-                                                            }
-                                                        } ?>>
+                                                        <input style="transform: scale(1.3); margin: -7px 10px 0px 15px;" type="radio" id="propre" name="kdTkp" value="50">
                                                     </td>
                                                     <td width="22%">
                                                         <label for="propre" style="margin-top: 5px;padding-left: 12px;">Promotif Preventif</label>
@@ -551,31 +495,12 @@
                                     </div>															
                                 </div>	
                             </div>
+                            <!-- TAB TAB PENDAFTARAN -->
                             
+                            <!-- TAB HISTORY -->
                             <div class="tab-pane" id="tab2">
                                 <div class="portlet-body">
                                     <div class="table-toolbar">
-                                        <!-- <div class="btn-group"> 
-                                            <?php 
-                                            $cek =  $this->session->userdata('user_level'); 
-                                            if($cek==0){?> 
-                                            <?php }else{ ?>
-
-                                                    <a href="<?php echo base_url()?>PendaftaranVRS/entri_rj" class="btn btn-success">
-                                                        <i class="fa fa-plus"></i> Daftarkan Pasien
-                                                    </a>
-
-                                            <?php } ?>
-                                        </div>
-                                        <div class="btn-group pull-right" id="filter">
-                                                <button class="btn dropdown-toggle" data-toggle="dropdown">Data <i class="fa fa-angle-down"></i>
-                                                </button>
-                                                <ul class="dropdown-menu pull-right">
-                                                    <li>
-                                                        <a data-toggle="modal" href="#lupperiode">Filter Data</a>			
-                                                    </li>			
-                                                </ul>
-                                        </div> -->
                                         <div class="row" style="margin:25px 0px 25px 0px;width:auto">
                                             <form>
                                                 <div class="col-sm-3">
@@ -591,26 +516,6 @@
                                             </form>
                                         </div>
                                     </div>
-                                    <!-- <div class="table-responsive">
-                                        <table id="tablepc" class="table table-striped table-bordered table-hover table-condensed table-scrollable" cellspacing="0" width="100%">
-
-                                            <thead class="page-breadcrumb breadcrumb">
-                                                <tr>
-                                                    <th class="title-white text-center" width="5%">No.</th>
-                                                    <th class="title-white text-center" width="10%">No Kartu</th>
-                                                    <th class="title-white text-center" width="25">Nama Peserta</th>
-                                                    <th class="title-white text-center" width="10%">Jenis Kelamin</th>
-                                                    <th class="title-white text-center" width="5%">Usia</th>
-                                                    <th class="title-white text-center" width="10%">Poli</th>
-                                                    <th class="title-white text-center" width="10%">Sumber</th>
-                                                    <th class="title-white text-center" width="10%">Status</th>
-                                                    <th class="title-white text-center" width="15%">Aksi</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                            </tbody>
-                                        </table>
-                                    </div> -->
                                     <div class="table-responsive">
                                         <table class="table table-striped table-bordered table-hover table-condensed table-scrollable" cellspacing="0" width="100%" id="table-test">
                                             <thead class="page-breadcrumb breadcrumb">
@@ -630,6 +535,368 @@
                                     </div>
                                 </div>
                             </div>
+                            <!-- TAB HISTORY -->
+
+                            <!-- TAB KUNJUNGAN -->
+                            <div class="tab-pane" id="tab3">
+                                <div class="alert alert-danger">
+                                    <p><b><i class="fa fa-exclamation-triangle fa-fw"></i>&nbsp; Perlu Diketahui</b></p>
+                                    <br />
+                                    Sebelum melakukan bridging, lakukan pemeriksaan perawat dan dokter delebih dahulu
+                                </div>
+
+                                <form name="pcare_form" id="pcare_form">
+                                    <input type="hidden" name="kdProviderPelayanan" id="kdProviderPelayanan" value="">
+                                    <fieldset name="data_diri">
+                                        <p style="font-weight: bold; font-size: 16px;">Data Diri Pasien</p>
+                                        <div style="display: grid; grid-template-columns: 1fr 10px 3fr;">
+                                            <label class="form-label">Faskes</label>
+                                            <span>:</span>
+                                            <div class="" style="margin:0px !important">
+                                                <input type="text" class="form-control" name="kodeRs" id="kodeRs" value="" readonly>
+                                            </div>
+                                        </div>
+                                        <div style="display: grid; grid-template-columns: 1fr 10px 3fr;">
+                                            <label class="form-label">No Registrasi</label>
+                                            <span>:</span>
+                                            <div class="" style="margin:0px !important">
+                                                <input type="text" class="form-control" name="noReg" id="noReg" value="" readonly>
+                                            </div>
+                                        </div>
+                                        <div style="display: grid; grid-template-columns: 1fr 10px 3fr;">
+                                            <label class="form-label">No. Kartu BPJS</label>
+                                            <span>:</span>
+                                            <div class="" style="margin:0px !important">
+                                                <input type="text" class="form-control" name="noKartu" id="noKartu" value="" readonly>
+                                            </div>
+                                        </div>
+                                        <div style="display: grid; grid-template-columns: 1fr 10px 3fr;">
+                                            <label class="form-label">Nama Peserta</label>
+                                            <span>:</span>
+                                            <!-- <span><?= $data_regist->namapas ?></span> -->
+                                            <div class="" style="margin:0px !important">
+                                                <input type="text" class="form-control" id="namaPeserta" value="" readonly>
+                                            </div>
+                                        </div>
+                                        <div style="display: grid; grid-template-columns: 1fr 10px 3fr;">
+                                            <label class="form-label">Status Peserta</label>
+                                            <span>:</span>
+                                            <div class="" style="margin:0px !important">
+                                                <input type="text" class="form-control" id="status" value="" readonly>
+                                            </div>
+                                        </div>
+                                        <div style="display: grid; grid-template-columns: 1fr 10px 3fr;">
+                                            <label class="form-label">Tanggal Lahir</label>
+                                            <span>:</span>
+                                            <div class="" style="margin:0px !important">
+                                                <input type="text" class="form-control" id="tglLahir" value="" readonly>
+                                            </div>
+                                        </div>
+                                        <div style="display: grid; grid-template-columns: 1fr 10px 3fr;">
+                                            <label class="form-label">Jenis Kelamin</label>
+                                            <span>:</span>
+                                            <div class="" style="margin:0px !important">
+                                                <input type="text" class="form-control" id="sex" value="" readonly>
+                                            </div>
+                                        </div>
+                                        <div style="display: grid; grid-template-columns: 1fr 10px 3fr;">
+                                            <label class="form-label">PPK Umum</label>
+                                            <span>:</span>
+                                            <div class="" style="margin:0px !important">
+                                                <input type="text" class="form-control" id="ppkUmum" value="" readonly>
+                                            </div>
+                                        </div>
+                                        <div style="display: grid; grid-template-columns: 1fr 10px 3fr;">
+                                            <label class="form-label">No. HP</label>
+                                            <span>:</span>
+                                            <div class="" style="margin:0px !important">
+                                                <input type="text" class="form-control" id="noHp" value="" readonly>
+                                            </div>
+                                        </div>
+                                        <div style="display: grid; grid-template-columns: 1fr 10px 3fr;">
+                                            <label class="form-label">No. Rekmed.</label>
+                                            <span>:</span>
+                                            <div class="" style="margin:0px !important">
+                                                <input type="text" class="form-control" id="rekmed" value="" readonly>
+                                            </div>
+                                        </div>
+                                    </fieldset>
+                                    <fieldset name="data_diri">
+                                        <p style="font-weight: bold; font-size: 16px;">Hasil Pemeriksaan</p>
+                                        <div style="display: grid; grid-template-columns: 1fr 3fr; gap: 20px;">
+                                            <label class="form-label" for="tglDaftar">Tanggal Daftar</label>
+                                            <input class="form-control" name="tglDaftar" id="tglDaftar" type="date">
+                                        </div>
+                                        <div style="display: grid; grid-template-columns: 1fr 3fr; gap: 20px;">
+                                            <label class="form-label" for="tglPulang">Tanggal Pulang</label>
+                                            <input class="form-control" name="tglPulang" id="tglPulang" type="date" value="<?= date("Y-m-d") ?>">
+                                        </div>
+                                        <div style="display: grid; grid-template-columns: 1fr 3fr; gap: 20px;">
+                                            <label class="form-label" for="noKunjungan">Nomor Kunjungan</label>
+                                            <input class="form-control" name="noKunjungan" id="noKunjungan" type="text" readonly>
+                                        </div>
+                                        <div style="display: grid; grid-template-columns: 1fr 3fr; gap: 20px;">
+                                            <label class="form-label" for="noUrut">Nomor P-Care Antri</label>
+                                            <input class="form-control" name="noUrut" id="noUrut" type="text" value="123" readonly>
+                                        </div>
+                                        <div style="display: grid; grid-template-columns: 1fr 3fr; gap: 20px;">
+                                            <label class="form-label">Jenis Kunjungan</label>
+                                            <div style="display: grid; grid-template-columns: 1fr 1fr 1fr;">
+                                                <label for="kunjungan_sakit" style="display: flex; align-items: center; gap: 10px;">
+                                                    <input type="radio" name="kunjSakit" id="sakit" value="1" style="transform: scale(1.3);" checked>
+                                                    Kunjungan Sakit
+                                                </label>
+                                                <label for="kunjungan_sehat" style="display: flex; align-items: center; gap: 10px;">
+                                                    <input type="radio" name="kunjSakit" id="sehat" value="2" style="transform: scale(1.3);">
+                                                    Kunjungan sehat
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div style="display: grid; grid-template-columns: 1fr 3fr; gap: 20px;">
+                                            <label class="form-label">Perawatan</label>
+                                            <div style="display: grid; grid-template-columns: 1fr 1fr 1fr;">
+                                                <label for="rawat_jalan" style="display: flex; align-items: center; gap: 10px;">
+                                                    <input type="radio" name="kdTkp" id="rawat_jalan" value="10" style="transform: scale(1.3);" checked>
+                                                    Rawat jalan
+                                                </label>
+                                                <label for="rawat_inap" style="display: flex; align-items: center; gap: 10px;">
+                                                    <input type="radio" name="kdTkp" id="rawat_inap" value="20" style="transform: scale(1.3);">
+                                                    Rawat Inap
+                                                </label>
+                                                <label for="promotif_preventif" style="display: flex; align-items: center; gap: 10px;">
+                                                    <input type="radio" name="kdTkp" id="promotif_preventif" value="50" style="transform: scale(1.3);">
+                                                    Promotif Preventif
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div style="display: grid; grid-template-columns: 1fr 3fr; gap: 20px;">
+                                            <label class="form-label" for="pcare_poli_dok">Poli Tujuan</label>
+                                            <div>
+                                                <select type="text" class="form-control" name="kdPoli" id="kdPoli">
+                                                    <?php foreach($pcare_poli->result() as $pp): ?>
+                                                    <option value="<?= $pp->kdPoli ?>"><?= $pp->nmPoli ?></option>
+                                                    <?php endforeach; ?>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div style="display: grid; grid-template-columns: 1fr 3fr; gap: 20px;">
+                                            <label class="form-label" for="keluhan">Keluhan Awal</label>
+                                            <textarea name="keluhan" id="keluhan" class="form-control" rows="3"></textarea>
+                                        </div>
+                                        <div style="display: grid; grid-template-columns: 1fr 3fr; gap: 20px;">
+                                            <label class="form-label" for="anamnesa">Anamnesa</label>
+                                            <textarea name="anamnesa" id="anamnesa" class="form-control" rows="3"></textarea>
+                                        </div>
+                                        <div style="display: grid; grid-template-columns: 1fr 3fr; gap: 20px;">
+                                            <label class="form-label" for="pcare_alergi">Alergi</label>
+                                            <div style="display: grid; grid-template-columns: 1fr 3fr;">
+                                                <label class="form-label" for="makanan" style="display: flex; align-items: center; gap: 10px;">
+                                                    <input type="checkbox" name="pcare_alergi_makanan" id="makanan" value="1" style="transform: scale(1.4)">
+                                                    Makanan
+                                                </label>
+                                                <select class="form-control" name="alergi" id="alergi">
+                                                    <?php for ($i = 0; $i < 10; $i++): ?>
+                                                        <option value="1">Alergi <?= $i ?></option>
+                                                    <?php endfor; ?>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div style="display: grid; grid-template-columns: 1fr 3fr; gap: 20px;">
+                                            <label class="form-label" for="prognosa">Prognosa</label>
+                                            <select class="form-control" name="prognosa" id="prognosa">
+                                                <?php for ($i = 0; $i < 10; $i++): ?>
+                                                    <option value="1">Prognosa <?= $i ?></option>
+                                                <?php endfor; ?>
+                                            </select>
+                                        </div>
+                                        <div style="display: grid; grid-template-columns: 1fr 3fr; gap: 20px;">
+                                            <label class="form-label" for="terapi">Terapi Obat</label>
+                                            <textarea class="form-control" name="terapi" id="terapi" rows="2"></textarea>
+                                        </div>
+                                        <div style="display: grid; grid-template-columns: 1fr 3fr; gap: 20px;">
+                                            <label class="form-label" for="terapinon">Terapi Non Obat</label>
+                                            <textarea class="form-control" name="terapinon" id="terapinon" rows="2"></textarea>
+                                        </div>
+                                        <div style="display: grid; grid-template-columns: 1fr 3fr; gap: 20px;">
+                                            <label class="form-label" for="bmhp">BMHP</label>
+                                            <textarea class="form-control" name="bmhp" id="bmhp" rows="2"></textarea>
+                                        </div>
+                                        <div style="display: grid; grid-template-columns: 1fr 3fr; gap: 20px;">
+                                            <label class="form-label" for="pcare_diagnosa">Diagnosa</label>
+                                            <div style="display: grid; grid-template-columns: 1fr 3fr; gap: 10px;" id="icd_result">
+                                            </div>
+                                        </div>
+                                        <div style="display: grid; grid-template-columns: 1fr 3fr; gap: 20px;">
+                                            <label class="form-label" for="kdSadar">Kesadaran</label>
+                                            <select class="form-control" name="kdSadar" id="kdSadar">
+                                                <?php foreach($pcare_sadar->result() as $psa): ?>
+                                                    <option value="<?= $psa->kdSadar ?>"><?= $psa->nmSadar ?></option>
+                                                <?php endforeach; ?>
+                                            </select>
+                                        </div>
+                                        <div style="display: grid; grid-template-columns: 1fr 3fr; gap: 20px;">
+                                            <label class="form-label" for="tinggiBadan">Tinggi Badan</label>
+                                            <div style="display: grid; grid-template-columns: 3fr 1fr 3fr; gap: 20px;">
+                                                <div style="display: flex; gap: 10px;">
+                                                    <input 
+                                                        class="form-control" 
+                                                        name="tinggiBadan" 
+                                                        id="tinggiBadan" 
+                                                        type="number" 
+                                                        value="175">
+                                                    cm
+                                                </div>
+                                                <label class="form-label" for="beratBadan">Berat Badan</label>
+                                                <div style="display: flex; gap: 10px;">
+                                                    <input 
+                                                        class="form-control" 
+                                                        name="beratBadan" 
+                                                        id="beratBadan" 
+                                                        type="number" 
+                                                        value="70">
+                                                    Kg
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div style="display: grid; grid-template-columns: 1fr 3fr; gap: 20px;">
+                                            <label class="form-label" for="lingkarPerut">Lingkar Perut</label>
+                                            <div style="display: grid; grid-template-columns: 3fr 1fr 3fr; gap: 20px;">
+                                                <div style="display: flex; gap: 10px;">
+                                                    <input 
+                                                        class="form-control" 
+                                                        name="lingkarPerut" 
+                                                        id="lingkarPerut" 
+                                                        type="number">
+                                                    cm
+                                                </div>
+                                                <label class="form-label" for="imt">IMT</label>
+                                                <div style="display: flex; gap: 10px;">
+                                                    <input 
+                                                        class="form-control" 
+                                                        name="imt" 
+                                                        id="imt" 
+                                                        type="number" 
+                                                        value="0.5">
+                                                    Kg/m
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <p style="font-weight: bold; font-size: 16px;">Tekanan Darah</p>
+                                        <div style="display: grid; grid-template-columns: 1fr 3fr; gap: 20px;">
+                                            <label class="form-label" for="sistole">Sistole</label>
+                                            <div style="display: grid; grid-template-columns: 3fr 1fr 3fr; gap: 20px;">
+                                                <div style="display: flex; gap: 10px;">
+                                                    <input 
+                                                        class="form-control" 
+                                                        name="sistole" 
+                                                        id="sistole" 
+                                                        type="number" max="250" min="40" 
+                                                        placeholder="40-250">
+                                                    mm/Hg
+                                                </div>
+                                                <label class="form-label" for="diastole">Diastole</label>
+                                                <div style="display: flex; gap: 10px;">
+                                                    <input 
+                                                        class="form-control" 
+                                                        name="diastole" 
+                                                        id="diastole" 
+                                                        type="number" max="180" min="30" 
+                                                        placeholder="30-180">
+                                                    mm/Hg
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div style="display: grid; grid-template-columns: 1fr 3fr; gap: 20px;">
+                                            <label class="form-label" for="respRate">Respitore Rate</label>
+                                            <div style="display: grid; grid-template-columns: 3fr 1fr 3fr; gap: 20px;">
+                                                <div style="display: flex; gap: 10px;">
+                                                    <input 
+                                                        class="form-control" 
+                                                        name="respRate" 
+                                                        id="respRate" 
+                                                        type="number">
+                                                    /menit
+                                                </div>
+                                                <label class="form-label" for="heartRate">Heart Rate</label>
+                                                <div style="display: flex; gap: 10px;">
+                                                    <input 
+                                                        class="form-control" 
+                                                        name="heartRate" 
+                                                        id="heartRate" 
+                                                        type="number" max="160" min="30" 
+                                                        placeholder="30-160">
+                                                    bpm
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div style="display: grid; grid-template-columns: 1fr 3fr; gap: 20px;">
+                                            <label class="form-label" for="pcare_tenaga_medis">Kasus KKL?</label>
+                                            <div style="display: grid; grid-template-columns: 1fr 1fr 1fr;">
+                                                <label for="kkl_true" style="display: flex; align-items: center; gap: 10px;">
+                                                    <input type="radio" id="kkl_true" value="1" style="transform: scale(1.3);">
+                                                    Ya
+                                                </label>
+                                                <label for="kkl_false" style="display: flex; align-items: center; gap: 10px;">
+                                                    <input type="radio" id="kkl_false" value="0" style="transform: scale(1.3);" checked>
+                                                    Tidak
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div style="display: grid; grid-template-columns: 1fr 3fr; gap: 20px;">
+                                            <label class="form-label" for="kdDokter">Tenaga Medis</label>
+                                            <select class="form-control" name="kdDokter" id="kdDokter">
+                                                <?php foreach($pcare_dr->result() as $pd): ?>
+                                                    <option value="<?= $pd->kdDokter ?>"><?= $pd->nmDokter ?></option>
+                                                <?php endforeach; ?>
+                                            </select>
+                                        </div>
+                                        <div style="display: grid; grid-template-columns: 1fr 3fr; gap: 20px;">
+                                            <label class="form-label" for="pcare_pelayan_non_kapitas">Pelayan Non-Kapitas</label>
+                                            <select class="form-control" id="pcare_pelayan_non_kapitas">
+                                                <?php for ($i = 0; $i < 10; $i++): ?>
+                                                    <option value="1">Pelayan <?= $i ?></option>
+                                                <?php endfor; ?>
+                                            </select>
+                                        </div>
+                                        <div style="display: grid; grid-template-columns: 1fr 3fr; gap: 20px;">
+                                            <label class="form-label" for="kdStatusPulang">Status Pulang</label>
+                                            <select class="form-control" name="kdStatusPulang" id="kdStatusPulang">
+                                                <?php foreach($pcare_sp->result() as $ps): ?>
+                                                    <option value="<?= $ps->kdStatusPulang ?>"><?= $ps->nmStatusPulang ?></option>
+                                                <?php endforeach; ?>
+                                            </select>
+                                        </div>
+                                    </fieldset>
+                                </form>
+
+                                <div style="display: flex; gap: 20px; align-items: center; justify-content: space-between; max-width: 80%; margin: 10px auto;">
+                                    <button class="btn green" type="button" onclick="save_pcare()">
+                                        <i class="fa fa-floppy-o"></i> Simpan
+                                    </button>
+                                    <button class="btn red" type="button">
+                                        <i class="fa fa-undo"></i> Batal
+                                    </button>
+                                    <button class="btn green" type="button">
+                                        <i class="fa fa-bookmark"></i> SPP
+                                    </button>
+                                    <button class="btn green" type="button">
+                                        <i class="fa fa-address-book"></i> Kunjungan
+                                    </button>
+                                    <button class="btn green" type="button">
+                                        <i class="fa fa-book"></i> Riwayat
+                                    </button>
+                                    <button class="btn green" type="button">
+                                        <i class="fa fa-hand-o-right"></i> Rujukan
+                                    </button>
+                                </div>
+
+                                <p style="font-weight: bold; font-size: 16px; margin-top: 20px;">Hasil Bridging</p>
+                                <hr stle="margin-bottom: 1rem;" />
+                                <div style="width: 80%; margin: 10px auto; padding: 10px; border: 1px solid black;" id="bridging_result_kunjungan">
+                                </div>
+                            </div>
+                            <!-- TAB KUNJUNGAN -->
                         </div>
                     </div>  
                 </div>
@@ -645,27 +912,12 @@
 ?>
 
 <script>
+    <?php if($noreg): ?>
+        get_data('<?= $noreg ?>');
+    <?php endif; ?>
+    
     $(document).ready(function() {
-
-        var tgllahire   = '<?= $data_pas->tgllahir?>'.substring(0, 10);
-        var tglmasuk    = '<?= $data_pas->tglmasuk?>'.substring(0, 10);
-        var doaa         = 1;
-        var birthDate   = new Date(tgllahire);
-        var usia        = hitung_usia(birthDate);
-        if(doaa==1){
-            $('[name="nadi"]').prop("readonly", true);
-            $('[name="nafas"]').prop("readonly", true);
-            $('[name="oksi"]').prop("readonly", true);
-            $('[name="suhu"]').prop("readonly", true);
-            $('[name="tekanan"]').prop("readonly", true);
-            $('[name="tekanan1"]').prop("readonly", true);
-        }
-        $('#umur').val(usia);
-        $('#tgl_l_per').val(tgllahire);
-        $('#tgl_per').val(tglmasuk);
-
         show_table();
-
     });
 
     function filterData(){
@@ -728,9 +980,10 @@
     }
 
     function search(){
-        
+        var v_noreg         = $("#noreg").val();
         var v_cari          = $('#carii').val();
         var v_jenis_kartu   = $('[name="jenis_kartu"]').val();
+
         $.ajax({				
             url         : `<?php echo site_url('api/pcare/peserta/')?>?jenis_kartu=${v_jenis_kartu}&no_kartu=${v_cari}`,
             type        : "GET",
@@ -740,7 +993,7 @@
             },
             success:function(data){
                 if(data == null){
-                    $("#bridging_result").append("<p class='text-danger'>[GET]&emsp;&emsp;Gagal mengambil data : <b>data tidak ditemukan</b></p>");
+                    $("#bridging_result").append("<p class='text-danger'>[GET]&emsp;&emsp;Gagal mengambil data bridging : <b>data tidak ditemukan</b></p>");
                     $('#bridging_result').animate({scrollTop: $('#bridging_result').height()}, 1000);
                 } else {
                     $("#kdProviderPeserta").val(data.kdProviderPst);
@@ -749,11 +1002,13 @@
                     $("#tglLahir").val(data.tglLahir);
                     $("#sex").val(data.sex).change();
                     $("#noHp").val(data.noHP);
-                    $("#rekmed").val("<?= $data_pas->rekmed ?>");
-                    $("#noReg").val("<?= $data_pas->noreg ?>");
                     $("#kdPoli").val("");
-                    $("#bridging_result").append("<p class='text-success'>[GET]&emsp;&emsp;Berhasil mengambil data</p>");
+                    $("#bridging_result").append("<p class='text-success'>[GET]&emsp;&emsp;Berhasil mengambil data bridging : <b>Pendaftaran</b></p>");
                     $('#bridging_result').animate({scrollTop: $('#bridging_result').height()}, 1000);
+                }
+
+                if(v_noreg != ""){
+                    get_data(v_noreg);
                 }
             },
             error:function(jqXHR){
@@ -765,8 +1020,175 @@
                     confirmButtonColor: "red"
                 });  
 
-                $("#bridging_result").append("<p class='text-danger'>[GET]&emsp;&emsp;Gagal mengambil data : <b>"+ jqXHR.responseJSON.message +"</b></p>");
+                $("#bridging_result").append("<p class='text-danger'>[GET]&emsp;&emsp;Gagal mengambil data bridging : <b>"+ jqXHR.responseJSON.message +"</b></p>");
                 $('#bridging_result').animate({scrollTop: $('#bridging_result').height()}, 1000);
+                $("#bridging_result").append("<p class='text-danger'>[GET]&emsp;&emsp;Gagal mengambil data bridging</p>");
+                $('#bridging_result').animate({scrollTop: $('#bridging_result').height()}, 1000);
+            }
+        });
+    }
+
+    function get_data(noreg){
+        $.ajax({
+            url: "/pcare/get_rekam_medis/"+ noreg,
+            type: "GET",
+            dataType: "JSON",
+            success: (res) => {
+                if(res.status_rekmed == true){
+                    $("#rekmed").val(res.data_rekmed.rekmed);
+                    $("#noReg").val(res.data_rekmed.noreg);
+                    if(res.status_pcare == false){
+                        switch(res.data_rekmed.kodepos){
+                            case "PUMUM" : 
+                                $("#kdPoli").val("001").change();
+                                break;
+                            case "PGIGI" : 
+                                $("#kdPoli").val("002").change();
+                                break;
+                            case "BIDAN" : 
+                                $("#kdPoli").val("003").change();
+                                break;
+                            case "LABOR" : 
+                                $("#kdPoli").val("004").change();
+                                break;
+                            default : 
+                                console.error("Failed get POLI from medical record data");
+                                break;
+                        }
+
+                        $("#keluhan").val(res.data_rekmed.keluhanawal);
+                        $("#tinggiBadan").val(res.data_rekmed.tinggibadan);
+                        $("#beratBadan").val(res.data_rekmed.beratbadan.split(".00").join(""));
+                        imt(res.data_rekmed.tinggibadan, res.data_rekmed.beratbadan.split(".00").join(""));
+                    }
+                    
+                    $("#bridging_result").append("<p class='text-success'>[GET]&emsp;&emsp;Berhasil mengambil data rekam medis : <b>"+ noreg +"</b></p>");
+                    $('#bridging_result').animate({scrollTop: $('#bridging_result').height()}, 1000);
+                }
+
+                if(res.status_pcare == true){
+                    get_pendaftaran_pcare('<?= $noreg ?>');
+                    $("#pcare_kunjungan").attr("style", "display:show");
+                    $("#status").val(res.data_pcare.status);
+
+                    switch(res.data_pcare.kunjSakit){
+                        case "1" : 
+                            $("#k_sakit").prop("checked", true);
+                            break;
+                        case "0" : 
+                            $("#k_sehat").prop("checked", true);
+                            break;
+                    }
+
+                    switch(res.data_pcare.kdTkp){
+                        case "10" : 
+                            $("#uniform-rajal #rajal").prop("checked", true);
+                            break;
+                        case "20" : 
+                            $("#uniform-ranap #ranap").prop("checked", true);
+                            break;
+                        case "50" : 
+                            $("#uniform-propre #propre").prop("checked", true);
+                            break;
+                    }
+
+                    switch(res.data_pcare.kdPoli){
+                        case "001" : 
+                            $("#kdPoli").val("001").change();
+                            break;
+                        case "002" : 
+                            $("#kdPoli").val("002").change();
+                            break;
+                        case "003" : 
+                            $("#kdPoli").val("003").change();
+                            break;
+                        case "004" : 
+                            $("#kdPoli").val("004").change();
+                            break;
+                        default : 
+                            console.error("Failed get POLI from medical record data");
+                            break;
+                    }
+
+                    $("#keluhan").val(res.data_pcare.keluhan);
+                    $("#tinggiBadan").val(res.data_pcare.tinggiBadan);
+                    $("#beratBadan").val(res.data_pcare.beratBadan);
+                    $("#imt").val(res.data_pcare.IMT);
+                    $("#sistole").val(res.data_pcare.sistole);
+                    $("#diastole").val(res.data_pcare.diastole);
+                    $("#respRate").val(res.data_pcare.respRate);
+                    $("#heartRate").val(res.data_pcare.heartRate);
+                    $("#lingkarPerut").val(res.data_pcare.lingkarPerut);
+
+                    $("#bridging_result").append("<p class='text-info'>[INFO]&emsp;Status bridging : <b>Update Data Pendaftaran</b>");
+                    $('#bridging_result').animate({scrollTop: $('#bridging_result').height()}, 1000);
+
+                    $("#bridging_result").append("<p class='text-success'>[GET]&emsp;&emsp;Berhasil mengambil data : <b>Pendaftaran</b></p>");
+                    $('#bridging_result').animate({scrollTop: $('#bridging_result').height()}, 1000);
+                }
+            },
+            error: (jqHXR) => {
+                
+            }
+        });
+    }
+    
+    function get_pendaftaran_pcare(param){
+        $.ajax({
+            url: "/pcare/pcare_get_data_pas/"+ param,
+            type: "GET",
+            dataType: "JSON",
+            success: (res) => {
+                if(res.status == "success"){
+                    $("#icd_result").html("");
+                    $.each(res.data_diag, function(i, k){
+                        $("#icd_result").append(""+
+                            "<input class='form-control' type='text' name='kdDiag[]' id='kdDiag"+ i +"' value='"+ k.icd_code +"' readonly>"+
+                            "<input class='form-control' type='text' name='nmDiag[]' id='nmDiag"+ i +"' value='"+ k.icd_name +"' readonly>"+
+                        "");
+                    });
+
+                    $("#keluhan").val(res.data_pas.keluhan_awal);
+                    $("#anamnesa").val(res.data_pas.keluhan_awal);
+                    $('#beratBadan').val(res.data_pas.berat_badan);
+                    $('#tinggiBadan').val(res.data_pas.tinggi_badan);
+                    imt_trigger(res.data_pas.tinggi_badan, res.data_pas.berat_badan);
+                } else 
+                if(res.status == "empty"){
+                    error_alert("PCare Diagnosa", res.message);
+                    $("#icd_result").html(""+
+                        "<input class='form-control' type='text' value='"+ res.message +"' readonly>"+
+                    "");
+                } else {
+                    error_alert("PCare Diagnosa", "Undefined status result");
+                    $("#icd_result").html(""+
+                        "<input class='form-control' type='text' value='Undefined status result' readonly>"+
+                    "");
+                }
+            },
+            error: (jqXHR) => {
+                //
+            }
+        });
+
+        $.ajax({
+            url: "/api/pcare/get_detail_pendaftaran/"+ param,
+            type: "GET",
+            dataType: "JSON",
+            success: (res) => {
+                console.log(res);
+                $("#kodeRs").val(res.kodeRs);
+                $("#tglDaftar").val(res.tglDaftar);
+                $("#noReg").val(res.noReg);
+                $("#noKartu").val(res.noKartuPeserta);
+                $("#namaPeserta").val(res.namaPeserta);
+                $("#status").val(res.status);
+                $("#ppkUmum").val(res.kodeRs);
+                $("#kdProviderPelayanan").val(res.kdProviderPelayanan);
+                $("#bridging_result_kunjungan").append("<p class='text-success'>[GET]&emsp;&emsp;Berhasil mengambil data bridging : <b>Kunjungan</b></p>");
+            },
+            error: (jqXHR) => {
+                console.error(jqXHR.responseJSON);
             }
         });
     }
@@ -796,6 +1218,25 @@
         });
     }
 
+    function save_pcare(){
+        var post_form = $("#pcare_form").serialize();
+
+        console.log(post_form);
+
+        $.ajax({
+            url: "/api/pcare/create_kunjungan/",
+            data: post_form,
+            type: "POST",
+            dataType: "JSON",
+            success: (res) => {
+                console.log(res);
+            },
+            error: (jqXHR) => {
+                console.error(jqXHR.responseJSON);
+            }
+        });
+    }
+
     function delete_data(id, nocard){
         $.ajax({
             url     : "/api/pcare/delete_pendaftaran",
@@ -809,6 +1250,84 @@
                 console.error(jqXHR.responseJSON);
             }
         });
+    }
+
+    function imt(vberat, vtinggi){
+        if(vberat== null){
+            var vberat=0;
+        }else{
+            var vberat=vberat;
+        }
+
+        if(vtinggi== null){
+            var vtinggi=0;
+        }else{
+            var vtinggi=vtinggi;
+        }
+
+        // alert(vberat2);
+        
+        var tbb   = eval(vtinggi)/100;
+        var bmi   = vberat/(tbb*tbb);   
+
+        if(bmi>0){
+            bmi2=Math.ceil(bmi);
+        }else{
+            bmi2=0;
+        }
+        
+        if(bmi>1 && bmi<18.5){
+            bmi_res='Under Weight';
+        }else if(bmi>18.5 && bmi<=25){
+            bmi_res='Normal Weight';
+        }else if(bmi>25 && bmi<=30){
+            bmi_res='Over Weight';
+        }else if(bmi>30 && bmi<1000){
+            bmi_res='Obese';
+        }else{
+            bmi_res='';
+        }
+
+        return $('[name="imt"]').val(bmi2);
+    }
+
+    function imt_trigger(vtinggi, vberat){
+        if(vberat== null){
+            var vberat=0;
+        }else{
+            var vberat=vberat;
+        }
+
+        if(vtinggi== null){
+            var vtinggi=0;
+        }else{
+            var vtinggi=vtinggi;
+        }
+
+        // alert(vberat2);
+        
+        var tbb   = eval(vtinggi)/100;
+        var bmi   = vberat/(tbb*tbb);   
+
+        if(bmi>0){
+            bmi2=Math.ceil(bmi);
+        }else{
+            bmi2=0;
+        }
+        
+        if(bmi>1 && bmi<18.5){
+            bmi_res='Under Weight';
+        }else if(bmi>18.5 && bmi<=25){
+            bmi_res='Normal Weight';
+        }else if(bmi>25 && bmi<=30){
+            bmi_res='Over Weight';
+        }else if(bmi>30 && bmi<1000){
+            bmi_res='Obese';
+        }else{
+            bmi_res='';
+        }
+
+        $('[name="imt"]').val(bmi2);
     }
 
     $('#beratBadan, #tinggiBadan').on("keyup", function(){
@@ -900,105 +1419,7 @@
         window.close(thiloc);
     }
 
-    // function save(){	    
-    //     // return;
-    //     // atas
-    //     var v_faskes        = $('[name="faskes"]').val();
-    //     var v_tgldaftar     = $('[name="tgldaftar"]').val();
-    //     var v_tipe_daftar   = $('[name="tipe_daftar"]').val();
-    //     var v_nobpjss       = $('[name="nobpjss"]').val();
-    //     var v_namapas       = $('[name="namapas"]').val();
-    //     var v_stat_p        = $('[name="stat_p"]').val();
-    //     var v_tgllahir      = $('[name="tgllahir"]').val();
-    //     var v_jkel          = $('[name="jkel"]').val();
-    //     var v_ppk           = $('[name="ppk"]').val();
-    //     var v_nohp          = $('[name="nohp"]').val();
-    //     var v_norm          = $('[name="norm"]').val();
-    //     // bawah
-    //     var v_tipe_kunj     = $('[name="tipe_kunj"]').val();
-    //     var v_tipe_rawat    = $('[name="tipe_rawat"]').val();
-    //     var v_noregg        = $('[name="noregg"]').val();
-    //     var v_poli_tujuan   = $('[name="poli_tujuan"]').val();
-    //     var v_keluhan       = $('[name="keluhan"]').val();
-    //     var v_tb            = $('[name="tb"]').val();
-    //     var v_bb            = $('[name="bb"]').val();
-    //     var v_lp            = $('[name="lp"]').val();
-    //     var v_imt           = $('[name="imt"]').val();
-    //     var v_sistole       = $('[name="sistole"]').val();
-    //     var v_diastole      = $('[name="diastole"]').val();
-    //     var v_resr          = $('[name="resr"]').val();
-    //     var v_hr            = $('[name="hr"]').val();
-
-
-    //     if (v_faskes =='' || v_faskes == null || v_tgldaftar =='' || v_tgldaftar == null || v_tipe_daftar =='' || v_tipe_daftar == null || v_nobpjss =='' || v_nobpjss == null || v_namapas =='' || v_namapas == null || v_stat_p =='' || v_stat_p == null || v_tgllahir =='' || v_tgllahir == null || v_jkel =='' || v_jkel == null || v_ppk =='' || v_ppk == null || v_nohp =='' || v_nohp == null || v_norm =='' || v_norm == null || v_tipe_kunj =='' || v_tipe_kunj == null || v_tipe_rawat =='' || v_tipe_rawat == null || v_poli_tujuan =='' || v_poli_tujuan == null || v_keluhan =='' || v_keluhan == null || v_tb =='' || v_tb == null || v_bb =='' || v_bb == null || v_lp =='' || v_lp == null || v_imt =='' || v_imt == null || v_sistole =='' || v_sistole == null || v_diastole =='' || v_diastole == null || v_resr =='' || v_resr == null || v_hr =='' || v_hr == null){
-
-    //         swal({
-    //             title: "DATA BELUM LENGKAP",
-    //             html: "<p>SILAHKAN LENGKAPI DATA</p>",
-    //             type: "error",
-    //             confirmButtonText: "OK" 
-    //         });    
-    //         return;
-
-    //     }         
-                
-    //     $.ajax({				
-    //         url         : "<?php echo site_url('PendaftaranVRS/add_bridging/1')?>",
-    //         data        : $('#form_bridging').serialize(),
-    //         type        : 'POST',
-    //         dataType    : "json",
-    //         success:function(data){ 
-    //         // data1 = JSON.parse(data);
-    //         // alert(data1.status);
-    //             if(data.status=='1'){   
-    //                 swal({
-    //                     title   : "DATA Pendaftaran Pasien",
-    //                     html    : 
-    //                         "<p> Nama   : <b>"+v_namapas+"</b> </p>"+ 
-    //                         "<br> <p> No. Register   : <b>"+v_noregg+"</b> </p>"+
-    //                         "<br>Berhasil di Perbarui...",
-    //                     type                : "success",
-    //                     confirmButtonText   : "OK"
-    //                     }).then((value) => {
-    //                         location.reload();
-    //                 });	
-    //             }else if(data.status=='2'){
-    //                 swal({
-    //                     title   : "DATA Pendaftaran Pasien",
-    //                     html    : 
-    //                         "<p> Nama   : <b>"+v_namapas+"</b> </p>"+ 
-    //                         "<br> <p> No. Register   : <b>"+v_noregg+"</b> </p>"+
-    //                         "<br> <br>Data Sudah Ada",
-    //                     type                : "success",
-    //                     confirmButtonText   : "OK"
-    //                     }).then((value) => {
-    //                         location.reload();
-    //                 });	
-    //                 return;
-    //             }else{
-    //                 swal({
-    //                     title   : "DATA Pendaftaran Pasien",
-    //                     html    : 
-    //                         "<p> Nama   : <b>"+v_namapas+"</b> </p>"+ 
-    //                         "<br> <p> No. Register   : <b>"+v_noregg+"</b> </p>"+
-    //                         "<br>Berhasil Tersimpan...",
-    //                     type                : "success",
-    //                     confirmButtonText   : "OK"
-    //                     }).then((value) => {
-    //                         location.reload();
-    //                 });	
-    //             }			
-                                    
-        
-    //         },
-    //         error:function(data){
-    //             swal('BRIDGING','Data gagal disimpan ... <br> CEK LAGI','');   	
-    //         }
-    //     });
-    // }	
-
     function tab2(){
-
         tablepc = $('#tablepc').DataTable({ 
             destroy: true,
             "processing": true,
@@ -1053,7 +1474,18 @@
         // tablepc.clear();
     }
 
+    function error_alert(message){
+        return swal({
+            title: "POLIKLINIK",
+            html: message,
+            type: "error",
+            confirmButtonText: "Tutup", 
+            confirmButtonColor: "red"
+        });
+    }
+
 </script>
 
-</body>
-</html> 
+<?php
+    // $this->load->view('template/footer_tb');
+?>

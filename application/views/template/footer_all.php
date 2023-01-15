@@ -77,6 +77,7 @@
    initailizeSelect2_jenis_penyakit();
    initailizeSelect2_tarif_erad('');
    initailizeSelect2_tarif_erad2();
+   initailizeSelect2_resep_retur();
 
    function initailizeSelect2_tarif_erad(unit){
       $(".select2_el_tarif_erad").select2({
@@ -1611,6 +1612,39 @@
          },
          ajax: {
             url: "<?php echo base_url(); ?>app/search_all_resep_obat",
+            type: "post",
+            dataType: 'json',
+            delay: 250,
+            data: function(params) {
+               return {
+                  searchTerm: params.term // search term
+               };
+            },
+
+            processResults: function(response) {
+               return {
+                  results: response
+               };
+            },
+            cache: true
+         }
+      });
+   }
+
+   function initailizeSelect2_resep_retur() {
+      $(".select2_el_resep_retur").select2({
+         allowClear: true,
+         multiple: false,
+         placeholder: '--- Pilih Poli ---',
+         //minimumInputLength: 2,
+         dropdownAutoWidth: true,
+         language: {
+            inputTooShort: function() {
+               return 'Ketikan Kode/Nama/Alamat minimal 2 huruf';
+            }
+         },
+         ajax: {
+            url: "<?php echo base_url(); ?>app/search_all_resep_obat_retur",
             type: "post",
             dataType: 'json',
             delay: 250,

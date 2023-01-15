@@ -49,12 +49,14 @@ $this->load->view('template/body');
       <div class="portlet-body">
         <div class="table-toolbar">
           <div class="btn-group">
+            <?php if($akses) : ?>
             <?php if ($akses->uadd) { ?>
               <a href="<?php echo base_url() ?>penjualan_cabang/entri" class="btn btn-success">
                 <i class="fa fa-plus"></i>
                 Data Baru
               </a>
             <?php } ?>
+            <?php endif; ?>
           </div>
           <div class="btn-group pull-right">
             <button class="btn dropdown-toggle" data-toggle="dropdown">Data <i class="fa fa-angle-down"></i></button>

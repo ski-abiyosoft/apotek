@@ -41,7 +41,7 @@
                 "list_master"       => $list_master,
                 "diagnosa"          => $this->pcare->get_data("bpjs_pcare_diagnosa"),
                 "dokter"            => $this->pcare->get_data("bpjs_pcare_dokter"),
-                "fakses"            => $this->pcare->get_data("bpjs_pcare_faskes"),
+                "faskes"            => $this->pcare->get_data("bpjs_pcare_faskes"),
                 "kdtkp"             => $this->pcare->get_data("bpjs_pcare_kdtkp"),
                 "kesadaran"         => $this->pcare->get_data("bpjs_pcare_kesadaran"),
                 "obat"              => $this->pcare->get_data("bpjs_pcare_obat"),

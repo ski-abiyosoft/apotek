@@ -153,7 +153,8 @@ class Poliklinik extends CI_Controller {
 			// $row[] = $periksa_perawat;
 			// $row[] = $periksa_dokter;
 			$sebut   = trim($this->M_global->penyebut($unit->antrino));
-			$row[]   = '<button class="btn btn-primary btn-sm" onclick="playAudio('."'".strtolower($unit->kodepos)."',"."'".strtolower($unit->antrino1)."',"."'".$unit->antrino."',"."'".$sebut."'".'); cekpanggilan('."'". $unit->noreg."'".')" type="button"><b>'.$unit->antrino1.'.'.$unit->antrino.' | call </b><i class="fa fa-volume-off"></i></button>';
+			$row[]   = '<button class="btn btn-primary btn-sm" onclick="playAudio('."'".strtolower($unit->kodepos)."',"."'".strtolower($unit->antrino1)."',"."'".$unit->antrino."',"."'".$sebut."'".')" type="button"><b>'.$unit->antrino1.'.'.$unit->antrino.' | call </b><i class="fa fa-volume-off"></i></button>';
+			// $row[]   = '<button class="btn btn-primary btn-sm" onclick="cekpanggilan('."'". $unit->noreg."'".')" type="button"><b>'.$unit->antrino1.'.'.$unit->antrino.' | call </b><i class="fa fa-volume-off"></i></button>';
 			$row[]   = $status_kasir;
 			$row[]   = $unit->noreg;
 			$row[]   = $unit->rekmed;
@@ -182,14 +183,104 @@ class Poliklinik extends CI_Controller {
 	}
 
 	public function cekpanggil($param_id){
-		// $now = date("Y-m-d");
-		$now = "2022-11-01";
+		$now = date("Y-m-d");
+		$id_display = $param_id;
 		$noreg = $this->input->get("noreg");
-		$dokter_display = $this->db->query("SELECT * FROM dokter_display WHERE id = '$param_id'")->row();
+		if($id_display){
+			$this->db->query("UPDATE tbl_regist SET id_display = '$id_display' WHERE noreg = '$noreg' AND id_display > 0");
+		}
+		$set_displayx = $this->db->query("SELECT * FROM tbl_regist WHERE noreg = '$noreg' ORDER BY lastno DESC LIMIT 1");
+		if($set_displayx->num_rows() > 0){
+			$set_display = $set_displayx->row();
+			$id_dis = $set_display->id_display;
+		} else {
+			$id_dis = $id_display;
+		}
+		$ceklast = $this->db->query("SELECT lastno FROM tbl_regist WHERE cekpanggil = 1 ORDER BY lastno DESC LIMIT 1");
+		if ($ceklast->num_rows() < 1) {
+			// $noregx = $noreg;
+			$last = 1;
+		} else {
+			// $noregx = $cl->noreg;
+			$cl = $ceklast->row();
+			$last = (int)$cl->lastno + 1;
+		}
+		$this->db->query("UPDATE tbl_regist SET cekpanggil = 1, lastno = '$last', panggil = 1 WHERE noreg = '$noreg'");
+		
+		$dokter_display = $this->db->query("SELECT * FROM dokter_display WHERE id = '$id_dis'")->row();
 		$kodokter1 = $dokter_display->kodokter1;
 		$kodokter2 = $dokter_display->kodokter2;
 		$kodokter3 = $dokter_display->kodokter3;
 		$kodokter4 = $dokter_display->kodokter4;
+		$data1 = $this->db->query("SELECT noreg, concat(antrino1, '.', LPAD(antrino, 3, '0')) as antrinonya FROM tbl_regist WHERE kodokter = '$kodokter1' AND cekpanggil = 1 AND tglmasuk = '$now' AND lastno > 0 ORDER BY lastno DESC LIMIT 1");
+		if($data1->num_rows() > 0){
+			$dt1 = $data1->row();
+			$dat1 = $dt1->antrinonya;
+			$noreg1 = $dt1->noreg;
+			// $this->db->query("UPDATE tbl_regist SET panggil = 1 WHERE noreg = '$dt1->noreg'");
+		} else {
+			$dat1 = "-";
+			$noreg1 = "-";
+		}
+		$data2 = $this->db->query("SELECT noreg, concat(antrino1, '.', LPAD(antrino, 3, '0')) as antrinonya FROM tbl_regist WHERE kodokter = '$kodokter2' AND cekpanggil = 1 AND tglmasuk = '$now' AND lastno > 0 ORDER BY lastno DESC LIMIT 1");
+		if($data2->num_rows() > 0){
+			$dt2 = $data2->row();
+			$dat2 = $dt2->antrinonya;
+			$noreg2 = $dt2->noreg;
+			// $this->db->query("UPDATE tbl_regist SET panggil = 1 WHERE noreg = '$dt2->noreg'");
+		} else {
+			$dat2 = "-";
+			$noreg2 = "-";
+		}
+		$data3 = $this->db->query("SELECT noreg, concat(antrino1, '.', LPAD(antrino, 3, '0')) as antrinonya FROM tbl_regist WHERE kodokter = '$kodokter3' AND cekpanggil = 1 AND tglmasuk = '$now' AND lastno > 0 ORDER BY lastno DESC LIMIT 1");
+		if($data3->num_rows() > 0){
+			$dt3 = $data3->row();
+			$dat3 = $dt3->antrinonya;
+			$noreg3 = $dt3->noreg;
+			// $this->db->query("UPDATE tbl_regist SET panggil = 1 WHERE noreg = '$dt3->noreg'");
+		} else {
+			$dat3 = "-";
+			$noreg3 = "-";
+		}
+		$data4 = $this->db->query("SELECT noreg, concat(antrino1, '.', LPAD(antrino, 3, '0')) as antrinonya FROM tbl_regist WHERE kodokter = '$kodokter4' AND cekpanggil = 1 AND tglmasuk = '$now' AND lastno > 0 ORDER BY lastno DESC LIMIT 1");
+		if($data4->num_rows() > 0){
+			$dt4 = $data4->row();
+			$dat4 = $dt4->antrinonya;
+			$noreg4 = $dt4->noreg;
+			// $this->db->query("UPDATE tbl_regist SET panggil = 1 WHERE noreg = '$dt4->noreg'");
+		} else {
+			$dat4 = "-";
+			$noreg4 = "-";
+		}
+
+		$data_now = [
+			'antri1' => $dat1,
+			'antri2' => $dat2,
+			'antri3' => $dat3,
+			'antri4' => $dat4,
+			'noreg1' => $noreg1,
+			'noreg2' => $noreg2,
+			'noreg3' => $noreg3,
+			'noreg4' => $noreg4,
+		];
+		
+		echo json_encode($data_now);
+	}
+
+	public function ubahpanggil($param_id){
+		$now = "2022-11-01";
+		$id_display = $param_id;
+		$noreg = $this->input->get("noreg");
+		if($id_display){
+			$this->db->query("UPDATE tbl_regist SET id_display = '$id_display' WHERE noreg = '$noreg' AND id_display > 0");
+		}
+		$set_displayx = $this->db->query("SELECT * FROM tbl_regist WHERE noreg = '$noreg' ORDER BY lastno DESC LIMIT 1");
+		if($set_displayx->num_rows() > 0){
+			$set_display = $set_displayx->row();
+			$id_dis = $set_display->id_display;
+		} else {
+			$id_dis = $id_display;
+		}
 		$ceklast = $this->db->query("SELECT lastno FROM tbl_regist WHERE cekpanggil = 1 ORDER BY lastno DESC LIMIT 1");
 		if ($ceklast->num_rows() < 1) {
 			$last = 1;
@@ -197,44 +288,45 @@ class Poliklinik extends CI_Controller {
 			$cl = $ceklast->row();
 			$last = (int)$cl->lastno + 1;
 		}
-		$this->db->query("UPDATE tbl_regist SET cekpanggil = 1, lastno = '$last' WHERE noreg = '$noreg' AND cekpanggil = 0");
-		$data1 = $this->db->query("SELECT * FROM tbl_regist WHERE kodokter = '$kodokter1' AND cekpanggil = 1 AND tglmasuk = '$now' AND lastno > 0 ORDER BY lastno DESC LIMIT 1");
+		$this->db->query("UPDATE tbl_regist SET cekpanggil = 1, lastno = '$last', panggil = 1 WHERE noreg = '$noreg' AND cekpanggil = 0");
+		
+		$dokter_display = $this->db->query("SELECT * FROM dokter_display WHERE id = '$id_dis'")->row();
+		$kodokter1 = $dokter_display->kodokter1;
+		$kodokter2 = $dokter_display->kodokter2;
+		$kodokter3 = $dokter_display->kodokter3;
+		$kodokter4 = $dokter_display->kodokter4;
+
+		$data1 = $this->db->query("SELECT * FROM tbl_regist WHERE noreg = '$noreg' AND cekpanggil = 1 AND tglmasuk = '$now' AND lastno > 0 ORDER BY lastno DESC LIMIT 1");
 		if($data1->num_rows() > 0){
-			$dt1 = $data1->result();
-			foreach($dt1 as $d1){
-				$dat1 = $d1->antrino1.".".$d1->antrino;
-			}
+			$dt1 = $data1->row();
+			$cek = $this->db->query("UPDATE tbl_regist SET panggil = 1 WHERE noreg = '$dt1->noreg' AND id_display > 0");
 		} else {
-			$dat1 = "-";
+			// echo json_encode(["status" => 0]);
 		}
-		$data2 = $this->db->query("SELECT * FROM tbl_regist WHERE kodokter = '$kodokter2' AND cekpanggil = 1 AND tglmasuk = '$now' AND lastno > 0 ORDER BY lastno DESC LIMIT 1");
+
+		$data2 = $this->db->query("SELECT * FROM tbl_regist WHERE noreg = '$noreg' AND cekpanggil = 1 AND tglmasuk = '$now' AND lastno > 0 ORDER BY lastno DESC LIMIT 1");
 		if($data2->num_rows() > 0){
 			$dt2 = $data2->row();
-			$dat2 = $dt2->antrino1.".".$dt2->antrino;
+			$cek = $this->db->query("UPDATE tbl_regist SET panggil = 1 WHERE noreg = '$dt2->noreg' AND id_display > 0");
 		} else {
-			$dat2 = "-";
+			// echo json_encode(["status" => 0]);
 		}
-		$data3 = $this->db->query("SELECT * FROM tbl_regist WHERE kodokter = '$kodokter3' AND cekpanggil = 1 AND tglmasuk = '$now' AND lastno > 0 ORDER BY lastno DESC LIMIT 1");
+
+		$data3 = $this->db->query("SELECT * FROM tbl_regist WHERE noreg = '$noreg' AND cekpanggil = 1 AND tglmasuk = '$now' AND lastno > 0 ORDER BY lastno DESC LIMIT 1");
 		if($data3->num_rows() > 0){
 			$dt3 = $data3->row();
-			$dat3 = $dt3->antrino1.".".$dt3->antrino;
+			$cek = $this->db->query("UPDATE tbl_regist SET panggil = 1 WHERE noreg = '$dt3->noreg' AND id_display > 0");
 		} else {
-			$dat3 = "-";
+			// echo json_encode(["status" => 0]);
 		}
-		$data4 = $this->db->query("SELECT * FROM tbl_regist WHERE kodokter = '$kodokter4' AND cekpanggil = 1 AND tglmasuk = '$now' AND lastno > 0 ORDER BY lastno DESC LIMIT 1");
+
+		$data4 = $this->db->query("SELECT * FROM tbl_regist WHERE noreg = '$noreg' AND cekpanggil = 1 AND tglmasuk = '$now' AND lastno > 0 ORDER BY lastno DESC LIMIT 1");
 		if($data4->num_rows() > 0){
 			$dt4 = $data4->row();
-			$dat4 = $dt4->antrino1.".".$dt4->antrino;
+			$cek = $this->db->query("UPDATE tbl_regist SET panggil = 1 WHERE noreg = '$dt4->noreg' AND id_display > 0");
 		} else {
-			$dat4 = "-";
+			// echo json_encode(["status" => 0]);
 		}
-		$data_now = [
-			'antri1' => $dat1,
-			'antri2' => $dat2,
-			'antri3' => $dat3,
-			'antri4' => $dat4,
-		];
-		echo json_encode($data_now);
 	}
 
 	public function ajax_add_per($param){

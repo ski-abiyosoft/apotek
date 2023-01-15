@@ -1,19 +1,22 @@
 <?php 
 
 require_once APPPATH . "libraries/dpsPcare/Repositories/TindakanRepository.php";
+require_once APPPATH . "libraries/dpsPcare/Repositories/MasterTarifHeaderRepository.php";
 require_once "Pcare_service.php";
 
 class Pcare_tindakan extends Pcare_service
 {
     protected $url;
     protected $tindakan;
+    protected $master_tindakan;
 
     public function __construct(array $arg)
     {
         parent::__construct($arg["kdppk"]);
 
-        $this->url        = $this->base_url . "tindakan";
-        $this->tindakan   = new TindakanRepository();
+        $this->url              = $this->base_url . "tindakan";
+        $this->tindakan         = new TindakanRepository();
+        $this->master_tindakan  = new MasterTarifHeaderRepository();
     }
     
     /**
@@ -69,5 +72,18 @@ class Pcare_tindakan extends Pcare_service
             "status"    => $result->status,
             "message"   => json_decode($result->data)->response
         ];
+    }
+
+    /**
+     * Method for updating master tindakan
+     * 
+     * @param string $kdTindakan
+     * @param string $kodetarif
+     */
+    public function update_master_tindakan (string $kdTindakan, string $kodetarif)
+    {
+        $this->master_tindakan->update((object) ["pcare_kdTindakan" => NULL], ["pcare_kdTindakan" => $kdTindakan]);
+
+        return $this->master_tindakan->update((object) ["pcare_kdTindakan" => $kdTindakan], ["kodetarif" => $kodetarif]);
     }
 }

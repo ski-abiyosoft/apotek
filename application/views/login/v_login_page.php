@@ -89,7 +89,7 @@
 
 <div class="logo">
 	<a href="<?php echo base_url();?>">
-		<img src="<?php echo base_url('assets/img/ski.png');?>" width="150" alt=""/>
+		<img src="<?php echo base_url('assets/img/ski_new.png');?>" width="150" alt=""/>
 	</a>
 </div>
 

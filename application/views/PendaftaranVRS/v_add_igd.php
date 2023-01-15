@@ -86,7 +86,7 @@
         <div class="col-md-6">
           <div class="form-group">
             <label class="col-md-3 control-label">Lokasi Praktek <font color="red">*</font></label>
-            <div class="col-md-5">
+            <div class="col-md-9">
               <select class="form-control select2me" id="ruang" name="ruang">
                 <option value="">--- Pilih ---</option>
                 <?php $data = $this->db->get("tbl_ruangpoli")->result();
@@ -95,10 +95,10 @@
                 <?php } ?>
               </select>
             </div>
-            <label class="col-md-2 control-label">No. Antri <font color="red"></font></label>
+            <!-- <label class="col-md-2 control-label">No. Antri <font color="red"></font></label>
             <div class="col-md-2">
               <input type="text" class="form-control" name="antrino" id="antrino" value="1" min="1">
-            </div>
+            </div> -->
           </div>
         </div>
       </div>
@@ -120,7 +120,7 @@
           <div class="form-group">
             <label class="col-md-3 control-label">Pengirim <font color="red">*</font></label>
             <div class="col-md-9">
-              <select class="form-control select2_el_dokter" style="width:100%;" id="pengirim" name="pengirim"></select>
+              <select class="form-control select2_dokter_igd" style="width:100%;" id="pengirim" name="pengirim"></select>
             </div>
           </div>
         </div>
@@ -783,45 +783,25 @@ function getinfopasien() {
   var xhttp;
   var vid = $('#pasien').val();
   $('#bpjs').show(200);
-  $('#penjamin').show(200);
+  // $('#penjamin').show(200);
   $.ajax({
     url: "<?php echo base_url();?>PendaftaranVRS/getinfopasien/?id=" + vid,
     type: "GET",
     dataType: "JSON",
     success: function(data) {
-      // if(data.keluar == 0){
-      //      swal({
-      //           title: "PASIEN",
-      //           html: "Sudah keluar",
-      //           type: "info",
-      //           confirmButtonText: "OK" 
-      //      }).then((value) => {
-      //           $('#modalruangkamar').modal('show');
-      //      });
-      // } else if(data.keluar == 1) {
-      //      // $('#poliklinik1').empty();
-      //      $('#dokter').empty();
-      //      $('#ruang').empty();
-      //      $('#vpenjamin').empty();
-      //      $('#jenispasien').empty();
-      //      $('#penjamin').hide(200);
-      //      $('#card').hide(200);
-      //      $('#sep').hide(200);
-      //      $('#rujukan').hide(200);
-      // }
       // console.log(data.noreg);
       $('#idpasien').val(data.idtr);
       $('#idpasien2').val(data.idtr);
-      $('#booking').val(data.mjkn_token);
+      // $('#booking').val(data.mjkn_token);
       $('#namapasien').val(data.namapas);
-      $('#ruang').val(data.koderuang).change();
+      // $('#ruang').val(data.koderuang).change();
       // $('#pengirim').val(data.drpengirim).change();
-      $('#noreg').val(data.noreg);
+      // $('#noreg').val(data.noreg);
       $('#norm').val(data.rekmed);
       // $('#poliklinik1').val(data.kodepos).change();
       $('#lupnorm').val(data.rekmed);
       $('#lupnamapasien').val(data.namapas);
-      $('#nomember').val(data.rekmed);
+      // $('#nomember').val(data.rekmed);
       $('#namapanggilan').val(data.namapanggilan);
       $('#lupnamapanggilan').val(data.namapanggilan);
       $('#lupnamakeluarga').val(data.namakeluarga);
@@ -836,7 +816,7 @@ function getinfopasien() {
         $('#sep').hide();
         $('#rujukan').hide();
       } else {
-        $('#jenispasien').val(data.jenispas).change();
+        // $('#jenispasien').val(data.jenispas).change();
       }
       $('#lupalamat2').val(data.alamat2);
       $('#goldarah').val(data.goldarah);
@@ -876,11 +856,11 @@ function getinfopasien() {
       } else {
         $('#lupumur').val(hitung_usia(formtglalhir));
       }
-      $('#nocard').val(data.nobpjs);
-      $('#nosep').val(data.nosep);
-      $('#norujukan').val(data.norujukan);
-      $('#jenispasien').val(data.jenispas);
-      $('#antrino').val(data.antrino);
+      // $('#nocard').val(data.nobpjs);
+      // $('#nosep').val(data.nosep);
+      // $('#norujukan').val(data.norujukan);
+      // $('#jenispasien').val(data.jenispas);
+      // $('#antrino').val(data.antrino);
       // $('#vpenjamin').val(data.cust_id).change();
 
       var selectElement = document.getElementById('luppreposition');
@@ -918,23 +898,23 @@ function getinfopasien() {
       selectElement.appendChild(opt);
       $('#lupcabang').val(data.koders);
 
-      if (data.cust_nama != '') {
-        var selectElement = document.getElementById('vpenjamin');
-        var opt = document.createElement('option');
-        opt.value = data.cust_id;
-        opt.innerHTML = data.cust_nama;
-        selectElement.appendChild(opt);
-        $('#vpenjamin').val(data.cust_id);
-      }
+      // if (data.cust_nama != '') {
+      //   var selectElement = document.getElementById('vpenjamin');
+      //   var opt = document.createElement('option');
+      //   opt.value = data.cust_id;
+      //   opt.innerHTML = data.cust_nama;
+      //   selectElement.appendChild(opt);
+      //   $('#vpenjamin').val(data.cust_id);
+      // }
 
-      if (data.drpengirim != '') {
-        var selectElement = document.getElementById('pengirim');
-        var opt = document.createElement('option');
-        opt.value = data.drpengirim;
-        opt.innerHTML = data.drpengirim;
-        selectElement.appendChild(opt);
-        $('#pengirim').val(data.drpengirim);
-      }
+      // if (data.drpengirim != '') {
+      //   var selectElement = document.getElementById('pengirim');
+      //   var opt = document.createElement('option');
+      //   opt.value = data.drpengirim;
+      //   opt.innerHTML = data.drpengirim;
+      //   selectElement.appendChild(opt);
+      //   $('#pengirim').val(data.drpengirim);
+      // }
 
       // if (data.kodokter != '') {
       //   var selectElement = document.getElementById('dokter');
@@ -1795,20 +1775,21 @@ function getRuang() {
 }
 
 function register() {
-  var norm = document.getElementById('norm').value;
-  var tanggal = document.getElementById('tanggal').value;
-  var jam = document.getElementById('jam').value;
-  var jenispasien = document.getElementById('jenispasien').value;
-  var poliklinik = document.getElementById('poliklinik1').value;
-  var penjamin = document.getElementById('vpenjamin').value;
-  var dokter = document.getElementById('dokter').value;
-  var antrino = document.getElementById('antrino').value;
-  var pengirim = document.getElementById('pengirim').value;
-  var ruang = document.getElementById('ruang').value;
-  var booking = document.getElementById('booking').value;
-  var nocard = document.getElementById('nocard').value;
-  var norujukan = document.getElementById('norujukan').value;
-  var nosep = document.getElementById('nosep').value;
+  var norm          = document.getElementById('norm').value;
+  var tanggal       = document.getElementById('tanggal').value;
+  var jam           = document.getElementById('jam').value;
+  var jenispasien   = $('#jenispasien').val();
+  var poliklinik    = document.getElementById('poliklinik1').value;
+  var penjamin      = document.getElementById('vpenjamin').value;
+  var dokter        = document.getElementById('dokter').value;
+  // var antrino       = document.getElementById('antrino').value;
+  // var antrino1      = document.getElementById('antrino1').value;
+  var pengirim      = document.getElementById('pengirim').value;
+  var ruang         = document.getElementById('ruang').value;
+  var booking       = document.getElementById('booking').value;
+  var nocard        = document.getElementById('nocard').value;
+  var norujukan     = document.getElementById('norujukan').value;
+  var nosep         = document.getElementById('nosep').value;
 
   // alert
   if (poliklinik == '') {
@@ -1819,10 +1800,10 @@ function register() {
       type: "error",
       confirmButtonText: "OK"
     }).then((value) => {
-      $('#modal_form').modal('show');
+      // $('#modal_form').modal('show');
+      $('#btnSave').text('save');
+      $('#btnSave').attr('disabled', false);
     });
-    $('#btnSave').text('save');
-    $('#btnSave').attr('disabled', false);
     return;
   }
   if (dokter == '') {
@@ -1833,24 +1814,24 @@ function register() {
       type: "error",
       confirmButtonText: "OK"
     }).then((value) => {
-      $('#modal_form').modal('show');
+      // $('#modal_form').modal('show');
+      $('#btnSave').text('save');
+      $('#btnSave').attr('disabled', false);
     });
-    $('#btnSave').text('save');
-    $('#btnSave').attr('disabled', false);
     return;
   }
   if (ruang == '') {
     $('#modal_form').modal('hide');
     swal({
-      title: "RUANG",
+      title: "Lokasi Praktek ",
       html: " Tidak Boleh Kosong .!!!",
       type: "error",
       confirmButtonText: "OK"
     }).then((value) => {
-      $('#modal_form').modal('show');
+      // $('#modal_form').modal('show');
+      $('#btnSave').text('save');
+      $('#btnSave').attr('disabled', false);
     });
-    $('#btnSave').text('save');
-    $('#btnSave').attr('disabled', false);
     return;
   }
   if (tanggal == '') {
@@ -1861,10 +1842,10 @@ function register() {
       type: "error",
       confirmButtonText: "OK"
     }).then((value) => {
-      $('#modal_form').modal('show');
+      // $('#modal_form').modal('show');
+      $('#btnSave').text('save');
+      $('#btnSave').attr('disabled', false);
     });
-    $('#btnSave').text('save');
-    $('#btnSave').attr('disabled', false);
     return;
   }
   if (jam == '') {
@@ -1875,27 +1856,13 @@ function register() {
       type: "error",
       confirmButtonText: "OK"
     }).then((value) => {
-      $('#modal_form').modal('show');
+      // $('#modal_form').modal('show');
+      $('#btnSave').text('save');
+      $('#btnSave').attr('disabled', false);
     });
-    $('#btnSave').text('save');
-    $('#btnSave').attr('disabled', false);
     return;
   }
-  if (pengirim == '') {
-    $('#modal_form').modal('hide');
-    swal({
-      title: "PENGIRIM",
-      html: " Tidak Boleh Kosong .!!!",
-      type: "error",
-      confirmButtonText: "OK"
-    }).then((value) => {
-      $('#modal_form').modal('show');
-    });
-    $('#btnSave').text('save');
-    $('#btnSave').attr('disabled', false);
-    return;
-  }
-  if (jenispasien == '') {
+  if (jenispasien == '' || jenispasien == null) {
     $('#modal_form').modal('hide');
     swal({
       title: "JENIS PASIEN",
@@ -1903,61 +1870,37 @@ function register() {
       type: "error",
       confirmButtonText: "OK"
     }).then((value) => {
-      $('#modal_form').modal('show');
+      // $('#modal_form').modal('show');      
+      $('#btnSave').text('save');
+      $('#btnSave').attr('disabled', false);
     });
-    $('#btnSave').text('save');
-    $('#btnSave').attr('disabled', false);
     return;
   }
-
-  swal({
-    title: "DATA PASIEN",
-    html: "Akan berhasil teregistrasi",
-    type: "success",
-    confirmButtonText: "OK"
-  });
-
-  url = "<?php echo site_url('PendaftaranVRS/tambah_pasien_register_igd')?>";
+  var noregz = $("#noreg").val();
+  url = "<?php echo site_url('PendaftaranVRS/tambah_pasien_register_igd?noreg=')?>"+noregz;
   $.ajax({
     url: url,
     type: "POST",
     data: ($('#frmpasien').serialize()),
     dataType: "JSON",
     success: function(data) {
-      console.log(data.status);
-      if (data.status == 0) {
+      if(data.status == 0){
         swal({
           title: "DATA PASIEN",
           html: "Data berhasil teregistrasi",
           type: "success",
-          confirmButtonText: "OK"
+          confirmButtonText: "OK" 
         }).then((value) => {
           $('#modal_form').modal('hide');
+          $("#btnsimpaneditpasien").attr('disabled', true);
+          $("#noreg").val(data.noreg);
         });
-      } else if (data.status == 1) {
+      } else if(data.status == 2){
         swal({
-          title: "DATA PASIEN",
-          text: "Ingin mengubah data ini?",
-          icon: "warning",
-          buttons: true,
-          buttons: false,
-          dangerMode: true,
-        }).then((value) => {
-          swal({
-            title: "DATA PASIEN",
-            html: "Data terdaftar berhasil diubah",
-            type: "success",
-            confirmButtonText: "OK"
-          }).then((value) => {
-            $('#modal_form').modal('hide');
-          });
-        });
-      } else {
-        swal({
-          title: "DATA PASIEN",
-          html: "Data gagal teregistrasi",
+          title: "PASIEN",
+          html: "Pasien atas nama : <b>"+data.nm+"</b><br>"+"SUDAH TERDAFTAR, SILAHKAN CEK DI LIST",
           type: "error",
-          confirmButtonText: "OK"
+          confirmButtonText: "OK" 
         }).then((value) => {
           $('#modal_form').modal('hide');
         });

@@ -92,22 +92,22 @@
 				<div class="col-md-6">
 					<div class="form-group">
 						<label class="col-md-3 control-label">Lokasi Praktek <font color="red">*</font></label>
-						<div class="col-md-5">
+						<div class="col-md-9">
 							<select class="form-control select2me" id="ruang" name="ruang">
 								<option value="">--- Pilih ---</option>
 								<?php 
 									$poli = $this->db->get("tbl_ruangpoli")->result();
 									foreach($poli as $row){ 
-										$selected = ($row->koderuang==$data->tujuan?'selected':'');
+										$selected = ($row->koderuang==$data->koderuang?'selected':'');
 								?>
 								<option <?= $selected; ?> value="<?= $row->koderuang;?>"><?= $row->namaruang;?></option>
 								<?php } ?>
 							</select>
 						</div>
-						<label class="col-md-2 control-label">No. Antri <font color="red"></font></label>
+						<!-- <label class="col-md-2 control-label">No. Antri <font color="red"></font></label>
 						<div class="col-md-2">
 							<input type="text" class="form-control" name="antrino" id="antrino" value="<?= $data->antrino;?>">
-						</div>
+						</div> -->
 					</div>
 				</div>
 			</div>
@@ -127,7 +127,7 @@
 					<div class="form-group">
 						<label class="col-md-3 control-label">Pengirim <font color="red">*</font></label>
 						<div class="col-md-9">
-							<select class="form-control select2_el_dokter" id="pengirim" name="pengirim">
+							<select class="form-control select2_dokter_igd" id="pengirim" name="pengirim">
 								<?php if($data->drpengirim){ 
 									$vdokter = data_master('tbl_dokter', array('kodokter' => $data->drpengirim));
 								?>
@@ -731,6 +731,36 @@
 
 <script>
 
+	$(".select2_dokter_igd").select2({
+  allowClear: true,
+  multiple: false,
+  placeholder: '--- Pilih Dokter ---',
+  //minimumInputLength: 2,
+  dropdownAutoWidth: true,
+  language: {
+    inputTooShort: function() {
+      return 'Ketikan Kode/Nama Akun Biaya minimal 2 huruf';
+    }
+  },
+  ajax: {
+    url: "<?php echo base_url();?>PendaftaranVRS/dokter_igd",
+    type: "post",
+    dataType: 'json',
+    delay: 250,
+    data: function(params) {
+      return {
+        searchTerm: params.term // search term
+      };
+    },
+    processResults: function(response) {
+      return {
+        results: response
+      };
+    },
+    cache: true
+  }
+});
+
 var jenispasien = document.getElementById('jenispasien').value;
 var penjamin = document.getElementById('vpenjamin').value;
 if(jenispasien != 'PAS1'){
@@ -776,16 +806,16 @@ var usia = hitung_usia(birthDate);
 $('#lupumur').val(usia);
 $('#umur123').val(usia);
 
-var segment = '<?= site_url("PendaftaranVRS/entri_igd")?>';
-if(segment){
-	var selectElement = document.getElementById('poliklinik');
-	var opt = document.createElement('option');
-	opt.value = "PUGD";
-	opt.innerHTML = "IGD";
-	selectElement.appendChild(opt);			
-	$('#poliklinik').val("PUGD");
-	$('#poliklinik').attr("disabled", true);
-}
+// var segment = '<?= site_url("PendaftaranVRS/entri_igd")?>';
+// if(segment){
+	// var selectElement = document.getElementById('poliklinik');
+	// var opt = document.createElement('option');
+	// opt.value = "PUGD";
+	// opt.innerHTML = "IGD";
+	// selectElement.appendChild(opt);
+// 	$('#poliklinik').val("PUGD");
+// 	$('#poliklinik').attr("disabled", true);
+// }
 
 function getKota(){
 	var select = document.getElementById('lupprovinsi').value;
@@ -1727,7 +1757,7 @@ function register(){
           var poliklinik = document.getElementById('poliklinik1').value;
           var penjamin = document.getElementById('vpenjamin').value;
           var dokter = document.getElementById('dokter').value;
-          var antrino = document.getElementById('antrino').value;
+          // var antrino = document.getElementById('antrino').value;
           var pengirim = document.getElementById('pengirim').value;
           var ruang = document.getElementById('ruang').value;
           var booking = document.getElementById('booking').value;
@@ -1834,52 +1864,34 @@ function register(){
                $('#btnSave').attr('disabled', false);
                return;
           }
-          url = "<?php echo site_url('PendaftaranVRS/tambah_pasien_register_rawat_jalan')?>";
+          url = "<?php echo site_url('PendaftaranVRS/edit_pasien_register_igd')?>";
           $.ajax({
                url : url,
                type: "POST",
                data: ($('#frmpasien').serialize()),
                dataType: "JSON",
                success: function(data){
-                   console.log(data.status);
-                    if(data.status == 0){
-                         swal({
-                              title: "DATA PASIEN",
-                              html: "Data berhasil teregistrasi",
-                              type: "success",
-                              confirmButtonText: "OK" 
-                         }).then((value) => {
-                              $('#modal_form').modal('hide');
-                         });
-                    }
-                    if(data.status == 1){
-                        swal({
-                            title: "DATA PASIEN",
-                            text: "Ingin mengubah data ini?",
-                            icon: "warning",
-                            buttons: true,
-                            buttons: false,
-                            dangerMode: true,
-                        }).then((value) => {
-                            swal({
-                                title: "DATA PASIEN",
-                                html: "Data terdaftar berhasil diubah",
-                                type: "success",
-                                confirmButtonText: "OK" 
-                            }).then((value) => {
-                                $('#modal_form').modal('hide');
-                            });
-                        }); 
-                    } else {
-                         swal({
-                              title: "DATA PASIEN",
-                              html: "Data gagal teregistrasi",
-                              type: "error",
-                              confirmButtonText: "OK" 
-                         }).then((value) => {
-                              $('#modal_form').modal('hide');
-                         });
-                    }
+									if(data.status == 0){
+										swal({
+											title: "DATA PASIEN",
+											html: "Data berhasil diubah",
+											type: "success",
+											confirmButtonText: "OK" 
+										}).then((value) => {
+											$('#modal_form').modal('hide');
+											$("#btnsimpaneditpasien").attr('disabled', true);
+											$("#noreg").val(data.noreg);
+										});
+									} else if(data.status == 1){
+										swal({
+											title: "PASIEN",
+											html: "Gagal Diubah",
+											type: "error",
+											confirmButtonText: "OK" 
+										}).then((value) => {
+											$('#modal_form').modal('hide');
+										});
+									}
                }
           });
           

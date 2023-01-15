@@ -11,14 +11,15 @@ class Pcare_sync extends CI_controller
         $this->load->library("dpsPcare/Services/Pcare_status_pulang", ["kdppk" => $this->session->userdata("kdppk")]);
         $this->load->library("dpsPcare/Services/Pcare_obat", ["kdppk" => $this->session->userdata("kdppk")]);
         $this->load->library("dpsPcare/Services/Pcare_tindakan", ["kdppk" => $this->session->userdata("kdppk")]);
+        $this->load->library("dpsPcare/Services/Pcare_provider", ["kdppk" => $this->session->userdata("kdppk")]);
     }
 
     public function index ()
     {
         $data = [
-            "obat"          => $this->db->where("pcare_kdObat <>", NULL)->get("tbl_barang")->result(),
-            "all_obat"      => $this->db->select("kodebarang id, namabarang text")->get("tbl_barang")->result(),
-            "tindakan"      => $this->db->where("pcare_kdTindakan <>", NULL)->get("tbl_tarifh")->result(),
+            "obat"          => $this->db->select("kodebarang, pcare_kdObat")->where("pcare_kdObat <>", NULL)->get("tbl_barang")->result(),
+            "all_obat"      => $this->db->select("kodebarang id, CONCAT(namabarang, ' (', satuan1, ')') text")->get("tbl_barang")->result(),
+            "tindakan"      => $this->db->select("kodetarif, pcare_kdTindakan")->where("pcare_kdTindakan <>", NULL)->get("tbl_tarifh")->result(),
             "all_tindakan"  => $this->db->select("kodetarif id, tindakan text")->get("tbl_tarifh")->result(),
         ];
 
@@ -110,7 +111,8 @@ class Pcare_sync extends CI_controller
      * Method for saving to master obat
      * 
      */
-    public function update_master () {
+    public function update_master_obat () 
+    {
         $master_code = $this->input->post("master_code");
         $result      = true;
 
@@ -152,4 +154,54 @@ class Pcare_sync extends CI_controller
             ->set_status_header($result->status)
             ->set_output(json_encode($result->data));
     }
+
+    /**
+     * Method save to master tindakan
+     * 
+     */
+    public function update_master_tindakan ()
+    {
+        $master_tindakan = $this->input->post("master_tindakan");
+
+        foreach($master_tindakan as $key => $value) {
+            $result = $this->pcare_tindakan->update_master_tindakan($key, $value);
+        }
+
+        if ($result) {
+            return $this->output
+                    ->set_content_type("application/json")
+                    ->set_status_header(200)
+                    ->set_output(json_encode([
+                        "status" => true,
+                        "data"   => null
+                    ]));
+        }
+
+        return $this->output
+                    ->set_content_type("application/json")
+                    ->set_status_header(500)
+                    ->set_output(json_encode([
+                        "status" => false,
+                        "data"   => null
+                    ]));
+    }
+
+    /**
+     * Method for synchronizing provider
+     *
+     * @param int $limit
+     */
+    public function provider (int $limit = 200)
+    {
+        $result = $this->pcare_provider->get_provider (0, $limit);
+
+        return $this->output
+            ->set_content_type("application/json")
+            ->set_status_header($result->status)
+            ->set_output(json_encode($result->data));
+    }
+
+    /**
+     * Method for synchonizing 
+     */
 }

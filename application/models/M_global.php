@@ -1801,6 +1801,20 @@ class M_global extends CI_Model
 		return $query->result();
 	}
 
+	function getAllresep_obat_retur($str)
+
+	{
+
+		$unit = $this->session->userdata('unit');
+
+
+		$tgl = date('Y-m-d');
+		$query = $this->db->query("SELECT resepno as id, concat(resepno,' | ',namapas,' | ',date_format(tglresep,'%d-%m-%Y')) as text from tbl_apoposting where koders= '$unit' AND noreg IN (SELECT noreg FROM tbl_kasir) and (namapas like '%$str%' or resepno like '$str%') and tglresep = '$tgl' and resepno not in (select resepno from tbl_apohreturjual)");
+
+
+		return $query->result();
+	}
+
 
 
 

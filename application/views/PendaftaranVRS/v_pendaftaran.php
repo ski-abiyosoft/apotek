@@ -217,7 +217,7 @@
                                                             </div>
                                                        </div>
                                                        <div class="table-responsive">
-                                                            <table id="tableIGD" class="table table-striped table-bordered table-hover" cellspacing="0" width="100%">
+                                                            <table id="tableIGD" class="table table-striped table-bordered table-hover table-condensed table-scrollable" cellspacing="0" width="100%" style="overflow-x: auto;">
                                                                  <thead class="page-breadcrumb breadcrumb">
                                                                       <tr>
                                                                            <th class="title-white text-center" width="1%">No.</th>
@@ -706,7 +706,6 @@ swal({
                }
                if(tab=='igd'){
                     reload_tableigd();
-
                }else if(tab=='rajal'){
                     reload_tablerj();
                }else{

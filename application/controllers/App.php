@@ -446,6 +446,12 @@ class App extends CI_Controller
 		echo json_encode($this->M_global->getAllresep_obat($q));
 	}
 
+	function search_all_resep_obat_retur()
+	{
+		$q = $this->input->post('searchTerm');
+		echo json_encode($this->M_global->getAllresep_obat_retur($q));
+	}
+
 	function search_tarif_tindakan()
 	{
 		$q = $this->input->post('searchTerm');

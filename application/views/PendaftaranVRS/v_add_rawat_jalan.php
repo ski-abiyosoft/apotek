@@ -1963,7 +1963,8 @@ function vpcare()
     // var nampasdet = document.getElementById("nampasdet").value;
     var noregdet  = $('#noreg').val();
     var rekmeddet = '000459';
-    url="<?php echo base_url()?>PendaftaranVRS/pcare_rj/?noreg="+noregdet+"&rekmed="+rekmeddet
+    var url       = "<?= base_url("PendaftaranVRS/pcare_rj/") ?>"+ noregdet;
+    url="<?php echo base_url()?>PendaftaranVRS/pcare_rj/"+noregdet;
     
     window.open(url,'_blank');
     window.focus();
@@ -2145,7 +2146,7 @@ function register() {
             showCancelButton: true,
             allowOutsideClick: false
           }).then(function() {
-              url="<?php echo base_url()?>PendaftaranVRS/pcare_rj/?noreg="+data.noreg+"&rekmed="+norm
+              url="<?php echo base_url()?>PendaftaranVRS/pcare_rj/"+data.noreg;
               
               window.open(url,'_blank');
               window.focus();

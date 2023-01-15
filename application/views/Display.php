@@ -99,7 +99,11 @@
         <input type="hidden" name="kodokterp2" id="kodokterp2">
         <input type="hidden" name="kodokterp3" id="kodokterp3">
         <input type="hidden" name="kodokterp4" id="kodokterp4">
-        <div class="h6"><?= $tgl; ?></div>
+        <input type="hidden" name="noreg1" id="noreg1">
+        <input type="hidden" name="noreg2" id="noreg2">
+        <input type="hidden" name="noreg3" id="noreg3">
+        <input type="hidden" name="noreg4" id="noreg4">
+        <div class="h6"><?= $tgl; ?>, <span id="jam"></span></div>
       </div>
     </div>
     <div class="row mb-1">
@@ -114,21 +118,16 @@
                   </div>
                 </div>
                 <hr>
-                <div class="row mb-4">
+                <div class="row mb-4" style="margin-top: 25px;">
                   <div class="col">
-                    <!-- <div class="card">
-                      <div class="card-body"> -->
-                        <video controls autoplay style="width: 100%; height: auto;" id="videonya" loop="true">
-                          <source src="<?= base_url('assets/video/'); ?>Splash.mp4" type="video/mp4">
-                        </video>
-                        <!-- <div id="noantrian_dokter" style="height: 305px; overflow-y: scroll; overflow: hidden;"></div> -->
-                      <!-- </div>
-                    </div> -->
+                    <video controls autoplay style="width: 100%; height: auto;" id="videonya" loop="true">
+                      <source src="<?= base_url('assets/video/'); ?>Splash.mp4" type="video/mp4">
+                    </video>
                   </div>
                 </div>
-                <div class="row">
+                <div class="row" style="margin-top: 50px;">
                   <div class="col text-center">
-                    <img src="<?= base_url('assets/img_user/profile_company.png'); ?>" style="height: 235px;">
+                    <img src="<?= base_url('assets/img_user/qr_abi3.png'); ?>" width="200px">
                   </div>
                 </div>
               </div>
@@ -145,19 +144,19 @@
                 </div>
                 <div class="row justify-content-center">
                   <div class="col-6 mb-2">
-                    <div class="card text-center h-100" style="background-color: #0d6efd; color: white;">
-                      <div class="card-header h-100">
+                    <div class="card h-100 border-primary">
+                      <div class="card-header text-center h-100 bg-primary text-white">
                         <div class="h4" id="nadokter1">Nadokter</div>
                       </div>
                       <div class="card-body">
                         <div class="row">
                           <div class="col-5 my-auto">
-                            <div id="noantrian_body1"></div>
+                            <div id="noantrian_body1" class="text-primary"></div>
                           </div>
-                          <div class="col-7 my-auto">
-                            <div class="card">
+                          <div class="col-7 my-auto text-center">
+                            <div class="card border-primary">
                               <div class="card-body text-center" style="font-size: 40px; color: #0d6efd;">
-                                <div class="fw-bold" id="antrinonya1">BELUM DATANG</div>
+                                <div class="fw-bold" id="antrinonya1">-</div>
                                 <span style="font-size: 14px;"><b>SEDANG DILAYANI</b></span>
                               </div>
                             </div>
@@ -167,8 +166,8 @@
                     </div>
                   </div>
                   <div class="col-6 mb-2">
-                    <div class="card text-center h-100" style="background-color: #f9cb9c; color: white;">
-                      <div class="card-header h-100">
+                    <div class="card h-100" style="border-color: #f9cb9c;">
+                      <div class="card-header h-100 text-center" style="background-color: #f9cb9c; color: white;">
                         <div class="h4" id="nadokter2">Nadokter</div>
                       </div>
                       <div class="card-body">
@@ -176,10 +175,10 @@
                           <div class="col-5 my-auto">
                             <div id="noantrian_body2"></div>
                           </div>
-                          <div class="col-7 my-auto">
-                            <div class="card">
+                          <div class="col-7 my-auto text-center">
+                            <div class="card" style="border-color: #f9cb9c;">
                               <div class="card-body text-center" style="font-size: 40px; color: #f9cb9c;">
-                                <div class="fw-bold" id="antrinonya2">BELUM DATANG</div>
+                                <div class="fw-bold" id="antrinonya2">-</div>
                                 <span style="font-size: 14px;"><b>SEDANG DILAYANI</b></span>
                               </div>
                             </div>
@@ -191,8 +190,8 @@
                 </div>
                 <div class="row">
                   <div class="col-6">
-                    <div class="card text-center h-100" style="background-color: #198754; color: white;">
-                      <div class="card-header h-100">
+                    <div class="card h-100" style="border-color: #198754;">
+                      <div class="card-header h-100 text-center" style="background-color: #198754; color: white;">
                         <div class="h4" id="nadokter3">Nadokter</div>
                       </div>
                       <div class="card-body">
@@ -200,10 +199,10 @@
                           <div class="col-5 my-auto">
                             <div id="noantrian_body3"></div>
                           </div>
-                          <div class="col-7 my-auto">
-                            <div class="card">
+                          <div class="col-7 my-auto text-center">
+                            <div class="card" style="border-color: #198754;">
                               <div class="card-body text-center" style="font-size: 40px; color: #198754;">
-                                <div class="fw-bold" id="antrinonya3">BELUM DATANG</div>
+                                <div class="fw-bold" id="antrinonya3">-</div>
                                 <span style="font-size: 14px;"><b>SEDANG DILAYANI</b></span>
                               </div>
                             </div>
@@ -213,8 +212,8 @@
                     </div>
                   </div>
                   <div class="col-6">
-                    <div class="card text-center h-100" style="background-color: #6c757d; color: white;">
-                      <div class="card-header h-100">
+                    <div class="card h-100" style="border-color: #6c757d;">
+                      <div class="card-header text-center h-100" style="background-color: #6c757d; color: white;">
                         <div class="h4" id="nadokter4">Nadokter</div>
                       </div>
                       <div class="card-body">
@@ -222,10 +221,10 @@
                           <div class="col-5 my-auto">
                             <div id="noantrian_body4"></div>
                           </div>
-                          <div class="col-7 my-auto">
-                            <div class="card">
+                          <div class="col-7 my-auto text-center">
+                            <div class="card" style="border-color: #6c757d;">
                               <div class="card-body" style="font-size: 40px; color: #6c757d;">
-                                <div class="fw-bold" id="antrinonya4">BELUM DATANG</div>
+                                <div class="fw-bold" id="antrinonya4">-</div>
                                 <span style="font-size: 14px;"><b>SEDANG DILAYANI</b></span>
                               </div>
                             </div>
@@ -339,7 +338,21 @@
     </div>
   </div>
 
+
+  <!-- modal -->
   <script type="text/javascript">
+    function modalx() {
+      $("#bodyx").css("filter", "blur(10px)");
+      $("#modal-config").show();
+    }
+
+    function tutup() {
+      $("#bodyx").css("filter", "none");
+      $("#modal-config").hide();
+      var vid = document.getElementById("videonya");
+      vid.play();
+    }
+    
     var idrow = <?= $jum_display + 1; ?>;
     var rowCount;
     var arr = [1];
@@ -365,54 +378,62 @@
         url: "<?= site_url('Display/hapusbaris/'); ?>"+id_display,
         type: "POST",
         dataType: "JSON",
+        success: function(data){
+          if(data.status == 1){
+            location.href = "<?= site_url('Display') ?>";
+          } else {
+            location.href = "<?= site_url('Display') ?>";
+          }
+        }
       });
     }
+  </script>
 
+
+  <!-- realtime -->
+  <script>
     function pilih(param){
-      // alert(param);
       var vid = document.getElementById("videonya");
       vid.play();
       $("#id_display").val(param);
-      var table = document.getElementById('datatable');
-      var rowCount = table.rows.length;
-      for (var i = 1; i < rowCount; i++) {
-        var row = table.rows[i];
-        var nama = row.cells[1].children[0].value;
-        var kodokter1 = row.cells[2].children[0].value;
-        var kodokter2 = row.cells[3].children[0].value;
-        var kodokter3 = row.cells[4].children[0].value;
-        var kodokter4 = row.cells[5].children[0].value;
-
-        var cek = "?nama="+nama+"&kodokter1="+kodokter1+"&kodokter2="+kodokter2+"&kodokter3="+kodokter3+"&kodokter4="+kodokter4;
-        getnomor(cek);
-      }
+      var nama = $("#nama_display"+param).val();
+      var kodokter1 = $("#dokter1_"+param).val();
+      var kodokter2 = $("#dokter2_"+param).val();
+      var kodokter3 = $("#dokter3_"+param).val();
+      var kodokter4 = $("#dokter4_"+param).val();
+      var cek = "?nama="+nama+"&kodokter1="+kodokter1+"&kodokter2="+kodokter2+"&kodokter3="+kodokter3+"&kodokter4="+kodokter4;
+      getnomor(cek);
     }
 
     function getnomor(cek){
       var id = $("#id_display").val();
       $.ajax({
-          url: "<?= site_url('Display/set_dokter/'); ?>"+id+cek,
-          data: $('#form-dokter').serialize(),
-          type: "POST",
-          dataType: "JSON",
-          success: function(data){
-            tutup();
-            $("#tampil_nama_display").text(data.nama_display);
-            $("#tampil_nama_display").css("font-weight", "bold");
-            $("#nadokter1").text(data.nadokter1);
-            $("#nadokter2").text(data.nadokter2);
-            $("#nadokter3").text(data.nadokter3);
-            $("#nadokter4").text(data.nadokter4);
-            $("#kodokterp1").val(data.kodokter1);
-            $("#kodokterp2").val(data.kodokter2);
-            $("#kodokterp3").val(data.kodokter3);
-            $("#kodokterp4").val(data.kodokter4);
-            no_sekarang();
-            get_noantri();
-            setInterval(no_sekarang, 1000);
-            setInterval(get_noantri, 1000);
-          }
-        });
+        url: "<?= site_url('Display/set_dokter/'); ?>"+id+cek,
+        data: $('#form-dokter').serialize(),
+        type: "POST",
+        dataType: "JSON",
+        success: function(data){
+          tutup();
+          $("#tampil_nama_display").text(data.nama_display);
+          $("#tampil_nama_display").css("font-weight", "bold");
+          $("#nadokter1").text(data.nadokter1);
+          $("#nadokter2").text(data.nadokter2);
+          $("#nadokter3").text(data.nadokter3);
+          $("#nadokter4").text(data.nadokter4);
+          $("#kodokterp1").val(data.kodokter1);
+          $("#kodokterp2").val(data.kodokter2);
+          $("#kodokterp3").val(data.kodokter3);
+          $("#kodokterp4").val(data.kodokter4);
+          no_sekarang();
+          get_noantri();
+          get_audio();
+          set_audio();
+          setInterval(no_sekarang, 1000);
+          setInterval(get_noantri, 1000);
+          setInterval(get_audio, 1000);
+          setTimeout(set_audio, 1000);
+        }
+      });
     }
 
     function get_noantri() {
@@ -420,6 +441,8 @@
       var kodokter2 = $("#kodokterp2").val();
       var kodokter3 = $("#kodokterp3").val();
       var kodokter4 = $("#kodokterp4").val();
+
+      // kolom dokter 1
       var param1 = kodokter1;
       xhttp = new XMLHttpRequest();
       xhttp.onreadystatechange = function() {
@@ -430,6 +453,7 @@
       xhttp.open("GET", "<?php echo base_url(); ?>Display/noantrian1/" + param1, true);
       xhttp.send();
 
+      // kolom dokter 2
       var param2 = kodokter2;
       xhttp = new XMLHttpRequest();
       xhttp.onreadystatechange = function() {
@@ -440,6 +464,7 @@
       xhttp.open("GET", "<?php echo base_url(); ?>Display/noantrian2/" + param2, true);
       xhttp.send();
 
+      // kolom dokter 3
       var param3 = kodokter3;
       xhttp = new XMLHttpRequest();
       xhttp.onreadystatechange = function() {
@@ -450,6 +475,7 @@
       xhttp.open("GET", "<?php echo base_url(); ?>Display/noantrian3/" + param3, true);
       xhttp.send();
 
+      // kolom dokter 4
       var param4 = kodokter4;
       xhttp = new XMLHttpRequest();
       xhttp.onreadystatechange = function() {
@@ -460,22 +486,6 @@
       xhttp.open("GET", "<?php echo base_url(); ?>Display/noantrian4/" + param4, true);
       xhttp.send();
     };
-  </script>
-
-  <script>
-    function modalx() {
-      $("#bodyx").css("filter", "blur(10px)");
-      $("#modal-config").show();
-    }
-
-    function tutup() {
-      $("#bodyx").css("filter", "none");
-      $("#modal-config").hide();
-    }
-  </script>
-
-  <script>
-    modalx();
 
     function no_sekarang() {
       var id = $("#id_display").val();
@@ -484,13 +494,361 @@
         dataType: "JSON",
         data: {},
         success: function(x) {
-          console.log(x)
+          // console.log(x)
           document.getElementById('antrinonya1').innerHTML = x.antri1;
           document.getElementById('antrinonya2').innerHTML = x.antri2;
           document.getElementById('antrinonya3').innerHTML = x.antri3;
           document.getElementById('antrinonya4').innerHTML = x.antri4;
+          $("#noreg1").val(x.noreg1);
+          $("#noreg2").val(x.noreg2);
+          $("#noreg3").val(x.noreg3);
+          $("#noreg4").val(x.noreg4);
+          var param = "?noreg1="+x.noreg1+"&noreg2="+x.noreg2+"&noreg3="+x.noreg3+"&noreg4="+x.noreg4;
+          $.ajax({
+            url: "<?= site_url('Display/set_id/'); ?>"+id+param,
+            type: "POST",
+            dataType: "JSON",
+          });
         }
       });
+    }
+
+    function set_audio() {
+      var id = $("#id_display").val();
+      $.ajax({
+        url: "<?= site_url('Poliklinik/ubahpanggil/'); ?>" + id,
+        dataType: "JSON",
+        data: {},
+        // success: function(x) {
+        //   console.log(x)
+        // }
+      });
+    }
+  </script>
+
+  <!-- master and jam -->
+  <script>
+    modalx();
+    jam();
+
+    function jam() {
+      var e = document.getElementById('jam'),
+      d = new Date(), h, m, s;
+      h = d.getHours();
+      m = set(d.getMinutes());
+      s = set(d.getSeconds());
+      e.innerHTML = h +':'+ m +':'+ s;
+      setTimeout('jam()', 1000);
+    }
+    
+    function set(e) {
+      e = e < 10 ? '0'+ e : e;
+      return e;
+    }
+  </script>
+
+  <!-- panggil -->
+  <script>
+    function get_audio() {
+      var id = $("#id_display").val();
+      var noreg1 = $("#noreg1").val();
+      var noreg2 = $("#noreg2").val();
+      var noreg3 = $("#noreg3").val();
+      var noreg4 = $("#noreg4").val();
+      var param = "?noreg1="+noreg1+"&noreg2="+noreg2+"&noreg3="+noreg3+"&noreg4="+noreg4+"&id="+id;
+      $.ajax({
+        url: "<?= site_url('Display/panggil/'); ?>"+param,
+        type: "POST",
+        dataType: "JSON",
+        success: function(data){
+          console.log(data);
+          kodepos = data.kodepos;
+          antrino1 = data.antrino1;
+          antrino = data.antrino;
+          sebut = data.sebut;
+          noreg = data.noreg;
+          if(data.status == 1){
+            playAudio(kodepos, antrino1, antrino, sebut, noreg);
+          } else {
+            matikan_audio(noreg);
+          }
+        }
+      });
+    }
+
+    function matikan_audio(noreg){
+      $.ajax({
+        url: "<?= site_url('Display/matikan/'); ?>"+noreg,
+        type: "POST",
+        dataType: "JSON",
+        // success: function(data){
+          // console.log(data)
+        // }
+      });
+    }
+
+    function alltrim(kata) {
+      b = (kata.split(' ').join(''));
+      c = (b.replace(/\s/g, ""));
+      return c
+    }
+
+    function playAudio(kodepos = "Z", noantri1 = "Z", antriangka = "", noantri = "satu", noreg) {
+      var bel = new Audio('audio/bell_long.wav');
+      var bel2 = new Audio('audio/nomor_antrian.wav');
+      var belh = new Audio('audio/' + noantri1 + '.wav');
+      var bel4 = new Audio('audio/belas.wav');
+      var bel5 = new Audio('audio/puluh.wav');
+      var bel7 = new Audio('audio/ratus.wav');
+      var to = new Audio('audio/silakan_menuju_ke.wav');
+      var poli = new Audio('audio/poli.wav');
+
+      if (kodepos == 'pumum') {
+        var cek_pol = new Audio('audio/umum.wav');
+      } else if (kodepos == 'pgigi') {
+        var cek_pol = new Audio('audio/gigi.wav');
+      } else if (kodepos == 'bidan') {
+        var cek_pol = new Audio('audio/ibu_dan_anak.wav');
+      } else if (kodepos == 'farmasi') {
+        var cek_pol = new Audio('audio/customer_service.wav');
+      } else if (kodepos == 'ugd') {
+        var cek_pol = new Audio('audio/customer_service.wav');
+      } else {
+        var cek_pol = new Audio('audio/umum.wav');
+      }
+      totalwaktu = 0;
+
+      setTimeout(function() {
+        bel.pause();
+        bel.currentTime = 0;
+        bel.play();
+      }, totalwaktu);
+      totalwaktu = totalwaktu + 1500;
+      setTimeout(function() {
+        bel2.pause();
+        bel2.currentTime = 0;
+        bel2.play();
+      }, totalwaktu);
+      totalwaktu = totalwaktu + 1500;
+      setTimeout(function() {
+        belh.pause();
+        belh.currentTime = 0;
+        belh.play();
+      }, totalwaktu);
+      totalwaktu = totalwaktu + 1000;
+      if (antriangka <= 11 || antriangka == 100) {
+        var bel3 = new Audio('audio/' + noantri + '.wav');
+        setTimeout(function() {
+          bel3.pause();
+          bel3.currentTime = 0;
+          bel3.play();
+        }, totalwaktu);
+        totalwaktu = totalwaktu + 1500;
+      } else if (antriangka > 11 && antriangka < 20) {
+        noantri2 = alltrim(noantri.split("belas").join(""));
+        var bel3 = new Audio('audio/' + noantri2 + '.wav');
+        setTimeout(function() {
+          bel3.pause();
+          bel3.currentTime = 0;
+          bel3.play();
+        }, totalwaktu);
+        totalwaktu = totalwaktu + 1000;
+        setTimeout(function() {
+          bel4.pause();
+          bel4.currentTime = 0;
+          bel4.play();
+        }, totalwaktu);
+        totalwaktu = totalwaktu + 1000;
+      } else if (antriangka == 20 || antriangka == 30 || antriangka == 40 || antriangka == 50 || antriangka == 60 || antriangka == 70 || antriangka == 80 || antriangka == 90) {
+        noantri2 = alltrim(noantri.split("puluh").join(""));
+        var bel3 = new Audio('audio/' + noantri2 + '.wav');
+        setTimeout(function() {
+          bel3.pause();
+          bel3.currentTime = 0;
+          bel3.play();
+        }, totalwaktu);
+        totalwaktu = totalwaktu + 1000;
+        // belas
+        setTimeout(function() {
+          bel5.pause();
+          bel5.currentTime = 0;
+          bel5.play();
+        }, totalwaktu);
+        totalwaktu = totalwaktu + 1000;
+      } else if (antriangka > 20 && antriangka < 100 && antriangka != 20 && antriangka != 30 && antriangka != 40 && antriangka != 50 && antriangka != 60 && antriangka != 70 && antriangka != 80 && antriangka != 90) {
+        noantri2 = alltrim(noantri.split("puluh").join("-"));
+        $dat = noantri2.split("-");
+        $bel3 = $dat[0];
+        $bel6 = $dat[1];
+        var bel3 = new Audio('audio/' + $bel3 + '.wav');
+        var bel6 = new Audio('audio/' + $bel6 + '.wav');
+        setTimeout(function() {
+          bel3.pause();
+          bel3.currentTime = 0;
+          bel3.play();
+        }, totalwaktu);
+        totalwaktu = totalwaktu + 1000;
+        // puluh
+        setTimeout(function() {
+          bel5.pause();
+          bel5.currentTime = 0;
+          bel5.play();
+        }, totalwaktu);
+        totalwaktu = totalwaktu + 1000;
+        setTimeout(function() {
+          bel6.pause();
+          bel6.currentTime = 0;
+          bel6.play();
+        }, totalwaktu);
+        totalwaktu = totalwaktu + 1000;
+      } else if (antriangka <= 110 || antriangka == 111) {
+        noantri2 = alltrim(noantri.split("seratus").join(""));
+        var bel3 = new Audio('audio/seratus.wav');
+        var bel4 = new Audio('audio/' + noantri2 + '.wav');
+        setTimeout(function() {
+          bel3.pause();
+          bel3.currentTime = 0;
+          bel3.play();
+        }, totalwaktu);
+        totalwaktu = totalwaktu + 1000;
+        setTimeout(function() {
+          bel4.pause();
+          bel4.currentTime = 0;
+          bel4.play();
+        }, totalwaktu);
+        totalwaktu = totalwaktu + 1000;
+      } else if (antriangka > 111 && antriangka < 120) {
+        noantri2 = alltrim(noantri.split("seratus").join(""));
+        noantri3 = alltrim(noantri2.split("belas").join(""));
+        var bel3 = new Audio('audio/seratus.wav');
+        var bel11 = new Audio('audio/' + noantri3 + '.wav');
+        setTimeout(function() {
+          bel3.pause();
+          bel3.currentTime = 0;
+          bel3.play();
+        }, totalwaktu);
+        totalwaktu = totalwaktu + 1000;
+        setTimeout(function() {
+          bel11.pause();
+          bel11.currentTime = 0;
+          bel11.play();
+        }, totalwaktu);
+        totalwaktu = totalwaktu + 1000;
+        setTimeout(function() {
+          bel4.pause();
+          bel4.currentTime = 0;
+          bel4.play();
+        }, totalwaktu);
+        totalwaktu = totalwaktu + 1000;
+      } else if (antriangka > 120 && antriangka < 200) {
+        noantri2 = alltrim(noantri.split("seratus").join(""));
+        noantri3 = alltrim(noantri2.split("puluh").join("-"));
+        $dat = noantri3.split("-");
+        $bel8 = $dat[0];
+        $bel9 = $dat[1];
+
+        var bel3 = new Audio('audio/seratus.wav');
+        var bel8 = new Audio('audio/' + $bel8 + '.wav');
+        var bel9 = new Audio('audio/' + $bel9 + '.wav');
+
+        // seratus
+        setTimeout(function() {
+          bel3.pause();
+          bel3.currentTime = 0;
+          bel3.play();
+        }, totalwaktu);
+        totalwaktu = totalwaktu + 1000;
+
+        setTimeout(function() {
+          bel8.pause();
+          bel8.currentTime = 0;
+          bel8.play();
+        }, totalwaktu);
+        totalwaktu = totalwaktu + 1000;
+        // puluh
+        setTimeout(function() {
+          bel5.pause();
+          bel5.currentTime = 0;
+          bel5.play();
+        }, totalwaktu);
+        totalwaktu = totalwaktu + 1000;
+        setTimeout(function() {
+          bel9.pause();
+          bel9.currentTime = 0;
+          bel9.play();
+        }, totalwaktu);
+        totalwaktu = totalwaktu + 1000;
+
+      } else if (antriangka > 200) {
+
+        noantri2 = alltrim(noantri.split("ratus").join("-"));
+        noantri3 = alltrim(noantri2.split("puluh").join("-"));
+        $dat = noantri3.split("-");
+        $bel3 = $dat[0];
+        $bel8 = $dat[1];
+        $bel9 = $dat[2];
+
+        var bel3 = new Audio('audio/' + $bel3 + '.wav');
+        var bel8 = new Audio('audio/' + $bel8 + '.wav');
+        var bel9 = new Audio('audio/' + $bel9 + '.wav');
+
+        // seratus
+        setTimeout(function() {
+          bel3.pause();
+          bel3.currentTime = 0;
+          bel3.play();
+        }, totalwaktu);
+        totalwaktu = totalwaktu + 1000;
+        // seratus
+        setTimeout(function() {
+          bel7.pause();
+          bel7.currentTime = 0;
+          bel7.play();
+        }, totalwaktu);
+        totalwaktu = totalwaktu + 1000;
+
+        setTimeout(function() {
+          bel8.pause();
+          bel8.currentTime = 0;
+          bel8.play();
+        }, totalwaktu);
+        totalwaktu = totalwaktu + 1000;
+        // puluh
+        setTimeout(function() {
+          bel5.pause();
+          bel5.currentTime = 0;
+          bel5.play();
+        }, totalwaktu);
+        totalwaktu = totalwaktu + 1000;
+        setTimeout(function() {
+          bel9.pause();
+          bel9.currentTime = 0;
+          bel9.play();
+        }, totalwaktu);
+        totalwaktu = totalwaktu + 1000;
+      }
+      setTimeout(function() {
+        to.pause();
+        to.currentTime = 0;
+        to.play();
+      }, totalwaktu);
+      totalwaktu = totalwaktu + 1700;
+
+      setTimeout(function() {
+        poli.pause();
+        poli.currentTime = 0;
+        poli.play();
+      }, totalwaktu);
+      totalwaktu = totalwaktu + 1000;
+
+      setTimeout(function() {
+        cek_pol.pause();
+        cek_pol.currentTime = 0;
+        cek_pol.play();
+      }, totalwaktu);
+      totalwaktu = totalwaktu + 1500;
+
+      return matikan_audio(noreg);
     }
   </script>
 

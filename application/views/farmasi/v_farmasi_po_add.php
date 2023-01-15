@@ -228,7 +228,7 @@ $this->load->view('template/body');
                                                 </td>
                                                 <td>
                                                     <!-- <select name="kode[]" id="kode1" onclick="cekbarangx(1)" class="form-control input-largex" onchange="showbarangname(this.value, 1)"></select> -->
-                                                    <select name="kode[]" id="kode1" class=" form-control input-largex" onchange="showbarangname(this.value, 1)"></select>
+                                                    <select name="kode[]" id="kode1" class=" form-control input-largex select2_el_farmasi_barangdata" onchange="showbarangname(this.value, 1)"></select>
                                                 </td>
 
                                                 <!-- <td>

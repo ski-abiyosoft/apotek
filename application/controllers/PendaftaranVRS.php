@@ -13,7 +13,12 @@ class PendaftaranVRS extends CI_Controller {
 		$this->session->set_userdata('menuapp', '2000');
 		$this->session->set_userdata('submenuapp', '2105');
 		$this->load->helper('simkeu_nota1');		
-		$this->load->helper('simkeu_nota');		
+		$this->load->helper('simkeu_nota');	
+		
+		$user   = $this->session->userdata("username");
+		if(empty($user)){
+			redirect("/app/logout");
+		}
 	}
 
 	public function index(){
@@ -169,11 +174,11 @@ class PendaftaranVRS extends CI_Controller {
 			$row[] = $status;
 			if($unit->keluar == 0 && $unit->batal == 0){			
 			  $row[] = 
-					'<a class="btn btn-sm btn-primary" href="'.base_url("pendaftaranVRS/edit_igd/".$unit->id."").'" title="Edit" ><i class="glyphicon glyphicon-edit"></i> </a> 				  
-					<a class="btn btn-sm btn-warning" href="'.base_url("pendaftaranVRS/cetak_igd2/?noreg=".$unit->noreg."").'" target="_blank" title="Cetak" ><i class="glyphicon glyphicon-print"></i></a>				   
-					<a class="btn btn-sm btn-success" href="javascript:void(0)" title="Kirim Email" onclick="send_email('."'".$unit->id."'".",'".$email."'".')"><i class="glyphicon glyphicon-envelope"></i> </a>
-					<a class="btn btn-sm btn-success" href="javascript:void(0)" title="Kirim Whatsapp" onclick="send_wa('."'".$unit->id."'".",'".$hp."'".')"><i class="fa fa-whatsapp"></i> </a>
-					<a class="btn btn-sm btn-danger" href="javascript:void(0)" title="Batalkan" onclick="Batalkan('."'".$unit->id."'".",'igd'".')"><i class="glyphicon glyphicon-remove"></i> </a>';
+					'<div class="text-center"><a class="btn btn-sm btn-primary" href="'.base_url("pendaftaranVRS/edit_igd/".$unit->id."").'" title="Edit" style="margin-bottom: 5px;"><i class="glyphicon glyphicon-edit"></i> </a> 				  
+					<a class="btn btn-sm btn-warning" href="'.base_url("pendaftaranVRS/cetak_igd2/?noreg=".$unit->noreg."").'" target="_blank" title="Cetak"  style="margin-bottom: 5px;"><i class="glyphicon glyphicon-print"></i></a>				   
+					<a class="btn btn-sm btn-success" href="javascript:void(0)" title="Kirim Email" onclick="send_email('."'".$unit->id."'".",'".$email."'".')" style="margin-bottom: 5px;"><i class="glyphicon glyphicon-envelope"></i> </a>
+					<a class="btn btn-sm btn-success" href="javascript:void(0)" title="Kirim Whatsapp" onclick="send_wa('."'".$unit->id."'".",'".$hp."'".')" style="margin-bottom: 5px;"><i class="fa fa-whatsapp"></i> </a>
+					<a class="btn btn-sm btn-danger" href="javascript:void(0)" title="Batalkan" onclick="Batalkan('."'".$unit->id."'".",'igd'".')" style="margin-bottom: 5px;"><i class="glyphicon glyphicon-remove"></i> </a></div>';
 			} else {
 			  $row[] = '';	
 			}
@@ -480,93 +485,156 @@ class PendaftaranVRS extends CI_Controller {
 		}
 	}
 	
-	function tambah_pasien_register_igd(){
-		$cabang = $this->session->userdata('unit');
-		$poli = 'PUGD';
-		$mjkn_token = $this->input->post('booking');
-		$dokter = $this->input->post('dokter');
-		$noreg = urut_transaksi('REGISTRASI', 16);
-		$ruang = $this->input->post('ruang');
-		$antrino = $this->input->post('antrino');
-		$tanggal = $this->input->post('tanggal');
-		$jam = $this->input->post('jam');
-		$pengirim = $this->input->post('pengirim');
-		$norm = $this->input->post('norm');
-		$username = $this->session->userdata('username');
-		$jenispasien = $this->input->post('jenispasien');
-		$penjamin = $this->input->post('vpenjamin');
-		$nocard = $this->input->post('nocard');
-		$norujukan = $this->input->post('norujukan');
-		$nosep = $this->input->post('nosep');
-		$tujuan = 1;
-		$kelas = '';
-		$baru = 1;
-		$keluar = 0;
-		// $tglkeluar;
-		$jamkeluar = '';
-		$shipt = 0;
-		$batal = 0;
-		$batalkarena = '';
-		$diperiksa_perawat = 0;
+	function edit_pasien_register_igd(){
+		$noreg           			= $this->input->post('noreg');
+		$cabang               = $this->session->userdata('unit');
+		$poli                 = "PUGD";
+		$mjkn_token           = $this->input->post('booking');
+		$dokter               = $this->input->post('dokter');
+		$ruang                = $this->input->post('ruang');
+		$antrino1             = null;
+		$antrino              = null;
+		$tanggal              = $this->input->post('tanggal');
+		$jam                  = $this->input->post('jam');
+		$pengirim             = $this->input->post('pengirim');
+		$norm                 = $this->input->post('norm');
+		$username             = $this->session->userdata('username');
+		$jenispasien          = $this->input->post('jenispasien');
+		$penjamin             = $this->input->post('vpenjamin');
+		$nocard               = $this->input->post('nocard');
+		$norujukan            = $this->input->post('norujukan');
+		$nosep                = $this->input->post('nosep');
+		$tujuan               = 1;
+		$kelas                = '';
+		$keluar               = 0;
+		$jamkeluar            = '';
+		$shipt                = 0;
+		$batal                = 0;
+		$batalkarena          = '';
+		$diperiksa_perawat    = 0;
+
 		if($jenispasien == 'PAS1'){
-			$cust = '';
-			$bpjs = null;
+			$cust    = '';
+			$bpjs    = null;
 			$rujukan = null;
-			$sep = null;
+			$sep     = null;
 		} else {
-			$cust = $penjamin;
-			$bpjs = $nocard;
+			$cust    = $penjamin;
+			$bpjs    = $nocard;
 			$rujukan = $norujukan;
-			$sep = $nosep;
+			$sep     = $nosep;
 		}
-		$cek = $this->db->query('select * from tbl_regist where rekmed = "'.$norm.'" and keluar = 0')->row_array();
-		if($cek){
-			$this->db->set('username', $username);
-			$this->db->set('koders', $cabang);
-			$this->db->set('mjkn_token', $mjkn_token);
-			$this->db->set('kodokter', $dokter);
-			$this->db->set('koderuang', $ruang);
-			$this->db->set('tujuan', $tujuan);
-			$this->db->set('kodepos', $poli);
-			$this->db->set('baru', $baru);
-			$this->db->set('antrino', $antrino);
-			$this->db->set('tglmasuk', $tanggal);
-			$this->db->set('tglmasuk', $tanggal);
-			$this->db->set('jam', $jam);
-			$this->db->set('drpengirim', $pengirim);
-			$this->db->set('jenispas', $jenispasien);
-			$this->db->set('cust_id', $cust);
-			$this->db->set('nobpjs', $bpjs);
-			$this->db->set('norujukan', $rujukan);
-			$this->db->set('nosep', $sep);
-			$this->db->where('keluar', 0);
-			$this->db->where('rekmed', $cek['rekmed']);
-			$this->db->update('tbl_regist');
-			echo json_encode(['status' => 1]);
+		$dataregist = [
+			'username'    => $username,
+			'mjkn_token'  => $mjkn_token,
+			'rekmed'      => $norm,
+			'kodokter'    => $dokter,
+			'koderuang'   => $ruang,
+			'tujuan'      => $tujuan,
+			'kodepos'     => $poli,
+			'antrino'     => $antrino,
+			'antrino1'    => $antrino1,
+			'tglmasuk'    => $tanggal,
+			'jam'         => $jam,
+			'drpengirim'  => $pengirim,
+			'jenispas'    => $jenispasien,
+			'cust_id'     => $cust,
+			'nobpjs'      => $bpjs,
+			'norujukan'   => $rujukan,
+			'nosep'       => $sep,
+			'koders'      => $cabang,
+		];
+		$where = [
+			'noreg' => $noreg
+		];
+		$this->db->update('tbl_regist', $dataregist, $where);
+		history_log(0 ,'REGISTRASI_RAJAL' ,'SAVE' ,$noreg ,'-');
+		echo json_encode(['status' => 0, 'noreg' => $noreg]);
+	}
+
+	function tambah_pasien_register_igd(){
+		$cabang               = $this->session->userdata('unit');
+		$poli                 = "PUGD";
+		$mjkn_token           = $this->input->post('booking');
+		$dokter               = $this->input->post('dokter');
+		$ruang                = $this->input->post('ruang');
+		$antrino1             = null;
+		$antrino              = null;
+		$tanggal              = $this->input->post('tanggal');
+		$jam                  = $this->input->post('jam');
+		$pengirim             = $this->input->post('pengirim');
+		$norm                 = $this->input->post('norm');
+		$username             = $this->session->userdata('username');
+		$jenispasien          = $this->input->post('jenispasien');
+		$penjamin             = $this->input->post('vpenjamin');
+		$nocard               = $this->input->post('nocard');
+		$norujukan            = $this->input->post('norujukan');
+		$nosep                = $this->input->post('nosep');
+		$tujuan               = 1;
+		$kelas                = '';
+		$cek_baru = $this->db->query("SELECT * FROM tbl_regist WHERE rekmed = '$norm'")->num_rows();
+		if($Cek_baru > 0){
+			$baru               = 0;
 		} else {
+			$baru               = 1;
+		}
+		$keluar               = 0;
+		$jamkeluar            = '';
+		$shipt                = 0;
+		$batal                = 0;
+		$batalkarena          = '';
+		$diperiksa_perawat    = 0;
+
+		if($jenispasien == 'PAS1'){
+			$cust    = '';
+			$bpjs    = null;
+			$rujukan = null;
+			$sep     = null;
+		} else {
+			$cust    = $penjamin;
+			$bpjs    = $nocard;
+			$rujukan = $norujukan;
+			$sep     = $nosep;
+		}
+		
+		$noreg = urut_transaksi('REGISTRASI', 16);
+		
+		$cekdata=$this->db->query("SELECT * from tbl_pasien where rekmed = '$norm'")->row();
+		if($cekdata->ada==1){
+			echo json_encode(['status' => 2, 'noreg' => $noreg, 'nm' => $cekdata->namapas]);			
+		}else{
 			$dataregist = [
-				'username' => $username,
-				'mjkn_token' => $mjkn_token,
-				'rekmed' => $norm,
-				'noreg' => $noreg,
-				'kodokter' => $dokter,
-				'koderuang' => $ruang,
-				'tujuan' => $tujuan,
-				'kodepos' => $poli,
-				'baru' => $baru,
-				'antrino' => $antrino,
-				'tglmasuk' => $tanggal,
-				'jam' => $jam,
-				'drpengirim' => $pengirim,
-				'jenispas' => $jenispasien,
-				'cust_id' => $cust,
-				'nobpjs' => $bpjs,
-				'norujukan' => $rujukan,
-				'nosep' => $sep,
-				'koders' => $cabang,
+				'username'    => $username,
+				'mjkn_token'  => $mjkn_token,
+				'rekmed'      => $norm,
+				'noreg'       => $noreg,
+				'kodokter'    => $dokter,
+				'koderuang'   => $ruang,
+				'tujuan'      => $tujuan,
+				'kodepos'     => $poli,
+				'baru'        => $baru,
+				'antrino'     => $antrino,
+				'antrino1'    => $antrino1,
+				'tglmasuk'    => $tanggal,
+				'jam'         => $jam,
+				'drpengirim'  => $pengirim,
+				'jenispas'    => $jenispasien,
+				'cust_id'     => $cust,
+				'nobpjs'      => $bpjs,
+				'norujukan'   => $rujukan,
+				'nosep'       => $sep,
+				'koders'      => $cabang,
 			];
 			$this->db->insert('tbl_regist', $dataregist);
-			echo json_encode(['status' => 0]);
+			$this->db->set('lastnoreg', $noreg);
+			if($nocard != '' || $nocard != null){
+				$this->db->set('nocard', $nocard);
+			}
+			$this->db->set('ada', 1);
+			$this->db->where('rekmed', $norm);
+			$this->db->update('tbl_pasien');
+			history_log(0 ,'REGISTRASI_RAJAL' ,'SAVE' ,$noreg ,'-');
+			echo json_encode(['status' => 0, 'noreg' => $noreg]);
 		}
 	}
 	// end igd add and regist
@@ -824,33 +892,42 @@ class PendaftaranVRS extends CI_Controller {
 		}
 	}
 
-	public function pcare_rj(){
-		$cek        = $this->session->userdata("level");
-		$koders     = $this->session->userdata("unit");
-		$username   = $this->session->userdata("username");
-		$ceknoreg   = $this->input->get('noreg');
-		$rekmed     = $this->input->get('rekmed');
+	public function pcare_rj($noreg = ""){
+		$data   = [
+			"noreg"         => $noreg == "" ? "" : $noreg,
+			"pcare_poli"    => $this->db->get_where("bpjs_pcare_poli", ["poliSakit" => "1"]),
+			"pcare_dr"		=> $this->db->get("bpjs_pcare_dokter"),
+			"pcare_sp"		=> $this->db->get("bpjs_pcare_status_pulang"),
+			"pcare_sadar"   => $this->db->get("bpjs_pcare_kesadaran"),		
+		];
 
-		if(!isset($ceknoreg) || !isset($rekmed)){
-			$this->session->set_flashdata("error", "Sesi bridging berakhir, silahkan masuk kembali");
-			redirect(base_url("pendaftaranVRS"));
-		} else {
-			$cek = $this->session->userdata('username');
-			if(!empty($cek))
-			{
-				$data['pcare_poli']	= $this->db->get_where("bpjs_pcare_poli", ["poliSakit" => "1"]);
-				$data['ttv']= $this->db->query("SELECT * FROM tbl_rekammedisrs WHERE noreg = '$ceknoreg' and rekmed = '$rekmed' and koders='$koders'")->row();
-				$data['id'] = $ceknoreg;
-				$data['data_pas'] = $this->db->query("SELECT tbl_regist.*, tbl_pasien.namapas, tbl_pasien.noidentitas, tbl_pasien.idpas, tbl_pasien.jkel, tbl_pasien.handphone, tbl_pasien.preposisi, tbl_pasien.namapanggilan, tbl_pasien.namakeluarga, tbl_pasien.tempatlahir, tbl_pasien.tgllahir, tbl_pasien.status, tbl_pasien.wn, tbl_pasien.agama, tbl_pasien.pendidikan, tbl_pasien.goldarah, tbl_pasien.hoby, tbl_pasien.pekerjaan, tbl_pasien.alamat, tbl_pasien.rt, tbl_pasien.rw, tbl_pasien.alamat2, tbl_pasien.handphone, tbl_pasien.propinsi, tbl_pasien.phone, tbl_pasien.kabupaten, tbl_pasien.email, tbl_pasien.kecamatan, tbl_pasien.fb, tbl_pasien.ig, tbl_pasien.twit, tbl_pasien.kelurahan, tbl_pasien.kodepos as kdpos
-				from tbl_regist inner join tbl_pasien on tbl_regist.rekmed=tbl_pasien.rekmed
-				where tbl_regist.noreg = '$ceknoreg'")->row();
+		$this->load->view("pcare/index", $data);
+		// $cek        = $this->session->userdata("level");
+		// $koders     = $this->session->userdata("unit");
+		// $username   = $this->session->userdata("username");
+		// $ceknoreg   = $this->input->get('noreg');
+		// $rekmed     = $this->input->get('rekmed');
+
+		// if(!isset($ceknoreg) || !isset($rekmed)){
+		// 	$this->session->set_flashdata("error", "Sesi bridging berakhir, silahkan masuk kembali");
+		// 	redirect(base_url("pendaftaranVRS"));
+		// } else {
+		// 	$cek = $this->session->userdata('username');
+		// 	if(!empty($cek))
+		// 	{
+		// 		$data['pcare_poli']	= $this->db->get_where("bpjs_pcare_poli", ["poliSakit" => "1"]);
+		// 		$data['ttv']= $this->db->query("SELECT * FROM tbl_rekammedisrs WHERE noreg = '$ceknoreg' and rekmed = '$rekmed' and koders='$koders'")->row();
+		// 		$data['id'] = $ceknoreg;
+		// 		$data['data_pas'] = $this->db->query("SELECT tbl_regist.*, tbl_pasien.namapas, tbl_pasien.noidentitas, tbl_pasien.idpas, tbl_pasien.jkel, tbl_pasien.handphone, tbl_pasien.preposisi, tbl_pasien.namapanggilan, tbl_pasien.namakeluarga, tbl_pasien.tempatlahir, tbl_pasien.tgllahir, tbl_pasien.status, tbl_pasien.wn, tbl_pasien.agama, tbl_pasien.pendidikan, tbl_pasien.goldarah, tbl_pasien.hoby, tbl_pasien.pekerjaan, tbl_pasien.alamat, tbl_pasien.rt, tbl_pasien.rw, tbl_pasien.alamat2, tbl_pasien.handphone, tbl_pasien.propinsi, tbl_pasien.phone, tbl_pasien.kabupaten, tbl_pasien.email, tbl_pasien.kecamatan, tbl_pasien.fb, tbl_pasien.ig, tbl_pasien.twit, tbl_pasien.kelurahan, tbl_pasien.kodepos as kdpos
+		// 		from tbl_regist inner join tbl_pasien on tbl_regist.rekmed=tbl_pasien.rekmed
+		// 		where tbl_regist.noreg = '$ceknoreg'")->row();
 				
-				$this->load->view('PendaftaranVRS/v_pcare', $data);
-			} else
-			{
-				header('location:'.base_url());
-			}
-		}
+		// 		$this->load->view('PendaftaranVRS/v_pcare', $data);
+		// 	} else
+		// 	{
+		// 		header('location:'.base_url());
+		// 	}
+		// }
 	}
 	
 	function add_bridging()

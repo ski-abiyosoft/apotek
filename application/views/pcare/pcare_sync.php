@@ -75,7 +75,7 @@
         color: red;
     }
 
-    .row{
+    .flex-col-center {
         display: flex;
         flex-direction: column;
         align-items: center;
@@ -104,7 +104,7 @@
     }
 </style>
 
-<div class="row">
+<div class="row flex-col-center">
     <div class="col-md-12">
         <h3 class="page-title">
         <span class="title-unit">
@@ -129,7 +129,7 @@
             </li>
             <li>
                 <a href="">
-                    SInkronisasi Database
+                    Sinkronisasi Database
                 </a>
             </li>
         </ul>
@@ -149,7 +149,10 @@
                             <option value="5">5. Obat</option>
                             <option value="6">6. Tindakan</option>
                             <option value="7">7. Provider Rayonisasi</option>
-                            <option value="8">8. Spesialis dan Sarana Khusus</option>
+                            <option value="8">8. Spesialis</option>
+                            <option value="9">9. Subspesialis</option>
+                            <option value="10">10. Sarana</option>
+                            <option value="11">11. Penyakit Khusus</option>
                         </select>
                     </div>
                 </div>
@@ -198,7 +201,7 @@
             </div>
             <div class="modal-body">
                 <form id="master-obat-sync">
-                    <table class="table">
+                    <table class="table" id="obat-table">
                         <thead>
                             <tr class="breadcrumb">
                                 <th class="text-center title-white">Kode Obat</th>
@@ -315,8 +318,9 @@
                     url: ajaxUrl,
                     success: (data) => {
                         if (data) {
-                            $("#console").append(`<p>${data.count} data telah disinkronisasi.</p>`)
-                            $("#tindakan-body").empty()
+                            $("#console").append(`<p>${data.count} data ditemukan.</p>`)
+                            $("#obat-table").dataTable().fnDestroy()
+                            $("#obat-body").empty()
 
                             data.list.forEach((item) => {
                                 $("#obat-body").append(
@@ -340,6 +344,26 @@
                                 placeholder: "Pilih master obat",
                                 dropdownParent: $("#obat-modal")
                             })
+
+                            obat.forEach((item) => {
+                                var selectEl = $(`#${item.pcare_kdObat}`)
+
+                                if (selectEl) {
+                                    selectEl.val(item.kodebarang)
+                                    selectEl.trigger("change")
+                                }
+                            })
+
+                            $("#obat-table").dataTable({
+                                bLengthChange: false,
+                                iDisplayLength: 5,
+                                aoColumns: [
+                                    {bSearchable: true},
+                                    {bSearchable: true},
+                                    {bSearchable: false},
+                                ]
+                            })
+
                             $("#obat-modal").modal("show")
                         }else {
                             swal({
@@ -359,6 +383,7 @@
                     success: (data) => {
                         if (data) {
                             $("#console").append(`<p>${data.count} data telah disinkronisasi.</p>`)
+                            $("#tindakan-table").dataTable().fnDestroy()
                             $("#tindakan-body").empty()
 
                             data.list.forEach((item) => {
@@ -383,13 +408,27 @@
                                 placeholder: "Pilih master tindakan",
                                 dropdownParent: $("#tindakan-modal")
                             })
-                            $(document).on('select2:close', '.my-select2', function (e) {
-                                var evt = "scroll.select2"
-                                $(e.target).parents().off(evt)
-                                $(window).off(evt)
+
+                            tindakan.forEach((item) => {
+                                var selectEl = $(`#${item.pcare_kdTindakan}`)
+
+                                if (selectEl) {
+                                    selectEl.val(item.kodetarif)
+                                    selectEl.trigger("change")
+                                }
                             })
+
+                            $("#tindakan-table").dataTable({
+                                bLengthChange: false,
+                                iDisplayLength: 5,
+                                aoColumns: [
+                                    {bSearchable: true},
+                                    {bSearchable: true},
+                                    {bSearchable: false},
+                                ]
+                            })
+
                             $("#tindakan-modal").modal("show")
-                            $("#tindakan-table").dataTable()
                         }else {
                             swal({
                                 type: "error",
@@ -434,10 +473,35 @@
 
     function sync_obat () {
         $.ajax({
-            url: `<?= base_url("pcare_sync/update_master") ?>`,
+            url: `<?= base_url("pcare_sync/update_master_obat") ?>`,
             type: "POST",
             dataType: "json",
             data: $("#master-obat-sync").serialize(),
+            success: (data) => {
+                if (data.status) {
+                    swal({
+                        type: "success",
+                        title: "Berhasil",
+                        html: "Data berhasil disimpan"
+                    })
+                }
+            },
+            error: (jqXHR, textStatus, errorThrown) => {
+                swal({
+                    type: "error",
+                    title: "Gagal",
+                    html: `${textStatus} - ${errorThrown}`
+                })
+            }
+        })
+    }
+
+    function sync_tindakan () {
+        $.ajax({
+            url: `<?= base_url("pcare_sync/update_master_tindakan") ?>`,
+            type: "POST",
+            dataType: "json",
+            data: $("#master-tindakan-sync").serialize(),
             success: (data) => {
                 if (data.status) {
                     swal({

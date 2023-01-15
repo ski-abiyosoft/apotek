@@ -157,12 +157,16 @@ $this->load->view('template/body');
                   <div class="col-md-6">
                     <table id="datatable_unit" class="table table-hoverx table-stripedx table-borderedx table-condensed table-scrollable">
                       <thead class="page-breadcrumb breadcrumb">
+                        <th class="title-white" style="text-align: center; width: 5%;">Hapus</th>
                         <th class="title-white" style="text-align: center">Unit Praktek</th>
                       </thead>
                       <tbody>
                         <?php $no = 1;
                         foreach ($kopoli as $k) : ?>
                           <tr id="unitrow_<?= $no; ?>">
+                            <td>
+                              <button type='button' onclick='hapusBarisIni(<?= $no; ?>);' class='btn red'><i class='fa fa-trash-o'></i></button>
+                            </td>
                             <td>
                               <input type="hidden" id="unit<?= $no; ?>" name="unit[]" value="<?= $k->kopoli; ?>">
                               <select name="unit1[]" id="unit1<?= $no; ?>" class="select2_el_poli form-control input-largex" disabled>
@@ -186,12 +190,16 @@ $this->load->view('template/body');
                   <div class="col-md-6">
                     <table id="datatable_lokasi" class="table table-hoverx table-stripedx table-borderedx table-condensed table-scrollable">
                       <thead class="page-breadcrumb breadcrumb">
+                        <th class="title-white" style="text-align: center; width: 5%;">Hapus</th>
                         <th class="title-white" style="text-align: center">Lokasi Praktek</th>
                       </thead>
                       <tbody>
                         <?php $no = 1;
                         foreach ($drcabang as $dc) : ?>
                           <tr id="lokasirow_<?= $no; ?>">
+                            <td>
+                              <button type='button' onclick='hapusBarisIni_l(<?= $no; ?>);' class='btn red'><i class='fa fa-trash-o'></i></button>
+                            </td>
                             <td>
                               <input type="hidden" id="lokasi<?= $no; ?>" name="lokasi[]" value="<?= $dc->koders; ?>">
                               <select name="lokasi1[]" id="lokasi1<?= $no; ?>" class="select2_el_cabang_all form-control input-largex" disabled>
@@ -251,23 +259,33 @@ $this->load->view('template/footer');
   var rowCount;
   var arr = [1];
 
-  function hapusBaris_unit() {
-    if (idrow > 2) {
-      var x = document.getElementById('datatable_unit').deleteRow(idrow - 1);
-      idrow--;
-    }
-  }
+  // function hapusBaris_unit() {
+  //   if (idrow > 2) {
+  //     var x = document.getElementById('datatable_unit').deleteRow(idrow - 1);
+  //     idrow--;
+  //   }
+  // }
 
   function tambah_unit() {
     var table = document.getElementById('datatable_unit');
     rowCount = table.rows.length;
     arr.push(idrow);
+
     var x = document.getElementById('datatable_unit').insertRow(rowCount);
+
     var td1 = x.insertCell(0);
-    var unit = "<select name='unit[]'  id='unit" + idrow + "' class='select2_el_poli form-control'></select>";
-    td1.innerHTML = unit;
+    var td2 = x.insertCell(1);
+
+    td1.innerHTML = "<button type='button' onclick='hapusBarisIni("+idrow+");' class='btn red'><i class='fa fa-trash-o'></i></button>";
+    td2.innerHTML = "<select name='unit[]'  id='unit" + idrow + "' class='select2_el_poli form-control'></select>";
+
     initailizeSelect2_poli();
+
     idrow++;
+  }
+
+  function hapusBarisIni(param) {
+    $("#unitrow_" + param).remove();
   }
 
   // lokasi
@@ -286,12 +304,22 @@ $this->load->view('template/footer');
     var table = document.getElementById('datatable_lokasi');
     rowCountx = table.rows.length;
     arrx.push(idrowx);
+
     var x = document.getElementById('datatable_lokasi').insertRow(rowCountx);
+
     var td1 = x.insertCell(0);
-    var lokasi = "<select name='lokasi[]'  id='lokasi" + idrowx + "' class='select2_el_cabang_all form-control'></select>";
-    td1.innerHTML = lokasi;
+    var td2 = x.insertCell(1);
+
+    td1.innerHTML = "<button type='button' onclick='hapusBarisIni_l("+idrow+");' class='btn red'><i class='fa fa-trash-o'></i></button>";
+    td2.innerHTML = "<select name='lokasi[]'  id='lokasi" + idrowx + "' class='select2_el_cabang_all form-control'></select>";
+
     initailizeSelect2_cabang_all();
+
     idrowx++;
+  }
+
+  function hapusBarisIni_l(param) {
+    $("#lokasirow_" + param).remove();
   }
 </script>
 
@@ -432,20 +460,19 @@ $this->load->view('template/footer');
               var table = document.getElementById('datatable_unit');
               rowCount = table.rows.length;
               for (i = 1; i < rowCount; i++) {
-                var unit = $("#unit" + i).val();
+                var row = table.rows[i];
+                var unit = row.cells[1].children[0].value;
                 $.ajax({
                   url: "<?= site_url('Master_dokter2/fd_edit?unit=') ?>" + unit + "&kodokter=" + kodokter,
                   type: "POST",
                   dataType: "JSON",
-                  // success: function(data) {
-                  //   console.log(data)
-                  // }
                 });
               }
               var table = document.getElementById('datatable_lokasi');
               rowCount = table.rows.length;
               for (i = 1; i < rowCount; i++) {
-                var lokasi = $("#lokasi" + i).val();
+                var row = table.rows[i];
+                var lokasi = row.cells[1].children[0].value;
                 $.ajax({
                   url: "<?= site_url('Master_dokter2/fdc_edit?lokasi=') ?>" + lokasi + "&kodokter=" + kodokter,
                   type: "POST",

@@ -966,7 +966,7 @@ class Kasir_konsul extends CI_Controller
 			$detil = $this->db->query("select * from (select tbl_tarifh.tindakan as ket, (tbl_dpoli.tarifrs + tbl_dpoli.tarifdr + tbl_dpoli.paramedis + tbl_dpoli.obatpoli) as jumlah from tbl_dpoli inner join tbl_tarifh on tbl_dpoli.kodetarif=tbl_tarifh.kodetarif where noreg = '$noreg' union	all select 'Adm' as ket, tbl_kasir.adm as jumlah from tbl_kasir where nokwitansi = '$nokwitansi' union	all select 'Diskon Total' as ket, tbl_kasir.diskonrp*-1 as jumlah from tbl_kasir where nokwitansi = '$nokwitansi') kasir where jumlah<>0")->result();
 			$dresep = $this->db->query("SELECT * from tbl_apohresep where noreg = '$noreg'")->row();
 			if ($dresep) {
-				$eresep = $dresep->orderno;
+				$eresep = $dresep->eresepno;
 				$param = $dresep->resepno;
 			} else {
 				$eresep = '';
@@ -1161,7 +1161,7 @@ class Kasir_konsul extends CI_Controller
 											</tr> 
 									</table>";
 			$header = $this->db->query("SELECT * from tbl_apohresep where resepno = '$param'")->row();
-			$detil = $this->db->query("SELECT * from tbl_apodresep where resepno = '$param'")->row();
+			$detil = $this->db->query("SELECT * from tbl_apodresep where resepno = '$param'")->result();
 			$posting = $this->db->query("SELECT * from tbl_apoposting  where resepno = '$param'")->row();
 			$kasir = $this->db->query("SELECT * from tbl_kasir where nokwitansi = '$nokwitansi'")->row();
 			$querypjk = $this->db->query("SELECT * FROM tbl_pajak where kodetax='PPN'")->row();
@@ -1181,7 +1181,7 @@ class Kasir_konsul extends CI_Controller
 			$detail_resep = $this->db->query("SELECT SUM(totalrp) AS totalrp FROM tbl_apodresep WHERE eresepno = '$eresep'")->row();
 			$data_pasien = data_master('tbl_pasien', array('rekmed' => $kasir->rekmed));
 			$rck = $this->db->query("SELECT * from tbl_apodetresep where resepno = '$param' AND koders='$unit'")->result();
-			$racikan = $this->db->query("SELECT * from tbl_aporacik where resepno = '$param' AND koders='$unit'")->row_array();
+			$racikan = $this->db->query("SELECT * from tbl_aporacik where resepno = '$param' AND koders='$unit'")->row();
 			$chari .= "
 									<table style=\"border-collapse:collapse;font-family: tahoma; font-size:12px\" width=\"100%\" align=\"center\" border=\"0\">
 											<tr>
@@ -1212,15 +1212,25 @@ class Kasir_konsul extends CI_Controller
 				} else {
 					$abc = $aporacik->totalrp; 
 				}
+				$no = 1;
 				$actualtotal	= ($detail_resep->totalrp + $abc) - (0 - $sisa_voucher);
+				foreach($detil as $dt){
+					$chari .= "<tr>
+													<td style=\"text-align:center; border-right: none; border-left: none; border-top: none; border-bottom: none;\">" . $no++ . "</td>
+													<td style=\"text-align:left; border-right: none; border-left: none; border-top: none; border-bottom: none;\">$dt->namabarang</td>
+													<td style=\"text-align:right; border-left: none; border-right: none; border-top: none; border-bottom: none;\">".number_format($dt->qty, 0)."</td>
+													<td style=\"text-align:right; border-left: none; border-right: none; border-top: none; border-bottom: none;\">".number_format($dt->discrp, 2)."</td>
+													<td style=\"text-align:right; border-left: none; border-right: none; border-top: none; border-bottom: none;\">".number_format($dt->totalrp, 2)."</td>
+											</tr>";
+				}
 				$chari .= "<tr>
 												<td style=\"text-align:center; border-right: none; border-left: none; border-top: none; border-bottom: none;\">" . $no++ . "</td>
 												<td style=\"text-align:left; border-right: none; border-left: none; border-top: none; border-bottom: none;\">** $aporacik->namaracikan</td>
 												<td style=\"text-align:right; border-left: none; border-right: none; border-top: none; border-bottom: none;\">".number_format($aporacik->jumlahracik, 0)."</td>
 												<td style=\"text-align:right; border-left: none; border-right: none; border-top: none; border-bottom: none;\">".number_format($aporacik->diskonrp, 2)."</td>
 												<td style=\"text-align:right; border-left: none; border-right: none; border-top: none; border-bottom: none;\">".number_format((!isset($abc) ? 0 : $abc), 2)."</td>
-										</tr></tbody>";
-				$chari .= "</table>";
+										</tr>";
+				$chari .= "</tbody></table>";
 			} else {
 				$chari .= "";
 				$apodresep = $this->db->query("SELECT * FROM tbl_apodresep WHERE resepno = '$param'")->result();

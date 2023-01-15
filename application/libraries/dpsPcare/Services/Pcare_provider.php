@@ -1,35 +1,35 @@
-<?php 
+<?php
 
-require_once "Pcare_service.php";
-require_once APPPATH . "libraries/dpsPcare/Repositories/ObatRepository.php";
-require_once APPPATH . "libraries/dpsPcare/Repositories/MasterBarangRepository.php";
+if (!class_exists("PcareService")) {
+    require_once(APPPATH . "libraries/dpsPcare/Services/Pcare_service.php");
+}
 
-class Pcare_obat extends Pcare_service
+require_once(APPPATH . "libraries/dpsPcare/Repositories/ProviderRepository.php");
+
+class Pcare_provider extends Pcare_service
 {
-    private $obat;
-    private $master_barang;
-    private $url;
+    protected $url;
+    protected $provider;
 
     public function __construct(array $arg)
     {
         parent::__construct($arg["kdppk"]);
 
-        $this->url           = $this->base_url . "obat";
-        $this->obat          = new ObatRepository();
-        $this->master_barang = new MasterBarangRepository();
+        $this->url              = $this->base_url . "provider";
+        $this->provider         = new ProviderRepository();
     }
 
     /**
-     * Method for getting medicine data from BPJS database
+     * Method for getting provider from BPJS Web Service
      * 
-     * @param string $search_term
      * @param int $offset
      * @param int $limit
+     * @return stdClass
      */
-    public function get_obat_dpho (string $search_term, int $offset = 0, int $limit = 100)
+    public function get_provider (int $offset = 0, int $limit = 100)
     {
         $timestamp  = $this->get_timestamp();
-        $result     = $this->make_request($timestamp, "{$this->url}/dpho/{$search_term}/{$offset}/{$limit}");
+        $result     = $this->make_request($timestamp, "{$this->url}/{$offset}/{$limit}");
 
         if ($result->status >= 200 AND $result->status < 300) {
             $decrypted = $this->decrypt_result(json_decode($result->data), $timestamp);
@@ -41,7 +41,7 @@ class Pcare_obat extends Pcare_service
                 if ($response_data->count > 0) {
                     foreach ($response_data->list as $data) {
                         $data->kodeRs = $this->kdppk;
-                        $this->obat->save_or_update($data, ["kdObat", "kodeRs"]);
+                        $this->provider->save_or_update($data, ["kdProvider", "kodeRs"]);
                     }
                 }
 
@@ -68,18 +68,5 @@ class Pcare_obat extends Pcare_service
             "status"    => $result->status,
             "message"   => json_decode($result->data)->response
         ];
-    }
-
-    /**
-     * Method for saving sync data into master table
-     * 
-     * @param string $kdObat
-     * @param string $kodebarang
-     */
-    public function update_master_barang (string $kdObat, string $kodebarang): bool
-    {
-        $this->master_barang->update((object) ["pcare_kdObat" => NULL], ["pcare_kdObat" => $kdObat]);
-
-        return $this->master_barang->update((object) ["pcare_kdObat" => $kdObat], ["kodebarang" => $kodebarang]);
     }
 }
