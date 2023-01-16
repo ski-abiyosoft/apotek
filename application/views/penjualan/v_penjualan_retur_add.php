@@ -177,7 +177,7 @@ $this->load->view('template/body');
                                         <th class="title-white" width="5%" style="text-align: center">Kuantitas</th>
                                         <th class="title-white" width="10%" style="text-align: center">Satuan</th>
                                         <th class="title-white" width="10%" style="text-align: center">Harga</th>
-                                        <th class="title-white" width="5%" style="text-align: center"></th>
+                                        <th class="title-white" width="5%" style="text-align: center">PPN</th>
                                         <th class="title-white" width="10%" style="text-align: center">Diskon (Rp)</th>
                                         <th class="title-white" width="15%" style="text-align: center">Total Harga</th>
 

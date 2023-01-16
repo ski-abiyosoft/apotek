@@ -5,6 +5,8 @@ class Pcare_sync extends CI_controller
     public function __construct()
     {
         parent::__construct();
+        $this->load->library("dpsPcare/Services/Pcare_peserta", ["kdppk" => $this->session->userdata("kdppk")]);
+        $this->load->library("dpsPcare/Services/Pcare_diagnosa", ["kdppk" => $this->session->userdata("kdppk")]);
         $this->load->library("dpsPcare/Services/Pcare_dokter", ["kdppk" => $this->session->userdata("kdppk")]);
         $this->load->library("dpsPcare/Services/Pcare_poli", ["kdppk" => $this->session->userdata("kdppk")]);
         $this->load->library("dpsPcare/Services/Pcare_kesadaran", ["kdppk" => $this->session->userdata("kdppk")]);
@@ -12,6 +14,11 @@ class Pcare_sync extends CI_controller
         $this->load->library("dpsPcare/Services/Pcare_obat", ["kdppk" => $this->session->userdata("kdppk")]);
         $this->load->library("dpsPcare/Services/Pcare_tindakan", ["kdppk" => $this->session->userdata("kdppk")]);
         $this->load->library("dpsPcare/Services/Pcare_provider", ["kdppk" => $this->session->userdata("kdppk")]);
+        $this->load->library("dpsPcare/Services/Pcare_spesialis", ["kdppk" => $this->session->userdata("kdppk")]);
+        $this->load->library("dpsPcare/Services/Pcare_subspesialis", ["kdppk" => $this->session->userdata("kdppk")]);
+        $this->load->library("dpsPcare/Services/Pcare_sarana", ["kdppk" => $this->session->userdata("kdppk")]);
+        $this->load->library("dpsPcare/Services/Pcare_khusus", ["kdppk" => $this->session->userdata("kdppk")]);
+        $this->load->library("dpsPcare/Services/Pcare_kelompok", ["kdppk" => $this->session->userdata("kdppk")]);
     }
 
     public function index ()
@@ -21,6 +28,9 @@ class Pcare_sync extends CI_controller
             "all_obat"      => $this->db->select("kodebarang id, CONCAT(namabarang, ' (', satuan1, ')') text")->get("tbl_barang")->result(),
             "tindakan"      => $this->db->select("kodetarif, pcare_kdTindakan")->where("pcare_kdTindakan <>", NULL)->get("tbl_tarifh")->result(),
             "all_tindakan"  => $this->db->select("kodetarif id, tindakan text")->get("tbl_tarifh")->result(),
+            "spesialis"     => $this->db->select("kdSpesialis id, nmSpesialis text")->get("bpjs_pcare_spesialis")->result(),
+            "dokter"        => $this->db->select("kodokter, pcare_kdDokter")->where("pcare_kdDokter <>", NULL)->get("tbl_dokter")->result(),
+            "all_dokter"    => $this->db->select("kodokter id, nadokter text")->get("tbl_dokter")->result(),
         ];
 
         $this->load->view("pcare/pcare_sync", $data);
@@ -39,6 +49,38 @@ class Pcare_sync extends CI_controller
             ->set_content_type("application/json")
             ->set_status_header($result->status)
             ->set_output(json_encode($result->data));
+    }
+
+    /**
+     * Method for updating tbl_dokter
+     * 
+     * @param int $limit
+     */
+    public function update_master_dokter (int $limit = 100)
+    {
+        $master_dokter = $this->input->post("master_dokter");
+
+        foreach($master_dokter as $key => $value) {
+            $result = $this->pcare_dokter->update_master_dokter($key, $value);
+        }
+
+        if ($result) {
+            return $this->output
+                    ->set_content_type("application/json")
+                    ->set_status_header(200)
+                    ->set_output(json_encode([
+                        "status" => true,
+                        "data"   => null
+                    ]));
+        }
+
+        return $this->output
+                    ->set_content_type("application/json")
+                    ->set_status_header(500)
+                    ->set_output(json_encode([
+                        "status" => false,
+                        "data"   => null
+                    ]));
     }
 
     /**
@@ -202,6 +244,110 @@ class Pcare_sync extends CI_controller
     }
 
     /**
-     * Method for synchonizing 
+     * Method for synchronizing spesialis
+     * 
      */
+    public function spesialis ()
+    {
+        $result = $this->pcare_spesialis->get_spesialis();
+
+        return $this->output
+            ->set_content_type("application/json")
+            ->set_status_header($result->status)
+            ->set_output(json_encode($result->data));
+    }
+
+    /**
+     * Method for synchronizing subspesialis
+     * 
+     * @param string $spesialis
+     */
+    public function subspesialis (string $spesialis)
+    {
+        $result = $this->pcare_subspesialis->get_subspesialis($spesialis);
+
+        return $this->output
+            ->set_content_type("application/json")
+            ->set_status_header($result->status)
+            ->set_output(json_encode($result->data));
+    }
+
+    /**
+     * Method for synchronizing sarana
+     * 
+     */
+    public function sarana ()
+    {
+        $result = $this->pcare_sarana->get_sarana();
+
+        return $this->output
+            ->set_content_type("application/json")
+            ->set_status_header($result->status)
+            ->set_output(json_encode($result->data));
+    }
+
+    /**
+     * Method for synchronizing khusus
+     * 
+     */
+    public function khusus ()
+    {
+        $result = $this->pcare_khusus->get_khusus();
+
+        return $this->output
+            ->set_content_type("application/json")
+            ->set_status_header($result->status)
+            ->set_output(json_encode($result->data));
+    }
+
+    /**
+     * Method for synchronizing diagnosa
+     * 
+     * @param string $search_term
+     */
+    public function diagnosa (string $search_term)
+    {
+        $result = $this->pcare_diagnosa->get_diagnosa($search_term);
+
+        return $this->output
+            ->set_content_type("application/json")
+            ->set_status_header($result->status)
+            ->set_output(json_encode($result->data));
+    }
+
+    /**
+     * Method for synchronizing diagnosa
+     * 
+     */
+    public function peserta ()
+    {
+        $search_term = $this->input->post("search_term");
+        $jenis_kartu = $this->input->post("jenis_kartu");
+
+        $result = $this->pcare_peserta->get_peserta($search_term, $jenis_kartu);
+
+        return $this->output
+            ->set_content_type("application/json")
+            ->set_status_header($result->status)
+            ->set_output(json_encode($result->data));
+    }
+
+    /**
+     * Method for synchronizing club prolanis
+     * 
+     * @param string $kdProgram
+     */
+    public function club_prolanis (string $kdProgram)
+    {
+        $search_term = $this->input->post("search_term");
+        $jenis_kartu = $this->input->post("jenis_kartu");
+
+        $result      = $this->pcare_kelompok->get_club_prolanis($kdProgram);
+        $result_db   = $this->db->get("bpjs_pcare_club_prolanis")->result();
+
+        return $this->output
+            ->set_content_type("application/json")
+            ->set_status_header($result->status)
+            ->set_output(json_encode($result_db));
+    }
 }

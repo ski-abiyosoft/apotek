@@ -330,16 +330,16 @@
                         <table class="table table-bordered table-striped">
                             <thead class="page-breadcrumb breadcrumb">
                                 <tr class="title-white">
-                                    <th>Kode Sarana</th>
-                                    <th>Nama Sarana</th>
+                                    <th>Kode Spesialis</th>
+                                    <th>Nama Spesialis</th>
                                     <th>Kode RS</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <?php foreach($spesialis->result() as $s): ?>
                                     <tr>
-                                        <td><?= $s->kdSarana ?></td>
-                                        <td><?= $s->nmSarana ?></td>
+                                        <td><?= $s->kdSpesialis ?></td>
+                                        <td><?= $s->nmSpesialis ?></td>
                                         <td><?= $s->kodeRs ?></td>
                                     </tr>
                                 <?php endforeach; ?>
@@ -365,7 +365,7 @@
                             <tbody>
                                 <?php foreach($subspesialis->result() as $s): ?>
                                     <tr>
-                                        <td><?= $s->kdSUbSpesialis ?></td>
+                                        <td><?= $s->kdSubSpesialis ?></td>
                                         <td><?= $s->nmSubSpesialis ?></td>
                                         <td><?= $s->kdPoliRujuk ?></td>
                                         <td><?= $s->kodeRs ?></td>

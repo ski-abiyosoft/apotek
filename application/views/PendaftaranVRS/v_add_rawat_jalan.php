@@ -273,7 +273,7 @@
       </div>
       <div class="row">
         <div class="col-md-12">
-          <button type="button" class="btn blue" style="float: right" onclick="vpcare();"  id="pcare" name="pcare"> 
+          <button type="button" class="btn blue" style="float: right" onclick="vpcare();"  id="pcare" type="button"> 
             <i class="fa fa-check-square"></i> Bridging PCare
           </button><br><br>
         </div>

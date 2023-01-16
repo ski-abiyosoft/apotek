@@ -31,7 +31,7 @@
   <link href="<?= base_url('assets/calendar/fullcalendar.css');?>" rel='stylesheet' />
   <script src="<?= base_url('assets/calendar/jquery.min.js?v=1.1');?>"></script>
   <script src="<?= base_url('assets/calendar/jquery-ui.min.js');?>"></script>
-  <script src="<?= base_url('assets/calendar/moment.min.js');?>"></script>
+  <script src="<?= base_url('assets/calendar/moment.min.js?v=0.0.01');?>"></script>
   <script src="<?= base_url('assets/calendar/fullcalendar.min.js');?>"></script>
   <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 

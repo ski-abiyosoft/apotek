@@ -28,8 +28,10 @@
             $this->load->view("pcare/index", $data);
         }
 
+        // GET
+
         public function get_rekam_medis($noreg){
-            $get_rekam_medis    = $this->db->get_where("tbl_rekammedisrs", ["noreg" => $noreg]);
+            $get_rekam_medis    = $this->db->get_where("pasien_rajal", ["noreg" => $noreg]);
             $get_pcare_regis    = $this->db->get_where("bpjs_pcare_pendaftaran", ["noReg" => $noreg]);
 
             if($get_pcare_regis->num_rows() == 0){
@@ -103,6 +105,21 @@
                     "berat_badan"	=> $berat_badan
                 ]
             ], JSON_UNESCAPED_SLASHES);
+        }
+
+        public function poli_by_status($status){
+            $list   = [];
+
+            $query_poli = $this->db->get_where("bpjs_pcare_poli", ["poliSakit" => $status]);
+
+            foreach($query_poli->result() as $qp){
+                $list[] = [
+                    "kdPoli"    => $qp->kdPoli,
+                    "nmPoli"    => $qp->nmPoli
+                ];
+            }
+
+            echo json_encode($list);
         }
 
     }

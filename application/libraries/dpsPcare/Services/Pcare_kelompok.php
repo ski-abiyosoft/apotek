@@ -1,27 +1,33 @@
 <?php
 
-require_once(APPPATH . "libraries/dpsPcare/Services/Pcare_service.php");
-require_once(APPPATH . "libraries/dpsPcare/Repositories/DokterRepository.php");
-require_once(APPPATH . "libraries/dpsPcare/Repositories/MasterDokterRepository.php");
+if (!class_exists("Pcare_service")) {
+    require "Pcare_service.php";
+}
 
-class Pcare_dokter extends Pcare_service
+require APPPATH . "libraries/dpsPcare/Repositories/ClubProlanisRepository.php";
+
+class Pcare_kelompok extends Pcare_service
 {
-    private $dokter;
-    private $master_dokter;
+    private $club_prolanis;
     private $url;
-    
+
     public function __construct(array $arg)
     {
         parent::__construct($arg["kdppk"]);
-        $this->master_dokter   = new MasterDokterRepository();
-        $this->dokter         = new DokterRepository();
-        $this->url            = $this->base_url . "dokter";
+
+        $this->url           = $this->base_url . "kelompok/club";
+        $this->club_prolanis = new ClubProlanisRepository();
     }
 
-    public function get_dokter (int $offset, int $limit)
+    /**
+     * Method for getting medicine data from BPJS database
+     * 
+     * @param string $kdProgram
+     */
+    public function get_club_prolanis (string $kdProgram)
     {
         $timestamp  = $this->get_timestamp();
-        $result     = $this->make_request($timestamp, "{$this->url}/{$offset}/{$limit}");
+        $result     = $this->make_request($timestamp, "{$this->url}/{$kdProgram}");
 
         if ($result->status >= 200 AND $result->status < 300) {
             $decrypted = $this->decrypt_result(json_decode($result->data), $timestamp);
@@ -32,8 +38,12 @@ class Pcare_dokter extends Pcare_service
 
                 if ($response_data->count > 0) {
                     foreach ($response_data->list as $data) {
-                        $data->kodeRs = $this->kdppk;
-                        $this->dokter->save_or_update($data, ["kdDokter", "kodeRs"]);
+                        $data->kodeRs       = $this->kdppk;
+                        $data->kdProgram    = $kdProgram;
+                        $data->tglMulai     = parse_local_date($data->tglMulai);
+                        $data->tglAkhir     = parse_local_date($data->tglAkhir);
+                        
+                        $this->club_prolanis->save_or_update($data, ["clubId", "kodeRs"]);
                     }
                 }
 
@@ -60,17 +70,5 @@ class Pcare_dokter extends Pcare_service
             "status"    => $result->status,
             "message"   => json_decode($result->data)->response
         ];
-    }
-
-    /**
-     * Method for updating master dokter
-     * 
-     * @param string $pcare_kdDokter
-     * @param string $kodokter
-     * @return bool
-     */
-    public function update_master_dokter (string $pcare_kdDokter, string $kodokter)
-    {
-        return $this->master_dokter->update((object) ["pcare_kdDokter" => $pcare_kdDokter], ["kodokter" => $kodokter]);
     }
 }

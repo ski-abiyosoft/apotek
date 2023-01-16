@@ -283,7 +283,7 @@
 			</div>			
 			<div class="row">
 				<div class="col-md-12">
-					<button class="btn blue" style="float: right" onclick="vpcare();"  id="pcare" name="pcare"> 
+					<button class="btn blue" style="float: right" onclick="vpcare('<?= $data->noreg;?>');"  id="pcare" type="button"> 
 						<i class="fa fa-check-square"></i> Briging PCare
 					</button><br><br>
 				</div>
@@ -1028,12 +1028,9 @@ function get_pcare(vpenjamin) {
   }
 }
 
-function vpcare()
+function vpcare(noreg)
 {
-    // var nampasdet = document.getElementById("nampasdet").value;
-    var noregdet  = '<?= $this->input->get("noreg") ?>';
-    var rekmeddet = '<?= $this->input->get("rekmed") ?>';
-    url="<?php echo base_url()?>PendaftaranVRS/pcare_rj/?noreg="+noregdet+"&rekmed="+rekmeddet
+	url="<?php echo base_url()?>PendaftaranVRS/pcare_rj/"+noreg;
     
     window.open(url,'_blank');
     window.focus();

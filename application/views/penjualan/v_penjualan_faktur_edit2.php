@@ -912,6 +912,8 @@ $this->load->view('template/footer');
 <script>
      $(window).on("load", function() {
           total();
+          var gud = $("#gudang").val();
+          initailizeSelect2_farmasi_baranggud(gud);
      });
 
      function t_jual_manual() {

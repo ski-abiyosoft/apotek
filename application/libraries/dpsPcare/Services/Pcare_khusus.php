@@ -15,7 +15,7 @@ class Pcare_khusus extends Pcare_service
     {
         parent::__construct($arg["kdppk"]);
 
-        $this->url              = $this->base_url . "spesialis/khusus";
+        $this->url            = $this->base_url . "spesialis/khusus";
         $this->khusus         = new KhususRepository();
     }
 
@@ -26,7 +26,7 @@ class Pcare_khusus extends Pcare_service
      * @param int $limit
      * @return stdClass
      */
-    public function get_provider (int $offset = 0, int $limit = 100)
+    public function get_khusus (int $offset = 0, int $limit = 100)
     {
         $timestamp  = $this->get_timestamp();
         $result     = $this->make_request($timestamp, "{$this->url}");

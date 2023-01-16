@@ -152,7 +152,9 @@
                             <option value="8">8. Spesialis</option>
                             <option value="9">9. Subspesialis</option>
                             <option value="10">10. Sarana</option>
-                            <option value="11">11. Penyakit Khusus</option>
+                            <option value="11">11. Sarana Khusus</option>
+                            <option value="12">12. Diagnosa (Opsional)</option>
+                            <option value="13">13. Peserta (Opsional)</option>
                         </select>
                     </div>
                 </div>
@@ -181,6 +183,25 @@
                         </select>
                     </div>
                 </div>
+                <div class="col-md-9 mb-3 hidden" id="param4-wrapper">
+                    <label class="col-md-3 control-label" for="param4">Pilih Spesialis:</label>
+                    <div class="col-md-9">
+                        <select class="form-control" name="param4" id="param4">
+                            <?php foreach ($spesialis as $value): ?>
+                                <option value="<?= $value->id ?>"><?= $value->text ?></option>
+                            <?php endforeach ?>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-9 mb-3 hidden" id="param5-wrapper">
+                    <label class="col-md-3 control-label" for="param5">Pilih Jenis Identitas:</label>
+                    <div class="col-md-9">
+                        <select class="form-control" name="param5" id="param5">
+                            <option value="noka">Kartu BPJS</option>
+                            <option value="nik">KTP/Kartu Keluarga</option>
+                        </select>
+                    </div>
+                </div>
                 <div class="col-md-9 flex flex-col items-center">
                     <button type="button" class="btn btn-danger" id="sync" type="submit"><i class="fa fa-refresh"></i> Mulai Sinkronisasi</button>
                 </div>
@@ -190,6 +211,8 @@
     <div class="col-md-8">
         <div class="col-md-12" id="console" style="border: 1px solid red; height: 20vh; margin: 0 auto; overflow: auto;" data-totalJobs="0"></div>
     </div>
+
+    <!-- Obat Modal -->
     <div class="modal fade" id="obat-modal" tabindex="-1" role="dialog" aria-labelledby="obat-modal" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
             <div class="modal-content">
@@ -220,6 +243,9 @@
             </div>
         </div>
     </div>
+    <!-- End Obat Modal -->
+
+    <!-- Tindakan Modal -->
     <div class="modal fade" id="tindakan-modal" role="dialog" aria-labelledby="tindakan-modal" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
             <div class="modal-content">
@@ -250,6 +276,40 @@
             </div>
         </div>
     </div>
+    <!-- End Tindakan Modal -->
+
+    <!-- Dokter Modal -->
+    <div class="modal fade" id="dokter-modal" role="dialog" aria-labelledby="dokter-modal" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+            <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="sync-tindakan"><strong>Sinkronisasi Master DOkter</strong></h3>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="master-dokter-sync">
+                    <table class="table" id="dokter-table">
+                        <thead>
+                            <tr class="breadcrumb">
+                                <th class="text-center title-white">Kode Dokter</th>
+                                <th class="text-center title-white">Nama Dokter</th>
+                                <th class="text-center title-white">Master Dokter</th>
+                            </tr>
+                        </thead>
+                        <tbody id="dokter-body"></tbody>
+                    </table>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" onclick="sync_dokter()">Save changes</button>
+            </div>
+            </div>
+        </div>
+    </div>
+    <!-- End Dokter Modal -->
 </div>
 
 <?php 
@@ -261,6 +321,8 @@
     var all_tindakan = JSON.parse(`<?= json_encode($all_tindakan) ?>`)
     var obat         = JSON.parse(`<?= json_encode($obat) ?>`)
     var tindakan     = JSON.parse(`<?= json_encode($tindakan) ?>`)
+    var all_dokter   = JSON.parse(`<?= json_encode($all_dokter) ?>`)
+    var dokter       = JSON.parse(`<?= json_encode($dokter) ?>`)
 
     $(document).ready(() => {
         var syncItem = $("#item").val()
@@ -277,19 +339,32 @@
         $("#param1-wrapper").addClass("hidden")
         $("#param2-wrapper").addClass("hidden")
         $("#param3-wrapper").addClass("hidden")
+        $("#param4-wrapper").addClass("hidden")
+        $("#param5-wrapper").addClass("hidden")
 
         if (item_value == 4) {
             $("#param3-wrapper").removeClass("hidden")
             return
         }
 
-        if (item_value == 5) {
+        if (item_value == 5 || item_value == 12) {
             $("#param1-wrapper").removeClass("hidden")
             return
         }
 
         if (item_value == 6) {
             $("#param2-wrapper").removeClass("hidden")
+            return
+        }
+
+        if (item_value == 9) {
+            $("#param4-wrapper").removeClass("hidden")
+            return
+        }
+
+        if (item_value == 13) {
+            $("#param1-wrapper").removeClass("hidden")
+            $("#param5-wrapper").removeClass("hidden")
             return
         }
     }
@@ -302,6 +377,69 @@
         switch (itemVal) {
             case "1":
                 ajaxUrl = baseUrl + "pcare_sync/dokter"
+                $.ajax({
+                    url: ajaxUrl,
+                    success: (data) => {
+                        if (data) {
+                            $("#console").empty()
+                            $("#console").append(`<p>${data.count} data ditemukan.</p>`)
+                            $("#dokter-table").dataTable().fnDestroy()
+                            $("#dokter-body").empty()
+
+                            data.list.forEach((item) => {
+                                $("#dokter-body").append(
+                                    /*html*/
+                                    `<tr>
+                                        <td class="text-center">
+                                            ${item.kdDokter}
+                                        </td>
+                                        <td class="text-center">${item.nmDokter}</td>
+                                        <td class="text-center">
+                                            <select id="${item.kdDokter}" class="form-control master_dokter" name="master_dokter[${item.kdDokter}]" style="width: 100%">
+                                                <option></option>
+                                            </select>
+                                        </td>
+                                    </tr>`
+                                )
+                            })
+
+                            $(".master_dokter").select2({
+                                data: all_dokter,
+                                placeholder: "Pilih master dokter",
+                                dropdownParent: $("#dokter-modal")
+                            })
+
+                            dokter.forEach((item) => {
+                                var selectEl = $(`#${item.pcare_kdDokter}`)
+
+                                if (selectEl) {
+                                    selectEl.val(item.kodokter)
+                                    selectEl.trigger("change")
+                                }
+                            })
+
+                            $("#obat-table").dataTable({
+                                bLengthChange: false,
+                                iDisplayLength: 5,
+                                aoColumns: [
+                                    {bSearchable: true},
+                                    {bSearchable: true},
+                                    {bSearchable: false},
+                                ]
+                            })
+
+                            $("#dokter-modal").modal("show")
+                        }else {
+                            swal({
+                                type: "error",
+                                title: "No Data",
+                                html: "Tidak ditemukan data!"
+                            })
+                        }
+                    }
+                })
+
+                return
                 break;
             case "2":
                 ajaxUrl = baseUrl + "pcare_sync/kesadaran"
@@ -318,6 +456,7 @@
                     url: ajaxUrl,
                     success: (data) => {
                         if (data) {
+                            $("#console").empty()
                             $("#console").append(`<p>${data.count} data ditemukan.</p>`)
                             $("#obat-table").dataTable().fnDestroy()
                             $("#obat-body").empty()
@@ -369,7 +508,7 @@
                             swal({
                                 type: "error",
                                 title: "No Data",
-                                html: "Tidak ditemukan data selama periode penarikan!"
+                                html: "Tidak ditemukan data!"
                             })
                         }
                     }
@@ -382,6 +521,7 @@
                     url: ajaxUrl,
                     success: (data) => {
                         if (data) {
+                            $("#console").empty()
                             $("#console").append(`<p>${data.count} data telah disinkronisasi.</p>`)
                             $("#tindakan-table").dataTable().fnDestroy()
                             $("#tindakan-body").empty()
@@ -433,7 +573,7 @@
                             swal({
                                 type: "error",
                                 title: "No Data",
-                                html: "Tidak ditemukan data selama periode penarikan!"
+                                html: "Tidak ditemukan data!"
                             })
                         }
                     }
@@ -445,6 +585,44 @@
                 break;
             case "8":
                 ajaxUrl = baseUrl + "pcare_sync/spesialis/"
+                break;
+            case "9":
+                ajaxUrl = baseUrl + "pcare_sync/subspesialis/" + $("#param4").val()
+                break;
+            case "10":
+                ajaxUrl = baseUrl + "pcare_sync/sarana"
+                break;
+            case "11":
+                ajaxUrl = baseUrl + "pcare_sync/khusus"
+                break;
+            case "12":
+                ajaxUrl = baseUrl + "pcare_sync/diagnosa/" + $("#param1").val()
+                break;
+            case "13":
+                ajaxUrl = baseUrl + "pcare_sync/peserta"
+                $.ajax({
+                    url: ajaxUrl,
+                    type: "POST",
+                    dataType: "json",
+                    data: { "jenis_kartu": $("#param5").val(), "search_term": $("#param1").val() },
+                    success: (data) => {
+                        if (data) {
+                            $("#console").empty()
+                            $("#console").append(`<p>Data ditemukan!</p>`)
+                            
+                            for (const property in data) {
+                                $("#console").append(`<p>${property}: ${data[property]}</p>`)
+                            }
+                        }else {
+                            swal({
+                                type: "error",
+                                title: "No Data",
+                                html: "Tidak ditemukan data!"
+                            })
+                        }
+                    }
+                })
+                return;
                 break;
         }
 
@@ -459,12 +637,13 @@
                         timer: 2000
                     })
 
+                    $("#console").empty()
                     $("#console").append(`<p>${data.count} data telah disinkronisasi.</p>`)
                 }else {
                     swal({
                         type: "error",
                         title: "No Data",
-                        html: "Tidak ditemukan data selama periode penarikan!"
+                        html: "Tidak ditemukan data!"
                     })
                 }
             }
@@ -502,6 +681,31 @@
             type: "POST",
             dataType: "json",
             data: $("#master-tindakan-sync").serialize(),
+            success: (data) => {
+                if (data.status) {
+                    swal({
+                        type: "success",
+                        title: "Berhasil",
+                        html: "Data berhasil disimpan"
+                    })
+                }
+            },
+            error: (jqXHR, textStatus, errorThrown) => {
+                swal({
+                    type: "error",
+                    title: "Gagal",
+                    html: `${textStatus} - ${errorThrown}`
+                })
+            }
+        })
+    }
+
+    function sync_dokter () {
+        $.ajax({
+            url: `<?= base_url("pcare_sync/update_master_dokter") ?>`,
+            type: "POST",
+            dataType: "json",
+            data: $("#master-dokter-sync").serialize(),
             success: (data) => {
                 if (data.status) {
                     swal({

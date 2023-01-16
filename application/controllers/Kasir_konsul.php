@@ -1257,14 +1257,25 @@ class Kasir_konsul extends CI_Controller
 																		<td width=\"20%\" align=\"center\" style=\"text-align:center; border-left: none; border-right: none;\"><b>Jumlah</b></td>
 																</tr>
 													</thead>";
-					foreach($apodresep as $apd){
+					foreach($detil as $dt){
 						$chari .= "<tr>
 														<td style=\"text-align:center; border-right: none; border-left: none; border-top: none; border-bottom: none;\">" . $no++ . "</td>
-														<td style=\"text-align:left; border-right: none; border-left: none; border-top: none; border-bottom: none;\">** $apd->namabarang</td>
-														<td style=\"text-align:right; border-left: none; border-right: none; border-top: none; border-bottom: none;\">".number_format($apd->qty, 0)."</td>
-														<td style=\"text-align:right; border-left: none; border-right: none; border-top: none; border-bottom: none;\">".number_format($apd->discrp, 2)."</td>
-														<td style=\"text-align:right; border-left: none; border-right: none; border-top: none; border-bottom: none;\">".number_format($apd->totalrp, 2)."</td>
-												</tr></tbody>";
+														<td style=\"text-align:left; border-right: none; border-left: none; border-top: none; border-bottom: none;\">$dt->namabarang</td>
+														<td style=\"text-align:right; border-left: none; border-right: none; border-top: none; border-bottom: none;\">".number_format($dt->qty, 0)."</td>
+														<td style=\"text-align:right; border-left: none; border-right: none; border-top: none; border-bottom: none;\">".number_format($dt->discrp, 2)."</td>
+														<td style=\"text-align:right; border-left: none; border-right: none; border-top: none; border-bottom: none;\">".number_format($dt->totalrp, 2)."</td>
+												</tr>";
+					}
+					if($racikan){
+						$chari .= "<tr>
+														<td style=\"text-align:center; border-right: none; border-left: none; border-top: none; border-bottom: none;\">" . $no . "</td>
+														<td style=\"text-align:left; border-right: none; border-left: none; border-top: none; border-bottom: none;\">** $racikan->namaracikan</td>
+														<td style=\"text-align:right; border-left: none; border-right: none; border-top: none; border-bottom: none;\">".number_format($racikan->jumlahracikan, 0)."</td>
+														<td style=\"text-align:right; border-left: none; border-right: none; border-top: none; border-bottom: none;\">".number_format($racikan->discrp, 2)."</td>
+														<td style=\"text-align:right; border-left: none; border-right: none; border-top: none; border-bottom: none;\">".number_format($racikan->totalrp, 2)."</td>
+												</tr>";
+					} else {
+						$chari .= "</tbody>";
 					}
 					$chari .= "<tfoot><tr>
 											<td style=\"text-align:right; border-right: none; border-left: none;\" colspan=\"4\"><b>Total Resep & Racik</b></td>

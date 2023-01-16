@@ -142,12 +142,43 @@ min-height: 300px;
 												</tr>
 											</thead>
 											<tbody>
-												<?php foreach ($agama as $a) : ?>
+												<?php $no = 1; foreach ($agama as $a) : ?>
+													<?php if($no == 1) {
+														$bgcolor = "#95ceff";
+														$color = "color: black";
+													} else if($no == 2) {
+														$bgcolor = "#5c5c61";
+														$color = "color: white";
+													} else if($no == 3) {
+														$bgcolor = "#a9ff96";
+														$color = "color: black";
+													} else if($no == 4) {
+														$bgcolor = "#ffbc75";
+														$color = "color: black";
+													} else if($no == 5) {
+														$bgcolor = "#999eff";
+														$color = "color: black";
+													} else if($no == 6) {
+														$bgcolor = "#ff7599";
+														$color = "color: black";
+													} else if($no == 7) {
+														$bgcolor = "#fdec6d";
+														$color = "color: black";
+													} else if($no == 8) {
+														$bgcolor = "#44a9a8";
+														$color = "color: black";
+													} else if($no == 9) {
+														$bgcolor = "#ff7474";
+														$color = "color: black";
+													} else if($no == 10) {
+														$bgcolor = "#91e8e1";
+														$color = "color: black";
+													} ?>
 													<tr>
-														<td><?= $a->agama; ?></td>
-														<td style="text-align: right;"><?= number_format($a->jumlah); ?></td>
+														<td style="background-color: <?= $bgcolor; ?>; <?= $color; ?>;"><?= $a->agama; ?></td>
+														<td style="text-align: right; background-color: <?= $bgcolor; ?>; <?= $color; ?>;"><?= number_format($a->jumlah); ?></td>
 													</tr>
-												<?php endforeach; ?>
+												<?php $no++; endforeach; ?>
 											</tbody>
 										</table>
 									</div>
@@ -183,12 +214,43 @@ min-height: 300px;
 												</tr>
 											</thead>
 											<tbody>
-												<?php foreach ($jeniskelamin as $jkel) : ?>
+												<?php $no = 1; foreach ($jeniskelamin as $jkel) : ?>
+													<?php if($no == 1) {
+														$bgcolor = "#95ceff";
+														$color = "color: black";
+													} else if($no == 2) {
+														$bgcolor = "#5c5c61";
+														$color = "color: white";
+													} else if($no == 3) {
+														$bgcolor = "#a9ff96";
+														$color = "color: black";
+													} else if($no == 4) {
+														$bgcolor = "#ffbc75";
+														$color = "color: black";
+													} else if($no == 5) {
+														$bgcolor = "#999eff";
+														$color = "color: black";
+													} else if($no == 6) {
+														$bgcolor = "#ff7599";
+														$color = "color: black";
+													} else if($no == 7) {
+														$bgcolor = "#fdec6d";
+														$color = "color: black";
+													} else if($no == 8) {
+														$bgcolor = "#44a9a8";
+														$color = "color: black";
+													} else if($no == 9) {
+														$bgcolor = "#ff7474";
+														$color = "color: black";
+													} else if($no == 10) {
+														$bgcolor = "#91e8e1";
+														$color = "color: black";
+													} ?>
 													<tr>
-														<td><?= $jkel->jk; ?></td>
-														<td style="text-align: right;"><?= number_format($jkel->jumlah); ?></td>
+														<td style="background-color: <?= $bgcolor; ?>; <?= $color; ?>;"><?= $jkel->jk; ?></td>
+														<td style="text-align: right; background-color: <?= $bgcolor; ?>; <?= $color; ?>;"><?= number_format($jkel->jumlah); ?></td>
 													</tr>
-												<?php endforeach; ?>
+												<?php $no++; endforeach; ?>
 											</tbody>
 										</table>
 									</div>
@@ -224,12 +286,43 @@ min-height: 300px;
 												</tr>
 											</thead>
 											<tbody>
-												<?php foreach ($pendidikan as $p) : ?>
+												<?php $no = 1; foreach ($pendidikan as $p) : ?>
+													<?php if($no == 1) {
+														$bgcolor = "#95ceff";
+														$color = "color: black";
+													} else if($no == 2) {
+														$bgcolor = "#5c5c61";
+														$color = "color: white";
+													} else if($no == 3) {
+														$bgcolor = "#a9ff96";
+														$color = "color: black";
+													} else if($no == 4) {
+														$bgcolor = "#ffbc75";
+														$color = "color: black";
+													} else if($no == 5) {
+														$bgcolor = "#999eff";
+														$color = "color: black";
+													} else if($no == 6) {
+														$bgcolor = "#ff7599";
+														$color = "color: black";
+													} else if($no == 7) {
+														$bgcolor = "#fdec6d";
+														$color = "color: black";
+													} else if($no == 8) {
+														$bgcolor = "#44a9a8";
+														$color = "color: black";
+													} else if($no == 9) {
+														$bgcolor = "#ff7474";
+														$color = "color: black";
+													} else if($no == 10) {
+														$bgcolor = "#91e8e1";
+														$color = "color: black";
+													} ?>
 													<tr>
-														<td><?= $p->pen; ?></td>
-														<td style="text-align: right;"><?= number_format($p->jumlah); ?></td>
+														<td style="background-color: <?= $bgcolor; ?>; <?= $color; ?>;"><?= $p->pen; ?></td>
+														<td style="text-align: right; background-color: <?= $bgcolor; ?>; <?= $color; ?>;"><?= number_format($p->jumlah); ?></td>
 													</tr>
-												<?php endforeach; ?>
+												<?php $no++; endforeach; ?>
 											</tbody>
 										</table>
 									</div>
@@ -265,12 +358,43 @@ min-height: 300px;
 												</tr>
 											</thead>
 											<tbody>
-												<?php foreach ($pekerjaan as $pk) : ?>
+												<?php $no = 1; foreach ($pekerjaan as $pk) : ?>
+													<?php if($no == 1) {
+														$bgcolor = "#95ceff";
+														$color = "color: black";
+													} else if($no == 2) {
+														$bgcolor = "#5c5c61";
+														$color = "color: white";
+													} else if($no == 3) {
+														$bgcolor = "#a9ff96";
+														$color = "color: black";
+													} else if($no == 4) {
+														$bgcolor = "#ffbc75";
+														$color = "color: black";
+													} else if($no == 5) {
+														$bgcolor = "#999eff";
+														$color = "color: black";
+													} else if($no == 6) {
+														$bgcolor = "#ff7599";
+														$color = "color: black";
+													} else if($no == 7) {
+														$bgcolor = "#fdec6d";
+														$color = "color: black";
+													} else if($no == 8) {
+														$bgcolor = "#44a9a8";
+														$color = "color: black";
+													} else if($no == 9) {
+														$bgcolor = "#ff7474";
+														$color = "color: black";
+													} else if($no == 10) {
+														$bgcolor = "#91e8e1";
+														$color = "color: black";
+													} ?>
 													<tr>
-														<td><?= $pk->pek; ?></td>
-														<td style="text-align: right;"><?= number_format($pk->jumlah); ?></td>
+														<td style="background-color: <?= $bgcolor; ?>; <?= $color; ?>;"><?= $pk->pek; ?></td>
+														<td style="text-align: right; background-color: <?= $bgcolor; ?>; <?= $color; ?>;"><?= number_format($pk->jumlah); ?></td>
 													</tr>
-												<?php endforeach; ?>
+												<?php $no++; endforeach; ?>
 											</tbody>
 										</table>
 									</div>
@@ -306,12 +430,43 @@ min-height: 300px;
 												</tr>
 											</thead>
 											<tbody>
-												<?php foreach ($status as $s) : ?>
+												<?php $no = 1; foreach ($status as $s) : ?>
+													<?php if($no == 1) {
+														$bgcolor = "#95ceff";
+														$color = "color: black";
+													} else if($no == 2) {
+														$bgcolor = "#5c5c61";
+														$color = "color: white";
+													} else if($no == 3) {
+														$bgcolor = "#a9ff96";
+														$color = "color: black";
+													} else if($no == 4) {
+														$bgcolor = "#ffbc75";
+														$color = "color: black";
+													} else if($no == 5) {
+														$bgcolor = "#999eff";
+														$color = "color: black";
+													} else if($no == 6) {
+														$bgcolor = "#ff7599";
+														$color = "color: black";
+													} else if($no == 7) {
+														$bgcolor = "#fdec6d";
+														$color = "color: black";
+													} else if($no == 8) {
+														$bgcolor = "#44a9a8";
+														$color = "color: black";
+													} else if($no == 9) {
+														$bgcolor = "#ff7474";
+														$color = "color: black";
+													} else if($no == 10) {
+														$bgcolor = "#91e8e1";
+														$color = "color: black";
+													} ?>
 													<tr>
-														<td><?= $s->stat; ?></td>
-														<td style="text-align: right;"><?= number_format($s->jumlah); ?></td>
+														<td style="background-color: <?= $bgcolor; ?>; <?= $color; ?>;"><?= $s->stat; ?></td>
+														<td style="text-align: right; background-color: <?= $bgcolor; ?>; <?= $color; ?>;"><?= number_format($s->jumlah); ?></td>
 													</tr>
-												<?php endforeach; ?>
+												<?php $no++; endforeach; ?>
 											</tbody>
 										</table>
 									</div>
@@ -347,12 +502,43 @@ min-height: 300px;
 												</tr>
 											</thead>
 											<tbody>
-												<?php foreach ($carabayar as $cb) : ?>
+												<?php $no = 1; foreach ($carabayar as $cb) : ?>
+													<?php if($no == 1) {
+														$bgcolor = "#95ceff";
+														$color = "color: black";
+													} else if($no == 2) {
+														$bgcolor = "#5c5c61";
+														$color = "color: white";
+													} else if($no == 3) {
+														$bgcolor = "#a9ff96";
+														$color = "color: black";
+													} else if($no == 4) {
+														$bgcolor = "#ffbc75";
+														$color = "color: black";
+													} else if($no == 5) {
+														$bgcolor = "#999eff";
+														$color = "color: black";
+													} else if($no == 6) {
+														$bgcolor = "#ff7599";
+														$color = "color: black";
+													} else if($no == 7) {
+														$bgcolor = "#fdec6d";
+														$color = "color: black";
+													} else if($no == 8) {
+														$bgcolor = "#44a9a8";
+														$color = "color: black";
+													} else if($no == 9) {
+														$bgcolor = "#ff7474";
+														$color = "color: black";
+													} else if($no == 10) {
+														$bgcolor = "#91e8e1";
+														$color = "color: black";
+													} ?>
 													<tr>
-														<td><?= $cb->cara; ?></td>
-														<td style="text-align: right;"><?= number_format($cb->jumlah); ?></td>
+														<td style="background-color: <?= $bgcolor; ?>; <?= $color; ?>;"><?= $cb->cara; ?></td>
+														<td style="text-align: right; background-color: <?= $bgcolor; ?>; <?= $color; ?>;"><?= number_format($cb->jumlah); ?></td>
 													</tr>
-												<?php endforeach; ?>
+												<?php $no++; endforeach; ?>
 											</tbody>
 										</table>
 									</div>
@@ -388,12 +574,43 @@ min-height: 300px;
 												</tr>
 											</thead>
 											<tbody>
-												<?php foreach ($poli as $p) : ?>
+												<?php $no = 1; foreach ($poli as $p) : ?>
+													<?php if($no == 1) {
+														$bgcolor = "#95ceff";
+														$color = "color: black";
+													} else if($no == 2) {
+														$bgcolor = "#5c5c61";
+														$color = "color: white";
+													} else if($no == 3) {
+														$bgcolor = "#a9ff96";
+														$color = "color: black";
+													} else if($no == 4) {
+														$bgcolor = "#ffbc75";
+														$color = "color: black";
+													} else if($no == 5) {
+														$bgcolor = "#999eff";
+														$color = "color: black";
+													} else if($no == 6) {
+														$bgcolor = "#ff7599";
+														$color = "color: black";
+													} else if($no == 7) {
+														$bgcolor = "#fdec6d";
+														$color = "color: black";
+													} else if($no == 8) {
+														$bgcolor = "#44a9a8";
+														$color = "color: black";
+													} else if($no == 9) {
+														$bgcolor = "#ff7474";
+														$color = "color: black";
+													} else if($no == 10) {
+														$bgcolor = "#91e8e1";
+														$color = "color: black";
+													} ?>
 													<tr>
-														<td><?= $p->pol; ?></td>
-														<td style="text-align: right;"><?= number_format($p->jumlah); ?></td>
+														<td style="background-color: <?= $bgcolor; ?>; <?= $color; ?>;"><?= $p->pol; ?></td>
+														<td style="text-align: right; background-color: <?= $bgcolor; ?>; <?= $color; ?>;"><?= number_format($p->jumlah); ?></td>
 													</tr>
-												<?php endforeach; ?>
+												<?php $no++; endforeach; ?>
 											</tbody>
 										</table>
 									</div>
@@ -429,12 +646,43 @@ min-height: 300px;
 												</tr>
 											</thead>
 											<tbody>
-												<?php foreach ($dokter as $d) : ?>
+												<?php $no = 1; foreach ($dokter as $d) : ?>
+													<?php if($no == 1) {
+														$bgcolor = "#95ceff";
+														$color = "color: black";
+													} else if($no == 2) {
+														$bgcolor = "#5c5c61";
+														$color = "color: white";
+													} else if($no == 3) {
+														$bgcolor = "#a9ff96";
+														$color = "color: black";
+													} else if($no == 4) {
+														$bgcolor = "#ffbc75";
+														$color = "color: black";
+													} else if($no == 5) {
+														$bgcolor = "#999eff";
+														$color = "color: black";
+													} else if($no == 6) {
+														$bgcolor = "#ff7599";
+														$color = "color: black";
+													} else if($no == 7) {
+														$bgcolor = "#fdec6d";
+														$color = "color: black";
+													} else if($no == 8) {
+														$bgcolor = "#44a9a8";
+														$color = "color: black";
+													} else if($no == 9) {
+														$bgcolor = "#ff7474";
+														$color = "color: black";
+													} else if($no == 10) {
+														$bgcolor = "#91e8e1";
+														$color = "color: black";
+													} ?>
 													<tr>
-														<td><?= $d->dok; ?></td>
-														<td style="text-align: right;"><?= number_format($d->jumlah); ?></td>
+														<td style="background-color: <?= $bgcolor; ?>; <?= $color; ?>;"><?= $d->dok; ?></td>
+														<td style="text-align: right; background-color: <?= $bgcolor; ?>; <?= $color; ?>;"><?= number_format($d->jumlah); ?></td>
 													</tr>
-												<?php endforeach; ?>
+												<?php $no++; endforeach; ?>
 											</tbody>
 										</table>
 									</div>
@@ -470,12 +718,43 @@ min-height: 300px;
 												</tr>
 											</thead>
 											<tbody>
-												<?php foreach ($kecamatan as $k) : ?>
+												<?php $no = 0; foreach ($kecamatan as $k) : ?>
+													<?php if($no == 1) {
+														$bgcolor = "#95ceff";
+														$color = "color: black";
+													} else if($no == 2) {
+														$bgcolor = "#5c5c61";
+														$color = "color: white";
+													} else if($no == 3) {
+														$bgcolor = "#a9ff96";
+														$color = "color: black";
+													} else if($no == 4) {
+														$bgcolor = "#ffbc75";
+														$color = "color: black";
+													} else if($no == 5) {
+														$bgcolor = "#999eff";
+														$color = "color: black";
+													} else if($no == 6) {
+														$bgcolor = "#ff7599";
+														$color = "color: black";
+													} else if($no == 7) {
+														$bgcolor = "#fdec6d";
+														$color = "color: black";
+													} else if($no == 8) {
+														$bgcolor = "#44a9a8";
+														$color = "color: black";
+													} else if($no == 9) {
+														$bgcolor = "#ff7474";
+														$color = "color: black";
+													} else if($no == 10) {
+														$bgcolor = "#91e8e1";
+														$color = "color: black";
+													} ?>
 													<tr>
-														<td><?= $k->kec; ?></td>
-														<td style="text-align: right;"><?= number_format($k->jumlah); ?></td>
+														<td style="background-color: <?= $bgcolor; ?>; <?= $color?>;"><?= $k->kec; ?></td>
+														<td style="text-align: right; background-color: <?= $bgcolor; ?>; <?= $color?>;"><?= number_format($k->jumlah); ?></td>
 													</tr>
-												<?php endforeach; ?>
+												<?php $no++; endforeach; ?>
 											</tbody>
 										</table>
 									</div>

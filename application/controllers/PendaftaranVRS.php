@@ -895,10 +895,11 @@ class PendaftaranVRS extends CI_Controller {
 	public function pcare_rj($noreg = ""){
 		$data   = [
 			"noreg"         => $noreg == "" ? "" : $noreg,
-			"pcare_poli"    => $this->db->get_where("bpjs_pcare_poli", ["poliSakit" => "1"]),
+			// "pcare_poli"    => $this->db->get_where("bpjs_pcare_poli", ["poliSakit" => "1"]),
 			"pcare_dr"		=> $this->db->get("bpjs_pcare_dokter"),
 			"pcare_sp"		=> $this->db->get("bpjs_pcare_status_pulang"),
-			"pcare_sadar"   => $this->db->get("bpjs_pcare_kesadaran"),		
+			"pcare_sadar"   => $this->db->get("bpjs_pcare_kesadaran"),	
+			"data_pas"		=> $this->db->get_where("pasien_rajal", ["noreg" => $noreg])->row()	
 		];
 
 		$this->load->view("pcare/index", $data);

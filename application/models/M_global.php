@@ -1992,19 +1992,17 @@ class M_global extends CI_Model
 		if ($unit != "") {
 
 			$query = $this->db->query("SELECT kodebarang as id, concat(' [ ', kodebarang ,' ] ',' - ',' [ ', namabarang ,' ] ',' - ',' [ ', satuan1 ,' ] ') as text FROM(
-			SELECT
-			kodebarang,namabarang,satuan1,
+			SELECT kodebarang,namabarang,satuan1,
 			IFNULL((select sum(saldoakhir) as saldoakhir from tbl_barangstock b where koders='$unit' and b.kodebarang=a.kodebarang),0) as salakhir
-			from tbl_logbarang a where kodebarang like '%$str%' or namabarang like '$str%'
+			from tbl_barang a where kodebarang like '%$str%' or namabarang like '$str%'
 			) as c
 			order by kodebarang");
 		} else {
-
 			$query = $this->db->query("SELECT kodebarang as id, concat(kodebarang,' | ',namabarang,' | ',satuan1) as text FROM(
 			SELECT
 			kodebarang,namabarang,satuan1,
 			IFNULL((select sum(saldoakhir) as saldoakhir from tbl_barangstock b where koders='$unit' and b.kodebarang=a.kodebarang),0)salakhir
-			from tbl_logbarang a 
+			from tbl_barang a 
 			) as c
 			order by kodebarang");
 		}
@@ -2190,7 +2188,7 @@ class M_global extends CI_Model
 			AND a.gudang ='$gudang' 
 			AND (b.namabarang LIKE '%$str%' OR b.kodebarang LIKE '%$str%') 
 			AND b.namabarang IS NOT NULL 
-			GROUP BY b.kodebarang ASC $limm ");
+			GROUP BY b.kodebarang ASC $limm");
 
 			// $query	= $this->db->query('SELECT a.kodebarang AS id, CONCAT("[ ", a.kodebarang," ] - [ ", a.namabarang," ] - [", a.satuan1," ] - [ ", FORMAT(IFNULL((
 			// 	SELECT SUM(saldoakhir)

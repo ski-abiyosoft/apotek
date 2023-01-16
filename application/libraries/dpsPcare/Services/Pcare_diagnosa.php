@@ -1,27 +1,27 @@
 <?php
 
-require_once(APPPATH . "libraries/dpsPcare/Services/Pcare_service.php");
-require_once(APPPATH . "libraries/dpsPcare/Repositories/DokterRepository.php");
-require_once(APPPATH . "libraries/dpsPcare/Repositories/MasterDokterRepository.php");
+require APPPATH . "libraries/dpsPcare/Repositories/DiagnosaRepository.php";
 
-class Pcare_dokter extends Pcare_service
+if (!class_exists("Pcare_service")) {
+    require "Pcare_service.php";
+}
+
+class Pcare_diagnosa extends Pcare_service
 {
-    private $dokter;
-    private $master_dokter;
+    private $diagnosa;
     private $url;
     
     public function __construct(array $arg)
     {
         parent::__construct($arg["kdppk"]);
-        $this->master_dokter   = new MasterDokterRepository();
-        $this->dokter         = new DokterRepository();
-        $this->url            = $this->base_url . "dokter";
+        $this->diagnosa  = new DiagnosaRepository();
+        $this->url       = $this->base_url . "diagnosa";
     }
 
-    public function get_dokter (int $offset, int $limit)
+    public function get_diagnosa (string $search_term, int $offset = 0, int $limit = 100)
     {
         $timestamp  = $this->get_timestamp();
-        $result     = $this->make_request($timestamp, "{$this->url}/{$offset}/{$limit}");
+        $result     = $this->make_request($timestamp, "{$this->url}/{$search_term}/{$offset}/{$limit}");
 
         if ($result->status >= 200 AND $result->status < 300) {
             $decrypted = $this->decrypt_result(json_decode($result->data), $timestamp);
@@ -32,8 +32,7 @@ class Pcare_dokter extends Pcare_service
 
                 if ($response_data->count > 0) {
                     foreach ($response_data->list as $data) {
-                        $data->kodeRs = $this->kdppk;
-                        $this->dokter->save_or_update($data, ["kdDokter", "kodeRs"]);
+                        $this->diagnosa->save_or_update($data, ["kdDiag"]);
                     }
                 }
 
@@ -60,17 +59,5 @@ class Pcare_dokter extends Pcare_service
             "status"    => $result->status,
             "message"   => json_decode($result->data)->response
         ];
-    }
-
-    /**
-     * Method for updating master dokter
-     * 
-     * @param string $pcare_kdDokter
-     * @param string $kodokter
-     * @return bool
-     */
-    public function update_master_dokter (string $pcare_kdDokter, string $kodokter)
-    {
-        return $this->master_dokter->update((object) ["pcare_kdDokter" => $pcare_kdDokter], ["kodokter" => $kodokter]);
     }
 }

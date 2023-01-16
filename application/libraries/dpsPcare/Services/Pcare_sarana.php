@@ -15,7 +15,7 @@ class Pcare_sarana extends Pcare_service
     {
         parent::__construct($arg["kdppk"]);
 
-        $this->url            = $this->base_url . "spesialis/khusus";
+        $this->url            = $this->base_url . "spesialis/sarana";
         $this->sarana         = new SaranaRepository();
     }
 
@@ -26,8 +26,8 @@ class Pcare_sarana extends Pcare_service
      * @param int $limit
      * @return stdClass
      */
-    public function get_provider (int $offset = 0, int $limit = 100)
-    {
+    public function get_sarana (int $offset = 0, int $limit = 100)
+    {    
         $timestamp  = $this->get_timestamp();
         $result     = $this->make_request($timestamp, "{$this->url}");
 
@@ -41,7 +41,7 @@ class Pcare_sarana extends Pcare_service
                 if ($response_data->count > 0) {
                     foreach ($response_data->list as $data) {
                         $data->kodeRs = $this->kdppk;
-                        $this->khusus->save_or_update($data, ["kdKhusus", "kodeRs"]);
+                        $this->sarana->save_or_update($data, ["kdSarana", "kodeRs"]);
                     }
                 }
 

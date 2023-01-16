@@ -131,11 +131,13 @@ class Penjualan_retur extends CI_Controller
 			$headerx = $this->db->query($queryh)->row();
 			if ($headerx) {
 				$header = $headerx;
-				$namapas = $header->namapas;
+				$namapro = $this->db->get_where("tbl_pasien", ["rekmed"=>$header->rekmed])->row();
+				$namapas = $namapro->namapas;
 			} else {
 				$header = $this->db->query("SELECT * from tbl_apohreturjual where tbl_apohreturjual.returno = '$param'")->row();
 				$ceknama = $this->db->get_where("tbl_apoposting", ['resepno' => $param])->row();
-				$namapas = $ceknama->namapas;
+				$namapro = $this->db->get_where("tbl_pasien", ["rekmed"=>$ceknama->rekmed])->row();
+				$namapas = $namapro->namapas;
 			}
 
 			$pdf = new simkeu_nota();
@@ -212,7 +214,7 @@ class Penjualan_retur extends CI_Controller
 			foreach ($detil as $db) {
 				$totdis += $db->discountrp;
 				$totppn += $db->ppnrp;
-				$tot += ($db->qtyretur * $db->price) - $db->discountrp + $db->ppnrp;
+				$tot += ($db->qtyretur * $db->price) - $db->discountrp;
 				$tot1 += ($db->qtyretur * $db->price);
 				$pdf->FancyRow2(5, array(
 					$no,
@@ -285,6 +287,8 @@ class Penjualan_retur extends CI_Controller
 			$size  = array('10', '10', '10', '10');
 			$judul = array('', '', '', $alamat2 . ', ' . date('d-m-Y'));
 			$pdf->FancyRow2(4, $judul, $fc,  $border, $align, $style, $size, $max);
+			$pdf->ln();
+			$pdf->ln();
 			$judul = array('', '', '', 'Petugas');
 			$pdf->FancyRow2(4, $judul, $fc,  $border, $align, $style, $size, $max);
 			$judul = array('VALIDASI KASIR:', '', '', 'Cap & Tanda Tangan');
@@ -1075,7 +1079,9 @@ class Penjualan_retur extends CI_Controller
 							$detil = $this->db->query("SELECT (select namabarang from tbl_barang where kodebarang=d.kodebarang) as namabarang, (SELECT satuan1 FROM tbl_barang WHERE kodebarang=d.kodebarang) AS satuan1, d.* from tbl_apohreturjual h join tbl_apodreturjual d on h.returno=d.returno where d.returno = '$nomor'");
 						}
 						// var_dump($detil); die;
-
+						$pajak = $this->db->get_where("tbl_pajak", ["kodetax" => "PPN"])->row();
+						$ppn = $pajak->prosentase / 100;
+						$d["pajak"] = $ppn;
 						$d['header']  = $header->result();
 						$d['detil']   = $detil->result();
 						$d['jumdata1'] = $detil->num_rows();
@@ -1136,8 +1142,10 @@ class Penjualan_retur extends CI_Controller
           <input name="harga[]" onchange="totalline(<?= $no ?>)" value="<?= str_replace('.00', '', $value->price) ?>"
             id="harga<?= $no ?>" type="text" class="form-control rightJustified" readonly>
         </td>
-        <td width="5%"><a class="btn default" id="lupharga<?= $no ?>" data-toggle="modal" href="#lupharga"
-            onclick="getidharga(this.id)"><i class="fa fa-search"></i></a></td>
+        <td width="5%">
+					<input type="checkbox" checked id="lupppn<?= $no ?>" name="lupppn[]" class="form-control" disabled>
+					<!-- <a class="btn default" id="lupharga<?= $no ?>" data-toggle="modal" href="#lupharga" onclick="getidharga(this.id)"><i class="fa fa-search"></i></a> -->
+				</td>
         <td width="10%">
           <input name="disc[]" onchange="totalline(<?= $no ?>);total()"
             value="<?= str_replace('.00', '', $value->discrp) ?>" id="disc<?= $no ?>" type="text"

@@ -801,6 +801,39 @@
       });
    }
 
+   function initailizeSelect2_farmasi_barang() {
+      $(".select2_el_farmasi_barang").select2({
+         allowClear: true,
+         multiple: false,
+         placeholder: '--- Pilih Barang ---',
+         //minimumInputLength: 2,
+         dropdownAutoWidth: true,
+         language: {
+            inputTooShort: function() {
+               return 'Ketikan Nomor minimal 2 huruf';
+            }
+         },
+         ajax: {
+            url: "<?php echo base_url(); ?>app/search_farmasi_barang2",
+            type: "post",
+            dataType: 'json',
+            delay: 250,
+            data: function(params) {
+               return {
+                  searchTerm: params.term // search term
+               };
+            },
+
+            processResults: function(response) {
+               return {
+                  results: response
+               };
+            },
+            cache: true
+         }
+      });
+   }
+
    function initailizeSelect2_farmasi_barang_cbg() {
       $(".select2_el_farmasi_barang_cbg").select2({
          allowClear: true,

@@ -3132,7 +3132,7 @@
         var data_post   = {
             kodokter: $(this).val(),
             noreg: '<?= $this->input->get("noreg") ?>',
-            kodepos: '<?= $ttv->kodepos ?>'
+            kodepos: '<?= $polipas ?>',
         };
         $.ajax({
             url: "/Igd/plklnkdrpoli/",
@@ -3295,8 +3295,8 @@
 
         //
 
-        initailizeSelect2_dokter('<?= $ttv->kodepos ?>');
-        initailizeSelect2_perawat('<?= $ttv->kodepos ?>');
+        initailizeSelect2_dokter('<?= $polipas ?>');
+        initailizeSelect2_perawat('<?= $polipas ?>');
     });
 
     <?php if($statusicd == "undone"): ?>
@@ -3888,13 +3888,13 @@
         "<td><button type='button' onclick='hapusBaris_tindakan("+idrowBill+")' class='btn red'><i class='fa fa-trash-o'></i> </button></td></td>"+
         "<td><select name='kode[]' id=kode"+idrowBill+" class='select2_el_poli_tindakan form-control input-largex' onchange='show_tindakan(this.value, "+idrowBill+")'> </select></td>"+
         "<td><input name='hrg[]' id=hrg"+idrowBill+" class='form-control rightJustified' readonly></td>"+
-        "<td><select name='dokter[]' id=dokter"+idrowBill+" type='text' class='form-control select2_el_dokter'><option value='<?= $kodokter ?>' selected><?= data_master("dokter", array("kodokter" => $kodokter, "koders" => $this->session->userdata("unit"), "kopoli" => $ttv->kodepos))->nadokter ?></option></select></td>"+
+        "<td><select name='dokter[]' id=dokter"+idrowBill+" type='text' class='form-control select2_el_dokter'><option value='<?= $kodokter ?>' selected><?= data_master("dokter", array("kodokter" => $kodokter, "koders" => $this->session->userdata("unit"), "kopoli" => $polipas))->nadokter ?></option></select></td>"+
         "<td><select name='paramedis[]' id=paramedis"+idrowBill+" type='text' class='form-control select2_el_perawat'></select></td>"+
         "</tr>");
 
         initailizeSelect2_poli_tindakan(kodpos);
-        initailizeSelect2_dokter('<?= $ttv->kodepos ?>');
-        initailizeSelect2_perawat('<?= $ttv->kodepos ?>');
+        initailizeSelect2_dokter('<?= $polipas ?>');
+        initailizeSelect2_perawat('<?= $polipas ?>');
         idrowBill++;
     }
 

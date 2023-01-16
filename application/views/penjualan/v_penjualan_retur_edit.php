@@ -71,7 +71,8 @@ foreach ($header as $rowh) {
                                         <label class="col-md-3 control-label">Pelanggan</label>
                                         <div class="col-md-6">
                                             <div class="input-group">
-                                                <select id="cust" name="cust" class="form-control select2_el_pasien input-large" data-placeholder="Pilih..." onkeypress="return tabE(this,event)">
+                                                <input type="hidden" name="cust" id="cust" value="<?= $rowh->rekmed; ?>">
+                                                <select id="cust" name="cust" class="form-control select2_el_pasien input-large" data-placeholder="Pilih..." onkeypress="return tabE(this,event)" disabled>
                                                     <?php
                                                     if ($rowh->rekmed) {
                                                         $datapasien = data_master('tbl_pasien', array('rekmed' => $rowh->rekmed));
@@ -158,11 +159,12 @@ foreach ($header as $rowh) {
 
                                     <table id="datatable" class="table table-hoverx table-stripedx table-borderedx table-condensed table-scrollable">
                                         <thead>
+                                            <th width="5%" style="text-align: center">Hapus</th>
                                             <th width="35%" style="text-align: center">Nama Barang</th>
                                             <th width="10%" style="text-align: center">Kuantitas</th>
                                             <th width="10%" style="text-align: center">Satuan</th>
                                             <th width="15%" style="text-align: center">Harga</th>
-                                            <th width="5%" style="text-align: center"></th>
+                                            <th width="5%" style="text-align: center">PPN</th>
                                             <th width="10%" style="text-align: center">Diskon (Rp)</th>
                                             <th width="15%" style="text-align: center">Total Harga</th>
 
@@ -172,18 +174,17 @@ foreach ($header as $rowh) {
                                             <?php
                                             $no = 1;
                                             foreach ($detil as $row) { ?>
-                                                <tr>
+                                                <tr id="rj_tr<?= $no; ?>">
+                                                    <td width="5%">
+                                                        <button type='button' onclick='hapusBarisIni(<?= $no; ?>); totalline(<?= $no; ?>);' class='btn red'><i class='fa fa-trash-o'></i></button>
+                                                    </td>
                                                     <td width="35%">
                                                         <select name="kode[]" id="kode<?= $no; ?>" class="select2_el_farmasi_barang form-control input-largex" onchange="showbarangname(this.value, <?= $no; ?>)">
-                                                            <option value="<?= $row->kodebarang; ?>"><?= $row->namabarang; ?>
-                                                                <?php
-                                                                // var_dump($row); die;
-                                                                ?>
-                                                            </option>
+                                                            <option value="<?= $row->kodebarang; ?>"><?= "[ ".$row->kodebarang." ] - [ ".$row->namabarang." ] - [ ".$row->satuan." ]"; ?></option>
                                                         </select>
                                                     </td>
                                                     <td width="10%">
-                                                        <input name="qty[]" value="<?php echo $row->qtyretur; ?>" onchange="totalline(<?php echo $no; ?>);total();changeqty(<?= $no ?>)" id="qty<?php echo $no; ?>" type="text" class="form-control rightJustified">
+                                                        <input name="qty[]" value="<?php echo $row->qtyretur; ?>" onchange="totalline(<?php echo $no; ?>);total();" id="qty<?php echo $no; ?>" type="text" class="form-control rightJustified">
                                                     </td>
                                                     <td width="10%">
                                                         <input name="sat[]" value="<?php echo $row->satuan; ?>" id="sat<?php echo $no; ?>" type="text" class="form-control " onkeypress="return tabE(this,event)">
@@ -192,17 +193,13 @@ foreach ($header as $rowh) {
                                                         <input name="harga[]" value="<?php echo number_format($row->price); ?>" onchange="totalline(<?php echo $no; ?>)" id="harga<?php echo $no; ?>" type="text" class="form-control rightJustified">
                                                     </td>
                                                     <td>
-                                                        <a class="btn default" id="lupharga<?php echo $no; ?>" data-toggle="modal" href="#lupharga" onclick="getidharga(this.id)"><i class="fa fa-search"></i></a>
+                                                        <input type='checkbox' checked class='form-control' id='ppn<?= $no; ?>' name='ppn[]' disabled>
                                                     </td>
                                                     <td width="5%">
                                                         <input name="disc[]" value="<?php echo number_format($row->discountrp); ?>" onchange="totalline(<?php echo $no; ?>);total()" id="disc<?php echo $no; ?>" type="text" class="form-control rightJustified ">
                                                     </td>
                                                     <td width="15%">
                                                         <input name="jumlah[]" value="<?= $row->totalrp ?>" id="jumlah<?php echo $no; ?>" type="text" class="form-control rightJustified" size="40%" onchange="total()">
-                                                        <!-- <input name="jumlah[]" value="<?= ($row->totalrp); ?>"
-                                                        id="jumlah<?= $no; ?>" type="text"
-                                                        class="form-control rightJustified" size="40%"
-                                                        onchange="total()" readonly> -->
                                                     </td>
 
                                                 </tr>
@@ -215,7 +212,7 @@ foreach ($header as $rowh) {
                                         <div class="col-xs-9">
                                             <div class="wells">
                                                 <button type="button" onclick="tambah()" class="btn green"><i class="fa fa-plus"></i> </button>
-                                                <button type="button" onclick="hapus()" class="btn red"><i class="fa fa-trash-o"></i></button>
+                                                <!-- <button type="button" onclick="hapus()" class="btn red"><i class="fa fa-trash-o"></i></button> -->
                                             </div>
                                         </div>
 
@@ -281,7 +278,9 @@ foreach ($header as $rowh) {
                                     <tr>
                                         <td width="40%"><strong>PPN</strong></td>
                                         <td width="1%"><strong>:</strong></td>
-                                        <td width="59" align="right"><strong><span id="_vppn"></span></strong></td>
+                                        <td width="59" align="right"><strong><span id="_vppn"></span></strong>
+                                            <input type="hidden" name="_ppn" id="_ppn" value="<?= $pajak ?>">
+                                        </td>
                                     </tr>
 
                                     <tr>
@@ -323,22 +322,22 @@ $this->load->view('template/footer');
         var td5 = x.insertCell(4);
         var td6 = x.insertCell(5);
         var td7 = x.insertCell(6);
-        td1.innerHTML = "<select name='kode[]' id=kode" + idrow + " onchange='showbarangname(this.value," + idrow +
-            ")' class='select2_el_farmasi_barang form-control' ><option value=''>--- Pilih Barang ---</option></select>";
-        td2.innerHTML = "<input name='qty[]'    id=qty" + idrow + " onchange='totalline(" + idrow +
-            ");total();changeqty(" + idrow + ")' value='1'  type='text' class='form-control rightJustified'  >";
-        td3.innerHTML = "<input name='sat[]'    id=sat" + idrow + " type='text' class='form-control' >";
-        td4.innerHTML = "<input name='harga[]'  id=harga" + idrow + " onchange='totalline(" + idrow +
-            ") value='0'  type='text' class='form-control rightJustified'>";
-        td5.innerHTML = "<a class='btn default' id=lupharga" + idrow +
-            " data-toggle='modal' href='#lupharga' onclick='getidharga(this.id)'><i class='fa fa-search'></i></a>";
-        td6.innerHTML = "<input name='disc[]'   id=disc" + idrow + " onchange='total();totalline(" + idrow +
-            ")' value='0'  type='text' class='form-control rightJustified'  >";
-        td7.innerHTML = "<input name='jumlah[]' id=jumlah" + idrow +
-            " type='text' class='form-control rightJustified' size='40%'>";
+        var td8 = x.insertCell(7);
+        td1.innerHTML = "<button type='button' onclick='hapusBarisIni(" + idrow + "); totalline(" + idrow + ");' class='btn red'><i class='fa fa-trash-o'></i></button>";
+        td2.innerHTML = "<select name='kode[]' id=kode" + idrow + " onchange='showbarangname(this.value," + idrow + ")' class='select2_el_farmasi_barang form-control' ><option value=''>--- Pilih Barang ---</option></select>";
+        td3.innerHTML = "<input name='qty[]'    id=qty" + idrow + " onchange='totalline(" + idrow + ");total();' value='1'  type='text' class='form-control rightJustified'  >";
+        td4.innerHTML = "<input name='sat[]'    id=sat" + idrow + " type='text' class='form-control' >";
+        td5.innerHTML = "<input name='harga[]'  id=harga" + idrow + " onchange='totalline(" + idrow + ") value='0'  type='text' class='form-control rightJustified'>";
+        td6.innerHTML = "<input type='checkbox' checked class='form-control' id='ppn" + idrow + "' name='ppn[]' disabled>";
+        td7.innerHTML = "<input name='disc[]'   id=disc" + idrow + " onchange='total();totalline(" + idrow + ")' value='0'  type='text' class='form-control rightJustified'  >";
+        td8.innerHTML = "<input name='jumlah[]' id=jumlah" + idrow + " type='text' class='form-control rightJustified' size='40%'>";
         initailizeSelect2_farmasi_barang();
-
         idrow++;
+    }
+
+    function hapusBarisIni(param) {
+        $("#rj_tr" + param).remove();
+        totalline(param);
     }
 
 
@@ -455,16 +454,13 @@ $this->load->view('template/footer');
                     var table = document.getElementById('datatable');
                     rowCount = table.rows.length;
                     for (i = 1; i < rowCount; i++) {
-                        var kode = $('#kode' + i).val();
-                        var qty = $('#qty' + i).val();
-                        var sat = $('#sat' + i).val();
-                        var hargax = $('#harga' + i).val();
-                        var harga = Number(parseInt(hargax.replaceAll(',', '')));
-                        var discx = $('#disc' + i).val();
-                        var disc = Number(parseInt(discx.replaceAll(',', '')));
-                        var jumlahx = $('#jumlah' + i).val();
-                        var jumlah = Number(parseInt(jumlahx.replaceAll(',', '')));
-                        // console.log(kode+' '+qty+' '+sat+' '+harga+' '+disc+' '+jumlah);
+                        var row = table.rows[i];
+                        var kode = row.cells[1].children[0].value;
+                        var qty = Number(row.cells[2].children[0].value.replace(/[^0-9\.]+/g, ""));
+                        var sat = row.cells[3].children[0].value;
+                        var harga = Number(row.cells[4].children[0].value.replace(/[^0-9\.]+/g, ""));
+                        var disc = Number(row.cells[6].children[0].value.replace(/[^0-9\.]+/g, ""));
+                        var jumlah = Number(row.cells[7].children[0].value.replace(/[^0-9\.]+/g, ""));
                         $.ajax({
                             url: '<?= site_url(); ?>Penjualan_retur/update_multi/?kode=' + kode + '&qty=' + qty + '&sat=' + sat + '&harga=' + harga + '&disc=' + disc + '&jumlah=' + jumlah + '&nobukti=' + nomor,
                             type: 'POST',
@@ -477,8 +473,7 @@ $this->load->view('template/footer');
                     }
                     swal({
                         title: "RETUR PENJUALAN",
-                        html: "<p> No. Bukti   : <b>" + nomor + "</b> </p>" +
-                            "Tanggal :  " + tanggal + "</b> </p>" + "Total Biaya:" + " " + total,
+                        html: "<p> No. Bukti   : <b>" + nomor + "</b> </p>" + "Tanggal :  " + tanggal + "</b> </p>" + "Total Biaya:" + " " + total,
                         type: "info",
                         confirmButtonText: "OK"
                     }).then((value) => {
@@ -564,6 +559,8 @@ $this->load->view('template/footer');
         return sign < 0 ? '-' + result : result;
     }
 
+    var pajak = <?= $pajak; ?>;
+
     function total() {
 
         var table = document.getElementById('datatable');
@@ -574,13 +571,13 @@ $this->load->view('template/footer');
 
         for (var i = 1; i < rowCount; i++) {
             var row = table.rows[i];
-            jumlah = row.cells[1].children[0].value;
-            harga = row.cells[3].children[0].value;
-            diskon = row.cells[5].children[0].value;
+            jumlah = row.cells[2].children[0].value;
+            harga = row.cells[4].children[0].value;
+            diskon = row.cells[6].children[0].value;
             var jumlah1 = Number(jumlah.replace(/[^0-9\.]+/g, ""));
             var harga1 = Number(harga.replace(/[^0-9\.]+/g, ""));
             var diskon1 = Number(diskon.replace(/[^0-9\.]+/g, ""));
-            row.cells[6].children[0].value = separateComma((jumlah1 * harga1 - diskon1).toFixed(0));
+            row.cells[7].children[0].value = separateComma((jumlah1 * harga1 - diskon1).toFixed(0));
 
             tjumlah = tjumlah + eval(jumlah1 * harga1);
 
@@ -593,20 +590,21 @@ $this->load->view('template/footer');
 
 
         }
+        var ppn_ = $("#_ppn").val();
 
-        tjumlah2 = (tjumlah - tdiskon) / 11;
+        tjumlah2 = (tjumlah - tdiskon) / ppn_;
 
-        tppn2 = (tjumlah - tdiskon) * 0.11;
+        tppn2 = (tjumlah - tdiskon) * pajak;
 
         tppn = 0;
 
         var xyz = tjumlah - tdiskon;
 
-        var ppnx = tjumlah * 11 / 100;
+        var ppnx = tjumlah * pajak;
 
         var tot = tjumlah + tdiskon + tppn;
 
-        var totx = xyz + tppn2;
+        var totx = xyz;
         // console.log(totx);
 
         var ttl = tjumlah + tppn;
@@ -642,19 +640,26 @@ $this->load->view('template/footer');
 
     function totalline(id) {
 
-        var table = document.getElementById('datatable');
-        var row = table.rows[id];
-        var harga = Number(row.cells[3].children[0].value.replace(/[^0-9\.]+/g, ""));
-        jumlah = row.cells[1].children[0].value * harga;
-        diskon = (row.cells[5].children[0].value / 100) * jumlah;
+        // var table = document.getElementById('datatable');
+        // var row = table.rows[id];
+        // var harga = Number(row.cells[4].children[0].value.replace(/[^0-9\.]+/g, ""));
+        // jumlah = row.cells[2].children[0].value * harga;
+        // diskon = (row.cells[6].children[0].value / 100) * jumlah;
+        // tot = jumlah - diskon;
+        // row.cells[7].children[0].value = formatCurrency1(tot);
+        // total();
 
-        // diskon = (row.cells[5].children[0].value);
-        tot = jumlah - diskon;
-        //    alert(jumlah);
-        //    alert(diskon);
-        //    alert(tot);
-        row.cells[6].children[0].value = formatCurrency1(tot);
-        total();
+        var table = document.getElementById('datatable');
+        var rowCount = table.rows.length;
+        for (var i = 1; i < rowCount; i++) {
+            var row = table.rows[i];
+            var qty = Number(row.cells[2].children[0].value.replace(/[^0-9\.]+/g, ""));
+            var harga = Number(row.cells[4].children[0].value.replace(/[^0-9\.]+/g, ""));
+            var diskon = Number(row.cells[6].children[0].value.replace(/[^0-9\.]+/g, ""));
+            tot = (qty * harga) - diskon;
+            row.cells[7].children[0].value = separateComma(tot);
+            total();
+        }
 
     }
 
