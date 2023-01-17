@@ -155,7 +155,7 @@ class Pcare_service
         
         $raw_string = $result->response;
 
-        if ($raw_string) {
+        if (is_string($raw_string)) {
             $key = "{$settings->consid}{$settings->conspas}".$timestamp;
 
             $clearResponse = $this->decryptor::decrypt_response($key, $raw_string);

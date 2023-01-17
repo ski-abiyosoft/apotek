@@ -491,13 +491,13 @@ function get_kdppk (string $koders): string {
 }
 
 /**
- * Function for parsing local date formated into ISO string formatted for database insert purpose.
+ * Function for reversing date string.
  * 
  * @param string $date
  * @return string
  */
-function parse_local_date (string $date_local): string {
-	$arrayDate 	= explode("-", $date_local);
+function parse_local_date (string $date): string {
+	$arrayDate 	= explode("-", $date);
 
 	return implode("-", array_reverse($arrayDate));
 }

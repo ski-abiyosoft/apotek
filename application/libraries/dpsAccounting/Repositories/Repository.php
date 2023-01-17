@@ -122,4 +122,67 @@
     {
         return $this->db->list_fields($this->table);
     }
+
+    /**
+     * Method for processing data table request
+     * 
+     * @return array
+     */
+    public function create_data_table(stdClass $request, array $where_clause = []): array
+    {
+        $sEcho = $request->sEcho;
+        $columns = $request->columns;
+        $limit = intval($request->iDisplayLength); 
+        $offset = intval($request->iDisplayStart); 
+        $search_value = $request->sSearch; 
+        $order_column = $request->iSortCol_0; 
+        $order_type = $request->sSortDir_0;
+
+        $columns_str    = implode(',', $columns);
+        $total_count = $this->select("COUNT(*) as jumlah");
+
+        if (count($where_clause) > 0) $total_count = $total_count->where($where_clause);
+
+        $total_count = $total_count->get()->row()->jumlah;
+
+        $filtered_count = $this->select("COUNT(*) as jumlah");
+
+        if (count($where_clause) > 0) $filtered_count = $filtered_count->where($where_clause);
+
+        if ($search_value != '') {
+            $where = '';
+
+            foreach ($columns as $key => $column) {
+                if ($key == 0) $where .= "$column like '%{$search_value}%'";
+                else $where .= "or $column like '%{$search_value}%'";
+            }
+
+            $filtered_count = $filtered_count->where("($where)");
+        }
+
+        $filtered_count = $filtered_count->get()->row()->jumlah;
+        $filtered_data  = $this->select("$columns_str");
+
+        if (count($where_clause) > 0) $filtered_data = $filtered_data->where($where_clause);
+
+        if ($search_value != '') {
+            $where = '';
+
+            foreach ($columns as $key => $column) {
+                if ($key == 0) $where .= "$column like '%{$search_value}%'";
+                else $where .= "or $column like '%{$search_value}%'";
+            }
+
+            $filtered_data = $filtered_data->where("($where)");
+        }
+
+        $filtered_data = $filtered_data->limit($limit, $offset)->order_by($columns[$order_column], $order_type)->get()->result();
+
+        return [
+            'iTotalRecords' => $total_count,
+            'iTotalDisplayRecords' => $filtered_count,
+            'sEcho' => intval($sEcho),
+            'aaData' => $filtered_data
+        ];
+    }
  }

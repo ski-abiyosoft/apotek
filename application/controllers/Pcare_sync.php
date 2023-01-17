@@ -343,7 +343,7 @@ class Pcare_sync extends CI_controller
         $jenis_kartu = $this->input->post("jenis_kartu");
 
         $result      = $this->pcare_kelompok->get_club_prolanis($kdProgram);
-        $result_db   = $this->db->get("bpjs_pcare_club_prolanis")->result();
+        $result_db   = $this->db->where("kodeRs", $this->session->userdata("kdppk"))->get("bpjs_pcare_club_prolanis")->result();
 
         return $this->output
             ->set_content_type("application/json")

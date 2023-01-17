@@ -18,6 +18,7 @@ class Pcare_api extends CI_Controller
         $this->load->library("dpsPcare/Services/Pcare_pendaftaran", ["kdppk" => $this->session->userdata("kdppk")]);
         $this->load->library("dpsPcare/Services/Pcare_peserta", ["kdppk" => $this->session->userdata("kdppk")]);
         $this->load->library("dpsPcare/Services/Pcare_kunjungan", ["kdppk" => $this->session->userdata("kdppk")]);
+        $this->load->library("dpsPcare/Services/Pcare_kelompok", ["kdppk" => $this->session->userdata("kdppk")]);
     }
 
     /**
@@ -448,5 +449,34 @@ class Pcare_api extends CI_Controller
     {
         echo $this->session->userdata("kdppk");
         exit;
+    }
+
+    /**
+     * Method for saving kegiatan kelompok
+     * 
+     */
+    public function add_kegiatan_kelompok ()
+    {
+        $result = $this->pcare_kelompok->add_kegiatan_kelompok((object) $this->input->post());
+
+        return $this->output
+                ->set_content_type('application/json')
+                ->set_status_header($result->status)
+                ->set_output(isset($result->data) ? $result->data : json_encode($result->message));
+    }
+
+    /**
+     * Method for getting data kegiatan from BPJS
+     * 
+     * @param string $date
+     */
+    public function get_kegiatan_kelompok (string $date) 
+    {
+        $result = $this->pcare_kelompok->get_kegiatan_kelompok($date);
+
+        return $this->output
+                ->set_content_type('application/json')
+                ->set_status_header($result->status)
+                ->set_output($result->data);
     }
 }

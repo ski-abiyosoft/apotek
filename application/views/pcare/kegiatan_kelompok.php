@@ -149,32 +149,47 @@
                 </li>
             </ul>
             <div class="tab-content" id="myTabContent">
-                <div class="tab-pane fade show active in" id="kegiatan_kelompok_list" role="tabpanel" aria-labelledby="kegiatan_kelompok_list-tab" style="display: flex !important; flex-direction: column; align-items: center;">
+                <div class="tab-pane fade active in" id="kegiatan_kelompok_list" role="tabpanel" aria-labelledby="kegiatan_kelompok_list-tab">
                     <div style="margin-bottom: 10px; width: 100%">
                         <h3 class="mb-3 text-center"><strong>Daftar Kegiatan Kelompok</strong></h3>
                         <button class="btn blue" type="button" onclick="showKelompokForm()"><i class="fa fa-plus"></i> <strong>Tambah Kegiatan Kelompok</strong></button>
                     </div>
                     <div class="table-responsive" style="width: 100%">
-                        <table class="table" id="club-prolanis-table">
+                        <table class="table" id="kegiatan-table">
                             <thead>
                                 <tr class="breadcrumb">
                                     <th class="title-white text-center">No.</th>
                                     <th class="title-white text-center">Edu. Id</th>
                                     <th class="title-white text-center">Club Id</th>
                                     <th class="title-white text-center">Tgl. Pelayanan</th>
-                                    <th class="title-white text-center">Jenis Kegiatan</th>
-                                    <th class="title-white text-center">Jenis Kelompok</th>
-                                    <th class="title-white text-center">Materi</th>
                                     <th class="title-white text-center">Pembicara</th>
                                     <th class="title-white text-center">Lokasi</th>
-                                    <th class="title-white text-center">Keterangan</th>
-                                    <th class="title-white text-center">Biaya</th>
+                                    <th class="title-white text-center">Aksi</th>
                                 </tr>
                             </thead>
                         </table>
                     </div>
                 </div>
-                <div class="tab-pane fade" id="detail_peserta" role="tabpanel" aria-labelledby="detail_peserta-tab">...</div>
+                <div class="tab-pane fade" id="detail_peserta" role="tabpanel" aria-labelledby="detail_peserta-tab">
+                    <div style="margin-bottom: 10px; width: 100%">
+                        <h3 class="mb-3 text-center"><strong>Daftar Peserta Kegiatan Kelompok</strong></h3>
+                    </div>
+                    <div class="table-responsive" style="width: 100%">
+                        <table class="table" id="peserta-kegiatan-table">
+                            <thead>
+                                <tr class="breadcrumb">
+                                    <th class="title-white text-center">No.</th>
+                                    <th class="title-white text-center">No. Kartu</th>
+                                    <th class="title-white text-center">Nama Peserta</th>
+                                    <th class="title-white text-center">Tgl. Lahir</th>
+                                    <th class="title-white text-center">Usia</th>
+                                    <th class="title-white text-center">Pekerjaan</th>
+                                    <th class="title-white text-center">No. HP</th>
+                                </tr>
+                            </thead>
+                        </table>
+                    </div>
+                </div>
                 <div class="tab-pane fade" id="klub_prolanis" role="tabpanel" aria-labelledby="klub_prolanis-tab" style="display: flex; flex-direction: column; align-items: center;">
                     <div class="col-md-6" style="display: flex; flex-direction: column; align-items: center;">
                         <h3 class="mb-3 text-center"><strong>Sinkronisasi Daftar Klub Prolanis</strong></h3>
@@ -237,7 +252,7 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <label class="col-md-3" class="form-label" for="kdKelompok">Kode Kegiatan:</label>
+                        <label class="col-md-3" class="form-label" for="kdKelompok">Kode Kelompok:</label>
                         <div class="col-md-9">
                             <select class="form-control" name="kdKelompok" id="kdKelompok">
                                 <?php foreach ($kelompok as $value): ?>
@@ -247,9 +262,9 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <label class="col-md-3" class="form-label" for="kdKelompok">Kode Kelompok:</label>
+                        <label class="col-md-3" class="form-label" for="kdKegiatan">Kode Kegiatan:</label>
                         <div class="col-md-9">
-                            <select class="form-control" name="kdKelompok" id="kdKelompok">
+                            <select class="form-control" name="kdKegiatan" id="kdKegiatan">
                                 <?php foreach ($kegiatan as $value): ?>
                                     <option value="<?= $value->kdProgram ?>"><?= $value->kdProgram ?> - <?= $value->nmProgram ?></option>
                                 <?php endforeach; ?>
@@ -289,8 +304,8 @@
                 </form>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary" onclick="addKelompok()">Save changes</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
+                <button type="button" class="btn btn-primary" onclick="addKelompok()">Simpan</button>
             </div>
             </div>
         </div>
@@ -320,7 +335,7 @@
                             mData: "id",
                             sClass: "text-center",
                             mRender: (data) => {
-                                return i++
+                                return data
                             }
                         },
                         {
@@ -384,7 +399,8 @@
 
     function addKelompok() {
         $.ajax({
-            url: '<?= base_url("pcare_kegiatan_kelompok/create") ?>',
+            url: '<?= base_url("api/pcare/add_kegiatan_kelompok") ?>',
+            type: "POST",
             dataType: "json",
             data: $("#kelompok-add").serialize(),
             success: (data) => {

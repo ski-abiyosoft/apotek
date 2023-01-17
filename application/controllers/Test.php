@@ -25,7 +25,7 @@ class Test extends CI_Controller
             ->set_content_type('application/json')
             ->set_status_header(200)
             ->set_output(json_encode([
-                "data" => $this->pcare_pendaftaran->get_pendaftaran_provider("22-12-2023")
+                "data" => $this->pcare_pendaftaran->get_pendaftaran_provider("14-01-2023")
             ]));
     }
 
