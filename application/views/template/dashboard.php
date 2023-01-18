@@ -718,7 +718,10 @@ min-height: 300px;
 												</tr>
 											</thead>
 											<tbody>
-												<?php $no = 0; foreach ($kecamatan as $k) : ?>
+												<?php 
+													$no = 1; 
+													foreach ($kecamatan as $k) : 
+												?>
 													<?php if($no == 1) {
 														$bgcolor = "#95ceff";
 														$color = "color: black";
@@ -754,7 +757,10 @@ min-height: 300px;
 														<td style="background-color: <?= $bgcolor; ?>; <?= $color?>;"><?= $k->kec; ?></td>
 														<td style="text-align: right; background-color: <?= $bgcolor; ?>; <?= $color?>;"><?= number_format($k->jumlah); ?></td>
 													</tr>
-												<?php $no++; endforeach; ?>
+												<?php 
+														$no++; 
+													endforeach; 
+												?>
 											</tbody>
 										</table>
 									</div>

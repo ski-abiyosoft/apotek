@@ -789,65 +789,119 @@ class Poliklinik extends CI_Controller {
 			$opresepno		= $this->input->post("noeresephide");
 			$opdok			= $this->input->post("doktereresep");
 			$opgud			= $this->input->post("gudang");
-			$opracik1		= $this->input->post("nama_racik1");
-			$opqtyjadi1		= $this->input->post("qty_jadi1");
-			$opaturan1		= $this->input->post("aturan_pakai1");
-			$opmanual1	   	= $this->input->post("r1manualracik");
-			$opracik2		= $this->input->post("nama_racik2");
-			$opqtyjadi2		= $this->input->post("qty_jadi2");
-			$opaturan2		= $this->input->post("aturan_pakai2");
-			$opmanual2	   	= $this->input->post("r2manualracik");
-			$opracik3		= $this->input->post("nama_racik3");
-			$opqtyjadi3		= $this->input->post("qty_jadi3");
-			$opaturan3		= $this->input->post("aturan_pakai3");
-			$opmanual3	  	= $this->input->post("r3manualracik");
 
-			$data_op_add	= array(
-				"koders"			=> $cabang,
-				"orderno"			=> $opresepno,
-				"noreg"				=> $noreg_dok,
-				"rekmed"			=> $rekmed_dok,
-				"tglorder"			=> date("Y-m-d"),
-				"proses"			=> "proses",
-				"jamorder"			=> date("H:i:s"),
-				"kodokter"			=> $opdok,
-				"resep"				=> 1,
-				"resepok"			=> 0,
-				"username"			=> $userid,
-				"gudang"			=> $opgud,
-				"racik1"			=> $opracik1,
-				"qtyjadi_racik1"	=> $opqtyjadi1,
-				"aturan_pakai_racik1"	=> $opaturan1,
-				"manual_racik1"		=> $opmanual1,
-				"racik2"			=> $opracik2,
-				"qtyjadi_racik2"	=> $opqtyjadi2,
-				"aturan_pakai_racik2"	=> $opaturan2,
-				"manual_racik2"		=> $opmanual2,
-				"racik3"			=> $opracik3,
-				"qtyjadi_racik3"	=> $opqtyjadi3,
-				"aturan_pakai_racik3"	=> $opaturan3,
-				"manual_racik3"		=> $opmanual3,
-			);
+			// racikan1
+			$opracik1						= $this->input->post("nama_racik1");
+			$opqtyjadi1					= $this->input->post("qty_jadi1");
+			$opaturan1					= $this->input->post("aturan_pakai1");
+			$opkemasanracik1		= $this->input->post("kemasan_racik1");
+			$opjenispakai1			= $this->input->post("jenispakai1");
+			$opcarapakai1				= $this->input->post("carapakai1");
+			$opmanual1	  			= $this->input->post("r1manualracik");
+			// end racikan 1
+			
+			// racikan 2
+			$opracik2						= $this->input->post("nama_racik2");
+			$opqtyjadi2					= $this->input->post("qty_jadi2");
+			$opaturan2					= $this->input->post("aturan_pakai2");
+			$opkemasanracik2		= $this->input->post("kemasan_racik2");
+			$opjenispakai2			= $this->input->post("jenispakai2");
+			$opcarapakai2				= $this->input->post("carapakai2");
+			$opmanual2	  			= $this->input->post("r2manualracik");
+			// end racikan 2
 
-			$data_op_edit	= array(
-				"tglorder"			=> date("Y-m-d"),
-				"jamorder"			=> date("H:i:s"),
-				"kodokter"			=> $opdok,
-				"username"			=> $userid,
-				"gudang"			=> $opgud,
-				"racik1"			=> $opracik1,
-				"qtyjadi_racik1"	=> $opqtyjadi1,
+			// racikan 3
+			$opracik3						= $this->input->post("nama_racik3");
+			$opqtyjadi3					= $this->input->post("qty_jadi3");
+			$opaturan3					= $this->input->post("aturan_pakai3");
+			$opkemasanracik3		= $this->input->post("kemasan_racik3");
+			$opjenispakai3			= $this->input->post("jenispakai3");
+			$opcarapakai3				= $this->input->post("carapakai3");
+			$opmanual3	  			= $this->input->post("r3manualracik");
+			// end racikan 3
+
+
+			// $opaturan1		= $this->input->post("aturan_pakai1");
+			// $opmanual1	  = $this->input->post("r1manualracik");
+			// $opracik2			= $this->input->post("nama_racik2");
+			// $opqtyjadi2		= $this->input->post("qty_jadi2");
+			// $opaturan2		= $this->input->post("aturan_pakai2");
+			// $opmanual2	  = $this->input->post("r2manualracik");
+			// $opracik3			= $this->input->post("nama_racik3");
+			// $opqtyjadi3		= $this->input->post("qty_jadi3");
+			// $opaturan3		= $this->input->post("aturan_pakai3");
+			// $opmanual3	  = $this->input->post("r3manualracik");
+
+			$data_op_add	= [
+				"koders"							=> $cabang,
+				"orderno"							=> $opresepno,
+				"noreg"								=> $noreg_dok,
+				"rekmed"							=> $rekmed_dok,
+				"tglorder"						=> date("Y-m-d"),
+				"proses"							=> "proses",
+				"jamorder"						=> date("H:i:s"),
+				"kodokter"						=> $opdok,
+				"resep"								=> 1,
+				"resepok"							=> 0,
+				"username"						=> $userid,
+				"gudang"							=> $opgud,
+				// racik1
+				"racik1"							=> $opracik1,
+				"qtyjadi_racik1"			=> $opqtyjadi1,
 				"aturan_pakai_racik1"	=> $opaturan1,
-				"manual_racik1"		=> $opmanual1,
-				"racik2"			=> $opracik2,
-				"qtyjadi_racik2"	=> $opqtyjadi2,
+				"manual_racik1"				=> $opmanual1,
+				"kemasan_racik1"			=> $opkemasanracik1,
+				"jenispakai1"					=> $opjenispakai1,
+				"carapakai1"					=> $opcarapakai1,
+				// racik2
+				"racik2"							=> $opracik2,
+				"qtyjadi_racik2"			=> $opqtyjadi2,
 				"aturan_pakai_racik2"	=> $opaturan2,
-				"manual_racik2"		=> $opmanual2,
-				"racik3"			=> $opracik3,
-				"qtyjadi_racik3"	=> $opqtyjadi3,
+				"manual_racik2"				=> $opmanual2,
+				"kemasan_racik2"			=> $opkemasanracik2,
+				"jenispakai2"					=> $opjenispakai2,
+				"carapakai2"					=> $opcarapakai2,
+				// racik3
+				"racik3"							=> $opracik3,
+				"qtyjadi_racik3"			=> $opqtyjadi3,
 				"aturan_pakai_racik3"	=> $opaturan3,
-				"manual_racik3"		=> $opmanual3,
-			);
+				"manual_racik3"				=> $opmanual3,
+				"kemasan_racik3"			=> $opkemasanracik3,
+				"jenispakai3"					=> $opjenispakai3,
+				"carapakai3"					=> $opcarapakai3,
+			];
+
+			$data_op_edit	= [
+				"tglorder"						=> date("Y-m-d"),
+				"jamorder"						=> date("H:i:s"),
+				"kodokter"						=> $opdok,
+				"username"						=> $userid,
+				"gudang"							=> $opgud,
+				// racik1
+				"racik1"							=> $opracik1,
+				"qtyjadi_racik1"			=> $opqtyjadi1,
+				"aturan_pakai_racik1"	=> $opaturan1,
+				"manual_racik1"				=> $opmanual1,
+				"kemasan_racik1"			=> $opkemasanracik1,
+				"jenispakai1"					=> $opjenispakai1,
+				"carapakai1"					=> $opcarapakai1,
+				// racik2
+				"racik2"							=> $opracik2,
+				"qtyjadi_racik2"			=> $opqtyjadi2,
+				"aturan_pakai_racik2"	=> $opaturan2,
+				"manual_racik2"				=> $opmanual2,
+				"kemasan_racik2"			=> $opkemasanracik2,
+				"jenispakai2"					=> $opjenispakai2,
+				"carapakai2"					=> $opcarapakai2,
+				// racik3
+				"racik3"							=> $opracik3,
+				"qtyjadi_racik3"			=> $opqtyjadi3,
+				"aturan_pakai_racik3"	=> $opaturan3,
+				"manual_racik3"				=> $opmanual3,
+				"kemasan_racik3"			=> $opkemasanracik3,
+				"jenispakai3"					=> $opjenispakai3,
+				"carapakai3"					=> $opcarapakai3,
+			];
 
 			if(!empty($er_obat)){
 				$order_check	= $this->db->query("SELECT * FROM tbl_orderperiksa WHERE noreg = '$noreg_dok'");

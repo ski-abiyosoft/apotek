@@ -1230,7 +1230,12 @@ class Kasir_konsul extends CI_Controller
 												<td style=\"text-align:right; border-left: none; border-right: none; border-top: none; border-bottom: none;\">".number_format($aporacik->diskonrp, 2)."</td>
 												<td style=\"text-align:right; border-left: none; border-right: none; border-top: none; border-bottom: none;\">".number_format((!isset($abc) ? 0 : $abc), 2)."</td>
 										</tr>";
-				$chari .= "</tbody></table>";
+				$chari .= "</tbody><tfoot><tr>
+										<td style=\"text-align:right; border-right: none; border-left: none;\" colspan=\"4\"><b>Total Resep & Racik</b></td>
+										<td style=\"text-align:right; border-left: none; border-right: none;\">".number_format((!isset($abc) ? 0 : $abc + $dt->totalrp), 2)."</td>
+								</tr></tfoot>";
+								$chari .= "</table>";
+				// $chari .= "</table>";
 			} else {
 				$chari .= "";
 				$apodresep = $this->db->query("SELECT * FROM tbl_apodresep WHERE resepno = '$param'")->result();
@@ -1331,7 +1336,7 @@ class Kasir_konsul extends CI_Controller
 														<tr>
 															<td style=\"text-align:left; border-right: none;\"><b>Total Keseluruhan</b></td>
 															<td style=\"text-align:center; border-right: none; border-left: none;\"><b> : </b></td>
-															<td style=\"text-align:right; border-left: none;\"><b>".number_format($totalin + $tot, 2)."</b></td>
+															<td style=\"text-align:right; border-left: none;\"><b>".number_format($abc + $dt->totalrp + $tot, 2)."</b></td>
 														</tr>
 													</table>
 												</td>
@@ -1346,23 +1351,23 @@ class Kasir_konsul extends CI_Controller
 				$bayarcash = number_format(0, 2);
 			}
 			$chari .= "
+									<table style=\"border-collapse:collapse;font-family: tahoma; font-size:12px\" width=\"100%\" align=\"center\" border=\"0\">
+											<tr>
+														<td> &nbsp; </td>
+											</tr> 
+									</table>";
+			$chari .= "
+									<table style=\"border-collapse:collapse;font-family: tahoma; font-size:12px\" width=\"100%\" align=\"center\" border=\"0\">
+											<tr>
+														<td> &nbsp; </td>
+											</tr> 
+									</table>";
+			$chari .= "
 									<table style=\"border-collapse:collapse;font-family: tahoma; font-size:12px\" width=\"40%\" align=\"left\" border=\"0\">
 											<tr>
 														<td width=\"55%\">Cash Rp</td>
 														<td width=\"5%\"> : </td>
 														<td width=\"40%\" style=\"text-align: right;\">$bayarcash</td>
-											</tr> 
-									</table>";
-			$chari .= "
-									<table style=\"border-collapse:collapse;font-family: tahoma; font-size:12px\" width=\"100%\" align=\"center\" border=\"0\">
-											<tr>
-														<td> &nbsp; </td>
-											</tr> 
-									</table>";
-			$chari .= "
-									<table style=\"border-collapse:collapse;font-family: tahoma; font-size:12px\" width=\"100%\" align=\"center\" border=\"0\">
-											<tr>
-														<td> &nbsp; </td>
 											</tr> 
 									</table>";
 			$query_kartu_card	= $this->db->query("SELECT * FROM tbl_kartukredit WHERE nokwitansi = '$nokwitansi'")->result();
@@ -1404,16 +1409,13 @@ class Kasir_konsul extends CI_Controller
 												<tr>
 															<td width=\"55%\">Nominal</td>
 															<td width=\"5%\"> : </td>
-															<td width=\"40%\" style=\"text-align: right;\">$ccval->jumlahbayar</td>
-												</tr> 
-										</table>";
+															<td width=\"40%\" style=\"text-align: right;\">".number_format($ccval->jumlahbayar, 2)."</td>
+												</tr>";
 			}
 			if ($kasir->kembalikeuangmuka > 0) { 
 				// $kembalikeuangmuka = number_format($kasir->uangmuka, 2);
 				$kembalikeuangmuka = number_format($kasir->kembali, 2);
-				$chari .= "
-											<table style=\"border-collapse:collapse;font-family: tahoma; font-size:12px\" width=\"40%\" align=\"left\" border=\"0\">
-													<tr>
+				$chari .= "<tr>
 																<td width=\"55%\">Kembali ke Uang muka</td>
 																<td width=\"5%\"> : </td>
 																<td width=\"40%\" style=\"text-align: right;\">$kembalikeuangmuka</td>
@@ -1421,9 +1423,7 @@ class Kasir_konsul extends CI_Controller
 											</table>";
 			} else {
 				$kembali = number_format($kasir->kembali, 2);
-				$chari .= "
-											<table style=\"border-collapse:collapse;font-family: tahoma; font-size:12px\" width=\"40%\" align=\"left\" border=\"0\">
-													<tr>
+				$chari .= "<tr>
 																<td width=\"55%\">Kembali ke Pasien</td>
 																<td width=\"5%\"> : </td>
 																<td width=\"40%\" style=\"text-align: right;\">$kembali</td>

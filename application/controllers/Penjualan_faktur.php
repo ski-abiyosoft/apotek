@@ -116,6 +116,7 @@ class Penjualan_faktur extends CI_Controller{
 	}
 
 	public function cetak(){
+    setlocale(LC_ALL, 'id_ID.utf8');
 		$cek = $this->session->userdata('level');
 		$unit = $this->session->userdata('unit');
 		$user = $this->session->userdata('username');
@@ -173,7 +174,8 @@ class Penjualan_faktur extends CI_Controller{
 			$fc     = array('0', '0', '0', '0', '0', '0', '0');
 			$pdf->SetFillColor(230, 230, 230);
 			$pdf->setfont('Arial', '', 9);
-			$pdf->FancyRow(array('No. Resep', ':', $header->resepno, 'Tanggal Resep', ':', date('d M Y', strtotime($header->tglresep)),), $fc, $border);
+      $tglresep = new DateTime($header->tglresep);
+			$pdf->FancyRow(array('No. Resep', ':', $header->resepno, 'Tanggal Resep', ':', strftime('%A, %d %B %Y', $tglresep->getTimestamp()),), $fc, $border);
 			$pdf->FancyRow(array('Nama Pasien', ':', $posting->namapas, 'No. Registrasi', ':', $header->noreg), $fc, $border);
 			$pdf->FancyRow(array('No. Member', ':', $header->rekmed, 'Alamat Kirim', ':', $data_pasien->alamat), $fc, $border);
 			$pdf->ln(10);
@@ -277,6 +279,28 @@ class Penjualan_faktur extends CI_Controller{
 			// die;
 
 			if ($racikan != null && $rck != null) {
+				$atpk = $this->db->query("SELECT aponame FROM tbl_barangsetup WHERE apocode = '".$racikan["aturanpakai"]."'")->row();
+				if($racikan['harga_manual'] > 0){
+					$hargamanual = $racikan['harga_manual'];
+					$hargaracikannya = $racikan['harga_manual'] + $racikan['diskonrp'];
+				} else {
+					$hargamanual = $racikan["totalrp"];
+					$hargaracikannya = $racikan['subtotal'] + $racikan['diskonrp'];
+				}
+				$pdf->FancyRow(array(
+						$no,
+						$racikan["resepno"],
+						"** ".$racikan["namaracikan"],
+						$header->kodepel,
+						number_format($racikan["jumlahracik"], 0, ',', '.'),
+						number_format($hargaracikannya, 0, ',', '.'),
+						//   number_format($racikan["diskonrp"], 0, ',', '.'),
+						//   number_format($racikan["totalrp"], 0, ',', '.')),$fc, $border, $align);
+						// number_format((!isset($diskon) ? 0 :$diskon), 0, ',', '.'),
+						number_format($racikan["diskonrp"], 0, ',', '.'),
+						number_format((!isset($hargamanual) ? 0 : $hargamanual), 0, ',', '.'),
+						$atpk->aponame
+				), $fc, $border, $align);
 				foreach ($rck as $rck) {
 
 
@@ -284,19 +308,20 @@ class Penjualan_faktur extends CI_Controller{
 					$ttlrp = $rck->qty * $rck->price;
 					$tr += $rck->totalrp;
 					$totaluangr += $rck->uangr;
-					$pdf->FancyRow(array(
-						$no,
-						$rck->kodebarang,
-						("** $rck->namabarang"),
-						$header->kodepel,
-						number_format($rck->qty, 0, ',', '.'),
-						number_format($rck->price, 0, ',', '.'),
-						//   number_format($racikan->diskonrp, 0, ',', '.'),
-						//   number_format($racikan->totalrp, 0, ',', '.')),$fc, $border, $align);
-						// number_format((!isset($diskon) ? 0 :$diskon), 0, ',', '.'),
-						'-',
-						number_format((!isset($rck->totalrp) ? 0 : $rck->totalrp), 0, ',', '.')
-					), $fc, $border, $align);
+					// $pdf->FancyRow(array(
+					// 	$no,
+					// 	$rck->kodebarang,
+					// 	("** $rck->namabarang"),
+					// 	$header->kodepel,
+					// 	number_format($rck->qty, 0, ',', '.'),
+					// 	number_format($rck->price, 0, ',', '.'),
+					// 	//   number_format($racikan->diskonrp, 0, ',', '.'),
+					// 	//   number_format($racikan->totalrp, 0, ',', '.')),$fc, $border, $align);
+					// 	// number_format((!isset($diskon) ? 0 :$diskon), 0, ',', '.'),
+					// 	'-',
+					// 	number_format((!isset($rck->totalrp) ? 0 : $rck->totalrp), 0, ',', '.'),
+					// 	$atpk->aponame
+					// ), $fc, $border, $align);
 
 					$ongkos = ($racikan['ongkosracik']);
 
@@ -423,7 +448,8 @@ class Penjualan_faktur extends CI_Controller{
 			$pdf->FancyRow(array('Total Resep', number_format($td, 0, ',', '.')), $fc, $borderx, $align, $style, $size);
 			$pdf->SetMargins(10, 10, 10, 10);
 			if ($ttlhargax != 0) {
-				$pdf->FancyRow(array("Sub Total Racik", number_format($ttlhargax, 0, ',', '.')), $fc, $border, $align, $style, $size);
+				// $pdf->FancyRow(array("Sub Total Racik", number_format($ttlhargax, 0, ',', '.')), $fc, $border, $align, $style, $size);
+				$pdf->FancyRow(array("Sub Total Racik", number_format($hargamanual, 0, ',', '.')), $fc, $border, $align, $style, $size);
 				$pdf->SetMargins(10, 10, 10, 10);
 			}
 			if ($totaluangr != 0) {
@@ -443,11 +469,13 @@ class Penjualan_faktur extends CI_Controller{
 			}
 			$ttlracikan = $racikan['totalrp'];
 			if ($ttlracikan != 0) {
-				$pdf->FancyRow(array('Total Racik', number_format($ttlracikan, 0, ',', '.')), $fc, $borderx, $align, $style, $size);
+				// $pdf->FancyRow(array('Total Racik', number_format($ttlracikan, 0, ',', '.')), $fc, $borderx, $align, $style, $size);
+				$pdf->FancyRow(array('Total Racik', number_format($hargamanual, 0, ',', '.')), $fc, $borderx, $align, $style, $size);
 				$pdf->SetMargins(10, 10, 10, 10);
 			}
 			// $pdf->FancyRow(array('DPP',number_format($dpp ,0,',','.')),$fc, $border, $align, $style, $size);
-			$pdf->FancyRow(array('Total Net', number_format(($td) + ($ttlracikan), 0, ',', '.')), $fc, $border, $align, $style, $size);
+			// $pdf->FancyRow(array('Total Net', number_format(($td) + ($ttlracikan), 0, ',', '.')), $fc, $border, $align, $style, $size);
+			$pdf->FancyRow(array('Total Net', number_format(($td) + ($hargamanual), 0, ',', '.')), $fc, $border, $align, $style, $size);
 			// var_dump($totsub);die;
 			$pdf->settextcolor(0);
 			$pdf->SetWidths(array(60, 60, 60));

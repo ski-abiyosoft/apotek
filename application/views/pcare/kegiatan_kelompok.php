@@ -387,7 +387,7 @@
                 swal({
                     type: "error",
                     title: "Gagal",
-                    html: `${textStatus} - ${errorThrown}`
+                    html: `<p>${jqXHR.status} - ${errorThrown}</p>`
                 })
             }
         })
@@ -407,10 +407,17 @@
                 console.log(data)
             },
             error: (jqXHR, textStatus, errorThrown) => {
+                var errors = jqXHR.responseJSON
+                var errorString = ""
+                
+                errors.forEach((el) => {
+                    errorString = errorString + `<p>${el.field} - ${el.message}</p>`
+                })
+
                 swal({
                     type: "error",
                     title: "Gagal!",
-                    html: `${textStatus} - ${errorThrown}`
+                    html: `${jqXHR.status} - ${errorThrown} ${errorString}`
                 })
             }
         })

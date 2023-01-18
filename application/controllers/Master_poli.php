@@ -18,7 +18,10 @@ class Master_poli extends CI_Controller {
 		$cek = $this->session->userdata('level');				
 		if(!empty($cek))
 		{
-			$this->load->view('master/v_master_poli');
+			$data = [
+				'jenis' => $this->db->query("SELECT * FROM tbl_setinghms WHERE lset = 'JBIS'")->result(),
+			];
+			$this->load->view('master/v_master_poli', $data);
 		} else
 		{
 			header('location:'.base_url());
@@ -35,6 +38,7 @@ class Master_poli extends CI_Controller {
 			$row = array();
 			$row[] = $unit->kodepos;
 			$row[] = $unit->namapost;
+			$row[] = $unit->jenis;
 						
 			$row[] = '<a class="btn btn-sm btn-primary" href="javascript:void(0)" title="Edit" onclick="edit_data('."'".$unit->id."'".')"><i class="glyphicon glyphicon-edit"></i> </a>
 				  <a class="btn btn-sm btn-danger" href="javascript:void(0)" title="Hapus" onclick="delete_data('."'".$unit->id."'".')"><i class="glyphicon glyphicon-trash"></i> </a>';
@@ -64,7 +68,7 @@ class Master_poli extends CI_Controller {
 		$data = array(
 				'kodepos' => $this->input->post('kode'),
 				'namapost' => $this->input->post('nama'),
-				
+				'jenispost' => $this->input->post('jenis'),
 			);
 		$insert = $this->M_poli->save($data);
 		history_log(0 ,'MASTER_POLI' ,'ADD' ,$this->input->post('kode') ,'-');
@@ -77,6 +81,7 @@ class Master_poli extends CI_Controller {
 		$data = array(
 				'kodepos' => $this->input->post('kode'),
 				'namapost' => $this->input->post('nama'),
+				'jenispost' => $this->input->post('jenis'),
 			);
 		$this->M_poli->update(array('id' => $this->input->post('id')), $data);
 		history_log(0 ,'MASTER_POLI' ,'EDIT' ,$this->input->post('kode') ,'-');

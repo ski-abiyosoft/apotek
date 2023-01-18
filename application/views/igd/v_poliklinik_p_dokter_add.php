@@ -77,6 +77,8 @@
     </div>
 </div>
 
+<?php $polipas = $ttv->kodepos; ?>
+
 <form id="form_periksa_dokter" class="form-horizontal" method="post">
     <div class="row">
         <div class="col-md-12">
@@ -96,7 +98,12 @@
                             <h3 style="color:green" align="left">
                                 <select type="text" class="selectpicker" class="form-control" id="selectdr" name="selectdr" style="margin-top:20px" data-live-search="true" data-width="100%" onkeypress="return tabE(this,event)">
                                     <?php
-                                        $polipas        = isset($ttv->kodepos) ? $ttv->kodepos : $data_pas->kodepos;
+                                        $polipasx        = isset($ttv->kodepos) ? $ttv->kodepos : $data_pas->kodepos;
+                                        if(isset($ttv->kodepos)) {
+                                            $polipas = $polipasx;
+                                        } else {
+                                            $polipas = $ttv->kodepos;
+                                        }
                                         $unit           = $this->session->userdata("unit");
 
                                         $query_drpoli   = $this->db->query("SELECT * FROM dokter WHERE koders = '$unit' AND kopoli = '$polipas' AND status = 'ON'")->result();

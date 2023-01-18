@@ -101,9 +101,13 @@ class Pcare_kelompok extends Pcare_service
 
         $result = $this->make_request($timestamp, "$this->url/kegiatan", "POST", $payload);
 
-        $decrypted = $this->decrypt_result(json_decode($result->data), $timestamp);
+        return (object) [
+            "status"    => $result->status,
+            "message"   => $result
+        ];
 
         if ($result->status >= 200 AND $result->status < 300) {
+            $decrypted = $this->decrypt_result(json_decode($result->data), $timestamp);
             $payload->eduId = json_decode($decrypted->response)->message;
             $this->kegiatan_kelompok->save_or_update($payload);
 
@@ -119,7 +123,7 @@ class Pcare_kelompok extends Pcare_service
 
         return (object) [
             "status"    => $result->status,
-            "message"   => $decrypted->response
+            "message"   => json_decode($result->data)->response
         ];
     }
 

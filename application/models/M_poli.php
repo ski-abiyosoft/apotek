@@ -4,8 +4,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 class M_poli extends CI_Model {
 
 	var $table = 'tbl_namapos';
-	var $column_order = array('id','kodepos','namapos',null); 
-	var $column_search = array('id','kodepos','namapos');
+	var $column_order = array('id','kodepos','namapost', 'jenispost',null); 
+	var $column_search = array('id','kodepos','namapost', 'jenispost');
 	var $order = array('id' => 'asc'); 
 
 	public function __construct()
@@ -17,6 +17,7 @@ class M_poli extends CI_Model {
 
 	private function _get_datatables_query()
 	{
+		$this->db->select($this->table.".*, (SELECT keterangan FROM tbl_setinghms WHERE kodeset = ".$this->table.".jenispost) as jenis");
 		$this->db->from($this->table);
 
 		$i = 0;

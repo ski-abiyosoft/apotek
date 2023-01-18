@@ -11,7 +11,7 @@
                             &nbsp;<?php echo $this->session->userdata('unit'); ?> 
                         </span>
                       - 
-                      <span class="title-web">Master <small>Data Poli</small>
+                      <span class="title-web">Master <small>Data Unit Bisnis</small>
 					</h3>
                       <ul class="page-breadcrumb breadcrumb">
 
@@ -30,7 +30,7 @@
 						</li>
 						<li>
 							<a class="title-white" href="#">
-                               Poli
+                               Unit Bisnis
 							</a>
 						</li>
 					</ul>
@@ -41,7 +41,7 @@
 					<div class="portlet">
 						<div class="portlet-title">
 							<div class="caption">
-								Daftar Poli
+								Daftar Unit Bisnis
 							</div>
 
 						</div>
@@ -71,7 +71,8 @@
                                <thead class="breadcrumb header-custom">
                                      <tr>
                                          <th class="title-white" style="text-align: center">Kode</th>
-                                         <th class="title-white" style="text-align: center">Nama Poli</th>
+                                         <th class="title-white" style="text-align: center">Nama Unit Bisnis</th>
+                                         <th class="title-white" style="text-align: center">Jenis Unit Bisnis</th>
                                          <th class="title-white" style="text-align: center;width:12%;">Aksi</th>
 
                                      </tr>
@@ -142,14 +143,14 @@ $(document).ready(function() {
     });
 
     //datepicker
-    $('.datepicker').datepicker({
-        autoclose: true,
-        format: "yyyy-mm-dd",
-        todayHighlight: true,
-        orientation: "top auto",
-        todayBtn: true,
-        todayHighlight: true,  
-    });
+    // $('.datepicker').datepicker({
+    //     autoclose: true,
+    //     format: "yyyy-mm-dd",
+    //     todayHighlight: true,
+    //     orientation: "top auto",
+    //     todayBtn: true,
+    //     todayHighlight: true,  
+    // });
 
     //set input/textarea/select event when change value, remove class error and remove text help block 
     $("input").change(function(){
@@ -197,6 +198,7 @@ function edit_data(id)
 		    $('[name="id"]').val(data.id);
             $('[name="kode"]').val(data.kodepos);
             $('[name="nama"]').val(data.namapost);
+            $('[name="jenis"]').val(data.jenispost);
             
             //$('[name="dob"]').datepicker('update',data.dob);
             $('#modal_form').modal('show'); // show bootstrap modal when complete loaded
@@ -309,28 +311,38 @@ function delete_data(id)
         <div class="modal-content">
             <div class="modal-header header-custom">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h3 class="modal-title">Data Poli</h3>
+                <h3 class="modal-title">Data Unit Bisnis</h3>
             </div>
             <div class="modal-body form">
                 <form action="#" id="form" class="form-horizontal">
                     <input type="hidden" value="" name="id"/> 
                     <div class="form-body">
                         <div class="form-group">
-                            <label class="control-label col-md-3">Kode</label>
+                            <label class="control-label col-md-3">Kode Unit Bisnis</label>
                             <div class="col-md-9">
-                                <input name="kode" placeholder="Kode" class="form-control input-small" maxlength="5" type="text">
+                                <input name="kode" placeholder="Kode Unit Bisnis" class="form-control" maxlength="5" type="text" style="width: 100%;">
                                 <span class="help-block"></span>
                             </div>
                         </div>
                         <div class="form-group">
-                            <label class="control-label col-md-3">Nama Poli</label>
+                            <label class="control-label col-md-3">Nama Unit Bisnis</label>
                             <div class="col-md-9">
-                                <input name="nama" placeholder="Nama Poli" class="form-control" maxlength="100" type="text">
+                                <input name="nama" placeholder="Nama Unit Bisnis" class="form-control" maxlength="100" type="text">
                                 <span class="help-block"></span>
                             </div>
-                        </div>						
-                        
-                        
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-md-3">Jenis Unit Bisnis</label>
+                            <div class="col-md-9">
+                                <select name="jenis" id="jenis" class="form-control">
+                                    <option value="">-- Pilih Jenis Bisnis --</option>
+                                    <?php foreach($jenis as $j) : ?>
+                                        <option value="<?= $j->kodeset; ?>"><?= "[ ".$j->kodeset." ] - [ ".$j->keterangan." ]"; ?></option>
+                                    <?php endforeach; ?>
+                                </select>
+                                <span class="help-block"></span>
+                            </div>
+                        </div>
                     </div>
                 </form>
             </div>

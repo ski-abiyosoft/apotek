@@ -133,7 +133,12 @@ class Pcare_service
         if (!$data) {
             return (object) [
                 "status"    => 500,
-                "message"   => "Request failed. Check your endpoint!"
+                "message"   => [ 
+                        [
+                            "field" => NULL,
+                            "message" => "Internal server error. The server may be busy or your endpoint was not found"
+                        ] 
+                    ]
             ];
         }
 

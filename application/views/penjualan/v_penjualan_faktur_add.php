@@ -526,20 +526,25 @@
                                         <tr bgcolor="#c7f2ff">
                                           <td width="10%" class="control-labelh rightJustified">JENIS</td>
                                           <td width="20%" colspan="2">
-                                            <select id="jenis_1" name="jenis_1" class="form-control">
+                                            <select id="jenis_1" name="jenis_1" class="form-control select2_ap1" style="width: 100%;" data-placeholder="- PILIH JENIS OBAT -">
                                               <option value="">- PILIH JENIS OBAT -</option>
                                               <?php
                                               $data = $this->db->query("SELECT * from tbl_barangsetup where  apogroup='JENISRACIK' ")->result();
                                               foreach ($data as $row) {
                                               ?>
                                                 <?php 
-                                                // if ($heresep->jenispakai == $row->apocode) {
-                                                //   $cekjp = 'selected';
-                                                // } else {
-                                                //   $cekjp = '';
-                                                // }  
+                                                if($heresep){
+                                                  $jenispakai1 = $heresep->jenispakai1;
+                                                } else {
+                                                  $jenispakai1 = "";
+                                                }
+                                                if ($jenispakai1 == $row->apocode) {
+                                                  $cekjp = 'selected';
+                                                } else {
+                                                  $cekjp = '';
+                                                }  
                                                 ?>
-                                                <option value="<?= $row->apocode; ?>"><?= $row->aponame; ?></option>
+                                                <option value="<?= $row->apocode; ?>" <?= $cekjp; ?>><?= $row->aponame; ?></option>
                                               <?php } ?>
                                             </select>
                                           </td>
@@ -555,11 +560,18 @@
                                           <td> &nbsp; </td>
                                           <td width="15%" class="control-labelh rightJustified">CARA PAKAI</td>
                                           <td>
-                                            <select name="carapakai" id="carapakai" class="form-control">
+                                            <select name="carapakai" id="carapakai" class="form-control select2_ap1" style="width: 100%;" data-placeholder=" - PILIH CARA PAKAI -">
+                                              <?php
+                                                if($heresep){
+                                                  $carapakai1 = $heresep->carapakai1;
+                                                } else {
+                                                  $carapakai1 = "";
+                                                }
+                                              ?>
                                               <option value=""> - PILIH CARA PAKAI -</option>
-                                              <option value="DIMINUM"> DIMINUM </option>
-                                              <option value="DIOLES"> DIOLES </option>
-                                              <option value="DITETES"> DITETES </option>
+                                              <option value="DIMINUM" <?= ($carapakai1 == "DIMINUM") ? "selected" : "" ?>> DIMINUM </option>
+                                              <option value="DIOLES" <?= ($carapakai1 == "DIOLES") ? "selected" : "" ?>> DIOLES </option>
+                                              <option value="DITETES" <?= ($carapakai1 == "DITETES") ? "selected" : "" ?>> DITETES </option>
                                             </select>
                                           </td>
                                         </tr>
@@ -574,27 +586,28 @@
                                             <input type="number" class="form-control " name="jumracik_1" id="jumracik_1" value="<?= $qtyjadi_racik1; ?>">
                                           </td>
                                           <td width="12%">
-                                            <select name="stajum_1" id="stajum_1" class="form-control">
+                                            <select name="stajum_1" id="stajum_1" class="form-control select2_ap1" style="width: 100%;" data-placeholder="- PILIH KEMASAN -">
                                               <option value="">- PILIH KEMASAN -</option>
                                               <?php
                                               $data = $this->db->query("SELECT * from tbl_barangsetup where  apogroup='KEMASANRACIK' ")->result();
                                               foreach ($data as $row) {
                                               ?>
                                                 <?php 
-                                                // if ($heresep->kemasan_racik3 == $row->apocode) {
-                                                //   $cekkr = 'selected';
-                                                // } else {
-                                                //   $cekkr = '';
-                                                // } 
+                                                if ($heresep->kemasan_racik1 == $row->apocode) {
+                                                  $cekkr = 'selected';
+                                                } else {
+                                                  $cekkr = '';
+                                                } 
                                                 ?>
-                                                <option value="<?= $row->apocode; ?>">
+                                                <option value="<?= $row->apocode; ?>" <?= $cekkr; ?>>
                                                   <?= $row->aponame; ?></option>
                                               <?php } ?>
                                             </select>
                                           </td>
                                           <td class="control-labelh rightJustified">ATURAN PAKAI</td>
                                           <td>
-                                            <select name="atpakai_1" id="atpakai_1" class="form-control select2_atpakai">
+                                            <!-- <select name="atpakai_1" id="atpakai_1" class="form-control select2_atpakai"> -->
+                                            <select name="atpakai_1" id="atpakai_1" class="form-control select2_ap1" style="width: 100%;" data-placeholder="- PILIH ATURAN PAKAI -">
                                               <option value="">- PILIH ATURAN PAKAI -</option>
                                               <?php
                                               foreach ($atpakaix as $row) {
@@ -867,7 +880,7 @@
 
                                         <td width="10%" class="control-labelh rightJustified">JENIS</td>
                                         <td width="20%" colspan="2">
-                                          <select id="jenis_1" name="jenis_1" class="form-control">
+                                          <select id="jenis_2" name="jenis_2" class="form-control">
                                             <?php
                                                 $data = $this->db->query("SELECT * from tbl_barangsetup where apogroup ='JENISRACIK'")->result();
                                                 foreach ($data as $row) { 
@@ -881,14 +894,14 @@
                                         <td width="15%" class="control-labelh rightJustified">NAMA
                                           RACIKAN</td>
                                         <td width="20%">
-                                          <input type="text" class="form-control " name="namaracik_1" id="namaracik_1" value=""
+                                          <input type="text" class="form-control " name="namaracik_2" id="namaracik_2" value=""
                                             Placeholder="Nama">
                                         </td>
                                         <td> &nbsp; </td>
                                         <td width="15%" class="control-labelh rightJustified">CARA PAKAI
                                         </td>
                                         <td>
-                                          <select name="carapakai" id="carapakai" class="form-control">
+                                          <select name="carapakai2" id="carapakai2" class="form-control">
                                             <option value=""> --- PILIH ----</option>
                                             <option value="DIMINUM"> DIMINUM </option>
                                             <option value="DIOLES"> DIOLES </option>
@@ -899,12 +912,12 @@
                                       <tr bgcolor="#c7f2ff">
                                         <td class="control-labelh rightJustified">JUMLAH</td>
                                         <td width="8%">
-                                          <input type="number" class="form-control " name="jumracik_1" id="jumracik_1" value="">
+                                          <input type="number" class="form-control " name="jumracik_2" id="jumracik_2" value="">
 
                                         </td>
 
                                         <td width="12%">
-                                          <select name="stajum_1" id="stajum_1" class="form-control">
+                                          <select name="stajum_2" id="stajum_2" class="form-control">
                                             <?php
                                                 $data = $this->db->query("SELECT * from tbl_barangsetup where  apogroup='KEMASANRACIK' ")->result();
                                                 foreach ($data as $row) { 
@@ -917,7 +930,7 @@
 
                                         <td class="control-labelh rightJustified">ATURAN PAKAI</td>
                                         <td>
-                                          <select name="atpakai_1" id="atpakai_1" class="form-control">
+                                          <select name="atpakai_2" id="atpakai_2" class="form-control">
                                             <?php
                                                 $data = $this->db->query("SELECT * from tbl_barangsetup where  apogroup='ATURANPAKAI' ")->result();
                                                 foreach ($data as $row) { 
@@ -1159,6 +1172,8 @@ $this->load->view('template/footer');
 ?>
 
 <script type="text/javascript">
+
+  $(".select2_ap1").select2();
 
 var idrow = 2;
 var rowCount;

@@ -458,11 +458,12 @@ class Pcare_api extends CI_Controller
     public function add_kegiatan_kelompok ()
     {
         $result = $this->pcare_kelompok->add_kegiatan_kelompok((object) $this->input->post());
+        $output = isset($result->data) ? $result->data : $result->message;
 
         return $this->output
                 ->set_content_type('application/json')
                 ->set_status_header($result->status)
-                ->set_output(isset($result->data) ? $result->data : json_encode($result->message));
+                ->set_output(json_encode($output));
     }
 
     /**

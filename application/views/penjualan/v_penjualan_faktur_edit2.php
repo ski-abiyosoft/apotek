@@ -518,7 +518,7 @@ if($datpas){
                                                                            <td width="10%" class="control-labelh rightJustified">JENIS</td>
                                                                            <td width="20%" colspan="2">
                                                                                 <?php if ($noedit != 1) : ?>
-                                                                                     <select id="jenis_1" name="jenis_1" class="form-control">
+                                                                                     <select id="jenis_1" name="jenis_1" class="form-control select2_ap1" style="width: 100%;">
                                                                                           <?php
                                                                                           $data = $this->db->query("SELECT * from tbl_barangsetup where  apogroup='JENISRACIK' ")->result();
                                                                                           foreach ($data as $row) { ?>
@@ -526,7 +526,7 @@ if($datpas){
                                                                                           <?php } ?>
                                                                                      </select>
                                                                                 <?php else : ?>
-                                                                                     <select id="jenis_1" name="jenis_1" class="form-control" disabled>
+                                                                                     <select id="jenis_1" name="jenis_1" class="form-control select2_ap1" style="width: 100%;" disabled>
                                                                                           <?php
                                                                                           $data = $this->db->query("SELECT * from tbl_barangsetup where  apogroup='JENISRACIK' ")->result();
                                                                                           foreach ($data as $row) { ?>
@@ -547,14 +547,14 @@ if($datpas){
                                                                            <td width="15%" class="control-labelh rightJustified">CARA PAKAI</td>
                                                                            <td>
                                                                                 <?php if ($noedit != 1) : ?>
-                                                                                     <select name="carapakai" id="carapakai" class="form-control">
+                                                                                     <select name="carapakai" id="carapakai" class="form-control select2_ap1" style="width: 100%;" data-placeholder=" --- PILIH ----">
                                                                                           <option value=""> --- PILIH ----</option>
                                                                                           <option <?= ($header_r->carapakai == 'DIMINUM' ? 'selected' : '') ?> value="DIMINUM"> DIMINUM </option>
                                                                                           <option <?= ($header_r->carapakai == 'DIOLES' ? 'selected' : '') ?> value="DIOLES"> DIOLES </option>
                                                                                           <option <?= ($header_r->carapakai == 'DITETES' ? 'selected' : '') ?> value="DITETES"> DITETES </option>
                                                                                      </select>
                                                                                 <?php else : ?>
-                                                                                     <select name="carapakai" id="carapakai" class="form-control" disabled>
+                                                                                     <select name="carapakai" id="carapakai" class="form-control select2_ap1" style="width: 100%;" disabled data-placeholder=" --- PILIH ----">
                                                                                           <option value=""> --- PILIH ----</option>
                                                                                           <option <?= ($header_r->carapakai == 'DIMINUM' ? 'selected' : '') ?> value="DIMINUM"> DIMINUM </option>
                                                                                           <option <?= ($header_r->carapakai == 'DIOLES' ? 'selected' : '') ?> value="DIOLES"> DIOLES </option>
@@ -574,7 +574,7 @@ if($datpas){
                                                                            </td>
                                                                            <td width="12%">
                                                                                 <?php if ($noedit != 1) : ?>
-                                                                                     <select name="stajum_1" id="stajum_1" class="form-control">
+                                                                                     <select name="stajum_1" id="stajum_1" class="form-control select2_ap1" style="width: 100%;">
                                                                                           <?php
                                                                                           $data = $this->db->query("SELECT * from tbl_barangsetup where  apogroup='KEMASANRACIK' ")->result();
                                                                                           foreach ($data as $row) { ?>
@@ -582,7 +582,7 @@ if($datpas){
                                                                                           <?php } ?>
                                                                                      </select>
                                                                                 <?php else : ?>
-                                                                                     <select name="stajum_1" id="stajum_1" class="form-control" disabled>
+                                                                                     <select name="stajum_1" id="stajum_1" class="form-control select2_ap1" style="width: 100%;" disabled>
                                                                                           <?php
                                                                                           $data = $this->db->query("SELECT * from tbl_barangsetup where  apogroup='KEMASANRACIK' ")->result();
                                                                                           foreach ($data as $row) { ?>
@@ -594,7 +594,7 @@ if($datpas){
                                                                            <td class="control-labelh rightJustified">ATURAN PAKAI</td>
                                                                            <td>
                                                                                 <?php if ($noedit != 1) : ?>
-                                                                                     <select name="atpakai_1" id="atpakai_1" class="form-control">
+                                                                                     <select name="atpakai_1" id="atpakai_1" class="form-control select2_ap1" style="width: 100%;">
                                                                                           <?php
                                                                                           $data = $this->db->query("SELECT * from tbl_barangsetup where  apogroup='ATURANPAKAI' ")->result();
                                                                                           foreach ($data as $row) { ?>
@@ -602,7 +602,7 @@ if($datpas){
                                                                                           <?php } ?>
                                                                                      </select>
                                                                                 <?php else : ?>
-                                                                                     <select name="atpakai_1" id="atpakai_1" class="form-control" disabled>
+                                                                                     <select name="atpakai_1" id="atpakai_1" class="form-control select2_ap1" style="width: 100%;" disabled>
                                                                                           <?php
                                                                                           $data = $this->db->query("SELECT * from tbl_barangsetup where  apogroup='ATURANPAKAI' ")->result();
                                                                                           foreach ($data as $row) { ?>
@@ -910,6 +910,8 @@ $this->load->view('template/footer');
 
 <!-- master -->
 <script>
+     $(".select2_ap1").select2();
+
      $(window).on("load", function() {
           total();
           var gud = $("#gudang").val();
@@ -1626,9 +1628,9 @@ $this->load->view('template/footer');
           var gudang = $('[name="gudang"]').val();
           if (document.getElementById('t_manual').checked == true) {
                var h_manual = 1;
-               var totalx = $('#toto_11').val();
+               var totalx_racikan = $('#toto_11').val();
           } else {
-               var totalx = $('#_vtotal').val();
+               var totalx_racikan = $('#totp_1').val();
                var h_manual = 0;
           }
           if (pembeli == 'KULIT') {
@@ -1704,7 +1706,7 @@ $this->load->view('template/footer');
                                         }
                                         swal({
                                              title: "UBAH RESEP",
-                                             html: "No. Bukti : <b>" + data.resepno + "</b>" + "<br>Tanggal : " + tanggal + "<br>Biaya Terbentuk : <b>" + totalx + "</b>" + "<br>Dengan Biaya Racikan : <b>" + racikanxx + '</b>',
+                                             html: "No. Bukti : <b>" + data.resepno + "</b>" + "<br>Tanggal : " + tanggal + "<br>Biaya Terbentuk : <b>" + totalx + "</b>" + "<br>Dengan Biaya Racikan : <b>" + totalx_racikan + '</b>',
                                              type: "info",
                                              confirmButtonText: "OK"
                                         }).then((value) => {

@@ -1283,15 +1283,63 @@
                                                                         <tbody>
                                                                             <tr style="background:#87ceeb">
                                                                                 <td align="right" style="width:20%;font-weight:bold;">Nama Racik</td>
-                                                                                <td style="width:80%"><input type="text" class="form-control" name="nama_racik1" style="width:100%" value="<?= isset($orderperiksa->racik1)? $orderperiksa->racik1 : "" ?>"></td>
+                                                                                <td style="width:80%"><input type="text" class="form-control" name="nama_racik1" style="width:100%" value="<?= isset($orderperiksa->racik1) ? $orderperiksa->racik1 : "" ?>"></td>
                                                                             </tr>
                                                                             <tr style="background:#87ceeb">
                                                                                 <td align="right" style="width:20%;font-weight:bold;">Qty Jadi</td>
-                                                                                <td style="width:80%"><input type="number" style="width:100%" class="form-control" name="qty_jadi1" value="<?= isset($orderperiksa->qtyjadi_racik1)? $orderperiksa->qtyjadi_racik1 : "" ?>"></td>
+                                                                                <td style="width:80%"><input type="number" style="width:100%" class="form-control" name="qty_jadi1" value="<?= isset($orderperiksa->qtyjadi_racik1) ? $orderperiksa->qtyjadi_racik1 : "" ?>"></td>
                                                                             </tr>
                                                                             <tr style="background:#87ceeb">
                                                                                 <td align="right" style="width:20%;font-weight:bold;">Aturan Pakai</td>
-                                                                                <td style="width:80%"><textarea type="text" style="width:100%;resize:none !important" class="form-control" name="aturan_pakai1" rows="2"><?= isset($orderperiksa->aturan_pakai_racik1)? $orderperiksa->aturan_pakai_racik1 : "" ?></textarea></td>
+                                                                                <td style="width:80%">
+                                                                                    <?php $ap = $this->db->query("SELECT * from tbl_barangsetup where  apogroup='ATURANPAKAI' ")->result(); ?>
+                                                                                    <select class="form-control select2_ap1" id="aturan_pakai1" name="aturan_pakai1" data-placeholder="Pilih..." style="width: 100%;">
+                                                                                        <option value="">Pilih...</option>
+                                                                                        <?php foreach($ap as $a) : ?>
+                                                                                            <?php if($orderperiksa->aturan_pakai_racik1 == $a->apocode) { $cekap = 'selected'; } else { $cekap = ''; } ?>
+                                                                                            <option value="<?= $a->apocode; ?>" <?= $cekap?>><?= $a->aponame; ?></option>
+                                                                                        <?php endforeach; ?>
+                                                                                    </select>
+                                                                                </td>
+                                                                            </tr>
+                                                                            <tr style="background:#87ceeb">
+                                                                                <td align="right" style="width:20%;font-weight:bold;">Kemasan</td>
+                                                                                <td style="width:80%">
+                                                                                    <?php $datakemasan = $this->db->query("SELECT * from tbl_barangsetup where  apogroup='KEMASANRACIK' ")->result(); ?>
+                                                                                    <select class="form-control select2_ap1" id="kemasan_racik1" name="kemasan_racik1" data-placeholder="Pilih..." style="width: 100%;">
+                                                                                        <option value="">Pilih...</option>
+                                                                                        <?php foreach($datakemasan as $dk) : ?>
+                                                                                            <?php if($orderperiksa->kemasan_racik1 == $dk->apocode) { $cekdk = 'selected'; } else { $cekdk = ''; }?>
+                                                                                            <option value="<?= $dk->apocode; ?>" <?= $cekdk; ?>><?= $dk->aponame; ?></option>
+                                                                                        <?php endforeach; ?>
+                                                                                    </select>
+                                                                                </td>
+                                                                            </tr>
+                                                                            <tr style="background:#87ceeb">
+                                                                                <td align="right" style="width:20%;font-weight:bold;">Jenis</td>
+                                                                                <td style="width:80%">
+                                                                                    <?php $datajenis = $this->db->query("SELECT * from tbl_barangsetup where  apogroup='JENISRACIK'")->result(); ?>
+                                                                                    <select class="form-control select2_ap1" id="jenispakai1" name="jenispakai1" data-placeholder="Pilih..." style="width: 100%;">
+                                                                                        <option value="">Pilih...</option>
+                                                                                        <?php foreach($datajenis as $dk) : ?>
+                                                                                            <?php if($orderperiksa->jenispakai1 == $dk->apocode) { $cekdk = 'selected'; } else { $cekdk = ''; }?>
+                                                                                            <option value="<?= $dk->apocode; ?>" <?= $cekdk; ?>><?= $dk->aponame; ?></option>
+                                                                                        <?php endforeach; ?>
+                                                                                    </select>
+                                                                                </td>
+                                                                            </tr>
+                                                                            <tr style="background:#87ceeb">
+                                                                                <td align="right" style="width:20%;font-weight:bold;">Cara Pakai</td>
+                                                                                <td style="width:80%">
+                                                                                    <select class="form-control select2_ap1" id="carapakai1" name="carapakai1" data-placeholder="Pilih..." style="width: 100%;">
+                                                                                        
+                                                                                        <option value="">Pilih...</option>
+                                                                                        <?php if($orderperiksa) { $carapakai = $orderperiksa->carapakai1; } else { $carapakai = ''; }?>
+                                                                                        <option value="DIMINUM" <?= $carapakai == "DIMINUM" ? "selected" : "" ?>> DIMINUM </option>
+                                                                                        <option value="DIOLES" <?= $carapakai == "DIOLES" ? "selected" : "" ?>> DIOLES </option>
+                                                                                        <option value="DITETES" <?= $carapakai == "DITETES" ? "selected" : "" ?>> DITETES </option>
+                                                                                    </select>
+                                                                                </td>
                                                                             </tr>
                                                                         </tbody>
                                                                     </table>
@@ -1370,21 +1418,69 @@
                                                             <div class="portlet-body form">
                                                                 <div class="form-body">
                                                                     <table class="table" style="width:100%;margin:auto">
-                                                                        <tbody>
-                                                                            <tr style="background:#87ceeb">
-                                                                                <td align="right" style="width:20%;font-weight:bold;">Nama Racik</td>
-                                                                                <td style="width:80%"><input type="text" class="form-control" name="nama_racik2" style="width:100%" value="<?= isset($orderperiksa->racik2)? $orderperiksa->racik2 : "" ?>"></td>
-                                                                            </tr>
-                                                                            <tr style="background:#87ceeb">
-                                                                                <td align="right" style="width:20%;font-weight:bold;">Qty Jadi</td>
-                                                                                <td style="width:80%"><input type="number" style="width:100%" class="form-control" name="qty_jadi2" value="<?= isset($orderperiksa->qtyjadi_racik2)? $orderperiksa->qtyjadi_racik2 : "" ?>"></td>
-                                                                            </tr>
-                                                                            <tr style="background:#87ceeb">
-                                                                                <td align="right" style="width:20%;font-weight:bold;">Aturan Pakai</td>
-                                                                                <td style="width:80%"><textarea type="text" style="width:100%;resize:none !important" class="form-control" name="aturan_pakai2" rows="2"><?= isset($orderperiksa->aturan_pakai_racik2)? $orderperiksa->aturan_pakai_racik2 : "" ?></textarea></td>
-                                                                            </tr>
-                                                                        </tbody>
-                                                                    </table>
+                                                                            <tbody>
+                                                                                <tr style="background:#87ceeb">
+                                                                                    <td align="right" style="width:20%;font-weight:bold;">Nama Racik</td>
+                                                                                    <td style="width:80%"><input type="text" class="form-control" name="nama_racik2" style="width:100%" value="<?= isset($orderperiksa->racik2) ? $orderperiksa->racik2 : "" ?>"></td>
+                                                                                </tr>
+                                                                                <tr style="background:#87ceeb">
+                                                                                    <td align="right" style="width:20%;font-weight:bold;">Qty Jadi</td>
+                                                                                    <td style="width:80%"><input type="number" style="width:100%" class="form-control" name="qty_jadi2" value="<?= isset($orderperiksa->qtyjadi_racik2) ? $orderperiksa->qtyjadi_racik2 : "" ?>"></td>
+                                                                                </tr>
+                                                                                <tr style="background:#87ceeb">
+                                                                                    <td align="right" style="width:20%;font-weight:bold;">Aturan Pakai</td>
+                                                                                    <td style="width:80%">
+                                                                                        <?php $ap = $this->db->query("SELECT * from tbl_barangsetup where  apogroup='ATURANPAKAI' ")->result(); ?>
+                                                                                        <select class="form-control select2_ap1" id="aturan_pakai2" name="aturan_pakai2" data-placeholder="Pilih..." style="width: 100%;">
+                                                                                            <option value="">Pilih...</option>
+                                                                                            <?php foreach($ap as $a) : ?>
+                                                                                                <?php if($orderperiksa->aturan_pakai_racik2 == $a->apocode) { $cekap = 'selected'; } else { $cekap = ''; } ?>
+                                                                                                <option value="<?= $a->apocode; ?>" <?= $cekap?>><?= $a->aponame; ?></option>
+                                                                                            <?php endforeach; ?>
+                                                                                        </select>
+                                                                                    </td>
+                                                                                </tr>
+                                                                                <tr style="background:#87ceeb">
+                                                                                    <td align="right" style="width:20%;font-weight:bold;">Kemasan</td>
+                                                                                    <td style="width:80%">
+                                                                                        <?php $datakemasan = $this->db->query("SELECT * from tbl_barangsetup where  apogroup='KEMASANRACIK' ")->result(); ?>
+                                                                                        <select class="form-control select2_ap1" id="kemasan_racik2" name="kemasan_racik2" data-placeholder="Pilih..." style="width: 100%;">
+                                                                                            <option value="">Pilih...</option>
+                                                                                            <?php foreach($datakemasan as $dk) : ?>
+                                                                                                <?php if($orderperiksa->kemasan_racik2 == $dk->apocode) { $cekdk = 'selected'; } else { $cekdk = ''; }?>
+                                                                                                <option value="<?= $dk->apocode; ?>" <?= $cekdk; ?>><?= $dk->aponame; ?></option>
+                                                                                            <?php endforeach; ?>
+                                                                                        </select>
+                                                                                    </td>
+                                                                                </tr>
+                                                                                <tr style="background:#87ceeb">
+                                                                                    <td align="right" style="width:20%;font-weight:bold;">Jenis</td>
+                                                                                    <td style="width:80%">
+                                                                                        <?php $datajenis = $this->db->query("SELECT * from tbl_barangsetup where  apogroup='JENISRACIK'")->result(); ?>
+                                                                                        <select class="form-control select2_ap1" id="jenispakai2" name="jenispakai2" data-placeholder="Pilih..." style="width: 100%;">
+                                                                                            <option value="">Pilih...</option>
+                                                                                            <?php foreach($datajenis as $dk) : ?>
+                                                                                                <?php if($orderperiksa->jenispakai2 == $dk->apocode) { $cekdk = 'selected'; } else { $cekdk = ''; }?>
+                                                                                                <option value="<?= $dk->apocode; ?>" <?= $cekdk; ?>><?= $dk->aponame; ?></option>
+                                                                                            <?php endforeach; ?>
+                                                                                        </select>
+                                                                                    </td>
+                                                                                </tr>
+                                                                                <tr style="background:#87ceeb">
+                                                                                    <td align="right" style="width:20%;font-weight:bold;">Cara Pakai</td>
+                                                                                    <td style="width:80%">
+                                                                                        <select class="form-control select2_ap1" id="carapakai2" name="carapakai2" data-placeholder="Pilih..." style="width: 100%;">
+                                                                                            
+                                                                                            <option value="">Pilih...</option>
+                                                                                            <?php if($orderperiksa) { $carapakai = $orderperiksa->carapakai2; } else { $carapakai = ''; }?>
+                                                                                            <option value="DIMINUM" <?= $carapakai == "DIMINUM" ? "selected" : "" ?>> DIMINUM </option>
+                                                                                            <option value="DIOLES" <?= $carapakai == "DIOLES" ? "selected" : "" ?>> DIOLES </option>
+                                                                                            <option value="DITETES" <?= $carapakai == "DITETES" ? "selected" : "" ?>> DITETES </option>
+                                                                                        </select>
+                                                                                    </td>
+                                                                                </tr>
+                                                                            </tbody>
+                                                                        </table>
                                                                     <br />
                                                                     <div class="table-responsive" style="margin-bottom:10px">
                                                                         <table style="width:100%;margin:auto" class="table table-hover table-striped table-bordered table-scrollable">
@@ -1460,20 +1556,69 @@
                                                             <div class="portlet-body form">
                                                                 <div class="form-body">
                                                                     <table class="table" style="width:100%;margin:auto">
-                                                                        <tbody>
-                                                                            <tr style="background:#87ceeb">
-                                                                                <td align="right" style="width:20%;font-weight:bold;">Nama Racik</td>
-                                                                                <td style="width:80%"><input type="text" class="form-control" name="nama_racik3" style="width:100%" value="<?= isset($orderperiksa->racik3)? $orderperiksa->racik3 : "" ?>"></td>
-                                                                            </tr>
-                                                                            <tr style="background:#87ceeb">
-                                                                                <td align="right" style="width:20%;font-weight:bold;">Qty Jadi</td>
-                                                                                <td style="width:80%"><input type="number" style="width:100%" class="form-control" name="qty_jadi3" value="<?= isset($orderperiksa->qtyjadi_racik3)? $orderperiksa->qtyjadi_racik3 : "" ?>"></td>
-                                                                            </tr>
-                                                                            <tr style="background:#87ceeb">
-                                                                                <td align="right" style="width:20%;font-weight:bold;">Aturan Pakai</td>
-                                                                                <td style="width:80%"><textarea type="text" style="width:100%;resize:none !important" class="form-control" name="aturan_pakai3" rows="2"><?= isset($orderperiksa->aturan_pakai_racik3)? $orderperiksa->aturan_pakai_racik3 : "" ?></textarea></td>
-                                                                            </tr>
-                                                                        </tbody>
+                                                                            <tbody>
+                                                                                <tr style="background:#87ceeb">
+                                                                                    <td align="right" style="width:20%;font-weight:bold;">Nama Racik</td>
+                                                                                    <td style="width:80%"><input type="text" class="form-control" name="nama_racik3" style="width:100%" value="<?= isset($orderperiksa->racik3) ? $orderperiksa->racik3 : "" ?>"></td>
+                                                                                </tr>
+                                                                                <tr style="background:#87ceeb">
+                                                                                    <td align="right" style="width:20%;font-weight:bold;">Qty Jadi</td>
+                                                                                    <td style="width:80%"><input type="number" style="width:100%" class="form-control" name="qty_jadi3" value="<?= isset($orderperiksa->qtyjadi_racik3) ? $orderperiksa->qtyjadi_racik3 : "" ?>"></td>
+                                                                                </tr>
+                                                                                <tr style="background:#87ceeb">
+                                                                                    <td align="right" style="width:20%;font-weight:bold;">Aturan Pakai</td>
+                                                                                    <td style="width:80%">
+                                                                                        <?php $ap = $this->db->query("SELECT * from tbl_barangsetup where  apogroup='ATURANPAKAI' ")->result(); ?>
+                                                                                        <select class="form-control select2_ap1" id="aturan_pakai3" name="aturan_pakai3" data-placeholder="Pilih..." style="width: 100%;">
+                                                                                            <option value="">Pilih...</option>
+                                                                                            <?php foreach($ap as $a) : ?>
+                                                                                                <?php if($orderperiksa->aturan_pakai_racik3 == $a->apocode) { $cekap = 'selected'; } else { $cekap = ''; } ?>
+                                                                                                <option value="<?= $a->apocode; ?>" <?= $cekap?>><?= $a->aponame; ?></option>
+                                                                                            <?php endforeach; ?>
+                                                                                        </select>
+                                                                                    </td>
+                                                                                </tr>
+                                                                                <tr style="background:#87ceeb">
+                                                                                    <td align="right" style="width:20%;font-weight:bold;">Kemasan</td>
+                                                                                    <td style="width:80%">
+                                                                                        <?php $datakemasan = $this->db->query("SELECT * from tbl_barangsetup where  apogroup='KEMASANRACIK' ")->result(); ?>
+                                                                                        <select class="form-control select2_ap1" id="kemasan_racik3" name="kemasan_racik3" data-placeholder="Pilih..." style="width: 100%;">
+                                                                                            <option value="">Pilih...</option>
+                                                                                            <?php foreach($datakemasan as $dk) : ?>
+                                                                                                <?php if($orderperiksa->kemasan_racik3 == $dk->apocode) { $cekdk = 'selected'; } else { $cekdk = ''; }?>
+                                                                                                <option value="<?= $dk->apocode; ?>" <?= $cekdk; ?>><?= $dk->aponame; ?></option>
+                                                                                            <?php endforeach; ?>
+                                                                                        </select>
+                                                                                    </td>
+                                                                                </tr>
+                                                                                <tr style="background:#87ceeb">
+                                                                                    <td align="right" style="width:20%;font-weight:bold;">Jenis</td>
+                                                                                    <td style="width:80%">
+                                                                                        <?php $datajenis = $this->db->query("SELECT * from tbl_barangsetup where  apogroup='JENISRACIK'")->result(); ?>
+                                                                                        <select class="form-control select2_ap1" id="jenispakai3" name="jenispakai3" data-placeholder="Pilih..." style="width: 100%;">
+                                                                                            <option value="">Pilih...</option>
+                                                                                            <?php foreach($datajenis as $dk) : ?>
+                                                                                                <?php if($orderperiksa->jenispakai3 == $dk->apocode) { $cekdk = 'selected'; } else { $cekdk = ''; }?>
+                                                                                                <option value="<?= $dk->apocode; ?>" <?= $cekdk; ?>><?= $dk->aponame; ?></option>
+                                                                                            <?php endforeach; ?>
+                                                                                        </select>
+                                                                                    </td>
+                                                                                </tr>
+                                                                                <tr style="background:#87ceeb">
+                                                                                    <td align="right" style="width:20%;font-weight:bold;">Cara Pakai</td>
+                                                                                    <td style="width:80%">
+                                                                                        <select class="form-control select2_ap1" id="carapakai3" name="carapakai3" data-placeholder="Pilih..." style="width: 100%;">
+                                                                                            
+                                                                                            <option value="">Pilih...</option>
+                                                                                            <?php if($orderperiksa) { $carapakai = $orderperiksa->carapakai3; } else { $carapakai = ''; }?>
+                                                                                            <option value="DIMINUM" <?= $carapakai == "DIMINUM" ? "selected" : "" ?>> DIMINUM </option>
+                                                                                            <option value="DIOLES" <?= $carapakai == "DIOLES" ? "selected" : "" ?>> DIOLES </option>
+                                                                                            <option value="DITETES" <?= $carapakai == "DITETES" ? "selected" : "" ?>> DITETES </option>
+                                                                                        </select>
+                                                                                    </td>
+                                                                                </tr>
+                                                                            </tbody>
+                                                                        </table>
                                                                     </table>
                                                                     <br />
                                                                     <div class="table-responsive" style="margin-bottom:10px">
@@ -2180,6 +2325,7 @@
                                                         </table>
                                                     </div>
                                                 </div>
+                                                
                                                 <div class="tab-pane" id="tab8">
                                                    <div class="alert alert-danger">
                                                       <p><b><i class="fa fa-exclamation-triangle fa-fw"></i>&nbsp; Perlu Diketahui</b></p>
@@ -2297,11 +2443,11 @@
                                                             <label class="form-label">Jenis Kunjungan</label>
                                                             <div style="display: grid; grid-template-columns: 1fr 1fr 1fr;">
                                                                <label for="kunjungan_sakit" style="display: flex; align-items: center; gap: 10px;">
-                                                                  <input type="radio" name="kunjSakit" id="sakit" value="1" style="transform: scale(1.3);" checked>
+                                                                  <input type="radio" name="kunjSakit" id="sakit" onchange="change_poli(this.value)" value="1" style="transform: scale(1.3);" checked>
                                                                   Kunjungan Sakit
                                                                </label>
                                                                <label for="kunjungan_sehat" style="display: flex; align-items: center; gap: 10px;">
-                                                                  <input type="radio" name="kunjSakit" id="sehat" value="2" style="transform: scale(1.3);">
+                                                                  <input type="radio" name="kunjSakit" id="sehat" onchange="change_poli(0)" value="2" style="transform: scale(1.3);">
                                                                   Kunjungan sehat
                                                                </label>
                                                             </div>
@@ -2326,15 +2472,7 @@
                                                          <div style="display: grid; grid-template-columns: 1fr 3fr; gap: 20px;">
                                                             <label class="form-label" for="pcare_poli_dok">Poli Tujuan</label>
                                                             <div>
-                                                                  <!-- <select type="text" class="form-control" id="pcare_poli_dok" name="pcare_poli_dok" readonly>
-                                                                     <option value="<?= $data_pas->kodepos ?>"><?= data_master("tbl_namapos", array("kodepos" => $data_pas->kodepos))->namapost ?></option>
-                                                                  </select> -->
-                                                                  <!-- <input readonly value="<?= isset($ttv->kodepos)? data_master("tbl_namapos", array("kodepos" => $ttv->kodepos))->namapost : data_master("tbl_namapos", array("kodepos" => $data_pas->kodepos))->namapost ?>" id="poli_dok" name="poli_dok" class="form-control" type="text">
-                                                                  <span class="help-block"></span> -->
                                                                   <select type="text" class="form-control" name="kdPoli" id="kdPoli">
-                                                                     <?php foreach($pcare_poli->result() as $pp): ?>
-                                                                        <option value="<?= $pp->kdPoli ?>"><?= $pp->nmPoli ?></option>
-                                                                     <?php endforeach; ?>
                                                                   </select>
                                                             </div>
                                                          </div>
@@ -2654,6 +2792,7 @@
 <!-- <script src="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/js/i18n/defaults-*.min.js"></script> -->
 
 <script>
+    $(".select2_ap1").select2();
 
     // PCARE JS //
 
@@ -2739,6 +2878,12 @@
             dataType: "JSON",
             success: (res) => {
                 console.log(res);
+                change_poli(res.kunjSakit);
+                if(res.kunjSakit == "0"){
+                    $("#sehat").prop("checked", true);
+                } else {
+                    $("#sakit").prop("checked", true);
+                }
                 $("#kodeRs").val(res.kodeRs);
                 $("#tglDaftar").val(res.tglDaftar);
                 $("#noReg").val('<?= $data_regist->noreg ?>');
@@ -2899,6 +3044,25 @@
                 console.error(jqXHR.responseJSON);
             }
         });
+    }
+
+    function change_poli(status){
+        $.ajax({
+            url         : "/pcare/poli_by_status/"+ status,
+            type        : "GET",
+            dataType    : "JSON",
+            beforeSend  : function(){
+                $("#kdPoli").empty();
+            },
+            success     : function(res){
+                $.each(res, function(k, v){
+                   $("#kdPoli").append("<option value='"+ v.kdPoli +"'>"+ v.nmPoli +"</option>");
+                });
+            },
+            error       : function(jqXHR, textStatus, errorThrown){
+                console.error("Error : Failed get 'Poli Tujuan'");
+            }
+        })
     }
 
     // PCARE JS //
@@ -4415,15 +4579,15 @@
         return;
         } 
 
-        if (qtyx==0 || qtyx== null){
-        swal({
-                title: "Billing Tindakan",
-                html: "<p>HARUS DI ISI !</p>",
-                type: "error",
-                confirmButtonText: "OK" 
-            });    
-        return;
-        } 
+        // if (qtyx==0 || qtyx== null){
+        // swal({
+        //         title: "Billing Tindakan",
+        //         html: "<p>HARUS DI ISI !</p>",
+        //         type: "error",
+        //         confirmButtonText: "OK" 
+        //     });    
+        // return;
+        // } 
         
         if (v_kelawal=='' || v_kelawal== null){
         swal({

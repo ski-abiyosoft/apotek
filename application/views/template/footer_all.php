@@ -1702,7 +1702,7 @@
       $(".select2_el_poli").select2({
          allowClear: true,
          multiple: false,
-         placeholder: '--- Pilih Poli ---',
+         placeholder: '--- Pilih Unit Bisnis ---',
          //minimumInputLength: 2,
          dropdownAutoWidth: true,
          language: {

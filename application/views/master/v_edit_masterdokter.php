@@ -152,13 +152,13 @@ $this->load->view('template/body');
                   </div>
                 </div>
                 <br>
-                <h3>PRAKTEK</h3>
+                <h3>UNIT BISNIS</h3>
                 <div class="row">
                   <div class="col-md-6">
                     <table id="datatable_unit" class="table table-hoverx table-stripedx table-borderedx table-condensed table-scrollable">
                       <thead class="page-breadcrumb breadcrumb">
                         <th class="title-white" style="text-align: center; width: 5%;">Hapus</th>
-                        <th class="title-white" style="text-align: center">Unit Praktek</th>
+                        <th class="title-white" style="text-align: center">Unit Bisnis</th>
                       </thead>
                       <tbody>
                         <?php $no = 1;
