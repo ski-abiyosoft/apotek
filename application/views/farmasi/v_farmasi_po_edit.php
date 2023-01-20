@@ -237,7 +237,7 @@ $this->load->view('template/body');
                       <tr id="po_tr<?= $no; ?>">
                         <td>
                           <button type='button' onclick=hapusBarisIni(<?= $no; ?>) class='btn red'><i
-                              class='fa fa-trash-o'></i></button>
+                              class='fa fa-trash-o'></i> - <?= $no; ?></button>
                         </td>
 
                         <td>
@@ -431,7 +431,7 @@ function tambah() {
 
   table.append("<tr id='po_tr" + idrow + "'>" +
     "<td><button type='button' onclick=hapusBarisIni(" + idrow +
-    ") class='btn red'><i class='fa fa-trash-o'></i> </button></td>" +
+    ") class='btn red'><i class='fa fa-trash-o'></i> - "+idrow+" </button></td>" +
     "<td><select name='kode[]' id='kode" + idrow +
     "'  class='select2_el_farmasi_barangdata form-control input-largex' onchange='showbarangname(this.value, " +
     idrow + ")'></select></td>" +

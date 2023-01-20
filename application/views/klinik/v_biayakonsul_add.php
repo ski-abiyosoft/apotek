@@ -2343,7 +2343,7 @@ $this->load->view('template/footer_tb');
     // var var1 = baseurl + 'kasir_konsul/cetak/?kwitansi=' + nokwitansi + '&noreg=' + noreg;
 
     // husain change
-    var var1 = baseurl + 'kasir_konsul/cetak_kwitansi/?kwitansi=' + nokwitansi + '&noreg=' + noreg;
+    var var1 = baseurl + 'kasir_konsul/cetak_kwitansi2/?kwitansi=' + nokwitansi + '&noreg=' + noreg;
     // end husain
     window.open(var1, '_blank');
 

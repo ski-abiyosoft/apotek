@@ -406,8 +406,12 @@
                                             $list_depo  = $this->db->query("SELECT * FROM tbl_depo ORDER BY keterangan ASC")->result();
                                             $get_gudang = $this->db->query("SELECT * FROM tbl_alkestransaksi WHERE notr = '". $_GET["noreg"] ."' GROUP BY notr AND koders = '$unit'")->row();
                                             foreach($list_depo as $ld_val){
-                                                if($ld_val->depocode == $get_gudang->gudang){
-                                                    echo "<option value='$get_gudang->gudang' selected>". data_master("tbl_depo", array("depocode" => $get_gudang->gudang))->keterangan ."</option>";
+                                                if($get_gudang){
+                                                    if($ld_val->depocode == $get_gudang->gudang){
+                                                        echo "<option value='$get_gudang->gudang' selected>". data_master("tbl_depo", array("depocode" => $get_gudang->gudang))->keterangan ."</option>";
+                                                    } else {
+                                                        echo "<option value='$ld_val->depocode'>$ld_val->keterangan</option>";
+                                                    }
                                                 } else {
                                                     echo "<option value='$ld_val->depocode'>$ld_val->keterangan</option>";
                                                 }
@@ -791,7 +795,7 @@
                                                                         </td>
 
                                                                         <td>
-                                                                            <select name="diag[]" id="diag1" class="select2_el_icdind form-control input-largex" onchange="pcare_diag_trigger(this.value)">
+                                                                            <select name="diag[]" id="diag1" class="select2_el_icdind form-control input-largex" >
                                                                             </select>
 
                                                                         </td>
@@ -814,7 +818,7 @@
                                                                             </select>
                                                                         </td>
                                                                         <td>
-                                                                            <select name="diag[]" id="diag<?= $no ?>" class="select2_el_icdind form-control input-largex" onchange="pcare_diag_trigger()">
+                                                                            <select name="diag[]" id="diag<?= $no ?>" class="select2_el_icdind form-control input-largex" >
                                                                                 <option value="<?= $dval->icdcode ?>" selected><?= $dval->nmdiag ?></option>
                                                                             </select>
                                                                         </td>
@@ -1296,7 +1300,13 @@
                                                                                     <select class="form-control select2_ap1" id="aturan_pakai1" name="aturan_pakai1" data-placeholder="Pilih..." style="width: 100%;">
                                                                                         <option value="">Pilih...</option>
                                                                                         <?php foreach($ap as $a) : ?>
-                                                                                            <?php if($orderperiksa->aturan_pakai_racik1 == $a->apocode) { $cekap = 'selected'; } else { $cekap = ''; } ?>
+                                                                                            <?php
+                                                                                                if($orderperiksa){ 
+                                                                                                    if($orderperiksa->aturan_pakai_racik1 == $a->apocode) { $cekap = 'selected'; } else { $cekap = ''; }
+                                                                                                } else {
+                                                                                                    $cekap = "";
+                                                                                                } 
+                                                                                            ?>
                                                                                             <option value="<?= $a->apocode; ?>" <?= $cekap?>><?= $a->aponame; ?></option>
                                                                                         <?php endforeach; ?>
                                                                                     </select>
@@ -1309,7 +1319,13 @@
                                                                                     <select class="form-control select2_ap1" id="kemasan_racik1" name="kemasan_racik1" data-placeholder="Pilih..." style="width: 100%;">
                                                                                         <option value="">Pilih...</option>
                                                                                         <?php foreach($datakemasan as $dk) : ?>
-                                                                                            <?php if($orderperiksa->kemasan_racik1 == $dk->apocode) { $cekdk = 'selected'; } else { $cekdk = ''; }?>
+                                                                                            <?php 
+                                                                                                if($orderperiksa){
+                                                                                                    if($orderperiksa->kemasan_racik1 == $dk->apocode) { $cekdk = 'selected'; } else { $cekdk = ''; }
+                                                                                                } else {
+                                                                                                    $cekdk = "";
+                                                                                                } 
+                                                                                            ?>
                                                                                             <option value="<?= $dk->apocode; ?>" <?= $cekdk; ?>><?= $dk->aponame; ?></option>
                                                                                         <?php endforeach; ?>
                                                                                     </select>
@@ -1322,7 +1338,13 @@
                                                                                     <select class="form-control select2_ap1" id="jenispakai1" name="jenispakai1" data-placeholder="Pilih..." style="width: 100%;">
                                                                                         <option value="">Pilih...</option>
                                                                                         <?php foreach($datajenis as $dk) : ?>
-                                                                                            <?php if($orderperiksa->jenispakai1 == $dk->apocode) { $cekdk = 'selected'; } else { $cekdk = ''; }?>
+                                                                                            <?php 
+                                                                                                if($orderperiksa){
+                                                                                                    if($orderperiksa->jenispakai1 == $dk->apocode) { $cekdk = 'selected'; } else { $cekdk = ''; }
+                                                                                                } else {
+                                                                                                    $cekdk = "";
+                                                                                                }
+                                                                                            ?>
                                                                                             <option value="<?= $dk->apocode; ?>" <?= $cekdk; ?>><?= $dk->aponame; ?></option>
                                                                                         <?php endforeach; ?>
                                                                                     </select>
@@ -2860,159 +2882,159 @@
         });
     }
 
-    function pcare_diag_trigger(param){
-        if(param == "" || param == null){
-            console.error("ICD error : failed to trigger icd diagnostics for pcare, undefined icd code");
-        } else {
+    // function pcare_diag_trigger(param){
+    //     if(param == "" || param == null){
+    //         console.error("ICD error : failed to trigger icd diagnostics for pcare, undefined icd code");
+    //     } else {
 
-            $.ajax({
-                url: "/poliklinik/get_icd_for_pcare/"+ param,
-                type: "GET",
-                dataType: "JSON",
-                success: function(res){
-                    if(res.status == "success"){
-                        $("#jenis_diagnosa1").val(param);
-                        $("#diagnosa1").val(res.string);
-                    } else 
-                    if(res.status == "error"){
-                        error_alert(res.message);
-                    } else {
-                        error_alert("results have been issued<br />but undefined result status");
-                    }
-                },
-                error: function(jqXHR, textStatus, errorThrown){
-                    error_alert("failed to trigger icd diagnostics for pcare (client)");
-                }
-            })
+    //         $.ajax({
+    //             url: "/poliklinik/get_icd_for_pcare/"+ param,
+    //             type: "GET",
+    //             dataType: "JSON",
+    //             success: function(res){
+    //                 if(res.status == "success"){
+    //                     $("#jenis_diagnosa1").val(param);
+    //                     $("#diagnosa1").val(res.string);
+    //                 } else 
+    //                 if(res.status == "error"){
+    //                     error_alert(res.message);
+    //                 } else {
+    //                     error_alert("results have been issued<br />but undefined result status");
+    //                 }
+    //             },
+    //             error: function(jqXHR, textStatus, errorThrown){
+    //                 error_alert("failed to trigger icd diagnostics for pcare (client)");
+    //             }
+    //         })
 
-        }
-    }
+    //     }
+    // }
 
-    function get_pendaftaran_pcare(param){
-        $.ajax({
-            url: "/poliklinik/pcare_get_data_pas/"+ param,
-            type: "GET",
-            dataType: "JSON",
-            success: (res) => {
-                if(res.status == "success"){
-                    $("#icd_result").html("");
-                    $.each(res.data_diag, function(i, k){
-                        $("#icd_result").append(""+
-                            "<input class='form-control' type='text' name='kdDiag"+ (parseInt(i)+1) +"' id='kdDiag"+ (parseInt(i)+1) +"' value='"+ k.icd_code +"' readonly>"+
-                            "<input class='form-control' type='text' name='nmDiag"+ (parseInt(i)+1) +"' id='nmDiag"+ (parseInt(i)+1) +"' value='"+ k.icd_name +"' readonly>"+
-                        "");
-                    });
+    // function get_pendaftaran_pcare(param){
+    //     $.ajax({
+    //         url: "/poliklinik/pcare_get_data_pas/"+ param,
+    //         type: "GET",
+    //         dataType: "JSON",
+    //         success: (res) => {
+    //             if(res.status == "success"){
+    //                 $("#icd_result").html("");
+    //                 $.each(res.data_diag, function(i, k){
+    //                     $("#icd_result").append(""+
+    //                         "<input class='form-control' type='text' name='kdDiag"+ (parseInt(i)+1) +"' id='kdDiag"+ (parseInt(i)+1) +"' value='"+ k.icd_code +"' readonly>"+
+    //                         "<input class='form-control' type='text' name='nmDiag"+ (parseInt(i)+1) +"' id='nmDiag"+ (parseInt(i)+1) +"' value='"+ k.icd_name +"' readonly>"+
+    //                     "");
+    //                 });
 
-                    $("#keluhan").val(res.data_pas.keluhan_awal);
-                    $("#anamnesa").val(res.data_pas.keluhan_awal);
-                    $('#beratBadan').val(res.data_pas.berat_badan);
-                    $('#tinggiBadan').val(res.data_pas.tinggi_badan);
-                    imt_trigger(res.data_pas.tinggi_badan, res.data_pas.berat_badan);
-                } else 
-                if(res.status == "empty"){
-                    error_alert("PCare Diagnosa", res.message);
-                    $("#icd_result").html(""+
-                        "<input class='form-control' type='text' value='"+ res.message +"' readonly>"+
-                    "");
-                } else {
-                    error_alert("PCare Diagnosa", "Undefined status result");
-                    $("#icd_result").html(""+
-                        "<input class='form-control' type='text' value='Undefined status result' readonly>"+
-                    "");
-                }
-            },
-            error: (jqXHR) => {
-                //
-            }
-        });
+    //                 $("#keluhan").val(res.data_pas.keluhan_awal);
+    //                 $("#anamnesa").val(res.data_pas.keluhan_awal);
+    //                 $('#beratBadan').val(res.data_pas.berat_badan);
+    //                 $('#tinggiBadan').val(res.data_pas.tinggi_badan);
+    //                 imt_trigger(res.data_pas.tinggi_badan, res.data_pas.berat_badan);
+    //             } else 
+    //             if(res.status == "empty"){
+    //                 error_alert("PCare Diagnosa", res.message);
+    //                 $("#icd_result").html(""+
+    //                     "<input class='form-control' type='text' value='"+ res.message +"' readonly>"+
+    //                 "");
+    //             } else {
+    //                 error_alert("PCare Diagnosa", "Undefined status result");
+    //                 $("#icd_result").html(""+
+    //                     "<input class='form-control' type='text' value='Undefined status result' readonly>"+
+    //                 "");
+    //             }
+    //         },
+    //         error: (jqXHR) => {
+    //             //
+    //         }
+    //     });
 
-        $.ajax({
-            url: "/api/pcare/get_detail_pendaftaran/"+ param,
-            type: "GET",
-            dataType: "JSON",
-            success: (res) => {
-                console.log(res);
-                change_poli(res.kunjSakit);
-                if(res.kunjSakit == "0"){
-                    $("#sehat").prop("checked", true);
-                } else {
-                    $("#sakit").prop("checked", true);
-                }
-                $("#kodeRs").val(res.kodeRs);
-                $("#tglDaftar").val(res.tglDaftar);
-                $("#noReg").val('<?= $data_regist->noreg ?>');
-                $("#noKartu").val(res.noKartuPeserta);
-                $("#namaPeserta").val(res.namaPeserta);
-                $("#status").val(res.status);
-                $("#tglLahir").val('<?= date("d-m-Y", strtotime($data_regist->tgllahir)) ?>');
-                $("#sex").val('<?= $data_regist->jkel == "P" ? "Pria" : "Wanita" ?>');
-                $("#ppkUmum").val(res.kodeRs);
-                $("#noHp").val('<?= $data_regist->handphone ?>');
-                $("#rekmed").val('<?= $data_regist->rekmed ?>');
-                $("#kdProviderPelayanan").val(res.kdProviderPelayanan);
-                $("#bridging_result").append("<p><i class='fa fa-check-circle fa-fw text-success'></i>&nbsp; Berhasil mengambil data</p>");
-            },
-            error: (jqXHR) => {
-                console.error(jqXHR.responseJSON);
-            }
-        });
+    //     $.ajax({
+    //         url: "/api/pcare/get_detail_pendaftaran/"+ param,
+    //         type: "GET",
+    //         dataType: "JSON",
+    //         success: (res) => {
+    //             console.log(res);
+    //             change_poli(res.kunjSakit);
+    //             if(res.kunjSakit == "0"){
+    //                 $("#sehat").prop("checked", true);
+    //             } else {
+    //                 $("#sakit").prop("checked", true);
+    //             }
+    //             $("#kodeRs").val(res.kodeRs);
+    //             $("#tglDaftar").val(res.tglDaftar);
+    //             $("#noReg").val('<?= $data_regist->noreg ?>');
+    //             $("#noKartu").val(res.noKartuPeserta);
+    //             $("#namaPeserta").val(res.namaPeserta);
+    //             $("#status").val(res.status);
+    //             $("#tglLahir").val('<?= date("d-m-Y", strtotime($data_regist->tgllahir)) ?>');
+    //             $("#sex").val('<?= $data_regist->jkel == "P" ? "Pria" : "Wanita" ?>');
+    //             $("#ppkUmum").val(res.kodeRs);
+    //             $("#noHp").val('<?= $data_regist->handphone ?>');
+    //             $("#rekmed").val('<?= $data_regist->rekmed ?>');
+    //             $("#kdProviderPelayanan").val(res.kdProviderPelayanan);
+    //             $("#bridging_result").append("<p><i class='fa fa-check-circle fa-fw text-success'></i>&nbsp; Berhasil mengambil data</p>");
+    //         },
+    //         error: (jqXHR) => {
+    //             console.error(jqXHR.responseJSON);
+    //         }
+    //     });
 
-        get_kunjungan_pcare(param);
-    }
+    //     get_kunjungan_pcare(param);
+    // }
 
-    function get_kunjungan_pcare(param){
-        $.ajax({
-            url         : "/pcare/get_kunjungan/"+ param,
-            type        : "GET",
-            dataType    : "JSON",
-            success     : function(res){
-                if(res.status == "success"){
-                    console.log(res.data.tglDaftar);
-                    $("#tglDaftar").val(res.data.tglDaftar);
-                    $("#tglPulang").val(res.data.tglPulang);
-                    $("#noKunjungan").val(res.data.noKunjungan);
-                    switch(res.data_reg.kunjSakit){
-                        case "1" : $("#sakit").prop("checked", true); break;
-                        case "2" : $("#sehat").prop("checked", true); break;
-                    }
+    // function get_kunjungan_pcare(param){
+    //     $.ajax({
+    //         url         : "/pcare/get_kunjungan/"+ param,
+    //         type        : "GET",
+    //         dataType    : "JSON",
+    //         success     : function(res){
+    //             if(res.status == "success"){
+    //                 console.log(res.data.tglDaftar);
+    //                 $("#tglDaftar").val(res.data.tglDaftar);
+    //                 $("#tglPulang").val(res.data.tglPulang);
+    //                 $("#noKunjungan").val(res.data.noKunjungan);
+    //                 switch(res.data_reg.kunjSakit){
+    //                     case "1" : $("#sakit").prop("checked", true); break;
+    //                     case "2" : $("#sehat").prop("checked", true); break;
+    //                 }
                     
-                    change_poli(res.data_reg.kunjSakit);
+    //                 change_poli(res.data_reg.kunjSakit);
 
-                    switch(res.data.kdTkp){
-                        case "10" : $("#rawat_jalan").prop("checked", true); break;
-                        case "20" : $("#rawat_inap").prop("checked", true); break;
-                        case "50" : $("#promotif_preventif").prop("checked", true); break;
-                    }
-                    $("#kdPoli").val(res.data.kdPoli);
-                    $("#keluhan").val(res.data.keluhan);
-                    $("#anamnesa").val(res.data.keluhan);
-                    $("#terapi").val(res.data.terapi);
-                    $("#terapinon").val(res.data.terapinon);
-                    $("#icd_result").html(""+
-                        "<input class='form-control' type='text' name='kdDiag1' id='kdDiag1' value='"+ (res.data.kdDiag1 == null? "-" : res.data.kdDiag1) +"' readonly>"+
-                        "<input class='form-control' type='text' name='nmDiag1' id='nmDiag1' value='"+ get_diagnosa(res.data.kdDiag1 != null? res.data.kdDiag1 : "") +"' readonly>"+
-                        "<input class='form-control' type='text' name='kdDiag2' id='kdDiag2' value='"+ (res.data.kdDiag2 == null? "-" : res.data.kdDiag2) +"' readonly>"+
-                        "<input class='form-control' type='text' name='nmDiag2' id='nmDiag2' value='"+ get_diagnosa(res.data.kdDiag2 != null? res.data.kdDiag2 : "") +"' readonly>"+
-                        "<input class='form-control' type='text' name='kdDiag3' id='kdDiag3' value='"+ (res.data.kdDiag3 == null? "-" : res.data.kdDiag3) +"' readonly>"+
-                        "<input class='form-control' type='text' name='nmDiag3' id='nmDiag3' value='"+ get_diagnosa(res.data.kdDiag3 != null? res.data.kdDiag3 : "") +"' readonly>"+
-                    "");
-                    $("#kdSadar").val(res.data.kdSadar);
-                    $("#tinggiBadan").val(res.data.tinggiBadan);
-                    $("#beratBadan").val(res.data.beratBadan);
-                    $("#lingkatPerut").val(res.data.lingkatPerut);
-                    $("#imt").val(res.data.imt);
-                    $("#sistole").val(res.data.sistole);
-                    $("#diastole").val(res.data.diastole);
-                    $("#respRate").val(res.data.respRate);
-                    $("#heartRate").val(res.data.heartRate);
-                    change_status_pulang(res.data.kdTkp);
-                }
-            },
-            error       : function(){
-                //
-            }
-        });
-    }
+    //                 switch(res.data.kdTkp){
+    //                     case "10" : $("#rawat_jalan").prop("checked", true); break;
+    //                     case "20" : $("#rawat_inap").prop("checked", true); break;
+    //                     case "50" : $("#promotif_preventif").prop("checked", true); break;
+    //                 }
+    //                 $("#kdPoli").val(res.data.kdPoli);
+    //                 $("#keluhan").val(res.data.keluhan);
+    //                 $("#anamnesa").val(res.data.keluhan);
+    //                 $("#terapi").val(res.data.terapi);
+    //                 $("#terapinon").val(res.data.terapinon);
+    //                 $("#icd_result").html(""+
+    //                     "<input class='form-control' type='text' name='kdDiag1' id='kdDiag1' value='"+ (res.data.kdDiag1 == null? "-" : res.data.kdDiag1) +"' readonly>"+
+    //                     "<input class='form-control' type='text' name='nmDiag1' id='nmDiag1' value='"+ get_diagnosa(res.data.kdDiag1 != null? res.data.kdDiag1 : "") +"' readonly>"+
+    //                     "<input class='form-control' type='text' name='kdDiag2' id='kdDiag2' value='"+ (res.data.kdDiag2 == null? "-" : res.data.kdDiag2) +"' readonly>"+
+    //                     "<input class='form-control' type='text' name='nmDiag2' id='nmDiag2' value='"+ get_diagnosa(res.data.kdDiag2 != null? res.data.kdDiag2 : "") +"' readonly>"+
+    //                     "<input class='form-control' type='text' name='kdDiag3' id='kdDiag3' value='"+ (res.data.kdDiag3 == null? "-" : res.data.kdDiag3) +"' readonly>"+
+    //                     "<input class='form-control' type='text' name='nmDiag3' id='nmDiag3' value='"+ get_diagnosa(res.data.kdDiag3 != null? res.data.kdDiag3 : "") +"' readonly>"+
+    //                 "");
+    //                 $("#kdSadar").val(res.data.kdSadar);
+    //                 $("#tinggiBadan").val(res.data.tinggiBadan);
+    //                 $("#beratBadan").val(res.data.beratBadan);
+    //                 $("#lingkatPerut").val(res.data.lingkatPerut);
+    //                 $("#imt").val(res.data.imt);
+    //                 $("#sistole").val(res.data.sistole);
+    //                 $("#diastole").val(res.data.diastole);
+    //                 $("#respRate").val(res.data.respRate);
+    //                 $("#heartRate").val(res.data.heartRate);
+    //                 change_status_pulang(res.data.kdTkp);
+    //             }
+    //         },
+    //         error       : function(){
+    //             //
+    //         }
+    //     });
+    // }
 
     function get_diagnosa(code = ""){
         if(code == ""){
@@ -4027,7 +4049,7 @@
         table.append("<tr id='diagnosa_tr"+ idrowDiag +"'>"+
         "<td><button type='button' onclick=hapusBaris_diagnosa("+idrowDiag+") class='btn red  justify'><i class='fa fa-trash-o'></i></button></td>"+
         "<td><select name='jenis_diag[]' id=jenis_diag"+idrowDiag+" class='select2_el_jnsicd form-control input-largex' onchange='getdiag(this.value,"+idrowDiag+")'></select></td>"+
-        "<td><select name='diag[]' id=diag"+idrowDiag+" class='select2_el_icdind form-control input-largex' onchange='pcare_diag_trigger(this.value)'> </select></td>"+
+        "<td><select name='diag[]' id=diag"+idrowDiag+" class='select2_el_icdind form-control input-largex' > </select></td>"+
         "<td><input name='utama[]' id=utama"+idrowDiag+" type='checkbox' class='form-control' onclick='cekutm(this.value,"+idrowDiag+")'>"+
         "<input name='utama_hide[]' id='utama_hide"+idrowDiag+"' type='hidden' class='form-control'></td>"+
         "</tr>");

@@ -302,7 +302,7 @@ $this->load->view('template/body');
                     <tbody>
                       <tr>
                         <td>
-                          <button type='button' onclick="hapusBarisIni(1)" class='btn red'><i class='fa fa-trash-o'>
+                          <button type='button' onclick="hapusBarisIni(1)" class='btn red'><i class='fa fa-trash-o'></i> - 1</button>
                         </td>
                         <td>
                           <!-- <select name="kode[]" id="kode1"
@@ -517,7 +517,7 @@ $this->load->view('template/footer');
     var td12 = x.insertCell(11);
 
     var button = "<td id='kolom" + idrow + "'><button type='button' onclick=hapusBarisIni(" + idrow + ") id=btnhapus" +
-      idrow + " class='btn red'><i class='fa fa-trash-o'></td>";
+      idrow + " class='btn red'><i class='fa fa-trash-o'></i> - "+idrow+"</button></td>";
 
     // var akun = "<select name='kode[]' id=kode" + idrow +
     //     " class='select2_el_farmasi_barang form-control' onchange='showbarangname(this.value," + idrow + ")' >";
