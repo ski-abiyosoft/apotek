@@ -266,169 +266,193 @@ function reload_table()
 table.ajax.reload(null,false); //reload datatable ajax 
 }
 
+function cek_size(params) {
+    alert(this.files[0].size)
+}
+
 function save()
 {
-    var file_data   = $('#filefoto').prop('files')[0];
-    var form_data   = new FormData();
-    form_data.append('filefoto', file_data);
-        
-    var kodecab     = $('[name="kode"]').val();
-    var namacab     = $('[name="nama"]').val();
-
-// if (kodecab=='' || kodecab== null){
-// swal({
-//         title: "KODE",
-//         html: "<p>HARUS DI ISI !</p>",
-//         type: "error",
-//         confirmButtonText: "OK" 
-//     });    
-// return;
-// } 
-
-// if (namacab=='' || namacab== null){
-// swal({
-//         title: "NAMA CABANG",
-//         html: "<p>HARUS DI ISI !</p>",
-//         type: "error",
-//         confirmButtonText: "OK" 
-//     });    
-// return;
-// } 
-
-// if (logocab=='' || logocab== null){
-// swal({
-//         title: "LOGO",
-//         html: "<p>HARUS DI ISI !</p>",
-//         type: "error",
-//         confirmButtonText: "OK" 
-//     });    
-// return;
-// } 
-
-
-$('#btnSave').text('saving...'); //change button text
-$('#btnSave').attr('disabled',true); //set button disable 
-var url;
-
-if(save_method == 'add') {
-    url = "<?php echo site_url('master_unit/ajax_add')?>";
-    url2 = "<?php echo site_url('master_unit/upload')?>";
-} else {
-    url = "<?php echo site_url('master_unit/ajax_update')?>";
-    url2 = "<?php echo site_url('master_unit/upload')?>";
-    
-}
-// console.log($('#form').serialize());
-// ajax adding data to database
-
-var form = $('#form')[0];
-    var data = new FormData(form);
-$.ajax({
-    url           : url,
-    type          : "POST",
-    enctype       : 'multipart/form-data',
-    // data: $('#form').serialize(),
-    data          : data,
-    dataType      : "JSON",
-    processData: false, // false, it prevent jQuery form transforming the data into a query string
-    contentType   : false,
-    cache         : false,
-    timeout       : 600000,
-    success: function(data)
-    {
-
-        if(data.status=="1") //if success close modal and reload ajax table
-        {
-            // ajax upload foto
-            // $.ajax({				
-            //     url           : url2,
-            //     data          : form_data,
-            //     // data: $('#form').serialize() + "&form_data=" + form_data
-            //     type          : 'POST',
-            //     cache         : false,
-            //     contentType   : false,
-            //     processData   : false,
-            //     success:function(data){ 
-            //         if(data==1){                         
-            //             swal({
-            //                 title   : "MASTER CABANG",
-            //                 html    : "<p> Kode   : <b>"+kodecab+"</b> </p>"+
-            //                 "Nama   : " + namacab+"<br>"+
-            //                 "BERHASIL TERSIMPAN ",
-            //                 type    : "success",
-            //                 confirmButtonText   : "OK"
-            //                 }).then((value) => {
-            //                     $('#modal_form').modal('hide');
-            //                     reload_table();
-            //             });	
-            //         }else{
+    $('input[type=file][data-max-size]').each(function(){
+        if(typeof this.files[0] !== 'undefined'){
+            var max = parseInt($(this).attr('max-size'),10),
+            mySize = this.files[0].size;
+            if(mySize > 100000){
+                console.log(mySize)
+                swal({
+                    title: "MASTER CABANG",
+                    html: "Ukuran gambar terlalu besar, maksimal ukuran 100 Kb",
+                    type: "error",
+                    confirmButtonText: "OK" 
+                })
+                $("#filefoto").val("");
+                return mySize;
+            } 
+            else {
+                var file_data   = $('#filefoto').prop('files')[0];
+                    var form_data   = new FormData();
+                    form_data.append('filefoto', file_data);
                         
-            //             swal({
-            //                 title   : "MASTER CABANG",
-            //                 html    : "<p> Kode   : <b>"+kodecab+"</b> </p>"+
-            //                 "Nama   : " + namacab+"<br>"+
-            //                 "GAGAL TERSIMPAN ",
-            //                 type    : "error",
-            //                 confirmButtonText: "OK" 
-            //                 }).then((value) => {
-            //                     $('#modal_form').modal('hide');
-            //                     // reload_table();
-            //             });	
-            //         }			
+                    var kodecab     = $('[name="kode"]').val();
+                    var namacab     = $('[name="nama"]').val();
+
+                // if (kodecab=='' || kodecab== null){
+                // swal({
+                //         title: "KODE",
+                //         html: "<p>HARUS DI ISI !</p>",
+                //         type: "error",
+                //         confirmButtonText: "OK" 
+                //     });    
+                // return;
+                // } 
+
+                // if (namacab=='' || namacab== null){
+                // swal({
+                //         title: "NAMA CABANG",
+                //         html: "<p>HARUS DI ISI !</p>",
+                //         type: "error",
+                //         confirmButtonText: "OK" 
+                //     });    
+                // return;
+                // } 
+
+                // if (logocab=='' || logocab== null){
+                // swal({
+                //         title: "LOGO",
+                //         html: "<p>HARUS DI ISI !</p>",
+                //         type: "error",
+                //         confirmButtonText: "OK" 
+                //     });    
+                // return;
+                // } 
+
+
+                $('#btnSave').text('saving...'); //change button text
+                $('#btnSave').attr('disabled',true); //set button disable 
+                var url;
+
+                if(save_method == 'add') {
+                    url = "<?php echo site_url('master_unit/ajax_add')?>";
+                    url2 = "<?php echo site_url('master_unit/upload')?>";
+                } else {
+                    url = "<?php echo site_url('master_unit/ajax_update')?>";
+                    url2 = "<?php echo site_url('master_unit/upload')?>";
+                    
+                }
+                // console.log($('#form').serialize());
+                // ajax adding data to database
+
+                var form = $('#form')[0];
+                    var data = new FormData(form);
+                $.ajax({
+                    url           : url,
+                    type          : "POST",
+                    enctype       : 'multipart/form-data',
+                    // data: $('#form').serialize(),
+                    data          : data,
+                    dataType      : "JSON",
+                    processData: false, // false, it prevent jQuery form transforming the data into a query string
+                    contentType   : false,
+                    cache         : false,
+                    timeout       : 600000,
+                    success: function(data)
+                    {
+
+                        if(data.status=="1") //if success close modal and reload ajax table
+                        {
+                            // ajax upload foto
+                            // $.ajax({				
+                            //     url           : url2,
+                            //     data          : form_data,
+                            //     // data: $('#form').serialize() + "&form_data=" + form_data
+                            //     type          : 'POST',
+                            //     cache         : false,
+                            //     contentType   : false,
+                            //     processData   : false,
+                            //     success:function(data){ 
+                            //         if(data==1){                         
+                            //             swal({
+                            //                 title   : "MASTER CABANG",
+                            //                 html    : "<p> Kode   : <b>"+kodecab+"</b> </p>"+
+                            //                 "Nama   : " + namacab+"<br>"+
+                            //                 "BERHASIL TERSIMPAN ",
+                            //                 type    : "success",
+                            //                 confirmButtonText   : "OK"
+                            //                 }).then((value) => {
+                            //                     $('#modal_form').modal('hide');
+                            //                     reload_table();
+                            //             });	
+                            //         }else{
                                         
-            
-            //     },
-            //     error:function(data){
-            //         swal('MASTER CABANG','Data gagal disimpan ...','');   	
-            //     }
-            // });
-            swal({
-                title   : "MASTER CABANG",
-                html    : "<p> Kode   : <b>"+kodecab+"</b> </p>"+
-                "Nama   : " + namacab+"<br>"+
-                "BERHASIL TERSIMPAN ",
-                type    : "success",
-                confirmButtonText   : "OK"
-                }).then((value) => {
-                    $('#modal_form').modal('hide');
-                    reload_table();
-            });	
+                            //             swal({
+                            //                 title   : "MASTER CABANG",
+                            //                 html    : "<p> Kode   : <b>"+kodecab+"</b> </p>"+
+                            //                 "Nama   : " + namacab+"<br>"+
+                            //                 "GAGAL TERSIMPAN ",
+                            //                 type    : "error",
+                            //                 confirmButtonText: "OK" 
+                            //                 }).then((value) => {
+                            //                     $('#modal_form').modal('hide');
+                            //                     // reload_table();
+                            //             });	
+                            //         }			
+                                                        
+                            
+                            //     },
+                            //     error:function(data){
+                            //         swal('MASTER CABANG','Data gagal disimpan ...','');   	
+                            //     }
+                            // });
+                            swal({
+                                title   : "MASTER CABANG",
+                                html    : "<p> Kode   : <b>"+kodecab+"</b> </p>"+
+                                "Nama   : " + namacab+"<br>"+
+                                "BERHASIL TERSIMPAN ",
+                                type    : "success",
+                                confirmButtonText   : "OK"
+                                }).then((value) => {
+                                    $('#modal_form').modal('hide');
+                                    reload_table();
+                            });	
 
-        } else if(data.status=="2"){
-            
-            swal({
-                title: "MASTER CABANG",
-                html: "<p> Nama   : <b>"+kodecab+"</b> </p>"+ 
-                "Nama :  " + namacab+"<br>"+
-                "ADA DUPLIKAT, SILAHKAN UBAH KODE ",
-                type: "error",
-                confirmButtonText: "OK" 
-                }).then((value) => {
-                    return;
-            });	
-        } else{
-            swal({
-                title: "MASTER CABANG",
-                html: "<p> Nama   : <b>"+kodecab+"</b> </p>"+ 
-                "Nama :  " + namacab+"<br>"+
-                "GAGAL SIMPAN, SILAHKAN CEK KEMBALI ",
-                type: "error",
-                confirmButtonText: "OK" 
-                }).then((value) => {
-                    return;
-            });	
+                        } else if(data.status=="2"){
+                            
+                            swal({
+                                title: "MASTER CABANG",
+                                html: "<p> Nama   : <b>"+kodecab+"</b> </p>"+ 
+                                "Nama :  " + namacab+"<br>"+
+                                "ADA DUPLIKAT, SILAHKAN UBAH KODE ",
+                                type: "error",
+                                confirmButtonText: "OK" 
+                                }).then((value) => {
+                                    return;
+                            });	
+                        } else{
+                            swal({
+                                title: "MASTER CABANG",
+                                html: "<p> Nama   : <b>"+kodecab+"</b> </p>"+ 
+                                "Nama :  " + namacab+"<br>"+
+                                "GAGAL SIMPAN, SILAHKAN CEK KEMBALI ",
+                                type: "error",
+                                confirmButtonText: "OK" 
+                                }).then((value) => {
+                                    return;
+                            });	
+                        }
+                        $('#btnSave').text('Simpan'); //change button text
+                        $('#btnSave').attr('disabled',false); //set button enable 
+
+
+                    },
+                        error:function(data){
+                            swal('MASTER CABANG','Data gagal disimpan ...','');   
+                            $('#btnSave').text('save'); //change button text
+                            $('#btnSave').attr('disabled',false); //set button enable 	
+                    }
+                });
+            }
         }
-        $('#btnSave').text('Simpan'); //change button text
-        $('#btnSave').attr('disabled',false); //set button enable 
-
-
-    },
-        error:function(data){
-            swal('MASTER CABANG','Data gagal disimpan ...','');   
-            $('#btnSave').text('save'); //change button text
-            $('#btnSave').attr('disabled',false); //set button enable 	
-    }
-});
+    });
+    
 }
 
 function delete_data(id)
@@ -785,7 +809,7 @@ $(document).ready(function() {
                                     <span class="help-block"></span>
                                 </div>
                                 <div class="col-9">
-                                    <input type="file" name="filefoto" id="filefoto" accept=".jpg,.jpeg,.png">
+                                    <input type="file" data-max-size="2048" name="filefoto" id="filefoto" accept=".jpg,.jpeg,.png">
                                     
                                 </div>
                             </div>

@@ -2332,7 +2332,7 @@
                                                       <br />
                                                       Sebelum melakukan bridging, lakukan pemeriksaan perawat dan dokter delebih dahulu
                                                    </div>
-                                                   <h4><strong>P-Care Bridging System - Abiyosoft | PENDAFTARAN</strong></h4>
+                                                   <h4><strong>P-Care Bridging System - Abiyosoft | KUNJUNGAN</strong></h4>
                                                    <hr stle="margin-bottom: 1rem;" />
                                                    <form name="pcare_form" id="pcare_form">
                                                       <input type="hidden" name="kdProviderPelayanan" id="kdProviderPelayanan" value="">
@@ -2456,15 +2456,15 @@
                                                             <label class="form-label">Perawatan</label>
                                                             <div style="display: grid; grid-template-columns: 1fr 1fr 1fr;">
                                                                <label for="rawat_jalan" style="display: flex; align-items: center; gap: 10px;">
-                                                                  <input type="radio" name="kdTkp" id="rawat_jalan" value="10" style="transform: scale(1.3);" checked>
+                                                                  <input type="radio" name="kdTkp" id="rawat_jalan" value="10" onclick="change_status_pulang(this.value)" style="transform: scale(1.3);" checked>
                                                                   Rawat jalan
                                                                </label>
                                                                <label for="rawat_inap" style="display: flex; align-items: center; gap: 10px;">
-                                                                  <input type="radio" name="kdTkp" id="rawat_inap" value="20" style="transform: scale(1.3);">
+                                                                  <input type="radio" name="kdTkp" id="rawat_inap" value="20" onclick="change_status_pulang(this.value)" style="transform: scale(1.3);">
                                                                   Rawat Inap
                                                                </label>
                                                                <label for="promotif_preventif" style="display: flex; align-items: center; gap: 10px;">
-                                                                  <input type="radio" name="kdTkp" id="promotif_preventif" value="50" style="transform: scale(1.3);">
+                                                                  <input type="radio" name="kdTkp" id="promotif_preventif" value="50" onclick="change_status_pulang(this.value)" style="transform: scale(1.3);">
                                                                   Promotif Preventif
                                                                </label>
                                                             </div>
@@ -2521,10 +2521,7 @@
                                                          <div style="display: grid; grid-template-columns: 1fr 3fr; gap: 20px;">
                                                             <label class="form-label" for="pcare_diagnosa">Diagnosa</label>
                                                             <div style="display: grid; grid-template-columns: 1fr 3fr; gap: 10px;" id="icd_result">
-                                                               <!-- <input class="form-control" type="text" name="pcare_jenis_diagnosa[]" id="jenis_diagnosa1" readonly value="Diagnosa">
-                                                               <input class="form-control" type="text" name="pcare_diagnosa[]" id="diagnosa1" readonly value="Patah Hati">
-                                                               <input class="form-control" type="text" name="pcare_jenis_diagnosa[]" id="jenis_diagnosa2" readonly value="Diagnosa">
-                                                               <input class="form-control" type="text" name="pcare_diagnosa[]" id="diagnosa2" readonly value="Sakit Rindu"> -->
+                                                               
                                                             </div>
                                                          </div>
                                                          <div style="display: grid; grid-template-columns: 1fr 3fr; gap: 20px;">
@@ -2608,14 +2605,15 @@
                                                             </div>
                                                          </div>
                                                          <div style="display: grid; grid-template-columns: 1fr 3fr; gap: 20px;">
-                                                            <label class="form-label" for="respRate">Respitore Rate</label>
+                                                            <label class="form-label" for="respRate">Respiratory Rate</label>
                                                             <div style="display: grid; grid-template-columns: 3fr 1fr 3fr; gap: 20px;">
                                                                <div style="display: flex; gap: 10px;">
                                                                   <input 
                                                                      class="form-control" 
                                                                      name="respRate" 
                                                                      id="respRate" 
-                                                                     type="number">
+                                                                     type="number" max="50" min="10" 
+                                                                     placeholder="10-50">
                                                                   /menit
                                                                </div>
                                                                <label class="form-label" for="heartRate">Heart Rate</label>
@@ -2661,14 +2659,69 @@
                                                          </div>
                                                          <div style="display: grid; grid-template-columns: 1fr 3fr; gap: 20px;">
                                                             <label class="form-label" for="kdStatusPulang">Status Pulang</label>
-                                                            <select class="form-control" name="kdStatusPulang" id="kdStatusPulang">
-                                                               <?php foreach($pcare_sp->result() as $ps): ?>
-                                                                  <option value="<?= $ps->kdStatusPulang ?>"><?= $ps->nmStatusPulang ?></option>
-                                                               <?php endforeach; ?>
+                                                            <select class="form-control" name="kdStatusPulang" id="kdStatusPulang" onchange="showRujukan(this.value)">
                                                             </select>
                                                          </div>
                                                       </fieldset>
+                                                      <fieldset name="rujukan" style="display:none">
+                                                         <p style="font-weight: bold; font-size: 16px;">Rujukan Lanjut</p>
+                                                         <hr stle="margin-bottom: 1rem;" />
+                                                         <div style="display: grid; grid-template-columns: 1fr 3fr; gap: 20px;">
+                                                            <label class="form-label" for="tglEstRujuk">Tanggal Estimasi Rujuk</label>
+                                                            <input type="date" class="form-control" name="tglEstRujuk" id="tglEstRujuk" value="<?= date("Y-m-d") ?>">
+                                                         </div>
+                                                         <div style="display: grid; grid-template-columns: 1fr 3fr; gap: 20px;">
+                                                            <label class="form-label" for="">Apakah pasien memerlukan sarana khusus ?</label>
+                                                            <select type="text" class="form-control" onchange="saranaRujukan(this.value)">
+                                                                <option>-- PILIH --</option>
+                                                                <option value="1">Ya</option>
+                                                                <option value="0">Tidak</option>
+                                                            </select>
+                                                         </div>
+                                                         <div id="rujukan_sarana" class="display:none">
+                                                            <div style="display: grid; grid-template-columns: 1fr 3fr; gap: 20px;">
+                                                                <label class="form-label" for="sarana_khusus">Sarana Khusus</label>
+                                                                <select type="text" class="form-control" id="sarana_khusus" name="sarana_khusus">
+                                                                </select>
+                                                            </div>
+                                                            <div style="padding:15px;border:1px solid #ddd;border-radius:5px;margin-bottom:15px;display:none" id="rujukan_khusus">
+                                                                <p style="padding-bottom:15.5px;display:flex;justify-content:space-between;align-items:center">
+                                                                <b>Rujukan Thalasemia/Hemofilia</b>
+                                                                <a href="#" data-toggle="tooltip" data-placement="top" title="Harap memilih sub spesialis diantara daftar berikut : 1. Penyakit Dalam, 2. Hematologi - Onkologi Medik, 3. Anak, 4. Anak - Hematologi Onkologi">Help ? <small>hover me</small></a>
+                                                                </p>
+                                                                <div style="display: grid; grid-template-columns: 1fr 3fr; gap: 20px;">
+                                                                    <label class="form-label" for="">Sepsialis</label>
+                                                                    <select type="text" class="form-control">
+                                                                    </select>
+                                                                </div>
+                                                                <div style="display: grid; grid-template-columns: 1fr 3fr; gap: 20px;">
+                                                                    <label class="form-label" for="">Sub Sepsialis</label>
+                                                                    <select type="text" class="form-control">
+                                                                    </select>
+                                                                </div>
+                                                            </div>
+                                                         </div>
+                                                         <div style="padding:15px;border:1px solid #ddd;border-radius:5px;margin-bottom:15px;display:none" id="rujukan_nonkhusus">
+                                                            <div style="display: grid; grid-template-columns: 1fr 3fr; gap: 20px;">
+                                                                <label class="form-label" for="">Sepsialis</label>
+                                                                <select type="text" class="form-control">
+                                                                </select>
+                                                            </div>
+                                                            <div style="display: grid; grid-template-columns: 1fr 3fr; gap: 20px;">
+                                                                <label class="form-label" for="">Sub Sepsialis</label>
+                                                                <select type="text" class="form-control">
+                                                                </select>
+                                                            </div>
+                                                            <div style="display: grid; grid-template-columns: 1fr 3fr; gap: 20px;">
+                                                                <label class="form-label" for="">Sarana</label>
+                                                                <select type="text" class="form-control">
+                                                                </select>
+                                                            </div>
+                                                         </div>
+                                                         <button type="button" class="btn green" id="">Cari Rujukan</button>
+                                                      </fieldset>
                                                    </form>
+                                                   <hr />
                                                    <div style="display: flex; gap: 20px; align-items: center; justify-content: space-between; max-width: 80%; margin: 10px auto;">
                                                       <button class="btn green" type="button" onclick="save_pcare()">
                                                          <i class="fa fa-floppy-o"></i> Simpan
@@ -2795,6 +2848,7 @@
     $(".select2_ap1").select2();
 
     // PCARE JS //
+    load_sarana_khusus();
 
     function error_alert(message){
         return swal({
@@ -2844,8 +2898,8 @@
                     $("#icd_result").html("");
                     $.each(res.data_diag, function(i, k){
                         $("#icd_result").append(""+
-                            "<input class='form-control' type='text' name='kdDiag[]' id='kdDiag"+ i +"' value='"+ k.icd_code +"' readonly>"+
-                            "<input class='form-control' type='text' name='nmDiag[]' id='nmDiag"+ i +"' value='"+ k.icd_name +"' readonly>"+
+                            "<input class='form-control' type='text' name='kdDiag"+ (parseInt(i)+1) +"' id='kdDiag"+ (parseInt(i)+1) +"' value='"+ k.icd_code +"' readonly>"+
+                            "<input class='form-control' type='text' name='nmDiag"+ (parseInt(i)+1) +"' id='nmDiag"+ (parseInt(i)+1) +"' value='"+ k.icd_name +"' readonly>"+
                         "");
                     });
 
@@ -2902,6 +2956,84 @@
                 console.error(jqXHR.responseJSON);
             }
         });
+
+        get_kunjungan_pcare(param);
+    }
+
+    function get_kunjungan_pcare(param){
+        $.ajax({
+            url         : "/pcare/get_kunjungan/"+ param,
+            type        : "GET",
+            dataType    : "JSON",
+            success     : function(res){
+                if(res.status == "success"){
+                    console.log(res.data.tglDaftar);
+                    $("#tglDaftar").val(res.data.tglDaftar);
+                    $("#tglPulang").val(res.data.tglPulang);
+                    $("#noKunjungan").val(res.data.noKunjungan);
+                    switch(res.data_reg.kunjSakit){
+                        case "1" : $("#sakit").prop("checked", true); break;
+                        case "2" : $("#sehat").prop("checked", true); break;
+                    }
+                    
+                    change_poli(res.data_reg.kunjSakit);
+
+                    switch(res.data.kdTkp){
+                        case "10" : $("#rawat_jalan").prop("checked", true); break;
+                        case "20" : $("#rawat_inap").prop("checked", true); break;
+                        case "50" : $("#promotif_preventif").prop("checked", true); break;
+                    }
+                    $("#kdPoli").val(res.data.kdPoli);
+                    $("#keluhan").val(res.data.keluhan);
+                    $("#anamnesa").val(res.data.keluhan);
+                    $("#terapi").val(res.data.terapi);
+                    $("#terapinon").val(res.data.terapinon);
+                    $("#icd_result").html(""+
+                        "<input class='form-control' type='text' name='kdDiag1' id='kdDiag1' value='"+ (res.data.kdDiag1 == null? "-" : res.data.kdDiag1) +"' readonly>"+
+                        "<input class='form-control' type='text' name='nmDiag1' id='nmDiag1' value='"+ get_diagnosa(res.data.kdDiag1 != null? res.data.kdDiag1 : "") +"' readonly>"+
+                        "<input class='form-control' type='text' name='kdDiag2' id='kdDiag2' value='"+ (res.data.kdDiag2 == null? "-" : res.data.kdDiag2) +"' readonly>"+
+                        "<input class='form-control' type='text' name='nmDiag2' id='nmDiag2' value='"+ get_diagnosa(res.data.kdDiag2 != null? res.data.kdDiag2 : "") +"' readonly>"+
+                        "<input class='form-control' type='text' name='kdDiag3' id='kdDiag3' value='"+ (res.data.kdDiag3 == null? "-" : res.data.kdDiag3) +"' readonly>"+
+                        "<input class='form-control' type='text' name='nmDiag3' id='nmDiag3' value='"+ get_diagnosa(res.data.kdDiag3 != null? res.data.kdDiag3 : "") +"' readonly>"+
+                    "");
+                    $("#kdSadar").val(res.data.kdSadar);
+                    $("#tinggiBadan").val(res.data.tinggiBadan);
+                    $("#beratBadan").val(res.data.beratBadan);
+                    $("#lingkatPerut").val(res.data.lingkatPerut);
+                    $("#imt").val(res.data.imt);
+                    $("#sistole").val(res.data.sistole);
+                    $("#diastole").val(res.data.diastole);
+                    $("#respRate").val(res.data.respRate);
+                    $("#heartRate").val(res.data.heartRate);
+                    change_status_pulang(res.data.kdTkp);
+                }
+            },
+            error       : function(){
+                //
+            }
+        });
+    }
+
+    function get_diagnosa(code = ""){
+        if(code == ""){
+            return "-";
+        } else {
+            var result;
+            $.ajax({
+                url         : "/pcare/get_diagnosa/"+ code,
+                type        : "GET",
+                dataType    : "JSON",
+                async       : false,
+                success     : function(res){
+                    result = res.nmdiag;
+                },
+                error       : function(){
+                    console.error("failed get 'Diagnosa Info' bridging");
+                }
+            });
+
+            return result;
+        }
     }
 
     $('#beratBadan, #tinggiBadan').on("keyup", function(){
@@ -3027,6 +3159,19 @@
         }       
     }); 
 
+    $("#respRate").change(function() {
+        var max = parseInt($(this).attr('max'));
+        var min = parseInt($(this).attr('min'));
+        if ($(this).val() > max)
+        {
+            $(this).val(max);
+        }
+        else if ($(this).val() < min)
+        {
+            $(this).val(min);
+        }       
+    }); 
+
     function save_pcare(){
         var post_form = $("#pcare_form").serialize();
 
@@ -3041,7 +3186,20 @@
                 console.log(res);
             },
             error: (jqXHR) => {
-                console.error(jqXHR.responseJSON);
+                var msg;
+
+                jqXHR.responseJSON.forEach(function(el){
+                    msg += `<p>${ el.field } - ${ el.message }</p>`
+                });
+
+                swal({
+                    title: "Bridging Error",
+                    html: msg,
+                    type: "error",
+                    confirmButtonText: "OK" 
+                }); 
+
+                // console.error(jqXHR.responseJSON);
             }
         });
     }
@@ -3063,6 +3221,61 @@
                 console.error("Error : Failed get 'Poli Tujuan'");
             }
         })
+    }
+
+    function change_status_pulang(status){
+        $.ajax({
+            url         : "/pcare/status_pulang_by_status/"+ status,
+            type        : "GET",
+            dataType    : "JSON",
+            beforeSend  : function(){
+                $("#kdStatusPulang").empty();
+            },
+            success     : function(res){
+                $.each(res, function(k, v){
+                   $("#kdStatusPulang").append("<option value='"+ v.kdStatusPulang +"'>"+ v.nmStatusPulang +"</option>");
+                });
+            },
+            error       : function(jqXHR, textStatus, errorThrown){
+                console.error("Error : Failed get 'Status Pulang'");
+            }
+        })
+    }
+
+    function showRujukan(param){
+        if(param == 4 || param == 6){
+            $("fieldset[name='rujukan']").removeAttr("style");
+        } else {
+            $("fieldset[name='rujukan']").attr("style", "display:none");
+        }
+    }
+
+    function saranaRujukan(param){
+        if(param == 1){
+            $("#rujukan_sarana").attr("style", "display:block");
+            $("#rujukan_nonkhusus").attr("style", "padding:15px;border:1px solid #ddd;border-radius:5px;margin-bottom:15px;display:none");
+        } else 
+        if(param == 0){
+            $("#rujukan_sarana").attr("style", "display:none");
+            $("#rujukan_nonkhusus").attr("style", "padding:15px;border:1px solid #ddd;border-radius:5px;margin-bottom:15px;display:block");
+        } else {
+            $("#rujukan_sarana").attr("style", "display:none");
+            $("#rujukan_nonkhusus").attr("style", "padding:15px;border:1px solid #ddd;border-radius:5px;margin-bottom:15px;display:none");
+        }
+    }
+
+    function load_sarana_khusus(){
+        $.ajax({
+            url: "/pcare/get_sarana_khusus",
+            type: "GET",
+            dataType: "JSON",
+            success: function(res){
+                console.log(res);
+            },
+            error: function(jqXHR){
+                console.error(jqXHR);
+            }
+        });
     }
 
     // PCARE JS //

@@ -127,6 +127,7 @@ class M_user extends CI_Model {
 			'uidlogin'   => $this->input->post('uidlogin'),
 			'username'   => $this->input->post('karyawan'),
 			'job_role'   => $this->input->post('jobsrole'),
+			'promas' 	 => $this->input->post('promass'),
 			'pwdlogin'   => md5($this->input->post('password')),
 			'cabang'     => implode(",", $cabang),
 			'level'      => $this->input->post('grup'),

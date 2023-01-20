@@ -142,7 +142,10 @@ $this->load->view('template/body');
                               &nbsp;
                               <div class="row">
                                    <div class="col-md-offset-3 col-md-9">
+                                        <a class=" btn btn-sm blue" onclick="layarr()" id="cetak" data-toggle="modal">Cetak LAYAR</a>
+
                                         <a class=" btn btn-sm red print_laporan" id="cetak" data-toggle="modal">Cetak PDF</a>
+
                                         <a class="btn btn-sm green" onclick="exp()"><i title=" CETAK PDF" class="fa fa-download"></i><b> EXCEL </b></a>
                                         <br />
                                         <h4>
@@ -334,6 +337,93 @@ $this->load->view('template/v_report');
                          confirmButtonText: "OK"
                     });
                }
+          }
+     }
+
+     function layarr() {
+
+          var cek_dari = document.getElementById('dari').value;
+          // $('.loading').modal('show');
+               
+          var laporan   = document.getElementById('laporan').value;
+          var depo      = document.getElementById('depo').value;
+
+          if (document.getElementById('keperluan').checked === true) {
+               var keperluan = 1;
+          } else {
+               var keperluan = 0;
+          }
+
+          if (document.getElementById('depoall').checked === true) {
+               var da = 1;
+          } else {
+               var da = 0;
+          }
+
+          if ((depo == '' || depo == null) && da == 0) {
+               swal({
+                    title: "DEPO",
+                    html: " Depo Harus Dipilih",
+                    type: "error",
+                    confirmButtonText: "OK"
+               });
+          } else {
+               var baseurl     = "<?php echo base_url() ?>";
+               if (laporan != '' && laporan != 5) {
+                    if(laporan == 3){
+                         $.ajax({
+                              url: "<?= site_url('Laporan_persediaan/cek_periode/'); ?>"+cek_dari,
+                              type: "POST",
+                              dataType: "JSON",
+                              success: function(data) {
+                                   if(data.status == 1){
+                                        $('#report').modal('hide');
+                                        const tanggalx = new Date(data.tgl);
+                                        const months = ["Januari", "Februari", "Mart", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
+                                        swal({
+                                             title: "TANGGAL PERIODE",
+                                             html: "Dimulai Pada : "+ tanggalx.getDate()+" "+months[tanggalx.getMonth()]+" "+tanggalx.getFullYear(),
+                                             type: "error",
+                                             confirmButtonText: "OK"
+                                        });
+                                        document.getElementById("dari").value = data.tgl;
+                                        return;
+                                   } else {
+                                        var dari = document.getElementById('dari').value;
+                                        var sampai = document.getElementById('sampai').value;
+                                        // $('#report').modal('show');
+                                        // $('.modal-title').text('Cetak Laporan Persediaan Barang');
+                                        // $("#simkeureport").html('<iframe src="<?php echo base_url(); ?>Laporan_persediaan/cetak2?dari=' + dari + '&sampai=' + sampai + '&da=' + da + '&depo=' + depo + '&laporan=' + laporan + '&keperluan=' + keperluan + '&pdf=1' + '" frameborder="no" width="100%" height="520"></iframe>');
+                                        var urlnya      = baseurl + 'Laporan_persediaan/cetak2?dari=' + dari + '&sampai=' + sampai + '&da=' + da + '&depo=' + depo + '&laporan=' + laporan + '&keperluan=' + keperluan + '&pdf=0';
+                                        window.open(urlnya, '_blank');
+                                   }
+                              }
+                         });
+                    } else {
+                         var dari = document.getElementById('dari').value;
+                         var sampai = document.getElementById('sampai').value;
+                         // $('#report').modal('show');
+                         // $('.modal-title').text('Cetak Laporan Persediaan Barang');
+                         // $("#simkeureport").html('<iframe src="<?php echo base_url(); ?>Laporan_persediaan/cetak2?dari=' + dari + '&sampai=' + sampai + '&da=' + da + '&depo=' + depo + '&laporan=' + laporan + '&keperluan=' + keperluan + '&pdf=1' + '" frameborder="no" width="100%" height="520"></iframe>');
+                         var urlnya      = baseurl + 'Laporan_persediaan/cetak2?dari=' + dari + '&sampai=' + sampai + '&da=' + da + '&depo=' + depo + '&laporan=' + laporan + '&keperluan=' + keperluan + '&pdf=0';
+                         window.open(urlnya, '_blank');
+                    }
+               } else if (laporan == 5){
+                    swal({
+                         title: "LAPORAN PEMUSNAHAN BARANG",
+                         html: " Masih Belum di Pakai .!!!",
+                         type: "info",
+                         confirmButtonText: "OK"
+                    });
+               } else {
+                    swal({
+                         title: "LAPORAN",
+                         html: " Tidak Boleh Kosong .!!!",
+                         type: "error",
+                         confirmButtonText: "OK"
+                    });
+               }
+               $('.loading').modal('hide');
           }
      }
 </script>

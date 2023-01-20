@@ -60,17 +60,21 @@ class M_pendaftaranVRS extends CI_Model {
 		$this->db->from($this->tablerj);
 		$this->db->join('userlogin','userlogin.uidlogin=pasien_rajal.username');
 		$this->db->where('pasien_rajal.koders', $cabang);
-		// $this->db->where('pasien_rajal.ada', 1);
 		$this->db->where('pasien_rajal.tujuan', 1);
-		// $this->db->where('pasien_rajal.batal', 0);
-		$this->db->where('pasien_rajal.kodepos !=', 'PUGD');
+		// $this->db->where('pasien_rajal.kodepos !=', 'LABOR');
+		// $this->db->where('pasien_rajal.kodepos !=', 'RADIO');
+		// $this->db->where('pasien_rajal.kodepos !=', 'FARMA');
+		// $this->db->where('pasien_rajal.kodepos !=', 'PUGD');
+		$where = "(kodepos != 'FARMA' AND kodepos != 'LABOR' AND kodepos != 'RADIO' AND kodepos != 'PUGD')";
+		$this->db->where($where);
+		// $this->db->where('pasien_rajal.kodepos !=', 'PUGD');
 		$this->db->group_by('pasien_rajal.id');
 		// $this->db->group_by('id');
 		if($jns == 1){
 			$tanggal = date('Y-m-d');
 			$this->db->where(array('pasien_rajal.tglmasuk' => $tanggal, 'pasien_rajal.batal' => 0));
 		} else {
-		    $this->db->where(array('pasien_rajal.tglmasuk >=' => $bulan,'tglmasuk<= ' => $tahun));
+			$this->db->where(array('pasien_rajal.tglmasuk >=' => $bulan,'tglmasuk<= ' => $tahun));
 		}
 		$i = 0;
 		foreach ($this->column_searchrj as $item) 
@@ -145,8 +149,7 @@ class M_pendaftaranVRS extends CI_Model {
 	var $column_searchigd = array('id', 'koders','uidlogin','antrino', 'noreg', 'rekmed', 'tglmasuk', 'namapas', 'tujuan', 'nadokter', 'cust_nama', 'jenispas', 'batal', 'keluar');
 	var $orderigd = array('pasien_rajal.koders' => 'asc'); 
 
-	private function _get_datatables_query_igd($jns, $bulan, $tahun)
-	{
+	private function _get_datatables_query_igd($jns, $bulan, $tahun) {
 		$cabang = $this->session->userdata('unit');	
 		$this->db->select($this->column_orderigd);
 		$this->db->from($this->tableigd);
@@ -194,7 +197,7 @@ class M_pendaftaranVRS extends CI_Model {
 		}
 	}	
 
-     function get_datatables_igd( $jns, $bulan, $tahun){
+  function get_datatables_igd( $jns, $bulan, $tahun){
 		$this->_get_datatables_query_igd( $jns, $bulan, $tahun);
 		if($_POST['length'] != -1)
 		$this->db->limit($_POST['length'], $this->input->post('start'));
@@ -202,15 +205,13 @@ class M_pendaftaranVRS extends CI_Model {
 		return $query->result();
 	}
 
-	function count_filtered_igd($jns, $bulan, $tahun)
-	{
+	function count_filtered_igd($jns, $bulan, $tahun) {
 		$this->_get_datatables_query_igd($jns, $bulan, $tahun);
 		$query = $this->db->get();
 		return $query->num_rows();
 	}
 
-	public function count_all_igd( $jns, $bulan, $tahun )
-	{
+	public function count_all_igd( $jns, $bulan, $tahun ) {
 		$cabang = $this->session->userdata('unit');	
 		$this->db->from($this->tableigd);
 		$this->db->where('koders', $cabang);
@@ -316,5 +317,90 @@ class M_pendaftaranVRS extends CI_Model {
 	{
 		$this->db->insert('tbl_pasien', $data);
 		return $this->db->insert_id();
+	}
+
+	// pasien_aps
+	var $tableaps = 'pasien_rajal';
+	var $column_orderaps = array('id', 'koders','uidlogin','antrino1','antrino', 'noreg', 'rekmed', 'tglmasuk', 'namapas', 'tujuan', 'nadokter', 'cust_nama', 'jenispas', 'batal', 'keluar');
+	var $column_searchaps = array('id', 'koders','uidlogin','antrino1','antrino', 'noreg', 'rekmed', 'tglmasuk', 'namapas', 'tujuan', 'nadokter', 'cust_nama', 'jenispas', 'batal', 'keluar');
+	var $orderaps = array('pasien_rajal.koders' => 'asc'); 
+
+	private function _get_datatables_query_aps($jns, $bulan, $tahun) {
+		$cabang = $this->session->userdata('unit');	
+		$this->db->select($this->column_orderaps);
+		$this->db->from($this->tableaps);
+		$this->db->join('userlogin','userlogin.uidlogin=pasien_rajal.username');
+		$this->db->where('pasien_rajal.koders', $cabang);
+		$this->db->where('pasien_rajal.tujuan', 1);
+		$where = "(kodepos = 'FARMA' OR kodepos = 'LABOR' OR kodepos = 'RADIO' AND kodepos != 'PUGD')";
+		$this->db->where($where);
+		$this->db->group_by('pasien_rajal.id');
+		if($jns == 1){
+			$tanggal = date('Y-m-d');
+			$this->db->where(array('pasien_rajal.tglmasuk' => $tanggal));
+			// $where = "AND pasien_rajal.tglmasuk = '$tanggal'";
+		} else {
+		    $this->db->where(array('pasien_rajal.tglmasuk >=' => $bulan,'tglmasuk<= ' => $tahun));
+				// $wheretgl = "AND pasien_rajal.tglmasuk >= '$bulan' AND pasien_rajal.tglmasuk <= '$tahun'";
+		}
+		// $this->db->query("SELECT id, koders,uidlogin,antrino, noreg, rekmed, tglmasuk, namapas, tujuan, nadokter, cust_nama, jenispas, batal, keluar FROM pasien_rajal JOIN userlogin ON userlogin.uidlogin=pasien_rajal.username WHERE pasien_rajal.koders = '$cabang' AND pasien_rajal.tujuan = 1 AND (pasien_rajal.kodepos = 'LABOR' OR pasien_rajal.kodepos = 'RADIO' OR pasien_rajal.kodepos = 'FARMA') GROUP BY pasien_rajal.id AND $wheretgl")->result();
+		$i = 0;
+		foreach ($this->column_searchaps as $item) 
+		{
+			if($_POST['search']['value']) 
+			{
+				
+				if($i===0) // first loop
+				{
+					$this->db->group_start(); // open bracket. query Where with OR clause better with bracket. because maybe can combine with other WHERE with AND.
+					$this->db->like($item, $_POST['search']['value']);
+				}
+				else
+				{
+					$this->db->or_like($item, $_POST['search']['value']);
+				}
+
+				if(count($this->column_searchaps) - 1 == $i) //last loop
+					$this->db->group_end(); //close bracket
+			}
+			$i++;
+		}
+		
+		if(isset($_POST['order'])) // here order processing
+		{
+			$this->db->order_by($this->column_orderaps[$_POST['order']['0']['column']], $_POST['order']['0']['dir']);
+		} 
+		else if(isset($this->orderaps))
+		{
+			$order = $this->orderaps;
+			$this->db->order_by(key($order), $order[key($order)]);
+		}
+	}	
+
+  function get_datatables_aps( $jns, $bulan, $tahun){
+		$this->_get_datatables_query_aps( $jns, $bulan, $tahun);
+		if($_POST['length'] != -1)
+		$this->db->limit($_POST['length'], $this->input->post('start'));
+		$query = $this->db->get();
+		return $query->result();
+	}
+
+	function count_filtered_aps($jns, $bulan, $tahun) {
+		$this->_get_datatables_query_aps($jns, $bulan, $tahun);
+		$query = $this->db->get();
+		return $query->num_rows();
+	}
+
+	public function count_all_aps( $jns, $bulan, $tahun ) {
+		$cabang = $this->session->userdata('unit');	
+		$this->db->from($this->tableaps);
+		$this->db->where('koders', $cabang);
+		
+		if($jns==1){
+			$this->db->where(array('year(tglmasuk)' => $tahun,'month(tglmasuk)' => $bulan));
+		} else {
+			$this->db->where(array('tglmasuk >=' => $bulan,'tglmasuk<= ' => $tahun));
+		}
+		return $this->db->count_all_results();
 	}
 }

@@ -91,6 +91,7 @@ class Kasir_konsul extends CI_Controller
 			$data['level'] = $level;
 			$data['pap'] = $pap;
 			$data['jumlah'] = $this->db->get_where("tbl_dpoli", ['noreg' => $noreg])->num_rows();
+			$data['kredit'] = $this->db->query("SELECT k.*, b.* FROM tbl_kartukredit k join tbl_edc b on k.kodebank=b.bankcode WHERE k.nokwitansi = '$qkasir->nokwitansi'")->result();
 
 			$this->load->view('klinik/v_biayakonsul_edit', $data);
 		} else {
@@ -1214,7 +1215,9 @@ class Kasir_konsul extends CI_Controller
 				}
 				$no = 1;
 				$actualtotal	= ($detail_resep->totalrp + $abc) - (0 - $sisa_voucher);
+				$detotal = 0;
 				foreach($detil as $dt){
+					$detotal += $dt->totalrp;
 					$chari .= "<tr>
 													<td style=\"text-align:center; border-right: none; border-left: none; border-top: none; border-bottom: none;\">" . $no++ . "</td>
 													<td style=\"text-align:left; border-right: none; border-left: none; border-top: none; border-bottom: none;\">$dt->namabarang</td>
@@ -1232,7 +1235,7 @@ class Kasir_konsul extends CI_Controller
 										</tr>";
 				$chari .= "</tbody><tfoot><tr>
 										<td style=\"text-align:right; border-right: none; border-left: none;\" colspan=\"4\"><b>Total Resep & Racik</b></td>
-										<td style=\"text-align:right; border-left: none; border-right: none;\">".number_format((!isset($abc) ? 0 : $abc + $dt->totalrp), 2)."</td>
+										<td style=\"text-align:right; border-left: none; border-right: none;\">".number_format((!isset($abc) ? 0 : $abc + $detotal), 2)."</td>
 								</tr></tfoot>";
 								$chari .= "</table>";
 				// $chari .= "</table>";
@@ -1262,7 +1265,9 @@ class Kasir_konsul extends CI_Controller
 																		<td width=\"20%\" align=\"center\" style=\"text-align:center; border-left: none; border-right: none;\"><b>Jumlah</b></td>
 																</tr>
 													</thead>";
+					$detotal = 0;
 					foreach($detil as $dt){
+						$detotal += $dt->totalrp;
 						$chari .= "<tr>
 														<td style=\"text-align:center; border-right: none; border-left: none; border-top: none; border-bottom: none;\">" . $no++ . "</td>
 														<td style=\"text-align:left; border-right: none; border-left: none; border-top: none; border-bottom: none;\">$dt->namabarang</td>
@@ -1284,7 +1289,7 @@ class Kasir_konsul extends CI_Controller
 					}
 					$chari .= "<tfoot><tr>
 											<td style=\"text-align:right; border-right: none; border-left: none;\" colspan=\"4\"><b>Total Resep & Racik</b></td>
-											<td style=\"text-align:right; border-left: none; border-right: none;\">".number_format((!isset($abc) ? 0 : $abc), 2)."</td>
+											<td style=\"text-align:right; border-left: none; border-right: none;\">".number_format((!isset($abc) ? 0 : $abc + $detotal), 2)."</td>
 									</tr></tfoot>";
 									$chari .= "</table>";
 				} else {
@@ -1336,7 +1341,7 @@ class Kasir_konsul extends CI_Controller
 														<tr>
 															<td style=\"text-align:left; border-right: none;\"><b>Total Keseluruhan</b></td>
 															<td style=\"text-align:center; border-right: none; border-left: none;\"><b> : </b></td>
-															<td style=\"text-align:right; border-left: none;\"><b>".number_format($abc + $dt->totalrp + $tot, 2)."</b></td>
+															<td style=\"text-align:right; border-left: none;\"><b>".number_format($abc + $detotal + $tot, 2)."</b></td>
 														</tr>
 													</table>
 												</td>
@@ -1490,6 +1495,491 @@ class Kasir_konsul extends CI_Controller
 		}
 	}
 
+	public function cetak_kwitansi2(){
+		$cek = $this->session->userdata('level');
+		$unit = $this->session->userdata('unit');
+		$user = $this->session->userdata('username');
+		$avatar = $this->session->userdata('avatar_cabang');
+		$nokwitansi = $this->input->get('kwitansi');
+		$noreg = $this->input->get('noreg');
+		if(!empty($cek)) {
+
+			$regist = $this->db->query("SELECT tbl_regist.*, tbl_pasien.namapas from tbl_regist inner join tbl_pasien on tbl_regist.rekmed=tbl_pasien.rekmed where noreg = '$noreg'")->row();
+
+			$kasir = $this->db->query("SELECT * from tbl_kasir where nokwitansi = '$nokwitansi'")->row();
+
+			$detail = $this->db->query("SELECT * from (select tbl_tarifh.tindakan as ket, (tbl_dpoli.tarifrs + tbl_dpoli.tarifdr + tbl_dpoli.paramedis + tbl_dpoli.obatpoli) as jumlah from tbl_dpoli inner join tbl_tarifh on tbl_dpoli.kodetarif=tbl_tarifh.kodetarif where noreg = '$noreg' union	all select 'Adm' as ket, tbl_kasir.adm as jumlah from tbl_kasir where nokwitansi = '$nokwitansi' union	all select 'Diskon Total' as ket, tbl_kasir.diskonrp*-1 as jumlah from tbl_kasir where nokwitansi = '$nokwitansi') kasir where jumlah<>0")->result();
+
+			$hresep = $this->db->query("SELECT * from tbl_apohresep where noreg = '$noreg'")->row();
+			
+			$voucher = $this->db->query("select 'Voucher' as ket, (tbl_kasir.voucherrp1 + tbl_kasir.voucherrp2 + tbl_kasir.voucherrp3)*-1 as jumlah from tbl_kasir 
+			where nokwitansi = '$nokwitansi'")->result();
+
+			$jml_harga = $this->db->query("SELECT sum(tbl_dpoli.tarifrs) AS jumlah FROM tbl_dpoli INNER JOIN tbl_tarifh ON tbl_dpoli.kodetarif=tbl_tarifh.kodetarif WHERE noreg = '$noreg'")->result();
+
+			$uangmuka = $this->db->query("SELECT * FROM tbl_kasir WHERE nokwitansi = '$nokwitansi'")->row();
+
+			$diskon = $this->db->query("SELECT 'Diskon Total' as ket, tbl_kasir.diskonrp*-1 as jumlah from tbl_kasir where nokwitansi = '$nokwitansi'")->row();
+
+			if($kasir->bayarcash > 0){
+				$bayarcash = number_format($kasir->bayarcash, 2);
+			} else {
+				$bayarcash = number_format(0, 2);
+			}
+
+			if ($hresep) {
+				$eresep = $hresep->eresepno;
+				$param = $hresep->resepno;
+			} else {
+				$eresep = '';
+				$param = '';
+			}
+
+			// dresep sintaks
+			$dresep = $this->db->query("SELECT * FROM tbl_apodresep WHERE resepno = '$param'")->result();
+
+			// posting sintaks
+			$posting = $this->db->query("SELECT * from tbl_apoposting  where resepno = '$param'")->row();
+
+			// pajak sintaks
+			$pajak = $this->db->query("SELECT * FROM tbl_pajak where kodetax='PPN'")->row();
+
+			// pasien
+			$pasien = data_master('tbl_pasien', array('rekmed' => $kasir->rekmed));
+			$dracik = $this->db->query("SELECT * from tbl_apodetresep where resepno = '$param' AND koders='$unit'")->result();
+			$hracik = $this->db->query("SELECT * from tbl_aporacik where resepno = '$param' AND koders='$unit'")->row();
+
+			// total detail
+			$tot_detail = 0;
+			foreach($detail as $d){
+				$tot_detail += $d->jumlah;
+			}
+
+			//total dresep
+			$tot_dresep=0;
+			foreach($dresep as $ap){
+				$tot_dresep += $ap->totalrp;
+			}
+
+			// cek kembalian
+			if ($kasir->bayarcash == 0) {
+				$kembalianx = 0;
+			} else {
+				$kembalianx = angka_rp($kasir->kembali, 2);
+			}
+
+			// sum jumlah detail
+			$jum_detail = 0;
+			foreach ($detail as $key => $value) {
+				$jum_detail += $value->jumlah;
+			}
+
+			if($hracik == true && $dracik == true){
+				if ($hracik->harga_manual != 0) {
+					$hargatotalracik = $hracik->harga_manual;
+				} else {
+					$hargatotalracik = $hracik->totalrp; 
+				}
+			} else {
+				$hargatotalracik = 0;
+			}
+
+			if($dresep){
+				$detotal = 0;
+				foreach($dresep as $drp){
+					$detotal += $drp->totalrp;
+				}
+			} else {
+				$detotal = 0;
+			}
+
+			// total semua
+			$semuanya_ = $tot_detail + $hargatotalracik + $detotal;
+
+			// sebut total semua
+			$terbilang = terbilang($semuanya_);
+
+			// cek voucher
+			foreach ($voucher as $v) {
+				$vcr1 = 0 - (int)$v->jumlah;
+				$vcr = number_format($vcr1);
+			}
+
+			// cek jharga
+			foreach ($jml_harga as $jh) {
+				$jh1 = 0 - (int)$jh->jumlah;
+				$jh = number_format($jh1);
+			}
+
+			// cek sisa
+			$ceksisa = $tot_detail - (0 - $jh1) - (int)$diskon->jumlah;
+
+			// mpdf
+			$unit = $this->session->userdata('unit');
+			$kop = $this->M_cetak->kop($unit);
+			$profile = data_master('tbl_namers', array('koders' => $unit));
+			$namars = $kop['namars'];
+			$alamat = $kop['alamat'];
+			$alamat2 = $kop['alamat2'];
+			$alamat3 = $profile->kota;
+			$kota = $kop['kota'];
+			$phone = $kop['phone'];
+			$whatsapp = $kop['whatsapp'];
+			$npwp = $kop['npwp'];
+			$chari = '';
+
+			// header
+			
+			$chari .= "<table style=\"border-collapse:collapse;font-family: Century Gothic; font-size:12px; color:#000;\" width=\"100%\"  border=\"0\" cellspacing=\"0\" cellpadding=\"0\">
+				<tr>
+					<td rowspan=\"6\" align=\"center\">
+						<img src=\"" . base_url() . "assets/img_user/$avatar\"  width=\"70\" height=\"70\"/>
+					</td>
+					<td colspan=\"20\">
+						<b>
+							<tr>
+								<td style=\"font-size:10px;border-bottom: none;\"><b><br>$namars</b></td>
+							</tr>
+							<tr>
+								<td style=\"font-size:9px;\">$alamat</td>
+							</tr>
+							<tr>
+								<td style=\"font-size:9px;\">$alamat2</td>
+							</tr>
+							<tr>
+								<td style=\"font-size:9px;\">Wa :$whatsapp    Telp :$phone </td>
+							</tr>
+							<tr>
+								<td style=\"font-size:9px;\">No. NPWP : $npwp</td>
+							</tr>
+						</b>
+					</td>
+				</tr>
+			</table>";
+			$chari .= "<table style=\"border-collapse:collapse;font-family: Tahoma; font-size:11px\" width=\"100%\" align=\"center\" border=\"0\" cellspacing=\"1\" cellpadding=\"3\">
+				<tr>
+					<td> &nbsp; </td>
+				</tr> 
+				<tr>
+					<td width=\"15%\" style=\"text-align:center; font-size:20px;\"><b>KWITANSI PEMBAYARAN</b></td>
+				</tr>
+				<tr>
+					<td> &nbsp; </td>
+				</tr> 
+			</table>";
+			$chari .= "<table style=\"border-collapse:collapse;font-family: tahoma; font-size:1px\" width=\"100%\" align=\"center\" border=\"1\">
+				<tr>
+					<td style=\"border-top: none; border-right: none; border-left: none;\"></td>
+				</tr> 
+				<tr>
+					<td style=\"border-top: none; border-bottom: none; border-right: none; border-left: none;\"> &nbsp; </td>
+				<tr>
+				</tr>
+				<tr>
+					<td style=\"border-top: none; border-right: none; border-left: none;\"></td>
+				</tr>
+			</table>";
+			$chari .= "<table style=\"border-collapse:collapse;font-family: tahoma; font-size:12px\" width=\"100%\" align=\"center\" border=\"0\">
+				<tr>
+					<td> &nbsp; </td>
+				</tr> 
+				<tr>
+					<td> &nbsp; </td>
+				</tr> 
+			</table>";
+
+			// isi header
+			$chari .= "<table style=\"border-collapse:collapse;font-family: tahoma; font-size:12px\" width=\"100%\" align=\"center\" border=\"0\">
+				<tr>
+					<td width=\"20%\">Sudah terima dari</td>
+					<td width=\"5%\"> : </td>
+					<td>$kasir->dibayaroleh</td>
+				</tr> 
+				<tr>
+					<td width=\"20%\">No. Member</td>
+					<td width=\"5%\"> : </td>
+					<td>$kasir->rekmed</td>
+				</tr> 
+				<tr>
+					<td width=\"20%\">Banyaknya Uang</td>
+					<td width=\"5%\"> : </td>
+					<td>$terbilang</td>
+				</tr> 
+				<tr>
+					<td width=\"20%\">Untuk Pembayaran</td>
+					<td width=\"5%\"> : </td>
+					<td>Pemeriksaan dokter & Resep</td>
+				</tr> 
+				<tr>
+					<td width=\"20%\">Pasien</td>
+					<td width=\"5%\"> : </td>
+					<td>$regist->namapas</td>
+				</tr>
+				<tr colspan=\"3\">
+					<td> &nbsp; </td>
+				</tr>
+			</table>";
+
+			// isi konsul
+			$chari .= "<table style=\"border-collapse:collapse;font-family: tahoma; font-size:16px\" width=\"100%\" align=\"center\" border=\"0\">
+				<tr>
+					<td><b>KONSULTASI</b></td>
+				</tr> 
+			</table>";
+			$chari .= "<table style=\"border-collapse:collapse;font-family: Tahoma; font-size:12px\" width=\"100%\" align=\"center\" border=\"1\" cellspacing=\"5\" cellpadding=\"5\">
+				<tr>
+					<td width=\"5%\" align=\"center\" style=\"text-align:center; border-left: none;\"><b>No</b></td>
+					<td width=\"75%\" align=\"center\" style=\"text-align:center; border-right: none; border-left: none;\"><b>Nama Tindakan</b></td>
+					<td width=\"20%\" align=\"center\" style=\"text-align:center; border-left: none; border-right: none;\"><b>Jumlah</b></td>
+				</tr>";
+
+			// isi detail konsul
+			$no = 1;
+			$tot = 0;
+			foreach ($detail as $db) {
+				$tot = $tot + $db->jumlah;
+				$chari .= "<tr>
+					<td style=\"text-align:center; border-left: none; border-top: none; border-bottom: none;\">" . $no++ . "</td>
+					<td style=\"text-align:left; border-right: none; border-left: none; border-top: none; border-bottom: none;\">$db->ket</td>
+					<td style=\"text-align:right; border-left: none; border-right: none; border-top: none; border-bottom: none;\">".number_format($db->jumlah, 2)."</td>
+				</tr>";
+
+				// jika ada voucher
+				if($vcr != 0){
+					$chari .= "<tr>
+						<td style=\"text-align:center; border-right: none; border-left: none; border-top: none; border-bottom: none;\">" . $no++ . "</td>
+						<td style=\"text-align:left; border-right: none; border-left: none; border-top: none; border-bottom: none;\">Voucher $vcr</td>
+						<td style=\"text-align:right; border-left: none; border-right: none; border-top: none; border-bottom: none;\">".number_format($jh, 2)."</td>
+					</tr>";
+				}
+			}
+			$chari .= "<tr>
+				<td style=\"text-align:right; border-right: none; border-left: none;\" colspan=\"2\"><b>Total Konsul</b></td>
+				<td style=\"text-align:right; border-left: none; border-right: none;\">".number_format($jum_detail, 2)."</td>
+			</tr>";
+			$chari .= "</table>";
+			// end konsul
+			
+			$chari .= "<table style=\"border-collapse:collapse;font-family: tahoma; font-size:12px\" width=\"100%\" align=\"center\" border=\"0\">
+				<tr>
+					<td> &nbsp; </td>
+				</tr> 
+				<tr>
+					<td> &nbsp; </td>
+				</tr> 
+			</table>";
+
+			// isi resep racik
+			$chari .= "<table style=\"border-collapse:collapse;font-family: tahoma; font-size:16px\" width=\"100%\" align=\"center\" border=\"0\">
+				<tr>
+					<td><b>RESEP & RACIKAN</b></td>
+				</tr> 
+			</table>";
+			$chari .= "<table style=\"border-collapse:collapse;font-family: Tahoma; font-size:12px\" width=\"100%\" align=\"center\" border=\"1\" cellspacing=\"5\" cellpadding=\"5\">
+				<tr>
+					<td width=\"5%\" align=\"center\" style=\"text-align:center; border-left: none;\"><b>No</b></td>
+					<td width=\"35%\" align=\"center\" style=\"text-align:center; border-right: none; border-left: none;\"><b>Keterangan</b></td>
+					<td width=\"10%\" align=\"center\" style=\"text-align:center; border-left: none; border-right: none;\"><b>Qty</b></td>
+					<td width=\"20%\" align=\"center\" style=\"text-align:center; border-left: none; border-right: none;\"><b>Diskon</b></td>
+					<td width=\"20%\" align=\"center\" style=\"text-align:center; border-left: none; border-right: none;\"><b>Jumlah</b></td>
+				</tr>";
+
+			// detail resep
+			$no = 1;
+			$detotal = 0;
+			foreach($dresep as $drp){
+				$detotal += $drp->totalrp;
+				$chari .= "<tr>
+					<td style=\"text-align:center; border-left: none; border-top: none; border-bottom: none;\">" . $no++ . "</td>
+					<td style=\"text-align:left; border-right: none; border-left: none; border-top: none; border-bottom: none;\">$drp->namabarang</td>
+					<td style=\"text-align:right; border-left: none; border-right: none; border-top: none; border-bottom: none;\">".number_format($drp->qty, 0)."</td>
+					<td style=\"text-align:right; border-left: none; border-right: none; border-top: none; border-bottom: none;\">".number_format($drp->discrp, 2)."</td>
+					<td style=\"text-align:right; border-left: none; border-right: none; border-top: none; border-bottom: none;\">".number_format($drp->totalrp, 2)."</td>
+				</tr>";
+			}
+
+			// jika ada racik
+			if($hracik == true && $dracik == true){
+				// jika menggunakan harga manual
+				if ($hracik->harga_manual != 0) {
+					$hargatotalracik = $hracik->harga_manual;
+				} else {
+					$hargatotalracik = $hracik->totalrp; 
+				}
+				$chari .= "<tr>
+					<td style=\"text-align:center; border-left: none; border-top: none; border-bottom: none;\">" . $no++ . "</td>
+					<td style=\"text-align:left; border-right: none; border-left: none; border-top: none; border-bottom: none;\">** $hracik->namaracikan</td>
+					<td style=\"text-align:right; border-left: none; border-right: none; border-top: none; border-bottom: none;\">".number_format($hracik->jumlahracik, 0)."</td>
+					<td style=\"text-align:right; border-left: none; border-right: none; border-top: none; border-bottom: none;\">".number_format($hracik->diskonrp, 2)."</td>
+					<td style=\"text-align:right; border-left: none; border-right: none; border-top: none; border-bottom: none;\">".number_format((!isset($hargatotalracik) ? 0 : $hargatotalracik), 2)."</td>
+				</tr>";
+			} else {
+				$hargatotalracik = 0;
+			}
+			
+			$chari .= "<tr>
+				<td style=\"text-align:right; border-right: none; border-left: none;\" colspan=\"4\"><b>Total Resep & Racik</b></td>
+				<td style=\"text-align:right; border-left: none; border-right: none;\">".number_format((!isset($hargatotalracik) ? 0 : $hargatotalracik + $detotal), 2)."</td>
+			</tr>";
+			$chari .= "</table>";
+			// end resep racik
+			
+			// total keseluruhan (konsul + resep + racik)
+			$chari .= "<table style=\"border-collapse:collapse;font-family: tahoma; font-size:16px\" width=\"100%\" align=\"center\" border=\"0\">
+				<tr>
+					<td width=\"80%\"> &nbsp; </td>
+					<td width=\"20%\"> &nbsp; </td>
+				</tr>
+				<tr>
+					<td width=\"80%\" style=\"text-align:right; border-right: none;\"><b>TOTAL KESELURUHAN</b></td>
+					<td width=\"20%\" style=\"text-align:right; border-left: none;\"><b>".number_format($hargatotalracik + $detotal + $tot_detail, 2)."</b></td>
+				</tr>
+			</table>";
+
+			
+			$chari .= "<table style=\"border-collapse:collapse;font-family: tahoma; font-size:12px\" width=\"100%\" align=\"center\" border=\"0\">
+				<tr>
+					<td> &nbsp; </td>
+				</tr> 
+				<tr>
+					<td> &nbsp; </td>
+				</tr> 
+			</table>";
+
+			// bayar cash
+			$chari .= "<table style=\"border-collapse:collapse;font-family: tahoma; font-size:12px\" width=\"50%\" align=\"left\" border=\"0\">
+				<tr>
+					<td width=\"40%\">Cash Rp</td>
+					<td width=\"10%\"> : Rp.</td>
+					<td width=\"50%\" style=\"text-align: right;\">$bayarcash</td>
+				</tr> 
+				<tr>
+					<td width=\"40%\">&nbsp;</td>
+					<td width=\"5%\">&nbsp;</td>
+					<td width=\"55%\" style=\"text-align: right;\">&nbsp;</td>
+				</tr>";
+
+			// cek kartu approved
+			$query_kartu_card	= $this->db->query("SELECT * FROM tbl_kartukredit WHERE nokwitansi = '$nokwitansi'")->result();
+
+			foreach ($query_kartu_card as $cckey => $ccval) {
+				$query_nama_bank	= $this->db->query("SELECT * FROM tbl_edc WHERE bankcode = '$ccval->kodebank' ")->row();
+				switch ($ccval->cardtype) {
+					case 1:
+						$cardType = "DEBIT NO";
+						break;
+					case 2:
+						$cardType = "CREDIT NO";
+						break;
+					case 3:
+						$cardType = "TRANSFER NO";
+						break;
+					case 4:
+						$cardType = "ONLINE";
+						break;
+				}
+				$nocard_length	= count($ccval->nocard) - 4;
+				$nocard = substr($ccval->nocard, 0, $nocard_length) . "XXX";
+				$chari .= "<tr>
+					<td width=\"40%\">Bank Penerbit</td>
+					<td width=\"5%\"> : </td>
+					<td width=\"55%\">$query_nama_bank->namabank</td>
+				</tr> 
+				<tr>
+					<td width=\"40%\">$cardType</td>
+					<td width=\"5%\"> : </td>
+					<td width=\"55%\">$nocard</td>
+				</tr> 
+				<tr>
+					<td width=\"40%\">Approval Code</td>
+					<td width=\"5%\"> : </td>
+					<td width=\"55%\" style=\"text-align: right;\">$ccval->nootorisasi</td>
+				</tr> 
+				<tr>
+					<td width=\"40%\">Nominal</td>
+					<td width=\"5%\"> : Rp.</td>
+					<td width=\"55%\" style=\"text-align: right;\">".number_format($ccval->jumlahbayar, 2)."</td>
+				</tr>
+				<tr>
+					<td width=\"40%\">&nbsp;</td>
+					<td width=\"5%\">&nbsp;</td>
+					<td width=\"55%\" style=\"text-align: right;\">&nbsp;</td>
+				</tr>";
+			}
+
+			// cek kembali
+			if ($kasir->kembalikeuangmuka > 0) {
+				$kembalikeuangmuka = number_format($kasir->kembali, 2);
+				$chari .= "<tr>
+					<td width=\"40%\">Kembali ke Uang muka</td>
+					<td width=\"5%\"> : Rp.</td>
+					<td width=\"55%\" style=\"text-align: right;\">$kembalikeuangmuka</td>
+				</tr>";
+			} else {
+				$kembali = number_format($kasir->kembali, 2);
+				$chari .= "<tr>
+					<td width=\"40%\">Kembali ke Pasien</td>
+					<td width=\"5%\"> : Rp.</td>
+					<td width=\"55%\" style=\"text-align: right;\">$kembali</td>
+				</tr>";
+			}
+
+			$chari .= "<tr>
+				<td width=\"40%\">&nbsp;</td>
+				<td width=\"5%\">&nbsp;</td>
+				<td width=\"55%\" style=\"text-align: right;\">&nbsp;</td>
+			</tr>";
+
+			$chari .= "</table>";
+
+			$chari .= "<table style=\"border-collapse:collapse;font-family: tahoma; font-size:12px\" width=\"100%\" align=\"right\" border=\"0\">
+				<tr>
+					<td width=\"50%\" style=\"text-align:center;\"> &nbsp; </td>
+					<td width=\"50%\" style=\"text-align:center;\"><b>$kota, ".date('d-m-Y', strtotime($kasir->tglbayar))."</b></td>
+				</tr> 
+				<tr>
+					<td width=\"50%\" style=\"text-align:center;\"> &nbsp; </td>
+					<td width=\"50%\" style=\"text-align:center; font-size:14px;\"><b>$namars</b></td>
+				</tr> 
+				<tr>
+					<td width=\"50%\" style=\"text-align:center;\"><b>Pasien</b></td>
+					<td width=\"50%\" style=\"text-align:center;\"><b>Cashier</b></td>
+				</tr> 
+				<tr>
+					<td width=\"50%\" style=\"text-align:center;\"> &nbsp; </td>
+					<td width=\"50%\" style=\"text-align:center;\"> &nbsp; </td>
+				</tr> 
+				<tr>
+					<td width=\"50%\" style=\"text-align:center;\"> &nbsp; </td>
+					<td width=\"50%\" style=\"text-align:center;\"> &nbsp; </td>
+				</tr> 
+				<tr>
+					<td width=\"50%\" style=\"text-align:center;\"> &nbsp; </td>
+					<td width=\"50%\" style=\"text-align:center;\"> &nbsp; </td>
+				</tr> 
+				<tr>
+					<td width=\"50%\" style=\"text-align:center;\"> &nbsp; </td>
+					<td width=\"50%\" style=\"text-align:center;\"> &nbsp; </td>
+				</tr> 
+				<tr>
+					<td width=\"50%\" style=\"text-align:center;\"> &nbsp; </td>
+					<td width=\"50%\" style=\"text-align:center;\"> &nbsp; </td>
+				</tr> 
+				<tr>
+					<td width=\"50%\" style=\"text-align:center;\">$regist->namapas</td>
+					<td width=\"50%\" style=\"text-align:center;\">$kasir->username</td>
+				</tr> 
+			</table>";
+
+			// print
+			$data['prev'] = $chari;
+			$judul = 'KWITANSI PEMBAYARAN';
+			echo ("<title>$judul</title>");
+			$this->M_cetak->mpdf('P', 'A4', $judul, $chari, '.PDF', 10, 10, 10, 2);
+		} else {
+			header('location:' . base_url());
+		}
+	}
 
 	public function cetak()
 	{

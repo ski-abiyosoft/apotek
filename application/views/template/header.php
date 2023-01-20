@@ -141,7 +141,14 @@
                 <td width="7%">
                   <li class="dropdown user">
                     <a class="navbar-brand" href="<?php echo base_url();?>dashboard">
-                      <img src="<?php echo base_url();?>assets/img_user/<?php echo $this->session->userdata('avatar_cabang');?>" width="45" class="img-responsive" />
+                      <!-- <img src="<?php echo base_url();?>assets/img_user/<?php echo $this->session->userdata('avatar_cabang');?>" width="45" class="img-responsive" /> -->
+                      <!-- husain change -->
+                      <?php 
+                        $cabang = $this->session->userdata("unit");
+                        $cbg = $this->db->get_where("tbl_namers", ["koders" => $cabang])->row();
+                      ?>
+                      <img src="<?php echo base_url('assets/img_user/').$cbg->avatar; ?>" width="50%" class="img-responsive" style="margin-top: auto;"/>
+                      <!-- end husain -->
                     </a>
 
                   </li>

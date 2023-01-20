@@ -1,13 +1,7 @@
 <?php
 
 class Pcare_api extends CI_Controller
-{
-    private $dokterService;
-    private $diagnosaService;
-    private $pesertaService;
-    private $kunjunganService;
-    
-    
+{      
     /**
      * We load all PCare Class in this constructor
      * 
@@ -15,10 +9,11 @@ class Pcare_api extends CI_Controller
     public function __construct()
     {
         parent::__construct();
-        $this->load->library("dpsPcare/Services/Pcare_pendaftaran", ["kdppk" => $this->session->userdata("kdppk")]);
-        $this->load->library("dpsPcare/Services/Pcare_peserta", ["kdppk" => $this->session->userdata("kdppk")]);
-        $this->load->library("dpsPcare/Services/Pcare_kunjungan", ["kdppk" => $this->session->userdata("kdppk")]);
-        $this->load->library("dpsPcare/Services/Pcare_kelompok", ["kdppk" => $this->session->userdata("kdppk")]);
+        $this->load->library("dpsPcare/Services/pcare_pendaftaran", ["kdppk" => $this->session->userdata("kdppk")]);
+        $this->load->library("dpsPcare/Services/pcare_peserta", ["kdppk" => $this->session->userdata("kdppk")]);
+        $this->load->library("dpsPcare/Services/pcare_kunjungan", ["kdppk" => $this->session->userdata("kdppk")]);
+        $this->load->library("dpsPcare/Services/pcare_kelompok", ["kdppk" => $this->session->userdata("kdppk")]);
+        $this->load->library("dpsPcare/Services/pcare_rujukan", ["kdppk" => $this->session->userdata("kdppk")]);
     }
 
     /**
@@ -320,13 +315,13 @@ class Pcare_api extends CI_Controller
             return $this->output
                     ->set_content_type('application/json')
                     ->set_status_header($result->status)
-                    ->set_output(json_encode($result->response));
+                    ->set_output(json_encode($result->message));
         }
 
         return $this->output
                 ->set_content_type('application/json')
                 ->set_status_header(200)
-                ->set_output(json_encode($result->response));
+                ->set_output(json_encode($result->data));
     }
 
     /**
@@ -445,10 +440,33 @@ class Pcare_api extends CI_Controller
                 ]));
     }
 
-    public function test ()
+    /**
+     * Method for getting supspecialist reference from BPJS WS
+     * 
+     */
+    public function get_rujukan_subspesialis ()
     {
-        echo $this->session->userdata("kdppk");
-        exit;
+        $subspesialis   = $this->input->get("subspesialis");
+        $kdKhusus       = $this->input->get("kdKhusus");
+        $sarana         = $this->input->get("sarana");
+        $noKartu        = $this->input->get("noKartu");
+        $tglEstRujuk    = $this->input->get("tglEstRujuk");
+
+        $result = $this->pcare_rujukan->get_subspesialis ($subspesialis, $sarana, $tglEstRujuk);
+
+        return $this->output
+                ->set_content_type('application/json')
+                ->set_status_header($result->status)
+                ->set_output(json_encode($result->data));
+    }
+
+    /**
+     * Method for getting supspecialist reference from BPJS WS
+     * 
+     */
+    public function get_rujukan_khusus ()
+    {
+        
     }
 
     /**

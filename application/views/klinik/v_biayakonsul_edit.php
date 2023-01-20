@@ -1042,25 +1042,50 @@ date_default_timezone_set("Asia/Jakarta");
                                                             </thead>
 
                                                             <tbody>
+                                                                <?php if($kredit) : ?>
+                                                                <?php $no = 1; foreach($kredit as $k) : ?>
                                                                 <tr>
                                                                     <td width="20%">
-                                                                        <select name="bayar_bank[]" id="bayar_bank1" class="select2_el_kasbank form-control input-large">
+                                                                        <select name="bayar_bank[]" id="bayar_bank<?= $no; ?>" class="select2_el_kasbank form-control input-large">
+                                                                            <option value="<?= $k->bankcode; ?>"><?= $k->namabank; ?></option>
                                                                         </select>
                                                                     </td>
                                                                     <td width="10%">
-                                                                        <select name="bayar_tipe[]" id="bayar_tipe1" class="form-control select2">
-                                                                            <option value="1">DEBIT</option>
-                                                                            <option value="2">CREDIT CARD</option>
-                                                                            <option value="3">TRANFER</option>
+                                                                        <select name="bayar_tipe[]" id="bayar_tipe<?= $no; ?>" class="form-control select2">
+                                                                            <option <?= ($k->cardtype == '1' ? 'selected' : '') ?> value="1">DEBIT</option>
+                                                                            <option <?= ($k->cardtype == '2' ? 'selected' : '') ?> value="2">CREDIT CARD</option>
+                                                                            <option <?= ($k->cardtype == '3' ? 'selected' : '') ?> value="3">TRANFER</option>
                                                                         </select>
                                                                     </td>
-                                                                    <td width="15%"><input name="bayar_nokartu[]" class="form-control"></td>
-                                                                    <td width="10%"><input name="bayar_trvalid[]" onchange="totalline_bayar(1)" value="0" type="text" class="form-control rightJustified"></td>
-                                                                    <td width="15%"><input name="bayar_nilai[]" onchange="totalline_bayar(1)" value="0" type="text" class="form-control rightJustified "></td>
-                                                                    <td width="10%"><input name="bayar_adm[]" onchange="totalline_bayar(1)" value="0" type="text" class="form-control rightJustified "></td>
-                                                                    <td width="20%"><input name="bayar_total[]" type="text" class="form-control rightJustified" readonly></td>
+                                                                    <td width="15%"><input name="bayar_nokartu[]" id="bayar_nokartu<?= $no; ?>" value="<?= $k->nocard; ?>" class="form-control"></td>
+                                                                    <td width="10%"><input name="bayar_trvalid[]" id="bayar_trvalid<?= $no; ?>" onchange="totalline_bayar(1)" value="<?= $k->nootorisasi; ?>" type="text" class="form-control rightJustified"></td>
+                                                                    <td width="15%"><input name="bayar_nilai[]" id="bayar_nilai<?= $no; ?>" onchange="totalline_bayar(1)" value="<?= number_format($k->jumlahbayar); ?>" type="text" class="form-control rightJustified "></td>
+                                                                    <td width="10%"><input name="bayar_adm[]" id="bayar_adm<?= $no; ?>" onchange="totalline_bayar(1)" value="<?= number_format($k->admpersen); ?>" type="text" class="form-control rightJustified "></td>
+                                                                    <td width="20%"><input name="bayar_total[]" id="bayar_total<?= $no; ?>" type="text" value="<?= number_format($k->totalcardrp); ?>" class="form-control rightJustified" readonly></td>
 
                                                                 </tr>
+                                                                <?php $no++; endforeach; ?>
+                                                                <?php else : ?>
+                                                                    <tr>
+                                                                        <td width="20%">
+                                                                            <select name="bayar_bank[]" id="bayar_bank1" class="select2_el_kasbank form-control input-large">
+                                                                            </select>
+                                                                        </td>
+                                                                        <td width="10%">
+                                                                            <select name="bayar_tipe[]" id="bayar_tipe1" class="form-control select2">
+                                                                                <option value="1">DEBIT</option>
+                                                                                <option value="2">CREDIT CARD</option>
+                                                                                <option value="3">TRANFER</option>
+                                                                            </select>
+                                                                        </td>
+                                                                        <td width="15%"><input name="bayar_nokartu[]" id="bayar_nokartu1" class="form-control"></td>
+                                                                        <td width="10%"><input name="bayar_trvalid[]" id="bayar_trvalid1" onchange="totalline_bayar(1)" value="0" type="text" class="form-control rightJustified"></td>
+                                                                        <td width="15%"><input name="bayar_nilai[]" id="bayar_nilai1" onchange="totalline_bayar(1)" value="0" type="text" class="form-control rightJustified "></td>
+                                                                        <td width="10%"><input name="bayar_adm[]" id="bayar_adm1" onchange="totalline_bayar(1)" value="0" type="text" class="form-control rightJustified "></td>
+                                                                        <td width="20%"><input name="bayar_total[]" id="bayar_total1" type="text" value="0" class="form-control rightJustified" readonly></td>
+
+                                                                    </tr>
+                                                                <?php endif; ?>
 
                                                             </tbody>
 
@@ -1800,7 +1825,7 @@ $this->load->view('template/footer_tb');
         // var var1 = baseurl + 'kasir_konsul/cetak/?kwitansi=' + nokwitansi + '&noreg=' + noreg;
 
         // husain change
-        var var1 = baseurl + 'kasir_konsul/cetak_kwitansi/?kwitansi=' + nokwitansi + '&noreg=' + noreg;
+        var var1 = baseurl + 'kasir_konsul/cetak_kwitansi2/?kwitansi=' + nokwitansi + '&noreg=' + noreg;
         // end husain
         window.open(var1, '_blank');
     }

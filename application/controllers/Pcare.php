@@ -7,25 +7,26 @@
         public function __construct(){
             parent::__construct();
 
-            $user   = $this->session->userdata("username");
-            if(empty($user)){
-                redirect("/app/logout");
-            }
+            // $user   = $this->session->userdata("username");
+            // if(empty($user)){
+            //     redirect("/app/logout");
+            // }
 
             $this->session->set_userdata('menuapp', '2900');
 		    $this->session->set_userdata('submenuapp', '2901');
         }
 
-        public function index($noreg = ""){
-            $data   = [
-                "noreg"         => $noreg == "" ? "" : $noreg,
-                "pcare_poli"    => $this->db->get_where("bpjs_pcare_poli", ["poliSakit" => "1"]),
-                "pcare_dr"		=> $this->db->get("bpjs_pcare_dokter"),
-                "pcare_sp"		=> $this->db->get("bpjs_pcare_status_pulang"),
-                "pcare_sadar"   => $this->db->get("bpjs_pcare_kesadaran"),		
-            ];
+        public function index(){
+            show_404();
+            // $data   = [
+            //     "noreg"         => $noreg == "" ? "" : $noreg,
+            //     "pcare_poli"    => $this->db->get_where("bpjs_pcare_poli", ["poliSakit" => "1"]),
+            //     "pcare_dr"		=> $this->db->get("bpjs_pcare_dokter"),
+            //     "pcare_sp"		=> $this->db->get("bpjs_pcare_status_pulang"),
+            //     "pcare_sadar"   => $this->db->get("bpjs_pcare_kesadaran"),		
+            // ];
 
-            $this->load->view("pcare/index", $data);
+            // $this->load->view("pcare/index", $data);
         }
 
         // GET
@@ -120,6 +121,52 @@
             }
 
             echo json_encode($list);
+        }
+        
+        public function status_pulang_by_status($status){
+            switch($status){
+                case "10" : $query_status_pulang    = $this->db->get_where("bpjs_pcare_status_pulang", ["rawatJalan" => 1])->result(); break;
+                case "20" : $query_status_pulang    = $this->db->get_where("bpjs_pcare_status_pulang", ["rawatInap" => 1])->result(); break;
+                default   : $query_status_pulang    = $this->db->get_where("bpjs_pcare_status_pulang")->result(); break;
+            }
+
+            echo json_encode($query_status_pulang);
+        }
+
+        public function get_kunjungan($noreg){
+            $query_kunjungan = $this->db->get_where("bpjs_pcare_kunjungan", ["noReg" => $noreg]);
+
+            if($query_kunjungan->num_rows() == 0){
+                $status     = "failed";
+                $data       = null;
+                $data_reg   = null;
+            } else {
+                $status     = "success";
+                $data       = $query_kunjungan->row();
+                $data_reg   = $this->db->get_where("bpjs_pcare_pendaftaran", ["noReg" => $noreg])->row();
+            }
+
+            echo json_encode([
+                "status"    => $status,
+                "data"      => $data,
+                "data_reg"  => $data_reg
+            ]);
+        }
+
+        public function get_diagnosa($code = ""){
+            if($code == ""){
+                $icdnb  = $this->db->get_where("tbl_icdinb", ["code" => $code])->row();
+                echo json_encode(["nmdiag" => ""]);
+            } else {
+                $icdnb  = $this->db->get_where("tbl_icdinb", ["code" => $code])->row();
+                echo json_encode(["nmdiag" => $icdnb->str]);
+            }
+        }
+
+        public function get_sarana_khusus(){
+            $query_sarana_khusus    = $this->db->get("bpjs_pcare_khusus")->result();
+
+            echo json_encode($query_sarana_khusus);
         }
 
     }

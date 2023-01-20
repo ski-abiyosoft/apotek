@@ -398,12 +398,12 @@ class Farmasi_stock extends CI_Controller
 				$hasilso       = number_format($row->hasilso, 0, ',', '.');
 				$saldoakhir    = number_format($row->saldoakhir, 0, ',', '.');
 			}else{
-				$saldoawal     = $row->saldoawal;
-				$sesuai        = $row->sesuai;
-				$terima        = $row->terima;
-				$keluar        = $row->keluar;
-				$hasilso       = $row->hasilso;
-				$saldoakhir    = $row->saldoakhir;
+				$saldoawal     = ceil($row->saldoawal);
+				$sesuai        = ceil($row->sesuai);
+				$terima        = ceil($row->terima);
+				$keluar        = ceil($row->keluar);
+				$hasilso       = ceil($row->hasilso);
+				$saldoakhir    = ceil($row->saldoakhir);
 			}
 			
 

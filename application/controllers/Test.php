@@ -11,7 +11,7 @@ class Test extends CI_Controller
         // $this->load->library('dpsPcare/Services/Pcare_poli', ["kdppk" => $this->session->userdata("kdppk")]);
         // $this->load->library('dpsPcare/Services/Pcare_status_pulang', ["kdppk" => $this->session->userdata("kdppk")]);
         // $this->load->library('dpsPcare/Services/Pcare_kesadaran', ["kdppk" => $this->session->userdata("kdppk")]);
-        $this->load->library('dpsPcare/Services/Pcare_pendaftaran', ["kdppk" => $this->session->userdata("kdppk")]);
+        $this->load->library('dpsPcare/Services/Pcare_kunjungan', ["kdppk" => $this->session->userdata("kdppk")]);
     }
     
     public function index()
@@ -47,5 +47,24 @@ class Test extends CI_Controller
             ->set_content_type('application/json')
             ->set_status_header($result->status)
             ->set_output(json_encode($result->data));
+    }
+
+    public function get_kunjungan (string $noKartu) {
+        $result = $this->pcare_kunjungan->get_kunjungan($noKartu);
+
+        return $this->output
+            ->set_content_type('application/json')
+            ->set_status_header($result->status)
+            ->set_output(json_encode($result->data));
+    }
+
+    public function rujukan () {
+        $data = [
+            "spesialis" => $this->db->get("bpjs_pcare_spesialis")->result(),
+            "subspesialis" => $this->db->get("bpjs_pcare_spesialis_sub")->result(),
+            "khusus" => $this->db->get("bpjs_pcare_khusus")->result(),
+            "sarana" => $this->db->get("bpjs_pcare_sarana")->result()
+        ];
+        $this->load->view("test", $data);
     }
 }

@@ -301,8 +301,7 @@ $this->load->view('template/body');
                           </td> -->
                           <td width="15%">
                             <select name="kode[]" id="kode<?php echo $no; ?>" class="select2_el_farmasi_barangdata form-control input-largex" onchange="showbarangname(this.value, <?= $no; ?>)">
-                              <option value="<?= $row->kodebarang; ?>"><?= $row->namabarang; ?>
-                              </option>
+                              <option value="<?= $row->kodebarang; ?>"><?= $row->namabarang; ?></option>
                             </select>
                           </td>
 

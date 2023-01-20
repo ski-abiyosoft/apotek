@@ -209,6 +209,7 @@ class Penjualan_faktur extends CI_Controller{
 			$ppn = 0;
 			$tot = 0;
 			$ttlharga = 0;
+			$hargamanual = 0;
 			$ttlhargax = 0;
 			$hrgR = 0;
 

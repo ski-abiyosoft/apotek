@@ -58,5 +58,5 @@ $route["api/pcare/(:any)"]          = "pcare_api/$1";
 $route["api/pcare/(:any)/(:any)"]   = "pcare_api/$1/$2";
 
 // Routes for pcare bridging index 
-$route["pcare/(:any)"]              = "pcare/index/$1";
-$route["pcare/(:any)/"]             = "pcare/index/$1";
+// $route["pcare/(:any)"]              = "pcare/index/$1";
+// $route["pcare/(:any)/"]             = "pcare/index/$1";

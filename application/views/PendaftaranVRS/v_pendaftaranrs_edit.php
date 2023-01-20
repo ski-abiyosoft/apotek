@@ -1046,7 +1046,7 @@ function getRuang(){
 		$('#vpenjamin').val("BPJS").change();
 		$('#nocardx').show();
 	} else {
-		$('#penjamin').hide(200);
+		// $('#penjamin').hide(200);
 		$('#card').hide(200);
 		$('#sep').hide(200);
 		$('#rujukan').hide(200);

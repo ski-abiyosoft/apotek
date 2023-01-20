@@ -369,7 +369,7 @@
 				<td rowspan=\"3\" bgcolor=\"#cccccc\" width=\"3%\" align=\"center\"><b>L/P</b></td>
 				<td rowspan=\"3\" bgcolor=\"#cccccc\" width=\"7%\" align=\"center\"><b>JAB/TFWT</b></td>
 				<td colspan=\"$harijum1\" bgcolor=\"#cccccc\" width=\"70%\" align=\"center\"> <b>$bull</b></td>
-				<td colspan=\"4\" bgcolor=\"#cccccc\" width=\"7%\" align=\"center\"><b>Rkp</b></td>
+				<td colspan=\"5\" bgcolor=\"#cccccc\" width=\"7%\" align=\"center\"><b>Rkp</b></td>
 			</tr>
 			<tr>";
 			for ($i = 0; $i <= $harijum; $i++) {
@@ -384,6 +384,7 @@
 				$workDateA->modify('+1 day');
 				}
 				$chari .="<td rowspan=\"2\" bgcolor=\"#cccccc\" align=\"center\"> H </td>";
+				$chari .="<td rowspan=\"2\" bgcolor=\"#cccccc\" align=\"center\"> W </td>";
 				$chari .="<td rowspan=\"2\" bgcolor=\"#cccccc\" align=\"center\"> S </td>";
 				$chari .="<td rowspan=\"2\" bgcolor=\"#cccccc\" align=\"center\"> I </td>";
 				$chari .="<td rowspan=\"2\" bgcolor=\"#cccccc\" align=\"center\"> A </td>";
@@ -414,15 +415,17 @@
 		$sql =
 		"SELECT a.*, 
 		(select count(*)jum from tbl_absen_ski b where b.nik=a.nik 
-		and tgl_absen between '$tgl1' and '$tgl2' and status in ('ab1','ab2') and status_masuk='1')rekaph ,
+		and tgl_absen between '$tgl1' and '$tgl2' and status in ('ab1') and status_masuk='1')rekaph ,
+		(select count(*)jum from tbl_absen_ski b where b.nik=a.nik 
+		and tgl_absen between '$tgl1' and '$tgl2' and status in ('ab2') and status_masuk='1')rekapw ,
 		(select count(*)jum from tbl_absen_ski b where b.nik=a.nik 
 		and tgl_absen between '$tgl1' and '$tgl2' and status='ab3' and status_masuk='1')rekaps ,
 		(select count(*)jum from tbl_absen_ski b where b.nik=a.nik 
 		and tgl_absen between '$tgl1' and '$tgl2' and status='ab4' and status_masuk='1')rekapi ,
 		(select count(*)jum from tbl_absen_ski b where b.nik=a.nik 
-		and tgl_absen between '$tgl1' and '$tgl2' and status='ab5' and status_masuk='1')rekapa 
+		and tgl_absen between '$tgl1' and '$tgl2' and status in ('ab1','ab2','ab3','ab4') and status_masuk='1')rekapa 
 		from tbl_kary_ski a where resign=0 
-		order by namakary";
+		order by substring(nik,10,3),namakary";
 
 		$query1   = $this->db->query($sql)->result();
 		$lcno     = 0;
@@ -430,15 +433,17 @@
 
 
 		foreach ($query1 as $row) {
-			$lcno            = $lcno + 1;
-			$nik             = $row->nik;
-			$namakary        = $row->namakary;
-			$jkel            = $row->jkel;
-			$jab             = $row->jab;
-			$rekaph          = $row->rekaph;
-			$rekaps          = $row->rekaps;
-			$rekapi          = $row->rekapi;
-			$rekapa          = $row->rekapa;
+			$lcno        = $lcno + 1;
+			$nik         = $row->nik;
+			$namakary    = $row->namakary;
+			$jkel        = $row->jkel;
+			$jab         = $row->jab;
+			$jammasuk    = $row->jammasuk;
+			$rekaph      = $row->rekaph;
+			$rekapw      = $row->rekapw;
+			$rekaps      = $row->rekaps;
+			$rekapi      = $row->rekapi;
+			$rekapa      = $row->rekapa;
 			
 			
 
@@ -449,6 +454,7 @@
 				<td rowspan=\"2\" align=\"left\">$namakary</td>
 				<td rowspan=\"2\" align=\"center\">$jkel</td>
 				<td rowspan=\"2\" align=\"left\">$jab</td>";
+				$alfa=0;
 				for ($i = 0; $i <= $harijum; $i++) {
 					
 					$workDateC_    = $workDateC->format('Y-m-d');
@@ -478,10 +484,26 @@
 					}
 
 					if($query->status<>'AB1'){
-						$chari .="<td bgcolor=\"$bgg\" align=\"center\"><b>".$query->nm_stat."</b></td>";
+						
+
+						if($bgg=='#fc456a' && $query->nm_stat==''){
+							$alfa++;
+							$chari .="<td bgcolor=\"$bgg\" align=\"center\"><b>Alfa</b></td>";
+	
+						}else{
+							$chari .="<td bgcolor=\"$bgg\" align=\"center\"><b>".$query->nm_stat."</b></td>";
+						}
 
 					}else{
-						$chari .="<td bgcolor=\"$bgg\" align=\"left\">".$query->jamm ." - ". $query->jamk."</td>";
+						if($row->jammasuk==1 and $query->jamm>'09:10:01')
+						{
+							$chari .="<td bgcolor=\"#fb811a\" align=\"left\">".$query->jamm ." - ". $query->jamk."</td>";
+						}else if($row->jammasuk==2 and $query->jamm>'08:10:01'){
+							$chari .="<td bgcolor=\"#fb811a\" align=\"left\">".$query->jamm ." - ". $query->jamk."</td>";
+						}else{
+
+							$chari .="<td bgcolor=\"$bgg\" align=\"left\">".$query->jamm ." - ". $query->jamk."</td>";
+						}
 					}
 				
 					$workDateC->modify('+1 day');
@@ -490,9 +512,10 @@
 
 				$chari .="
 				<td rowspan=\"2\" align=\"center\">$rekaph</td>
+				<td rowspan=\"2\" align=\"center\">$rekapw</td>
 				<td rowspan=\"2\" align=\"center\">$rekaps</td>
 				<td rowspan=\"2\" align=\"center\">$rekapi</td>
-				<td rowspan=\"2\" align=\"center\">$rekapa</td>
+				<td rowspan=\"2\" align=\"center\">$alfa</td>
 				</tr>
 				
 				<tr>";

@@ -264,6 +264,13 @@ function cekjobs(val) {
     $('[name="jobsrole"]').val(val);
 }
 
+function cek_promas(val) {
+
+    // var status_job= val;
+    $('[name="promass"]').val(val);
+}
+
+
 
 function save() {
     $('#btnSave').text('saving...'); //change button text
@@ -448,11 +455,50 @@ function myShow() {
                                         &nbsp;&nbsp;&nbsp;
 
                                         <td style="border-top:1px solid white;">
-                                            <input selected="true" type="radio" id="nonmed" name="jobs"
-                                                onclick="cekjobs(this.value)" value="3">
+                                            <input selected="true" type="radio" id="nonmed" name="jobs" onclick="cekjobs(this.value)" value="3">
+                                        </td>
+                                        <td colspan="3" style="border-top:1px solid white;">
+                                            <label>Non Medis/ User Biasa</label>
+                                        </td>
+                                    </tr>
+
+                                    <!-- promas -->
+                                    <tr>
+                                        <td style="border-top:1px solid white;" align="right" width="23%">
+                                            <label>Prosedur Masuk</label>
+                                            <input type="hidden" name="promass" id="promass">
+                                        </td>
+
+                                        <td style="border-top:1px solid white;" align="right" width="10%">
+                                            <input selected="true" type="radio" id="all" name="promas" onclick="cek_promas(this.value)"
+                                                value="1">
                                         </td>
                                         <td style="border-top:1px solid white;">
-                                            <label>Non Medis/ User Biasa</label>
+                                            <label for="all" >ALL</label>
+                                        </td>
+                                        &nbsp;&nbsp;&nbsp;
+
+                                        <td style="border-top:1px solid white;">
+                                            <input type="radio" id="rj_igd" name="promas" onclick="cek_promas(this.value)" value="2">
+                                        </td>
+                                        <td style="border-top:1px solid white;">
+                                            <label for="rj_igd" >RJ/IGD</label>
+                                        </td>
+                                        &nbsp;&nbsp;&nbsp;
+
+                                        <td style="border-top:1px solid white;">
+                                            <input type="radio" id="ranap" name="promas" onclick="cek_promas(this.value)" value="3">
+                                        </td>
+                                        <td style="border-top:1px solid white;">
+                                            <label for="ranap" >RANAP</label>
+                                        </td>                                        
+                                        &nbsp;&nbsp;&nbsp;
+
+                                        <td style="border-top:1px solid white;">
+                                            <input type="radio" id="aps" name="promas" onclick="cek_promas(this.value)" value="4">
+                                        </td>
+                                        <td style="border-top:1px solid white;">
+                                            <label for="aps" >APS</label>
                                         </td>
                                     </tr>
                                     <!-- </div> -->

@@ -1952,7 +1952,7 @@ class Poliklinik extends CI_Controller {
 				// PCARE
 				$pcarepoli			= $this->db->get_where("bpjs_pcare_poli", ["poliSakit" => "1"]);
 				$pcaredr			= $this->db->get("bpjs_pcare_dokter");
-				$pcarestatuspulang	= $this->db->get("bpjs_pcare_status_pulang");
+				$pcarestatuspulang	= $this->db->get_where("bpjs_pcare_status_pulang", ["rawatJalan" => 1]);
 				$pcarekesadaran     = $this->db->get("bpjs_pcare_kesadaran");
 
 				// VALUE

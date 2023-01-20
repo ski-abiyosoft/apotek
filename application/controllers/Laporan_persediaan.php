@@ -1399,11 +1399,11 @@ class Laporan_persediaan extends CI_Controller
                          $ttotal_HNA  = 0;
                          foreach($query as $q){
                               if($cekpdf==2) {
-                                   $hasilso = round($q->hasilso);
-                                   $sat_HPP = round($q->sat_HPP);
-                                   $total_HPP = round($q->total_HPP);
-                                   $sat_HNA = round($q->sat_HNA);
-                                   $total_HNA = round($q->total_HNA);
+                                   $hasilso = ceil($q->hasilso);
+                                   $sat_HPP = ceil($q->sat_HPP);
+                                   $total_HPP = ceil($q->total_HPP);
+                                   $sat_HNA = ceil($q->sat_HNA);
+                                   $total_HNA = ceil($q->total_HNA);
                               } else {
                                    $hasilso = number_format($q->hasilso);
                                    $sat_HPP = number_format($q->sat_HPP);
@@ -1433,11 +1433,11 @@ class Laporan_persediaan extends CI_Controller
                               $ttotal_HNA += $q->total_HNA;
                          }
                          if($cekpdf==2) {
-                              $thasilso1 = round($thasilso);
-                              $tsat_HPP1 = round($tsat_HPP);
-                              $ttotal_HPP1 = round($ttotal_HPP);
-                              $tsat_HNA1 = round($tsat_HNA);
-                              $ttotal_HNA1 = round($ttotal_HNA);
+                              $thasilso1 = ceil($thasilso);
+                              $tsat_HPP1 = ceil($tsat_HPP);
+                              $ttotal_HPP1 = ceil($ttotal_HPP);
+                              $tsat_HNA1 = ceil($tsat_HNA);
+                              $ttotal_HNA1 = ceil($ttotal_HNA);
                          } else {
                               $thasilso1 = number_format($thasilso);
                               $tsat_HPP1 = number_format($tsat_HPP);
@@ -1922,7 +1922,7 @@ class Laporan_persediaan extends CI_Controller
                                         if($cekpdf == 1){
                                              $salakhir = number_format($bs->saldoakhir);
                                         } else {
-                                             $salakhir = round($bs->saldoakhir);
+                                             $salakhir = ceil($bs->saldoakhir);
                                         }
 
                                         $body .= "<tr>
@@ -1978,58 +1978,52 @@ class Laporan_persediaan extends CI_Controller
                                         // $jeda = $this->M_KartuStock->cek_jeda($unit, $tgl_kemarin, $depo, $q->kodebarang);
                                         
 
-                                        if($cekpdf==2){
-
-                                        $kodebarang             = $q->kodebarang;
-                                        $namabarang             = $q->namabarang;
-                                        $satuan                 = $q->satuan; 
-                                        $saldoawal              = $bs->saldoawal + ($q->jeda_total_masuk
-                                         - $q->jeda_total_keluar);
-                                        $salawal                = round($saldoawal);
-                                        $pembelian              = round($q->pembelian);
-                                        $mutasi_in              = round($q->move_in);
-                                        $produksi               = round($q->produksi_jadi);
-                                        $so                     = round($q->so);
-                                        $retur_beli             = round($q->retur_beli);
-                                        $total_masuk            = round($q->total_masuk);
-                                        $jual                   = round($q->jual);
-                                        $mutasi_out             = round($q->mutasi_out);
-                                        $retur_jual             = round($q->retur_jual);
-                                        $produksi_out           = round($q->produksi_bahan);
-                                        $bhp                    = round($q->bhp);
-                                        $expired                = round($q->expire);
-                                        $total_keluar           = round($q->total_keluar);
-                                        $salakhir               = round($saldoawal + $q->saldo);
-                                        $hpp                    = round($q->hpp);
-                                        $total_persediaan_rp    = round($salakhir * $hpp);
-
-
-                                        }else{
-
-                                        $kodebarang             = $q->kodebarang;
-                                        $namabarang             = $q->namabarang;
-                                        $satuan                 = $q->satuan; 
-                                        $saldoawal              = $bs->saldoawal + ($q->jeda_total_masuk
-                                        - $q->jeda_total_keluar);
-                                        $salawal                = number_format($saldoawal);
-                                        $pembelian              = number_format($q->pembelian);
-                                        $mutasi_in              = number_format($q->move_in);
-                                        $produksi               = number_format($q->produksi_jadi);
-                                        $so                     = number_format($q->so);
-                                        $retur_beli             = number_format($q->retur_beli);
-                                        $total_masuk            = number_format($q->total_masuk);
-                                        $jual                   = number_format($q->jual);
-                                        $mutasi_out             = number_format($q->mutasi_out);
-                                        $retur_jual             = number_format($q->retur_jual);
-                                        $produksi_out           = number_format($q->produksi_bahan);
-                                        $bhp                    = number_format($q->bhp);
-                                        $expired                = number_format($q->expire);
-                                        $total_keluar           = number_format($q->total_keluar);
-                                        $salakhir               = number_format($saldoawal + $q->saldo);
-                                        $hpp                    = number_format($q->hpp);
-                                        // $total_persediaan_rp    = number_format($q->total);
-                                        $total_persediaan_rp    = number_format(($saldoawal + $q->saldo) * $q->hpp);
-
+                                        if($cekpdf==1) {
+                                             $kodebarang             = $q->kodebarang;
+                                             $namabarang             = $q->namabarang;
+                                             $satuan                 = $q->satuan; 
+                                             $saldoawal              = $bs->saldoawal + ($q->jeda_total_masuk - $q->jeda_total_keluar);
+                                             $salawal                = number_format($saldoawal);
+                                             $pembelian              = number_format($q->pembelian);
+                                             $mutasi_in              = number_format($q->move_in);
+                                             $produksi               = number_format($q->produksi_jadi);
+                                             $so                     = number_format($q->so);
+                                             $retur_beli             = number_format($q->retur_beli);
+                                             $total_masuk            = number_format($q->total_masuk);
+                                             $jual                   = number_format($q->jual);
+                                             $mutasi_out             = number_format($q->mutasi_out);
+                                             $retur_jual             = number_format($q->retur_jual);
+                                             $produksi_out           = number_format($q->produksi_bahan);
+                                             $bhp                    = number_format($q->bhp);
+                                             $expired                = number_format($q->expire);
+                                             $total_keluar           = number_format($q->total_keluar);
+                                             $salakhir               = number_format($saldoawal + $q->saldo);
+                                             $hpp                    = number_format($q->hpp);
+                                             // $total_persediaan_rp    = number_format($q->total);
+                                             $total_persediaan_rp    = number_format(($saldoawal + $q->saldo) * $q->hpp);
+                                        } else {
+                                             $kodebarang             = $q->kodebarang;
+                                             $namabarang             = $q->namabarang;
+                                             $satuan                 = $q->satuan; 
+                                             $saldoawal              = $bs->saldoawal + ($q->jeda_total_masuk
+                                             - $q->jeda_total_keluar);
+                                             $salawal                = ceil($saldoawal);
+                                             $pembelian              = ceil($q->pembelian);
+                                             $mutasi_in              = ceil($q->move_in);
+                                             $produksi               = ceil($q->produksi_jadi);
+                                             $so                     = ceil($q->so);
+                                             $retur_beli             = ceil($q->retur_beli);
+                                             $total_masuk            = ceil($q->total_masuk);
+                                             $jual                   = ceil($q->jual);
+                                             $mutasi_out             = ceil($q->mutasi_out);
+                                             $retur_jual             = ceil($q->retur_jual);
+                                             $produksi_out           = ceil($q->produksi_bahan);
+                                             $bhp                    = ceil($q->bhp);
+                                             $expired                = ceil($q->expire);
+                                             $total_keluar           = ceil($q->total_keluar);
+                                             $salakhir               = ceil($saldoawal + $q->saldo);
+                                             $hpp                    = ceil($q->hpp);
+                                             $total_persediaan_rp    = ceil($salakhir * $hpp);
                                         }
                                         
                                         $body .= "<tr>

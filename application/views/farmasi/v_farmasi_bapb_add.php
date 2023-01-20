@@ -336,7 +336,7 @@ $this->load->view('template/body');
                         </td>
 
                         <td>
-                          <input name="jumlah[]" id="jumlah1" type="text" class="form-control rightJustified" size="40%">
+                          <input name="jumlah[]" id="jumlah1" type="text" class="form-control rightJustified" size="40%" readonly>
                         </td>
                         <td>
                           <input name="expire[]" onchange="totalline(1);total()" value="" id="expire1" type="date" class="form-control">
@@ -1265,9 +1265,9 @@ $this->load->view('template/footer');
 
     var vtotal = $('#_vtotal').text();
     var xtotal = parseInt(vtotal.replaceAll(',', ''));
-    // if (xtotal >= '5000000') {
-    //     $('#materai').val('10000').change();
-    // }
+    if (xtotal >= '5000000') {
+        $('#materai').val('10000').change();
+    }
     var table = document.getElementById('datatable');
     var rowCount = table.rows.length;
 
@@ -1475,6 +1475,8 @@ $this->load->view('template/footer');
     }
   }
 
+  $("#btnsave").attr("disabled", true);
+
   function getdatapo(str) {
 
     var vtotal = $('#_vtotal').text();
@@ -1511,8 +1513,7 @@ $this->load->view('template/footer');
 
             x = i + 1;
 
-            var option = $("<option selected></option>").val(data[i].kodebarang).text(data[i]
-              .namabarang);
+            var option = $("<option selected></option>").val(data[i].kodebarang).text(data[i].kodebarang+' - '+data[i].namabarang);
             $('#kode' + x).append(option).trigger('change');
 
             if (data[i].vat == 1) {
@@ -1525,10 +1526,21 @@ $this->load->view('template/footer');
             document.getElementById("po" + x).value = str;
             document.getElementById("disc" + x).value = 0;
 
+            cekrownya(i);
           }
 
         }
       });
+    }
+  }
+
+  function cekrownya(param) {
+    var table = document.getElementById('datatable');
+    var rowCount = table.rows.length; 
+    for (var i = 1; i < rowCount; i++)  {
+      if(param == i){
+        $("#btnsave").attr("disabled", false);
+      }
     }
   }
 </script>

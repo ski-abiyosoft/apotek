@@ -80,17 +80,17 @@ class Pcare_kunjungan extends Pcare_service
 
         $timestamp  = $this->get_timestamp();
         $result     = $this->make_request($timestamp, $this->url, "POST", $bridgingPayload);
-        $decrypted  = $this->decrypt_result(json_decode($result->data), $timestamp);
 
-        if ($result->status >= 200 AND $result < 300) {
-            $response = json_decode($decrypted->response);
-            $bridgingData->noKunjungan = $response->message;
+        if ($result->status >= 200 AND $result->status < 300) {
+            $decrypted                  = $this->decrypt_result(json_decode($result->data), $timestamp);
+            $response                   = json_decode($decrypted->response);
+            $bridgingData->noKunjungan  = $response->message;
 
             $this->kunjungan->save($bridgingData);
 
             return (object) [
                 'status'    => $result->status,
-                "response"  => $response
+                "data"      => $result
             ];
         }
 
@@ -173,9 +173,20 @@ class Pcare_kunjungan extends Pcare_service
      * @param stdClass $data_set
      * @return int
      */
-    public function save_or_update (stdClass $data_set): int
+    public function save_or_update (stdClass $data_set)
     {
-        $this->kunjungan->save_or_update ($data_set, ["no_reg"]);
+        $fields = $this->kunjungan->get_fields();
+        $data   = (object) [];
+
+        foreach ($fields as $field) {
+            if ($field == "id") {
+                continue;
+            }
+
+            $data->$field = $data_set->$field;
+        }
+        
+        $this->kunjungan->save_or_update ($data, ["noReg"]);
 
         $kunjungan = $this->kunjungan->select("id")->where("noReg", $data_set->noReg)->get()->row();
 
@@ -222,5 +233,61 @@ class Pcare_kunjungan extends Pcare_service
         }))[0];
 
         return $tacc->alasanTacc;
+    }
+
+    /**
+     * Method for getting visitation history of given card number
+     * 
+     * @param string $noKartu
+     */
+    public function get_kunjungan (string $noKartu): stdClass
+    {
+        $timestamp  = $this->get_timestamp();
+        $result     = $this->make_request($timestamp, "{$this->url}/peserta/{$noKartu}");
+
+        if ($result->status >= 200 AND $result->status < 300) {
+            $decrypted = $this->decrypt_result(json_decode($result->data), $timestamp);
+
+            // If response is not null
+            if ($decrypted->response) {
+                $response_data = json_decode($decrypted->response);
+
+                if ($response_data->count > 0) {
+                    foreach ($response_data->list as $data) {
+                        if ($data->providerPelayanan->kdProvider == $this->kdppk) {
+                            $data_set = (object) [
+                                "noKartu"      => $data->peserta->noKartu,
+                                "tglDaftar"    => parse_local_date($data->tglKunjungan),
+                                "noKunjungan"  => $data->noKunjungan
+                            ];
+                            
+                            $this->kunjungan->save_or_update($data_set, ["noKartu", "tglDaftar"]);
+                        }
+                    }
+                }
+
+                return (object) [
+                    "status"    => $result->status,
+                    "data"      => $response_data
+                ];
+            }
+
+            // If response null
+            return (object) [
+                "status"    => $result->status,
+                "data"      => $decrypted->response
+            ];
+        }
+
+        // If internal server error
+        if ($result->status >= 500) {
+            return $result;
+        }
+
+        // If request completed with error
+        return (object) [
+            "status"    => $result->status,
+            "message"   => json_decode($result->data)->response
+        ];
     }
 }

@@ -33,7 +33,7 @@
         &nbsp;<?php echo $this->session->userdata('unit'); ?>
       </span>
       -
-      <span class="title-web">RS <small>Pendaftaran Pasien RJ/IGD</small>
+      <span class="title-web">RS <small>Pendaftaran Pasien APS</small>
     </h3>
   </div>
 </div>
@@ -57,7 +57,7 @@
               <div class="input-group flex gap">
                 <span class="btn-sm btn blue pointer" onclick="pasienLama(this)"><i class="fa fa-id-card"></i> Pasien Lama</span>
                 <div class="hidden" id="pasien_lama">
-                  <select class="form-control select2_el_pasien input-medium" onChange="getinfopasien()" id="pasien"
+                  <select class="form-control select2_el_pasien input-medium" onchange="getinfopasien()" id="pasien"
                     name="pasien">
                   </select>
                 </div>
@@ -71,12 +71,12 @@
         </div>
         <div class="col-md-6">
           <div class="form-group">
-            <label class="col-md-3 control-label">Poliklinik <font color="red">*</font></label>
+            <label class="col-md-3 control-label">Penunjang Medis <font color="red">*</font></label>
             <div class="col-md-9">
-              <select name="poliklinik1" id="poliklinik1" class="form-control select2_ap1" onchange="update(); cekruang()" style="width:100%;" data-placeholder="-- Pilih --">
+              <select name="poliklinik1" id="poliklinik1" class="form-control select2_ap1" onchange="update(); cekruang();" style="width:100%;" data-placeholder="-- Pilih --">
                 <option value="">-- Pilih --</option>
                 <?php foreach($namapos as $pos): ?>
-                <option value="<?= $pos->kodepos;?>"><?= $pos->namapost;?></option>
+                  <option value="<?= $pos->kodepos;?>"><?= $pos->namapost;?></option>
                 <?php endforeach; ?>
               </select>
             </div>
@@ -136,14 +136,6 @@
             </div>
           </div>
         </div>
-          <!-- <div class="col-md-6">
-            <div class="form-group">
-              <label class="col-md-3 control-label">Pengirim </label>
-              <div class="col-md-9"> 
-                <select class="form-control select2_el_dokter" style="width:100%;" id="pengirim" name="pengirim"></select>
-              </div>
-            </div>
-          </div> -->
         <div class="col-md-6">
           <div class="form-group">
             <label class="col-md-3 control-label">No. Antri <font color="red"></font></label>
@@ -155,7 +147,6 @@
             </div>
           </div>
         </div>
-        
       </div>
       <div class="row">
         <div class="col-md-6">
@@ -183,7 +174,6 @@
             </div>
           </div>
         </div>
-
       </div>
       <div class="row">
         <div class="col-md-6">
@@ -228,7 +218,6 @@
             </div>
           </div>
         </div>
-        
       </div>
       <div class="row">
         <div class="col-md-6">
@@ -302,7 +291,6 @@
                     Tracer Pasien
                   </a>
                 </li>
-
               </ul>
             </div>
             <button class="btn green" type="button" onClick="window.location.reload();"><i class="fa fa-refresh"></i>
@@ -853,7 +841,6 @@ function getinfopasien() {
         const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
         swal({
             title: "REGISTRASI PASIEN TIDAK BISA DILAKUKAN",
-            // html: "Pasien atas nama : <b>"+data.namapas+"</b><br>Sudah registrasi di cabang : <b>"+data.koders_regist+"</b><br>Silahkan hubungi admin cabang : <b>"+data.koders+"</b>",
             html: "<b>Close Bill</b> atau <b>Batalkan</b> pasien terlebih dahulu<br>Dengan nomor bill : "+data.noreg+"<br>Poliklinik : "+data.kodepos+"<br>Tanggal : "+tanggalx.getDate()+" "+months[tanggalx.getMonth()]+" "+tanggalx.getFullYear(),
             type: "error",
             confirmButtonText: "OK"
@@ -914,10 +901,7 @@ function getinfopasien() {
         $('#idpasien2').val(data.idtr);
         $('#booking').val(data.mjkn_token);
         $('#namapasien').val(data.namapas);
-        // $('#ruang').val(data.koderuang).change();
-        // $('#noreg').val(data.noreg);
         $('#norm').val(data.rekmed);
-        // $('#poliklinik1').val(data.kodepos).change();
         $('#lupnorm').val(data.rekmed);
         $('#lupnamapasien').val(data.namapas);
         $('#nomember').val(data.rekmed);
@@ -929,14 +913,6 @@ function getinfopasien() {
         $('#lupalamat1').val(data.alamat);
         $('#lupprovinsi').val(data.namaprop);
         $('#lupkodepos1').val(data.kodepos1).change();
-        // if(data.jenispas == '' || data.jenispas == null){
-        //      $('#penjamin').hide();
-        //      $('#card').hide();
-        //      $('#sep').hide();
-        //      $('#rujukan').hide();
-        // } else {
-        //      $('#jenispasien').val(data.jenispas).change();
-        // }
         $('#lupalamat2').val(data.alamat2);
         $('#goldarah').val(data.goldarah);
         $('#hp').val(data.handphone);
@@ -964,7 +940,6 @@ function getinfopasien() {
         $('#hpkeluarga').val(data.hphub);
         $('#luprt').val(data.rt);
         $('#luprw').val(data.rw);
-        // $('#lupkodepos').val(data.kodepos);
         $('#lupinfoklinik').val(data.iklinik);
         $('#lupinfopas').val(data.cekiklinik);
         $('#umur123').val(hitung_usia(data.tanggallahir));
@@ -978,8 +953,6 @@ function getinfopasien() {
         $('#nosep').val(data.nosep);
         $('#norujukan').val(data.norujukan);
         $('#jenispasien').val(data.jenispas);
-        // $('#antrino').val(data.antrino);
-        // $('#vpenjamin').val(data.cust_id).change();
   
         var selectElement = document.getElementById('luppreposition');
         var opt = document.createElement('option');
@@ -1024,24 +997,6 @@ function getinfopasien() {
           selectElement.appendChild(opt);
           $('#vpenjamin').val(data.cust_id);
         }
-  
-        // if(data.drpengirim !=''){		
-        //           var selectElement = document.getElementById('pengirim');
-        //           var opt = document.createElement('option');
-        //           opt.value = data.drpengirim;
-        //           opt.innerHTML = data.drpengirim;
-        //           selectElement.appendChild(opt);
-        //           $('#pengirim').val(data.drpengirim);
-        //      }
-  
-        // if(data.kodokter !=''){		
-        //           var selectElement = document.getElementById('dokter');
-        //           var opt = document.createElement('option');
-        //           opt.value = data.kodokter;
-        //           opt.innerHTML = data.nadokter;
-        //           selectElement.appendChild(opt);
-        //           $('#dokter').val(data.kodokter);
-        //      }
   
         if (data.propinsi != '') {
           var selectElement = document.getElementById('lupprovinsi');
@@ -1917,35 +1872,6 @@ function save_pasien() {
 
 <!-- form -->
 <script>
-$(".select2_dokter_igd").select2({
-  allowClear: true,
-  multiple: false,
-  placeholder: '--- Pilih Dokter ---',
-  //minimumInputLength: 2,
-  dropdownAutoWidth: true,
-  language: {
-    inputTooShort: function() {
-      return 'Ketikan Kode/Nama Akun Biaya minimal 2 huruf';
-    }
-  },
-  ajax: {
-    url: "<?php echo base_url();?>PendaftaranVRS/dokter_igd",
-    type: "post",
-    dataType: 'json',
-    delay: 250,
-    data: function(params) {
-      return {
-        searchTerm: params.term // search term
-      };
-    },
-    processResults: function(response) {
-      return {
-        results: response
-      };
-    },
-    cache: true
-  }
-});
 
 document.getElementById('pcare').style.visibility="hidden";
 
@@ -2075,20 +2001,6 @@ function register() {
     });
     return;
   }
-  // if (pengirim == '') {
-  //   $('#modal_form').modal('hide');
-  //   swal({
-  //     title: "PENGIRIM",
-  //     html: " Tidak Boleh Kosong .!!!",
-  //     type: "error",
-  //     confirmButtonText: "OK"
-  //   }).then((value) => {
-  //     // $('#modal_form').modal('show');
-  //     $('#btnSave').text('save');
-  //     $('#btnSave').attr('disabled', false);
-  //   });
-  //   return;
-  // }
   if (jenispasien == '' || jenispasien== null) {
     $('#modal_form').modal('hide');
     swal({
@@ -2104,15 +2016,8 @@ function register() {
     return;
   }
 
-  // swal({
-  //   title: "DATA PASIEN",
-  //   html: "Akan berhasil teregistrasi",
-  //   type: "success",
-  //   confirmButtonText: "OK"
-  // });
-
   var noregz = $("#noreg").val();
-  url = "<?php echo site_url('PendaftaranVRS/tambah_pasien_register_rawat_jalan?noreg=')?>"+noregz;
+  url = "<?php echo site_url('PendaftaranVRS/tambah_pasien_register_aps?noreg=')?>"+noregz;
   $.ajax({
     url: url,
     type: "POST",
@@ -2124,16 +2029,6 @@ function register() {
         if(vpenjamin == "BPJS"){
           //
         } else {
-          // swal({
-          //   title: "DATA PASIEN",
-          //   html: "Data berhasil teregistrasi",
-          //   type: "success",
-          //   confirmButtonText: "OK" 
-          // }).then((value) => {
-          //   $('#modal_form').modal('hide');
-          //   $("#btnsimpaneditpasien").attr('disabled', true);
-          //   $("#noreg").val(data.noreg);
-          // });
 
           swal({
             title: "DATA PASIEN",
@@ -2177,32 +2072,8 @@ function register() {
             $('#modal_form').modal('hide');
           });
       }
-        // husain change
-        // if (data.status == 0) {
-        //   swal({
-        //     title: "DATA PASIEN",
-        //     html: "Data berhasil teregistrasi",
-        //     type: "success",
-        //     confirmButtonText: "OK"
-        //   }).then((value) => {
-        //     $('#modal_form').modal('hide');
-        //   });
-        //   $("#noreg").val(data.noreg);
-        //   $("#btnsimpaneditpasien").attr('disabled', true);
-        // } else {
-        //   swal({
-        //     title: "DATA PASIEN",
-        //     html: "Data gagal teregistrasi",
-        //     type: "error",
-        //     confirmButtonText: "OK"
-        //   }).then((value) => {
-        //     $('#modal_form').modal('hide');
-        //   });
-        // }
-      }
-    });
-    // }
-
+    }
+  });
 }
 
 function Batalkan(id) {

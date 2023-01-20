@@ -122,6 +122,7 @@ class Master_user extends CI_Controller {
 					'cabang'     => implode(",", $cabang),
 					'level'      => $this->input->post('grup'),
 					'job_role'   => $this->input->post('jobsrole'),
+					'promas'     => $this->input->post('promass'),
 					'user_level' => $this->input->post('ulev'),
 					'shift'      => $this->input->post('shift'),
 					'locked'     => $this->input->post('aktif'),
@@ -133,6 +134,7 @@ class Master_user extends CI_Controller {
 					'pwdlogin'   => md5($this->input->post('password')),
 					'cabang'     => implode(",", $cabang),
 					'job_role'   => $this->input->post('jobsrole'),
+					'promas'     => $this->input->post('promass'),
 					'level'      => $this->input->post('grup'),
 					'locked'     => $this->input->post('aktif'),
 				);

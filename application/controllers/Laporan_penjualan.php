@@ -203,14 +203,14 @@ class Laporan_penjualan extends CI_Controller
 						$jualtotal_qty = number_format($q->jualtotal_qty);
 						$jualtotal_rp = number_format($q->jualtotal_rp);
 					} else {
-						$qty_apotik = $q->qty_apotik;
-						$rp_apotik = $q->rp_apotik;
-						$qty_rajal = $q->qty_rajal;
-						$rp_lokal = $q->rp_lokal;
-						$qty_ranap = $q->qty_ranap;
-						$rp_ranap = $q->rp_ranap;
-						$jualtotal_qty = $q->jualtotal_qty;
-						$jualtotal_rp = $q->jualtotal_rp;
+						$qty_apotik = ceil($q->qty_apotik);
+						$rp_apotik = ceil($q->rp_apotik);
+						$qty_rajal = ceil($q->qty_rajal);
+						$rp_rajal = ceil($q->rp_rajal);
+						$qty_ranap = ceil($q->qty_ranap);
+						$rp_ranap = ceil($q->rp_ranap);
+						$jualtotal_qty = ceil($q->jualtotal_qty);
+						$jualtotal_rp = ceil($q->jualtotal_rp);
 					}
 					$body .= "<tr>
 						<td align=\"center\">" . $no++ . "</td>
