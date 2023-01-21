@@ -35,13 +35,6 @@ class Pcare_rujukan extends Pcare_service
             if ($decrypted->response) {
                 $response_data = json_decode($decrypted->response);
 
-                // if ($response_data->count > 0) {
-                //     foreach ($response_data->list as $data) {
-                //         $data->kodeRs   = $this->kdppk;
-                //         $this->spesialis->save_or_update($data, ["kdSpesialis", "kodeRs"]);
-                //     }
-                // }
-
                 return (object) [
                     "status"    => $result->status,
                     "data"      => $response_data
@@ -63,9 +56,7 @@ class Pcare_rujukan extends Pcare_service
         // If request completed with error
         return (object) [
             "status"    => $result->status,
-            "message"   => [
-                "url" => "$tglEstRujuk"
-            ]
+            "message"   => $result
         ];
     }
 

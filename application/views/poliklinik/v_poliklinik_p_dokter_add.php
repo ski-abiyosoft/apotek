@@ -681,7 +681,7 @@
                                                     </a>
                                                 </li>
                                                 <li class="<?= $tab8 ?? "" ?>" id="erm">
-                                                    <a href="<?= "/poliklinik/pemeriksaan_dokter/". $_SERVER["QUERY_STRING"] ?>#tab8" data-toggle="tab" onclick="get_pendaftaran_pcare('<?= $this->input->get('noreg') ?>')">
+                                                    <a href="<?= "/poliklinik/pemeriksaan_dokter/". $_SERVER["QUERY_STRING"] ?>#tab8" data-toggle="tab">
                                                         <b>P-CARE KUNJUNGAN PASIEN</b>
                                                     </a>
                                                 </li>
@@ -778,31 +778,25 @@
                                                                     <th class="title-white" width="30%" style="text-align: center">JENIS </th>
                                                                     <th class="title-white" width="45%" style="text-align: center">Icd 10/ Icd 9 diagnosa</th>
                                                                     <th class="title-white" width="20%" style="text-align: center">Utama</th>
-
                                                                 </thead>
 
                                                                 <tbody id="diagnosa_row">
                                                                     <?php if($statusicd == "undone"): ?>
                                                                     <tr id="diagnosa_tr1">
                                                                         <td align="center" >
-                                                                            <button type='button' onclick="hapusBaris_diagnosa(1)" class='btn red'><i class='fa fa-trash-o'></i>
+                                                                            <button type='button' onclick="hapusBaris_diagnosa(1)" class='btn red'>
+                                                                                <i class='fa fa-trash-o'></i>
                                                                             </button>
                                                                         </td>
                                                                         <td>
-                                                                            <select name="jenis_diag[]" id="jenis_diag1" class="select2_el_jnsicd form-control input-largex" onchange="getdiag(this.value,1)">
-                                                                            </select>
-
+                                                                            <select name="jenis_diag[]" id="jenis_diag1" class="select2_el_jnsicd form-control input-largex" onchange="getdiag(this.value,1)"></select>
                                                                         </td>
-
                                                                         <td>
-                                                                            <select name="diag[]" id="diag1" class="select2_el_icdind form-control input-largex" >
-                                                                            </select>
-
+                                                                            <select name="diag[]" id="diag1" class="select2_el_icdind form-control input-largex" ></select>
                                                                         </td>
                                                                         <td>
                                                                             <input name="utama[]" id="utama1" type="checkbox" class="form-control " onclick="cekutm(this.value,1)">
                                                                             <input name="utama_hide[]" id="utama_hide1" type="hidden" class="form-control" >
-
                                                                         </td>
 
                                                                     </tr>
@@ -909,7 +903,6 @@
                                                                                     ?>
                                                                                             <!-- echo "<option value='$bval->kodokter'>". data_master("tbl_dokter", array("kodokter" => $bval->kodokter, "koders" => $this->session->userdata("unit")))->nadokter ."</option>"; -->
                                                                                             <option value="<?= $bval->kodokter ?>" selected><?= data_master("dokter", array("kodokter" => $bval->kodokter, "koders" => $this->session->userdata("unit"), "kopoli" => $polipas))->nadokter ?></option>
-                                                                                            
                                                                                     <?php
                                                                                         }
                                                                                     ?>
@@ -2349,12 +2342,15 @@
                                                 </div>
                                                 
                                                 <div class="tab-pane" id="tab8">
-                                                   <div class="alert alert-danger">
-                                                      <p><b><i class="fa fa-exclamation-triangle fa-fw"></i>&nbsp; Perlu Diketahui</b></p>
-                                                      <br />
-                                                      Sebelum melakukan bridging, lakukan pemeriksaan perawat dan dokter delebih dahulu
-                                                   </div>
-                                                   <h4><strong>P-Care Bridging System - Abiyosoft | KUNJUNGAN</strong></h4>
+                                                    <div class="alert alert-danger">
+                                                        <p>
+                                                            <strong><i class="fa fa-exclamation-triangle fa-fw"></i>&nbsp; Perlu Diketahui</strong>
+                                                        </p>
+                                                        <br/>
+                                                        <p>Sebelum melakukan bridging, lakukan pemeriksaan perawat dan dokter delebih dahulu</p>
+                                                    </div>
+                                                   <h4>
+                                                        <strong>P-Care Bridging System - Abiyosoft | KUNJUNGAN</strong></h4>
                                                    <hr stle="margin-bottom: 1rem;" />
                                                    <form name="pcare_form" id="pcare_form">
                                                       <input type="hidden" name="kdProviderPelayanan" id="kdProviderPelayanan" value="">

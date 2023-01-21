@@ -426,8 +426,17 @@ function page_permission($password){
  * @param string $date
  * @return string 
  */
-function local_date (string $date): string{
-	return strftime('%e %B %Y', strtotime($date));
+function local_date (string $date, string $format): string{
+	$fmt = datefmt_create(
+		'id_ID',
+		IntlDateFormatter::FULL,
+		IntlDateFormatter::FULL,
+		'Asia/Jakarta',
+		IntlDateFormatter::GREGORIAN,
+		$format ?? 'dd MMMM yyyy'
+	);
+
+	return datefmt_format($fmt, strtotime($date));
 }
 
 /* UNIQUE FILE */

@@ -1864,10 +1864,17 @@ class M_global extends CI_Model
 
 
 	function getcabang_all($str)
-
 	{
 
 		$query = $this->db->query("SELECT koders as id, concat(namars) as text from tbl_namers order by namars");
+
+		return $query->result();
+	}
+
+	function getcabang_all_sess($str)
+	{
+		$unit = $this->session->userdata('cabb');
+		$query = $this->db->query("SELECT koders as id, concat(namars) as text from tbl_namers where koders in ($unit) order by namars");
 
 		return $query->result();
 	}

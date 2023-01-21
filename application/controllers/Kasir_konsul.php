@@ -1768,61 +1768,66 @@ class Kasir_konsul extends CI_Controller
 					<td> &nbsp; </td>
 				</tr> 
 			</table>";
+			
+			if($hresep){
+				// isi resep racik
+				$chari .= "<table style=\"border-collapse:collapse;font-family: tahoma; font-size:16px\" width=\"100%\" align=\"center\" border=\"0\">
+					<tr>
+						<td><b>RESEP & RACIKAN</b></td>
+					</tr> 
+				</table>";
+				$chari .= "<table style=\"border-collapse:collapse;font-family: Tahoma; font-size:12px\" width=\"100%\" align=\"center\" border=\"1\" cellspacing=\"5\" cellpadding=\"5\">
+					<tr>
+						<td width=\"5%\" align=\"center\" style=\"text-align:center; border-left: none;\"><b>No</b></td>
+						<td width=\"35%\" align=\"center\" style=\"text-align:center; border-right: none; border-left: none;\"><b>Keterangan</b></td>
+						<td width=\"10%\" align=\"center\" style=\"text-align:center; border-left: none; border-right: none;\"><b>Qty</b></td>
+						<td width=\"20%\" align=\"center\" style=\"text-align:center; border-left: none; border-right: none;\"><b>Diskon</b></td>
+						<td width=\"20%\" align=\"center\" style=\"text-align:center; border-left: none; border-right: none;\"><b>Jumlah</b></td>
+					</tr>";
 
-			// isi resep racik
-			$chari .= "<table style=\"border-collapse:collapse;font-family: tahoma; font-size:16px\" width=\"100%\" align=\"center\" border=\"0\">
-				<tr>
-					<td><b>RESEP & RACIKAN</b></td>
-				</tr> 
-			</table>";
-			$chari .= "<table style=\"border-collapse:collapse;font-family: Tahoma; font-size:12px\" width=\"100%\" align=\"center\" border=\"1\" cellspacing=\"5\" cellpadding=\"5\">
-				<tr>
-					<td width=\"5%\" align=\"center\" style=\"text-align:center; border-left: none;\"><b>No</b></td>
-					<td width=\"35%\" align=\"center\" style=\"text-align:center; border-right: none; border-left: none;\"><b>Keterangan</b></td>
-					<td width=\"10%\" align=\"center\" style=\"text-align:center; border-left: none; border-right: none;\"><b>Qty</b></td>
-					<td width=\"20%\" align=\"center\" style=\"text-align:center; border-left: none; border-right: none;\"><b>Diskon</b></td>
-					<td width=\"20%\" align=\"center\" style=\"text-align:center; border-left: none; border-right: none;\"><b>Jumlah</b></td>
-				</tr>";
-
-			// detail resep
-			$no = 1;
-			$detotal = 0;
-			foreach($dresep as $drp){
-				$detotal += $drp->totalrp;
-				$chari .= "<tr>
-					<td style=\"text-align:center; border-left: none; border-top: none; border-bottom: none;\">" . $no++ . "</td>
-					<td style=\"text-align:left; border-right: none; border-left: none; border-top: none; border-bottom: none;\">$drp->namabarang</td>
-					<td style=\"text-align:right; border-left: none; border-right: none; border-top: none; border-bottom: none;\">".number_format($drp->qty, 0)."</td>
-					<td style=\"text-align:right; border-left: none; border-right: none; border-top: none; border-bottom: none;\">".number_format($drp->discrp, 2)."</td>
-					<td style=\"text-align:right; border-left: none; border-right: none; border-top: none; border-bottom: none;\">".number_format($drp->totalrp, 2)."</td>
-				</tr>";
-			}
-
-			// jika ada racik
-			if($hracik == true && $dracik == true){
-				// jika menggunakan harga manual
-				if ($hracik->harga_manual != 0) {
-					$hargatotalracik = $hracik->harga_manual;
-				} else {
-					$hargatotalracik = $hracik->totalrp; 
+				// detail resep
+				$no = 1;
+				$detotal = 0;
+				foreach($dresep as $drp){
+					$detotal += $drp->totalrp;
+					$chari .= "<tr>
+						<td style=\"text-align:center; border-left: none; border-top: none; border-bottom: none;\">" . $no++ . "</td>
+						<td style=\"text-align:left; border-right: none; border-left: none; border-top: none; border-bottom: none;\">$drp->namabarang</td>
+						<td style=\"text-align:right; border-left: none; border-right: none; border-top: none; border-bottom: none;\">".number_format($drp->qty, 0)."</td>
+						<td style=\"text-align:right; border-left: none; border-right: none; border-top: none; border-bottom: none;\">".number_format($drp->discrp, 2)."</td>
+						<td style=\"text-align:right; border-left: none; border-right: none; border-top: none; border-bottom: none;\">".number_format($drp->totalrp, 2)."</td>
+					</tr>";
 				}
+
+				// jika ada racik
+				if($hracik == true && $dracik == true){
+					// jika menggunakan harga manual
+					if ($hracik->harga_manual != 0) {
+						$hargatotalracik = $hracik->harga_manual;
+					} else {
+						$hargatotalracik = $hracik->totalrp; 
+					}
+					$chari .= "<tr>
+						<td style=\"text-align:center; border-left: none; border-top: none; border-bottom: none;\">" . $no++ . "</td>
+						<td style=\"text-align:left; border-right: none; border-left: none; border-top: none; border-bottom: none;\">** $hracik->namaracikan</td>
+						<td style=\"text-align:right; border-left: none; border-right: none; border-top: none; border-bottom: none;\">".number_format($hracik->jumlahracik, 0)."</td>
+						<td style=\"text-align:right; border-left: none; border-right: none; border-top: none; border-bottom: none;\">".number_format($hracik->diskonrp, 2)."</td>
+						<td style=\"text-align:right; border-left: none; border-right: none; border-top: none; border-bottom: none;\">".number_format((!isset($hargatotalracik) ? 0 : $hargatotalracik), 2)."</td>
+					</tr>";
+				} else {
+					$hargatotalracik = 0;
+				}
+				
 				$chari .= "<tr>
-					<td style=\"text-align:center; border-left: none; border-top: none; border-bottom: none;\">" . $no++ . "</td>
-					<td style=\"text-align:left; border-right: none; border-left: none; border-top: none; border-bottom: none;\">** $hracik->namaracikan</td>
-					<td style=\"text-align:right; border-left: none; border-right: none; border-top: none; border-bottom: none;\">".number_format($hracik->jumlahracik, 0)."</td>
-					<td style=\"text-align:right; border-left: none; border-right: none; border-top: none; border-bottom: none;\">".number_format($hracik->diskonrp, 2)."</td>
-					<td style=\"text-align:right; border-left: none; border-right: none; border-top: none; border-bottom: none;\">".number_format((!isset($hargatotalracik) ? 0 : $hargatotalracik), 2)."</td>
+					<td style=\"text-align:right; border-right: none; border-left: none;\" colspan=\"4\"><b>Total Resep & Racik</b></td>
+					<td style=\"text-align:right; border-left: none; border-right: none;\">".number_format((!isset($hargatotalracik) ? 0 : $hargatotalracik + $detotal), 2)."</td>
 				</tr>";
+				$chari .= "</table>";
+				// end resep racik
 			} else {
 				$hargatotalracik = 0;
+				$detotal = 0;
 			}
-			
-			$chari .= "<tr>
-				<td style=\"text-align:right; border-right: none; border-left: none;\" colspan=\"4\"><b>Total Resep & Racik</b></td>
-				<td style=\"text-align:right; border-left: none; border-right: none;\">".number_format((!isset($hargatotalracik) ? 0 : $hargatotalracik + $detotal), 2)."</td>
-			</tr>";
-			$chari .= "</table>";
-			// end resep racik
 			
 			// total keseluruhan (konsul + resep + racik)
 			$chari .= "<table style=\"border-collapse:collapse;font-family: tahoma; font-size:16px\" width=\"100%\" align=\"center\" border=\"0\">

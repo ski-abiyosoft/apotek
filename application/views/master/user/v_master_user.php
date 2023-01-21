@@ -227,21 +227,31 @@ function edit_data(id) {
                 $('[name="karyawan"]').val(data.username);
                 $.each(data.cabang.split(","), function(i, keyword) {
                     $("#unit2[value='" + keyword + "']").attr("checked", true).val();
-                });
+                }); 
                 $('[name="grup"]').val(data.level);
                 $('[name="aktif"]').val(data.locked);
+                $('[name="shift"]').val(data.shift);
                 $('[name="ulev"]').val(data.user_level);
                 //$('[name="dob"]').datepicker('update',data.dob);
                 $('#modal_form').modal('show'); // show bootstrap modal when complete loaded
                 $('.modal-title').text('Edit Data'); // Set title to Bootstrap modal title
+
                 if (data.job_role == 1) {
                     $("#dr").attr("checked", true).val();
                 } else if (data.job_role == 2) {
                     $("#param").attr("checked", true).val();
-
                 } else {
                     $("#nonmed").attr("checked", true).val();
+                }
 
+                if (data.promas == 1) {
+                    $("#all").attr("checked", true).val();
+                } else if (data.promas == 2) {
+                    $("#rj_igd").attr("checked", true).val();
+                } else if (data.promas == 3) {
+                    $("#ranap").attr("checked", true).val();
+                } else {
+                    $("#aps").attr("checked", true).val();
                 }
 
             }
@@ -441,7 +451,7 @@ function myShow() {
                                                 value="1">
                                         </td>
                                         <td style="border-top:1px solid white;">
-                                            <label>Dokter</label>
+                                            <label for="dr">Dokter</label>
                                         </td>
                                         &nbsp;&nbsp;&nbsp;
 
@@ -450,7 +460,7 @@ function myShow() {
                                                 value="2">
                                         </td>
                                         <td style="border-top:1px solid white;">
-                                            <label>Paramedis</label>
+                                            <label for="param">Paramedis</label>
                                         </td>
                                         &nbsp;&nbsp;&nbsp;
 
@@ -458,7 +468,7 @@ function myShow() {
                                             <input selected="true" type="radio" id="nonmed" name="jobs" onclick="cekjobs(this.value)" value="3">
                                         </td>
                                         <td colspan="3" style="border-top:1px solid white;">
-                                            <label>Non Medis/ User Biasa</label>
+                                            <label for="nonmed">Non Medis/ User Biasa</label>
                                         </td>
                                     </tr>
 
@@ -528,9 +538,10 @@ function myShow() {
                                 <label class="control-label col-md-3">Pilihan Shift</label>
                                 <div class="col-md-9">
                                     <select name="shift" class="form-control">
-                                        <option value="">--Pilih Grup--</option>
-                                        <option>Dengan Shift</option>
-                                        <option>Tanpa Shift</option>
+                                        <?php 
+                                        foreach($shift->result_array() as $db) {?>
+                                        <option value="<?php echo $db['kodeset'];?>"><?php echo $db['keterangan'];?></option>
+                                        <?php } ?>
                                     </select>
                                     <span class="help-block"></span>
                                 </div>

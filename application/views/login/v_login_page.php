@@ -89,7 +89,11 @@
 
 <div class="logo">
 	<a href="<?php echo base_url();?>">
-		<img src="<?php echo base_url('assets/img/ski_new.png');?>" width="150" alt=""/>
+		<img src="<?php echo base_url('assets/img/ski_new.png');?>" width="120" alt=""/>
+	</a>
+	<a href="<?php echo base_url();?>">
+		<br>
+	<img src="<?php echo base_url('assets/img/abiyosoft.png');?>" width="150" alt=""/>
 	</a>
 </div>
 
@@ -356,8 +360,8 @@
 				init: function () {
 					//handleLogin();
 					$.backstretch([
-						"<?php echo base_url();?>assets/img/bg/1.jpg",
-						"<?php echo base_url();?>assets/img/bg/2.jpg",
+						// "<?php echo base_url();?>assets/img/bg/1.jpg",
+						// "<?php echo base_url();?>assets/img/bg/2.jpg",
 						"<?php echo base_url();?>assets/img/bg/3.jpg",
 						"<?php echo base_url();?>assets/img/bg/4.jpg"
 						], {

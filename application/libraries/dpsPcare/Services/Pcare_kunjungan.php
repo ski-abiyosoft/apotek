@@ -199,7 +199,7 @@ class Pcare_kunjungan extends Pcare_service
      * @param string $kdTacc
      * @return mixed
      */
-    public function get_tacc (string $kdTacc)
+    public function get_tacc ()
     {
         $tacc_enum = [
             [ 
@@ -228,11 +228,7 @@ class Pcare_kunjungan extends Pcare_service
             ]
         ];
 
-        $tacc = (object) array_values(array_filter($tacc_enum, function ($item) use ($kdTacc) {
-            return $item['kdTacc'] == $kdTacc;
-        }))[0];
-
-        return $tacc->alasanTacc;
+        return $tacc_enum;
     }
 
     /**

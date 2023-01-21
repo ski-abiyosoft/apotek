@@ -284,12 +284,12 @@ class Pcare_api extends CI_Controller
      * @param string $kdTacc
      * @return mixed
      */
-    public function get_tacc (string $kdTacc)
+    public function get_tacc ()
     {
         return $this->output
             ->set_content_type("application/json")
             ->set_status_header("200")
-            ->set_output(json_encode($this->pcare_kunjungan->get_tacc($kdTacc)));
+            ->set_output(json_encode($this->pcare_kunjungan->get_tacc()));
     }
 
     /**
@@ -447,9 +447,7 @@ class Pcare_api extends CI_Controller
     public function get_rujukan_subspesialis ()
     {
         $subspesialis   = $this->input->get("subspesialis");
-        $kdKhusus       = $this->input->get("kdKhusus");
         $sarana         = $this->input->get("sarana");
-        $noKartu        = $this->input->get("noKartu");
         $tglEstRujuk    = $this->input->get("tglEstRujuk");
 
         $result = $this->pcare_rujukan->get_subspesialis ($subspesialis, $sarana, $tglEstRujuk);
@@ -457,7 +455,7 @@ class Pcare_api extends CI_Controller
         return $this->output
                 ->set_content_type('application/json')
                 ->set_status_header($result->status)
-                ->set_output(json_encode($result->data));
+                ->set_output(json_encode($result->message));
     }
 
     /**
@@ -466,7 +464,18 @@ class Pcare_api extends CI_Controller
      */
     public function get_rujukan_khusus ()
     {
-        
+        $subspesialis   = $this->input->get("subspesialis");
+        $kdKhusus       = $this->input->get("kdKhusus");
+        $sarana         = $this->input->get("sarana");
+        $noKartu        = $this->input->get("noKartu");
+        $tglEstRujuk    = $this->input->get("tglEstRujuk");
+
+        $result = $this->pcare_rujukan->get_khusus ($noKartu, $kdKhusus, $subspesialis, $tglEstRujuk);
+
+        return $this->output
+                ->set_content_type('application/json')
+                ->set_status_header($result->status)
+                ->set_output(json_encode($result->data));
     }
 
     /**

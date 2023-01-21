@@ -1,83 +1,86 @@
 <script>
-   // saya nambah ini
-   initailizeSelect2_resep();
+   $( document ).ready(function() {
 
-   // aha nambah ini
-   initailizeSelect2_depo();
-   // Nambah ini
+      // saya nambah ini
+      initailizeSelect2_resep();
 
-   // Bedah Central
+      // aha nambah ini
+      initailizeSelect2_depo();
+      // Nambah ini
+
+      // Bedah Central
 
 
-   initailizeSelect2();
-   initailizeSelect2_promo();
-   initailizeSelect2_vouchersource();
-   initailizeSelect2_penjamin();
-   initailizeSelect2_hadiah();
-   initailizeSelect2_barang();
-   initailizeSelect2_kasbank();
-   initailizeSelect2_kasbankedc();
-   initailizeSelect2_cabang();
-   initailizeSelect2_cabang_all();
-   initailizeSelect2_pendapatan();
-   initailizeSelect2_dept();
-   initailizeSelect2_provinsi();
-   initailizeSelect2_kota('');
-   initailizeSelect2_kecamatan('');
-   initailizeSelect2_agama();
-   initailizeSelect2_pendidikan();
-   initailizeSelect2_pekerjaan();
-   initailizeSelect2_pasien();
-   initailizeSelect2_poli();
-   initailizeSelect2_dokter('');
-   initailizeSelect2_perawat();
-   initailizeSelect2_register('');
-   initailizeSelect2_registerresep('');
-   initailizeSelect2_tarif_tindakan('');
-   initailizeSelect2_vendor();
-   initailizeSelect2_rekening_vendor();
-   initailizeSelect2_resepobat();
-   initailizeSelect2_farmasi_barang();
-   initailizeSelect2_farmasi_barang_cbg();
-   initailizeSelect2_farmasi_barang2();
-   initailizeSelect2_poli_tindakan('');
-   initailizeSelect2_farmasi_baranggud();
-   select2_el_alkes();
-   initailizeSelect2_farmasi_barangdata();
-   initailizeSelect2_log_barangdata();
-   initailizeSelect2_farmasi_user_2();
-   initailizeSelect2_farmasi_user();
-   initailizeSelect2_farmasi_baranggudso();
-   initailizeSelect2_farmasi_depo();
-   initailizeSelect2_logistik_depo();
-   initailizeSelect2_farmasi_permohonan();
-   initailizeSelect2_icdind('');
-   initailizeSelect2_jnsicd();
-   initailizeSelect2_farmasi_po('');
-   initailizeSelect2_farmasi_po2('');
-   initailizeSelect2_farmasi_po3('');
-   initailizeSelect2_pembayaran();
-   initailizeSelect2_log_barang();
-   initailizeSelect2_log_baranggud();
-   initailizeSelect2_logistik_permohonan();
-   initailizeSelect2_preposition();
-   initailizeSelect2_statuspasien();
-   initailizeSelect2_goldarah();
-   initailizeSelect2_jenispasien();
-   initailizeSelect2_akunBiaya();
-   initailizeSelect2_voucher_penjualan();
-   initailizeSelect2_pos();
-   initailizeSelect2_costcentre();
-   initailizeSelect2_jenisfaktur();
-   initailizeSelect2_akundiskonadjust();
-   initailizeSelect2_custid();
-   initailizeSelect2_akunpendapatan();
-   initailizeSelect2_tarif();
-   initailizeSelect2_cabangg();
-   initailizeSelect2_jenis_penyakit();
-   initailizeSelect2_tarif_erad('');
-   initailizeSelect2_tarif_erad2();
-   initailizeSelect2_resep_retur();
+      initailizeSelect2();
+      initailizeSelect2_promo();
+      initailizeSelect2_vouchersource();
+      initailizeSelect2_penjamin();
+      initailizeSelect2_hadiah();
+      initailizeSelect2_barang();
+      initailizeSelect2_kasbank();
+      initailizeSelect2_kasbankedc();
+      initailizeSelect2_cabang();
+      initailizeSelect2_cabang_all();
+      initailizeSelect2_pendapatan();
+      initailizeSelect2_dept();
+      initailizeSelect2_provinsi();
+      initailizeSelect2_kota('');
+      initailizeSelect2_kecamatan('');
+      initailizeSelect2_agama();
+      initailizeSelect2_pendidikan();
+      initailizeSelect2_pekerjaan();
+      initailizeSelect2_pasien();
+      initailizeSelect2_poli();
+      initailizeSelect2_dokter('');
+      initailizeSelect2_perawat();
+      initailizeSelect2_register('');
+      initailizeSelect2_registerresep('');
+      initailizeSelect2_tarif_tindakan('');
+      initailizeSelect2_vendor();
+      initailizeSelect2_rekening_vendor();
+      initailizeSelect2_resepobat();
+      initailizeSelect2_farmasi_barang();
+      initailizeSelect2_farmasi_barang_cbg();
+      initailizeSelect2_farmasi_barang2();
+      initailizeSelect2_poli_tindakan('');
+      initailizeSelect2_farmasi_baranggud();
+      select2_el_alkes();
+      initailizeSelect2_farmasi_barangdata();
+      initailizeSelect2_log_barangdata();
+      initailizeSelect2_farmasi_user_2();
+      initailizeSelect2_farmasi_user();
+      initailizeSelect2_farmasi_baranggudso();
+      initailizeSelect2_farmasi_depo();
+      initailizeSelect2_logistik_depo();
+      initailizeSelect2_farmasi_permohonan();
+      initailizeSelect2_icdind('');
+      initailizeSelect2_jnsicd();
+      initailizeSelect2_farmasi_po('');
+      initailizeSelect2_farmasi_po2('');
+      initailizeSelect2_farmasi_po3('');
+      initailizeSelect2_pembayaran();
+      initailizeSelect2_log_barang();
+      initailizeSelect2_log_baranggud();
+      initailizeSelect2_logistik_permohonan();
+      initailizeSelect2_preposition();
+      initailizeSelect2_statuspasien();
+      initailizeSelect2_goldarah();
+      initailizeSelect2_jenispasien();
+      initailizeSelect2_akunBiaya();
+      initailizeSelect2_voucher_penjualan();
+      initailizeSelect2_pos();
+      initailizeSelect2_costcentre();
+      initailizeSelect2_jenisfaktur();
+      initailizeSelect2_akundiskonadjust();
+      initailizeSelect2_custid();
+      initailizeSelect2_akunpendapatan();
+      initailizeSelect2_tarif();
+      initailizeSelect2_cabangg();
+      initailizeSelect2_jenis_penyakit();
+      initailizeSelect2_tarif_erad('');
+      initailizeSelect2_tarif_erad2();
+      initailizeSelect2_resep_retur();
+   });
 
    function initailizeSelect2_tarif_erad(unit){
       $(".select2_el_tarif_erad").select2({
