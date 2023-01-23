@@ -26,8 +26,14 @@ class Test extends CI_Controller
             ->set_content_type('application/json')
             ->set_status_header(200)
             ->set_output(json_encode([
-                "data" => $this->pcare_pendaftaran->get_pendaftaran_provider("18-01-2023")
+                "data" => $this->db->list_fields("bpjs_pcare_rujukan")
             ]));
+        // return $this->output
+        //     ->set_content_type('application/json')
+        //     ->set_status_header(200)
+        //     ->set_output(json_encode([
+        //         "data" => $this->pcare_pendaftaran->get_pendaftaran_provider("23-01-2023")
+        //     ]));
     }
 
     public function peserta (string $noKartu)
@@ -59,8 +65,18 @@ class Test extends CI_Controller
             ->set_output(json_encode($result->data));
     }
 
+    public function get_rujukan (string $noKunjungan) {
+        $result = $this->pcare_kunjungan->get_rujukan($noKunjungan);
+
+        return $this->output
+            ->set_content_type('application/json')
+            ->set_status_header($result->status)
+            ->set_output(json_encode($result->data));
+    }
+
     public function rujukan (string $noreg = "") {
         $data = [
+            "noreg"         => $noreg,
             "kesadaran"     => $this->db->get("bpjs_pcare_kesadaran")->result(),
             "poli"          => $this->db->get("bpjs_pcare_poli")->result(),
             "status_pulang" => $this->db->get("bpjs_pcare_status_pulang")->result(),
@@ -84,5 +100,12 @@ class Test extends CI_Controller
         }
 
         $this->load->view("test", $data);
+    }
+
+    public function cetak_rujukan (string $noRujukan)
+    {
+        $data = $this->db->where("noRujukan", $noRujukan)->get("bpjs_pcare_rujukan")->row();
+
+        return $this->load->view("pcare/cetak_rujukan", $data);
     }
 }

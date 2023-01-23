@@ -162,7 +162,7 @@ class Pcare_pendaftaran extends Pcare_service
         // If request completed with error
         return (object) [
             "status"    => $result->status,
-            "message"   => json_decode($result->data)->response
+            "message"   => $result
         ];
     }
 

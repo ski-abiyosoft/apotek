@@ -28,7 +28,7 @@
         </h4>
         <hr stle="margin-bottom: 1rem;" />
         <form name="pcare_form" id="pcare_form">
-            <input type="hidden" name="kdProviderPelayanan" id="kdProviderPelayanan" value="">
+            <input type="hidden" name="kdProviderPelayanan" id="kdProviderPelayanan" value="<?= $kdppk->koders ?>">
             <fieldset name="data_diri">
                 <p style="font-weight: bold; font-size: 16px;">Data Diri Pasien</p>
                 <hr stle="margin-bottom: 1rem;" />
@@ -36,14 +36,15 @@
                     <label class="form-label">Faskes</label>
                     <span>:</span>
                     <div class="" style="margin:0px !important">
-                        <input type="text" class="form-control" name="kodeRs" id="kodeRs" value="<?= "$kdppk->koders | $kdppk->namers" ?>" readonly>
+                        <input type="hidden" class="form-control" name="kodeRs" id="kodeRs" value="<?= $kdppk->koders ?>" readonly>
+                        <input type="text" class="form-control" value="<?= "$kdppk->koders | $kdppk->namers" ?>" readonly>
                     </div>
                 </div>
                 <div class="mb-3" style="display: grid; grid-template-columns: 1fr 10px 3fr;">
                     <label class="form-label">No. Urut Registrasi</label>
                     <span>:</span>
                     <div class="" style="margin:0px !important">
-                        <input type="text" class="form-control" name="noReg" id="noReg" value="<?= $pcare_regist_data->noUrut ?>" readonly>
+                        <input type="text" class="form-control" name="noReg" id="noReg" value="<?= $noreg ?>" readonly>
                     </div>
                 </div>
                 <div class="mb-3" style="display: grid; grid-template-columns: 1fr 10px 3fr;">
@@ -354,7 +355,7 @@
                             readonly>
                     </div>
                 </div>
-                <div class="mb-3" style="display: grid; grid-template-columns: 1fr 3fr; gap: 20px;">
+                <div class="mb-3" id="sub-spesialis-input" style="display: grid; grid-template-columns: 1fr 3fr; gap: 20px;">
                     <label class="form-label" for="rujukLanjutSubSpesialisKdSubSpesialis1">Sub-Spesialis</label>
                     <div  style="display: grid; grid-template-columns: 1fr 3fr;  gap: 10px;" id="icd_result">
                         <input 
@@ -371,7 +372,7 @@
                             readonly>
                     </div>
                 </div>
-                <div class="mb-3" style="display: grid; grid-template-columns: 1fr 3fr; gap: 20px;">
+                <div class="mb-3" id="sarana-input" style="display: grid; grid-template-columns: 1fr 3fr; gap: 20px;">
                     <label class="form-label" for="rujukLanjutSubSpesialisKdSarana">Sarana</label>
                     <div  style="display: grid; grid-template-columns: 1fr 3fr;  gap: 10px;" id="icd_result">
                         <input 
@@ -383,12 +384,12 @@
                         <input 
                             type="text" 
                             class="form-control" 
-                            name="rujukLanjutSubSpesialisKdSarana" 
-                            id="rujukLanjutSubSpesialisKdSarana" 
+                            name="rujukLanjutSubSpesialisNmSarana" 
+                            id="rujukLanjutSubSpesialisNmSarana" 
                             readonly>
                     </div>
                 </div>
-                <div class="mb-3" style="display: grid; grid-template-columns: 1fr 3fr; gap: 20px;">
+                <div class="mb-3 d-none attr-khusus" style="display: grid; grid-template-columns: 1fr 3fr; gap: 20px;">
                     <label class="form-label" for="rujukLanjutKhususKdKhusus">Khusus</label>
                     <div  style="display: grid; grid-template-columns: 1fr 3fr;  gap: 10px;" id="icd_result">
                         <input 
@@ -405,7 +406,7 @@
                             readonly>
                     </div>
                 </div>
-                <div class="mb-3" style="display: grid; grid-template-columns: 1fr 3fr; gap: 20px;">
+                <div class="mb-3 d-none attr-khusus" style="display: grid; grid-template-columns: 1fr 3fr; gap: 20px;">
                     <label class="form-label" for="rujukLanjutKhususCatatan">Catatan Rujukan Khusus</label>
                     <textarea class="form-control" name="rujukLanjutKhususCatatan" id="rujukLanjutKhususCatatan" rows="2" placeholder="Free text ..."></textarea>
                 </div>
@@ -575,6 +576,8 @@
         var statusPulang    = <?= json_encode($status_pulang) ?>;
         var pcareRegistData = <?= json_encode($pcare_regist_data) ?>;
         var subSpesialis    = <?= json_encode($subspesialis) ?>;
+        var sarana          = <?= json_encode($sarana) ?>;
+        var khusus          = <?= json_encode($khusus) ?>;
         var icd_all         = <?= json_encode($icd_all) ?>;
         var daftarRujukan, tacc;
 
@@ -853,11 +856,94 @@
         }
 
         function pilihPpk(kdppk) {
-            var kdppk = daftarRujukan.find((el) => {
+            // Close modal
+            $("#form-rujukan").modal("hide")
+
+            // Append the selected item into main form
+
+            // Mempersiapkan data rujukan
+
+            // Cek termasuk rujukan khusus atau tidak
+            var isKhusus = $("#sarana_khusus").val()
+
+            // Mencari PPK Rujukan
+            var ppk = daftarRujukan.find((el) => {
                 return el.kdppk == kdppk
             })
 
-            console.log(kdppk)
+            // Mencari info subspesialis
+            var selectedSubSpesialis = subSpesialis.find((el) => {
+                return el.kdSubSpesialis == $("#sub_spesialis").val()
+            })
+
+            // Mencari info sarana
+            var selectedSarana = sarana.find((el) => {
+                return el.kdSarana == $("#sarana_rujuk").val()
+            })
+
+            // Set info khusus null
+            var selectedKhusus   = null;
+
+            // Mengisi input estimasi rujuk
+            $("#rujukLanjutTglEstimasiRujuk").val($("#tglEstRujuk").val())
+
+            // Mengisi input kode PPK & nama PPK
+            $("#rujukLanjutKdPpk").val(ppk.kdppk)
+            $("#rujukLanjutNmPpk").val(`${ppk.nmppk} - ${ppk.alamatPpk} - ${ppk.telpPpk}`)
+
+            // Mengisi input subspesialis
+            $("#rujukLanjutSubSpesialisKdSubSpesialis1").val(selectedSubSpesialis.kdSubSpesialis)
+            $("#rujukLanjutSubSpesialisNmSubSpesialis1").val(selectedSubSpesialis.nmSubSpesialis)
+
+            // Mengisi input sarana
+            $("#rujukLanjutSubSpesialisKdSarana").val(selectedSarana.kdSarana)
+            $("#rujukLanjutSubSpesialisNmSarana").val(selectedSarana.nmSarana)
+
+            // Jika rujukan khusus
+            if (isKhusus == 1) {
+                // Mencari info khusus
+                selectedKhusus = khusus.find((el) => {
+                    return el.kdKhusus == $("#khusus").val()
+                })
+                
+                // Mengisi input untuk rujukan khusus
+                $("#rujukLanjutKhususKdKhusus").val(selectedKhusus.kdKhusus)
+                $("#rujukLanjutKhususNmKhusus").val(selectedKhusus.nmKhusus)
+
+                // Rujukan khsusu tidak memerlukan sarana
+                $("#rujukLanjutSubSpesialisKdSarana").val("")
+                $("#rujukLanjutSubSpesialisNmSarana").val("")
+                $("#sarana-input").addClass("d-none")
+
+                // Tampilkan input untuk rujukan khusus
+                $(".attr-khusus").removeClass("d-none")
+            }else {
+                // Jika bukan rujukan khusus maka fungsi berakhir
+                return
+            }
+
+            // Jika rujukan khusus bukan Thalasemia atau Hemofilia, tidak memerlukan subspesialis
+            if (selectedKhusus.kdKhusus != "THA" || selectedKhusus.kdKhusus != "HEM") {
+                $("#rujukLanjutSubSpesialisKdSubSpesialis1").val("")
+                $("#rujukLanjutSubSpesialisNmSubSpesialis1").val("")
+                $("#sub-spesialis-input").addClass("d-none")
+            }
+        }
+
+        function save_pcare() {
+            // console.log($("#pcare_form").serialize())
+            $.ajax({
+                url: "<?= base_url("api/pcare/create_kunjungan") ?>",
+                type: "post",
+                dataType: "json",
+                data: $("#pcare_form").serialize(),
+                success: (data) => {
+                    console.log(data)
+                },
+                error: (jqXHR, textStatus, errorThrown) => {
+                    console.log(jqXHR.responseJSON)
+                }
+            })
         }
     </script>
 </body>

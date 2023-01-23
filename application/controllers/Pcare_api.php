@@ -304,7 +304,7 @@ class Pcare_api extends CI_Controller
         $data_set   = (object) [];
 
         foreach ($fields as $field) {
-            $data_set->$field = isset($request->$field) ? $request->$field : NULL;
+            $data_set->$field = (isset($request->$field) && strlen($request->$field) > 0) ? $request->$field : NULL;
         }
 
         $id = $this->pcare_kunjungan->save_or_update($data_set);
@@ -430,14 +430,12 @@ class Pcare_api extends CI_Controller
         $this->kunjunganService->getRujukan($noKunjungan);
 
         $result = $this->db->where("noKunjungan", $noKunjungan)->get("bpjs_pcare_rujukan")->row();
+        $output = isset($result->data) ? $result->data : $result->message;
 
         return $this->output
                 ->set_content_type('application/json')
                 ->set_status_header(200)
-                ->set_output(json_encode([
-                    "status"        => true,
-                    "data"          => $result
-                ]));
+                ->set_output(json_encode($output));
     }
 
     /**
@@ -451,11 +449,12 @@ class Pcare_api extends CI_Controller
         $tglEstRujuk    = $this->input->get("tglEstRujuk");
 
         $result = $this->pcare_rujukan->get_subspesialis ($subspesialis, $sarana, $tglEstRujuk);
+        $output = isset($result->data) ? $result->data : $result->message;
 
         return $this->output
                 ->set_content_type('application/json')
                 ->set_status_header($result->status)
-                ->set_output(json_encode($result->message));
+                ->set_output(json_encode($output));
     }
 
     /**
@@ -471,11 +470,12 @@ class Pcare_api extends CI_Controller
         $tglEstRujuk    = $this->input->get("tglEstRujuk");
 
         $result = $this->pcare_rujukan->get_khusus ($noKartu, $kdKhusus, $subspesialis, $tglEstRujuk);
+        $output = isset($result->data) ? $result->data : $result->message;
 
         return $this->output
                 ->set_content_type('application/json')
                 ->set_status_header($result->status)
-                ->set_output(json_encode($result->data));
+                ->set_output(json_encode($output));
     }
 
     /**

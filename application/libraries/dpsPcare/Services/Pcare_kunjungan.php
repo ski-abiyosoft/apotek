@@ -2,6 +2,7 @@
 
 require_once("Pcare_service.php");
 require_once(APPPATH . "libraries/dpsPcare/Repositories/KunjunganRepository.php");
+require_once(APPPATH . "libraries/dpsPcare/Repositories/RujukanRepository.php");
 
 class Pcare_kunjungan extends Pcare_service
 {
@@ -13,6 +14,7 @@ class Pcare_kunjungan extends Pcare_service
         parent::__construct($arg["kdppk"]);
         $this->url              = $this->base_url . "kunjungan";
         $this->kunjungan        = new KunjunganRepository();
+        $this->rujukan          = new RujukanRepository();
     }
 
     /**
@@ -84,13 +86,13 @@ class Pcare_kunjungan extends Pcare_service
         if ($result->status >= 200 AND $result->status < 300) {
             $decrypted                  = $this->decrypt_result(json_decode($result->data), $timestamp);
             $response                   = json_decode($decrypted->response);
-            $bridgingData->noKunjungan  = $response->message;
+            $bridgingData->noKunjungan  = $response[0]->message;
 
             $this->kunjungan->save($bridgingData);
 
             return (object) [
                 'status'    => $result->status,
-                "data"      => $result
+                "data"      => $decrypted
             ];
         }
 
@@ -261,6 +263,55 @@ class Pcare_kunjungan extends Pcare_service
                         }
                     }
                 }
+
+                return (object) [
+                    "status"    => $result->status,
+                    "data"      => $response_data
+                ];
+            }
+
+            // If response null
+            return (object) [
+                "status"    => $result->status,
+                "data"      => $decrypted->response
+            ];
+        }
+
+        // If internal server error
+        if ($result->status >= 500) {
+            return $result;
+        }
+
+        // If request completed with error
+        return (object) [
+            "status"    => $result->status,
+            "message"   => json_decode($result->data)->response
+        ];
+    }
+
+    /**
+     * Method for getting rujukan based on visitation number
+     * 
+     * @param string $noKunjungan
+     * @return stdClass
+     */
+    public function get_rujukan (string $noKunjungan): stdClass
+    {
+        $timestamp  = $this->get_timestamp();
+        $result     = $this->make_request($timestamp, "{$this->url}/rujukan/{$noKunjungan}");
+
+        if ($result->status >= 200 AND $result->status < 300) {
+            $decrypted = $this->decrypt_result(json_decode($result->data), $timestamp);
+
+            // If response is not null
+            if ($decrypted->response) {
+                $response_data = json_decode($decrypted->response);
+
+                // if ($response_data) {
+                //     $response_data->kodeRs = $this->kdppk;
+                    
+                //     $this->rujukan->save_or_update_rujukan($response_data, ["noKunjungan", "tglKunjungan", "kodeRs"]);
+                // }
 
                 return (object) [
                     "status"    => $result->status,
