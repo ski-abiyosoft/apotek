@@ -1,29 +1,29 @@
-<?php 
-	$this->load->view('template/header');
-	$this->load->view('template/body');    
-	date_default_timezone_set("Asia/Jakarta");	
+<?php
+$this->load->view('template/header');
+$this->load->view('template/body');
+date_default_timezone_set("Asia/Jakarta");
 ?>
 
 <style>
-  .hidden {
-    display: none;
-  }
+.hidden {
+  display: none;
+}
 
-  .flex {
-    display: flex;
-  }
+.flex {
+  display: flex;
+}
 
-  .gap {
-    gap: 10px
-  }
+.gap {
+  gap: 10px
+}
 
-  .flex-col {
-    flex-direction: column;
-  }
+.flex-col {
+  flex-direction: column;
+}
 
-  .pointer{
-    cursor: pointer;
-  }
+.pointer {
+  cursor: pointer;
+}
 </style>
 
 <div class="row" style="margin-bottom:20px;">
@@ -55,7 +55,8 @@
             <label class="col-md-3 control-label">Cari <font color="red"></font></label>
             <div class="col-md-9">
               <div class="input-group flex gap">
-                <span class="btn-sm btn blue pointer" onclick="pasienLama(this)"><i class="fa fa-id-card"></i> Pasien Lama</span>
+                <span class="btn-sm btn blue pointer" onclick="pasienLama(this)"><i class="fa fa-id-card"></i> Pasien
+                  Lama</span>
                 <div class="hidden" id="pasien_lama">
                   <select class="form-control select2_el_pasien input-medium" onChange="getinfopasien()" id="pasien"
                     name="pasien">
@@ -63,7 +64,8 @@
                 </div>
                 <input type="hidden" id="idpasien">
                 <div class="input-group-btn" id="pasien_baru">
-                  <a class="btn-sm btn green" id="plus" onclick="add_pasien()"><i class="fa fa-plus"></i> Pasien Baru</a>
+                  <a class="btn-sm btn green" id="plus" onclick="add_pasien()"><i class="fa fa-plus"></i> Pasien
+                    Baru</a>
                 </div>
               </div>
             </div>
@@ -73,10 +75,11 @@
           <div class="form-group">
             <label class="col-md-3 control-label">Poliklinik <font color="red">*</font></label>
             <div class="col-md-9">
-              <select name="poliklinik1" id="poliklinik1" class="form-control select2_ap1" onchange="update(); cekruang()" style="width:100%;" data-placeholder="-- Pilih --">
+              <select name="poliklinik1" id="poliklinik1" class="form-control select2_ap1"
+                onchange="update(); cekruang()" style="width:100%;" data-placeholder="-- Pilih --">
                 <option value="">-- Pilih --</option>
-                <?php foreach($namapos as $pos): ?>
-                <option value="<?= $pos->kodepos;?>"><?= $pos->namapost;?></option>
+                <?php foreach ($namapos as $pos) : ?>
+                <option value="<?= $pos->kodepos; ?>"><?= $pos->namapost; ?></option>
                 <?php endforeach; ?>
               </select>
             </div>
@@ -115,13 +118,13 @@
             <label class="col-md-3 control-label">Lokasi Praktek <font color="red">*</font></label>
             <div class="col-md-9">
               <select class="form-control select2_lokasix" id="ruang" name="ruang">
-                
+
               </select>
             </div>
           </div>
         </div>
       </div>
-      
+
       <div class="row">
         <div class="col-md-6">
           <div class="form-group">
@@ -129,14 +132,14 @@
             <div class="col-md-9">
               <div class="input-group">
                 <input type="date" class="form-control input-medium" id="tanggal" name="tanggal" placeholder="Otomatis"
-                  value="<?= date('Y-m-d');?>">
+                  value="<?= date('Y-m-d'); ?>">
                 <input type="time" class="form-control input-small" id="jam" name="jam" placeholder="Otomatis"
-                  value="<?= date('H:i:s');?>">
+                  value="<?= date('H:i:s'); ?>">
               </div>
             </div>
           </div>
         </div>
-          <!-- <div class="col-md-6">
+        <!-- <div class="col-md-6">
             <div class="form-group">
               <label class="col-md-3 control-label">Pengirim </label>
               <div class="col-md-9"> 
@@ -149,35 +152,37 @@
             <label class="col-md-3 control-label">No. Antri <font color="red"></font></label>
             <div class="col-md-9">
               <div class="input-group">
-                <input type="text" class="form-control input-small" id="antrino1" name="antrino1" value="" placeholder="" readonly>
+                <input type="text" class="form-control input-small" id="antrino1" name="antrino1" value=""
+                  placeholder="" readonly>
                 <input type="text" class="form-control input-medium " name="antrino" id="antrino" value="1">
               </div>
             </div>
           </div>
         </div>
-        
+
       </div>
       <div class="row">
         <div class="col-md-6">
-            <div class="form-group">
-              <label class="col-md-3 control-label">No. RM <font color="red"></font></label>
-              <div class="col-md-9">
-                <input type="hidden" name="pengirim" id="pengirim">
-                <input type="text" class="form-control" id="norm" name="norm" value="" placeholder="otomatis" readonly>
-              </div>
+          <div class="form-group">
+            <label class="col-md-3 control-label">No. RM <font color="red"></font></label>
+            <div class="col-md-9">
+              <input type="hidden" name="pengirim" id="pengirim">
+              <input type="text" class="form-control" id="norm" name="norm" value="" placeholder="otomatis" readonly>
             </div>
+          </div>
         </div>
         <div class="col-md-6">
           <div class="form-group">
             <label class="col-md-3 control-label">Jenis Pasien <font color="red">*</font></label>
             <div class="col-md-9">
-              <select class="form-control select2_el_jenispasien" style="width:100%;" id="jenispasien" name="jenispasien" onchange="getRuang()">
+              <select class="form-control select2_el_jenispasien" style="width:100%;" id="jenispasien"
+                name="jenispasien" onchange="getRuang()">
                 <option value="">--- Pilih ---</option>
                 <?php $jenis = $this->db->get_where("tbl_setinghms", array("lset" => 'JPAS'))->result();
-								foreach($jenis as $row){ 
-								$selected = ($row->kodeset==$data->jenispas?'selected':'');
-								?>
-                <option <?= $selected;?> value="<?= $row->kodeset;?>"><?= $row->keterangan;?></option>
+                foreach ($jenis as $row) {
+                  $selected = ($row->kodeset == $data->jenispas ? 'selected' : '');
+                ?>
+                <option <?= $selected; ?> value="<?= $row->kodeset; ?>"><?= $row->keterangan; ?></option>
                 <?php } ?>
               </select>
             </div>
@@ -198,13 +203,14 @@
           <div class="form-group">
             <label class="col-md-3 control-label">Penjamin <font color="red"></font></label>
             <div class="col-md-9">
-              <select class="form-control select2_el_penjamin" style="width:100%;" id="vpenjamin" name="vpenjamin" onchange="get_pcare(this.value)">
+              <select class="form-control select2_el_penjamin" style="width:100%;" id="vpenjamin" name="vpenjamin"
+                onchange="get_pcare(this.value)">
                 <option value="">--- Pilih ---</option>
                 <?php $penjamin = $this->db->get_where("tbl_penjamin", array("cust_id" => 'BPJS'))->result();
-								foreach($penjamin as $row){ 
-								$selected = ($row->cust_id==$data->cust_nama?'selected':'');
-								?>
-                <option <?= $selected;?> value="<?= $row->cust_id;?>"><?= $row->cust_nama;?></option>
+                foreach ($penjamin as $row) {
+                  $selected = ($row->cust_id == $data->cust_nama ? 'selected' : '');
+                ?>
+                <option <?= $selected; ?> value="<?= $row->cust_id; ?>"><?= $row->cust_nama; ?></option>
                 <?php } ?>
               </select>
             </div>
@@ -228,7 +234,7 @@
             </div>
           </div>
         </div>
-        
+
       </div>
       <div class="row">
         <div class="col-md-6">
@@ -272,7 +278,7 @@
       </div>
       <div class="row">
         <div class="col-md-12">
-          <button type="button" class="btn blue" style="float: right" onclick="vpcare();"  id="pcare" type="button"> 
+          <button type="button" class="btn blue" style="float: right" onclick="vpcare();" id="pcare" type="button">
             <i class="fa fa-check-square"></i> Bridging PCare
           </button><br><br>
         </div>
@@ -287,10 +293,11 @@
             <button id="btnsimpaneditpasien" type="button" onclick="register()" class="btn blue"><i
                 class="fa fa-save"></i> <b>Simpan Data Pasien</b></button>
             <div class="btn-group">
-              <button type="button" id="btncetak" class="btn btn-warning"> 
+              <button type="button" id="btncetak" class="btn btn-warning">
                 <i class="fa fa-print"></i>
                 <b>Cetak</b></button>
-              <button type="button" id="btncetak1" class="btn btn-warning dropdown-toggle" data-toggle="dropdown"><i class="fa fa-angle-down"></i></button>
+              <button type="button" id="btncetak1" class="btn btn-warning dropdown-toggle" data-toggle="dropdown"><i
+                  class="fa fa-angle-down"></i></button>
               <ul class="dropdown-menu" role="menu">
                 <li>
                   <a href="#" onclick="javascript:_urlcetak1();">
@@ -307,9 +314,9 @@
             </div>
             <button class="btn green" type="button" onClick="window.location.reload();"><i class="fa fa-refresh"></i>
               Data Baru</button>
-            <a class="btn red" href="<?php echo base_url('pendaftaranVRS')?>"><i class="fa fa-undo"></i><b> KEMBALI
+            <a class="btn red" href="<?php echo base_url('pendaftaranVRS') ?>"><i class="fa fa-undo"></i><b> KEMBALI
               </b></a>
-              <br><br><br><br>
+            <br><br><br><br>
           </div>
         </div>
       </div>
@@ -319,7 +326,7 @@
 </div>
 
 <?php
-	$this->load->view('template/footer_tb');  
+$this->load->view('template/footer_tb');
 ?>
 
 <div class="modal fade" id="lup_pasien" role="dialog">
@@ -379,8 +386,8 @@
                   <div class="input-group">
                     <select class="form-control input-small" name="luppreposition" id="luppreposition">
                       <option value="">-- Pilih --</option>
-                      <?php foreach(setinghms('PREP') as $row){ ?>
-                      <option value="<?= $row->kodeset;?>"><?= $row->keterangan;?></option>
+                      <?php foreach (setinghms('PREP') as $row) { ?>
+                      <option value="<?= $row->kodeset; ?>"><?= $row->keterangan; ?></option>
                       <?php } ?>
                     </select>
                     <input type="text" class="form-control input-medium" name="lupnamapasien" id="lupnamapasien"
@@ -403,7 +410,8 @@
                       <option value="K_PELAJAR">K_PELAJAR</option>
                       <option value="KMAHASISWA">KMAHASISWA</option>
                     </select>
-                    <input type="text" class="form-control input-medium" name="lupnoidentitas" id="lupnoidentitas" value="">
+                    <input type="text" class="form-control input-medium" name="lupnoidentitas" id="lupnoidentitas"
+                      value="">
                   </div>
                 </div>
               </div>
@@ -476,8 +484,8 @@
                   <select class="form-control select2_el_statuspasien" name="lupstatus" id="lupstatus">
                     <option value="">-- Pilih --</option>
                     <?php
-										foreach(setinghms('STAT') as $row){ ?>
-                    <option value="<?= $row->kodeset;?>"><?= $row->keterangan;?></option>
+                    foreach (setinghms('STAT') as $row) { ?>
+                    <option value="<?= $row->kodeset; ?>"><?= $row->keterangan; ?></option>
                     <?php } ?>
                   </select>
                 </div>
@@ -504,8 +512,8 @@
                   <select class="form-control select2_el_agama" id="lupagama" name="lupagama">
                     <option value="">-- Pilih --</option>
                     <?php
-										foreach(setinghms('AGAM') as $row){ ?>
-                    <option value="<?= $row->kodeset;?>"><?= $row->keterangan;?></option>
+                    foreach (setinghms('AGAM') as $row) { ?>
+                    <option value="<?= $row->kodeset; ?>"><?= $row->keterangan; ?></option>
                     <?php } ?>
                   </select>
                 </div>
@@ -518,8 +526,8 @@
                   <select class="form-control select2_el_pendidikan" id="luppendidikan" name="luppendidikan">
                     <option value="">-- Pilih --</option>
                     <?php
-										foreach(setinghms('PEND') as $row){ ?>
-                    <option value="<?= $row->kodeset;?>"><?= $row->keterangan;?></option>
+                    foreach (setinghms('PEND') as $row) { ?>
+                    <option value="<?= $row->kodeset; ?>"><?= $row->keterangan; ?></option>
                     <?php } ?>
                   </select>
                 </div>
@@ -534,8 +542,8 @@
                   <select class="form-control select2_el_goldarah" id="lupgoldarah" name="lupgoldarah">
                     <option value="">-- Pilih --</option>
                     <?php
-										foreach(setinghms('GOLD') as $row){ ?>
-                    <option value="<?= $row->kodeset;?>"><?= $row->keterangan;?></option>
+                    foreach (setinghms('GOLD') as $row) { ?>
+                    <option value="<?= $row->kodeset; ?>"><?= $row->keterangan; ?></option>
                     <?php } ?>
                   </select>
                 </div>
@@ -558,8 +566,8 @@
                   <select class="form-control select2_el_pekerjaan" id="luppekerjaan" name="luppekerjaan">
                     <option value="">-- Pilih --</option>
                     <?php
-										foreach(setinghms('PEKE') as $row){ ?>
-                    <option value="<?= $row->kodeset;?>"><?= $row->keterangan;?></option>
+                    foreach (setinghms('PEKE') as $row) { ?>
+                    <option value="<?= $row->kodeset; ?>"><?= $row->keterangan; ?></option>
                     <?php } ?>
                   </select>
                 </div>
@@ -602,7 +610,8 @@
               <div class="form-group">
                 <label class="col-md-3 control-label">Handphone <font color="red">*</font></label>
                 <div class="col-md-9">
-                  <input type="text" class="form-control" id="luphp" name="luphp" placeholder="Diawali dengan +62" value="+62">
+                  <input type="text" class="form-control" id="luphp" name="luphp" placeholder="Diawali dengan +62"
+                    value="+62">
                 </div>
               </div>
             </div>
@@ -613,7 +622,7 @@
                   <select class="form-control select2_el_provinsi" id="lupprovinsi" name="lupprovinsi"
                     onChange="getKota()" onclick="getKota()">
                     <option value="">-- Pilih --</option>
-                    <?php foreach($propinsi as $p) : ?>
+                    <?php foreach ($propinsi as $p) : ?>
                     <option value="<?= $p->kodeprop; ?>"><?= $p->namaprop; ?></option>
                     <?php endforeach; ?>
                   </select>
@@ -743,35 +752,35 @@
 <script>
 $(".select2_ap1").select2();
 // husaina add
-function cekruang(){
+function cekruang() {
 
   var poliklinik = $("#poliklinik1").val();
-  
-    $.ajax({
-      url: "/PendaftaranVRS/cekruang/" + poliklinik,
-      type: "GET",
-      dataType: "JSON",
-      success: function(data) {
-        if (data.status == 0) {
-          
-          swal({
-            title: "Kesalahan",
-            html: "Cek Lagi",
-            type: "error",
-            confirmButtonText: "OK"
-          }).then((value) => {
-            return;
-          });
 
-        } else {
-          $("#ruang").empty();
-          $.each(data, function(key, value) {
-            $("#ruang").append("<option value='" + value.koderuang + "'>" + value.namaruang +
-              "</option>");
-          });
-        }
+  $.ajax({
+    url: "/PendaftaranVRS/cekruang/" + poliklinik,
+    type: "GET",
+    dataType: "JSON",
+    success: function(data) {
+      if (data.status == 0) {
+
+        swal({
+          title: "Kesalahan",
+          html: "Cek Lagi",
+          type: "error",
+          confirmButtonText: "OK"
+        }).then((value) => {
+          return;
+        });
+
+      } else {
+        $("#ruang").empty();
+        $.each(data, function(key, value) {
+          $("#ruang").append("<option value='" + value.koderuang + "'>" + value.namaruang +
+            "</option>");
+        });
       }
-    });
+    }
+  });
 
 }
 // end husain
@@ -783,7 +792,7 @@ $("#sep1").hide();
 $('#luppreposition').on('change', function() {
   var prep = this.value;
   $.ajax({
-    url: "<?php echo base_url();?>app/getvaluesetinghms/?kode=" + prep,
+    url: "<?php echo base_url(); ?>app/getvaluesetinghms/?kode=" + prep,
     type: "GET",
     dataType: 'json',
     success: function(data) {
@@ -799,40 +808,38 @@ $('#luppreposition').on('change', function() {
 
 });
 
-function _urlcetak1()
-{
-	var baseurl    = "<?php echo base_url()?>";
-	var noreg      = $('[name="noreg"]').val();
-  if(noreg==''){
+function _urlcetak1() {
+  var baseurl = "<?php echo base_url() ?>";
+  var noreg = $('[name="noreg"]').val();
+  if (noreg == '') {
     swal({
-      title   : "Data Pasien ",
-      html    : "Belum Ada ...",
-      type    : "error",
+      title: "Data Pasien ",
+      html: "Belum Ada ...",
+      type: "error",
       confirmButtonText: "OK"
     });
     return;
-  }else{
-    url = baseurl+'PendaftaranVRS/cetak_rj2/?noreg='+noreg
+  } else {
+    url = baseurl + 'PendaftaranVRS/cetak_rj2/?noreg=' + noreg
     window.open(url, '');
-                
+
   }
 }
 
-function _urlcetak2()
-{
-	var baseurl    = "<?php echo base_url()?>";
-	var noreg      = $('[name="noreg"]').val();
-	var umur      = $('#umur123').val();
-  if(noreg==''){
+function _urlcetak2() {
+  var baseurl = "<?php echo base_url() ?>";
+  var noreg = $('[name="noreg"]').val();
+  var umur = $('#umur123').val();
+  if (noreg == '') {
     swal({
-      title   : "Data Pasien ",
-      html    : "Belum Ada ...",
-      type    : "error",
+      title: "Data Pasien ",
+      html: "Belum Ada ...",
+      type: "error",
       confirmButtonText: "OK"
     });
     return;
-  }else{
-    url = baseurl+'PendaftaranVRS/cetak_rj3/?noreg='+noreg+"&umur="+umur
+  } else {
+    url = baseurl + 'PendaftaranVRS/cetak_rj3/?noreg=' + noreg + "&umur=" + umur
     window.open(url, '');
   }
 }
@@ -843,23 +850,27 @@ function getinfopasien() {
   $('#bpjs').show(200);
   // $('#penjamin').show(200);
   $.ajax({
-    url: "<?php echo base_url();?>PendaftaranVRS/getinfopasien/?id=" + vid,
+    url: "<?php echo base_url(); ?>PendaftaranVRS/getinfopasien/?id=" + vid,
     type: "GET",
     dataType: "JSON",
     success: function(data) {
       console.log(data);
-      if(data.ada == 1){
+      if (data.ada == 1) {
         const tanggalx = new Date(data.tglmasuk);
-        const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+        const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September",
+          "October", "November", "December"
+        ];
         swal({
-            title: "REGISTRASI PASIEN TIDAK BISA DILAKUKAN",
-            // html: "Pasien atas nama : <b>"+data.namapas+"</b><br>Sudah registrasi di cabang : <b>"+data.koders_regist+"</b><br>Silahkan hubungi admin cabang : <b>"+data.koders+"</b>",
-            html: "<b>Close Bill</b> atau <b>Batalkan</b> pasien terlebih dahulu<br>Dengan nomor bill : "+data.noreg+"<br>Poliklinik : "+data.kodepos+"<br>Tanggal : "+tanggalx.getDate()+" "+months[tanggalx.getMonth()]+" "+tanggalx.getFullYear(),
-            type: "error",
-            confirmButtonText: "OK"
-          }).then((value) => {
-            window.location.reload();
-          });
+          title: "REGISTRASI PASIEN TIDAK BISA DILAKUKAN",
+          // html: "Pasien atas nama : <b>"+data.namapas+"</b><br>Sudah registrasi di cabang : <b>"+data.koders_regist+"</b><br>Silahkan hubungi admin cabang : <b>"+data.koders+"</b>",
+          html: "<b>Close Bill</b> atau <b>Batalkan</b> pasien terlebih dahulu<br>Dengan nomor bill : " + data
+            .noreg + "<br>Poliklinik : " + data.kodepos + "<br>Tanggal : " + tanggalx.getDate() + " " +
+            months[tanggalx.getMonth()] + " " + tanggalx.getFullYear(),
+          type: "error",
+          confirmButtonText: "OK"
+        }).then((value) => {
+          window.location.reload();
+        });
       } else {
         if (data.keluar == 0) {
           // $('#poliklinik1').val(data.kodepos).change();
@@ -980,42 +991,42 @@ function getinfopasien() {
         $('#jenispasien').val(data.jenispas);
         // $('#antrino').val(data.antrino);
         // $('#vpenjamin').val(data.cust_id).change();
-  
+
         var selectElement = document.getElementById('luppreposition');
         var opt = document.createElement('option');
         opt.value = data.preposisi;
         opt.innerHTML = data.namapreposisi;
         selectElement.appendChild(opt);
         $('#luppreposition').val(data.preposisi);
-  
+
         var selectElement = document.getElementById('lupstatus');
         var opt = document.createElement('option');
         opt.value = data.status;
         opt.innerHTML = data.namastatus;
         selectElement.appendChild(opt);
         $('#lupstatus').val(data.status);
-  
+
         var selectElement = document.getElementById('lupgoldarah');
         var opt = document.createElement('option');
         opt.value = data.goldarah;
         opt.innerHTML = data.goldarah;
         selectElement.appendChild(opt);
         $('#lupgoldarah').val(data.goldarah);
-  
+
         var selectElement = document.getElementById('lupwarganegara');
         var opt = document.createElement('option');
         opt.value = data.wn;
         opt.innerHTML = data.wn;
         selectElement.appendChild(opt);
         $('#lupwarganegara').val(data.wn);
-  
+
         var selectElement = document.getElementById('lupcabang');
         var opt = document.createElement('option');
         opt.value = data.koders;
         opt.innerHTML = data.namars;
         selectElement.appendChild(opt);
         $('#lupcabang').val(data.koders);
-  
+
         if (data.cust_nama != '') {
           var selectElement = document.getElementById('vpenjamin');
           var opt = document.createElement('option');
@@ -1024,7 +1035,7 @@ function getinfopasien() {
           selectElement.appendChild(opt);
           $('#vpenjamin').val(data.cust_id);
         }
-  
+
         // if(data.drpengirim !=''){		
         //           var selectElement = document.getElementById('pengirim');
         //           var opt = document.createElement('option');
@@ -1033,7 +1044,7 @@ function getinfopasien() {
         //           selectElement.appendChild(opt);
         //           $('#pengirim').val(data.drpengirim);
         //      }
-  
+
         // if(data.kodokter !=''){		
         //           var selectElement = document.getElementById('dokter');
         //           var opt = document.createElement('option');
@@ -1042,7 +1053,7 @@ function getinfopasien() {
         //           selectElement.appendChild(opt);
         //           $('#dokter').val(data.kodokter);
         //      }
-  
+
         if (data.propinsi != '') {
           var selectElement = document.getElementById('lupprovinsi');
           var opt = document.createElement('option');
@@ -1051,8 +1062,8 @@ function getinfopasien() {
           selectElement.appendChild(opt);
           $('#lupprovinsi').val(data.propinsi);
         }
-  
-  
+
+
         if (data.kabupaten != '') {
           var selectElement = document.getElementById('kabkota');
           var opt = document.createElement('option');
@@ -1062,7 +1073,7 @@ function getinfopasien() {
           selectElement.appendChild(opt);
           $('#kabkota').val(data.kabupaten);
         }
-  
+
         if (data.kecamatan != '') {
           var selectElement = document.getElementById('lupkecamatan');
           var opt = document.createElement('option');
@@ -1071,7 +1082,7 @@ function getinfopasien() {
           selectElement.appendChild(opt);
           $('#lupkecamatan').val(data.kecamatan);
         }
-  
+
         if (data.kelurahan != '') {
           var selectElement = document.getElementById('lupkelurahan');
           var opt = document.createElement('option');
@@ -1080,29 +1091,29 @@ function getinfopasien() {
           selectElement.appendChild(opt);
           $('#lupkelurahan').val(data.kelurahan);
         }
-  
+
         var selectElement = document.getElementById('lupagama');
         var opt = document.createElement('option');
         opt.value = data.agama;
         opt.innerHTML = data.namaagama;
         selectElement.appendChild(opt);
         $('#lupagama').val(data.agama);
-  
-  
+
+
         var selectPendidikan = document.getElementById('luppendidikan');
         var opt = document.createElement('option');
         opt.value = data.pendidikan;
         opt.innerHTML = data.namapendidikan;
         selectPendidikan.appendChild(opt);
         $('#luppendidikan').val(data.pendidikan);
-  
+
         var selectPekerjaan = document.getElementById('luppekerjaan');
         var opt = document.createElement('option');
         opt.value = data.pekerjaan;
         opt.innerHTML = data.namapekerjaan;
         selectPekerjaan.appendChild(opt);
         $('#luppekerjaan').val(data.pekerjaan);
-  
+
         $('#lupemail').val(data.email);
         $('#lupgoldarah').val(data.goldarah);
         $('#luptgllahir').trigger('change');
@@ -1129,7 +1140,7 @@ cabb();
 function cabb() {
   var vid = 'aaa';
   $.ajax({
-    url: "<?php echo base_url();?>app/search_cabang2/?id=" + vid,
+    url: "<?php echo base_url(); ?>app/search_cabang2/?id=" + vid,
     type: "GET",
     dataType: "JSON",
     success: function(data) {
@@ -1143,10 +1154,10 @@ function ktp() {
   var ktp = document.getElementById('lupidentitas').value;
   if (ktp == "KTP") {
     $('#lupnoidentitas').on('change', function() {
-      if($("#lupnoidentitas").val() != "") {
-        if($("#lupnoidentitas").val() == "-"){
+      if ($("#lupnoidentitas").val() != "") {
+        if ($("#lupnoidentitas").val() == "-") {
           $.ajax({
-            url: "<?php echo base_url();?>PendaftaranVRS/namaprovinsi_all/",
+            url: "<?php echo base_url(); ?>PendaftaranVRS/namaprovinsi_all/",
             type: "POST",
             dataType: "JSON",
             success: function(data) {
@@ -1167,7 +1178,7 @@ function ktp() {
           });
         } else {
           var noktp = this.value;
-          var prov = noktp.substring(0, 2);save
+          var prov = noktp.substring(0, 2);
           var kotakab = noktp.substring(0, 4);
           var kec = noktp.substring(0, 6);
           getprov(prov);
@@ -1177,7 +1188,7 @@ function ktp() {
         }
       } else {
         $.ajax({
-          url: "<?php echo base_url();?>PendaftaranVRS/namaprovinsi_all/",
+          url: "<?php echo base_url(); ?>PendaftaranVRS/namaprovinsi_all/",
           type: "POST",
           dataType: "JSON",
           success: function(data) {
@@ -1203,7 +1214,7 @@ function ktp() {
 
 function getprov(kode) {
   $.ajax({
-    url: "<?php echo base_url();?>PendaftaranVRS/namaprovinsi/?kode=" + kode,
+    url: "<?php echo base_url(); ?>PendaftaranVRS/namaprovinsi/?kode=" + kode,
     type: "POST",
     dataType: "JSON",
     success: function(data) {
@@ -1223,7 +1234,7 @@ function getprov(kode) {
 
 function getkot(kode) {
   $.ajax({
-    url: "<?php echo base_url();?>PendaftaranVRS/namakota/?kode=" + kode,
+    url: "<?php echo base_url(); ?>PendaftaranVRS/namakota/?kode=" + kode,
     type: "POST",
     dataType: "JSON",
     success: function(data) {
@@ -1244,7 +1255,7 @@ function getkot(kode) {
 
 function getkec(kode) {
   $.ajax({
-    url: "<?php echo base_url();?>PendaftaranVRS/namakecamatan/?kode=" + kode,
+    url: "<?php echo base_url(); ?>PendaftaranVRS/namakecamatan/?kode=" + kode,
     type: "POST",
     dataType: "JSON",
     success: function(data) {
@@ -1290,21 +1301,21 @@ $(".select2_lokasix").select2();
 function update() {
   var select = document.getElementById('poliklinik1').value;
   initailizeSelect2_dokter(select);
-    // UMUM
-  if(select=='PUMUM'){
+  // UMUM
+  if (select == 'PUMUM') {
     $('#antrino1').val('A');
     // GIGI
-  }else if(select=='PGIGI'){
+  } else if (select == 'PGIGI') {
     $('#antrino1').val('B');
     // KIA
-  }else if(select=='BIDAN'){
+  } else if (select == 'BIDAN') {
     $('#antrino1').val('C');
-  }else{
+  } else {
     $('#antrino1').val('F');
   }
 
   $.ajax({
-    url: "<?= site_url('PendaftaranVRS/get_dokter_rj');?>",
+    url: "<?= site_url('PendaftaranVRS/get_dokter_rj'); ?>",
     type: "POST",
     data: ($('#frmpasien').serialize()),
     dataType: "JSON",
@@ -1330,7 +1341,7 @@ $('#rujukan').hide();
 function getKota() {
   var select = document.getElementById('lupprovinsi').value;
   $.ajax({
-    url: "<?= site_url('PendaftaranVRS/get_kota');?>",
+    url: "<?= site_url('PendaftaranVRS/get_kota'); ?>",
     type: "POST",
     data: ($('#frmpasien2').serialize()),
     dataType: "JSON",
@@ -1352,7 +1363,7 @@ function getKota() {
 function getKecamatan() {
   var select = document.getElementById('kabkota').value;
   $.ajax({
-    url: "<?= site_url('PendaftaranVRS/get_kecamatan');?>",
+    url: "<?= site_url('PendaftaranVRS/get_kecamatan'); ?>",
     type: "POST",
     data: ($('#frmpasien2').serialize()),
     dataType: "JSON",
@@ -1373,7 +1384,7 @@ function getKecamatan() {
 function getDesa() {
   var kec = document.getElementById('lupkecamatan').value;
   $.ajax({
-    url: "<?= site_url()?>PendaftaranVRS/get_desa",
+    url: "<?= site_url() ?>PendaftaranVRS/get_desa",
     type: "POST",
     data: ($('#frmpasien2').serialize()),
     dataType: "JSON",
@@ -1394,7 +1405,7 @@ function getDesa() {
 function getKP() {
   var select = document.getElementById('lupkecamatan').value;
   $.ajax({
-    url: "<?= site_url('PendaftaranVRS/getKP');?>",
+    url: "<?= site_url('PendaftaranVRS/getKP'); ?>",
     type: "POST",
     data: ($('#frmpasien2').serialize()),
     dataType: "JSON",
@@ -1413,44 +1424,44 @@ function tgllahir() {
 }
 
 function save_pasien() {
-  var clupcabang        = document.getElementById('lupcabang').value;
-  var clupnorm          = document.getElementById('lupnorm').value;
-  var cluppreposition   = document.getElementById('luppreposition').value;
-  var clupnamapasien    = document.getElementById('lupnamapasien').value;
-  var clupidentitas     = document.getElementById('lupidentitas').value;
-  var clupnoidentitas   = document.getElementById('lupnoidentitas').value;
+  var clupcabang = document.getElementById('lupcabang').value;
+  var clupnorm = document.getElementById('lupnorm').value;
+  var cluppreposition = document.getElementById('luppreposition').value;
+  var clupnamapasien = document.getElementById('lupnamapasien').value;
+  var clupidentitas = document.getElementById('lupidentitas').value;
+  var clupnoidentitas = document.getElementById('lupnoidentitas').value;
   var clupnamapanggilan = document.getElementById('lupnamapanggilan').value;
-  var clupnamakeluarga  = document.getElementById('lupnamakeluarga').value;
-  var cluptempatlahir   = document.getElementById('luptempatlahir').value;
-  var cluptgllahir      = document.getElementById('luptgllahir').value;
-  var birthDate         = new Date($('#luptgllahir').val());
-  var usia              = hitung_usia(birthDate);
+  var clupnamakeluarga = document.getElementById('lupnamakeluarga').value;
+  var cluptempatlahir = document.getElementById('luptempatlahir').value;
+  var cluptgllahir = document.getElementById('luptgllahir').value;
+  var birthDate = new Date($('#luptgllahir').val());
+  var usia = hitung_usia(birthDate);
   $('#umur123').val(usia);
-  var clupjeniskelamin  = document.getElementById('lupjeniskelamin').value;
-  var clupstatus        = document.getElementById('lupstatus').value;
-  var clupwarganegara   = document.getElementById('lupwarganegara').value;
-  var clupagama         = document.getElementById('lupagama').value;
-  var cluppendidikan    = document.getElementById('luppendidikan').value;
-  var clupgoldarah      = document.getElementById('lupgoldarah').value;
-  var cluphobby         = document.getElementById('luphobby').value;
-  var cluppekerjaan     = document.getElementById('luppekerjaan').value;
-  var clupalamat1       = document.getElementById('lupalamat1').value;
-  var cluprt            = document.getElementById('luprt').value;
-  var cluprw            = document.getElementById('luprw').value;
-  var clupalamat2       = document.getElementById('lupalamat2').value;
-  var cluphp            = document.getElementById('luphp').value;
-  var cekhp             = cluphp.substring(0, 3);
-  var clupprovinsi      = document.getElementById('lupprovinsi').value;
-  var cluptelp          = document.getElementById('lupphone').value;
-  var ckabkota          = document.getElementById('kabkota').value;
-  var clupemail         = document.getElementById('lupemail').value;
-  var clupkecamatan     = document.getElementById('lupkecamatan').value;
-  var clupfb            = document.getElementById('lupfb').value;
-  var clupkelurahan     = document.getElementById('lupkelurahan').value;
-  var cluptwitter       = document.getElementById('luptwitter').value;
-  var clupkodepos       = document.getElementById('lupkodepos1').value;
-  var clupig            = document.getElementById('lupig').value;
-  const tgl             = new Date().toISOString().split('T')[0];
+  var clupjeniskelamin = document.getElementById('lupjeniskelamin').value;
+  var clupstatus = document.getElementById('lupstatus').value;
+  var clupwarganegara = document.getElementById('lupwarganegara').value;
+  var clupagama = document.getElementById('lupagama').value;
+  var cluppendidikan = document.getElementById('luppendidikan').value;
+  var clupgoldarah = document.getElementById('lupgoldarah').value;
+  var cluphobby = document.getElementById('luphobby').value;
+  var cluppekerjaan = document.getElementById('luppekerjaan').value;
+  var clupalamat1 = document.getElementById('lupalamat1').value;
+  var cluprt = document.getElementById('luprt').value;
+  var cluprw = document.getElementById('luprw').value;
+  var clupalamat2 = document.getElementById('lupalamat2').value;
+  var cluphp = document.getElementById('luphp').value;
+  var cekhp = cluphp.substring(0, 3);
+  var clupprovinsi = document.getElementById('lupprovinsi').value;
+  var cluptelp = document.getElementById('lupphone').value;
+  var ckabkota = document.getElementById('kabkota').value;
+  var clupemail = document.getElementById('lupemail').value;
+  var clupkecamatan = document.getElementById('lupkecamatan').value;
+  var clupfb = document.getElementById('lupfb').value;
+  var clupkelurahan = document.getElementById('lupkelurahan').value;
+  var cluptwitter = document.getElementById('luptwitter').value;
+  var clupkodepos = document.getElementById('lupkodepos1').value;
+  var clupig = document.getElementById('lupig').value;
+  const tgl = new Date().toISOString().split('T')[0];
 
   // kondisi
   if ($('#jeniskelamin').val() == '' || $('#jeniskelamin').val() == null) {
@@ -1851,13 +1862,13 @@ function save_pasien() {
     return;
   }
 
-  url = "<?php echo site_url('PendaftaranVRS/tambah_pasien_rawat_jalan')?>";
+  url = "<?php echo site_url('PendaftaranVRS/tambah_pasien_rawat_jalan') ?>";
   $.ajax({
     url: url,
-      type: "POST",
-      data: ($('#frmpasien2').serialize()),
-      dataType: "JSON",
-      success: function(data) {
+    type: "POST",
+    data: ($('#frmpasien2').serialize()),
+    dataType: "JSON",
+    success: function(data) {
       // console.log(data);
       if (data.status == 0) {
         $('#modal_form').modal('hide');
@@ -1870,7 +1881,7 @@ function save_pasien() {
           $('#modal_form').modal('hide');
         });
         $('#norm').val(data.norm);
-      }  else if (data.status == 1) {
+      } else if (data.status == 1) {
         $('#modal_form').modal('hide');
         swal({
           title: "DATA PASIEN",
@@ -1929,7 +1940,7 @@ $(".select2_dokter_igd").select2({
     }
   },
   ajax: {
-    url: "<?php echo base_url();?>PendaftaranVRS/dokter_igd",
+    url: "<?php echo base_url(); ?>PendaftaranVRS/dokter_igd",
     type: "post",
     dataType: 'json',
     delay: 250,
@@ -1947,27 +1958,26 @@ $(".select2_dokter_igd").select2({
   }
 });
 
-document.getElementById('pcare').style.visibility="hidden";
+document.getElementById('pcare').style.visibility = "hidden";
 
 function get_pcare(vpenjamin) {
-  
+
   if (vpenjamin == "BPJS") {
-    document.getElementById('pcare').style.visibility="visible";
+    document.getElementById('pcare').style.visibility = "visible";
   } else {
-    document.getElementById('pcare').style.visibility="hidden";
+    document.getElementById('pcare').style.visibility = "hidden";
   }
 }
 
-function vpcare()
-{
-    // var nampasdet = document.getElementById("nampasdet").value;
-    var noregdet  = $('#noreg').val();
-    var rekmeddet = '000459';
-    var url       = "<?= base_url("PendaftaranVRS/pcare_rj/") ?>"+ noregdet;
-    url="<?php echo base_url()?>PendaftaranVRS/pcare_rj/"+noregdet;
-    
-    window.open(url,'_blank');
-    window.focus();
+function vpcare() {
+  // var nampasdet = document.getElementById("nampasdet").value;
+  var noregdet = $('#noreg').val();
+  var rekmeddet = '000459';
+  var url = "<?= base_url("PendaftaranVRS/pcare_rj/") ?>" + noregdet;
+  url = "<?php echo base_url() ?>PendaftaranVRS/pcare_rj/" + noregdet;
+
+  window.open(url, '_blank');
+  window.focus();
 }
 
 function getRuang() {
@@ -1987,22 +1997,22 @@ function getRuang() {
 }
 
 function register() {
-  var norm          = document.getElementById('norm').value;
-  var tanggal       = document.getElementById('tanggal').value;
-  var jam           = document.getElementById('jam').value;
+  var norm = document.getElementById('norm').value;
+  var tanggal = document.getElementById('tanggal').value;
+  var jam = document.getElementById('jam').value;
   // var jenispasien   = document.getElementById('jenispasien').value;
-  var jenispasien   = $('#jenispasien').val();
-  var poliklinik    = document.getElementById('poliklinik1').value;
-  var penjamin      = document.getElementById('vpenjamin').value;
-  var dokter        = document.getElementById('dokter').value;
-  var antrino       = document.getElementById('antrino').value;
-  var antrino1      = document.getElementById('antrino1').value;
-  var pengirim      = document.getElementById('pengirim').value;
-  var ruang         = document.getElementById('ruang').value;
-  var booking       = document.getElementById('booking').value;
-  var nocard        = document.getElementById('nocard').value;
-  var norujukan     = document.getElementById('norujukan').value;
-  var nosep         = document.getElementById('nosep').value;
+  var jenispasien = $('#jenispasien').val();
+  var poliklinik = document.getElementById('poliklinik1').value;
+  var penjamin = document.getElementById('vpenjamin').value;
+  var dokter = document.getElementById('dokter').value;
+  var antrino = document.getElementById('antrino').value;
+  var antrino1 = document.getElementById('antrino1').value;
+  var pengirim = document.getElementById('pengirim').value;
+  var ruang = document.getElementById('ruang').value;
+  var booking = document.getElementById('booking').value;
+  var nocard = document.getElementById('nocard').value;
+  var norujukan = document.getElementById('norujukan').value;
+  var nosep = document.getElementById('nosep').value;
 
   // alert
   if (poliklinik == '') {
@@ -2089,7 +2099,7 @@ function register() {
   //   });
   //   return;
   // }
-  if (jenispasien == '' || jenispasien== null) {
+  if (jenispasien == '' || jenispasien == null) {
     $('#modal_form').modal('hide');
     swal({
       title: "JENIS PASIEN",
@@ -2112,7 +2122,7 @@ function register() {
   // });
 
   var noregz = $("#noreg").val();
-  url = "<?php echo site_url('PendaftaranVRS/tambah_pasien_register_rawat_jalan?noreg=')?>"+noregz;
+  url = "<?php echo site_url('PendaftaranVRS/tambah_pasien_register_rawat_jalan?noreg=') ?>" + noregz;
   $.ajax({
     url: url,
     type: "POST",
@@ -2120,8 +2130,8 @@ function register() {
     dataType: "JSON",
     success: function(data) {
       // script originial
-      if(data.status == 0){
-        if(vpenjamin == "BPJS"){
+      if (data.status == 0) {
+        if (vpenjamin == "BPJS") {
           //
         } else {
           // swal({
@@ -2146,62 +2156,62 @@ function register() {
             showCancelButton: true,
             allowOutsideClick: false
           }).then(function() {
-              url="<?php echo base_url()?>PendaftaranVRS/pcare_rj/"+data.noreg;
-              
-              window.open(url,'_blank');
-              window.focus();
+            url = "<?php echo base_url() ?>PendaftaranVRS/pcare_rj/" + data.noreg;
+
+            window.open(url, '_blank');
+            window.focus();
           }, function(dismiss) {
             // dismiss can be 'cancel', 'overlay',
             // 'close', and 'timer'
             if (dismiss === 'cancel') {
-              
+
               $('#modal_form').modal('hide');
               $("#btnsimpaneditpasien").attr('disabled', true);
               $("#noreg").val(data.noreg);
             }
           });
-          
+
           $('#modal_form').modal('hide');
           $("#btnsimpaneditpasien").attr('disabled', true);
           $("#noreg").val(data.noreg);
 
         }
-      } else if(data.status == 2){
+      } else if (data.status == 2) {
         swal({
-            title: "PASIEN",
-            html: "Pasien atas nama : <b>"+data.nm+"</b><br>"+
+          title: "PASIEN",
+          html: "Pasien atas nama : <b>" + data.nm + "</b><br>" +
             "SUDAH TERDAFTAR, SILAHKAN CEK DI LIST",
-            type: "error",
-            confirmButtonText: "OK" 
-          }).then((value) => {
-            $('#modal_form').modal('hide');
-          });
+          type: "error",
+          confirmButtonText: "OK"
+        }).then((value) => {
+          $('#modal_form').modal('hide');
+        });
       }
-        // husain change
-        // if (data.status == 0) {
-        //   swal({
-        //     title: "DATA PASIEN",
-        //     html: "Data berhasil teregistrasi",
-        //     type: "success",
-        //     confirmButtonText: "OK"
-        //   }).then((value) => {
-        //     $('#modal_form').modal('hide');
-        //   });
-        //   $("#noreg").val(data.noreg);
-        //   $("#btnsimpaneditpasien").attr('disabled', true);
-        // } else {
-        //   swal({
-        //     title: "DATA PASIEN",
-        //     html: "Data gagal teregistrasi",
-        //     type: "error",
-        //     confirmButtonText: "OK"
-        //   }).then((value) => {
-        //     $('#modal_form').modal('hide');
-        //   });
-        // }
-      }
-    });
-    // }
+      // husain change
+      // if (data.status == 0) {
+      //   swal({
+      //     title: "DATA PASIEN",
+      //     html: "Data berhasil teregistrasi",
+      //     type: "success",
+      //     confirmButtonText: "OK"
+      //   }).then((value) => {
+      //     $('#modal_form').modal('hide');
+      //   });
+      //   $("#noreg").val(data.noreg);
+      //   $("#btnsimpaneditpasien").attr('disabled', true);
+      // } else {
+      //   swal({
+      //     title: "DATA PASIEN",
+      //     html: "Data gagal teregistrasi",
+      //     type: "error",
+      //     confirmButtonText: "OK"
+      //   }).then((value) => {
+      //     $('#modal_form').modal('hide');
+      //   });
+      // }
+    }
+  });
+  // }
 
 }
 
@@ -2223,7 +2233,7 @@ function Batalkan(id) {
       data: {
         alasan: alasan
       },
-      url: '<?php echo base_url()?>PendaftaranVRS/pembatalan/' + id,
+      url: '<?php echo base_url() ?>PendaftaranVRS/pembatalan/' + id,
       success: function(response) {
         if (response.status == 1) {
           swal(
@@ -2248,7 +2258,7 @@ function Batalkan(id) {
  * Script untuk memilih pasien lama
  * 
  */
-function pasienLama(el){
+function pasienLama(el) {
   var pasienLama = document.querySelector('#pasien_lama')
 
   el.classList.add('hidden')

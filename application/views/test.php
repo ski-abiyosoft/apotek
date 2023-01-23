@@ -118,7 +118,7 @@
                 </div>
                 <div class="mb-3" style="display: grid; grid-template-columns: 1fr 3fr; gap: 20px;">
                     <label class="form-label" for="noKunjungan">Nomor Kunjungan</label>
-                    <input class="form-control" name="noKunjungan" id="noKunjungan" type="text" value="Otomatis" readonly>
+                    <input class="form-control" name="noKunjungan" id="noKunjungan" type="text" value="<?= isset($pcare_visit_data) ? $pcare_visit_data->noKunjungan : "Otomatis" ?>" readonly>
                 </div>
                 <div class="mb-3" style="display: grid; grid-template-columns: 1fr 3fr; gap: 20px;">
                     <label class="form-label" for="noUrut">Nomor P-Care Antri</label>
@@ -553,9 +553,9 @@
             <button class="btn btn-warning" type="button">
                 <i class="fa fa-book"></i> Riwayat
             </button>
-            <button class="btn btn-info" type="button">
+            <a href="<?= isset($pcare_visit_data->noKunjungan) ? base_url("test/cetak_rujukan/{$pcare_visit_data->noKunjungan}") : "#" ?>" target="_blank" class="btn btn-info" type="button">
                 <i class="fa fa-hand-o-right"></i> Rujukan
-            </button>
+            </a>
         </div>
         <p style="font-weight: bold; font-size: 16px; margin-top: 20px;">Hasil Bridging</p>
         <hr stle="margin-bottom: 1rem;" />

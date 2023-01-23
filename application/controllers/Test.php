@@ -92,6 +92,7 @@ class Test extends CI_Controller
         if (strlen($noreg) > 0) {
             $regist_data                = $this->db->where("noreg", $noreg)->get("tbl_regist")->row();
             $data["pcare_regist_data"]  = $this->db->where("noreg", $noreg)->get("bpjs_pcare_pendaftaran")->row();
+            $data["pcare_visit_data"]   = $this->db->where("noreg", $noreg)->get("bpjs_pcare_kunjungan")->row();
             $data["data_peserta"]       = $this->db->where("noKartu", $regist_data->nobpjs)->get("bpjs_pcare_peserta")->row();
             $data["local_regist_data"]  = $regist_data;
             $data["local_mr"]           = $this->db->where("noreg", $noreg)->get("tbl_rekammedisrs")->row();
