@@ -1,5 +1,5 @@
 <script>
-   $( document ).ready(function() {
+   // $( document ).ready(function() {
 
       // saya nambah ini
       initailizeSelect2_resep();
@@ -80,7 +80,7 @@
       initailizeSelect2_tarif_erad('');
       initailizeSelect2_tarif_erad2();
       initailizeSelect2_resep_retur();
-   });
+   // });
 
    function initailizeSelect2_tarif_erad(unit){
       $(".select2_el_tarif_erad").select2({
