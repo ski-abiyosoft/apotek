@@ -307,11 +307,11 @@ class Pcare_kunjungan extends Pcare_service
             if ($decrypted->response) {
                 $response_data = json_decode($decrypted->response);
 
-                // if ($response_data) {
-                //     $response_data->kodeRs = $this->kdppk;
+                if ($response_data) {
+                    $response_data->kodeRs = $this->kdppk;
                     
-                //     $this->rujukan->save_or_update_rujukan($response_data, ["noKunjungan", "tglKunjungan", "kodeRs"]);
-                // }
+                    $this->rujukan->save_or_update_rujukan($response_data, ["noRujukan", "tglKunjungan", "kodeRs"]);
+                }
 
                 return (object) [
                     "status"    => $result->status,

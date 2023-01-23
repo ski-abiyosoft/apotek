@@ -2866,7 +2866,7 @@
     $(".select2_ap1").select2();
 
     // PCARE JS //
-    load_sarana_khusus();
+    // load_sarana_khusus();
 
     function error_alert(message){
         return swal({

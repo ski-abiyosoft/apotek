@@ -14,7 +14,7 @@ class RujukanRepository extends Repository
      * @param stdClass $data_set
      * @param array $unique_column
      */
-    public function save_or_update_rujukan (stdClass $data_set, array $unique_column): stdClass
+    public function save_or_update_rujukan (stdClass $data_set, array $unique_column)
     {
         $insert_data    = (object) [
             "kodeRs" => $data_set->kodeRs,
@@ -30,9 +30,12 @@ class RujukanRepository extends Repository
             "pisa" => $data_set->pisa,
             "ketPisa" => $data_set->ketPisa,
             "sex" => $data_set->sex,
-            "kdDiag1" => $data_set->kdDiag1->kdDiag,
-            "kdDiag2" => $data_set->kdDiag2,
-            "kdDiag3" => $data_set->kdDiag3,
+            "kdDiag1" => $data_set->diag1->kdDiag,
+            "nmDiag1" => $data_set->diag1->nmDiag,
+            "kdDiag2" => isset($data_set->diag2->kdDiag) ? $data_set->diag2->kdDiag : NULL,
+            "nmDiag2" => isset($data_set->diag2->nmDiag) ? $data_set->diag2->nmDiag : NULL,
+            "kdDiag3" => isset($data_set->diag3->kdDiag) ? $data_set->diag3->kdDiag : NULL,
+            "nmDiag3" => isset($data_set->diag3->nmDiag) ? $data_set->diag3->nmDiag : NULL,
             "catatan" => $data_set->catatan,
             "kdDokter" => $data_set->dokter->kdDokter,
             "nmTacc" => isset($data_set->tacc->nmTacc) ? $data_set->tacc->nmTacc : NULL,
@@ -42,12 +45,10 @@ class RujukanRepository extends Repository
         $where_clause = [];
 
         foreach($unique_column as $key => $value) {
-            array_push($where_clause, [
-                $value => $insert_data->$value,
-            ]);
+            $where_clause[$value] = $insert_data->$value;
         }
 
-        $is_exists      = $this->select("id")->where($where_clause)->get($this->table)->row();
+        $is_exists      = $this->select("id")->where($where_clause)->get()->row();
 
         if (isset($is_exists)) {
             return $this->update($insert_data, $where_clause);
