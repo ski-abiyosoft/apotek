@@ -191,7 +191,7 @@ $this->load->view('template/body');
                             <button type='button' onclick="hapusBaris_lokasi(1)" class='btn red'><i class='fa fa-trash-o'>
                           </td>
                           <td width="95%">
-                            <select name="lokasi[]" id="lokasi1" class="select2_el_cabang_all form-control input-largex"></select>
+                            <select name="lokasi[]" id="lokasi1" class="select2_el_cabang_all_sess form-control input-largex"></select>
                           </td>
                         </tr>
                       </tbody>

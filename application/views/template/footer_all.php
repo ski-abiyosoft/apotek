@@ -21,6 +21,7 @@
       initailizeSelect2_kasbankedc();
       initailizeSelect2_cabang();
       initailizeSelect2_cabang_all();
+      initailizeSelect2_cabang_all_sess();
       initailizeSelect2_pendapatan();
       initailizeSelect2_dept();
       initailizeSelect2_provinsi();
@@ -2115,6 +2116,40 @@
          },
          ajax: {
             url: "<?php echo base_url(); ?>app/search_cabang_all",
+            type: "post",
+            dataType: 'json',
+            delay: 250,
+            data: function(params) {
+               return {
+                  searchTerm: params.term // search term
+               };
+            },
+
+            processResults: function(response) {
+               return {
+                  results: response
+               };
+            },
+            cache: true
+         }
+      });
+   }
+
+   function initailizeSelect2_cabang_all_sess() {
+
+      $(".select2_el_cabang_all_sess").select2({
+         allowClear: true,
+         multiple: false,
+         placeholder: '--- Pilih Cabang ---',
+         //minimumInputLength: 2,
+         dropdownAutoWidth: true,
+         language: {
+            inputTooShort: function() {
+               return 'Ketikan Kode/Nama Kas/Bank minimal 2 huruf';
+            }
+         },
+         ajax: {
+            url: "<?php echo base_url(); ?>app/search_cabang_all_sess",
             type: "post",
             dataType: 'json',
             delay: 250,

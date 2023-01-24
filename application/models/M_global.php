@@ -58,13 +58,13 @@ class M_global extends CI_Model
 		$tgl      = date('Y-m-d');
 		// $tgl      = '2022-12-25';
 		$sql      = $this->db->query("SELECT status from ms_close_app WHERE koders = '$cabang' and statustgl='$tgl' ")->row();
-		if($sql){
+		if ($sql) {
 			return $sql->status;
-		}else{
+		} else {
 			return 0;
 		}
-    }
-	
+	}
+
 	public function _periodebulan2()
 
 	{
@@ -556,13 +556,14 @@ class M_global extends CI_Model
 		return $row->typename;
 	}
 
-	function cek_internet(){
+	function cek_internet()
+	{
 		$connected = @fsockopen("www.google.com", 80);
-		
-		if ($connected){
+
+		if ($connected) {
 			$is_conn = true; //jika koneksi tersambung
 			fclose($connected);
-		}else{
+		} else {
 			$is_conn = false; //jika koneksi gagal
 		}
 		return $is_conn;
@@ -1874,7 +1875,11 @@ class M_global extends CI_Model
 	function getcabang_all_sess($str)
 	{
 		$unit = $this->session->userdata('cabb');
-		$query = $this->db->query("SELECT koders as id, concat(namars) as text from tbl_namers where koders in ($unit) order by namars");
+		$data  = explode(",",$unit);
+		$query = $this->db->select("koders as id, namars as text")
+		->where_in("koders", $data)
+		->order_by("namars")
+		->get("tbl_namers");
 
 		return $query->result();
 	}
@@ -2017,9 +2022,10 @@ class M_global extends CI_Model
 		return $query->result();
 	}
 
-	function getfarmasibarang_cbg($str){
+	function getfarmasibarang_cbg($str)
+	{
 		$unit = $this->session->userdata("unit");
-		if($str == ""){
+		if ($str == "") {
 			$limm = "LIMIT 10";
 			$kondisi = "";
 		} else {
@@ -2145,7 +2151,7 @@ class M_global extends CI_Model
 			$limm = "";
 		}
 
-		if ($unit != "" ) {
+		if ($unit != "") {
 
 			$query = $this->db->query("SELECT kodebarang as id, concat(' [ ', kodebarang ,' ] ',' - ',' [ ', namabarang ,' ] ',' - ',' [ ', satuan1 ,' ] ',' - ',' [ ', salakhir ,' ] ',' - ',' [ ', hargabeli ,' ]',' - ',' [ ', hargajual ,' ]') as text FROM(
 			SELECT
@@ -2167,7 +2173,7 @@ class M_global extends CI_Model
 
 		return $query->result();
 	}
-	
+
 	function getfarmasibaranggud($str, $gudang)
 	{
 		//-- saya ganti --//

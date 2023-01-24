@@ -79,7 +79,7 @@ $this->load->view('template/body');
                   </div>
                   <div class="col-md-7">
                     <div class="form-group">
-                      <label class="col-md-3 control-label">NO. SIP <font color="red">*</font></label>
+                      <label class="col-md-3 control-label">NO. STR <font color="red">*</font></label>
                       <div id="nopo" class="col-md-9">
                         <input id="nosip" name="nosip" class="form-control" type="text">
                       </div>
@@ -152,7 +152,7 @@ $this->load->view('template/body');
                   </div>
                 </div>
                 <br>
-                <h3>PRAKTEK</h3>
+                <h3>UNIT BISNIS</h3>
                 <div class="row">
                   <div class="col-md-6">
                     <table id="datatable_unit" class="table table-hoverx table-stripedx table-borderedx table-condensed table-scrollable">
@@ -191,7 +191,7 @@ $this->load->view('template/body');
                             <button type='button' onclick="hapusBaris_lokasi(1)" class='btn red'><i class='fa fa-trash-o'>
                           </td>
                           <td width="95%">
-                            <select name="lokasi[]" id="lokasi1" class="select2_el_cabang_all form-control input-largex"></select>
+                            <select name="lokasi[]" id="lokasi1" class="select2_el_cabang_all_sess form-control input-largex"></select>
                           </td>
                         </tr>
                       </tbody>

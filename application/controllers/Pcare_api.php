@@ -14,6 +14,8 @@ class Pcare_api extends CI_Controller
         $this->load->library("dpsPcare/Services/pcare_kunjungan", ["kdppk" => $this->session->userdata("kdppk")]);
         $this->load->library("dpsPcare/Services/pcare_kelompok", ["kdppk" => $this->session->userdata("kdppk")]);
         $this->load->library("dpsPcare/Services/pcare_rujukan", ["kdppk" => $this->session->userdata("kdppk")]);
+        $this->load->library("dpsPcare/Services/pcare_obat", ["kdppk" => $this->session->userdata("kdppk")]);
+        $this->load->library("dpsPcare/Services/pcare_tindakan", ["kdppk" => $this->session->userdata("kdppk")]);
     }
 
     /**
@@ -373,30 +375,16 @@ class Pcare_api extends CI_Controller
      * is id and visitation number (noKunjungan). Make sure you use POST method to access this method.
      * 
      */
-    public function delete_kunjungan ()
+    public function delete_kunjungan (int $id)
     {
-        $id             = $this->input->post("id");
-        $noKunjungan    = $this->input->post("noKunjungan");
+        $result = $this->pcare_kunjungan->delete_kunjungan($id);
 
-        try {
-            $this->kunjunganService->deleteKunjungan($id, $noKunjungan);
-        }catch (Exception $e) {
-            return $this->output
-                ->set_content_type('application/json')
-                ->set_status_header(500)
-                ->set_output(json_encode([
-                    "metaCode"  => -1,
-                    "message"   => "Gagal mendapatkan data. Terjadi Kesalahan server."
-                ]));
-        }
+        $output = isset($result->data) ? $result->data : $result->message;
 
         return $this->output
                 ->set_content_type('application/json')
                 ->set_status_header(200)
-                ->set_output(json_encode([
-                    "noKunjungan"   => $noKunjungan,
-                    "message"       => "Data berhasil dihapus."
-                ]));
+                ->set_output(json_encode($output));
     }
 
 
@@ -485,6 +473,36 @@ class Pcare_api extends CI_Controller
     public function add_kegiatan_kelompok ()
     {
         $result = $this->pcare_kelompok->add_kegiatan_kelompok((object) $this->input->post());
+        $output = isset($result->data) ? $result->data : $result->message;
+
+        return $this->output
+                ->set_content_type('application/json')
+                ->set_status_header($result->status)
+                ->set_output(json_encode($output));
+    }
+
+    /**
+     * Method for saving kegiatan kelompok
+     * 
+     */
+    public function add_obat_kunjungan (string $noKunjungan)
+    {
+        $result = $this->pcare_obat->add_obat_kunjungan($noKunjungan, (object) $this->input->post());
+        $output = isset($result->data) ? $result->data : $result->message;
+
+        return $this->output
+                ->set_content_type('application/json')
+                ->set_status_header($result->status)
+                ->set_output(json_encode($output));
+    }
+
+    /**
+     * Method for saving kegiatan kelompok
+     * 
+     */
+    public function add_tindakan_kunjungan (string $noKunjungan)
+    {
+        $result = $this->pcare_tindakan->add_tindakan_kunjungan($noKunjungan, (object) $this->input->post());
         $output = isset($result->data) ? $result->data : $result->message;
 
         return $this->output

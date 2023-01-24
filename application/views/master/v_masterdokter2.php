@@ -44,12 +44,12 @@ $this->load->view('template/body');
         </div>
         <div class="btn-group pull-right" style="margin-bottom:20px;">
           <label>Cabang : </label>
-          <select class="form-control input-large select2_el_cabang_all" id="cabang" name="cabang" onchange="getcabang()">
-            <?php if (isset($cabang)) :
+          <select class="form-control input-large select2_el_cabang_all_sess" id="cabang" name="cabang" onchange="getcabang()">
+            <!-- <?php if (isset($cabang)) :
               $rs = $this->db->query("SELECT * FROM tbl_namers WHERE koders = '$cabang'")->row();
             ?>
               <option value="<?= $cabang ?>" selected><?= $rs->namars ?></option>
-            <?php endif; ?>
+            <?php endif; ?> -->
           </select>
         </div>
       </div>

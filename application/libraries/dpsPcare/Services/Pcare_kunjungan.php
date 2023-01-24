@@ -117,56 +117,34 @@ class Pcare_kunjungan extends Pcare_service
      */
     public function delete_kunjungan (int $id)
     {
-        $raw_data = $this->kunjungan->find($id);
+        $visit_record = $this->kunjungan->find($id);
         
-        $timestamp = $this->get_timestamp();
+        $timestamp  = $this->get_timestamp();
+        $result     = $this->make_request($timestamp, $this->url . "/{$visit_record->noKunjungan}", "DELETE");
 
-        $this->header_init($timestamp);
+        if ($result->status >= 200 AND $result->status < 300) {
+            $decrypted                  = $this->decrypt_result(json_decode($result->data), $timestamp);
+            $response                   = json_decode($decrypted->response);
+            $bridgingData->noKunjungan  = $response[0]->message;
 
-        $request = curl_init("{$this->uri}/{$raw_data->noKunjungan}");
-        curl_setopt($request, CURLOPT_TIMEOUT, 5);
-        curl_setopt($request, CURLOPT_CONNECTTIMEOUT, 5);
-        curl_setopt($request, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($request, CURLOPT_HTTPHEADER, $this->get_headers());
-        curl_setopt($request, CURLOPT_CUSTOMREQUEST, "DELETE");
-        $data = curl_exec($request);
-        $httpStatus = curl_getinfo($request, CURLINFO_HTTP_CODE);
-        curl_close($request);
+            $this->kunjungan->save($bridgingData);
 
-        if ($httpStatus >= 400) {
             return (object) [
-                "status"    => $httpStatus,
-                "response"  => json_decode($data)->response
-            ];    
+                'status'    => $result->status,
+                "data"      => $decrypted
+            ];
         }
 
-        $raw_data->deleted = 1;
+        // If internal server error
+        if ($result->status >= 500) {
+            return $result;
+        }
 
-        $this->kunjungan->save($raw_data);
-
+        // If request completed with error
         return (object) [
-            "status"    => $httpStatus,
-            "response"  => json_decode($data)->metaData
+            "status"    => $result->status,
+            "message"   => json_decode($result->data)->response
         ];
-    }
-    
-    public function test(string $noKartu)
-    {
-        $timestamp = $this->get_timestamp();
-
-        $this->header_init($timestamp);
-
-        $request = curl_init("{$this->uri}/peserta/{$noKartu}");
-        curl_setopt($request, CURLOPT_TIMEOUT, 5);
-        curl_setopt($request, CURLOPT_CONNECTTIMEOUT, 5);
-        curl_setopt($request, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($request, CURLOPT_HTTPHEADER, $this->get_headers());
-        $data = curl_exec($request);
-        curl_close($request);
-
-        $decrypted = $this->decrypt_result(json_decode($data), $timestamp);
-
-        return $decrypted;
     }
 
     /**

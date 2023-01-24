@@ -124,6 +124,7 @@
                             <label class="control-label col-md-4">Umur </label>
                             <div class="col-md-8">
                                 <input type="text" value=""  class="form-control" id="umur" name="umur" value="" readonly>	
+                                <input type="hidden" value=""  class="form-control" id="umur_tahun" name="umur_tahun" value="" readonly>	
                             </div>
                         </div>
 
@@ -194,7 +195,7 @@
                         <div class="form-group">
                             <label class="control-label col-md-4" style="color:green">Nadi</label>
                             <div class="col-md-5">
-                                <input name="nadi" value="<?= $ttv->nadi ?>" placeholder="0" class="form-control" type="number">
+                                <input name="nadi" value="<?= $ttv->nadi ?>" placeholder="0" class="form-control" type="number" onchange="cek_nadi(this.value)">
                                 <span class="help-block"></span>
                             </div>
                             <label class="control-label" style="color:green">/Menit</label>
@@ -218,7 +219,7 @@
                         <div class="form-group">
                             <label class="control-label col-md-4" style="color:green">Pernafasan</label>
                             <div class="col-md-5">
-                                <input name="nafas" value="<?= $ttv->nafas ?>" placeholder="0" class="form-control" type="number">
+                                <input name="nafas" value="<?= $ttv->nafas ?>" placeholder="0" class="form-control" type="number" onchange="cek_nafas()">
                                 <span class="help-block"></span>
                             </div>
                             <label class="control-label" style="color:green">/Menit</label>
@@ -242,7 +243,7 @@
                         <div class="form-group">
                             <label class="control-label col-md-4" style="color:green">SPO2</label>
                             <div class="col-md-5">
-                                <input name="oksi" value="<?= $ttv->oksigen ?>" placeholder="0" class="form-control" type="number">
+                                <input name="oksi" value="<?= $ttv->oksigen ?>" placeholder="0" class="form-control" type="number" onchange="cek_spo()">
                                 <span class="help-block"></span>
                             </div>
                             <label class="control-label" style="color:green">%</label>
@@ -290,12 +291,12 @@
                         <div class="form-group">
                             <label class="control-label col-md-4" style="color:green">Tekanan Darah</label>
                             <div class="col-md-3">
-                                <input name="tekanan" value="<?= $ttv->tdarah ?>" placeholder="0" class="form-control" type="number">
+                                <input name="tekanan" value="<?= $ttv->tdarah ?>" placeholder="0" class="form-control" type="number" onchange="cek_td_atas()">
                                 <span class="help-block"></span>
                             </div>
                             <label class="control-label col-md-1" style="color:green">/</label>
                             <div class="col-md-3">
-                                <input name="tekanan1" value="<?= $ttv->tdarah1 ?>" placeholder="0" class="form-control" type="number">
+                                <input name="tekanan1" value="<?= $ttv->tdarah1 ?>" placeholder="0" class="form-control" type="number" onchange="cek_td_bawah()">
                                 <span class="help-block"></span>
                             </div>
                         </div>
@@ -365,9 +366,10 @@
 
         var tgllahire   = '<?= $data_pas->tgllahir?>'.substring(0, 10);
         var tglmasuk    = '<?= $data_pas->tglmasuk?>'.substring(0, 10);
-        var doaa         = '<?= $ttv->dead?>';
+        var doaa        = '<?= $ttv->dead?>';
         var birthDate   = new Date(tgllahire);
         var usia        = hitung_usia(birthDate);
+        var usia_tahun  = tahun_usia(birthDate);
         if(doaa==1){
             $('[name="nadi"]').prop("readonly", true);
             $('[name="nafas"]').prop("readonly", true);
@@ -377,6 +379,7 @@
             $('[name="tekanan1"]').prop("readonly", true);
         }
         $('#umur').val(usia);
+        $('#umur_tahun').val(usia_tahun);
         $('#tgl_l_per').val(tgllahire);
         $('#tgl_per').val(tglmasuk);
 
@@ -461,6 +464,42 @@
             $('[name="tekanan"]').val('');
             $('[name="tekanan1"]').val('');
             $('[name="doa_hidden"]').val(0);
+        }
+    }
+
+    function tahun_usia(tgllahir) {
+      var birthDate = new Date(tgllahir);
+      const EPOCH = new Date(0);
+      const EPOCH_YEAR = EPOCH.getUTCFullYear();
+
+      const diff = new Date(Date.now() - birthDate.getTime());
+
+      var years = Math.abs(diff.getUTCFullYear() - EPOCH_YEAR);
+      return years;
+   }
+    
+    function cek_nadi(param)
+    {
+        
+        var v_umur          = $('[name="umur_tahun"]').val().substring(0, 2);
+        if(v_umur>7 && v_umur<23){            
+            
+            if(param<80 || param>110){
+                if (v_nadi=='' || v_nadi== null){
+                swal({
+                        title: "NADI",
+                        html: "<p>HARUS DI ISI !</p>",
+                        type: "error",
+                        confirmButtonText: "OK" 
+                    });    
+                return;
+                } 
+
+            }
+
+        }else{
+            alert('aaa');
+           
         }
     }
 

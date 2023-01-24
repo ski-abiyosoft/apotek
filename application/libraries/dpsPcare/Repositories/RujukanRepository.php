@@ -40,7 +40,15 @@ class RujukanRepository extends Repository
             "kdDokter" => $data_set->dokter->kdDokter,
             "nmTacc" => isset($data_set->tacc->nmTacc) ? $data_set->tacc->nmTacc : NULL,
             "alasanTacc" => isset($data_set->tacc->alasanTacc) ? $data_set->tacc->alasanTacc : NULL,
-            "infoDenda" => isset($data_set->infoDenda) ? $data_set->infoDenda : NULL
+            "infoDenda" => isset($data_set->infoDenda) ? $data_set->infoDenda : NULL,
+            "tglEstRujuk" => parse_local_date($data_set->tglEstRujuk),
+            "tglAkhirRujuk" => parse_local_date($data_set->tglAkhirRujuk),
+            "jadwal" => $data_set->jadwal,
+            "kdDati" => $data_set->ppk->kc->dati->kdDati,
+            "nmDati" => $data_set->ppk->kc->dati->nmDati,
+            "nmKR" => $data_set->ppk->kc->kdKR->nmKR,
+            "kdKR" => $data_set->ppk->kc->kdKR->kdKR,
+            "nmDokter" => $data_set->dokter->nmDokter
         ];
         $where_clause = [];
 

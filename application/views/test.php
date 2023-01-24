@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pcare Testing Center</title>
+    <title>Kunjungan - Pcare Testing Center</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css"
         integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css" integrity="sha512-5A8nwdMOWrSz20fDsjczgUidUBR8liPYU+WymTZP1lmY9G6Oc7HlZv156XqnsgNUzTyMefFTcsFH/tnJE/+xBg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
@@ -110,11 +110,25 @@
                 <hr stle="margin-bottom: 1rem;" />
                 <div class="mb-3" style="display: grid; grid-template-columns: 1fr 3fr; gap: 20px;">
                     <label class="form-label" for="tglDaftar">Tanggal Kunjungan</label>
-                    <input class="form-control" name="tglDaftar" id="tglDaftar" type="date">
+                    <input 
+                        class="form-control" 
+                        name="tglDaftar" 
+                        id="tglDaftar" 
+                        type="date" 
+                        value="<?= isset($pcare_visit_data->tglDaftar) ? $pcare_visit_data->tglDaftar : date("Y-m-d") ?>"
+                        <?= isset($pcare_visit_data->tglDaftar) ? "readonly" : "" ?>
+                        >
                 </div>
                 <div class="mb-3" style="display: grid; grid-template-columns: 1fr 3fr; gap: 20px;">
                     <label class="form-label" for="tglPulang">Tanggal Pulang</label>
-                    <input class="form-control" name="tglPulang" id="tglPulang" type="date" value="<?= date("Y-m-d") ?>">
+                    <input 
+                        class="form-control" 
+                        name="tglPulang" 
+                        id="tglPulang" 
+                        type="date" 
+                        value="<?= isset($pcare_visit_data->tglPulang) ? $pcare_visit_data->tglPulang : date("Y-m-d") ?>"
+                        <?= isset($pcare_visit_data->tglPulang) ? "readonly" : "" ?>
+                        >
                 </div>
                 <div class="mb-3" style="display: grid; grid-template-columns: 1fr 3fr; gap: 20px;">
                     <label class="form-label" for="noKunjungan">Nomor Kunjungan</label>
@@ -222,11 +236,11 @@
                 </div>
                 <div class="mb-3" style="display: grid; grid-template-columns: 1fr 3fr; gap: 20px;">
                     <label class="form-label" for="terapi">Terapi Obat</label>
-                    <textarea class="form-control" name="terapi" id="terapi" rows="2" placeholder="Terapi obat free text ..."></textarea>
+                    <textarea class="form-control" name="terapi" id="terapi" rows="2" placeholder="Terapi obat free text ..."><?= isset($pcare_visit_data->terapi) ? $pcare_visit_data->terapi : 0 ?></textarea>
                 </div>
                 <div class="mb-3" style="display: grid; grid-template-columns: 1fr 3fr; gap: 20px;">
                     <label class="form-label" for="terapinon">Terapi Non Obat</label>
-                    <textarea class="form-control" name="terapinon" id="terapinon" rows="2" placeholder="Terapi non-obat free text ..."></textarea>
+                    <textarea class="form-control" name="terapinon" id="terapinon" rows="2" placeholder="Terapi non-obat free text ..."><?= isset($pcare_visit_data->terapinon) ? $pcare_visit_data->terapinon : 0 ?></textarea>
                 </div>
                 <div class="mb-3" style="display: grid; grid-template-columns: 1fr 3fr; gap: 20px;">
                     <label class="form-label" for="kdSadar">Kesadaran</label>
@@ -254,7 +268,7 @@
                     <label class="form-label" for="lingkarPerut">Lingkar Perut</label>
                     <div style="display: grid; grid-template-columns: 3fr 1fr 3fr; gap: 20px;">
                         <div style="display: flex; gap: 10px;">
-                            <input class="form-control" name="lingkarPerut" id="lingkarPerut" type="number">
+                            <input class="form-control" name="lingkarPerut" id="lingkarPerut" type="number" value="<?= isset($pcare_visit_data->lingkarPerut) ? $pcare_visit_data->lingkarPerut : 0 ?>">
                             cm
                         </div>
                         <label class="form-label" for="imt">IMT</label>
@@ -544,12 +558,12 @@
             <button class="btn btn-danger" type="button">
                 <i class="fa fa-undo"></i> Batal
             </button>
-            <button class="btn btn-success" type="button">
-                <i class="fa fa-bookmark"></i> SPP
-            </button>
-            <button class="btn btn-info" type="button">
-                <i class="fa fa-address-book"></i> Kunjungan
-            </button>
+            <a id="link-obat" target="_blank" class="btn btn-success" type="button">
+                <i class="fa fa-plus"></i> Tambah Obat
+            </a>
+            <a id="link-tindakan" target="_blank" class="btn btn-info" type="button">
+                <i class="fa fa-plus"></i> Tambah Tindakan
+            </a>
             <button class="btn btn-warning" type="button">
                 <i class="fa fa-book"></i> Riwayat
             </button>
@@ -573,6 +587,7 @@
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <script>
         var poli            = <?= json_encode($poli) ?>;
+        var visit_data      = <?= json_encode($pcare_visit_data ?? (object) []) ?>;
         var statusPulang    = <?= json_encode($status_pulang) ?>;
         var pcareRegistData = <?= json_encode($pcare_regist_data) ?>;
         var subSpesialis    = <?= json_encode($subspesialis) ?>;
@@ -582,6 +597,10 @@
         var daftarRujukan, tacc;
 
         $(document).ready(() => {
+            if (visit_data.noKunjungan) {
+                $("#link-obat").attr("href", "<?= base_url("test/obat_kunjungan") ?>/" + $("#noKunjungan").val())
+                $("#link-tindakan").attr("href", "<?= base_url("test/tindakan_kunjungan") ?>/" + $("#noKunjungan").val())
+            }
             // Get TACC
             $.ajax({
                 url: "<?= base_url("api/pcare") ?>" + "/get_tacc",

@@ -220,6 +220,12 @@ class App extends CI_Controller
 		echo json_encode($this->M_global->getcabang_all($q));
 	}
 
+	function search_cabang_all_sess()
+	{
+		$q = $this->input->post('searchTerm');
+		echo json_encode($this->M_global->getcabang_all_sess($q));
+	}
+
 	function search_pendapatan()
 	{
 		$q = $this->input->post('searchTerm');

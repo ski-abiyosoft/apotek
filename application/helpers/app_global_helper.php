@@ -10,7 +10,7 @@ function user_login(){
 	return $CI->session->userdata('username');	
 }
 
-function hitung_umur($tanggal_lahir){
+function hitung_umur($tanggal_lahir, $format = "full"){
 	$birthDate = new DateTime($tanggal_lahir);
 	$today = new DateTime("today");
 	if ($birthDate > $today) { 
@@ -19,7 +19,14 @@ function hitung_umur($tanggal_lahir){
 	$y = $today->diff($birthDate)->y;
 	$m = $today->diff($birthDate)->m;
 	$d = $today->diff($birthDate)->d;
-	return $y." tahun ".$m." bulan ".$d." hari";
+
+	if ($format == "full") {
+		return $y." tahun ".$m." bulan ".$d." hari";	
+	}
+	
+	if ($format == "tahun") {
+		return $y;
+	}
 }
 
 function pasien_rekmed_baru($nama){	

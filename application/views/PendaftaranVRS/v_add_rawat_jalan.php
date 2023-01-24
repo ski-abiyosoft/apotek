@@ -481,7 +481,7 @@ $this->load->view('template/footer_tb');
               <div class="form-group">
                 <label class="col-md-3 control-label">Status <font color="red">*</font></label>
                 <div class="col-md-9">
-                  <select class="form-control select2_el_statuspasien" name="lupstatus" id="lupstatus">
+                  <select class="form-control" name="lupstatus" id="lupstatus">
                     <option value="">-- Pilih --</option>
                     <?php
                     foreach (setinghms('STAT') as $row) { ?>
@@ -509,7 +509,7 @@ $this->load->view('template/footer_tb');
               <div class="form-group">
                 <label class="col-md-3 control-label">Agama <font color="red"></font></label>
                 <div class="col-md-9">
-                  <select class="form-control select2_el_agama" id="lupagama" name="lupagama">
+                  <select class="form-control" id="lupagama" name="lupagama">
                     <option value="">-- Pilih --</option>
                     <?php
                     foreach (setinghms('AGAM') as $row) { ?>
@@ -523,7 +523,7 @@ $this->load->view('template/footer_tb');
               <div class="form-group">
                 <label class="col-md-3 control-label">Pendidikan <font color="red">*</font></label>
                 <div class="col-md-9">
-                  <select class="form-control select2_el_pendidikan" id="luppendidikan" name="luppendidikan">
+                  <select class="form-control" id="luppendidikan" name="luppendidikan">
                     <option value="">-- Pilih --</option>
                     <?php
                     foreach (setinghms('PEND') as $row) { ?>
@@ -539,7 +539,7 @@ $this->load->view('template/footer_tb');
               <div class="form-group">
                 <label class="col-md-3 control-label">Gol. Darah <font color="red"></font></label>
                 <div class="col-md-9">
-                  <select class="form-control select2_el_goldarah" id="lupgoldarah" name="lupgoldarah">
+                  <select class="form-control" id="lupgoldarah" name="lupgoldarah">
                     <option value="">-- Pilih --</option>
                     <?php
                     foreach (setinghms('GOLD') as $row) { ?>
@@ -563,7 +563,7 @@ $this->load->view('template/footer_tb');
               <div class="form-group">
                 <label class="col-md-3 control-label">Pekerjaan <font color="red">*</font></label>
                 <div class="col-md-9">
-                  <select class="form-control select2_el_pekerjaan" id="luppekerjaan" name="luppekerjaan">
+                  <select class="form-control" id="luppekerjaan" name="luppekerjaan">
                     <option value="">-- Pilih --</option>
                     <?php
                     foreach (setinghms('PEKE') as $row) { ?>
@@ -619,8 +619,8 @@ $this->load->view('template/footer_tb');
               <div class="form-group">
                 <label class="col-md-3 control-label">Provinsi <font color="red">*</font></label>
                 <div class="col-md-9">
-                  <select class="form-control select2_el_provinsi" id="lupprovinsi" name="lupprovinsi"
-                    onChange="getKota()" onclick="getKota()">
+                  <select class="form-control" id="lupprovinsi" name="lupprovinsi" onChange="getKota()"
+                    onclick="getKota()">
                     <option value="">-- Pilih --</option>
                     <?php foreach ($propinsi as $p) : ?>
                     <option value="<?= $p->kodeprop; ?>"><?= $p->namaprop; ?></option>
