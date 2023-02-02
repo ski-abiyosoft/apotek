@@ -86,8 +86,7 @@ $this->load->view('template/body');
                                                 </th>
                                                 <th class="title-white" width="15%" style="text-align: center">Tanggal
                                                 </th>
-                                                <th class="title-white" width="15%" style="text-align: center">No. Reg
-                                                </th>
+                                                <!-- <th class="title-white" width="15%" style="text-align: center">No. Reg</th> -->
                                                 <th class="title-white" width="15%" style="text-align: center">Rekmed
                                                 </th>
                                                 <th class="title-white" width="5%" style="text-align: center">Nama
@@ -115,7 +114,7 @@ $this->load->view('template/body');
                                                     <td align="center"><?php echo $row->resepno; ?></td>
                                                     <td align="center"><?php echo date('d-m-Y', strtotime($row->tglresep)); ?>
                                                     </td>
-                                                    <td align="center"><?php echo $row->noreg; ?></td>
+                                                    <!-- <td align="center"><?php echo $row->noreg; ?></td> -->
                                                     <td align="center"><?php echo $row->rekmed; ?></td>
                                                     <td align="center"><?php echo $row->namapas; ?></td>
                                                     <td align="right"><?php echo number_format($row->poscredit, 0, ',', '.'); ?>
@@ -158,11 +157,12 @@ $this->load->view('template/body');
                             <div class="row">
 
                                 <div class="col-md-12">
-                                    <div class="portlet ">
+                                    <div class="portlet box blue">
                                         <div class="portlet-title">
                                             <div class="caption">
-                                                <i class="fa fa-reorder"></i>
-                                                <span class="label label-info">KWITANSI</span>
+                                                <div class="caption">
+                                                    <i class="fa fa-reorder"></i><b> KWITANSI</b>
+                                                </div>
                                             </div>
                                         </div>
                                         <input type="hidden" name="rekmed" id="rekmed">
@@ -446,12 +446,12 @@ $this->load->view('template/body');
                             </div>
                             <div class="row">
                                 <div class="col-md-12">
-                                    <div class="portlet ">
+                                    <div class="portlet box red">
                                         <div class="portlet-title">
                                             <div class="caption">
-                                                <i class="fa fa-reorder"></i>
-                                                <span class="label label-danger">PENGURANGAN</span>
-                                            </div>
+												<i class="fa fa-reorder"></i>
+												<span class="title-white">PENGURANGAN</span>												
+											</div>
 
 
                                         </div>
@@ -583,19 +583,20 @@ $this->load->view('template/body');
 
                             <div class="row">
                                 <div class="col-md-12">
-                                    <div class="portlet ">
+                                    <div class="portlet box blue">
                                         <div class="portlet-title">
                                             <div class="caption">
-                                                <i class="fa fa-reorder"></i>
-                                                <span class="label label-warning">PEMBAYARAN</span>
-                                            </div>
+                                                <div class="caption">
+                                                    <i class="fa fa-reorder"></i><b> PEMBAYARAN</b>
+                                                </div>
+											</div>
 
 
                                         </div>
-                                        <span class="label label-info">ELECTRONIC (DEBET/CREDIT/TRANFER/EMONEY)</span>
+                                        
                                         <div class="portlet-body form">
-
                                             <div class="form-body">
+                                                <span class="label label-info"><b>ELECTRONIC (DEBET/CREDIT/TRANFER/EMONEY)</b></span>
                                                 <div class="row">
                                                     <div class="col-md-12">
                                                         <table width="100%" id="datatable_pembayaran" class="table table-hoverx table-stripedx table-borderedx table-condensed table-scrollable">
@@ -653,8 +654,8 @@ $this->load->view('template/body');
                             </div>
 
                             <div class="row">
-                                <div class="col-md-9">
-                                    <table class="table">
+                                <div class="col-md-12">
+                                    <table class="table" border="0" width="100%">
 
                                         <tr>
                                             <td>TOTAL ELECTRONIC RP</td>
@@ -681,9 +682,9 @@ $this->load->view('template/body');
                                         <tr>
                                             <td>KEMBALI RP</td>
                                             <td><input type="text" class="form-control total rightJustified" name="kembalirp" id="kembalirp" value="0" readonly></td>
-                                            <td><span id="pertanyaan">Auto ke uang muka</span></td>
-                                            <td width="10%"><input type="checkbox" id="uangmukakembaliya" name="kembaliuang" checked value="1"><span id="textya"></span></td>
-                                            <td width="10%"><input type="checkbox" id="uangmukakembalitidak" name="kembaliuang" value="0"><span id="texttidak">Kembali ke
+                                            <!-- <td style="border-top:none;"><span id="pertanyaan">Auto ke uang muka</span></td> -->
+                                            <td style="border-top:none;" width="10%"><input type="hidden" id="uangmukakembaliya" name="kembaliuang" checked value="1"><span id="textya"></span></td>
+                                            <td style="border-top:none;" width="10%"><input type="checkbox" checked id="uangmukakembalitidak" name="kembaliuang" value="0"><span id="texttidak">Kembali ke
                                                     pasien</span></td>
 
                                         </tr>
@@ -699,7 +700,7 @@ $this->load->view('template/body');
                                                 <input type="text" class="form-control total leftJustified" name="hpno" id="hpno" value="" readonly>
 
                                             </td>
-                                            <td>
+                                            <td style="border-top:none;">
 
                                                 <input type="checkbox" id="reg_cekhp" name="reg_cekhp" value="1" class="form-control">
                                             </td>
@@ -717,7 +718,9 @@ $this->load->view('template/body');
 
 
                                         <button id="btnsimpan_bayar" type="button" onclick="save_bayar()" class="btn blue"><i class="fa fa-save"></i> UPDATE</button>
-                                        <button id="btncetak_bayar" type="button" onclick="javascript:window.open(_urlcetak(),'_blank');" class="btn yellow"><i class="fa fa-save"></i> CETAK KWITANSI</button>
+                                        <button id="btncetak_bayar" type="button" onclick="javascript:window.open(_urlcetak(1),'_blank');" class="btn yellow"><i class="fa fa-save"></i> CETAK KWITANSI</button>
+
+                                        <button id="btncetak_jaminan" type="button" onclick="javascript:window.open(_urlcetak(2),'_blank');" class="btn yellow"><i class="fa fa-save"></i> CETAK JAMINAN</button>
 
                                         <a href="<?= base_url('kasir_obat') ?>" class="btn btn red">TUTUP</a>
                                         <h4><span id="error" style="display:none; color:#F00">Terjadi Kesalahan...
@@ -767,6 +770,9 @@ $this->load->view('template/v_periode');
 
 
 <script>
+    
+    // $("#j_umum").attr("disabled", true);
+    // $("#j_jaminan").attr("disabled", true);
     function getjaminan1(param) {
         $.ajax({
             url: "<?= site_url('Kasir_obat/getjaminan1/') ?>" + param,
@@ -790,6 +796,7 @@ $this->load->view('template/v_periode');
             }
         });
     }
+    $("#btncetak_jaminan").hide();
 
     function cek_umum() {
         if (document.getElementById('j_umum').checked == true) {
@@ -797,12 +804,14 @@ $this->load->view('template/v_periode');
             $("#tercover_rp").val(0);
             $("#tercover_rp2").val(0);
             total_net();
+            $("#btncetak_jaminan").hide();
         }
     }
 
     function cek_jaminan() {
         if (document.getElementById('j_jaminan').checked == true) {
             $("#show_jaminan").show();
+            $("#btncetak_jaminan").show();
         }
     }
 
@@ -1109,8 +1118,66 @@ $this->load->view('template/v_periode');
     }
 
     function save_bayar() {
+        var reseprp = $('#reseprp').val();
+        var voucherrp1 = $('#voucherrp1').val();
+        var voucherrp2 = $('#voucherrp2').val();
+        var voucherrp3 = $('#voucherrp3').val();
+        if (voucherrp1 != '' | voucherrp1 != null) {
+            if (voucherrp1 == 0) {
+                var vc1 = '';
+            } else {
+                var vc1 = '<br>VC1 : ' + voucherrp1;
+            }
+        } else {
+            var vc1 = '';
+        }
+        if (voucherrp2 != '' | voucherrp2 != null) {
+            if (voucherrp2 == 0) {
+                var vc2 = '';
+            } else {
+                var vc2 = '<br>VC2 : ' + voucherrp2;
+            }
+        } else {
+            var vc2 = '';
+        }
+        if (voucherrp3 != '' | voucherrp3 != null) {
+            if (voucherrp3 == 0) {
+                var vc3 = '';
+            } else {
+                var vc3 = '<br>VC3 : ' + voucherrp3;
+            }
+        } else {
+            var vc3 = '';
+        }
         var nomor = $('[name="noresep"]').val();
         var total = $('#totalnet').val();
+        var totalrpx = $("#reseprp").val();
+        var totalrp = Number(parseInt(totalrpx.replaceAll(',', '')));
+
+        var abc;
+        var table_bank = document.getElementById('datatable_pembayaran');
+        var rowCount = table_bank.rows.length;
+        for (var i = 1; i < rowCount; i++) {
+            var row = table_bank.rows[i];
+            tipe = row.cells[1].children[0].value;
+            bayarnyax = row.cells[4].children[0].value;
+            bayarnya = bayarnyax.replace(/[^0-9\.]+/g, "");
+            if (tipe == 1) {
+                $1 = 'DC';
+            } else if (tipe == 2) {
+                $1 = 'CC';
+            } else if (tipe == 3) {
+                $1 = 'TR';
+            } else {
+                $1 = 'OL';
+            }
+            if (bayarnya == '' || bayarnya == null || bayarnya == 0) {
+                abc = "<br>" + $1 + " : .....";
+            } else {
+                abc = "<br>" + $1 + " : <b>" + bayarnyax + "</b>";
+            }
+            var jumlah1 = Number(jumlah.replace(/[^0-9\.]+/g, ""));
+        }
 
         // cek pakai uang muka apakah lebih dari tersedia uang muka
         var uangmukapakaix = $('#uangmukapakai').val();
@@ -1128,12 +1195,13 @@ $this->load->view('template/v_periode');
         var tercover = $("#tercover_rp").val();
         var tercoverx = Number(parseInt(tercover.replaceAll(',', '')));
         var tercover2 = $("#tercover_rp2").val();
-        var totalrpx = $("#reseprp").val();
-        var totalrp = Number(parseInt(totalrpx.replaceAll(',', '')));
         var trp = Number(parseInt(tercover.replaceAll(',', '')));
         var trp2 = Number(parseInt(tercover2.replaceAll(',', '')));
         total_cover = trp + trp2;
         hasil = totalrp - total_cover;
+
+        var totalnetnyax = $("#totalnet").val();
+        var totalnetnya = Number(parseInt(totalnetnyax.replaceAll(',', '')));
 
         var terimadari = $('#terimadari').val();
         var nohp = $('#hpno').val();
@@ -1159,6 +1227,12 @@ $this->load->view('template/v_periode');
                 confirmButtonText: "OK"
             });
             return;
+        }
+
+        if (uangmukapakaix > 0) {
+            um = "<br>DP : " + formatCurrency1(uangmukapakaix);
+        } else {
+            um = "";
         }
 
 
@@ -1193,19 +1267,27 @@ $this->load->view('template/v_periode');
                     //document.getElementById("tersimpan_bayar").value="OK";
 
                     if (jaminan == 1) {
-                        alertj = "<br>Penjamin : " + vpenjaminx + ", Dengan Biaya : " + tercover + "<br>COB : " + vpenjamin2x + ", Dengan Biaya : " + tercover2;
+                        alertjx = "<br>" + vpenjaminx + " : <b>" + tercover + "</b>";
+                        if (trp2 > 0) {
+                            cobnya = "<br>" + vpenjamin2x + " : <b>" + tercover2 + "</b>";
+                        } else {
+                            cobnya = "";
+                        }
+                        alertj = alertjx + cobnya;
                     } else {
                         alertj = "";
                     }
+                    // var totalnx = Number(data.total);
 
                     swal({
                         title: "KWITANSI PEMBAYARAN",
-                        html: "<p> No. Bukti   : <b>" + data.nomor + "</b> </p>" + "<p>Biaya Terbentuk Rp " + formatCurrency1(data.total).split(".00").join("") + "</p>" + alertj,
+                        html: "<p>No. Bukti : <b>" + data.nomor + "</b></p><br> Biaya Terbentuk Rp : <b>" + reseprp + "</b>" + um + "<br>Resep Racik <b>" + formatCurrency1(totalnetnya) + "</b>" + abc + vc1 + vc2 + vc3 + alertj,
                         type: "info",
                         confirmButtonText: "OK"
                     }).then((value) => {
                         //location.reload();
                         document.getElementById("btncetak_bayar").disabled = false;
+                        document.getElementById("btncetak_jaminan").disabled = false;
                         $('#nokwitansi').val(data.nomor);
                     });
 
@@ -1477,7 +1559,7 @@ $this->load->view('template/v_periode');
         $('#uangmukapakai').val(formatCurrency1(uangmukapakai));
 
         if (vuangmukarp > 0 || vbayartunai != 0 || vbayarcredit != 0 || vretur != 0) {
-            document.getElementById('pertanyaan').style.visibility = 'visible';
+            // document.getElementById('pertanyaan').style.visibility = 'visible';
             document.getElementById('textya').style.visibility = 'visible';
             document.getElementById('uangmukakembaliya').style.visibility = 'visible';
 
@@ -1490,7 +1572,7 @@ $this->load->view('template/v_periode');
             }
 
         } else {
-            document.getElementById('pertanyaan').style.visibility = 'hidden';
+            // document.getElementById('pertanyaan').style.visibility = 'hidden';
             document.getElementById('textya').style.visibility = 'hidden';
             document.getElementById('uangmukakembaliya').style.visibility = 'hidden';
             document.getElementById('uangmukakembalitidak').style.visibility = 'hidden';
@@ -1501,11 +1583,15 @@ $this->load->view('template/v_periode');
 
     }
 
-    function _urlcetak() {
+    function _urlcetak(param) {
         var baseurl = "<?php echo base_url() ?>";
         var nokwitansi = $('[name="nokwitansi"]').val();
         var noresep = $('[name="noresep"]').val();
-        return baseurl + 'kasir_obat/cetak/?kwitansi=' + nokwitansi + '&resep=' + noresep;
+        if (param == 1) {
+            return baseurl + 'kasir_obat/cetak/?kwitansi=' + nokwitansi + '&resep=' + noresep;
+        } else {
+            return baseurl + 'kasir_obat/cetak_jaminan/?kwitansi=' + nokwitansi + '&resep=' + noresep;
+        }
     }
 
     function filterdata() {
@@ -1519,9 +1605,10 @@ $this->load->view('template/v_periode');
     jQuery(document).ready(function() {
         TableEditable.init();
         document.getElementById("btncetak_bayar").disabled = true;
+        document.getElementById("btncetak_jaminan").disabled = true;
 
         // tambahan dari saya
-        document.getElementById('pertanyaan').style.visibility = 'hidden';
+        // document.getElementById('pertanyaan').style.visibility = 'hidden';
         document.getElementById('uangmukakembaliya').style.visibility = 'hidden';
         document.getElementById('textya').style.visibility = 'hidden';
 

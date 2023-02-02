@@ -804,26 +804,38 @@ $this->load->view('template/footer');
   }
 
   function savex() {
-    var supp = $('[name="supp"]').val();
-    var mattx = $('[name="materai"]').val();
-    var matt = Number(parseInt(mattx.replaceAll(',', '')));
-    var nomorpo = $('[name="nomorpo"]').val();
-    var gudang = $('[name="gudang"]').val();
-    var tanggal = $('[name="tanggal"]').val();
-    var nomor = $('[name="nomorbukti"]').val();
-    var pemb = $('[name="pembayaran"]').val();
-    var fakt = $('[name="nofaktur"]').val();
-    var sjj = $('[name="nomorsj"]').val();
-    var total = $('#_vtotal').text();
-    var ppn_123 = $('#_vppn').text();
-    var table = document.getElementById('datatable');
-    var rowCount = table.rows.length;
-    var jfalse = 0;
+    var supp        = $('[name="supp"]').val();
+    var mattx       = $('[name="materai"]').val();
+    var matt        = Number(parseInt(mattx.replaceAll(',', '')));
+    var nomorpo     = $('[name="nomorpo"]').val();
+    var gudang      = $('[name="gudang"]').val();
+    var tanggal     = $('[name="tanggal"]').val();
+    var nomor       = $('[name="nomorbukti"]').val();
+    var pemb        = $('[name="pembayaran"]').val();
+    var fakt        = $('[name="nofaktur"]').val();
+    var sjj         = $('[name="nomorsj"]').val();
+    var total       = $('#_vtotal').text();
+    var ppn_123     = $('#_vppn').text();
+    var table       = document.getElementById('datatable');
+    var rowCount    = table.rows.length;
+    var jfalse      = 0;
     for (var i = 1; i < rowCount; i++) {
       var row = table.rows[i];
       var taxz = $('#tax' + i).is(':checked');
       if (taxz == false) {
         jfalse = jfalse + 1;
+      }
+
+      var expire    = $("#expire" + i).val(); 
+
+      if (expire == '' || expire == null) {
+        swal({
+          title: "Expired Date",
+          html: "<p>HARUS DI isi</p>",
+          type: "error",
+          confirmButtonText: "OK"
+        });
+        return;
       }
     }
     if (matt == 0) {
@@ -932,36 +944,37 @@ $this->load->view('template/footer');
                   type: "error",
                   confirmButtonText: "OK"
                 });
+                return;
               } else if (data.status == 2) {
                 //rincian
-                var terima_no = data.nomor;
-                var table = document.getElementById('datatable');
-                rowCount = table.rows.length;
-                var pj = parseInt($("#ppn2_").val()) / 100;
-                totvatrp = 0;
-                diskontotal = 0;
+                var terima_no   = data.nomor;
+                var table       = document.getElementById('datatable');
+                rowCount        = table.rows.length;
+                var pj          = parseInt($("#ppn2_").val()) / 100;
+                totvatrp        = 0;
+                diskontotal     = 0;
                 for (i = 1; i < rowCount; i++) {
-                  var kode = $("#kode" + i).val();
-                  var qty = $("#qty" + i).val();
-                  var sat = $("#sat" + i).val();
-                  var hargax = $("#harga" + i).val();
-                  var harga = Number(hargax.replace(/[^0-9\.]+/g,
+                  var kode    = $("#kode" + i).val();
+                  var qty     = $("#qty" + i).val();
+                  var sat     = $("#sat" + i).val();
+                  var hargax  = $("#harga" + i).val();
+                  var harga   = Number(hargax.replace(/[^0-9\.]+/g,
                     ""));
-                  var disc = $("#disc" + i).val();
+                  var disc    = $("#disc" + i).val();
                   var discrpx = $("#discrp" + i).val();
-                  var discrp = Number(discrpx.replace(
-                    /[^0-9\.]+/g, ""));
-                  var taxx = $('#tax' + i).is(':checked');
+                  var discrp  = Number(discrpx.replace(/[^0-9\.]+/g, ""));
+                  var taxx    = $('#tax' + i).is(':checked');
                   if (taxx == true) {
                     var vat = 1;
                   } else {
                     var vat = 0;
                   }
                   // var tax = $("#tax"+i).val();
-                  var jumlahx = $("#jumlah" + i).val();
-                  var jumlah = Number(jumlahx.replace(/[^0-9\.]+/g, ""));
-                  var expire = $("#expire" + i).val();
-                  var po = $("#po" + i).val();
+                  var jumlahx   = $("#jumlah" + i).val();
+                  var jumlah    = Number(jumlahx.replace(/[^0-9\.]+/g, ""));
+                  var expire    = $("#expire" + i).val(); 
+
+                  var po        = $("#po" + i).val();
                   if (vat == 1) {
                     if (matt == 0) {
                       var vatrp = jumlah * pj;

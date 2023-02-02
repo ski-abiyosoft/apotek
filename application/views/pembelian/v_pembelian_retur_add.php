@@ -163,7 +163,6 @@ $this->load->view('template/body');
                                                 <th style="color:white; text-align:center">Satuan</th>
                                                 <th style="color:white; text-align:center">Harga</th>
                                                 <th style="color:white; text-align:center">Tax</th>
-                                                <th style="color:white; text-align:center"></th>
                                                 <th style="color:white; text-align:center">Diskon</th>
                                                 <th style="color:white; text-align:center">Disc Rp</th>
                                                 <th style="color:white; text-align:center">Total</th>
@@ -195,11 +194,6 @@ $this->load->view('template/body');
                                                     </td>
                                                     <td>
                                                         <input type="checkbox" name="tax[]" value='0' id="tax1" class="form-control" onchange="totalline(1);total();">
-                                                    </td>
-                                                    <td>
-                                                        <a class="btn default" id="lupharga1" data-toggle="modal" href="#lupharga" onclick="getidharga(this.id)" readonly>
-                                                            <i class="fa fa-search"></i>
-                                                        </a>
                                                     </td>
                                                     <td width="5%">
                                                         <input name="disc[]" onchange="totalline(1);total();cekdisc(1)" value="0" id="disc1" type="text" class="form-control rightJustified">
@@ -422,7 +416,6 @@ $this->load->view('template/footer');
             "<td><input name='sat[]'    id=sat" + idrow + " type='text' class='form-control' readonly></td>" +
             "<td><input name='harga[]'  id=harga" + idrow + " onchange='totalline(" + idrow + ")' value='0'  type='text' class='form-control rightJustified' readonly></td>" +
             "<td><input name='tax[]'  id=tax" + idrow + " onchange='totalline(" + idrow + ");total()' value='0' type='checkbox' class='form-control rightJustified'></td>" +
-            "<td><a class='btn default' id=lupharga" + idrow + " data-toggle='modal' href='#lupharga' onclick='getidharga(this.id)'><i class='fa fa-search'></i></a></td>" +
             "<td><input name='disc[]'   id=disc" + idrow + " onchange='totalline(" + idrow + ");total();cekdisc(" + idrow + ")' value='0'  type='text' class='form-control rightJustified'  ></td>" +
             "<td><input name='discrp[]'   id=discrp" + idrow + " onchange='totalline(" + idrow + ");cekdiscrp(" + idrow + ")' value='0'  type='text' class='form-control rightJustified'  ></td>" +
             "<td><input name='jumlah[]' id=jumlah" + idrow + " type='text' class='form-control rightJustified'></td>" +
@@ -642,9 +635,9 @@ $this->load->view('template/footer');
                         sat = row.cells[3].children[0].value;
                         hargax = row.cells[4].children[0].value;
                         var harga = Number(hargax.replace(/[^0-9\.]+/g, ""));
-                        discx = row.cells[7].children[0].value;
+                        discx = row.cells[6].children[0].value;
                         var disc = Number(discx.replace(/[^0-9\.]+/g, ""));
-                        discrpx = row.cells[8].children[0].value;
+                        discrpx = row.cells[7].children[0].value;
                         var discrp = Number(discrpx.replace(/[^0-9\.]+/g, ""));
                         // var kode = $("#kode" + i).val();
                         // var qtyx = $("#qty" + i).val();
@@ -656,14 +649,15 @@ $this->load->view('template/footer');
                         // var discrpx = $("#discrp" + i).val();
                         // var discrp = Number(discrpx.replace(/[^0-9\.]+/g, ""));
                         // var taxx = $('#tax' + i).is(':checked');
-                        if (row.cells[5].children[0].checked == true) {
+                        // row.cells[5].children[0]
+                        if (document.getElementById('tax'+i).checked == true) {
                             var vat = 1;
                         } else {
                             var vat = 0;
                         }
                         // var tax = $("#tax"+i).val();
                         // var jumlahx = $("#jumlah" + i).val();
-                        var jumlahx = row.cells[9].children[0].value;
+                        var jumlahx = row.cells[8].children[0].value;
                         var jumlah = Number(jumlahx.replace(/[^0-9\.]+/g, ""));
                         if (vat == 1) {
                             var vatrp = jumlah * pj;
@@ -671,11 +665,10 @@ $this->load->view('template/footer');
                             var vatrp = 0;
                         }
                         // console.log('kode : '+kode+', qty : '+qty+', sat : '+sat+', harga : '+harga+', disc : '+disc+', discrp : '+discrp+', tax : '+vat+', jumlah : '+jumlah+', pajak : '+pj+', taxrp : '+vatrp);
+                        var param = "?kode=" + kode + '&qty=' + qty + '&sat=' + sat + '&harga=' + harga + '&disc=' + disc + '&discrp=' + discrp + '&tax=' + vat + '&jumlah=' + jumlah + '&taxrp=' + vatrp + '&retur_no=' + no
+                        console.log(param);
                         $.ajax({
-                            url: '<?= site_url() ?>Pembelian_retur/save_multi/?kode=' + kode + '&qty=' +
-                                qty + '&sat=' + sat + '&harga=' + harga + '&disc=' + disc + '&discrp=' +
-                                discrp + '&tax=' + vat + '&jumlah=' + jumlah + '&taxrp=' + vatrp +
-                                '&retur_no=' + no,
+                            url: '<?= site_url() ?>Pembelian_retur/save_multi/' + param,
                             data: $('#frmpembelian').serialize(),
                             type: 'POST',
                             dataType: 'JSON',
@@ -860,9 +853,9 @@ $this->load->view('template/footer');
 
             jumlah = row.cells[2].children[0].value;
             harga = row.cells[4].children[0].value;
-            diskon = row.cells[7].children[0].value;
-            diskonrp = row.cells[8].children[0].value;
-            subtotal = row.cells[9].children[0].value;
+            diskon = row.cells[6].children[0].value;
+            diskonrp = row.cells[7].children[0].value;
+            subtotal = row.cells[8].children[0].value;
 
             var jumlah1 = Number(jumlah.replace(/[^0-9\.]+/g, ""));
             var harga1 = Number(harga.replace(/[^0-9\.]+/g, ""));

@@ -452,17 +452,39 @@ $(document).ready(function() {
                                     <label class="control-label col-md-3">Satuan&nbsp;<small
                                             style="color:red">*</small></label>
                                     <div class="col-md-9">
-                                        <input name="satuan" placeholder="" class="form-control" maxlength="100"
-                                            type="text">
+                                        <!-- <input name="satuan" placeholder="" class="form-control" maxlength="100"
+                                            type="text"> -->
+
+                                        <!-- <select name="satuan" id="satuan" class="select2_el_satuan form-control ">
+                                        </select> -->
+                                        
+                                        <select name="satuan" id="satuan" class="form-control">
+                                        <?php 
+                                        $data = $this->db->query("SELECT * from tbl_barangsetup where apogroup='SATUAN' AND apocode<>''")->result();
+                                        foreach($data as $row){ ?>
+                                        <option value="<?= $row->apocode;?>"><?= $row->aponame.' - [ '.$row->apocode.' ] ';?></option>
+                                        <?php } ?>
+                                        </select>
+
                                         <span class="help-block"></span>
                                     </div>
                                 </div>
 
                                 <div class="form-group">
                                     <label class="control-label col-md-3">Satuan2</label>
-                                    <div class="col-md-3">
-                                        <input name="satuan2" placeholder="" class="form-control" maxlength="100"
-                                            type="text">
+                                    <div class="col-md-4">
+                                        <!-- <input name="satuan2" placeholder="" class="form-control" maxlength="100"
+                                            type="text"> -->
+
+                                        <select name="satuan2" id="satuan2" class="form-control">
+                                        <?php 
+                                        $data = $this->db->query("SELECT * from tbl_barangsetup where apogroup='SATUAN' AND apocode<>''")->result();
+                                        foreach($data as $row){ ?>
+                                        <option value="<?= $row->apocode;?>"><?= $row->aponame.' - [ '.$row->apocode.' ] ';?></option>
+                                        <?php } ?>
+                                        </select>
+
+
                                         <span class="help-block"></span>
                                     </div>
                                     <div class="col-md-2">
@@ -481,9 +503,18 @@ $(document).ready(function() {
 
                                 <div class="form-group">
                                     <label class="control-label col-md-3">Satuan3</label>
-                                    <div class="col-md-3">
-                                        <input name="satuan3" placeholder="" class="form-control" maxlength="100"
-                                            type="text">
+                                    <div class="col-md-4">
+                                        <!-- <input name="satuan3" placeholder="" class="form-control" maxlength="100"
+                                            type="text"> -->
+
+                                        <select name="satuan3" id="satuan3" class="form-control">
+                                        <?php 
+                                        $data = $this->db->query("SELECT * from tbl_barangsetup where apogroup='SATUAN' AND apocode<>''")->result();
+                                        foreach($data as $row){ ?>
+                                        <option value="<?= $row->apocode;?>"><?= $row->aponame.' - [ '.$row->apocode.' ] ';?></option>
+                                        <?php } ?>
+                                        </select>
+
                                         <span class="help-block"></span>
                                     </div>
                                     <div class="col-md-2">
@@ -529,8 +560,7 @@ $(document).ready(function() {
                                     <label class="control-label col-md-3">HNA+PPN&nbsp;<small
                                             style="color:red">*</small></label>
                                     <div class="col-md-9">
-                                        <input id="hnappn" name="hnappn" placeholder="" class="form-control"
-                                            maxlength="100" type="text">
+                                        <input id="hnappn" name="hnappn" placeholder="" class="form-control" maxlength="100" type="number">
                                         <span class="help-block"></span>
                                     </div>
                                 </div>
@@ -549,8 +579,7 @@ $(document).ready(function() {
                                     <label class="control-label col-md-3">Harga Jual&nbsp;<small
                                             style="color:red">*</small></label>
                                     <div class="col-md-9">
-                                        <input name="hargajual" placeholder="" class="form-control" maxlength="100"
-                                            type="text">
+                                        <input name="hargajual" placeholder="" class="form-control" maxlength="100" type="number">
                                         <span class="help-block"></span>
                                     </div>
                                 </div>
@@ -849,6 +878,21 @@ $("#ppn").on("change", function() {
         $("#hnappn").val(hna);
     }
 });
+
+$('[name="kode"]').keyup(function() {
+        var cekkk = $('[name="kode"]').val();
+        var cek2 = alltrim(cekkk);
+        $('[name="kode"]').val(cek2);
+});
+
+function alltrim(kata){
+
+    b = (kata.split("'" ).join("`"));
+    c = (b.split(" ").join(""));
+    d = (c.replace( /\s/g, ""));
+    return d
+
+}
 
 function filterdata(){	
 	var kd = $("#carikode").val();

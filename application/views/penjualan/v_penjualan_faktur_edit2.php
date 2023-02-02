@@ -2,9 +2,9 @@
 $this->load->view('template/header');
 $this->load->view('template/body');
 
-$datpas   = $this->db->query("SELECT * FROM pasien_rajal WHERE noreg = '$header->noreg'")->row();
+$datpas   = $this->db->query("SELECT * FROM tbl_pasien WHERE rekmed = '$header->rekmed'")->row();
 
-if($datpas){
+if ($datpas) {
      $age_date = new DateTime($datpas->tgllahir);
      $age_now = new DateTime();
      $age_interval = $age_now->diff($age_date);
@@ -41,7 +41,7 @@ if($datpas){
                </li>
                <li>
                     <a class="title-white" href="">
-                         Entri Faktur
+                         Update Faktur
                     </a>
                </li>
           </ul>
@@ -50,7 +50,7 @@ if($datpas){
 <div class="portlet box blue">
      <div class="portlet-title">
           <div class="caption">
-               <i class="fa fa-reorder"></i><b>*Data Baru</b>
+               <i class="fa fa-reorder"></i><b>*Data Update</b>
           </div>
      </div>
      <div class="portlet-body form">
@@ -63,28 +63,11 @@ if($datpas){
                                         <label class="col-md-3 control-label">Pembeli <font color="red">*</font></label>
                                         <div class="col-md-6">
                                              <select id="pembeli" name="pembeli" class="form-control select2_pembeli" onchange="getdataklinik()" disabled>
-                                                  <option <?= ($posting->kodepel=='atr'?'selected':'')?> value="atr">Apotik Tanpa Resep</option>
-                                                  <option <?= ($posting->kodepel=='adr'?'selected':'')?> value="adr">Apotik Dengan Resep</option>
-                                                  <option <?= ($posting->kodepel=='RAJAL'?'selected':'')?> value="RAJAL">Rawat Jalan</option>
-                                                  <option <?= ($posting->kodepel=='RANAP'?'selected':'')?> value="RANAP">Rawat Inap</option>
-                                                  <option <?= ($posting->kodepel=='APOTIK'?'selected':'')?> value="APOTIK">Apotik</option>
-                                                  
-                                                  
-                                                  <!-- <option <?= ($posting->kodepel=='KULIT'?'selected':'')?> value="KULIT">Kulit
-                                                  </option>
-                                                  <option <?= ($posting->kodepel=='LOKAL'?'selected':'')?> value="LOKAL">Lokal
-                                                  </option>
-                                                  <option <?= ($posting->kodepel=='SPA'?'selected':'')?> value="SPA">Spa</option>
-                                                  <option <?= ($posting->kodepel=='GIGI'?'selected':'')?> value="GIGI">Gigi
-                                                  </option> -->
-                                                  <!-- <option value="">--- Pilih ---</option>
-                                                  <option <?= ($header->kodepel == 'KULIT' ? 'selected' : '') ?> value="KULIT" selected>Kulit</option>
-                                                  <option <?= ($header->kodepel == 'LOKAL' ? 'selected' : '') ?> value="LOKAL">Lokal</option>
-                                                  <option <?= ($header->kodepel == 'KIRIM' ? 'selected' : '') ?> value="KIRIM">Kirim</option>
-                                                  <option <?= ($header->kodepel == 'SPA' ? 'selected' : '') ?> value="SPA">Spa</option>
-                                                  <option <?= ($header->kodepel == 'GIGI' ? 'selected' : '') ?> value="GIGI">Gigi</option>
-                                                  <option <?= ($header->kodepel == 'ONLINE' ? 'selected' : '') ?> value="ONLINE">Online</option>
-                                                  <option <?= ($header->kodepel == 'APOTIK' ? 'selected' : '') ?> value="APOTIK">Apotik</option> -->
+                                                  <option <?= ($header->kodepel == 'atr' ? 'selected' : '') ?> value="atr">Apotik Tanpa Resep</option>
+                                                  <option <?= ($header->kodepel == 'adr' ? 'selected' : '') ?> value="adr">Apotik Dengan Resep</option>
+                                                  <option <?= ($header->kodepel == 'RAJAL' ? 'selected' : '') ?> value="RAJAL">Rawat Jalan</option>
+                                                  <option <?= ($header->kodepel == 'RANAP' ? 'selected' : '') ?> value="RANAP">Rawat Inap</option>
+                                                  <option <?= ($header->kodepel == 'APOTIK' ? 'selected' : '') ?> value="APOTIK">Apotik</option>
                                              </select>
                                         </div>
                                    </div>
@@ -93,13 +76,7 @@ if($datpas){
                                    <div class="form-group">
                                         <label class="col-md-3 control-label">Resep Dari <font color="red">*</font></label>
                                         <div class="col-md-9">
-                                             <select id="dokter" name="dokter" class="form-control select2_el_dokter" data-placeholder="Pilih..." onkeypress="return tabE(this,event)" disabled>
-                                                  <?php if ($header->kodokter) :
-                                                       $namadr   = data_master("dokter", array("kodokter" => $header->kodokter, "koders" => $this->session->userdata("unit"), "kopoli" => $datpas->kodepos))->nadokter
-                                                  ?>
-                                                       <option value="<?= $header->kodokter; ?>" selected><?= $header->kodokter . ' | ' . $namadr; ?></option>
-                                                  <?php endif; ?>
-                                             </select>
+                                             <input type="text" id="dokter" name="dokter" class="form-control" value="<?= $header->kodokter; ?>" <?= ($header->kodepel == 'adr' ? '' : 'readonly') ?>>
                                         </div>
                                    </div>
                               </div>
@@ -110,38 +87,15 @@ if($datpas){
                                         <label class="col-md-3 control-label">DEPO <font color="red">*</font></label>
                                         <div class="col-md-6">
                                              <select id="gudang" name="gudang" class="form-control select2_el_farmasi_depo" data-placeholder="Pilih..." onkeypress="return tabE(this,event)" readonly disabled>
-                                                       <?php $namagudang = data_master('tbl_depo', array('depocode' => $header->gudang))->keterangan; ?>
-                                                       <option selected value="<?= $header->gudang; ?>"><?= $header->gudang; ?></option>
+                                                  <?php $namagudang = data_master('tbl_depo', array('depocode' => $header->gudang))->keterangan; ?>
+                                                  <option selected value="<?= $header->gudang; ?>"><?= $namagudang; ?></option>
                                              </select>
                                         </div>
                                    </div>
                               </div>
                               <div class="col-md-6">
                                    <div class="form-group">
-                                        <label class="col-md-3 control-label">No. E-Resep <font color="red">*</font></label>
-                                        <div class="col-md-6">
-                                             <input type="text" id="noeresep" name="noeresep" class="form-control" value="<?= $header->eresepno ?>" readonly>
-                                        </div>
-                                   </div>
-                              </div>
-                         </div>
-                         <div class="row">
-                              <div class="col-md-6" id="vnoreg">
-                                   <div class="form-group">
-                                        <label class="col-md-3 control-label">No. Registrasi <font color="red">*</font></label>
-                                        <div class="col-md-6">
-                                             <select id="noreg" name="noreg" class="form-control select2_el_registrasiresep" onchange="getdataregistrasi()" disabled>
-                                                  <?php if ($header->noreg) :
-                                                       $noreg = data_master('tbl_regist', array('noreg' => $header->noreg))->noreg; ?>
-                                                       <option value="<?= $header->noreg; ?>"><?= $noreg; ?></option>
-                                                  <?php endif; ?>
-                                             </select>
-                                        </div>
-                                   </div>
-                              </div>
-                              <div class="col-md-6">
-                                   <div class="form-group">
-                                        <label class="col-md-3 control-label">No. Resep <font color="red">*</font></label>
+                                        <label class="col-md-3 control-label">No. Pembelian <font color="red">*</font></label>
                                         <div class="col-md-6">
                                              <input type="text" id="noresep" name="noresep" class="form-control" readonly value="<?= $header->resepno; ?>">
                                         </div>
@@ -153,7 +107,7 @@ if($datpas){
                                    <div class="form-group">
                                         <label class="col-md-3 control-label">Member <font color="red">*</font></label>
                                         <div class="col-md-9">
-                                             <select id="pasien" name="pasien" class="form-control select2_el_pasien" onchange="getinfopasien()" data-placeholder="Pilih..." onkeypress="return tabE(this,event)" disabled>
+                                             <select id="pasien" name="pasien" class="form-control select2_el_pasien" onchange="getinfopasien()" data-placeholder="Pilih..." onkeypress="return tabE(this,event)">
                                                   <?php if ($header->rekmed) :
                                                        $datapasien = data_master('tbl_pasien', array('rekmed' => $header->rekmed)); ?>
                                                        <option value="<?= $header->rekmed; ?>">
@@ -180,7 +134,7 @@ if($datpas){
                                    <div class="form-group">
                                         <label class="col-md-3 control-label">Nama Pembeli <font color="red">*</font></label>
                                         <div class="col-md-6">
-                                             <input type="text" name="namapasien" id="namapasien" class="form-control" value="<?= $posting->namapas; ?>" readonly>
+                                             <input type="text" name="namapasien" id="namapasien" class="form-control" value="<?= $posting->namapas; ?>">
                                         </div>
                                    </div>
                               </div>
@@ -198,23 +152,23 @@ if($datpas){
                               </div>
                          </div>
                          <div class="row">
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label class="col-md-3 control-label">Umur <font color="red">*</font></label>
-                                    <div class="col-md-6">
-                                        <input type="text" name="umurpas" id="umurpas" class="form-control" value="<?= $age_interval->y .' Tahun '. $age_interval->m .' Bulan '. $age_interval->d .' Hari' ?>" readonly>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                   <label class="col-md-3 control-label">No Handphone <font color="red">*</font></label>
-                                   <div class="col-md-9">
-                                        <input type="text" name="phone" id="phone" class="form-control" value="<?= $datapasien->handphone; ?>" readonly>
+                              <div class="col-md-6">
+                                   <div class="form-group">
+                                        <label class="col-md-3 control-label">Umur <font color="red">*</font></label>
+                                        <div class="col-md-6">
+                                             <input type="text" name="umurpas" id="umurpas" class="form-control" value="<?= $age_interval->y . ' Tahun ' . $age_interval->m . ' Bulan ' . $age_interval->d . ' Hari' ?>" readonly>
+                                        </div>
                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                              </div>
+                              <div class="col-md-6">
+                                   <div class="form-group">
+                                        <label class="col-md-3 control-label">No Handphone <font color="red">*</font></label>
+                                        <div class="col-md-9">
+                                             <input type="text" name="phone" id="phone" class="form-control" value="<?= $datapasien->handphone; ?>" readonly>
+                                        </div>
+                                   </div>
+                              </div>
+                         </div>
 
                          <br>
                          <ul class="nav nav-pills">
@@ -246,8 +200,8 @@ if($datpas){
                                                             <th class="title-white" width="5%" style="text-align: center">Disc. %</th>
                                                             <th class="title-white" width="10%" style="text-align: center">Disc. Rp</th>
                                                             <th class="title-white" width="10%" style="text-align: center">Total Harga</th>
-                                                            <th class="title-white" width="10%" style="text-align: center">Aturan Pakai</th>
                                                             <th class="title-white" width="10%" style="text-align: center">Keterangan</th>
+                                                            <th class="title-white" width="10%" style="text-align: center">Aturan Pakai</th>
                                                        </tr>
                                                   </thead>
                                                   <tbody>
@@ -307,16 +261,28 @@ if($datpas){
                                                                  </td>
                                                                  <td>
                                                                       <?php if ($noedit != 1) : ?>
-                                                                           <input name="aturan_pakai[]" value="<?= $row->atpakai ?>" id="aturan_pakai<?= $no; ?>" type="text" class="form-control rightJustified ">
+                                                                           <textarea name="keterangan[]" id="keterangan<?= $no ?>" type="text" class="form-control" style="resize:none" rows="2"><?= $row->ket ?></textarea>
                                                                       <?php else : ?>
-                                                                           <input name="aturan_pakai[]" value="<?= $row->atpakai ?>" id="aturan_pakai<?= $no; ?>" type="text" class="form-control rightJustified " readonly>
+                                                                           <textarea name="keterangan[]" id="keterangan<?= $no ?>" type="text" class="form-control" style="resize:none" rows="2" reaonly><?= $row->ket ?></textarea>
                                                                       <?php endif ?>
                                                                  </td>
                                                                  <td>
                                                                       <?php if ($noedit != 1) : ?>
-                                                                           <textarea name="keterangan[]" id="keterangan<?= $no ?>" type="text" class="form-control" style="resize:none" rows="2"><?= $row->ket ?></textarea>
+                                                                           <select name="aturan_pakai" id="aturan_pakai<?= $no ?>" class="form-control select2_atp">
+                                                                                <?php
+                                                                                $data = $this->db->query("SELECT * from tbl_barangsetup where  apogroup='ATURANPAKAI' ")->result();
+                                                                                foreach ($data as $rows) { ?>
+                                                                                     <option <?= ($row->atpakai == $rows->apocode ? 'selected' : '') ?> value="<?= $rows->apocode; ?>"><?= $rows->aponame; ?></option>
+                                                                                <?php } ?>
+                                                                           </select>
                                                                       <?php else : ?>
-                                                                           <textarea name="keterangan[]" id="keterangan<?= $no ?>" type="text" class="form-control" style="resize:none" rows="2" reaonly><?= $row->ket ?></textarea>
+                                                                           <select name="aturan_pakai" id="aturan_pakai<?= $no ?>" class="form-control select2_atp" disabled>
+                                                                                <?php
+                                                                                $data = $this->db->query("SELECT * from tbl_barangsetup where  apogroup='ATURANPAKAI' ")->result();
+                                                                                foreach ($data as $rows) { ?>
+                                                                                     <option <?= ($row->atpakai == $rows->apocode ? 'selected' : '') ?> value="<?= $rows->apocode; ?>"><?= $rows->aponame; ?></option>
+                                                                                <?php } ?>
+                                                                           </select>
                                                                       <?php endif ?>
                                                                  </td>
                                                             </tr>
@@ -908,7 +874,7 @@ if($datpas){
 </div>
 
 <?php
-$this->load->view('template/footer');
+$this->load->view('template/footer_tb');
 ?>
 
 <!-- master -->
@@ -916,6 +882,8 @@ $this->load->view('template/footer');
      $(window).on("load", function() {
           total();
      });
+
+     $(".select2_atp").select2();
 
      function t_jual_manual() {
           var x = $("#toto_11").val();
@@ -949,6 +917,8 @@ $this->load->view('template/footer');
                     $('#namapasien').val(data.namapas);
                     $('#alamat').val(data.alamat);
                     $('#phone').val(data.phone);
+                    var umur = hitung_usia(data.tgllahir);
+                    $('#umurpas').val(umur);
                }
           });
      }
@@ -1010,8 +980,8 @@ $this->load->view('template/footer');
                "<td><input name='disc[]' id=disc" + idrow + " onchange='totalline(" + idrow + ");cekdisc(" + idrow + ")' value='0'  type='text' class='form-control rightJustified'  ></td>" +
                "<td><input name='disc2[]' id=disc2" + idrow + " onkeyup='myFunction(" + idrow + ")' onchange='totalline(" + idrow + ");cekdiscrp(" + idrow + ")' value='0'  type='text' class='form-control rightJustified'  ></td>" +
                "<td><input name='jumlah[]' id=jumlah" + idrow + " type='text' class='form-control rightJustified' size='40%' readonly></td>" +
-               '<td><input name="aturan_pakai[]" value="" id="aturan_pakai'+ idrow +'" type="text" class="form-control rightJustified "></td>'+
-               '<td><textarea name="keterangan[]" id="keterangan'+ idrow +'" type="text" class="form-control" style="resize:none" rows="2"></textarea></td>'+
+               '<td><input name="aturan_pakai[]" value="" id="aturan_pakai' + idrow + '" type="text" class="form-control rightJustified "></td>' +
+               '<td><textarea name="keterangan[]" id="keterangan' + idrow + '" type="text" class="form-control" style="resize:none" rows="2"></textarea></td>' +
                "</tr>");
           initailizeSelect2_farmasi_baranggud(gud);
           idrow++;
@@ -1492,17 +1462,17 @@ $this->load->view('template/footer');
      }
 
      function saveracik() {
-          var x = document.getElementById('datatableracik').insertRow(idrow2);
-          var rowCount = idrow2;
-          var gudang = $('[name="gudang"]').val();
-          var jenis_racikan = $('[name="jenis_1"]').val();
-          var nama_racikan = $('[name="namaracik_1"]').val();
-          var jumlah_racikan = $('[name="jumracik_1"]').val();
-          var satuan_jumlah_racikan = $('[name="stajum_1"]').val();
-          var aturan_pakai_racikan = $('[name="atpakai_1"]').val();
-          var cara_pakai_racikan = $('[name="carapakai"]').val();
-          var resepmanual = $('[name="resman_1"]').val();
-          var nobukti = $('#noresep').val();
+          var x                       = document.getElementById('datatableracik').insertRow(idrow2);
+          var rowCount                = idrow2;
+          var gudang                  = $('[name="gudang"]').val();
+          var jenis_racikan           = $('[name="jenis_1"]').val();
+          var nama_racikan            = $('[name="namaracik_1"]').val();
+          var jumlah_racikan          = $('[name="jumracik_1"]').val();
+          var satuan_jumlah_racikan   = $('[name="stajum_1"]').val();
+          var aturan_pakai_racikan    = $('[name="atpakai_1"]').val();
+          var cara_pakai_racikan      = $('[name="carapakai"]').val();
+          var resepmanual             = $('[name="resman_1"]').val();
+          var nobukti                 = $('#noresep').val();
 
           if (document.getElementById('t_manual').checked == true) {
                var h_manual = 1;
@@ -1584,18 +1554,18 @@ $this->load->view('template/footer');
                                    idrowx = idrow2;
                               }
                               for (i = 1; i < idrowx; i++) {
-                                   var koderacik = $('#koderacik' + i).val();
-                                   var namaracik = $('#namaracik' + i).val();
-                                   var satuanracik = $('#satracik' + i).val();
-                                   var qtyracik = $('#qtyracik' + i).val();
+                                   var koderacik    = $('#koderacik' + i).val();
+                                   var namaracik    = $('#namaracik' + i).val();
+                                   var satuanracik  = $('#satracik' + i).val();
+                                   var qtyracik     = $('#qtyracik' + i).val();
                                    var qtyjualracik = $('#qtyjualracik' + i).val();
-                                   var hargaracikx = $('#hargaracik' + i).val();
-                                   var hargaracik = Number(parseInt(hargaracikx.replaceAll(',', '')));
-                                   var uangracikx = $('#uangracik' + i).val();
-                                   var uangracik = Number(parseInt(uangracikx.replaceAll(',', '')));
+                                   var hargaracikx  = $('#hargaracik' + i).val();
+                                   var hargaracik   = Number(parseInt(hargaracikx.replaceAll(',', '')));
+                                   var uangracikx   = $('#uangracik' + i).val();
+                                   var uangracik    = Number(parseInt(uangracikx.replaceAll(',', '')));
                                    var jumlahracikx = $('#jumlahracik' + i).val();
-                                   var jumlahracik = Number(parseInt(jumlahracikx.replaceAll(',', '')));
-                                   var param = '?resepno=' + nobukti + "&kodebarang=" + koderacik + "&namabarang=" + namaracik + "&qty=" + qtyracik + "&qtyr=" + qtyjualracik + "&satuan=" + satuanracik + "&price=" + hargaracik + "&uangr=" + uangracik + "&totalrp=" + jumlahracik;
+                                   var jumlahracik  = Number(parseInt(jumlahracikx.replaceAll(',', '')));
+                                   var param        = '?resepno=' + nobukti + "&kodebarang=" + koderacik + "&namabarang=" + namaracik + "&qty=" + qtyracik + "&qtyr=" + qtyjualracik + "&satuan=" + satuanracik + "&price=" + hargaracik + "&uangr=" + uangracik + "&totalrp=" + jumlahracik;
                                    // console.log(param);
                                    $.ajax({
                                         url: "<?= site_url('Penjualan_faktur/update_apodetresep/') ?>" + param,
@@ -1620,11 +1590,11 @@ $this->load->view('template/footer');
      }
 
      function saveresep() {
-          var noreg = $('[name="noreg"]').val();
-          var rekmed = $('[name="pasien"]').val();
-          var dokter = $('[name="dokter"]').val();
+          var noreg   = $('[name="noreg"]').val();
+          var rekmed  = $('[name="pasien"]').val();
+          var dokter  = $('[name="dokter"]').val();
           var pembeli = $('[name="pembeli"]').val();
-          var gudang = $('[name="gudang"]').val();
+          var gudang  = $('[name="gudang"]').val();
           if (document.getElementById('t_manual').checked == true) {
                var h_manual = 1;
                var totalx = $('#toto_11').val();
@@ -1632,6 +1602,7 @@ $this->load->view('template/footer');
                var totalx = $('#_vtotal').val();
                var h_manual = 0;
           }
+          
           if (pembeli == 'KULIT') {
                jenispas = 1;
           } else if (pembeli == 'LOKAL') {
@@ -1646,22 +1617,26 @@ $this->load->view('template/footer');
                jenispas = 6;
           } else if (pembeli == 'APOTIK') {
                jenispas = 7;
-          } else if(pembeli == 'RAJAL'){
+          } else if (pembeli == 'RAJAL') {
                jenispas = 8;
-          } else if(pembeli == 'RANAP'){
+          } else if (pembeli == 'RANAP') {
                jenispas = 9;
+          } else if (pembeli == 'adr') {
+               jenispas = 10;
+          } else if (pembeli == 'atr') {
+               jenispas = 11;
           }
-          var resepno = $('#noresep').val();
-          var eresepno = $('#noeresep').val();
-          var tanggal = $('[name="tanggal"]').val();
-          var pasien = $('[name="pasien"]').val();
-          var gudang = $('[name="gudang"]').val();
-          var pembeli = $('[name="pembeli"]').val();
-          var totalx = $('#_vtotal').text();
-          var total = Number(parseInt(totalx.replaceAll(',', '')));
-          var nohp = $('#phone').val();
+          var resepno   = $('#noresep').val();
+          var eresepno  = $('#noeresep').val();
+          var tanggal   = $('[name="tanggal"]').val();
+          var pasien    = $('[name="pasien"]').val();
+          var gudang    = $('[name="gudang"]').val();
+          var pembeli   = $('[name="pembeli"]').val();
+          var totalx    = $('#_vtotal').text();
+          var total     = Number(parseInt(totalx.replaceAll(',', '')));
+          var nohp      = $('#phone').val();
           var racikanxx = $('#totp_1').val();
-          var racikan = Number(parseInt(racikanxx.replaceAll(',', '')));
+          var racikan   = Number(parseInt(racikanxx.replaceAll(',', '')));
 
           console.log($('#frmpenjualan').serialize());
 
@@ -1681,21 +1656,21 @@ $this->load->view('template/footer');
                               success: function(data) {
                                    if (data.status == 1) {
                                         for (i = 1; i < idrow; i++) {
-                                             var kode = $('#kode' + i).val();
-                                             var nama = $('#nama' + i).val();
-                                             var qty = $('#qty' + i).val();
-                                             var sat = $('#sat' + i).val();
-                                             var hargax = $('#harga' + i).val();
-                                             var harga = Number(parseInt(hargax.replaceAll(',', '')));
-                                             var disc = $('#disc' + i).val();
-                                             var discrpx = $('#disc2' + i).val();
-                                             var discrp = Number(parseInt(discrpx.replaceAll(',', '')));
-                                             var jumlahx = $('#jumlah' + i).val();
-                                             var jumlah = Number(parseInt(jumlahx.replaceAll(',', '')));
+                                             var kode       = $('#kode' + i).val();
+                                             var nama       = $('#nama' + i).val();
+                                             var qty        = $('#qty' + i).val();
+                                             var sat        = $('#sat' + i).val();
+                                             var hargax     = $('#harga' + i).val();
+                                             var harga      = Number(parseInt(hargax.replaceAll(',', '')));
+                                             var disc       = $('#disc' + i).val();
+                                             var discrpx    = $('#disc2' + i).val();
+                                             var discrp     = Number(parseInt(discrpx.replaceAll(',', '')));
+                                             var jumlahx    = $('#jumlah' + i).val();
+                                             var jumlah     = Number(parseInt(jumlahx.replaceAll(',', '')));
                                              var aturpakai  = $("#aturan_pakai" + i).val();
-                                             var keterangan  = $("#keterangan" + i).val();
-                                             var ppnx = 1;
-                                             var ppnrp = (jumlah / (111 / 100)) * ppn;
+                                             var keterangan = $("#keterangan" + i).val();
+                                             var ppnx       = 1;
+                                             var ppnrp      = (jumlah / (111 / 100)) * ppn;
                                              $.ajax({
                                                   url: "<?= site_url('Penjualan_faktur/update_apodresep/?resepno=') ?>" + resepno + "&kodebarang=" + kode + "&namabarang=" + nama + "&qty=" + qty + "&satuan=" + sat + "&discount=" + disc + "&discrp=" + discrp + "&price=" + harga + "&totalrp=" + jumlah + "&ppn=" + ppnx + "&ppnrp=" + ppnrp + "&gudang=" + gudang + "&eresepno=" + eresepno + "&aturanpakai=" + aturpakai + "&keterangan=" + keterangan,
                                                   type: "POST",

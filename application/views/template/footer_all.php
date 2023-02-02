@@ -53,6 +53,7 @@
    initailizeSelect2_farmasi_permohonan();
    initailizeSelect2_icdind('');
    initailizeSelect2_jnsicd();
+   initailizeSelect2_satuan();
    initailizeSelect2_farmasi_po('');
    initailizeSelect2_farmasi_po2('');
    initailizeSelect2_farmasi_po3('');
@@ -1114,6 +1115,39 @@
             type: "post",
             dataType: 'json',
             delay: 250,
+            data: function(params) {
+               return {
+                  searchTerm: params.term // search term
+               };
+            },
+
+            processResults: function(response) {
+               return {
+                  results: response
+               };
+            },
+            cache: true
+         }
+      });
+   }
+   
+   function initailizeSelect2_satuan() {
+      $(".select2_el_satuan").select2({
+         allowClear           : true,
+         multiple             : false,
+         placeholder          : '--- Pilih Jenis ---',
+         //minimumInputLength: 2,
+         dropdownAutoWidth    : true,
+         language: {
+            inputTooShort: function() {
+               return 'Ketikan Nomor minimal 2 huruf';
+            }
+         },
+         ajax: {
+            url         : "<?php echo base_url(); ?>app/search_satuan",
+            type        : "post",
+            dataType    : 'json',
+            delay       : 250,
             data: function(params) {
                return {
                   searchTerm: params.term // search term

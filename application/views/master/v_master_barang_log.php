@@ -48,8 +48,7 @@
 
 
                     </div>
-                    <button class="btn btn-success" onclick="add_data()"><i class="glyphicon glyphicon-plus"></i> Data
-                        Baru</button>
+                    <button class="btn btn-success" onclick="add_data()"><i class="glyphicon glyphicon-plus"></i> Data Baru</button>
                     <div class="btn-group pull-right">
                         <button class="btn dropdown-toggle" data-toggle="dropdown">Data <i class="fa fa-angle-down"></i>
                         </button>
@@ -568,4 +567,19 @@ $("#ppn").on("change", function() {
         $("#hargabelippn").val(hna);
     }
 });
+
+$('[name="kode"]').keyup(function() {
+        var cekkk = $('[name="kode"]').val();
+        var cek2 = alltrim(cekkk);
+        $('[name="kode"]').val(cek2);
+});
+
+function alltrim(kata){
+
+    b = (kata.split("'" ).join("`"));
+    c = (b.split(" ").join(""));
+    d = (c.replace( /\s/g, ""));
+    return d
+
+}
 </script>

@@ -258,7 +258,21 @@ class Inventory_tso extends CI_Controller
 		$xxx = $sesuai->saldo + $sesuai->sesuai;
 		$tanggal = date("Y-m-d");
 		$tanggal_now = date("Y-m-d H:i:s");
-		$this->db->query("UPDATE tbl_barangstock set hasilso = $sesuai->hasilso, sesuai = $sesuai->sesuai, saldoakhir= $xxx, tglso = '$tanggal', lasttr = '$tanggal_now' where kodebarang = '$sesuai->kodebarang' and koders = '$sesuai->koders' and gudang = '$sesuai->gudang'");
+		$cek = $this->db->get_where("tbl_barangstock", ["koders" => $sesuai->koders, "gudang" => $sesuai->gudang, "kodebarang" => $sesuai->kodebarang])->num_rows();
+		if($cek > 0){
+			$this->db->query("UPDATE tbl_barangstock set hasilso = $sesuai->hasilso, sesuai = $sesuai->sesuai, saldoakhir= $xxx, tglso = '$tanggal', lasttr = '$tanggal_now' where kodebarang = '$sesuai->kodebarang' and koders = '$sesuai->koders' and gudang = '$sesuai->gudang'");
+		} else {
+			$datastock = array(
+				'koders'       => $sesuai->koders,
+				'kodebarang'   => $sesuai->kodebarang,
+				'gudang'       => $sesuai->gudang,
+				'saldoawal'    => 0,
+				'terima'       => $xxx,
+				'saldoakhir'   => $xxx,
+				'lasttr'       => $tanggal_now,
+			);
+			$this->db->insert('tbl_barangstock', $datastock);
+		}
 		echo json_encode(array("status" => 1));
 	}
 
@@ -274,7 +288,21 @@ class Inventory_tso extends CI_Controller
 			$tanggal   = date("Y-m-d");
 			$tanggal_now   = date("Y-m-d H:i:s");
 
-			$this->db->query("UPDATE tbl_barangstock set hasilso = $sesuai->hasilso, sesuai = $sesuai->sesuai, saldoakhir= $xxx, tglso = '$tanggal', lasttr = '$tanggal_now' where kodebarang = '$sesuai->kodebarang' and koders = '$sesuai->koders' and gudang = '$sesuai->gudang'");
+			$cek = $this->db->get_where("tbl_barangstock", ["koders" => $sesuai->koders, "gudang" => $sesuai->gudang, "kodebarang" => $sesuai->kodebarang])->num_rows();
+			if($cek > 0){
+				$this->db->query("UPDATE tbl_barangstock set hasilso = $sesuai->hasilso, sesuai = $sesuai->sesuai, saldoakhir= $xxx, tglso = '$tanggal', lasttr = '$tanggal_now' where kodebarang = '$sesuai->kodebarang' and koders = '$sesuai->koders' and gudang = '$sesuai->gudang'");
+			} else {
+				$datastock = array(
+					'koders'       => $sesuai->koders,
+					'kodebarang'   => $sesuai->kodebarang,
+					'gudang'       => $sesuai->gudang,
+					'saldoawal'    => 0,
+					'terima'       => $xxx,
+					'saldoakhir'   => $xxx,
+					'lasttr'       => $tanggal_now,
+				);
+				$this->db->insert('tbl_barangstock', $datastock);
+			}
 		}
 		$this->db->set('approve', 1);
 		$this->db->where('approve', 0);
@@ -343,7 +371,7 @@ class Inventory_tso extends CI_Controller
 					'yangubah' => $_yangubah,
 					'approve' => 0,
 				);
-				$xxx = $_saldo + $_plusminus;
+				$xxx = $_saldoakhir + $_plusminus;
 				if ($_kode != "") {
 					if ($param == 1) {
 						$this->db->insert('tbl_aposesuai', $datad);
@@ -978,7 +1006,7 @@ class Inventory_tso extends CI_Controller
 		$cabang = $this->session->userdata('unit');
 		$prm = urldecode($param); //remove spaci
 		$gudang = $this->input->get('gudang');
-		$qry = "SELECT tbl_barang.*, (select saldoakhir from tbl_barangstock where gudang = '$gudang' and koders= '$cabang' and kodebarang = tbl_barang.`kodebarang`) as salakhir FROM tbl_barang WHERE kodebarang = '$prm'";
+		$qry = "SELECT tbl_barang.*, (select saldoakhir from tbl_barangstock where gudang = '$gudang' and koders= '$cabang' and kodebarang = tbl_barang.`kodebarang`) as salakhir FROM tbl_barang WHERE kodebarang = '$param'";
 		echo json_encode($this->db->query($qry)->row());
 	}
 }

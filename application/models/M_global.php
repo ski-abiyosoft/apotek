@@ -616,6 +616,14 @@ class M_global extends CI_Model
 		return $row->satuan;
 	}
 
+	
+	function get_satuan($str)
+	{
+		$query = $this->db->query("SELECT * from tbl_barangsetup where apogroup='SATUAN' AND apocode<>''");
+
+		return $query->result();
+	}
+
 
 
 	public function _namabank($kode)

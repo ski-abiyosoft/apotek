@@ -219,6 +219,9 @@
                                             if ($row->keluar=='1')
                                                 { ?>
 											 <a class="btn btn-sm btn-info" href="<?php echo base_url()?>penjualan_faktur/edit/<?php echo $row->resepno;?>/1"><i class="glyphicon glyphicon-eye-open"></i></a>
+
+                                             <a class="btn btn-sm btn-warning" onclick="_urlcetak('<?php echo $row->resepno;?>')" title="Cetak">
+                                                <i class="glyphicon glyphicon-print"></i></a>
                                             <?php }?>
                                            <?php
                                             if ($row->keluar=='0')

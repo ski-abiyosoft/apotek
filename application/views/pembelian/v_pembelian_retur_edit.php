@@ -102,7 +102,7 @@ $this->load->view('template/body');
                                     <div class="form-group">
                                         <label class="col-md-3 control-label">Tanggal</label>
                                         <div class="col-md-4">
-                                            <input id="tanggal" name="tanggal" class="form-control input-medium" type="date" value="<?= date('Y-m-d', strtotime($header->retur_date)); ?>"/>
+                                            <input id="tanggal" name="tanggal" class="form-control input-medium" type="date" value="<?= date('Y-m-d', strtotime($header->retur_date)); ?>" />
                                         </div>
                                     </div>
                                 </div>
@@ -128,7 +128,6 @@ $this->load->view('template/body');
                                             <th class="title-white" width="10%" style="text-align: center">Harga</th>
                                             <th class="title-white" width="5%" style="text-align: center">Tax</th>
                                             <th class="title-white" width="10%" style="text-align: center">Tax Rp</th>
-                                            <th class="title-white" style="text-align: center"></th>
                                             <th class="title-white" width="5%" style="text-align: center">Diskon %</th>
                                             <th class="title-white" width="10%" style="text-align: center">Diskon Rp</th>
                                             <th class="title-white" width="15%" style="text-align: center">Total Harga</th>
@@ -162,9 +161,6 @@ $this->load->view('template/body');
                                                     </td>
                                                     <td>
                                                         <input name="pajak[]" value="<?= number_format($row->taxrp); ?>" onchange="totalline(<?= $no; ?>);total()" id="pajak<?= $no; ?>" type="text" class="form-control rightJustified" readonly>
-                                                    </td>
-                                                    <td>
-                                                        <a class="btn default" id="lupharga<?= $no; ?>" data-toggle="modal" href="#lupharga" onclick="getidharga(this.id)" disabled><i class="fa fa-search"></i></a>
                                                     </td>
                                                     <td>
                                                         <input name="disc[]" value="<?= $row->discount; ?>" onchange="totalline(<?= $no; ?>);total();cekdisc(<?= $no ?>)" id="disc<?= $no; ?>" type="text" class="form-control rightJustified ">
@@ -381,7 +377,7 @@ $this->load->view('template/footer');
         var td7 = x.insertCell(6);
         var td8 = x.insertCell(7);
         var td9 = x.insertCell(8);
-        var td10 = x.insertCell(9);
+        // var td10 = x.insertCell(9);
         td1.innerHTML = "<select name='kode[]' id=kode" + idrow + " onchange='showbarangname(this.value," + idrow +
             ")' class='select2_el_farmasi_barangdata form-control' ><option value=''>--- Pilih Barang ---</option></select>";
         td2.innerHTML = "<input name='qty[]'    id=qty" + idrow + " onchange='totalline(" + idrow + ");total();cekqty(" + idrow + ")' value='1'  type='text' class='form-control rightJustified'  >";
@@ -389,10 +385,9 @@ $this->load->view('template/footer');
         td4.innerHTML = "<input name='harga[]'  id=harga" + idrow + " onchange='totalline(" + idrow + ")' value='0'  type='text' class='form-control rightJustified'>";
         td5.innerHTML = "<input name='tax[]'  id=tax" + idrow + " onchange='totalline(" + idrow + ");total()' value='0' type='checkbox' class='form-control rightJustified'>";
         td6.innerHTML = "<input name='pajak[]' onchange='totalline(" + idrow + ");total()' value='0' id='pajak" + idrow + "' type='text ' class='form-control rightJustified ' readonly>";
-        td7.innerHTML = "<a class='btn default' id=lupharga" + idrow + " data-toggle='modal' href='#lupharga' onclick='getidharga(this.id)'><i class='fa fa-search'></i></a> ";
-        td8.innerHTML = "<input name='disc[]'   id=disc" + idrow + " onchange='totalline(" + idrow + ");total();cekdisc(" + idrow + ")' value='0'  type='text' class='form-control rightJustified'  >";
-        td9.innerHTML = "<input name='discrp[]'   id=discrp" + idrow + " onchange='totalline(" + idrow + ");cekdiscrp(" + idrow + ")' value='0'  type='text' class='form-control rightJustified'  >";
-        td10.innerHTML = "<input name='jumlah[]' id=jumlah" + idrow + " type='text' class='form-control rightJustified' readonly value='0'>";
+        td7.innerHTML = "<input name='disc[]'   id=disc" + idrow + " onchange='totalline(" + idrow + ");total();cekdisc(" + idrow + ")' value='0'  type='text' class='form-control rightJustified'  >";
+        td8.innerHTML = "<input name='discrp[]'   id=discrp" + idrow + " onchange='totalline(" + idrow + ");cekdiscrp(" + idrow + ")' value='0'  type='text' class='form-control rightJustified'  >";
+        td9.innerHTML = "<input name='jumlah[]' id=jumlah" + idrow + " type='text' class='form-control rightJustified' readonly value='0'>";
         initailizeSelect2_farmasi_barang();
         initailizeSelect2_farmasi_barangdata();
         idrow++;
@@ -652,8 +647,6 @@ $this->load->view('template/footer');
         return sign < 0 ? '-' + result : result;
     }
 
-    var cekppn2 = '<?= $cekppn2; ?>';
-
 
     function total() {
 
@@ -679,30 +672,31 @@ $this->load->view('template/footer');
             // harga = $('#harga' + i).val();
             // diskon = $('#disc' + i).val();
             // diskonrp = $('#discrp' + i).val();
+            // taxrp = $('#pajak' + i).val();
             // subtotal = $('#jumlah' + i).val();
 
             jumlah = row.cells[1].children[0].value;
             harga = row.cells[3].children[0].value;
-            diskon = row.cells[7].children[0].value;
-            // diskon = $('#disc' + i).val();
-            diskonrp = row.cells[8].children[0].value;
-            // subtotal = row.cells[9].children[0].value;
+            pajak = row.cells[5].children[0].value;
+            diskon = row.cells[6].children[0].value;
+            diskonrp = row.cells[7].children[0].value;
 
+            var pajak1 = Number(pajak.replace(/[^0-9\.]+/g, ""));
             var jumlah1 = Number(jumlah.replace(/[^0-9\.]+/g, ""));
             var harga1 = Number(harga.replace(/[^0-9\.]+/g, ""));
             var diskon1 = Number(diskon.replace(/[^0-9\.]+/g, ""));
             var diskon2 = Number(diskonrp.replace(/[^0-9\.]+/g, ""));
             var diskonx = (jumlah1 * harga1) * diskon1 / 100;
-            if (diskon1 == 0) {
-                subtotal1 = (jumlah1 * harga1) - diskon2;
-            } else {
-                subtotal1 = (jumlah1 * harga1) - diskonx;
-            }
-            $("#jumlah" + i).val(separateComma(subtotal1));
+
+            subtotal1 = (jumlah1 * harga1) - diskonx;
+
+            row.cells[8].children[0].value = separateComma(subtotal1);
+
             // var subtotal1 = Number(subtotal.replace(/[^0-9\.]+/g, ""));
             // row.cells[3].children[0].value = (separateComma(harga1));
             // row.cells[7].children[0].value = (separateComma(jumlah1 * harga1 * diskon1/100));
-            // row.cells[8].children[0].value = (separateComma(jumlah1 * harga1 - diskon2));
+            // row.cells[8].children[0].value = (separateComma(subtotal1));
+            // alert(subtotal1)
             // var subtotal1 = jumlah1 * harga1;
 
 
@@ -711,20 +705,19 @@ $this->load->view('template/footer');
 
             tdiskon += diskon2;
             tsub += subtotal1;
-            if (document.getElementById('tax' + i) !== null && document.getElementById('tax' + i).checked === true) {
-                // if (row.cells[5].children[0].checked === true) {
-                pajakx = row.cells[5].children[0].value;
-                var pajakx1 = Number(pajakx.replace(/[^0-9\.]+/g, ""));
-                tppn += (pajakx1);
-                pajak = subtotal1 * cekppn2;
-                $("#pajak" + i).val(separateComma(pajak));
-            } else {
-                $("#pajak" + i).val(separateComma(0));
-            }
-            // console.log(tppn);
+            // if (document.getElementById('tax' + i) != null || document.getElementById('tax' + i).checked == true) {
+            //     // if (row.cells[5].children[0].checked === true) {
+            //     pajakx = row.cells[5].children[0].value;
+            //     var pajakx1 = Number(pajakx.replace(/[^0-9\.]+/g, ""));
+            //     tppn += (pajakx1);
+            //     pajak = subtotal1 * cekppn2;
+            //     $("#pajak" + i).val(separateComma(pajak));
+            // } else {
+            //     $("#pajak" + i).val(separateComma(0));
+            // }
+            tppn += pajak1;
 
         }
-        // console.log(tjumlah)
         var tmaterai = Number(tmateraix);
 
         var abc = Number(tjumlah - tdiskon + tppn);
@@ -807,18 +800,49 @@ $this->load->view('template/footer');
 
     // }
 
+    var cekppn2 = '<?= $cekppn2; ?>';
+
+    function cekdisc(id) {
+        var discx = $("#disc" + id).val();
+        var disc = Number(parseInt(discx.replaceAll(',', '')));
+        var qtyx = $('#qty' + id).val();
+        var qty = Number(parseInt(qtyx.replaceAll(',', '')));
+        var hargax = $('#harga' + id).val();
+        var harga = Number(parseInt(hargax.replaceAll(',', '')));
+        var diskon = (qty * harga) * disc / 100;
+        $("#discrp" + id).val(separateComma(diskon));
+        total();
+    }
+
+    function cekdiscrp(id) {
+        var discrpx = $("#discrp" + id).val();
+        var discrp = Number(parseInt(discrpx.replaceAll(',', '')));
+        var qtyx = $('#qty' + id).val();
+        var qty = Number(parseInt(qtyx.replaceAll(',', '')));
+        var hargax = $('#harga' + id).val();
+        var harga = Number(parseInt(hargax.replaceAll(',', '')));
+        var diskon = (qty * harga) - discrp;
+        $("#disc" + id).val(0);
+        $("#discrp" + id).val(separateComma(diskon));
+        total();
+    }
+
     function totalline(id) {
 
         var table = document.getElementById('datatable');
         var row = table.rows[id];
-        var disc = $('#disc' + id).val();
         var qtyx = $('#qty' + id).val();
         var qty = Number(parseInt(qtyx.replaceAll(',', '')));
         var discrpx = $('#discrp' + id).val();
         var discrp = Number(parseInt(discrpx.replaceAll(',', '')));
         var hargax = $('#harga' + id).val();
         var harga = Number(parseInt(hargax.replaceAll(',', '')));
-        $("#jumlah" + id).val(separateComma(qty * harga));
+        if (document.getElementById('tax' + id).checked == true) {
+            var pajak = ((qty * harga) - discrp) * cekppn2;
+            $("#pajak" + id).val(separateComma(pajak));
+        } else {
+            $("#pajak" + id).val(separateComma(0));
+        }
         total();
 
     }
@@ -838,8 +862,12 @@ $this->load->view('template/footer');
         // for (i = 1; i < jumdata; i++) {
         //     totalline(i);
         // }
-        total();
+        // total();
     };
+
+    $(document).ready(function() {
+        total();
+    });
 </script>
 
 <div class="modal fade" id="lupharga" tabindex="-1" role="dialog" aria-hidden="true">

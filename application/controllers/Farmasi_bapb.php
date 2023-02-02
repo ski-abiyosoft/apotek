@@ -1031,66 +1031,64 @@ class Farmasi_bapb extends CI_Controller
 
 			$pdf->setfont('Arial', 'B', 18);
 			$pdf->SetAligns(array('C', 'C', 'C'));
-			$border = array('BTLR');
-			$size   = array('');
-			$align = array('C');
-			$style = array('B');
-			$size  = array('18');
-			$max   = array(20);
-			$fc     = array('0');
-			$hc     = array('20');
-			$judul = array('SURAT PERNYATAAN & PEMBELIAN BARANG');
+			$border    = array('BTLR');
+			$size      = array('');
+			$align     = array('C');
+			$style     = array('B');
+			$size      = array('18');
+			$max       = array(20);
+			$fc        = array('0');
+			$hc        = array('20');
+			$judul     = array('SURAT PERNYATAAN & PEMBELIAN BARANG');
 			$pdf->FancyRow2(10, $judul, $fc,  $border, $align, $style, $size, $max);
-			$size  = array('10');
-			$align = array('L');
-			$border = array('');
-
-
+			$size      = array('10');
+			$align     = array('L');
+			$border    = array('');
 
 			$pdf->ln(1);
 			$pdf->setfont('Arial', 'B', 10);
 			$pdf->SetWidths(array(20, 5, 80, 30, 5, 50));
-			$border = array('LT', 'T', 'T', 'T', 'T', 'TR');
-			$fc     = array('0', '0', '0', '0', '0', '0');
+			$border    = array('LT', 'T', 'T', 'T', 'T', 'TR');
+			$fc        = array('0', '0', '0', '0', '0', '0');
 			$pdf->SetFillColor(230, 230, 230);
 			$pdf->setfont('Arial', '', 9);
 
 
 			$pdf->FancyRow(array('Terima dari', ':', $header->vendor_name, 'BAPB No.', ':', $header->terima_no), $fc, $border);
-			$border = array('L', '', '', '', '', 'R');
+			$border    = array('L', '', '', '', '', 'R');
 			$pdf->FancyRow(array('', '', $header->alamat, 'Tgl Faktur', ':', date('d-m-Y', strtotime($header->terima_date))), $fc, $border);
 			$pdf->FancyRow(array('', '', '', 'Tgl Penerimaan', ':', date('d-m-Y', strtotime($header->terima_date))), $fc, $border);
 			$pdf->FancyRow(array('', '', '', 'Tgl Jatuh Tempo', ':', date('d-m-Y', strtotime($header->due_date))), $fc, $border);
 			$pdf->FancyRow(array('', '', '', 'No. Faktur', ':', $header->invoice_no), $fc, $border);
 			$pdf->FancyRow(array('', '', '', 'No. Surat Jalan', ':', $header->sj_no), $fc, $border);
-			$border = array('LB', 'B', 'B', 'B', 'B', 'BR');
-			$gd = $this->db->get_where('tbl_depo', ['depocode' => $header->gudang])->row();
+			$border    = array('LB', 'B', 'B', 'B', 'B', 'BR');
+			$gd        = $this->db->get_where('tbl_depo', ['depocode' => $header->gudang])->row();
 			$pdf->FancyRow(array('', '', $header->phone, 'Gudang', ':', $gd->keterangan), $fc, $border);
 
 
 			$pdf->ln(2);
 			$pdf->SetWidths(array(10, 25, 30, 15, 15, 20, 20, 20, 35));
-			$border = array('LTB', 'TB', 'TB', 'TB', 'TB', 'TB', 'TB', 'TB', 'TBR');
-			$align  = array('C', 'C', 'C', 'C', 'C', 'C', 'C', 'C', 'C');
+			$border    = array('LTB', 'TB', 'TB', 'TB', 'TB', 'TB', 'TB', 'TB', 'TBR');
+			$align     = array('C', 'C', 'C', 'C', 'C', 'C', 'C', 'C', 'C');
 			$pdf->setfont('Arial', 'B', 9);
 			$pdf->SetAligns(array('L', 'C', 'R'));
-			$fc = array('0', '0', '0', '0', '0', '0', '0', '0', '0');
-			$judul = array('No.', 'Kode Barang', 'Nama Barang', 'Qty', 'Satuan', 'HPP', 'Disc', 'Total', 'Po No');
+			$fc        = array('0', '0', '0', '0', '0', '0', '0', '0', '0');
+			$judul     = array('No.', 'Kode Barang', 'Nama Barang', 'Qty', 'Satuan', 'HPP', 'Disc', 'Total', 'Po No');
 			$pdf->FancyRow2(8, $judul, $fc, $border, $align);
 			$pdf->setfont('Arial', '', 9);
-			$tot = 0;
-			$subtot = 0;
-			$tdisc  = 0;
-			$border = array('L', '', '', '', '', '', '', '', 'R');
-			$align  = array('L', 'L', 'L', 'R', 'R', 'R', 'R', 'R', 'L');
-			$style = array('', '', '', '', '', '', '', '', '');
-			$size  = array('8', '8', '8', '8', '8', '8', '8', '8', '8');
-			$max   = array(2, 2, 2, 2, 2, 2, 2, 2, 2);
-			$fc     = array('0', '0', '0', '0', '0', '0', '0', '0', '0');
-			$no = 1;
-			$totitem = 0;
-			$tot = 0;
-			$diskon = 0;
+			$tot       = 0;
+			$subtot    = 0;
+			$tdisc     = 0;
+			$border    = array('L', '', '', '', '', '', '', '', 'R');
+			$align     = array('L', 'L', 'L', 'R', 'R', 'R', 'R', 'R', 'L');
+			$style     = array('', '', '', '', '', '', '', '', '');
+			$size      = array('8', '8', '8', '8', '8', '8', '8', '8', '8');
+			$max       = array(2, 2, 2, 2, 2, 2, 2, 2, 2);
+			$fc        = array('0', '0', '0', '0', '0', '0', '0', '0', '0');
+			$no        = 1;
+			$totitem   = 0;
+			$tot       = 0;
+			$diskon    = 0;
 			foreach ($detil as $db) {
 				$hpp = data_master('tbl_barang', array('kodebarang' => $db->kodebarang))->hpp;
 				$xxx = $db->qty_terima * $db->price;

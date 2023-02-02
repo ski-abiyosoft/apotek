@@ -273,23 +273,23 @@ class Farmasi_stock extends CI_Controller
 		}
 
 		//exel
-		$data['prev'] = $chari;
-		$judul          = 'LAPORAN HARIAN KASIR PENDAFTARAN PER SHIFT';
-		switch ($cekpdf) {
-			case 0;
-				echo ("<title>DATA GLOBAL SKI</title>");
-				echo ($chari);
-				break;
-			case 1;
-				$this->M_cetak->mpdf('L', 'A3', $judul, $chari, 'KASIR-01.PDF', 10, 10, 10, 1);
-				break;
-			case 2;
-				header("Cache-Control: no-cache, no-store, must-revalidate");
-				header("Content-Type: application/vnd-ms-excel");
-				header("Content-Disposition: attachment; filename= $judul.xls");
-				$this->load->view('app/master_cetak', $data);
-				break;
-		}
+		// $data['prev'] = $chari;
+		// $judul          = 'LAPORAN HARIAN KASIR PENDAFTARAN PER SHIFT';
+		// switch ($cekpdf) {
+		// 	case 0;
+		// 		echo ("<title>DATA GLOBAL SKI</title>");
+		// 		echo ($chari);
+		// 		break;
+		// 	case 1;
+		// 		$this->M_cetak->mpdf('L', 'A3', $judul, $chari, 'KASIR-01.PDF', 10, 10, 10, 1);
+		// 		break;
+		// 	case 2;
+		// 		header("Cache-Control: no-cache, no-store, must-revalidate");
+		// 		header("Content-Type: application/vnd-ms-excel");
+		// 		header("Content-Disposition: attachment; filename= $judul.xls");
+		// 		$this->load->view('app/master_cetak', $data);
+		// 		break;
+		// }
 	}
 
 	function cetak($gudang = '', $cekpdf = '')
@@ -454,7 +454,7 @@ class Farmasi_stock extends CI_Controller
 	{
 		$cek	= $this->session->userdata('level');
 		$cabang	= $this->session->userdata('unit');
-		// $gudang = $this->input->get('gudang');
+		$gudang = $this->input->get('gudang');
 		if (!empty($cek)) {
 			$query = 'SELECT tbl_barangstock.*,tbl_barang.namabarang, tbl_barang.satuan1 from tbl_barangstock join tbl_barang on tbl_barang.kodebarang=tbl_barangstock.kodebarang where tbl_barangstock.koders = "' . $cabang . '" and tbl_barangstock.gudang = "' . $gudang . '" order by id desc';
 			// $d['data'] = $this->db->query($query)->result();
