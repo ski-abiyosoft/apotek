@@ -79,7 +79,7 @@ class Farmasi_bapb extends CI_Controller
 
 	public function getpo($po)
 	{
-		$data = $this->db->query("SELECT a.*, b.namabarang 
+		$data = $this->db->query("SELECT a.*, b.namabarang ,b.het
 		FROM tbl_barangdpo a
 		LEFT JOIN tbl_barang b ON b.kodebarang=a.kodebarang WHERE po_no = '$po'")->result();
 		echo json_encode($data);
@@ -303,7 +303,7 @@ class Farmasi_bapb extends CI_Controller
 			$data['akses']    = $akses;
 			$header   = $this->db->query("SELECT (select po_no from tbl_barangdterima b where a.terima_no=b.terima_no limit 1)po_no,a.* from tbl_baranghterima a where terima_no = '$id'")->row();
 
-			$detil    = $this->db->query("SELECT tbl_barangdterima.*, tbl_barang.namabarang from tbl_barangdterima
+			$detil    = $this->db->query("SELECT tbl_barangdterima.*, tbl_barang.namabarang,tbl_barang.het from tbl_barangdterima
 		  inner join tbl_barang on tbl_barangdterima.kodebarang=tbl_barang.kodebarang
 		  where terima_no = '$id'");
 
@@ -507,25 +507,26 @@ class Farmasi_bapb extends CI_Controller
 
 	function save_multi()
 	{
-		$cabang = $this->session->userdata('unit');
-		$gudang   = $this->input->post('gudang');
-		$terima_no = $this->input->get('terima_no');
-		$kode = $this->input->get('kode');
-		$qty = $this->input->get('qty');
-		$sat = $this->input->get('sat');
-		$harga = $this->input->get('harga');
-		$disc = $this->input->get('disc');
-		$discrp = $this->input->get('discrp');
-		$vat = $this->input->get('vat');
-		$jumlah = $this->input->get('jumlah');
-		$expire = $this->input->get('expire');
-		$po = $this->input->get('po');
-		$vatrp = $this->input->get('vatrp');
-		$po_no  = $this->input->post('nomorpo');
+		$cabang       = $this->session->userdata('unit');
+		$gudang       = $this->input->post('gudang');
+		$terima_no    = $this->input->get('terima_no');
+		$kode         = $this->input->get('kode');
+		$qty          = $this->input->get('qty');
+		$sat          = $this->input->get('sat');
+		$harga        = $this->input->get('harga');
+		$het          = $this->input->get('het');
+		$disc         = $this->input->get('disc');
+		$discrp       = $this->input->get('discrp');
+		$vat          = $this->input->get('vat');
+		$jumlah       = $this->input->get('jumlah');
+		$expire       = $this->input->get('expire');
+		$po           = $this->input->get('po');
+		$vatrp        = $this->input->get('vatrp');
+		$po_no        = $this->input->post('nomorpo');
 
 		if ($harga != '' && $kode != '') {
-			$ppn = $this->db->get_where('tbl_pajak', ['kodetax' => 'PPN'])->row_array();
-			$cekq = $this->db->query('select * from tbl_barang where kodebarang = "' . $kode . '"')->result();
+			$ppn   = $this->db->get_where('tbl_pajak', ['kodetax' => 'PPN'])->row_array();
+			$cekq  = $this->db->query('select * from tbl_barang where kodebarang = "' . $kode . '"')->result();
 			foreach ($cekq as $cq) {
 				if($harga > $cq->hargabeli){
 					if ($cq->vat == 1) {
@@ -541,6 +542,9 @@ class Farmasi_bapb extends CI_Controller
 					$this->db->update('tbl_barang');
 				}
 			}
+			$this->db->set('het', $het);
+			$this->db->where('kodebarang', $kode);
+			$this->db->update('tbl_barang');
 			// $sql = $this->db->query('select terima_no from tbl_baranghterima where koders = "'.$cabang.'" and gudang = "'.$gudang.'" order by id desc limit 1')->result();
 			// foreach($sql as $s){
 			if ($po_no == '') {

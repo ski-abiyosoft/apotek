@@ -11,7 +11,7 @@
                             &nbsp;<?php echo $this->session->userdata('unit'); ?> 
                         </span>
                       - 
-                      <span class="title-web">Master <small>Cost Centre</small>
+                      <span class="title-web">Master <small>Satuan</small>
 					</h3>
                       <ul class="page-breadcrumb breadcrumb">
 
@@ -30,7 +30,7 @@
 						</li>
 						<li>
 							<a href="#">
-                               Cost Centre
+                               Satuan
 							</a>
 						</li>
 					</ul>
@@ -41,7 +41,7 @@
 					<div class="portlet">
 						<div class="portlet-title">
 							<div class="caption">
-								Daftar Cost Centre
+								Daftar Satuan
 							</div>
 
 						</div>
@@ -51,7 +51,7 @@
 								
 									
 								</div>
-								<button class="btn btn-success" onclick="add_bank()"><i class="glyphicon glyphicon-plus"></i> Data Baru</button>
+								<button class="btn btn-success" onclick="add_data()"><i class="glyphicon glyphicon-plus"></i> Data Baru</button>
                                 <div class="btn-group pull-right">
 									<button class="btn dropdown-toggle" data-toggle="dropdown">Data <i class="fa fa-angle-down"></i>
 									</button>
@@ -71,7 +71,7 @@
                                <thead class="breadcrumb">
                                      <tr>
                                          <th style="text-align: center">Kode</th>
-                                         <th style="text-align: center">Nama Departemen</th>
+                                         <th style="text-align: center">Keterangan</th>
                                          <th style="text-align: center;width:12%;">Aksi</th>
 
                                      </tr>
@@ -108,7 +108,7 @@ $(document).ready(function() {
 
         // Load data for the table's content from an Ajax source
         "ajax": {
-            "url": "<?php echo site_url('master_costcenter/ajax_list')?>",
+            "url": "<?php echo site_url('master_satuan/ajax_list')?>",
             "type": "POST"
         },
 		
@@ -165,11 +165,27 @@ $(document).ready(function() {
         $(this).next().empty();
     });
 
+    
+    // $('[name="kode"]').keyup(function() {
+    //         var cekkk = $('[name="kode"]').val();
+    //         var cek2 = alltrim(cekkk);
+    //         $('[name="kode"]').val(cek2);
+    // });
+
+    // function alltrim(kata){
+
+    //     b = (kata.split("'" ).join("`"));
+    //     c = (b.split(" ").join(""));
+    //     d = (c.replace( /\s/g, ""));
+    //     return d
+
+    // }
+
 });
 
 
 
-function add_bank()
+function add_data()
 {
     save_method = 'add';
     $('#form')[0].reset(); // reset form on modals
@@ -188,15 +204,15 @@ function edit_data(id)
 
     //Ajax Load data from ajax
     $.ajax({
-        url : "<?php echo site_url('master_costcenter/ajax_edit/')?>/" + id,
+        url : "<?php echo site_url('master_satuan/ajax_edit/')?>/" + id,
         type: "GET",
         dataType: "JSON",
         success: function(data)
         {
 
 		    $('[name="id"]').val(data.id);
-            $('[name="kode"]').val(data.depid);
-            $('[name="nama"]').val(data.namadep);
+            $('[name="kode"]').val(data.apocode);
+            $('[name="nama"]').val(data.aponame);
             
             //$('[name="dob"]').datepicker('update',data.dob);
             $('#modal_form').modal('show'); // show bootstrap modal when complete loaded
@@ -222,9 +238,9 @@ function save()
     var url;
 
     if(save_method == 'add') {
-        url = "<?php echo site_url('master_costcenter/ajax_add')?>";
+        url = "<?php echo site_url('master_satuan/ajax_add')?>";
     } else {
-        url = "<?php echo site_url('master_costcenter/ajax_update')?>";
+        url = "<?php echo site_url('master_satuan/ajax_update')?>";
     }
 
     // ajax adding data to database
@@ -264,13 +280,13 @@ function save()
     });
 }
 
-function delete_data(id)
+function delete_data(id,name)
 {
-    if(confirm('Yakin data Bank dengan kode '+id+' ini akan dihapus ?'))
+    if(confirm('Yakin data Master dengan kode '+name+' ini akan dihapus ?'))
     {
         // ajax delete data to database
         $.ajax({
-            url : "<?php echo site_url('master_costcenter/ajax_delete')?>/"+id,
+            url : "<?php echo site_url('master_satuan/ajax_delete')?>/"+id,
             type: "POST",
             dataType: "JSON",
             success: function(data)
@@ -309,7 +325,7 @@ function delete_data(id)
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h3 class="modal-title">Data Departemen</h3>
+                <h3 class="modal-title">Data Satuan</h3>
             </div>
             <div class="modal-body form">
                 <form action="#" id="form" class="form-horizontal">
@@ -318,12 +334,12 @@ function delete_data(id)
                         <div class="form-group">
                             <label class="control-label col-md-3">Kode</label>
                             <div class="col-md-9">
-                                <input name="kode" placeholder="Kode" class="form-control input-small" maxlength="5" type="text">
+                                <input name="kode" placeholder="Kode" class="form-control input-small" type="text">
                                 <span class="help-block"></span>
                             </div>
                         </div>
                         <div class="form-group">
-                            <label class="control-label col-md-3">Nama </label>
+                            <label class="control-label col-md-3">Keterangan</label>
                             <div class="col-md-9">
                                 <input name="nama" placeholder="Uraian" class="form-control" maxlength="100" type="text">
                                 <span class="help-block"></span>

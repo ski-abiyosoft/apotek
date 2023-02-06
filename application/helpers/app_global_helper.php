@@ -30,20 +30,20 @@ function hitung_umur($tanggal_lahir, $format = "full"){
 }
 
 function pasien_rekmed_baru($nama){	
-	$CI =& get_instance();	
-	$kode_cabang = $CI->session->userdata('unit');	  
-	$namadepan = substr($nama, 0,1);
+	$CI            = & get_instance();
+	$kode_cabang   = $CI->session->userdata('unit');
+	$namadepan     = substr($nama, 0,1);
 	//   $dataurut = $CI->db->query("select urut as nomor from tbl_urutmr where mrkey='$namadepan'")->row();
-	$dataurut = $CI->db->query("select urut as nomor from tbl_urutmr where koders = '$kode_cabang' AND mrkey='$namadepan'")->row();
+	$dataurut      = $CI->db->query("SELECT urut as nomor from tbl_urutmr where koders = '$kode_cabang' AND mrkey='$namadepan'")->row();
 
 	if($dataurut){
 		$nourut = $dataurut->nomor+1;
 		//   $CI->db->query("update tbl_urutmr set urut=urut+1 where mrkey='$namadepan'");
-		$CI->db->query("update tbl_urutmr set urut=urut+1 where koders='$kode_cabang' AND mrkey='$namadepan'");
+		$CI->db->query("UPDATE tbl_urutmr set urut=urut+1 where koders='$kode_cabang' AND mrkey='$namadepan'");
 	} else {
 		$nourut = 1;	
 		//   $CI->db->query("insert into tbl_urutmr(mrkey, urut) values('$namadepan', 1)");
-		$CI->db->query("insert into tbl_urutmr(koders, mrkey, urut) values('$kode_cabang','$namadepan', 1)");
+		$CI->db->query("INSERT into tbl_urutmr(koders, mrkey, urut) values('$kode_cabang','$namadepan', 1)");
 	}
 				
 	$rekmed = $kode_cabang.$namadepan.str_pad( $nourut, 6, '0', STR_PAD_LEFT );	
@@ -163,6 +163,7 @@ function urut_transaksi_igd($trkode, $lebar){
 }
 
 function urut_faktur_pajak($trkode, $lebar){
+<<<<<<< HEAD
 $CI =& get_instance();
 $CI->db->query("UPDATE tbl_urutrs set nourut=nourut+1 where kode_urut='$trkode'");
 $data_urut = $CI->db->query("SELECT * from tbl_urutrs where kode_urut='$trkode'")->row();
@@ -171,6 +172,16 @@ $date = date("Y");
 $urut = trim($date);
 $kode_transaksi = $urut.str_pad( $nomor_urut, $lebar, '0', STR_PAD_LEFT );
 return $kode_transaksi;	
+=======
+	$CI =& get_instance();
+	$CI->db->query("UPDATE tbl_urutrs set nourut=nourut+1 where kode_urut='$trkode'");
+	$data_urut = $CI->db->query("SELECT * from tbl_urutrs where kode_urut='$trkode'")->row();
+	$nomor_urut = $data_urut->nourut;
+	$date = date("Y");
+	$urut = trim($date);
+	$kode_transaksi = $urut.str_pad( $nomor_urut, $lebar, '0', STR_PAD_LEFT );
+	return $kode_transaksi;	
+>>>>>>> development
 }
 
 function urut_tarif($trkode, $lebar){
@@ -488,6 +499,7 @@ function sumTime($time1, $time2) {
 
 }
 
+<<<<<<< HEAD
 /**
  * Method for finding PPK code from BPJS
  * 
@@ -529,4 +541,14 @@ function isJson(string $string): bool {
 	return json_last_error() === JSON_ERROR_NONE;
  }
 
+=======
+function get_jenis_bayar () {
+	return (object) [
+		1 => "Cek/Giro",
+		2 => "Transfer",
+		3 => "Tunai",
+	];
+}
+
+>>>>>>> development
 ?>

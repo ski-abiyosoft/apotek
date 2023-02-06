@@ -296,15 +296,17 @@ $this->load->view('template/body');
 
                     <thead class="page-breadcrumb breadcrumb">
                       <th class="title-white" width="5%" style="text-align: center">Delete</th>
-                      <th class="title-white" width="15%" style="text-align: center">Nama Barang
+                      <th class="title-white" width="10%" style="text-align: center">Nama Barang
                       </th>
-                      <th class="title-white" width="5%" style="text-align: center">Qty</th>
+                      <th class="title-white" width="10%" style="text-align: center">Qty</th>
                       <th class="title-white" width="5%" style="text-align: center">Satuan</th>
                       <th class="title-white" width="10%" style="text-align: center">Harga</th>
                       <th class="title-white" width="5%" style="text-align: center">Disc %</th>
                       <th class="title-white" width="10%" style="text-align: center">Disc Rp</th>
                       <th class="title-white" width="5%" style="text-align: center">Tax</th>
                       <th class="title-white" width="15%" style="text-align: center">Total Harga
+                      </th>
+                      <th class="title-white" width="15%" style="text-align: center">HET
                       </th>
                       <th class="title-white" width="6%" style="text-align: center">Expire</th>
                       <th class="title-white" width="14%" style="text-align: center">PO No</th>
@@ -361,10 +363,22 @@ $this->load->view('template/body');
                             readonly>
                         </td>
                         <td>
+<<<<<<< HEAD
                           <input name="expire[]" onchange="totalline(1);total()" value="" id="expire1" type="date"
                             class="form-control">
                         </td>
                         <td>
+=======
+                        <input name="het[]" onchange="totalline(1);total();" value="0" id="het1"
+                            type="text" class="form-control rightJustified ">
+                        </td>
+                        <td>
+                          <input name="expire[]" onchange="totalline(1);total()" value="" id="expire1" type="date"
+                            class="form-control">
+                        </td>
+                        
+                        <td>
+>>>>>>> development
                           <input name="po[]" onchange="totalline(1);total()" value="" id="po1" type="text"
                             class="form-control">
                         </td>
@@ -563,6 +577,10 @@ function tambah() {
   var td10 = x.insertCell(9);
   var td11 = x.insertCell(10);
   var td12 = x.insertCell(11);
+<<<<<<< HEAD
+=======
+  var td13 = x.insertCell(12);
+>>>>>>> development
 
   var button = "<td id='kolom" + idrow + "'><button type='button' onclick=hapusBarisIni(" + idrow + ") id=btnhapus" +
     idrow + " class='btn red'><i class='fa fa-trash-o'></i> - " + idrow + "</button></td>";
@@ -601,14 +619,21 @@ function tambah() {
   var jum = "<input name='jumlah[]' id=jumlah" + idrow +
     " type='text' class='form-control rightJustified' size='40%' readonly>";
 
+<<<<<<< HEAD
   var expire = "<input name='expire[]'  id=expire" + idrow + " onchange='totalline(" + idrow +
     ") value=''  type='date' class='form-control'>";
+=======
+  var het = "<input name='het[]' id=het" + idrow + " onchange='totalline(" + idrow + ");' value='0'  type='text' class='form-control rightJustified'  >";
+    
+  var expire = "<input name='expire[]'  id=expire" + idrow + " onchange='totalline(" + idrow + ") value=''  type='date' class='form-control'>";
+>>>>>>> development
 
   var poo = "<input name='po[]'  id=po" + idrow + " onchange='totalline(" + idrow +
     ") value=''  type='text' class='form-control'>";
 
   var vatrp = "<input type='hidden' name='vatrp[]' value=0 id='vatrp" + idrow + "'>";
 
+<<<<<<< HEAD
   td1.innerHTML = button;
   td2.innerHTML = akun;
   td3.innerHTML = qty;
@@ -621,6 +646,21 @@ function tambah() {
   td10.innerHTML = expire;
   td11.innerHTML = poo;
   td12.innerHTML = vatrp;
+=======
+  td1.innerHTML   = button;
+  td2.innerHTML   = akun;
+  td3.innerHTML   = qty;
+  td4.innerHTML   = sat;
+  td5.innerHTML   = hrg;
+  td6.innerHTML   = diskper;
+  td7.innerHTML   = diskrp;
+  td8.innerHTML   = taxx;
+  td9.innerHTML   = jum;
+  td10.innerHTML  = het;
+  td11.innerHTML  = expire;
+  td12.innerHTML  = poo;
+  td13.innerHTML  = vatrp;
+>>>>>>> development
   // initailizeSelect2_farmasi_barang();
   initailizeSelect2_farmasi_barangdata();
   idrow++;
@@ -771,6 +811,21 @@ function cek_tax(id) {
 }
 
 function cekjt(str) {
+<<<<<<< HEAD
+
+
+  var strr = str;
+  var tglter = document.getElementById('tanggal').value;
+
+  $.ajax({
+    url: "<?php echo base_url(); ?>farmasi_bapb/cekhari/?kode=" + str,
+    type: "GET",
+    dataType: "JSON",
+    success: function(data) {
+      inputHari = data.valuerp;
+      var hariKedepan = new Date(new Date(tglter).getTime() + (inputHari * 24 * 60 * 60 * 1000));
+      document.getElementById('jatuhtempo').value = hariKedepan.toISOString().slice(0, 10);
+=======
 
 
   var strr = str;
@@ -795,6 +850,65 @@ function cekjt(str) {
 
 }
 
+function cekpo2() {
+
+
+  var cekpoo = $('#cekpo').is(':checked');
+  var isi = 'NonPO';
+  var supp = $('[name="supp"]').val();
+
+
+  if (cekpoo == false) {
+    $('#nopo').html('<input class="form-control" name="nomorpo" value="' + isi + '" disabled />');
+
+  } else {
+
+    $('[name="supp"]').val('');
+    document.getElementById("supp").innerHTML = ("");
+    $('#nopo').html(
+      '<select id="nomorpo" name="nomorpo" class="form-control select2_el_farmasi_po" data-placeholder="Pilih..." onkeypress="return tabE(this,event)" onchange="getdatapo(this.value);gethpo(this.value);"></select>'
+    );
+
+  }
+  var vtotal = $('#_vtotal').text();
+  var xtotal = parseInt(vtotal.replaceAll(',', ''));
+  // if (xtotal >= '5000000') {
+  //     $('#materai').val("10000").change();
+  // }
+
+
+}
+
+
+function showbarangname(str, id) {
+
+  var xhttp;
+
+  var vid = id;
+  $.ajax({
+    url: "<?php echo base_url(); ?>farmasi_bapb/getinfobarang/?kode=" + str,
+    type: "GET",
+    dataType: "JSON",
+    success: function(data) {
+      $("#btnsave").attr("disabled", false);
+      // console.log(data);
+      $('#sat' + vid).val(data.satuan1);
+      $('#harga' + vid).val(formatCurrency1(data.hargabeli));
+      $('#het' + vid).val(data.het);
+      totalline(vid);
+>>>>>>> development
+      var vtotal = $('#_vtotal').text();
+      var xtotal = parseInt(vtotal.replaceAll(',', ''));
+      // if (xtotal >= '5000000') {
+      //     $('#materai').val("10000").change();
+      // }
+    }
+  });
+
+
+}
+
+<<<<<<< HEAD
 function cekpo2() {
 
 
@@ -884,6 +998,54 @@ function savex() {
   } else {
     $kett = "Ada <b>" + jfalse + "</b> Yang Tidak menggunakan Tax";
   }
+=======
+function savex() {
+  var supp        = $('[name="supp"]').val();
+  var mattx       = $('[name="materai"]').val();
+  var matt        = Number(parseInt(mattx.replaceAll(',', '')));
+  var nomorpo     = $('[name="nomorpo"]').val();
+  var gudang      = $('[name="gudang"]').val();
+  var tanggal     = $('[name="tanggal"]').val();
+  var nomor       = $('[name="nomorbukti"]').val();
+  var pemb        = $('[name="pembayaran"]').val();
+  var fakt        = $('[name="nofaktur"]').val();
+  var sjj         = $('[name="nomorsj"]').val();
+  var total       = $('#_vtotal').text();
+  var ppn_123     = $('#_vppn').text();
+  var table       = document.getElementById('datatable');
+  var rowCount    = table.rows.length;
+  var jfalse      = 0;
+  for (var i = 1; i < rowCount; i++) {
+    var row   = table.rows[i];
+    var taxz  = $('#tax' + i).is(':checked');
+    
+    if (taxz == false) {
+      jfalse = jfalse + 1;
+    }
+
+    var expire    = $("#expire" + i).val(); 
+
+      if (expire == '' || expire == null) {
+        swal({
+          title: "Expired Date",
+          html: "<p>HARUS DI isi</p>",
+          type: "error",
+          confirmButtonText: "OK"
+        });
+        return;
+      }
+  }
+  if (matt == 0) {
+    matte = "Tanpa Materai";
+  } else {
+    matte = matt;
+  }
+  if (jfalse == 0) {
+    $kett = "Di Pakai Di Semua List";
+  } else {
+    $kett = "Ada <b>" + jfalse + "</b> Yang Tidak menggunakan Tax";
+  }
+>>>>>>> development
   swal({
     title: 'TAX',
     html: $kett,
@@ -980,6 +1142,7 @@ function savex() {
                 type: "error",
                 confirmButtonText: "OK"
               });
+<<<<<<< HEAD
             } else if (data.status == 2) {
               //rincian
               var terima_no = data.nomor;
@@ -1000,6 +1163,29 @@ function savex() {
                 var discrp = Number(discrpx.replace(
                   /[^0-9\.]+/g, ""));
                 var taxx = $('#tax' + i).is(':checked');
+=======
+              return;
+            } else if (data.status == 2) {
+              //rincian
+              var terima_no   = data.nomor;
+              var table       = document.getElementById('datatable');
+              rowCount        = table.rows.length;
+              var pj          = parseInt($("#ppn2_").val()) / 100;
+              totvatrp        = 0;
+              diskontotal     = 0;
+              for (i = 1; i < rowCount; i++) {
+                var kode    = $("#kode" + i).val();
+                var qty     = $("#qty" + i).val();
+                var sat     = $("#sat" + i).val();
+                var hargax  = $("#harga" + i).val();
+                var harga   = Number(hargax.replace(/[^0-9\.]+/g,
+                  ""));
+                var disc    = $("#disc" + i).val();
+                var discrpx = $("#discrp" + i).val();
+                var discrp  = Number(discrpx.replace(
+                  /[^0-9\.]+/g, ""));
+                var taxx    = $('#tax' + i).is(':checked');
+>>>>>>> development
                 if (taxx == true) {
                   var vat = 1;
                 } else {
@@ -1009,6 +1195,10 @@ function savex() {
                 var jumlahx = $("#jumlah" + i).val();
                 var jumlah = Number(jumlahx.replace(/[^0-9\.]+/g, ""));
                 var expire = $("#expire" + i).val();
+<<<<<<< HEAD
+=======
+                var het = $("#het" + i).val();
+>>>>>>> development
                 var po = $("#po" + i).val();
                 if (vat == 1) {
                   if (matt == 0) {
@@ -1024,7 +1214,11 @@ function savex() {
                   url: '<?= site_url() ?>farmasi_bapb/save_multi/?kode=' + kode + '&qty=' + qty +
                     '&sat=' + sat + '&harga=' + harga + '&disc=' + disc + '&discrp=' + discrp +
                     '&vat=' + vat + '&jumlah=' + jumlah + '&expire=' + expire + '&po=' + po +
+<<<<<<< HEAD
                     '&vatrp=' + vatrp + '&terima_no=' + terima_no,
+=======
+                    '&vatrp=' + vatrp + '&terima_no=' + terima_no+ '&het=' + het,
+>>>>>>> development
                   data: $('#frmpembelian').serialize(),
                   type: 'POST',
                   dataType: 'JSON',
@@ -1391,6 +1585,7 @@ function totalline(id) {
 
   // console.log(id);
   // arr.indexOf(idrow)
+<<<<<<< HEAD
   var table = document.getElementById('datatable');
   //    var row      = table.rows[id];
   var row = table.rows[arr.indexOf(id) + 1];
@@ -1404,6 +1599,39 @@ function totalline(id) {
   var discrpx = $('#discrp' + id).val();
   var discrp = Number(parseInt(discrpx.replaceAll(',', '')));
   jumlahz = qty * harga - discrp;
+=======
+  var table       = document.getElementById('datatable');
+  //    var row      = table.rows[id];
+  var row         = table.rows[arr.indexOf(id) + 1];
+  var harga       = Number(row.cells[4].children[0].value.replace(/[^0-9\.]+/g, ""));
+  var diskonrp    = Number(row.cells[6].children[0].value.replace(/[^0-9\.]+/g, ""));
+  jumlah          = row.cells[2].children[0].value * harga;
+  diskon          = (row.cells[5].children[0].value / 100) * jumlah;
+  var qty         = $('#qty' + id).val();
+  var kode         = $('#kode' + id).val();
+  var hargax      = $('#harga' + id).val();
+  var harga       = Number(parseInt(hargax.replaceAll(',', '')));
+  var hetx        = $('#het' + id).val();
+  var het         = Number(parseInt(hetx.replaceAll(',', '')));
+  var discrpx     = $('#discrp' + id).val();
+  var discrp      = Number(parseInt(discrpx.replaceAll(',', '')));
+  jumlahz         = qty * harga - discrp;
+  
+  if(harga>het){
+    swal({
+      title: "Harga Beli "+kode,
+      html: "<p>Tidak Boleh Lebih Dari HET</p>",
+      type: "error",
+      confirmButtonText: "OK"
+    });
+    $('#harga' + id).val(het);
+    document.getElementById("harga" + id).value = het;
+    // return;
+  }else{
+
+  }
+
+>>>>>>> development
   $('#jumlah' + id).val(separateComma(jumlahz));
 
   //    if(diskon !=0 && diskonrp!=0){
@@ -1582,6 +1810,10 @@ function getdatapo(str) {
           document.getElementById("qty" + x).value = data[i].qty_po
           document.getElementById("sat" + x).value = data[i].satuan;
           document.getElementById("harga" + x).value = data[i].price_po;
+<<<<<<< HEAD
+=======
+          document.getElementById("het" + x).value = data[i].het;
+>>>>>>> development
           document.getElementById("disc" + x).value = data[i].discount;
           document.getElementById("po" + x).value = str;
           document.getElementById("disc" + x).value = 0;

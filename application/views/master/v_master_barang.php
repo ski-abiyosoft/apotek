@@ -242,6 +242,7 @@ function edit_data(id) {
 
             $('[name="hargajual"]').val(data.hargajual);
             $('[name="hna"]').val(data.hargabeli);
+            $('[name="het"]').val(data.het);
             $('[name="hnappn"]').val(data.hargabelippn);
             $('[name="ppn"]').val(data.vat);
             $('[name="nilaipersediaan"]').val(data.hpp.split(".00").join(""));
@@ -400,8 +401,7 @@ $(document).ready(function() {
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label class="control-label col-md-3">Kode&nbsp;<small
-                                            style="color:red">*</small></label>
+                                    <label class="control-label col-md-3">Kode&nbsp;<small style="color:red">*</small></label>
                                     <div class="col-md-9">
                                         <input name="kode" placeholder="Kode" class="form-control" maxlength="20"
                                             type="text">
@@ -410,8 +410,7 @@ $(document).ready(function() {
                                 </div>
 
                                 <div class="form-group">
-                                    <label class="control-label col-md-3">Nama Barang&nbsp;<small
-                                            style="color:red">*</small></label>
+                                    <label class="control-label col-md-3">Nama Barang&nbsp;<small style="color:red">*</small></label>
                                     <div class="col-md-9">
                                         <input name="nama" placeholder="Uraian" class="form-control" maxlength="100"
                                             type="text">
@@ -420,8 +419,7 @@ $(document).ready(function() {
                                 </div>
 
                                 <div class="form-group">
-                                    <label class="control-label col-md-3">Nama Generic&nbsp;<small
-                                            style="color:red">*</small></label>
+                                    <label class="control-label col-md-3">Nama Generic&nbsp;<small style="color:red">*</small></label>
                                     <div class="col-md-9">
                                         <input name="namageneric" placeholder="" class="form-control" maxlength="100"
                                             type="text">
@@ -430,8 +428,7 @@ $(document).ready(function() {
                                 </div>
 
                                 <div class="form-group">
-                                    <label class="control-label col-md-3">Inventory Cat&nbsp;<small
-                                            style="color:red">*</small></label>
+                                    <label class="control-label col-md-3">Inventory Cat&nbsp;<small style="color:red">*</small></label>
                                     <div class="col-md-9">
                                         <!-- <input name="inventorycat" placeholder="" class="form-control" maxlength="100" type="text">
 
@@ -449,20 +446,41 @@ $(document).ready(function() {
                                 </div>
 
                                 <div class="form-group">
-                                    <label class="control-label col-md-3">Satuan&nbsp;<small
-                                            style="color:red">*</small></label>
+                                    <label class="control-label col-md-3">Satuan&nbsp;<small style="color:red">*</small></label>
                                     <div class="col-md-9">
-                                        <input name="satuan" placeholder="" class="form-control" maxlength="100"
-                                            type="text">
+                                        <!-- <input name="satuan" placeholder="" class="form-control" maxlength="100"
+                                            type="text"> -->
+
+                                        <!-- <select name="satuan" id="satuan" class="select2_el_satuan form-control ">
+                                        </select> -->
+                                        
+                                        <select name="satuan" id="satuan" class="form-control">
+                                        <?php 
+                                        $data = $this->db->query("SELECT * from tbl_barangsetup where apogroup='SATUAN' AND apocode<>''")->result();
+                                        foreach($data as $row){ ?>
+                                        <option value="<?= $row->apocode;?>"><?= $row->aponame.' - [ '.$row->apocode.' ] ';?></option>
+                                        <?php } ?>
+                                        </select>
+
                                         <span class="help-block"></span>
                                     </div>
                                 </div>
 
                                 <div class="form-group">
                                     <label class="control-label col-md-3">Satuan2</label>
-                                    <div class="col-md-3">
-                                        <input name="satuan2" placeholder="" class="form-control" maxlength="100"
-                                            type="text">
+                                    <div class="col-md-4">
+                                        <!-- <input name="satuan2" placeholder="" class="form-control" maxlength="100"
+                                            type="text"> -->
+
+                                        <select name="satuan2" id="satuan2" class="form-control">
+                                        <?php 
+                                        $data = $this->db->query("SELECT * from tbl_barangsetup where apogroup='SATUAN' AND apocode<>''")->result();
+                                        foreach($data as $row){ ?>
+                                        <option value="<?= $row->apocode;?>"><?= $row->aponame.' - [ '.$row->apocode.' ] ';?></option>
+                                        <?php } ?>
+                                        </select>
+
+
                                         <span class="help-block"></span>
                                     </div>
                                     <div class="col-md-2">
@@ -481,9 +499,18 @@ $(document).ready(function() {
 
                                 <div class="form-group">
                                     <label class="control-label col-md-3">Satuan3</label>
-                                    <div class="col-md-3">
-                                        <input name="satuan3" placeholder="" class="form-control" maxlength="100"
-                                            type="text">
+                                    <div class="col-md-4">
+                                        <!-- <input name="satuan3" placeholder="" class="form-control" maxlength="100"
+                                            type="text"> -->
+
+                                        <select name="satuan3" id="satuan3" class="form-control">
+                                        <?php 
+                                        $data = $this->db->query("SELECT * from tbl_barangsetup where apogroup='SATUAN' AND apocode<>''")->result();
+                                        foreach($data as $row){ ?>
+                                        <option value="<?= $row->apocode;?>"><?= $row->aponame.' - [ '.$row->apocode.' ] ';?></option>
+                                        <?php } ?>
+                                        </select>
+
                                         <span class="help-block"></span>
                                     </div>
                                     <div class="col-md-2">
@@ -500,8 +527,7 @@ $(document).ready(function() {
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <label class="control-label col-md-3">Kemasan&nbsp;<small
-                                            style="color:red">*</small></label>
+                                    <label class="control-label col-md-3">Kemasan&nbsp;<small style="color:red">*</small></label>
                                     <div class="col-md-9">
                                         <input name="kemasan" placeholder="" class="form-control" maxlength="100"
                                             type="text">
@@ -509,15 +535,13 @@ $(document).ready(function() {
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <label class="control-label col-md-3">HNA&nbsp;<small
-                                            style="color:red">*</small></label>
+                                    <label class="control-label col-md-3">HNA&nbsp;<small style="color:red">*</small></label>
                                     <div class="col-md-3">
                                         <input name="hna" id="hna" placeholder="" class="form-control" maxlength="100"
                                             type="text">
                                         <span class="help-block"></span>
                                     </div>
-                                    <label class="control-label col-md-3">Dikenakan PPN&nbsp;<small
-                                            style="color:red">*</small></label>
+                                    <label class="control-label col-md-3">Dikenakan PPN&nbsp;<small style="color:red">*</small></label>
                                     <div class="col-md-3">
                                         <select name="ppn" class="form-control" id="ppn">
                                             <option value="1">Ya</option>
@@ -526,31 +550,36 @@ $(document).ready(function() {
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <label class="control-label col-md-3">HNA+PPN&nbsp;<small
-                                            style="color:red">*</small></label>
+                                    <label class="control-label col-md-3">HNA+PPN&nbsp;<small style="color:red">*</small></label>
                                     <div class="col-md-9">
-                                        <input id="hnappn" name="hnappn" placeholder="" class="form-control"
-                                            maxlength="100" type="text">
+                                        <input id="hnappn" name="hnappn" placeholder="" class="form-control" maxlength="100" type="number">
                                         <span class="help-block"></span>
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <label class="control-label col-md-3">Jenis Harga&nbsp;<small
-                                            style="color:red">*</small></label>
+                                    <label class="control-label col-md-3">HET&nbsp;<small style="color:red">*</small></label>
                                     <div class="col-md-9">
-                                        <select name="jenisharga" class="form-control">
+                                        <input id="het" name="het" placeholder="" class="form-control" maxlength="100" type="number">
+                                        <span class="help-block"></span>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label col-md-3">Jenis Harga&nbsp;<small style="color:red">*</small></label>
+                                    <div class="col-md-6">
+                                        <select name="jenisharga" class="form-control" onchange="cek(this.value)">
                                             <option value="1">Prosentase</option>
                                             <option value="2" selected>Manual</option>
                                         </select>
                                     </div>
+                                    <div class="col-md-3" id="cek_persen">
+                                        <input type="text" name="persen" id="persen" class="form-control text-right" placeholder="%" onchange="dapetin(this.value)">
+                                    </div>
                                 </div>
 
                                 <div class="form-group">
-                                    <label class="control-label col-md-3">Harga Jual&nbsp;<small
-                                            style="color:red">*</small></label>
+                                    <label class="control-label col-md-3">Harga Jual&nbsp;<small style="color:red">*</small></label>
                                     <div class="col-md-9">
-                                        <input name="hargajual" placeholder="" class="form-control" maxlength="100"
-                                            type="text">
+                                        <input name="hargajual" id="hargajual" placeholder="" class="form-control" maxlength="100" type="number">
                                         <span class="help-block"></span>
                                     </div>
                                 </div>
@@ -565,8 +594,7 @@ $(document).ready(function() {
                                 </div>
 
                                 <div class="form-group">
-                                    <label class="control-label col-md-3">Nilai Persediaan Satuan&nbsp;<small
-                                            style="color:red">*</small></label>
+                                    <label class="control-label col-md-3">Nilai Persediaan Satuan&nbsp;<small style="color:red">*</small></label>
                                     <div class="col-md-9">
                                         <input name="nilaipersediaan" placeholder="" class="form-control"
                                             maxlength="100" type="text">
@@ -575,8 +603,7 @@ $(document).ready(function() {
                                 </div>
 
                                 <div class="form-group">
-                                    <label class="control-label col-md-3">Status Barang&nbsp;<small
-                                            style="color:red">*</small></label>
+                                    <label class="control-label col-md-3">Status Barang&nbsp;<small style="color:red">*</small></label>
                                     <div class="col-md-9">
                                         <select name="status" class="form-control">
                                             <option value="1">Aktif</option>
@@ -599,8 +626,7 @@ $(document).ready(function() {
                                 </div>
 
                                 <div class="form-group">
-                                    <label class="control-label col-md-3">Kelas Terapi&nbsp;<small
-                                            style="color:red">*</small></label>
+                                    <label class="control-label col-md-3">Kelas Terapi&nbsp;<small style="color:red">*</small></label>
                                     <div class="col-md-9">
                                         <select name="kelasterapi" id="kelasterapi" class="form-control">
                                             <?php 
@@ -613,8 +639,7 @@ $(document).ready(function() {
                                 </div>
 
                                 <div class="form-group">
-                                    <label class="control-label col-md-3">Golongan&nbsp;<small
-                                            style="color:red">*</small></label>
+                                    <label class="control-label col-md-3">Golongan&nbsp;<small style="color:red">*</small></label>
                                     <div class="col-md-9">
                                         <select name="golongan" id="golongan" class="form-control">
                                             <?php 
@@ -627,8 +652,7 @@ $(document).ready(function() {
                                 </div>
 
                                 <div class="form-group">
-                                    <label class="control-label col-md-3">Pabrik&nbsp;<small
-                                            style="color:red">*</small></label>
+                                    <label class="control-label col-md-3">Pabrik&nbsp;<small style="color:red">*</small></label>
                                     <div class="col-md-9">
                                         <select name="pabrik" id="pabrik" class="form-control">
                                             <?php 
@@ -641,8 +665,7 @@ $(document).ready(function() {
                                 </div>
 
                                 <div class="form-group">
-                                    <label class="control-label col-md-3">Jenis&nbsp;<small
-                                            style="color:red">*</small></label>
+                                    <label class="control-label col-md-3">Jenis&nbsp;<small style="color:red">*</small></label>
                                     <div class="col-md-9">
                                         <select name="jenis" id="jenis" class="form-control">
                                             <?php 
@@ -655,8 +678,7 @@ $(document).ready(function() {
                                 </div>
 
                                 <div class="form-group">
-                                    <label class="control-label col-md-3">Main Vendor&nbsp;<small
-                                            style="color:red">*</small></label>
+                                    <label class="control-label col-md-3">Main Vendor&nbsp;<small style="color:red">*</small></label>
                                     <div class="col-md-9">
                                         <select id="vendor" name="vendor" class="form-control input-large">
                                             <?php 
@@ -669,11 +691,13 @@ $(document).ready(function() {
                                 </div>
 
                                 <div class="form-group">
-                                    <label class="control-label col-md-3">Lead Time&nbsp;<small
-                                            style="color:red">*</small></label>
-                                    <div class="col-md-9">
-                                        <input name="leadtime" value="0" class="form-control" maxlength="100"
-                                            type="text">
+                                    <label class="control-label col-md-3">Lead Time&nbsp;<small  style="color:red">*</small></label>
+                                    <div class="col-md-4">
+                                        <input name="leadtime" value="0" class="form-control" maxlength="100" type="number">
+                                        <span class="help-block"></span>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <label for="" class="control-label">Hari</label>
                                         <span class="help-block"></span>
                                     </div>
                                 </div>
@@ -688,8 +712,7 @@ $(document).ready(function() {
                                 </div>
 
                                 <div class="form-group">
-                                    <label class="control-label col-md-3">Minimum Stock&nbsp;<small
-                                            style="color:red">*</small></label>
+                                    <label class="control-label col-md-3">Minimum Stock&nbsp;<small style="color:red">*</small></label>
                                     <div class="col-md-9">
                                         <input name="minstock" value="0" class="form-control" maxlength="100"
                                             type="text">
@@ -698,8 +721,7 @@ $(document).ready(function() {
                                 </div>
 
                                 <div class="form-group">
-                                    <label class="control-label col-md-3">Reorder Level&nbsp;<small
-                                            style="color:red">*</small></label>
+                                    <label class="control-label col-md-3">Reorder Level&nbsp;<small style="color:red">*</small></label>
                                     <div class="col-md-9">
                                         <input name="reorderlevel" value="0" class="form-control" maxlength="100"
                                             type="text">
@@ -850,6 +872,21 @@ $("#ppn").on("change", function() {
     }
 });
 
+$('[name="kode"]').keyup(function() {
+        var cekkk = $('[name="kode"]').val();
+        var cek2 = alltrim(cekkk);
+        $('[name="kode"]').val(cek2);
+});
+
+function alltrim(kata){
+
+    b = (kata.split("'" ).join("`"));
+    c = (b.split(" ").join(""));
+    d = (c.replace( /\s/g, ""));
+    return d
+
+}
+
 function filterdata(){	
 	var kd = $("#carikode").val();
 	var nm = $("#carinama").val();
@@ -857,4 +894,38 @@ function filterdata(){
 	var str = "?kd="+kd+"&nm="+nm+"&sat="+sat;
 	table.ajax.url("<?= base_url();?>master_barang/ajax_list/"+str).load();	 
 }
+</script>
+
+<script>
+    $("#cek_persen").hide();
+    
+    function cek(param) {
+        if(param == 1) {
+            $("#cek_persen").show();
+        } else {
+            $("#cek_persen").hide();
+        }
+    }
+
+    function dapetin(param) {
+        var hnappn = $("#hnappn").val();
+        var het = $("#het").val();
+        var beli = $("#hnappn").val();
+        hj = (beli * (param / 100)) + eval(beli);
+        hnappn2 = het - hnappn;
+        hna2 = hnappn2/hnappn * 100
+        // alert(hna2)
+        if(param > hna2) {
+            swal({
+                title: "PERSENTASE",
+                html: "Maksimal "+hna2.toFixed(0)+"%",
+                type: "error",
+                confirmButtonText: "OK"
+            });
+            $("#persen").val(hna2.toFixed(0))
+            $("#hargajual").val(0);
+        } else {
+            $("#hargajual").val(hj);
+        }
+    }
 </script>

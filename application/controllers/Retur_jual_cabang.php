@@ -6,7 +6,11 @@ class Retur_jual_cabang extends CI_Controller
 	{
 		parent::__construct();
 		$this->session->set_userdata('menuapp', '4000');
+<<<<<<< HEAD
 		$this->session->set_userdata('submenuapp', '6103');
+=======
+		$this->session->set_userdata('submenuapp', '4403');
+>>>>>>> development
 		$this->load->helper('simkeu_nota');
 	}
 

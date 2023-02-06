@@ -224,6 +224,7 @@ $this->load->view('template/footer');
                         type: "GET",
                         dataType: "JSON",
                         success: function(data) {
+                            console.log(data)
                             $('#sat' + vid).val(data.satuan1);
                             var qty = $('#qty' + vid).val();
                             $('#saldoakhir' + id).val(Math.round(data.salakhir));

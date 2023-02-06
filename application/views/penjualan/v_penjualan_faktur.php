@@ -151,6 +151,7 @@
                             </div>
                             <table class="table table-striped table-hover table-bordered" id="keuangan-keluar-list">
                             <thead>
+<<<<<<< HEAD
                                     <tr class="page-breadcrumb breadcrumb">
                                         <th class="title-white" style="text-align: center">Cab.</th>
                                         <th class="title-white" style="text-align: center" width="150">User ID</th>
@@ -167,6 +168,24 @@
                                         <th>&nbsp;</th>                                          -->
                                     </tr>
                                     </thead>
+=======
+                                     <tr class="page-breadcrumb breadcrumb">
+                                         <th class="title-white" style="text-align: center">Cab.</th>
+										 <th class="title-white" style="text-align: center" width="150">User ID</th>
+									     <th class="title-white" style="text-align: center">No. Resep</th>
+										 <!-- <th class="title-white" style="text-align: center">No. Register</th> -->
+										 <th class="title-white" style="text-align: center">Rekmed</th>
+										 <th class="title-white" style="text-align: center">Nama Pasien</th>
+										 <th class="title-white" style="text-align: center">Tanggal</th>
+										 <th class="title-white" style="text-align: center">Jumlah Rp</th>
+										 <!-- <th class="title-white" style="text-align: center">No. Kwitansi</th> -->
+                                         <th class="title-white" style="text-align: center">Status</th>
+                                         <th class="title-white" style="text-align: center">Action</th>
+										 <!-- <th>&nbsp;</th>
+                                         <th>&nbsp;</th>                                          -->
+                                     </tr>
+                                     </thead>
+>>>>>>> development
 
                                     
                                     <tbody>
@@ -178,6 +197,7 @@
                                         
                                         ?>
 
+<<<<<<< HEAD
                                     <tr class="show1" id="row_<?php echo $row->resepno;?>">
                                         <td align="center"><?php echo $row->koders;?></td>	
                                         <td align="center"><?php echo $row->username;?></td>										 
@@ -202,6 +222,32 @@
                                                 <span class="label label-sm label-success">
                                                     Lunas
                                                 </span>
+=======
+                                     <tr class="show1" id="row_<?php echo $row->resepno;?>">
+									     <td align="center"><?php echo $row->koders;?></td>	
+									     <td align="center"><?php echo $row->username;?></td>										 
+                                         <td align="center"><?php echo $row->resepno;?></td>										 
+										 <!-- <td align="center"><?php echo $row->noreg;?></td>										  -->
+										 <td align="center"><?php echo $row->rekmed;?></td>										 
+										 <td align="center"><?php echo $row->namapas;?></td>										 
+                                         <td align="center"><?php echo date('d-m-Y',strtotime($row->tglresep));?></td>										 
+                                         <td align="right"><?php echo number_format($row->poscredit,0,',','.');?></td>
+										 <!-- <td><?php echo $row->nokwitansi;?></td> -->
+                                         
+                                         <td style="text-align: center"><?php
+                                                 if ($row->keluar=='0')
+                                                 { ?>
+										           <span class="label label-sm label-warning">
+											          Belum Lunas
+										           </span>
+										           <?php
+                                                 }else
+                                                 if ($row->keluar=='1')
+                                                 { ?>
+                                                   <span class="label label-sm label-success">
+                                                     Lunas
+										           </span>
+>>>>>>> development
 
                                                 <?php
                                                 } ?> 
@@ -218,7 +264,14 @@
                                             <?php
                                             if ($row->keluar=='1')
                                                 { ?>
+<<<<<<< HEAD
                                             <a class="btn btn-sm btn-info" href="<?php echo base_url()?>penjualan_faktur/edit/<?php echo $row->resepno;?>/1"><i class="glyphicon glyphicon-eye-open"></i></a>
+=======
+											 <a class="btn btn-sm btn-info" href="<?php echo base_url()?>penjualan_faktur/edit/<?php echo $row->resepno;?>/1"><i class="glyphicon glyphicon-eye-open"></i></a>
+
+                                             <a class="btn btn-sm btn-warning" onclick="_urlcetak('<?php echo $row->resepno;?>')" title="Cetak">
+                                                <i class="glyphicon glyphicon-print"></i></a>
+>>>>>>> development
                                             <?php }?>
                                         <?php
                                             if ($row->keluar=='0')

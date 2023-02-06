@@ -76,7 +76,7 @@
 
     .col-sm-lock{
         flex-basis: 0;
-        -ms-flex-positive: 1;
+        -ms-flex-positive: 1; 
         flex-grow: 1;
         max-width: 100%;
     }
@@ -88,6 +88,7 @@
 <body class="login" onload="noBack();" onpageshow="if (event.persisted) noBack();" onunload="">
 
 <div class="logo">
+<<<<<<< HEAD
 	<a href="<?php echo base_url();?>">
 		<img src="<?php echo base_url('assets/img/ski_new.png');?>" width="120" alt=""/>
 	</a>
@@ -96,6 +97,16 @@
 	<img src="<?php echo base_url('assets/img/abiyosoft.png');?>" width="150" alt=""/>
 	</a>
 </div>
+=======
+    <a href="<?php echo base_url();?>">
+      <img src="<?php echo base_url('assets/img/ski_new.png');?>" width="120" alt="" />
+    </a>
+    <a href="<?php echo base_url();?>">
+      <br>
+      <img src="<?php echo base_url('assets/img/abiyosoft.png');?>" width="150" alt="" />
+    </a>
+  </div>
+>>>>>>> development
 
 <div class="content">
 	<form id="frmlogin" class="login-form"  action="<?php echo base_url('app/auth');?>" method="post">

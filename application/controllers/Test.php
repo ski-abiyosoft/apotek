@@ -6,6 +6,7 @@ class Test extends CI_Controller
     public function __construct()
     {
         parent::__construct();
+<<<<<<< HEAD
         // $this->load->library('dpsPcare/Services/Pcare_dokter', ["kdppk" => $this->session->userdata("kdppk")]);
         // $this->load->library('dpsPcare/Services/Pcare_peserta', ["kdppk" => $this->session->userdata("kdppk")]);
         // $this->load->library('dpsPcare/Services/Pcare_poli', ["kdppk" => $this->session->userdata("kdppk")]);
@@ -13,6 +14,12 @@ class Test extends CI_Controller
         $this->load->library('dpsPcare/Services/Pcare_obat', ["kdppk" => $this->session->userdata("kdppk")]);
         $this->load->library('dpsPcare/Services/Pcare_kunjungan', ["kdppk" => $this->session->userdata("kdppk")]);
         $this->load->library('dpsPcare/Services/Pcare_pendaftaran', ["kdppk" => $this->session->userdata("kdppk")]);
+=======
+        $this->load->library('dpsAccounting/Services/cash_disbursement_service');
+        $this->load->model('M_piutang', 'piutang', TRUE);
+        $this->load->model('M_cetak', 'pdf');
+        $this->load->model('M_rs', 'rs');
+>>>>>>> development
     }
     
     public function index()
@@ -25,6 +32,7 @@ class Test extends CI_Controller
         return $this->output
             ->set_content_type('application/json')
             ->set_status_header(200)
+<<<<<<< HEAD
             ->set_output(json_encode([
                 "data" => $this->db->list_fields("bpjs_pcare_obat_kunjungan")
             ]));
@@ -224,5 +232,8 @@ class Test extends CI_Controller
         $data["kunjungan"] = $this->db->where("noKartu", $noKartu)->get("bpjs_pcare_kunjungan")->result();
 
         return $this->load->view("pcare/riwayat_kunjungan", $data);
+=======
+            ->set_output(json_encode($this->cash_disbursement_service->test()));
+>>>>>>> development
     }
 }

@@ -397,6 +397,7 @@ class Farmasi_po extends CI_Controller
 			'tglkirim'      => $this->input->post('tanggalkirim'),
 			'vendor_id'     => $this->input->post('supp'),
 			'username'      => $userid,
+			'disetujuioleh'  => $userid,
 			'kurs'          => $this->input->post('kurs'),
 			'kursrate'      => $this->input->post('rate'),
 			'dikirimvia'    => $this->input->post('dikirimvia'),
@@ -417,21 +418,21 @@ class Farmasi_po extends CI_Controller
 		$qty    = $this->input->post('qty');
 		$sat    = $this->input->post('sat');
 		$harga  = $this->input->post('harga');
-		$disc   = $this->input->post('disc');
-		$tax    = $this->input->post('tax');
+		// $disc   = $this->input->post('disc');
+		// $tax    = $this->input->post('tax');
 		$jumlah = $this->input->post('jumlah');
 
 		$jumdata    = count($kode);
 		for ($i = 0; $i <= $jumdata - 1; $i++) {
 			$_harga    = str_replace(',', '', $harga[$i]);
-			$_disc     = str_replace(',', '', $disc[$i]);
+			// $_disc     = str_replace(',', '', $disc[$i]);
 			$_jumlah   = str_replace(',', '', $jumlah[$i]);
 
-			if ($tax[$i]) {
-				$_tax = 1;
-			} else {
-				$_tax = 0;
-			}
+			// if ($tax[$i]) {
+			// 	$_tax = 1;
+			// } else {
+			// 	$_tax = 0;
+			// }
 
 			$data_rinci = array(
 				'koders'       => $cabang,
@@ -439,9 +440,9 @@ class Farmasi_po extends CI_Controller
 				'kodebarang'   => $kode[$i],
 				'qty_po'       => $qty[$i],
 				'price_po'     => $_harga,
-				'discount'     => $_disc,
+				'discount'     => 0,
 				'satuan'       => $sat[$i],
-				'vat'          => $_tax,
+				'vat'          => 0,
 				'total'        => $_jumlah,
 
 			);

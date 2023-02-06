@@ -100,7 +100,7 @@
 													<tr style="border-top:none;">
 														<td>&nbsp;</td>
 														<td>TGL & JAM BAYAR</td>												  
-														<td><input type="datetime-local" class="form-control" name="tglbayar" id="tglbayar" value="<?= date('Y-m-d\TH:i', strtotime($kasir->tglbayar));?>"></td>
+														<td><input type="datetime-local" class="form-control" name="tglbayar" id="tglbayar" value="<?= date('Y-m-d\TH:i', strtotime(substr($kasir->tglbayar, 0, 10).''.$kasir->jambayar ));?>"></td>
 														
 														<td>TOTAL RESEP RP</td>												  
 														<td><input type="text" class="form-control rightJustified" name="reseprp" id="reseprp" value="<?= $kasir->totalresep;?>" readonly></td>
@@ -168,133 +168,128 @@
 										</div>
 										</div>
 									</div> -->
-									<div id="tabpromo" class="portlet box blue">
+									<!-- <div id="tabpromo" class="portlet box blue">
 
-									<div class="portlet-title">
-										<div class="caption">
-											<i class="fa fa-reorder"></i><b>PROMO</b>
-										</div>
-									</div>		
-
-									<div class="portlet-body">		
-										<table class="table table-hoverx table-stripedx table-borderedx table-condensed table-scrollable" width="100%" border="0">
-											<div class="col-md-12">
-												<div class="form-group">
-													<tr>
-														<td class="title-white" align="center" width="15%"></td>
-														
-														<td class="breadcrumb title-white" align="center" width="5%" halign="justify"><b>No</b></td>
-														<td class="breadcrumb title-white" align="center" width="20%" halign="justify"><b>Promo</b></td>
-														<td class="breadcrumb title-white" align="center" width="20%" halign="justify"><b>Hadiah</b></td>
-														<td class="breadcrumb title-white" align="center" width="15%" halign="justify"><b>Qty</b></td>
-
-														<td class=" title-white" align="center" width="20%"></td>
-													</tr>
-													<tr>
-														<td>&nbsp;</td>
-														<td align="center"> 1 </td>			  
-														<td align="center">
-															<select name="promo1" class="form-control select2_el_promo input-medium">
-															<option value="">--- Pilih Promo1 ---</option>
-															</select>
-														</td>
-
-														<td align="center">
-															<select name="hadiah1" class="form-control select2_el_hadiah input-medium">
-															<option value="">--- Pilih Hadiah1 ---</option>
-															</select>
-														</td>													  
-														<td align="center">
-															<input type="text" class="form-control input-small rightJustified" name="qtyhadiah1" id="qtyhadiah1" value="0">
-														</td>
-														
-														
-													</tr>
-
-													<tr>
-														<td>&nbsp;</td>
-														<td align="center"> 2 </td>			  
-														<td align="center">
-															<select name="promo2" class="form-control select2_el_promo input-medium">
-															<option value="">--- Pilih Promo2 ---</option>
-															</select>
-														</td>
-
-														<td align="center">
-															<select name="hadiah2" class="form-control select2_el_hadiah input-medium">
-															<option value="">--- Pilih Hadiah2 ---</option>
-															</select>
-														</td>													  
-														<td align="center">
-															<input type="text" class="form-control input-small rightJustified" name="qtyhadiah2" id="qtyhadiah2" value="0">
-														</td>
-														
-														
-													</tr>
-
-													<tr>
-														<td>&nbsp;</td>
-														<td align="center"> 3 </td>			  
-														<td align="center">
-															<select name="promo[]" class="form-control select2_el_promo input-medium">
-															<option value="">--- Pilih Promo1 ---</option>
-															</select>
-														</td>
-
-														<td align="center">
-															<select name="hadiah[]" class="form-control select2_el_hadiah input-medium">
-															<option value="">--- Pilih Hadiah1 ---</option>
-															</select>
-														</td>												  
-														<td align="center"><input type="text" class="form-control rightJustified input-small" name="qtyhadiah[]" id="qtyhadiah1" value="0"></td>
-														
-														
-													</tr>
-
-													<tr>
-														<td>&nbsp;</td>
-														<td align="center"> 4 </td>			  
-														<td align="center">
-															<select name="promo[]" class="form-control select2_el_promo input-medium">
-															<option value="">--- Pilih Promo1 ---</option>
-															</select>
-														</td>
-
-														<td align="center">
-															<select name="hadiah[]" class="form-control select2_el_hadiah input-medium">
-															<option value="">--- Pilih Hadiah1 ---</option>
-															</select>
-														</td>												  
-														<td align="center"><input type="text" class="form-control rightJustified input-small" name="qtyhadiah[]" id="qtyhadiah1" value="0"></td>
-														
-														
-													</tr>
-
-													<tr>
-														<td>&nbsp;</td>
-														<td align="center"> 5 </td>			  
-														<td align="center">
-															<select name="promo[]" class="form-control select2_el_promo input-medium">
-															<option value="">--- Pilih Promo1 ---</option>
-															</select>
-														</td>
-
-														<td align="center">
-															<select name="hadiah[]" class="form-control select2_el_hadiah input-medium">
-															<option value="">--- Pilih Hadiah1 ---</option>
-															</select>
-														</td>												  
-														<td align="center"><input type="text" class="form-control rightJustified input-small" name="qtyhadiah[]" id="qtyhadiah1" value="0"></td>
-														
-														
-													</tr>
-													
-													
-												</div>
+										<div class="portlet-title">
+											<div class="caption">
+												<i class="fa fa-reorder"></i><b>PROMO</b>
 											</div>
-										</table>
-									</div>
-								</div> 
+										</div>		
+
+										<div class="portlet-body">		
+											<table class="table table-hoverx table-striped table-bordered table-condensed table-scrollable" width="100%" border="0">
+												<div class="col-md-12">
+													<div class="form-group">
+													<thead class="breadcrumb">
+														<tr>														
+															<td class="breadcrumb title-white" align="center" width="10%" halign="justify"><b>No</b></td>
+															<td class="breadcrumb title-white" align="center" width="30%" halign="justify"><b>Promo</b></td>
+															<td class="breadcrumb title-white" align="center" width="30%" halign="justify"><b>Hadiah</b></td>
+															<td class="breadcrumb title-white" align="center" width="30%" halign="justify"><b>Qty</b></td>
+
+														</tr>
+														
+													</thead>
+														<tr>
+															<td align="center"> 1 </td>			  
+															<td align="center">
+																<select name="promo1" class="form-control select2_el_promo input-medium">
+																<option value="">--- Pilih Promo1 ---</option>
+																</select>
+															</td>
+
+															<td align="center">
+																<select name="hadiah1" class="form-control select2_el_hadiah input-medium">
+																<option value="">--- Pilih Hadiah1 ---</option>
+																</select>
+															</td>													  
+															<td align="center">
+																<input type="text" class="form-control input-small rightJustified" name="qtyhadiah1" id="qtyhadiah1" value="0">
+															</td>
+															
+															
+														</tr>
+
+														<tr>
+															<td align="center"> 2 </td>			  
+															<td align="center">
+																<select name="promo2" class="form-control select2_el_promo input-medium">
+																<option value="">--- Pilih Promo2 ---</option>
+																</select>
+															</td>
+
+															<td align="center">
+																<select name="hadiah2" class="form-control select2_el_hadiah input-medium">
+																<option value="">--- Pilih Hadiah2 ---</option>
+																</select>
+															</td>													  
+															<td align="center">
+																<input type="text" class="form-control input-small rightJustified" name="qtyhadiah2" id="qtyhadiah2" value="0">
+															</td>
+															
+															
+														</tr>
+
+														<tr>
+															<td align="center"> 3 </td>			  
+															<td align="center">
+																<select name="promo[]" class="form-control select2_el_promo input-medium">
+																<option value="">--- Pilih Promo1 ---</option>
+																</select>
+															</td>
+
+															<td align="center">
+																<select name="hadiah[]" class="form-control select2_el_hadiah input-medium">
+																<option value="">--- Pilih Hadiah1 ---</option>
+																</select>
+															</td>												  
+															<td align="center"><input type="text" class="form-control rightJustified input-small" name="qtyhadiah[]" id="qtyhadiah1" value="0"></td>
+															
+															
+														</tr>
+
+														<tr>
+															<td align="center"> 4 </td>			  
+															<td align="center">
+																<select name="promo[]" class="form-control select2_el_promo input-medium">
+																<option value="">--- Pilih Promo1 ---</option>
+																</select>
+															</td>
+
+															<td align="center">
+																<select name="hadiah[]" class="form-control select2_el_hadiah input-medium">
+																<option value="">--- Pilih Hadiah1 ---</option>
+																</select>
+															</td>												  
+															<td align="center"><input type="text" class="form-control rightJustified input-small" name="qtyhadiah[]" id="qtyhadiah1" value="0"></td>
+															
+															
+														</tr>
+
+														<tr>
+															<td align="center"> 5 </td>			  
+															<td align="center">
+																<select name="promo[]" class="form-control select2_el_promo input-medium">
+																<option value="">--- Pilih Promo1 ---</option>
+																</select>
+															</td>
+
+															<td align="center">
+																<select name="hadiah[]" class="form-control select2_el_hadiah input-medium">
+																<option value="">--- Pilih Hadiah1 ---</option>
+																</select>
+															</td>												  
+															<td align="center"><input type="text" class="form-control rightJustified input-small" name="qtyhadiah[]" id="qtyhadiah1" value="0"></td>
+															
+															
+														</tr>
+														
+														
+													</div>
+												</div>
+											</table>
+										</div>
+									</div>  -->
 									<!-- <div class="col-md-2">
 									</div>
 									
@@ -311,60 +306,36 @@
 										
 										<div class="portlet-body form">									
 										    <div class="form-body">
-											   <table class="table">
-											    <tr>
-												  <td><input type="checkbox" name="adapromo" value="Y"> Ada Promo</td>												  
-												  <td></td>
-												  
-												</tr>
-												<tr>
-												  <td>PROMO 1</td>												  
-												  <td>
-												     <select name="promo1" class="form-control select2_el_promo input-medium">
-													   <option value="">--- Pilih Promo1 ---</option>
-													 </select>
-												  </td>
-												  
-												</tr>
-												<tr>
-												  <td>HADIAH 1</td>												  
-												  <td>QTY</td>
-												  
-												</tr>
-												<tr>
-												  <td>
-												     <select name="hadiah1" class="form-control select2_el_hadiah input-medium">
-													   <option value="">--- Pilih Hadiah1 ---</option>
-													 </select>
-												  </td>												  
-												  <td><input type="text" class="form-control rightJustified" name="qtyhadiah1" id="qtyhadiah1" value="0"></td>
-												  
-												</tr>
-												<tr>
-												  <td>PROMO 2</td>												  
-												  <td>
-												     <select name="promo2" class="form-control select2_el_promo input-medium">
-													   <option value="">--- Pilih Promo2 ---</option>
-													 </select>
-												  </td>
-												  
-												</tr>
-												<tr>
-												  <td>HADIAH 2</td>												  
-												  <td>QTY</td>
-												  
-												</tr>
-												<tr>
-												  <td>
-												     <select name="hadiah2" class="form-control select2_el_hadiah input-medium">
-													   <option value="">--- Pilih Hadiah2 ---</option>
-													 </select>
-												  </td>												  
-												  <td><input type="text" class="form-control rightJustified" name="qtyhadiah2" id="qtyhadiah2" value="0"></td>
-												  
-												</tr>
-												
-											  </table>
+											   <table class="table" width="100%" border="0">
+													<div class="col-md-6">
+													<div class="form-group">
+														<tr>
+														<td width="20%" style="border-bottom:none;background: #0855d5;"  class="title-white"><b>&nbsp;ADA PROMO ?</b></td>
+
+														<td width="10%" style="font-weight:bold;border-top:none;" align="center" >&nbsp;ADA
+														</td>
+
+														<td width="10%" style="font-weight:bold;border-top:none;" align="center">TIDAK
+														</td>
+														</tr>
+														<tr>
+														<td >&nbsp;
+														</td>
+														<td style="font-weight:bold;border-top:none;">
+															<input type="checkbox" name="adapromo" class="form-control cekpromo" value=1
+															onclick="cekpro(1)" id="adapromo">
+														</td>
+
+														<td style="font-weight:bold;border-top:none;" >
+															<input type="checkbox" checked="checked" name="adapromo" class="form-control cekpromo"
+															onclick="cekpro(2)" value=0 id="tidakadapromo">
+														</td>
+														<td width="80%" style="border-top:none;"></td>
+														</tr>
+
+													</div>
+													</div>
+												</table>
 											</div>
 										 
 										</div>
@@ -373,7 +344,7 @@
 								 </div> -->
 								 <div class="row">
 									<div class="col-md-12">
-									   <div class="portlet box blue">
+									   <div class="portlet box red">
 										<div class="portlet-title">
 											<div class="caption">
 												<i class="fa fa-reorder"></i>
@@ -430,19 +401,21 @@
 
                                 <div class="row">								
 									<div class="col-md-12">
-									   <div class="portlet ">
+									   <div class="portlet box blue">
 										<div class="portlet-title">
-											<div class="caption">
-												<i class="fa fa-reorder"></i>
-												<span class="label label-warning">PEMBAYARAN</span>
+										<div class="caption">
+                                                <div class="caption">
+                                                    <i class="fa fa-reorder"></i><b> PEMBAYARAN</b>
+                                                </div>
 											</div>
 											
 											
 										</div>
-										<span class="label label-info">ELECTRONIC (DEBET/CREDIT/TRANFER/EMONEY)</span> 
-										<div class="portlet-body form">	
+										<div class="portlet-body form">
                                             										
 											<div class="form-body">
+												<span class="label label-info"><b>ELECTRONIC (DEBET/CREDIT/TRANFER/EMONEY)</b></span> 
+
 										        <div class="row">
 												 <div class="col-md-12">
                                                    	<table id="datatable_pembayaran" class="table table-hoverx table-stripedx table-borderedx table-condensed table-scrollable">
@@ -458,25 +431,63 @@
                     								</thead>
 													
                     								<tbody>
-													<tr>													   
-                                                        <td width="20%">
-														    <select name="bayar_bank[]" id="bayar_bank1" class="select2_el_kasbankedc form-control input-largex">															 
-															</select>												
-														</td>
-														<td width="10%">
-														    <select name="bayar_tipe[]" id="bayar_tipe1" class="form-control select2">
-                                                              <option value="1">DEBIT</option>	
-															  <option value="2">CREDIT CARD</option>
-															  <option value="3">TRANFER</option>
-															</select>												
-														</td>
-														<td width="15%"><input name="bayar_nokartu[]" class="form-control"></td>								
-						                                <td width="10%"><input name="bayar_trvalid[]"  onchange="totalline_bayar(1)" value="0"  type="text" class="form-control rightJustified"  ></td>
-														<td width="15%"><input name="bayar_nilai[]"   onchange="totalline_bayar(1)" value="0"  type="text" class="form-control rightJustified "  ></td>
-														<td width="10%"><input name="bayar_adm[]"   onchange="totalline_bayar(1)" value="0"  type="text" class="form-control rightJustified "  ></td>
-                                                        <td width="20%"><input name="bayar_total[]"  type="text" class="form-control rightJustified" readonly></td>
-                                                       
-								                      </tr>
+														<?php if($kredit) : ?>
+														<?php $no = 1; foreach($kredit as $k) : ?>
+														<tr>
+															<td width="20%">
+																<select name="bayar_bank[]" id="bayar_bank<?= $no; ?>"
+																class="select2_el_kasbank form-control input-large">
+																<option value="<?= $k->bankcode; ?>"><?= $k->namabank; ?></option>
+																</select>
+															</td>
+															<td width="10%">
+																<select name="bayar_tipe[]" id="bayar_tipe<?= $no; ?>" class="form-control select2">
+																<option <?= ($k->cardtype == '1' ? 'selected' : '') ?> value="1">DEBIT</option>
+																<option <?= ($k->cardtype == '2' ? 'selected' : '') ?> value="2">CREDIT CARD
+																</option>
+																<option <?= ($k->cardtype == '3' ? 'selected' : '') ?> value="3">TRANFER</option>
+																</select>
+															</td>
+															<td width="15%"><input name="bayar_nokartu[]" id="bayar_nokartu<?= $no; ?>"
+																value="<?= $k->nocard; ?>" class="form-control"></td>
+															<td width="10%"><input name="bayar_trvalid[]" id="bayar_trvalid<?= $no; ?>"
+																onchange="totalline_bayar(1)" value="<?= $k->nootorisasi; ?>" type="text"
+																class="form-control rightJustified"></td>
+															<td width="15%"><input name="bayar_nilai[]" id="bayar_nilai<?= $no; ?>"
+																onchange="totalline_bayar(1)" value="<?= number_format($k->jumlahbayar); ?>"
+																type="text" class="form-control rightJustified "></td>
+															<td width="10%"><input name="bayar_adm[]" id="bayar_adm<?= $no; ?>"
+																onchange="totalline_bayar(1)" value="<?= number_format($k->admpersen); ?>"
+																type="text" class="form-control rightJustified "></td>
+															<td width="20%"><input name="bayar_total[]" id="bayar_total<?= $no; ?>" type="text"
+																value="<?= number_format($k->totalcardrp); ?>" class="form-control rightJustified"
+																readonly></td>
+
+														</tr>
+														<?php $no++; endforeach; ?>
+														<?php else : ?>
+													
+														<tr>													   
+															<td width="20%">
+																<select name="bayar_bank[]" id="bayar_bank1" class="select2_el_kasbankedc form-control input-largex">															 
+																</select>												
+															</td>
+															<td width="10%">
+																<select name="bayar_tipe[]" id="bayar_tipe1" class="form-control select2">
+																<option value="1">DEBIT</option>	
+																<option value="2">CREDIT CARD</option>
+																<option value="3">TRANFER</option>
+																</select>												
+															</td>
+															<td width="15%"><input name="bayar_nokartu[]" class="form-control"></td>								
+															<td width="10%"><input name="bayar_trvalid[]"  onchange="totalline_bayar(1)" value="0"  type="text" class="form-control rightJustified"  ></td>
+															<td width="15%"><input name="bayar_nilai[]"   onchange="totalline_bayar(1)" value="0"  type="text" class="form-control rightJustified "  ></td>
+															<td width="10%"><input name="bayar_adm[]"   onchange="totalline_bayar(1)" value="0"  type="text" class="form-control rightJustified "  ></td>
+															<td width="20%"><input name="bayar_total[]"  type="text" class="form-control rightJustified" readonly></td>
+														
+														</tr>
+														
+														<?php endif; ?>
                     								
 								                    </tbody>
 													  
@@ -499,7 +510,7 @@
 								</div>	
 								
 								<div class="row">
-								  <div class="col-md-4">
+								  <div class="col-md-9">
 								   <table class="table">
 											  
 												<tr>
@@ -518,8 +529,16 @@
 												  
 												</tr>
 												<tr>
-												  <td>KEMBALI RP</td>												  
-												  <td><input type="text" class="form-control total rightJustified" name="kembalirp" id="kembalirp" value="<?= $kasir->kembali;?>" readonly></td>
+													<td>KEMBALI RP</td>												  
+													<td><input type="text" class="form-control total rightJustified" name="kembalirp" id="kembalirp" value="<?= $kasir->kembali;?>" readonly></td>
+													<td style="border-top:none;">
+														<span id="pertanyaan">Auto ke uang muka</span></td>
+													<td style="border-top:none;" width="10%">
+														<input type="checkbox" id="uangmukakembaliya" name="kembaliuang" <?= ($kasir->kembalikeuangmuka == 1 ? 'checked' : '') ?> value="1"><span id="textya"></span>
+													</td>
+													<td style="border-top:none;" width="10%">
+														<input type="checkbox" id="uangmukakembalitidak" name="kembaliuang" <?= ($kasir->kembalikeuangmuka == 0 ? 'checked' : '') ?> value="0"><span id="texttidak">Kembali ke pasien</span>
+													</td>
 												  
 												</tr>
 											  </table>
@@ -534,7 +553,8 @@
 								
 								   
 									<!--button id="btnsimpan_bayar" type="button" onclick="save_bayar()" class="btn blue"><i class="fa fa-save"></i> UPDATE</button-->
-									<a class="btn yellow print_laporan" onclick="javascript:window.open(_urlcetak(),'_blank');" ><i class="fa fa-print"></i> CETAK KWITANSI</a>
+									<a class="btn yellow print_laporan" onclick="javascript:window.open(_urlcetak(1),'_blank');" ><i class="fa fa-print"></i> CETAK KWITANSI</a>
+									<a class="btn yellow print_laporan" id="btncetak_jaminan" onclick="javascript:window.open(_urlcetak(2),'_blank');" ><i class="fa fa-print"></i> CETAK JAMINAN</a>
                                        									
 									<a href="<?= base_url('kasir_obat')?>" class="btn btn red">TUTUP</a>
 									<h4><span id="error" style="display:none; color:#F00">Terjadi Kesalahan... </span> <span id="success" style="display:none; color:#0C0">Data sudah disimpan...</span></h4>								
@@ -988,12 +1008,16 @@ function total_net(){
 }	
   
   
-function _urlcetak()
+function _urlcetak(param)
 {
 	var baseurl = "<?php echo base_url()?>";
 	var nokwitansi= $('[name="nokwitansi"]').val();				
 	var noresep= $('[name="noresep"]').val();				
+	if(param == 1){
     return baseurl+'kasir_obat/cetak/?kwitansi='+nokwitansi+'&resep='+noresep;
+	} else {
+    return baseurl+'kasir_obat/cetak_jaminan/?kwitansi='+nokwitansi+'&resep='+noresep;
+	}
 }
 
 	
@@ -1011,6 +1035,10 @@ jQuery(document).ready(function() {
    
 });
 	
+
+$("input[name='kembaliuang']").on('change', function() {
+	$("input[name='kembaliuang']").not(this).prop('checked', false);
+});
 </script>
 
 

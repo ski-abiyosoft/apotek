@@ -10,6 +10,7 @@ class Penjualan_faktur extends CI_Controller{
 		$this->session->set_userdata('submenuapp', '3201');
 		$this->load->helper('simkeu_nota1');
 		$this->load->helper('simkeu_nota');
+		$this->load->model('M_pasien','M_pasien');
 	}
 
 	public function index(){
@@ -115,12 +116,21 @@ class Penjualan_faktur extends CI_Controller{
 		}
 	}
 
+<<<<<<< HEAD
 	public function cetak(){
     setlocale(LC_ALL, 'id_ID.utf8');
 		$cek = $this->session->userdata('level');
 		$unit = $this->session->userdata('unit');
 		$user = $this->session->userdata('username');
 		$nobukti = $this->input->get('nobukti');
+=======
+	public function cetak()
+	{
+		$cek        = $this->session->userdata('level');
+		$unit       = $this->session->userdata('unit');
+		$user       = $this->session->userdata('username');
+		$nobukti    = $this->input->get('nobukti');
+>>>>>>> development
 		if (!empty($cek)) {
 
 			// $unit          = $this->session->userdata('unit');
@@ -133,7 +143,8 @@ class Penjualan_faktur extends CI_Controller{
 
 			$queryh        = "SELECT * from tbl_apohresep where resepno = '$param'";
 			$queryd        = "SELECT * from tbl_apodresep where resepno = '$param' AND koders='$unit'";
-			$detil_r        = "SELECT * from tbl_apodetresep where resepno = '$param' AND koders='$unit'";
+			$detil_r       = "SELECT *, (SELECT aturanpakai FROM tbl_aporacik WHERE resepno = tbl_apodetresep.resepno) as aturanpakai,
+			(SELECT namaracikan FROM tbl_aporacik WHERE resepno = tbl_apodetresep.resepno) as namaracikan from tbl_apodetresep where resepno = '$param' AND koders='$unit'";
 			$queryr        = "SELECT * from tbl_aporacik where resepno = '$param' AND koders='$unit'";
 			// $queryd =$this->db->query("SELECT a.diskonrp, a.totalrp , b.namabarang, b.qty, b.price, b.totalrp FROM tbl_aporacik AS a
 			// JOIN tbl_apodresep AS b ON a.resepno = b.resepno
@@ -142,9 +153,9 @@ class Penjualan_faktur extends CI_Controller{
 
 			$queryb        = "SELECT * from tbl_apoposting  where resepno = '$param'";
 			$detil         = $this->db->query($queryd)->result();
-			$rck         = $this->db->query($detil_r)->result();
+			$rck           = $this->db->query($detil_r)->result();
 			// var_dump($rck);die;
-			$racikan 	   = $this->db->query($queryr)->row_array();
+			$racikan       = $this->db->query($queryr)->row_array();
 			$header        = $this->db->query($queryh)->row();
 			$posting       = $this->db->query($queryb)->row();
 			$data_pasien   = data_master('tbl_pasien', array('rekmed' => $header->rekmed));
@@ -169,38 +180,45 @@ class Penjualan_faktur extends CI_Controller{
 			$pdf->FancyRow2(10, $judul, $fc,  $border, $align, $style, $size, $max);
 			$pdf->ln(1);
 			$pdf->setfont('Arial', 'B', 10);
-			$pdf->SetWidths(array(25, 5, 40, 30, 5, 40, 50));
-			$border = array('', '', '', '', '', '', '');
-			$fc     = array('0', '0', '0', '0', '0', '0', '0');
+			$pdf->SetWidths(array(25, 5, 60, 30, 5, 50));
+			$border = array('', '', '', '', '', '');
+			$fc     = array('0', '0', '0', '0', '0', '0');
 			$pdf->SetFillColor(230, 230, 230);
 			$pdf->setfont('Arial', '', 9);
+<<<<<<< HEAD
       $tglresep = new DateTime($header->tglresep);
 			$pdf->FancyRow(array('No. Resep', ':', $header->resepno, 'Tanggal Resep', ':', strftime('%A, %d %B %Y', $tglresep->getTimestamp()),), $fc, $border);
 			$pdf->FancyRow(array('Nama Pasien', ':', $posting->namapas, 'No. Registrasi', ':', $header->noreg), $fc, $border);
 			$pdf->FancyRow(array('No. Member', ':', $header->rekmed, 'Alamat Kirim', ':', $data_pasien->alamat), $fc, $border);
+=======
+			$pdf->FancyRow(array('No. Resep', ':', $header->resepno, 'Tanggal Resep', ':', date('d M Y', strtotime($header->tglresep)),), $fc, $border);
+			$pdf->FancyRow(array('Nama Pasien', ':', $posting->namapas, 'Alamat Kirim', ':', $data_pasien->alamat), $fc, $border);
+			$pdf->FancyRow(array('No. Member', ':', $header->rekmed, '', '', ''), $fc, $border);
+>>>>>>> development
 			$pdf->ln(10);
 
-			$pdf->SetWidths(array(10, 20, 40, 20, 10, 25, 25, 25, 15));
-			$border = array('LTBR', 'LTBR', 'LTBR', 'LTBR', 'LTBR', 'LTBR', 'LTBR', 'LTBR', 'LTBR');
-			$align  = array('C', 'C', 'C', 'C', 'C', 'C', 'C', 'C', 'C');
+			$pdf->SetWidths(array(10, 25, 25, 30, 20, 20, 20, 20, 20, 20));
+			$border = array('LTBR', 'LTBR', 'LTBR', 'LTBR', 'LTBR', 'LTBR', 'LTBR','LTBR', 'LTBR');
+			$align  = array('C', 'C', 'C', 'C', 'C', 'C', 'C','C', 'C');
 			$pdf->setfont('Arial', 'B', 9);
 			$pdf->SetAligns(array('L', 'C', 'R'));
 			//$pdf->SetFillColor(0,0,139);
 			//$pdf->settextcolor(255,255,255);
-			$fc = array('0', '0', '0', '0', '0', '0', '0', '0', '0');
-			$judul = array('No.', 'Kode', 'Nama', 'Jenis TR', 'QTY', 'Harga', 'Diskon', 'Total', 'Aturan');
+			$fc = array('0', '0', '0', '0', '0', '0', '0','0', '0');
+			$judul = array('No.', 'Kode Obat', 'Nama Obat', 'Jenis Tr', 'Jumlah', 'Harga Sat', 'Diskon', 'Total Rp', 'Pakai');
 			$pdf->FancyRow2(8, $judul, $fc, $border, $align);
 			$border = array('', '', '');
 			$pdf->setfont('Arial', '', 9);
 			// $Subtot = 0;
 			// $tdisc  = 0;
-			$border = array('', '', '', '', '', '', '', '', '');
-			$border = array('LTBR', 'LTBR', 'LTBR', 'LTBR', 'LTBR', 'LTBR', 'LTBR', 'LTBR', 'LTBR');
-			$borderx = array('', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B');
-			$align  = array('C', 'L', 'L', 'C', 'R', 'R', 'R', 'R', 'C');
-			$fc = array('0', '0', '0', '0', '0', '0', '0', '0', '0');
+			$border = array('', '', '', '', '', '', '','', '');
+			$border = array('LTBR', 'LTBR', 'LTBR', 'LTBR', 'LTBR', 'LTBR', 'LTBR','LTBR', 'LTBR');
+			$borderx = array('', 'B', 'B', 'B', 'B', 'B', 'B','B', 'B');
+			$align  = array('C', 'L', 'L', 'C', 'R', 'R', 'R','R', 'C');
+			$fc = array('0', '0', '0', '0', '0', '0', '0','0', '0');
 			$pdf->SetFillColor(0, 0, 139);
 			$pdf->settextcolor(0);
+<<<<<<< HEAD
 			$no = 1;
 			$Tot = 0;
 			$Totdisc = 0;
@@ -212,64 +230,84 @@ class Penjualan_faktur extends CI_Controller{
 			$hargamanual = 0;
 			$ttlhargax = 0;
 			$hrgR = 0;
+=======
+			$no            = 1;
+			$Tot           = 0;
+			$Totdisc       = 0;
+			$Totsub        = 0;
+			$jumlahObat    = 0;
+			$ppn           = 0;
+			$tot           = 0;
+			$ttlharga      = 0;
+			$ttlhargax     = 0;
+			$hrgR          = 0;
+>>>>>>> development
 
-			$jmlRsp = 0;
-			$ttlDisc = 0;
-			$ttlSubRsp = 0;
-			$ppnRsp = 0;
-			$ttlhargaRsp = 0;
-			$ttlRsp = 0;
-			$dpp = 0;
-			$TOTAL = 0;
-			$cekdpp = 0;
-			$DiskonPersen = 0;
-			$ongkos = 0;
-			$totaluangr = 0;
+			$jmlRsp        = 0;
+			$ttlDisc       = 0;
+			$ttlSubRsp     = 0;
+			$ppnRsp        = 0;
+			$ttlhargaRsp   = 0;
+			$ttlRsp        = 0;
+			$dpp           = 0;
+			$TOTAL         = 0;
+			$cekdpp        = 0;
+			$DiskonPersen  = 0;
+			$ongkos        = 0;
+			$totaluangr    = 0;
 			$racik = $this->db->query("SELECT a.namaracikan, a.jumlahracik, a.kemasanracik, a.aturanpakai ,
 			a.totalrp, a.diskonrp, a.ongkosracik, b.namabarang , b.resepno FROM tbl_aporacik AS a
 			JOIN tbl_apodresep AS b ON a.resepno = b.resepno
 			WHERE b.resepno ='$param'")->result();
 
-			$query_ppn = $this->db->query("SELECT * FROM tbl_pajak where kodetax='PPN'")->result();
-			$cekppn2 = $query_ppn[0]->prosentase / 100;
-			$td = 0;
-			$tr = 0;
-			$ppnx = 0;
-			$Totdiscx = 0;
+			$query_ppn   = $this->db->query("SELECT * FROM tbl_pajak where kodetax='PPN'")->result();
+			$cekppn2     = $query_ppn[0]->prosentase / 100;
+			$td          = 0;
+			$tr          = 0;
+			$ppnx        = 0;
+			$Totdiscx    = 0;
 
 
 			foreach ($detil as $db1) {
 
-				$diskon = (int)$db1->qty * (int)$db1->price * (int)$db1->discount / 100;
-				$diskonx = $db1->discrp;
-				$ttlrp = $db1->qty * $db1->price - $diskonx;
+				$diskon       = (int)$db1->qty * (int)$db1->price * (int)$db1->discount / 100;
+				$diskonx      = $db1->discrp;
+				$ttlrp        = $db1->qty * $db1->price - $diskonx;
 
 				// right
-				$cekdpp += 111 / 100;
-				$jumlahObat +=  $db1->qty;
-				$Totdisc  += $diskon;
-				$Totdiscx  += $diskonx;
+				$cekdpp       += 111 / 100;
+				$jumlahObat   += $db1->qty;
+				$Totdisc      += $diskon;
+				$Totdiscx     += $diskonx;
 				// $DiskonPersen += $db1->discount;
 
-				$ttlharga +=  $db1->qty * $db1->price;
-				$tot      = ($ttlharga - $Totdisc);
-				$ppn      = ($ttlharga - $Totdisc) * $cekppn2;
-				$TOTAL = $tot  + $ppn;
-				$dpp =  ($TOTAL - $Totdisc) / (111 / 100);
+				$ttlharga     += $db1->qty * $db1->price;
+				$tot          = ($ttlharga - $Totdisc);
+				$ppn          = ($ttlharga - $Totdisc) * $cekppn2;
+				$TOTAL        = $tot  + $ppn;
+				$dpp          = ($TOTAL - $Totdisc) / (111 / 100);
 
-				$td += $ttlrp;
+				$td           += $ttlrp;
 				//   $dx = $db1->discount/100;
 				//   $dxx = $dx*$db1->price;
+				if($header->kodepel == 'adr'){
+					$kodepel = 'Apotik Dengan Resep';
+				} else if ($header->kodepel == 'atr') {
+					$kodepel = 'Apotik Tanpa Resep';
+				} else {
+					$kodepel = $header->kodepel;
+				}
+				$atx = $this->db->query("SELECT * from tbl_barangsetup where  apocode='$db1->atpakai'")->row();
 				$pdf->FancyRow(array(
 					$no,
 					$db1->kodebarang,
 					$db1->namabarang,
-					$header->kodepel,
+					$kodepel,
 					number_format($db1->qty, 0, ',', '.'),
 					number_format($db1->price, 0, ',', '.'),
 					number_format($diskonx, 0, ',', '.'),
 					number_format($ttlrp, 0, ',', '.'),
-					$db1->atpakai
+					$atx->aponame,
 				), $fc, $border, $align);
 
 				$no++;
@@ -304,7 +342,15 @@ class Penjualan_faktur extends CI_Controller{
 				), $fc, $border, $align);
 				foreach ($rck as $rck) {
 
+					if ($header->kodepel == 'adr') {
+						$kodepel = 'Apotik Dengan Resep';
+					} else if ($header->kodepel == 'atr') {
+						$kodepel = 'Apotik Tanpa Resep';
+					} else {
+						$kodepel = $header->kodepel;
+					}
 
+<<<<<<< HEAD
 					$diskon = $rck->qty * $rck->price * $racikan['diskon'] / 100;
 					$ttlrp = $rck->qty * $rck->price;
 					$tr += $rck->totalrp;
@@ -323,6 +369,28 @@ class Penjualan_faktur extends CI_Controller{
 					// 	number_format((!isset($rck->totalrp) ? 0 : $rck->totalrp), 0, ',', '.'),
 					// 	$atpk->aponame
 					// ), $fc, $border, $align);
+=======
+
+					$diskon        = $rck->qty * $rck->price * $racikan['diskon'] / 100;
+					$ttlrp         = $rck->qty * $rck->price;
+					$tr            += $rck->totalrp;
+					$totaluangr    += $rck->uangr;
+					$atx           = $this->db->query("SELECT * from tbl_barangsetup where  apocode='$rck->aturanpakai'")->row();
+					$pdf->FancyRow(array(
+						$no,
+						$rck->kodebarang,
+						("** $rck->namaracikan"),
+						$kodepel,
+						number_format($rck->qty, 0, ',', '.'),
+						number_format($rck->price, 0, ',', '.'),
+						//   number_format($racikan->diskonrp, 0, ',', '.'),
+						//   number_format($racikan->totalrp, 0, ',', '.')),$fc, $border, $align);
+						// number_format((!isset($diskon) ? 0 :$diskon), 0, ',', '.'),
+						'-',
+						number_format((!isset($rck->totalrp) ? 0 : $rck->totalrp), 0, ',', '.'),
+						$atx->aponame,
+					), $fc, $border, $align);
+>>>>>>> development
 
 					$ongkos = ($racikan['ongkosracik']);
 
@@ -340,13 +408,13 @@ class Penjualan_faktur extends CI_Controller{
 					$no++;
 				}
 			}
-			$diskonracik = $racikan['diskonrp'];
-			$ppnx = $td * $cekppn2;
-			$ppnxx = $racikan['ppnrp'];
-			$totalx = $td + ($tr - $diskonracik) + $ppnx + $ongkos;
+			$diskonracik   = $racikan['diskonrp'];
+			$ppnx          = $td * $cekppn2;
+			$ppnxx         = $racikan['ppnrp'];
+			$totalx        = $td + ($tr - $diskonracik) + $ppnx + $ongkos;
 
-			$dpp_done = $td / (111 / 100);
-			$ppn_done = $dpp_done * $cekppn2;
+			$dpp_done      = $td / (111 / 100);
+			$ppn_done      = $dpp_done * $cekppn2;
 
 
 			$pdf->ln();
@@ -446,7 +514,7 @@ class Penjualan_faktur extends CI_Controller{
 			$pdf->SetMargins(10, 10, 10, 10);
 			$pdf->FancyRow(array('PPN Resep', number_format($ppn_done, 0, ',', '.')), $fc, $border, $align, $style, $size);
 			$pdf->SetMargins(10, 10, 10, 10);
-			$pdf->FancyRow(array('Total Resep', number_format($td, 0, ',', '.')), $fc, $borderx, $align, $style, $size);
+			$pdf->FancyRow(array('Total Resep', number_format($td, 0, ',', '.')), $fc, $border, $align, $style, $size);
 			$pdf->SetMargins(10, 10, 10, 10);
 			if ($ttlhargax != 0) {
 				// $pdf->FancyRow(array("Sub Total Racik", number_format($ttlhargax, 0, ',', '.')), $fc, $border, $align, $style, $size);
@@ -469,14 +537,42 @@ class Penjualan_faktur extends CI_Controller{
 				$pdf->SetMargins(10, 10, 10, 10);
 			}
 			$ttlracikan = $racikan['totalrp'];
+			$cek_racik = $this->db->get_where("tbl_aporacik", ["resepno" => $param])->row();
+			
+			if($cek_racik){
+				if ($cek_racik->harga_manual > 0) {
+					$harga_asli = $cek_racik->harga_manual;
+				} else {
+					$harga_asli = $ttlracikan;
+				}
+			}else{
+				$harga_asli = 0;
+			}
 			if ($ttlracikan != 0) {
+<<<<<<< HEAD
 				// $pdf->FancyRow(array('Total Racik', number_format($ttlracikan, 0, ',', '.')), $fc, $borderx, $align, $style, $size);
 				$pdf->FancyRow(array('Total Racik', number_format($hargamanual, 0, ',', '.')), $fc, $borderx, $align, $style, $size);
+=======
+				$pdf->FancyRow(array('Total Racik', number_format($harga_asli, 0, ',', '.')), $fc, $border, $align, $style, $size);
+>>>>>>> development
 				$pdf->SetMargins(10, 10, 10, 10);
 			}
+			if ($header->ongkoskirim != 0) {
+				$pdf->FancyRow(array('Ongkos Kirim', number_format($header->ongkoskirim, 0, ',', '.')), $fc, $borderx, $align, $style, $size);
+				$pdf->SetMargins(10, 10, 10, 10);
+			}
+			if ($header->ongkoskirim != 0) {
+				$ongkir = $header->ongkoskirim;
+			} else {
+				$ongkir = 0;
+			}
 			// $pdf->FancyRow(array('DPP',number_format($dpp ,0,',','.')),$fc, $border, $align, $style, $size);
+<<<<<<< HEAD
 			// $pdf->FancyRow(array('Total Net', number_format(($td) + ($ttlracikan), 0, ',', '.')), $fc, $border, $align, $style, $size);
 			$pdf->FancyRow(array('Total Net', number_format(($td) + ($hargamanual), 0, ',', '.')), $fc, $border, $align, $style, $size);
+=======
+			$pdf->FancyRow(array('Total Net', number_format(($td) + ($harga_asli) + ($ongkir), 0, ',', '.')), $fc, $border, $align, $style, $size);
+>>>>>>> development
 			// var_dump($totsub);die;
 			$pdf->settextcolor(0);
 			$pdf->SetWidths(array(60, 60, 60));
@@ -958,6 +1054,57 @@ class Penjualan_faktur extends CI_Controller{
 		echo json_encode($nobukti);
 	}
 
+	public function save_pasien()
+	{
+		$user               = $this->session->userdata('username');
+		$cabang             = $this->session->userdata('unit');
+		
+		$c_lupnamapasienx   = $this->input->post('lupnamapasien');
+		$c_lupnamapasien    = preg_replace('/\s+/', ' ', $c_lupnamapasienx);
+		$c_vpenjamin        = $this->input->post('vpenjamin');
+		$c_lupidentitas     = $this->input->post('lupidentitas');
+		$c_lupnoidentitas   = $this->input->post('lupnoidentitas');
+		$c_no_bpjs          = $this->input->post('no_bpjs');
+		$c_luppreposition   = $this->input->post('luppreposition');
+		$c_luphp            = $this->input->post('luphp');
+		$c_lupalamat        = $this->input->post('lupalamat');
+		$q                  = $this->input->post('searchTerm');
+		// echo '<pre>';
+		// print_r($q);
+		// die;
+		
+		$qry = "SELECT * from tbl_pasien where namapas = '$c_lupnamapasien' and  penjamin='$c_vpenjamin' and nocard='$c_no_bpjs' ";
+		$jumdata = $this->db->query($qry)->num_rows();
+		
+		if($jumdata>0){
+			echo json_encode(array("status" => true,"value" => 0));	
+		}else {
+		// date_default_timezone_set("Asia/Jakarta");
+		
+			$rekmed     = pasien_rekmed_baru($c_lupnamapasien);	 // time();
+			
+			// $this->_validate();
+			$data = array(
+					'rekmed'      => $rekmed,
+					'koders'      => $cabang,
+					'preposisi'   => $c_luppreposition,
+					'namapas'     => $c_lupnamapasien,
+					'handphone'   => $c_luphp,
+					'noidentitas' => $c_lupnoidentitas,
+					'alamat'      => $c_lupalamat,
+					'idpas'       => $c_lupidentitas,
+					'nocard'      => $c_no_bpjs,
+					'penjamin'    => $c_vpenjamin,
+
+				);
+
+			// print_r($data);
+			$insert = $this->M_pasien->save($data);
+		
+	  	  echo json_encode(array("status" => true,"value" => 1, "idtr" => $insert,"rekmed" => $rekmed,"nama" => $c_lupnamapasien, "alamat" => $c_lupalamat));
+		} 
+	}
+
 	public function saveracik(){
 		$param = 1;
 		$hasil    = 0;
@@ -1068,7 +1215,9 @@ class Penjualan_faktur extends CI_Controller{
 
 
 			// $jumdata   = (int)count($kodeo_1);
-			$jumdata   = $this->input->get('jml');
+			// $jumdata   = $this->input->get('jml');
+			$jumdataa    = count($kodeo_1);
+			$jumdata     = $jumdataa-1;
 			$nourut    = 1;
 			$tot       = 0;
 			$tdisc     = 0;
@@ -1078,7 +1227,7 @@ class Penjualan_faktur extends CI_Controller{
 
 
 			// print_r($qty_racik_1);
-			for ($i = 0; $i <= $jumdata - 1; $i++) {
+			for ($i = 0; $i <= $jumdata; $i++) {
 				$_kodeo_1       = $kodeo_1[$i];
 				$_namao_1       = $namao_1[$i];
 				$_sato_1        = $sato_1[$i];
@@ -1120,7 +1269,7 @@ class Penjualan_faktur extends CI_Controller{
 					'jamdresep'    => date('H-i-s'),
 				);
 
-				echo json_encode($datad, JSON_PRETTY_PRINT);
+				// echo json_encode($datad, JSON_PRETTY_PRINT);
 				if ($_kodeo_1 != "") {
 					$this->db->insert('tbl_apodetresep', $datad);
 					$cekstok = $this->db->query("SELECT * FROM tbl_barangstock WHERE kodebarang = '$_kodeo_1' AND koders = '$cabang'  AND gudang = '$gudang'")->num_rows();
@@ -1168,15 +1317,18 @@ class Penjualan_faktur extends CI_Controller{
 		$ketpakai		= $this->input->post("keterangan");
 		$gudang			= $this->input->post("gudang");
 
-		if($eresepstatus == 1){
-			$noeresep	= $this->input->post("noeresep");
-		} else {
+		// if($eresepstatus == 1){
+		// 	$noeresep	= $this->input->post("noeresep");
+		// } else {
 			$noeresep	= "";
-		}
+		// }
 
 		$ppn_pajak_insx = $this->db->get_where('tbl_pajak', ['kodetax' => 'PPN'])->row_array();
 		$ppn_pajak_ins = $ppn_pajak_insx['prosentase'] / 100;
 		if (!empty($cek)) {
+			if($dokter==''){
+				$dokter='';
+			}
 
 			switch ($pembeli) {
 				case "KULIT":
@@ -1207,6 +1359,12 @@ class Penjualan_faktur extends CI_Controller{
 				case "APOTIK":
 					$gudang = "FARMASI";
 					break;
+				case "atr":
+					$gudang = $this->input->post("gudang");
+					break;
+				case "adr":
+					$gudang = $this->input->post("gudang");
+					break;
 				default:
 					$gudang = "KOSONG";
 					break;
@@ -1230,6 +1388,10 @@ class Penjualan_faktur extends CI_Controller{
 				$jenispas = 8;
 			} else if($pembeli == 'RANAP'){
 				$jenispas = 9;
+			} else if($pembeli == 'adr'){
+				$jenispas = 10;
+			} else if($pembeli == 'atr'){
+				$jenispas = 11;
 			}
 
 			if ($param == 1) {
@@ -1419,7 +1581,8 @@ class Penjualan_faktur extends CI_Controller{
 				'noreg'     => $noreg,
 				'rekmed'    => $rekmed,
 				'namapas'   => $this->input->post('namapasien'),
-				'umurpas'   => $this->input->post('umurpas'),
+				'umurpas'   => '-',
+				// 'umurpas'   => $this->input->post('umurpas'),
 				//'gudang'  => $this->input->post('gudang'),
 				'gudang'    => $gudang,
 				'posting'   => 1,
@@ -1511,26 +1674,26 @@ class Penjualan_faktur extends CI_Controller{
 		if (!empty($cek)) {
 			$unit = $this->session->userdata('unit');
 
-			$posting = $this->db->get_where('tbl_apoposting', array('resepno' => $nomor));
-			$header = $this->db->get_where('tbl_apohresep', array('resepno' => $nomor));
-			$detil  = $this->db->select('tbl_apodresep.*, tbl_barang.namabarang as namabarang1')->join('tbl_barang', 'tbl_barang.kodebarang=tbl_apodresep.kodebarang')->get_where('tbl_apodresep', array('resepno' => $nomor));
+			$posting   = $this->db->get_where('tbl_apoposting', array('resepno' => $nomor));
+			$header    = $this->db->get_where('tbl_apohresep', array('resepno' => $nomor));
+			$detil     = $this->db->select('tbl_apodresep.*, tbl_barang.namabarang as namabarang1')->join('tbl_barang', 'tbl_barang.kodebarang=tbl_apodresep.kodebarang')->get_where('tbl_apodresep', array('resepno' => $nomor));
 
-			$header_r = $this->db->get_where('tbl_aporacik', array('resepno' => $nomor));
-			$detil_r  = $this->db->get_where('tbl_apodetresep', array('resepno' => $nomor));
-			$dresep  = $this->db->get_where('tbl_apodresep', array('resepno' => $nomor));
+			$header_r  = $this->db->get_where('tbl_aporacik', array('resepno' => $nomor));
+			$detil_r   = $this->db->get_where('tbl_apodetresep', array('resepno' => $nomor));
+			$dresep    = $this->db->get_where('tbl_apodresep', array('resepno' => $nomor));
 			$dataRacik = $this->db->query("SELECT * FROM tbl_aporacik where resepno ='$nomor'");
-			$total = $this->db->query("SELECT totalrp FROM tbl_apodetresep WHERE resepno = '$nomor'");
+			$total     = $this->db->query("SELECT totalrp FROM tbl_apodetresep WHERE resepno = '$nomor'");
 			$d['header']   = $header->row();
 			$d['detil']    = $detil->result();
 			$d['posting']  = $posting->row();
 			$d['jumdata']  = $detil->num_rows();
-			$d['dracikan']  = $detil_r->num_rows();
+			$d['dracikan'] = $detil_r->num_rows();
 			$d['noedit']   = $noedit;
 			$d['racik']    = $dataRacik->row();
 			$d['header_r'] = $header_r->row();
 			$d['detil_r']  = $detil_r->result();
 			$d['ttl']      = $total->result();
-			$d['ppn'] = $this->db->get_where('tbl_pajak', ['kodetax' => 'PPN'])->row_array();
+			$d['ppn']      = $this->db->get_where('tbl_pajak', ['kodetax' => 'PPN'])->row_array();
 
 			$this->load->view('penjualan/v_penjualan_faktur_edit2', $d);
 		} else {
@@ -1539,8 +1702,8 @@ class Penjualan_faktur extends CI_Controller{
 	}
 
 	public function update_aporacik(){
-		$cek = $this->session->userdata('level');
-		$cabang  = $this->session->userdata('unit');
+		$cek    = $this->session->userdata('level');
+		$cabang = $this->session->userdata('unit');
 		$gudang = $this->input->get('gudang');
 		if (!empty($cek)) {
 			$resepno = $this->input->get('resepno');
@@ -1550,21 +1713,21 @@ class Penjualan_faktur extends CI_Controller{
 			} else {
 				$atpakai = $atpakaix;
 			}
-			$subtotal = $this->input->get('subtotal');
-			$diskon = $this->input->get('diskon');
-			$diskonrp = $this->input->get('diskonrp');
-			$ppn = $this->input->get('ppn');
-			$ppnrp = $this->input->get('ppnrp');
-			$ongkosracik = $this->input->get('ongkosracik');
-			$totalrp = $this->input->get('totalrp');
-			$carapakai = $this->input->get('carapakai');
-			$jenisracik = $this->input->get('jenisracik');
-			$jumlahracik = $this->input->get('jumlahracik');
-			$namaracik = $this->input->get('namaracik');
-			$kemasanracik = $this->input->get('stajum');
-			$resepmanual = $this->input->get('resepmanual');
-			$harga_manual = $this->input->get('harga_manual');
-			$cek_rm = $this->input->get('cek_rm');
+			$subtotal        = $this->input->get('subtotal');
+			$diskon          = $this->input->get('diskon');
+			$diskonrp        = $this->input->get('diskonrp');
+			$ppn             = $this->input->get('ppn');
+			$ppnrp           = $this->input->get('ppnrp');
+			$ongkosracik     = $this->input->get('ongkosracik');
+			$totalrp         = $this->input->get('totalrp');
+			$carapakai       = $this->input->get('carapakai');
+			$jenisracik      = $this->input->get('jenisracik');
+			$jumlahracik     = $this->input->get('jumlahracik');
+			$namaracik       = $this->input->get('namaracik');
+			$kemasanracik    = $this->input->get('stajum');
+			$resepmanual     = $this->input->get('resepmanual');
+			$harga_manual    = $this->input->get('harga_manual');
+			$cek_rm          = $this->input->get('cek_rm');
 			$where = [
 				'koders' => $cabang,
 				'resepno' => $resepno,
@@ -1605,6 +1768,7 @@ class Penjualan_faktur extends CI_Controller{
 				'totalrp' => $totalrp,
 				'resep_manual' => $resepmanual,
 			];
+			
 			$check_racik = $this->db->get_where('tbl_aporacik', $where)->num_rows();
 			if ($check_racik != 0) {
 				$this->db->update('tbl_aporacik', $data, $where);
@@ -1689,16 +1853,16 @@ class Penjualan_faktur extends CI_Controller{
 	}
 
 	public function update_apoposting(){
-		$cek = $this->session->userdata('level');
-		$cabang  = $this->session->userdata('unit');
-		$gudang = $this->input->get('gudang');
-		$hasil    = 0;
-		$vnoreg   = '';
-		$rekmed   = '';
-		$userid   = $this->session->userdata('username');
-		$racikan  = $this->input->get('racikan');
-		$total    = $this->input->get('total');
-		$noregx    = $this->input->get('noreg');
+		$cek        = $this->session->userdata('level');
+		$cabang     = $this->session->userdata('unit');
+		$gudang     = $this->input->get('gudang');
+		$hasil      = 0;
+		$vnoreg     = '';
+		$rekmed     = '';
+		$userid     = $this->session->userdata('username');
+		$racikan    = $this->input->get('racikan');
+		$total      = $this->input->get('total');
+		$noregx     = $this->input->get('noreg');
 		if ($noregx == null || $noregx == 'null' || $noregx == '') {
 			$noreg = '';
 		} else {

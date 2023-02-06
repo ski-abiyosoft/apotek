@@ -494,7 +494,11 @@ $this->load->view('template/footer');
     var total = $("#_vtotal").text();
     var diskon = $('#_vdiskon').text();
     var ppn = $('#_vppn').text();
+<<<<<<< HEAD
     var tanggal = $('#tanggald').val();
+=======
+    var tanggal = $('[name="tanggal"]').val();
+>>>>>>> development
     if (jenis == '' || jenis == null) {
       swal({
         title: "JENIS",

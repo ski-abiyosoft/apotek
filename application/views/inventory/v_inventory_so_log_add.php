@@ -201,23 +201,32 @@ $this->load->view('template/footer');
 		var gudang = $("#gudang").val();
 		var vid = id;
 		$.ajax({
-			url: "<?php echo base_url(); ?>inventory_tso_log/getinfobarang/" + str + "/?gudang=" + gudang,
-			type: "GET",
+			url: "<?= site_url('Inventory_tso_log/validkan/'); ?>"+str+"/"+gudang,
+			type: "POST",
 			dataType: "JSON",
-			success: function(data) {
-				console.log(data)
-				$('#sat' + vid).val(data.satuan1);
-				var qty = $('#qty' + vid).val();
-				$('#saldoakhir' + id).val(Math.round(data.salakhir));
-				var salakhirx = Number(parseInt(data.salakhir));
-				if (data.salakhir != null) {
-					var salakhir = salakhirx;
-				} else {
-					var salakhir = 0;
+			success: function(data){
+				if(data.status == 1){
+					$.ajax({
+						url: "<?php echo base_url(); ?>inventory_tso_log/getinfobarang/" + str + "/?gudang=" + gudang,
+						type: "GET",
+						dataType: "JSON",
+						success: function(data) {
+							console.log(data)
+							$('#sat' + vid).val(data.satuan1);
+							var qty = $('#qty' + vid).val();
+							$('#saldoakhir' + id).val(Math.round(data.salakhir));
+							var salakhirx = Number(parseInt(data.salakhir));
+							if (data.salakhir != null) {
+								var salakhir = salakhirx;
+							} else {
+								var salakhir = 0;
+							}
+							$('#sat' + id).val(data.satuan1);
+							var art = qty - salakhir;
+							$('#plusminus' + id).val(art);
+						}
+					});
 				}
-				$('#sat' + id).val(data.satuan1);
-				var art = qty - salakhir;
-				$('#plusminus' + id).val(art);
 			}
 		});
 	}

@@ -634,6 +634,12 @@ class App extends CI_Controller
 		echo json_encode($this->M_global->get_jnsicd($q));
 	}
 
+	function search_satuan()
+	{
+		$q = $this->input->post('searchTerm');
+		echo json_encode($this->M_global->get_satuan($q));
+	}
+
 
 
 	function search_farmasi_po2()

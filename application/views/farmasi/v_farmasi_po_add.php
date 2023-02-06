@@ -523,15 +523,16 @@ $this->load->view('template/currency');
                 cancelButtonText: 'Tidak'
             }).then(function() {
                 $.ajax({
-                    url: "<?php echo site_url('farmasi_po/ajax_add/1?ipo=') ?>" + ipo,
-                    data: $('#frmpembelian').serialize(),
-                    type: 'POST',
+                    url         : "<?php echo site_url('farmasi_po/ajax_add/1?ipo=') ?>" + ipo,
+                    data        : $('#frmpembelian').serialize(),
+                    type        : "POST",
+                    dataType    : "JSON",
                     success: function(data) {
-                        // console.log(data)
-                        data1 = JSON.parse(data);
+                        console.log(data)
+                        // data1 = JSON.parse(data);
                         swal({
                             title: "PURCHASE ORDER",
-                            html: "<p> No. Bukti   : <b>" + data1.nomor + "</b> </p>" + "Tanggal :  " + tanggal + "<br><br>Biaya Terbentuk <br><b>" + total + "</b>",
+                            html: "<p> No. Bukti   : <b>" + data.nomor + "</b> </p>" + "Tanggal :  " + tanggal + "<br><br>Biaya Terbentuk <br><b>" + total + "</b>",
                             type: "info",
                             confirmButtonText: "OK"
                         }).then((value) => {
@@ -539,8 +540,11 @@ $this->load->view('template/currency');
                         });
     
                     },
-                    error: function(data) {
-                        swal('PESANAN PEMBELIAN', 'Data gagal disimpan ...', '');
+                    error: function(jqXHR, textStatus, errorThrown) {
+                        alert(textStatus);
+                        $('#btnSave').text('save'); //change button text
+                        $('#btnSave').attr('disabled', false); //set button enable 
+
                     }
                 });
             });

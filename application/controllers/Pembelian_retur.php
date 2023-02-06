@@ -557,15 +557,6 @@
                                     <td width=\"3%\" style=\"border-left:none; border-right:none; border-bottom:none; border-top:none;\">&nbsp;</td>
                                     <td width=\"35%\" style=\"border-left:none; border-right:none; border-bottom:none; border-top:none;\">$header->phone</td>
                                     <td width=\"4%\" style=\"border-left:none; border-right:none; border-bottom:none; border-top:none;\">&nbsp;</td>
-                                    <td width=\"10%\" style=\"border-left:none; border-right:none; border-bottom:none; border-top:none;\">Invoice</td>
-                                    <td width=\"3%\" style=\"border-left:none; border-right:none; border-bottom:none; border-top:none;\">:</td>
-                                    <td width=\"35%\" style=\"border-left:none; border-right:none; border-bottom:none; border-top:none;\">$header->invoice_no</td>
-                              </tr> 
-                              <tr>
-                                    <td width=\"10%\" style=\"border-left:none; border-right:none; border-bottom:none; border-top:none;\">&nbsp;</td>
-                                    <td width=\"3%\" style=\"border-left:none; border-right:none; border-bottom:none; border-top:none;\">&nbsp;</td>
-                                    <td width=\"35%\" style=\"border-left:none; border-right:none; border-bottom:none; border-top:none;\">&nbsp;</td>
-                                    <td width=\"4%\" style=\"border-left:none; border-right:none; border-bottom:none; border-top:none;\">&nbsp;</td>
                                     <td width=\"10%\" style=\"border-left:none; border-right:none; border-bottom:none; border-top:none;\">Gudang</td>
                                     <td width=\"3%\" style=\"border-left:none; border-right:none; border-bottom:none; border-top:none;\">:</td>
                                     <td width=\"35%\" style=\"border-left:none; border-right:none; border-bottom:none; border-top:none;\">" . $gudangz['keterangan'] . "</td>
