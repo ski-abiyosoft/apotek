@@ -23,20 +23,20 @@ function hitung_umur($tanggal_lahir){
 }
 
 function pasien_rekmed_baru($nama){	
-	$CI =& get_instance();	
-	$kode_cabang = $CI->session->userdata('unit');	  
-	$namadepan = substr($nama, 0,1);
+	$CI            = & get_instance();
+	$kode_cabang   = $CI->session->userdata('unit');
+	$namadepan     = substr($nama, 0,1);
 	//   $dataurut = $CI->db->query("select urut as nomor from tbl_urutmr where mrkey='$namadepan'")->row();
-	$dataurut = $CI->db->query("select urut as nomor from tbl_urutmr where koders = '$kode_cabang' AND mrkey='$namadepan'")->row();
+	$dataurut      = $CI->db->query("SELECT urut as nomor from tbl_urutmr where koders = '$kode_cabang' AND mrkey='$namadepan'")->row();
 
 	if($dataurut){
 		$nourut = $dataurut->nomor+1;
 		//   $CI->db->query("update tbl_urutmr set urut=urut+1 where mrkey='$namadepan'");
-		$CI->db->query("update tbl_urutmr set urut=urut+1 where koders='$kode_cabang' AND mrkey='$namadepan'");
+		$CI->db->query("UPDATE tbl_urutmr set urut=urut+1 where koders='$kode_cabang' AND mrkey='$namadepan'");
 	} else {
 		$nourut = 1;	
 		//   $CI->db->query("insert into tbl_urutmr(mrkey, urut) values('$namadepan', 1)");
-		$CI->db->query("insert into tbl_urutmr(koders, mrkey, urut) values('$kode_cabang','$namadepan', 1)");
+		$CI->db->query("INSERT into tbl_urutmr(koders, mrkey, urut) values('$kode_cabang','$namadepan', 1)");
 	}
 				
 	$rekmed = $kode_cabang.$namadepan.str_pad( $nourut, 6, '0', STR_PAD_LEFT );	

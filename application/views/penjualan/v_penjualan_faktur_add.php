@@ -30,7 +30,7 @@ $umur          = $age_interval->y . ' Tahun ' . $age_interval->m . ' Bulan ' . $
   <div class="col-md-12">
     <h3 class="page-title">
       <span class="title-unit">
-        &nbsp;<?php echo $this->session->userdata('unit'); ?>
+        &nbsp;<?= $this->session->userdata('unit'); ?>
       </span>
       -
       <span class="title-web">Farmasi <small>Penjualan Resep</small>
@@ -38,11 +38,11 @@ $umur          = $age_interval->y . ' Tahun ' . $age_interval->m . ' Bulan ' . $
     <ul class="page-breadcrumb breadcrumb">
       <li>
         <i style="color:white;" class="fa fa-home"></i>
-        <a class="title-white" href="<?php echo base_url(); ?>dashboard">Awal</a>
+        <a class="title-white" href="<?= base_url(); ?>dashboard">Awal</a>
         <i style="color:white;" class="fa fa-angle-right"></i>
       </li>
       <li>
-        <a class="title-white" href="<?php echo base_url(); ?>penjualan_faktur">Daftar Faktur Penjualan</a>
+        <a class="title-white" href="<?= base_url(); ?>penjualan_faktur">Daftar Faktur Penjualan</a>
         <i style="color:white;" class="fa fa-angle-right"></i>
       </li>
       <li>
@@ -114,7 +114,7 @@ $umur          = $age_interval->y . ' Tahun ' . $age_interval->m . ' Bulan ' . $
                 <div class="form-group">
                   <label class="col-md-3 control-label">Tanggal <font color="red">*</font></label>
                   <div class="col-md-6">
-                    <input id="tanggal" name="tanggal" class="form-control input-medium" type="date" value="<?php echo date('Y-m-d'); ?>" />
+                    <input id="tanggal" name="tanggal" class="form-control input-medium" type="date" value="<?= date('Y-m-d'); ?>" />
                   </div>
                   <div class="col-md-3">
                     <input type="time" class="form-control" name="jam" id="jam" value="<?= date('H:i:s'); ?>">
@@ -134,21 +134,23 @@ $umur          = $age_interval->y . ' Tahun ' . $age_interval->m . ' Bulan ' . $
             <div class="row">
               <div class="col-md-6">
                 <div class="form-group">
-                  <!-- <label class="col-md-3 control-label">Nama Pembeli <font color="red">*</font></label>
-                                    <div class="col-md-6">
-                                        <input type="text" name="namapasien" id="namapasien" class="form-control">
-                                    </div>
-                                    <div class="form-group"> -->
                   <label class="col-md-3 control-label">Member <font color="red">*</font></label>
                   <div class="col-md-9">
-                    <select id="pasien" name="pasien" class="form-control select2_el_pasien" onchange="getinfopasien()" data-placeholder="Pilih..." onkeypress="return tabE(this,event)">
-                      <!-- <?php $gpasraj = $this->db->query("SELECT * FROM tbl_pasien WHERE rekmed = '$heresep->rekmed'")->row(); ?> -->
-                      <!-- <option value="<?= $heresep->rekmed ?>">
-                                                <?= $gpasraj->rekmed . " | " . $gpasraj->namapas . " | " . $gpasraj->alamat2 . " | " .  $gpasraj->noidentitas . " | " . $gpasraj->handphone ?>
-                                            </option> -->
-                      <input type="hidden" name="namapasien" id="namapasien" class="form-control">
-                    </select>
+                    <div class="input-group input-medium">
+                      
+                      <select id="pasien" name="pasien" class="form-control select2_el_pasien" onchange="getinfopasien()" data-placeholder="Pilih..." onkeypress="return tabE(this,event)">
+                        <!-- <?php $gpasraj = $this->db->query("SELECT * FROM tbl_pasien WHERE rekmed = '$heresep->rekmed'")->row(); ?> -->
+                        <!-- <option value="<?= $heresep->rekmed ?>">
+                                                  <?= $gpasraj->rekmed . " | " . $gpasraj->namapas . " | " . $gpasraj->alamat2 . " | " .  $gpasraj->noidentitas . " | " . $gpasraj->handphone ?>
+                                              </option> -->
+                        <input type="hidden" name="namapasien" id="namapasien" class="form-control">
+                      </select>
+                      <span class="input-group-btn">
+                        <a class="btn-sm btn green" onclick="add_pasien()"><i class="fa fa-plus"></i></a>
+                      </span>
+                    </div>
                   </div>
+
                 </div>
               </div>
               <div class="col-md-6">
@@ -160,6 +162,21 @@ $umur          = $age_interval->y . ' Tahun ' . $age_interval->m . ' Bulan ' . $
                   <div class="col-md-2">
                     <input type="checkbox" id="reg_cekhp" name="reg_cekhp" value="1" class="form-control">
                   </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label class="col-md-3 control-label">Nama Pasien <font color="red">*</font></label>
+                  <div class="col-md-9">
+                    <div class="input-group input-medium">
+                      
+                      <input id="nama_pas" name="nama_pas" type="text" class="form-control">
+                    </div>
+                  </div>
+
                 </div>
               </div>
             </div>
@@ -199,6 +216,7 @@ $umur          = $age_interval->y . ' Tahun ' . $age_interval->m . ' Bulan ' . $
                         <th class="title-white" width="10%" style="text-align: center">Total Harga</th>
                         <th class="title-white" width="5%" style="text-align: center">Keterangan</th>
                         <th class="title-white" width="5%" style="text-align: center">Aturan Pakai</th>
+                        <th class="title-white" width="5%" style="text-align: center">Expired Date</th>
                       </thead>
                       <tbody>
                         <?php if (isset($_GET["eresep"])) {
@@ -239,6 +257,11 @@ $umur          = $age_interval->y . ' Tahun ' . $age_interval->m . ' Bulan ' . $
                                   <?php endforeach; ?>
                                 </select>
                               </td>
+                              <td>
+                                <input name="expire[]" onchange="totalline(1);total()" value="" id="expire1" type="date" class="form-control">
+                              </td>
+                              </td>
+                              
                             </tr>
                           <?php $no++;
                           }
@@ -266,6 +289,9 @@ $umur          = $age_interval->y . ' Tahun ' . $age_interval->m . ' Bulan ' . $
                                 <?php endforeach; ?>
                               </select>
                             </td>
+                            <td>
+                                <input name="expire[]" onchange="totalline(1);total()" value="" id="expire1" type="date" class="form-control">
+                              </td>
                           </tr>
                         <?php } ?>
                       </tbody>
@@ -675,6 +701,172 @@ $umur          = $age_interval->y . ' Tahun ' . $age_interval->m . ' Bulan ' . $
 </div>
 </div>
 
+<div class="modal fade" id="modal_form" role="dialog">
+    <div class="modal-dialog modal-full">
+        <div class="modal-content">
+            <div class="modal-header header-custom">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h3 class="modal-title">Data Pasien</h3>
+            </div>
+            <div class="modal-body form">
+                <form action="#" id="form" class="form-horizontal">
+                    <input type="hidden" value="" name="id" />
+                    <div class="form-body">
+
+                        <div class="row">
+                            <div class="col-md-6">
+                              <div class="form-group">
+                                <label class="col-md-3 control-label">Penjamin <font color="red">*</font></label>
+                                <div class="col-md-9">
+                                  <select class="form-control" style="width:100%;" id="vpenjamin" name="vpenjamin" >
+                                    <option value="">--- Pilih ---</option>
+                                    <?php $penjamin = $this->db->get("tbl_penjamin")->result();
+                                    foreach($penjamin as $row){ 
+                                    // $selected = ($row->cust_id==$data->cust_nama?'selected':'');
+                                    ?>
+                                    <!-- <option <?= $selected;?> value="<?= $row->cust_id;?>"><?= $row->cust_nama;?></option> -->
+                                    <option value="<?= $row->cust_id;?>"><?= $row->cust_nama;?></option>
+                                    <?php } ?>
+                                  </select>
+                                </div>
+                              </div>
+                            </div>
+                            <div class="col-md-6">
+                              <div class="form-group">
+                                <label class="control-label col-md-3">Identitas <font color="red">*</font></label>
+                                <div class="col-md-2">
+                                  <select name="lupidentitas" id="lupidentitas" class="form-control input-small">
+                                      <option value="-">-- Pilih --</option>
+                                      <option value="KTP">KTP</option>
+                                      <option value="SIM">SIM</option>
+                                      <option value="PASPORT">PASPORT</option>
+                                      <option value="K_PELAJAR">K_PELAJAR</option>
+                                      <option value="KMAHASISWA">KMAHASISWA</option>
+                                  </select>
+
+                                </div>
+                                <div class="col-md-7">
+                                  <input type="text" placeholder="No Identitas" name="lupnoidentitas" id="lupnoidentitas" class="form-control">
+                                </div>
+
+                              </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                              <div class="form-group">
+                                  <label class="control-label col-md-3">No Member
+                                    <font color="red">*</font>
+                                  </label>
+                                  <div class="col-md-9">
+                                      <input name="rekmed" id="rekmed" placeholder="Auto" class="form-control" type="text" readonly>
+                                      <span class="help-block"></span>
+                                  </div>
+                              </div>
+                            </div>
+                            <div class="col-md-6">
+                              <div class="form-group">
+                                  <label class="control-label col-md-3">No BPJS <font color="red">*</font></label>
+                                  <div class="col-md-9">
+                                      <input name="no_bpjs" id="no_bpjs" placeholder="NO BPJS" class="form-control" type="number" >
+                                      <span class="help-block"></span>
+                                  </div>
+                              </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                            <div class="form-group">
+                                  <label class="control-label col-md-3">Nama Pasien <font color="red">*</font></label>
+                                  <div class="col-md-2">
+                                        <select class="form-control input-small" name="luppreposition" id="luppreposition">
+                                          
+                                            <option value="">-- Pilih --</option>
+                                            <?php
+                                            foreach (setinghms('PREP') as $row) { ?>
+                                                <option value="<?= $row->kodeset; ?>"><?= $row->keterangan; ?></option>
+                                            <?php } ?>
+                                        </select>
+                                  </div>
+                                  <div class="col-md-7">
+                                        <input name="lupnamapasien" required="required" id="lupnamapasien" placeholder="Nama Pasien"  class="form-control" type="text">
+                                  </div>
+                              </div>
+                            </div>
+                            <div class="col-md-6">
+                              <div class="form-group">
+                                <label class="control-label col-md-3">Handphone <font color="red">*</font></label>
+                                <div class="col-md-9">
+                                  <div class="input-group input-medium">
+                                    <!-- <span class="input-group-btn">
+                                      <a class="form-control">+62</a>
+                                    </span> -->
+                                    <input name="luphp" id="luphp" placeholder="Dimulai Tanpa 0" class="form-control" maxlength="" type="text" value="+62">
+                                  </div>
+                                </div>
+                              </div>
+                                <!-- <div class="form-group">
+                                    <label class="control-label col-md-3">Status</label>
+                                    <div class="col-md-9">
+                                        <select class="form-control" id="lupstatus" name="lupstatus">
+                                            <?php
+                                            foreach (setinghms('STAT') as $row) { ?>
+                                                <option value="<?= $row->kodeset; ?>"><?= $row->keterangan; ?></option>
+                                            <?php } ?>
+                                        </select>
+                                    </div>
+                                </div> -->
+                            </div>
+                        </div>
+
+
+                        <div class="row">
+                            <div class="col-md-6">
+                              <div class="form-group">
+                                  <label class="control-label col-md-3">Alamat <font color="red">*</font></label>
+                                  <div class="col-md-9">
+                                      <input name="lupalamat" id="lupalamat" placeholder="Alamat Pasien" class="form-control" type="text" >
+                                      <span class="help-block"></span>
+                                  </div>
+                              </div>
+                            </div>
+                            <!-- <div class="col-md-6">
+                                <div class="form-group">
+
+                                    <label class="control-label col-md-3">Identitas</label>
+                                    <div class="col-md-2">
+                                      <select name="lupidentitas" id="lupidentitas" class="form-control input-small">
+                                          <option value="-">-- Pilih --</option>
+                                          <option value="KTP">KTP</option>
+                                          <option value="SIM">SIM</option>
+                                          <option value="PASPORT">PASPORT</option>
+                                          <option value="K_PELAJAR">K_PELAJAR</option>
+                                          <option value="KMAHASISWA">KMAHASISWA</option>
+                                      </select>
+
+                                    </div>
+                                    <div class="col-md-7">
+                                      <input type="text" placeholder="No Identitas" name="lupnoidentitas" id="lupnoidentitas" class="form-control">
+                                    </div>
+
+                                </div>
+                            </div> -->
+                        </div>
+
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="btnSave_pass" onclick="save_pasien()" class="btn btn-primary">Simpan</button>
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Batal</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+
 <?php
 $this->load->view('template/footer');
 ?>
@@ -793,7 +985,7 @@ $this->load->view('template/footer');
   //   $('#harga' + vid).val(0);
   //   var customer = $('#cust').val();
   //   $.ajax({
-  //     url: "<?php echo base_url(); ?>penjualan_faktur/norespauto/?kode=" + str,
+  //     url: "<?= base_url(); ?>penjualan_faktur/norespauto/?kode=" + str,
   //     type: "GET",
   //     dataType: "JSON",
   //     success: function(data) {
@@ -879,6 +1071,7 @@ $this->load->view('template/footer');
       "<td><input name='jumlah[]' id=jumlah" + idrow + " type='text' class='form-control rightJustified' size='40%' readonly></td>" +
       "<td><textarea name='keterangan[]' id='keterangan" + idrow + "' type='text' class='form-control' style='resize:none' rows='2'></textarea></td>" +
       "<td><select name='aturan_pakai[]' id='aturan_pakai" + idrow + "' class='form-control select2_atp' data-placeholder='Pilih...'><option value=''>Pilih...</option><?php foreach ($atpakaix as $row) : ?> <option value='<?= $row->apocode; ?>'><?= $row->aponame; ?></option><?php endforeach; ?></select></td>" +
+      "<td><input name='expire[]' onchange='totalline(1);total()' value='' id='expire" + idrow + "' type='date' class='form-control'> </td>"+
       "</tr>");
     initailizeSelect2_farmasi_baranggud(gud);
     idrow++;
@@ -926,7 +1119,7 @@ $this->load->view('template/footer');
         document.getElementById("txtHint").innerHTML = this.responseText;
       }
     };
-    xhttp.open("GET", "<?php echo base_url(); ?>penjualan_faktur/getbarang/" + str, true);
+    xhttp.open("GET", "<?= base_url(); ?>penjualan_faktur/getbarang/" + str, true);
     xhttp.send();
   }
 
@@ -942,7 +1135,7 @@ $this->load->view('template/footer');
         document.getElementById("daftarakun").innerHTML = this.responseText;
       }
     };
-    xhttp.open("GET", "<?php echo base_url(); ?>penjualan_faktur/getakun/" + str, true);
+    xhttp.open("GET", "<?= base_url(); ?>penjualan_faktur/getakun/" + str, true);
     xhttp.send();
   }
 
@@ -958,7 +1151,7 @@ $this->load->view('template/footer');
         document.getElementById("dafhargabeli").innerHTML = this.responseText;
       }
     };
-    xhttp.open("GET", "<?php echo base_url(); ?>penjualan_faktur/getharga/" + str, true);
+    xhttp.open("GET", "<?= base_url(); ?>penjualan_faktur/getharga/" + str, true);
     xhttp.send();
   }
 
@@ -970,7 +1163,7 @@ $this->load->view('template/footer');
     $('#harga' + vid).val(0);
     var customer = $('#cust').val();
     $.ajax({
-      url: "<?php echo base_url(); ?>penjualan_faktur/getinfobarang/?kode=" + str,
+      url: "<?= base_url(); ?>penjualan_faktur/getinfobarang/?kode=" + str,
       type: "GET",
       dataType: "JSON",
       success: function(data) {
@@ -1172,7 +1365,7 @@ $this->load->view('template/footer');
     var kode = $("#kode" + id).val();
     var customer = $('#cust').val();
     $.ajax({
-      url: "<?php echo base_url(); ?>Penjualan_faktur/cekstok?kode=" + kode + '&gudang=' + gudang,
+      url: "<?= base_url(); ?>Penjualan_faktur/cekstok?kode=" + kode + '&gudang=' + gudang,
       type: "POST",
       dataType: "JSON",
       success: function(data) {
@@ -1201,7 +1394,7 @@ $this->load->view('template/footer');
     var vid = id;
     var customer = $('#cust').val();
     $.ajax({
-      url: "<?php echo base_url(); ?>penjualan_faktur/cekharga/?kode=" + str,
+      url: "<?= base_url(); ?>penjualan_faktur/cekharga/?kode=" + str,
       type: "GET",
       dataType: "JSON",
       success: function(data) {
@@ -1312,7 +1505,7 @@ $this->load->view('template/footer');
     $('#hargaoju' + vid + '_1').val(0);
 
     $.ajax({
-      url: "<?php echo base_url(); ?>penjualan_faktur/getinfobarang/?kode=" + str,
+      url: "<?= base_url(); ?>penjualan_faktur/getinfobarang/?kode=" + str,
       type: "GET",
       dataType: "JSON",
       success: function(data) {
@@ -1334,7 +1527,7 @@ $this->load->view('template/footer');
     var customer = $('#cust').val();
     var vid = id;
     $.ajax({
-      url: "<?php echo base_url(); ?>penjualan_faktur/cekstok/?kode=" + str + '&gudang=' + gudang,
+      url: "<?= base_url(); ?>penjualan_faktur/cekstok/?kode=" + str + '&gudang=' + gudang,
       type: "GET",
       dataType: "JSON",
       success: function(data) {
@@ -1386,7 +1579,7 @@ $this->load->view('template/footer');
     var vid = id;
     var customer = $('#cust').val();
     $.ajax({
-      url: "<?php echo base_url(); ?>penjualan_faktur/cekharga/?kode=" + str,
+      url: "<?= base_url(); ?>penjualan_faktur/cekharga/?kode=" + str,
       type: "GET",
       dataType: "JSON",
       success: function(data) {
@@ -1413,7 +1606,7 @@ $this->load->view('template/footer');
 
   function cek_ppn2() {
     $.ajax({
-      url: '<?php echo base_url(); ?>farmasi_bapb/cekppn',
+      url: '<?= base_url(); ?>farmasi_bapb/cekppn',
       type: "GET",
       dataType: "json",
       success: function(data) {
@@ -1509,6 +1702,131 @@ $this->load->view('template/footer');
     var param = supp + '~' + item;
     showharga(param);
   }
+
+  function add_pasien() {
+      save_method = 'add';
+      $('#form')[0].reset(); // reset form on modals
+      $('.form-group').removeClass('has-error'); // clear error class
+      $('.help-block').empty(); // clear error string
+      $('#modal_form').modal('show'); // show bootstrap modal
+      $('.modal-title').text('Pasien Baru'); // Set Title to Bootstrap modal title
+  }
+
+  function save_pasien() {
+        $('#btnSave_pass').text('saving...'); //change button text
+        $('#btnSave_pass').attr('disabled', true); //set button disable 
+        var url;
+
+        var v_vpenjamin       = $('[name="vpenjamin"]').val();
+        var v_lupidentitas    = $('[name="lupidentitas"]').val();
+        var v_lupnoidentitas  = $('[name="lupnoidentitas"]').val();
+        var v_no_bpjs         = $('[name="no_bpjs"]').val();
+        var v_luppreposition  = $('[name="luppreposition"]').val();
+        var v_lupnamapasien   = $('[name="lupnamapasien"]').val();
+        var v_luphp           = $('[name="luphp"]').val();
+        var v_lupalamat       = $('[name="lupalamat"]').val();
+
+        if (
+            v_vpenjamin == '' || v_vpenjamin == null ||
+            v_lupidentitas == '' || v_lupidentitas == null ||
+            v_lupnoidentitas == '' || v_lupnoidentitas == null ||
+            v_no_bpjs == '' || v_no_bpjs == null ||
+            v_luppreposition == '' || v_luppreposition == null ||
+            v_lupnamapasien == '' || v_lupnamapasien == null ||
+            v_luphp == '' || v_luphp == null ||
+            v_lupalamat == '' || v_lupalamat == null
+            ) {
+            $('#modal_form').modal('hide');
+            swal({
+                title: "DATA BELUM LENGKAP",
+                html: " Silahkan Di Lengkapi dahulu .!!!",
+                type: "error",
+                confirmButtonText: "OK"
+            }).then((value) => {
+                $('#modal_form').modal('show');
+            });
+
+            $('#btnSave_pass').text('save'); //change button text
+            $('#btnSave_pass').attr('disabled', false); //set button enable 
+            return;
+        }
+
+
+        url = "<?= site_url('penjualan_faktur/save_pasien') ?>";
+
+        // ajax adding data to database
+        $.ajax({
+            url: url,
+            type: "POST",
+            data: $('#form').serialize(),
+            dataType: "JSON",
+            success: function(data) {
+                if (data.status) //if success close modal and reload ajax table
+                {
+                    if (data.value == 1) {
+
+                        $('#idtr').val(data.idtr);
+                        var selectElement   = null;
+                        selectElement       = document.getElementById('pasien');
+                        var opt             = document.createElement('option');
+                        opt.value           = data.rekmed;
+                        opt.innerHTML       = data.rekmed + ' | ' + data.nama + ' | ' + data.alamat;
+                        selectElement.removeChild(selectElement.lastChild);
+                        selectElement.appendChild(opt);
+                        $('#nomember').val(data.rekmed);
+
+                        getinfopasien();
+
+                        $('#modal_form').modal('hide');
+                        swal({
+                            title: "DATA PASIEN",
+                            html: "Berhasil dibuat <br/> dengan Nomor Member <br/><b><span style='color:green;font-size:30px;font-weight:bold;'>" +
+                                data.rekmed + "</span></b>",
+                            type: "success",
+                            confirmButtonText: "OK"
+
+                        });
+
+                        document.getElementById("btncetak").disabled = false;
+                        document.getElementById("btncetak1").disabled = false;
+
+                    } else {
+                        // swal('PASIEN','Data Pasien sudah terdaftar ...','');
+                        $('#modal_form').modal('hide');
+                        swal({
+                            title: "PASIEN",
+                            html: " Data Pasien sudah terdaftar .!!",
+                            type: "error",
+                            confirmButtonText: "OK"
+                        }).then((value) => {
+                            $('#modal_form').modal('show');
+                        });
+                        //   alert('Pasien sudah terdaftar');
+                    }
+                } else {
+                    for (var i = 0; i < data.inputerror.length; i++) {
+                        $('[name="' + data.inputerror[i] + '"]').parent().parent().addClass(
+                            'has-error'
+                        ); //select parent twice to select div form-group class and add has-error class
+                        $('[name="' + data.inputerror[i] + '"]').next().text(data.error_string[
+                            i]); //select span help-block class set text error string
+                    }
+                }
+                $('#btnSave_pass').text('Simpan'); //change button text
+                $('#btnSave_pass').attr('disabled', false); //set button enable 
+
+
+            },
+
+            error: function(jqXHR, textStatus, errorThrown) {
+                $('#btnSave_pass').text('save'); //change button text
+                $('#btnSave_pass').attr('disabled', false); //set button enable 
+
+            }
+
+        });
+    }
+
 
   function ceksave() {
     swal({
@@ -1634,7 +1952,7 @@ $this->load->view('template/footer');
       "&cek_rm=" + h_manual + "&harga_manual=" + totalxx;
     // console.log(param)
     $.ajax({
-      url: '<?php echo site_url() ?>penjualan_faktur/saveracik/' + param,
+      url: '<?= site_url() ?>penjualan_faktur/saveracik/' + param,
       data: $('#frmpenjualan').serialize(),
       type: "POST",
       success: function(data) {
@@ -1705,7 +2023,7 @@ $this->load->view('template/footer');
 
   // 	}  else {
   // 	$.ajax({				
-  // 		url:'<?php echo site_url('penjualan_faktur/save/1') ?>',				
+  // 		url:'<?= site_url('penjualan_faktur/save/1') ?>',				
   // 		data:$('#frmpenjualan').serialize(),				
   // 		type:'POST',
 
@@ -1744,7 +2062,7 @@ $this->load->view('template/footer');
   // 					  confirmButtonText: "OK" 
   // 					 }).then((value) => {
   // 							saveracik_1();
-  // 							// location.href = "<?php echo base_url() ?>penjualan_faktur";
+  // 							// location.href = "<?= base_url() ?>penjualan_faktur";
   // 							// return;
   // 		         });				
 
@@ -1858,7 +2176,7 @@ $this->load->view('template/footer');
 
       $.ajax({
 
-        url: '<?php echo site_url('penjualan_faktur/save/1') ?>' + params,
+        url: '<?= site_url('penjualan_faktur/save/1') ?>' + params,
         data: $('#frmpenjualan').serialize(),
 
         dataType: "JSON",
@@ -1877,7 +2195,7 @@ $this->load->view('template/footer');
               confirmButtonText: "OK"
             }).then((value) => {
               // bayar();
-              location.href = "<?php echo base_url() ?>penjualan_faktur";
+              location.href = "<?= base_url() ?>penjualan_faktur";
               return;
             });
               document.getElementById("tersimpan").value = "OK";
@@ -1935,7 +2253,7 @@ $this->load->view('template/footer');
               confirmButtonText: "OK"
             }).then((value) => {
               // bayar();
-              location.href = "<?php echo base_url() ?>penjualan_faktur";
+              location.href = "<?= base_url() ?>penjualan_faktur";
               return;
             });
           }
@@ -2048,12 +2366,13 @@ $this->load->view('template/footer');
     // }
     // console.log(vid);
     $.ajax({
-      url: "<?php echo base_url(); ?>pasien/getinfopasien/?id=" + vid,
+      url: "<?= base_url(); ?>pasien/getinfopasien/?id=" + vid,
       type: "GET",
       dataType: "JSON",
       success: function(data) {
         // console.log(data);
         $('#namapasien').val(data.namapas);
+        $('#nama_pas').val(data.namapas);
         $('#alamat').val(data.alamat);
         $('#phone').val(data.handphone);
 
@@ -2200,7 +2519,7 @@ $this->load->view('template/footer');
     console.log(str)
     if (str == "") {} else {
       $.ajax({
-        url: "<?php echo base_url(); ?>kasir_konsul/getdataregistrasi/?noreg=" + str,
+        url: "<?= base_url(); ?>kasir_konsul/getdataregistrasi/?noreg=" + str,
         type: "GET",
         dataType: "JSON",
 
@@ -2231,7 +2550,7 @@ $this->load->view('template/footer');
   }
 
   function _urlcetak() {
-    var baseurl = "<?php echo base_url() ?>";
+    var baseurl = "<?= base_url() ?>";
     var nobukti = $('#noresep').val();
     return baseurl + 'penjualan_faktur/cetak/?nobukti=' + nobukti;
   }

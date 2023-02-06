@@ -10,6 +10,7 @@ class Penjualan_faktur extends CI_Controller{
 		$this->session->set_userdata('submenuapp', '3201');
 		$this->load->helper('simkeu_nota1');
 		$this->load->helper('simkeu_nota');
+		$this->load->model('M_pasien','M_pasien');
 	}
 
 	public function index(){
@@ -334,13 +335,13 @@ class Penjualan_faktur extends CI_Controller{
 					$no++;
 				}
 			}
-			$diskonracik = $racikan['diskonrp'];
-			$ppnx = $td * $cekppn2;
-			$ppnxx = $racikan['ppnrp'];
-			$totalx = $td + ($tr - $diskonracik) + $ppnx + $ongkos;
+			$diskonracik   = $racikan['diskonrp'];
+			$ppnx          = $td * $cekppn2;
+			$ppnxx         = $racikan['ppnrp'];
+			$totalx        = $td + ($tr - $diskonracik) + $ppnx + $ongkos;
 
-			$dpp_done = $td / (111 / 100);
-			$ppn_done = $dpp_done * $cekppn2;
+			$dpp_done      = $td / (111 / 100);
+			$ppn_done      = $dpp_done * $cekppn2;
 
 
 			$pdf->ln();
@@ -967,6 +968,57 @@ class Penjualan_faktur extends CI_Controller{
 		$kode_cabang = $this->session->userdata('unit');
 		$nobukti  = temp_urut_transaksi('RESEP', $kode_cabang, 19);
 		echo json_encode($nobukti);
+	}
+
+	public function save_pasien()
+	{
+		$user               = $this->session->userdata('username');
+		$cabang             = $this->session->userdata('unit');
+		
+		$c_lupnamapasienx   = $this->input->post('lupnamapasien');
+		$c_lupnamapasien    = preg_replace('/\s+/', ' ', $c_lupnamapasienx);
+		$c_vpenjamin        = $this->input->post('vpenjamin');
+		$c_lupidentitas     = $this->input->post('lupidentitas');
+		$c_lupnoidentitas   = $this->input->post('lupnoidentitas');
+		$c_no_bpjs          = $this->input->post('no_bpjs');
+		$c_luppreposition   = $this->input->post('luppreposition');
+		$c_luphp            = $this->input->post('luphp');
+		$c_lupalamat        = $this->input->post('lupalamat');
+		$q                  = $this->input->post('searchTerm');
+		// echo '<pre>';
+		// print_r($q);
+		// die;
+		
+		$qry = "SELECT * from tbl_pasien where namapas = '$c_lupnamapasien' and  penjamin='$c_vpenjamin' and nocard='$c_no_bpjs' ";
+		$jumdata = $this->db->query($qry)->num_rows();
+		
+		if($jumdata>0){
+			echo json_encode(array("status" => true,"value" => 0));	
+		}else {
+		// date_default_timezone_set("Asia/Jakarta");
+		
+			$rekmed     = pasien_rekmed_baru($c_lupnamapasien);	 // time();
+			
+			// $this->_validate();
+			$data = array(
+					'rekmed'      => $rekmed,
+					'koders'      => $cabang,
+					'preposisi'   => $c_luppreposition,
+					'namapas'     => $c_lupnamapasien,
+					'handphone'   => $c_luphp,
+					'noidentitas' => $c_lupnoidentitas,
+					'alamat'      => $c_lupalamat,
+					'idpas'       => $c_lupidentitas,
+					'nocard'      => $c_no_bpjs,
+					'penjamin'    => $c_vpenjamin,
+
+				);
+
+			// print_r($data);
+			$insert = $this->M_pasien->save($data);
+		
+	  	  echo json_encode(array("status" => true,"value" => 1, "idtr" => $insert,"rekmed" => $rekmed,"nama" => $c_lupnamapasien, "alamat" => $c_lupalamat));
+		} 
 	}
 
 	public function saveracik(){

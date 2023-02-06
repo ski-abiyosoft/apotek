@@ -8,7 +8,7 @@ $this->load->view('template/body');
   <div class="col-md-12">
     <h3 class="page-title">
       <span class="title-unit">
-        &nbsp;<?php echo $this->session->userdata('unit'); ?>
+        &nbsp;<?= $this->session->userdata('unit'); ?>
       </span>
       -
       <span class="title-web"><?= $modul; ?> <small><small><?= $submodul; ?></small>
@@ -16,13 +16,13 @@ $this->load->view('template/body');
     <ul class="page-breadcrumb breadcrumb">
       <li>
         <i style="color:white;" class="fa fa-home"></i>
-        <a class="title-white" href="<?php echo base_url(); ?>dashboard">
+        <a class="title-white" href="<?= base_url(); ?>dashboard">
           Awal
         </a>
         <i style="color:white;" class="fa fa-angle-right"></i>
       </li>
       <li>
-        <a class="title-white" href="<?php echo base_url(); ?><?= $url; ?>">
+        <a class="title-white" href="<?= base_url(); ?><?= $url; ?>">
           Daftar <?= $submodul; ?>
         </a>
         <i style="color:white;" class="fa fa-angle-right"></i>
@@ -110,7 +110,7 @@ $this->load->view('template/body');
                     </label>
                     <div class="col-md-4">
 
-                      <input id="tanggal" name="tanggal" class="form-control input-medium" type="date" value="<?php echo date('Y-m-d', strtotime($header->terima_date)); ?>" />
+                      <input id="tanggal" name="tanggal" class="form-control input-medium" type="date" value="<?= date('Y-m-d', strtotime($header->terima_date)); ?>" />
 
                     </div>
 
@@ -152,7 +152,7 @@ $this->load->view('template/body');
                     <label class="col-md-3 control-label">Tgl. Tukar</label>
                     <div class="col-md-4">
 
-                      <input id="tanggaltukar" name="tanggaltukar" class="form-control input-medium" type="date" value="<?php echo date('Y-m-d', strtotime($header->tgltukar)); ?>" />
+                      <input id="tanggaltukar" name="tanggaltukar" class="form-control input-medium" type="date" value="<?= date('Y-m-d', strtotime($header->tgltukar)); ?>" />
 
                     </div>
 
@@ -234,7 +234,7 @@ $this->load->view('template/body');
                       <font color="red">*</font>
                     </label>
                     <div class="col-md-4">
-                      <input type="date" class="form-control" name="jatuhtempo" id="jatuhtempo" value="<?php echo date('Y-m-d', strtotime($header->due_date)); ?>" readonly>
+                      <input type="date" class="form-control" name="jatuhtempo" id="jatuhtempo" value="<?= date('Y-m-d', strtotime($header->due_date)); ?>" readonly>
                     </div>
                   </div>
                 </div>
@@ -299,6 +299,8 @@ $this->load->view('template/body');
                       <th class="title-white" width="5%" style="text-align: center">Tax</th>
                       <th class="title-white" width="15%" style="text-align: center">Total Harga
                       </th>
+                      <th class="title-white" width="15%" style="text-align: center">HET
+                      </th>
                       <th class="title-white" width="10%" style="text-align: center">Expire</th>
                       <th class="title-white" width="10%" style="text-align: center">PO No</th>
 
@@ -314,42 +316,45 @@ $this->load->view('template/body');
                             <button type='button' onclick='hapusBarisIni(<?= $no; ?>); total();' class='btn red'><i class='fa fa-trash-o'></i></button>
                           </td> -->
                           <td width="15%">
-                            <select name="kode[]" id="kode<?php echo $no; ?>" class="select2_el_farmasi_barangdata form-control input-largex" onchange="showbarangname(this.value, <?= $no; ?>)">
+                            <select name="kode[]" id="kode<?= $no; ?>" class="select2_el_farmasi_barangdata form-control input-largex" onchange="showbarangname(this.value, <?= $no; ?>)">
                               <option value="<?= $row->kodebarang; ?>"><?= $row->namabarang; ?>
                               </option>
                             </select>
                           </td>
 
                           <td width="5%">
-                            <input name="qty[]" onchange="totalline(<?= $no; ?>);total();cekqty(<?= $no ?>); changeqty(<?= $no; ?>)" value="<?= number_format($row->qty_terima); ?>" id="qty<?php echo $no; ?>" type="text" class="form-control rightJustified">
+                            <input name="qty[]" onchange="totalline(<?= $no; ?>);total();cekqty(<?= $no ?>); changeqty(<?= $no; ?>)" value="<?= number_format($row->qty_terima); ?>" id="qty<?= $no; ?>" type="text" class="form-control rightJustified">
                           </td>
                           <td width="10%">
-                            <input name="sat[]" id="sat<?php echo $no; ?>" value="<?= $row->satuan; ?>" type="text" class="form-control" onkeypress="return tabE(this,event)" readonly>
+                            <input name="sat[]" id="sat<?= $no; ?>" value="<?= $row->satuan; ?>" type="text" class="form-control" onkeypress="return tabE(this,event)" readonly>
                           </td>
                           <td width="10%">
-                            <input name="harga[]" onchange="totalline(<?= $no; ?>);total();cekharga(<?= $no; ?>);" value="<?= number_format($row->price); ?>" id="harga<?php echo $no; ?>" type="text" class="form-control rightJustified">
+                            <input name="harga[]" onchange="totalline(<?= $no; ?>);total();cekharga(<?= $no; ?>);" value="<?= number_format($row->price); ?>" id="harga<?= $no; ?>" type="text" class="form-control rightJustified">
                           </td>
                           <td width="5%">
-                            <input name="disc[]" onchange="totalline(<?= $no; ?>);total();" value="<?= $row->discount; ?>" id="disc<?php echo $no; ?>" type="text" class="form-control rightJustified ">
+                            <input name="disc[]" onchange="totalline(<?= $no; ?>);total();" value="<?= $row->discount; ?>" id="disc<?= $no; ?>" type="text" class="form-control rightJustified ">
                           </td>
                           <td width="10%">
-                            <input name="discrp[]" onchange="totalline(<?= $no; ?>);total();" value="<?= number_format($row->discountrp); ?>" id="discrp<?php echo $no; ?>" type="text" class="form-control rightJustified ">
+                            <input name="discrp[]" onchange="totalline(<?= $no; ?>);total();" value="<?= number_format($row->discountrp); ?>" id="discrp<?= $no; ?>" type="text" class="form-control rightJustified ">
                           </td>
                           <td>
                             <input type="checkbox" name="tax[]" <?php if ($row->vat == 1) {
-                                                                  echo 'checked';
-                                                                } else {
-                                                                  echo '';
-                                                                } ?> id="tax<?php echo $no; ?>" class="form-control" onchange="totalline(<?= $no; ?>);total()" value="<?= $row->vat; ?>">
+                              echo 'checked';
+                            } else {
+                              echo '';
+                            } ?> id="tax<?= $no; ?>" class="form-control" onchange="totalline(<?= $no; ?>);total()" value="<?= $row->vat; ?>">
                           </td>
                           <td width="15%">
                             <input name="jumlah[]" value="<?= number_format($row->totalrp); ?>" id="jumlah<?= $no; ?>" type="text" class="form-control rightJustified" size="40%" readonly>
                           </td>
+                          <td>
+                        <input name="het[]" onchange="totalline(<?= $no; ?>);total();" value="<?= $row->het; ?>" id="het1" type="text" class="form-control rightJustified ">
+                        </td>
                           <td width="10%">
-                            <input name="expire[]" onchange="totalline(<?= $no; ?>);total()" value="<?= date('Y-m-d', strtotime($row->exp_date)); ?>" id="expire<?php echo $no; ?>" type="date" class="form-control">
+                            <input name="expire[]" onchange="totalline(<?= $no; ?>);total()" value="<?= date('Y-m-d', strtotime($row->exp_date)); ?>" id="expire<?= $no; ?>" type="date" class="form-control">
                           </td>
                           <td width="10%">
-                            <input name="po[]" onchange="totalline(<?= $no; ?>);total()" value="<?= $row->po_no; ?>" id="po<?php echo $no; ?>" type="text" class="form-control">
+                            <input name="po[]" onchange="totalline(<?= $no; ?>);total()" value="<?= $row->po_no; ?>" id="po<?= $no; ?>" type="text" class="form-control">
                           </td>
                         </tr>
                       <?php $no++;
@@ -396,7 +401,7 @@ $this->load->view('template/body');
 									</div> -->
 
                 <div class="btn-group">
-                  <a class="btn red" href="<?php echo base_url('farmasi_bapb/') ?>"><i class="fa fa-undo"></i><b>
+                  <a class="btn red" href="<?= base_url('farmasi_bapb/') ?>"><i class="fa fa-undo"></i><b>
                       KEMBALI </b></a>
                 </div>
 
@@ -580,7 +585,7 @@ $this->load->view('template/footer');
     var kode = $('#kode' + id).val();
     var jumlah = harga * qty;
     $.ajax({
-      url: "<?php echo base_url(); ?>Farmasi_bapb/cekharga/?kode=" + kode + "&harga=" + hargax,
+      url: "<?= base_url(); ?>Farmasi_bapb/cekharga/?kode=" + kode + "&harga=" + hargax,
       type: "GET",
       dataType: "JSON",
       success: function(data) {
@@ -725,7 +730,7 @@ $this->load->view('template/footer');
     total();
   }
 
-  var idrow = <?php echo $jumdata + 1; ?>;
+  var idrow = <?= $jumdata + 1; ?>;
   var rowCount;
   var arr = [1];
 
@@ -747,6 +752,7 @@ $this->load->view('template/footer');
     var td9 = x.insertCell(8);
     var td10 = x.insertCell(9);
     var td11 = x.insertCell(10);
+    var td12 = x.insertCell(11);
 
     var akun = "<select name='kode[]' id=kode" + idrow + " class='select2_el_farmasi_barangdata form-control' onchange='showbarangname(this.value," + idrow + ")' >";
 
@@ -763,22 +769,25 @@ $this->load->view('template/footer');
     var taxx = "<input type='checkbox' name='tax[]' value='0' id=tax" + idrow + " onchange='totalline(" + idrow + ");total();' class='form-control'>";
     var jum = "<input name='jumlah[]' id=jumlah" + idrow + " type='text' class='form-control rightJustified' size='40%' readonly>";
 
+    var het = "<input name='het[]' id=het" + idrow + " onchange='totalline(" + idrow + ");' value='0'  type='text' class='form-control rightJustified'  >";
+    
     var expire = "<input name='expire[]'  id=expire" + idrow + " onchange='totalline(" + idrow + ") value=''  type='date' class='form-control'>";
 
     var poo = "<input name='po[]'  id=po" + idrow + " onchange='totalline(" + idrow + ") value=''  type='text' class='form-control'>";
 
     var vatrp = "<input type='hidden' name='vatrp[]' value=0 id='vatrp" + idrow + "' >";
-    td1.innerHTML = akun;
-    td2.innerHTML = qty;
-    td3.innerHTML = sat;
-    td4.innerHTML = hrg;
-    td5.innerHTML = diskper;
-    td6.innerHTML = diskrp;
-    td7.innerHTML = taxx;
-    td8.innerHTML = jum;
-    td9.innerHTML = expire;
-    td10.innerHTML = poo;
-    td11.innerHTML = vatrp;
+    td1.innerHTML   = akun;
+    td2.innerHTML   = qty;
+    td3.innerHTML   = sat;
+    td4.innerHTML   = hrg;
+    td5.innerHTML   = diskper;
+    td6.innerHTML   = diskrp;
+    td7.innerHTML   = taxx;
+    td8.innerHTML   = jum;
+    td9.innerHTML   = het;
+    td10.innerHTML  = expire;
+    td11.innerHTML  = poo;
+    td12.innerHTML  = vatrp;
     initailizeSelect2_farmasi_barangdata();
     // var gud = $('[name="gudang"]').val();
     // initailizeSelect2_farmasi_baranggud(gud);
@@ -866,7 +875,7 @@ $this->load->view('template/footer');
     var tglter = document.getElementById('tanggal').value;
 
     $.ajax({
-      url: "<?php echo base_url(); ?>farmasi_bapb/cekhari/?kode=" + str,
+      url: "<?= base_url(); ?>farmasi_bapb/cekhari/?kode=" + str,
       type: "GET",
       dataType: "JSON",
       success: function(data) {
@@ -906,7 +915,7 @@ $this->load->view('template/footer');
     var nomorpo = $('#nomorpo').val();
     $('#po' + id).val(nomorpo);
     $.ajax({
-      url: "<?php echo base_url(); ?>farmasi_po/getinfobarang/?kode=" + str,
+      url: "<?= base_url(); ?>farmasi_po/getinfobarang/?kode=" + str,
       type: "GET",
       dataType: "JSON",
       success: function(data) {
@@ -1116,7 +1125,7 @@ $this->load->view('template/footer');
                     type: "success",
                     confirmButtonText: "OK"
                   }).then((value) => {
-                    location.href = "<?php echo base_url() ?>farmasi_bapb";
+                    location.href = "<?= base_url() ?>farmasi_bapb";
                   });
                 }
               }
@@ -1141,8 +1150,8 @@ $this->load->view('template/footer');
     } else {
 
       $.ajax({
-        url: "<?php echo site_url('farmasi_bapb/ajax_add/2') ?>",
-        // url: "<?php echo site_url('farmasi_bapb/ubahdata/2') ?>",
+        url: "<?= site_url('farmasi_bapb/ajax_add/2') ?>",
+        // url: "<?= site_url('farmasi_bapb/ubahdata/2') ?>",
         data: $('#frmpembelian').serialize(),
         type: 'POST',
         success: function(data) {
@@ -1159,7 +1168,7 @@ $this->load->view('template/footer');
             confirmButtonText: "OK"
           }).then((value) => {
             location.href =
-              "<?php echo base_url() ?>farmasi_bapb";
+              "<?= base_url() ?>farmasi_bapb";
           });
         },
         error: function(data) {
@@ -1276,14 +1285,22 @@ $this->load->view('template/footer');
     //   var diskonrp = Number(row.cells[5].children[0].value.replace(/[^0-9\.]+/g, ""));
     //   jumlahx = row.cells[2].children[0].value * harga;
     //   diskon = (row.cells[4].children[0].value / 100) * jumlah;
-    var qtyx = $('#qty' + id).val();
-    var qty = Number(parseInt(qtyx.replaceAll(',', '')));
-    var hargax = $('#harga' + id).val();
-    var harga = Number(parseInt(hargax.replaceAll(',', '')));
+    var qtyx    = $('#qty' + id).val();
+    var qty     = Number(parseInt(qtyx.replaceAll(',', '')));
+    var hargax  = $('#harga' + id).val();
+    var harga   = Number(parseInt(hargax.replaceAll(',', '')));
+    var hetx  = $('#het' + id).val();
+    var het   = Number(parseInt(hetx.replaceAll(',', '')));
     var discrpx = $('#discrp' + id).val();
-    var discrp = Number(parseInt(discrpx.replaceAll(',', '')));
-    jumlah = qty * harga;
-    diskon = ($('#disc' + id).val() / 100) * jumlah;
+    var discrp  = Number(parseInt(discrpx.replaceAll(',', '')));
+    jumlah      = qty * harga;
+    diskon      = ($('#disc' + id).val() / 100) * jumlah;
+
+    // if(){
+
+    // }else{
+
+    // }
     if (eval(diskon) > 0) {
       $('#discrp' + id).val(separateComma(diskon));
       tot = jumlah - diskon;
@@ -1316,7 +1333,7 @@ $this->load->view('template/footer');
 
     } else {
       $.ajax({
-        url: "<?php echo base_url(); ?>farmasi_bapb/getdatapo/?nopo=" + str,
+        url: "<?= base_url(); ?>farmasi_bapb/getdatapo/?nopo=" + str,
         type: "GET",
         success: function(data) {
           initailizeSelect2_farmasi_barang();
@@ -1342,7 +1359,7 @@ $this->load->view('template/footer');
       totalline(1);
     } else {
       $.ajax({
-        url: "<?php echo base_url(); ?>farmasi_bapb/getpo/" + str,
+        url: "<?= base_url(); ?>farmasi_bapb/getpo/" + str,
         type: "GET",
         dataType: "JSON",
 

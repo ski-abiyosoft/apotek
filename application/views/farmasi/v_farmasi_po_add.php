@@ -224,7 +224,7 @@ $this->load->view('template/body');
                                         <tbody>
                                             <tr>
                                                 <td>
-                                                    <button type='button' onclick=hapusBarisIni(1) class='btn red'><i class='fa fa-trash-o'>
+                                                    <button type='button' onclick=hapusBarisIni(1) class='btn red'><i class='fa fa-trash-o'></i> - 1</button>
                                                 </td>
                                                 <td>
                                                     <!-- <select name="kode[]" id="kode1" onclick="cekbarangx(1)" class="form-control input-largex" onchange="showbarangname(this.value, 1)"></select> -->
@@ -380,7 +380,7 @@ $this->load->view('template/currency');
         var td4 = x.insertCell(3);
         var td5 = x.insertCell(4);
         var td6 = x.insertCell(5);
-        var button = "<button type='button' onclick=hapusBarisIni(" + idrow + ") class='btn red'><i class='fa fa-trash-o'>"
+        var button = "<button type='button' onclick=hapusBarisIni(" + idrow + ") class='btn red'><i class='fa fa-trash-o'></i> - "+idrow+"</button>"
         // var td6=x.insertCell(5);
         // var td7=x.insertCell(6);
         // cekbarang(idrow);
@@ -523,15 +523,16 @@ $this->load->view('template/currency');
                 cancelButtonText: 'Tidak'
             }).then(function() {
                 $.ajax({
-                    url: "<?php echo site_url('farmasi_po/ajax_add/1?ipo=') ?>" + ipo,
-                    data: $('#frmpembelian').serialize(),
-                    type: 'POST',
+                    url         : "<?php echo site_url('farmasi_po/ajax_add/1?ipo=') ?>" + ipo,
+                    data        : $('#frmpembelian').serialize(),
+                    type        : "POST",
+                    dataType    : "JSON",
                     success: function(data) {
-                        // console.log(data)
-                        data1 = JSON.parse(data);
+                        console.log(data)
+                        // data1 = JSON.parse(data);
                         swal({
                             title: "PURCHASE ORDER",
-                            html: "<p> No. Bukti   : <b>" + data1.nomor + "</b> </p>" + "Tanggal :  " + tanggal + "<br><br>Biaya Terbentuk <br><b>" + total + "</b>",
+                            html: "<p> No. Bukti   : <b>" + data.nomor + "</b> </p>" + "Tanggal :  " + tanggal + "<br><br>Biaya Terbentuk <br><b>" + total + "</b>",
                             type: "info",
                             confirmButtonText: "OK"
                         }).then((value) => {
@@ -539,8 +540,11 @@ $this->load->view('template/currency');
                         });
     
                     },
-                    error: function(data) {
-                        swal('PESANAN PEMBELIAN', 'Data gagal disimpan ...', '');
+                    error: function(jqXHR, textStatus, errorThrown) {
+                        alert(textStatus);
+                        $('#btnSave').text('save'); //change button text
+                        $('#btnSave').attr('disabled', false); //set button enable 
+
                     }
                 });
             });

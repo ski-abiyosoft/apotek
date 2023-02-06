@@ -129,14 +129,14 @@ class Pasien extends CI_Controller {
 
 	public function ajax_add()
 	{
-		$user     = $this->session->userdata('username');
-        $cabang   = $this->session->userdata('unit');
-		$namax     = $this->input->post('lupnamapasien');
-		$nama = preg_replace('/\s+/', ' ', $namax);
-		$tgllahir = $this->input->post('luptgllahir');
-		$tmptlhr = $this->input->post('luptempatlahir');
+		$user       = $this->session->userdata('username');
+		$cabang     = $this->session->userdata('unit');
+		$namax      = $this->input->post('lupnamapasien');
+		$nama       = preg_replace('/\s+/', ' ', $namax);
+		$tgllahir   = $this->input->post('luptgllahir');
+		$tmptlhr    = $this->input->post('luptempatlahir');
 		// $noidentitas = $this->input->post('lupnoidentitas');
-		$q = $this->input->post('searchTerm');
+		$q          = $this->input->post('searchTerm');
 		// echo '<pre>';
 		// print_r($q);
 		// die;
@@ -145,6 +145,7 @@ class Pasien extends CI_Controller {
 		
 		$qry = "SELECT count(*) as jum from tbl_pasien where namapas = '$nama' and tempatlahir = '$tmptlhr' and date(tgllahir)='$tgllahir'";
 		$jumdata = $this->db->query($qry)->row();
+		
 		if($jumdata->jum<1){
 		// date_default_timezone_set("Asia/Jakarta");
 		

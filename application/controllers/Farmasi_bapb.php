@@ -79,7 +79,7 @@ class Farmasi_bapb extends CI_Controller
 
 	public function getpo($po)
 	{
-		$data = $this->db->query("SELECT a.*, b.namabarang 
+		$data = $this->db->query("SELECT a.*, b.namabarang ,b.het
 		FROM tbl_barangdpo a
 		LEFT JOIN tbl_barang b ON b.kodebarang=a.kodebarang WHERE po_no = '$po'")->result();
 		echo json_encode($data);
@@ -303,7 +303,7 @@ class Farmasi_bapb extends CI_Controller
 			$data['akses']    = $akses;
 			$header   = $this->db->query("SELECT (select po_no from tbl_barangdterima b where a.terima_no=b.terima_no limit 1)po_no,a.* from tbl_baranghterima a where terima_no = '$id'")->row();
 
-			$detil    = $this->db->query("SELECT tbl_barangdterima.*, tbl_barang.namabarang from tbl_barangdterima
+			$detil    = $this->db->query("SELECT tbl_barangdterima.*, tbl_barang.namabarang,tbl_barang.het from tbl_barangdterima
 		  inner join tbl_barang on tbl_barangdterima.kodebarang=tbl_barang.kodebarang
 		  where terima_no = '$id'");
 
@@ -325,6 +325,7 @@ class Farmasi_bapb extends CI_Controller
 		$user_level   = $this->session->userdata('user_level');
 		$level        = $this->session->userdata('level');
 		$akses        = $this->M_global->cek_menu_akses($level, 3102);
+		$lock         = $this->M_global->close_app();
 		$dat          = explode("~", $param);
 		if ($dat[0] == 1) {
 			$bulan = date('m');
@@ -347,6 +348,8 @@ class Farmasi_bapb extends CI_Controller
 				$status = '<span class="label label-sm label-danger">Closed</span> ';
 			}
 
+			$cek_apo = $this->db->query("SELECT * FROM tbl_apoap WHERE terima_no = '$rd->terima_no'")->row();
+
 			$row   = array();
 			$row[] = '<span "font-weight:bold;"><b>' . $rd->koders . '</b></span>';
 			$row[] = '<span "font-weight:bold;"><b>' . $rd->username . '</b></span>';
@@ -358,21 +361,41 @@ class Farmasi_bapb extends CI_Controller
 			$gd = $this->db->get_where("tbl_depo", ['depocode' => $rd->gudang])->row();
 			$row[] = '<span "font-weight:bold;"><b>' . $gd->keterangan . '</b></span>';
 
-			if($user_level==0){
-				$row[] = '
-				<a target="_blank" class="btn btn-sm btn-warning" href="' . base_url("farmasi_bapb/cetak/?id=" . $rd->terima_no . "") . '" title="Cetak" ><i class="glyphicon glyphicon-print"></i> </a>';
-			}else{
-				if ($akses->uedit == 1 && $akses->udel == 1) {
-					$row[] = '
-					<a class="btn btn-sm btn-primary" href="' . base_url("farmasi_bapb/edit/" . $rd->terima_no . "") . '" title="Edit" ><i class="glyphicon glyphicon-edit"></i> </a>
-					<a target="_blank" class="btn btn-sm btn-warning" href="' . base_url("farmasi_bapb/cetak/?id=" . $rd->terima_no . "") . '" title="Cetak" ><i class="glyphicon glyphicon-print"></i> </a>
-					<a class="btn btn-sm btn-danger" href="javascript:void(0)" title="Hapus" onclick="delete_data(' . "'" . $rd->id . "'" . ",'" . $rd->terima_no . "'" . ')"><i class="glyphicon glyphicon-trash"></i> </a>';
-				} else if ($akses->uedit == 1 && $akses->udel == 0) {
-					$row[] = '<a class="btn btn-sm btn-primary" href="' . base_url("farmasi_bapb/edit/" . $rd->id . "") . '" title="Edit" ><i class="glyphicon glyphicon-edit"></i> </a> ';
-				} else if ($akses->uedit == 0 && $akses->udel == 1) {
-					$row[] = '<a class="btn btn-sm btn-danger" href="javascript:void(0)" title="Hapus" onclick="delete_data(' . "'" . $rd->id . "'" . ')"><i class="glyphicon glyphicon-trash"></i> </a>';
-				} else {
-					$row[] = '';
+			if($cek_apo->tukarfaktur < 1) {
+				if($user_level==0){
+					$row[] = '<div class="text-center">
+					<a target="_blank" class="btn btn-sm btn-warning" href="' . base_url("farmasi_bapb/cetak/?id=" . $rd->terima_no . "") . '" title="Cetak" ><i class="glyphicon glyphicon-print"></i> </a></div>';
+				}else{
+					if ($akses->uedit == 1 && $akses->udel == 1 && $lock == 0) {
+						$row[] = '<div class="text-center">
+						<a class="btn btn-sm btn-primary" href="' . base_url("farmasi_bapb/edit/" . $rd->terima_no . "") . '" title="Edit" ><i class="glyphicon glyphicon-edit"></i> </a>
+						<a target="_blank" class="btn btn-sm btn-warning" href="' . base_url("farmasi_bapb/cetak/?id=" . $rd->terima_no . "") . '" title="Cetak" ><i class="glyphicon glyphicon-print"></i> </a>
+						<a class="btn btn-sm btn-danger" href="javascript:void(0)" title="Hapus" onclick="delete_data(' . "'" . $rd->id . "'" . ",'" . $rd->terima_no . "'" . ')"><i class="glyphicon glyphicon-trash"></i> </a></div>';
+					} else if ($akses->uedit == 1 && $akses->udel == 0) {
+						$row[] = '<a class="btn btn-sm btn-primary" href="' . base_url("farmasi_bapb/edit/" . $rd->id . "") . '" title="Edit" ><i class="glyphicon glyphicon-edit"></i> </a> ';
+					} else if ($akses->uedit == 0 && $akses->udel == 1) {
+						$row[] = '<a class="btn btn-sm btn-danger" href="javascript:void(0)" title="Hapus" onclick="delete_data(' . "'" . $rd->id . "'" . ')"><i class="glyphicon glyphicon-trash"></i> </a>';
+					} else {
+						$row[] = '';
+					}
+				}
+			} else {
+				if($user_level==0){
+					$row[] = '<div class="text-center">
+					<a target="_blank" class="btn btn-sm btn-warning" href="' . base_url("farmasi_bapb/cetak/?id=" . $rd->terima_no . "") . '" title="Cetak" ><i class="glyphicon glyphicon-print"></i> </a></div>';
+				}else{
+					if ($akses->uedit == 1 && $akses->udel == 1 && $lock == 0) {
+						$row[] = '<div class="text-center">
+						<button disabled type="button" class="btn btn-sm btn-primary" title="Edit" ><i class="glyphicon glyphicon-edit"></i> </button>
+						<a target="_blank" class="btn btn-sm btn-warning" href="' . base_url("farmasi_bapb/cetak/?id=" . $rd->terima_no . "") . '" title="Cetak" ><i class="glyphicon glyphicon-print"></i> </a>
+						<button class="btn btn-sm btn-danger" type="button" title="Hapus" disabled><i class="glyphicon glyphicon-trash"></i> </button></div>';
+					} else if ($akses->uedit == 1 && $akses->udel == 0) {
+						$row[] = '<button class="btn btn-sm btn-primary" type="button" disabled title="Edit" ><i class="glyphicon glyphicon-edit"></i> </button> ';
+					} else if ($akses->uedit == 0 && $akses->udel == 1) {
+						$row[] = '<button type="button" class="btn btn-sm btn-danger" title="Hapus" disabled><i class="glyphicon glyphicon-trash"></i> </button>';
+					} else {
+						$row[] = '';
+					}
 				}
 			}
 			
@@ -484,25 +507,26 @@ class Farmasi_bapb extends CI_Controller
 
 	function save_multi()
 	{
-		$cabang = $this->session->userdata('unit');
-		$gudang   = $this->input->post('gudang');
-		$terima_no = $this->input->get('terima_no');
-		$kode = $this->input->get('kode');
-		$qty = $this->input->get('qty');
-		$sat = $this->input->get('sat');
-		$harga = $this->input->get('harga');
-		$disc = $this->input->get('disc');
-		$discrp = $this->input->get('discrp');
-		$vat = $this->input->get('vat');
-		$jumlah = $this->input->get('jumlah');
-		$expire = $this->input->get('expire');
-		$po = $this->input->get('po');
-		$vatrp = $this->input->get('vatrp');
-		$po_no  = $this->input->post('nomorpo');
+		$cabang       = $this->session->userdata('unit');
+		$gudang       = $this->input->post('gudang');
+		$terima_no    = $this->input->get('terima_no');
+		$kode         = $this->input->get('kode');
+		$qty          = $this->input->get('qty');
+		$sat          = $this->input->get('sat');
+		$harga        = $this->input->get('harga');
+		$het          = $this->input->get('het');
+		$disc         = $this->input->get('disc');
+		$discrp       = $this->input->get('discrp');
+		$vat          = $this->input->get('vat');
+		$jumlah       = $this->input->get('jumlah');
+		$expire       = $this->input->get('expire');
+		$po           = $this->input->get('po');
+		$vatrp        = $this->input->get('vatrp');
+		$po_no        = $this->input->post('nomorpo');
 
 		if ($harga != '' && $kode != '') {
-			$ppn = $this->db->get_where('tbl_pajak', ['kodetax' => 'PPN'])->row_array();
-			$cekq = $this->db->query('select * from tbl_barang where kodebarang = "' . $kode . '"')->result();
+			$ppn   = $this->db->get_where('tbl_pajak', ['kodetax' => 'PPN'])->row_array();
+			$cekq  = $this->db->query('select * from tbl_barang where kodebarang = "' . $kode . '"')->result();
 			foreach ($cekq as $cq) {
 				if($harga > $cq->hargabeli){
 					if ($cq->vat == 1) {
@@ -518,6 +542,9 @@ class Farmasi_bapb extends CI_Controller
 					$this->db->update('tbl_barang');
 				}
 			}
+			$this->db->set('het', $het);
+			$this->db->where('kodebarang', $kode);
+			$this->db->update('tbl_barang');
 			// $sql = $this->db->query('select terima_no from tbl_baranghterima where koders = "'.$cabang.'" and gudang = "'.$gudang.'" order by id desc limit 1')->result();
 			// foreach($sql as $s){
 			if ($po_no == '') {
@@ -614,7 +641,6 @@ class Farmasi_bapb extends CI_Controller
 		$gudang   = $this->input->post('gudang');
 		$faktur   = $this->input->post('nofaktur');
 		$terimano   = $this->input->get('terimano');
-		$alasan_ubah   = $this->input->post('alasan_ubah');
 		$tanggal  = date('Y-m-d');
 		$jam      = date('H:i:s');
 		$nomorpo  = $this->input->post('nomorpo');
@@ -639,7 +665,6 @@ class Farmasi_bapb extends CI_Controller
 		$this->db->set('diskontotal', $this->input->post('diskonrp'));
 		$this->db->set('term', $this->input->post('pembayaran'));
 		$this->db->set('jenisbeli', $jenisbeli);
-		$this->db->set('alasan', $alasan_ubah);
 		$this->db->set('userid', $userid);
 		$this->db->set('ppn', $ppn['prosentase']);
 		$this->db->set('jamterima', $jam);
@@ -1031,64 +1056,65 @@ class Farmasi_bapb extends CI_Controller
 
 			$pdf->setfont('Arial', 'B', 18);
 			$pdf->SetAligns(array('C', 'C', 'C'));
-			$border    = array('BTLR');
-			$size      = array('');
-			$align     = array('C');
-			$style     = array('B');
-			$size      = array('18');
-			$max       = array(20);
-			$fc        = array('0');
-			$hc        = array('20');
-			$judul     = array('SURAT PERNYATAAN & PEMBELIAN BARANG');
+			$border = array('BTLR');
+			$size   = array('');
+			$align = array('C');
+			$style = array('B');
+			$size  = array('18');
+			$max   = array(20);
+			$fc     = array('0');
+			$hc     = array('20');
+			$judul = array('SURAT PERNYATAAN & PEMBELIAN BARANG');
 			$pdf->FancyRow2(10, $judul, $fc,  $border, $align, $style, $size, $max);
-			$size      = array('10');
-			$align     = array('L');
-			$border    = array('');
+			$size  = array('10');
+			$align = array('L');
+			$border = array('');
+
+
 
 			$pdf->ln(1);
 			$pdf->setfont('Arial', 'B', 10);
 			$pdf->SetWidths(array(20, 5, 80, 30, 5, 50));
-			$border    = array('LT', 'T', 'T', 'T', 'T', 'TR');
-			$fc        = array('0', '0', '0', '0', '0', '0');
+			$border = array('LT', 'T', 'T', 'T', 'T', 'TR');
+			$fc     = array('0', '0', '0', '0', '0', '0');
 			$pdf->SetFillColor(230, 230, 230);
 			$pdf->setfont('Arial', '', 9);
 
 
 			$pdf->FancyRow(array('Terima dari', ':', $header->vendor_name, 'BAPB No.', ':', $header->terima_no), $fc, $border);
-			$border    = array('L', '', '', '', '', 'R');
+			$border = array('L', '', '', '', '', 'R');
 			$pdf->FancyRow(array('', '', $header->alamat, 'Tgl Faktur', ':', date('d-m-Y', strtotime($header->terima_date))), $fc, $border);
 			$pdf->FancyRow(array('', '', '', 'Tgl Penerimaan', ':', date('d-m-Y', strtotime($header->terima_date))), $fc, $border);
-			$pdf->FancyRow(array('', '', '', 'Tgl Jatuh Tempo', ':', date('d-m-Y', strtotime($header->due_date))), $fc, $border);
 			$pdf->FancyRow(array('', '', '', 'No. Faktur', ':', $header->invoice_no), $fc, $border);
 			$pdf->FancyRow(array('', '', '', 'No. Surat Jalan', ':', $header->sj_no), $fc, $border);
-			$border    = array('LB', 'B', 'B', 'B', 'B', 'BR');
-			$gd        = $this->db->get_where('tbl_depo', ['depocode' => $header->gudang])->row();
+			$border = array('LB', 'B', 'B', 'B', 'B', 'BR');
+			$gd = $this->db->get_where('tbl_depo', ['depocode' => $header->gudang])->row();
 			$pdf->FancyRow(array('', '', $header->phone, 'Gudang', ':', $gd->keterangan), $fc, $border);
 
 
 			$pdf->ln(2);
 			$pdf->SetWidths(array(10, 25, 30, 15, 15, 20, 20, 20, 35));
-			$border    = array('LTB', 'TB', 'TB', 'TB', 'TB', 'TB', 'TB', 'TB', 'TBR');
-			$align     = array('C', 'C', 'C', 'C', 'C', 'C', 'C', 'C', 'C');
+			$border = array('LTB', 'TB', 'TB', 'TB', 'TB', 'TB', 'TB', 'TB', 'TBR');
+			$align  = array('C', 'C', 'C', 'C', 'C', 'C', 'C', 'C', 'C');
 			$pdf->setfont('Arial', 'B', 9);
 			$pdf->SetAligns(array('L', 'C', 'R'));
-			$fc        = array('0', '0', '0', '0', '0', '0', '0', '0', '0');
-			$judul     = array('No.', 'Kode Barang', 'Nama Barang', 'Qty', 'Satuan', 'HPP', 'Disc', 'Total', 'Po No');
+			$fc = array('0', '0', '0', '0', '0', '0', '0', '0', '0');
+			$judul = array('No.', 'Kode Barang', 'Nama Barang', 'Qty', 'Satuan', 'HPP', 'Disc', 'Total', 'Po No');
 			$pdf->FancyRow2(8, $judul, $fc, $border, $align);
 			$pdf->setfont('Arial', '', 9);
-			$tot       = 0;
-			$subtot    = 0;
-			$tdisc     = 0;
-			$border    = array('L', '', '', '', '', '', '', '', 'R');
-			$align     = array('L', 'L', 'L', 'R', 'R', 'R', 'R', 'R', 'L');
-			$style     = array('', '', '', '', '', '', '', '', '');
-			$size      = array('8', '8', '8', '8', '8', '8', '8', '8', '8');
-			$max       = array(2, 2, 2, 2, 2, 2, 2, 2, 2);
-			$fc        = array('0', '0', '0', '0', '0', '0', '0', '0', '0');
-			$no        = 1;
-			$totitem   = 0;
-			$tot       = 0;
-			$diskon    = 0;
+			$tot = 0;
+			$subtot = 0;
+			$tdisc  = 0;
+			$border = array('L', '', '', '', '', '', '', '', 'R');
+			$align  = array('L', 'L', 'L', 'R', 'R', 'R', 'R', 'R', 'L');
+			$style = array('', '', '', '', '', '', '', '', '');
+			$size  = array('8', '8', '8', '8', '8', '8', '8', '8', '8');
+			$max   = array(2, 2, 2, 2, 2, 2, 2, 2, 2);
+			$fc     = array('0', '0', '0', '0', '0', '0', '0', '0', '0');
+			$no = 1;
+			$totitem = 0;
+			$tot = 0;
+			$diskon = 0;
 			foreach ($detil as $db) {
 				$hpp = data_master('tbl_barang', array('kodebarang' => $db->kodebarang))->hpp;
 				$xxx = $db->qty_terima * $db->price;

@@ -346,6 +346,13 @@ $this->load->view('template/footer');
 ?>
 
 <script>
+    // Kiw
+    if($("input[name='tax[]']").is(":checked") !== false){
+        $(this).prop("checked", true);
+    } else {
+        $(this).prop("checked", true);
+    }
+
     $("#form_ppn").hide();
     var idrow = 2;
     var rowCount;
@@ -418,7 +425,7 @@ $this->load->view('template/footer');
             "<td><input name='tax[]'  id=tax" + idrow + " onchange='totalline(" + idrow + ");total()' value='0' type='checkbox' class='form-control rightJustified'></td>" +
             "<td><input name='disc[]'   id=disc" + idrow + " onchange='totalline(" + idrow + ");total();cekdisc(" + idrow + ")' value='0'  type='text' class='form-control rightJustified'  ></td>" +
             "<td><input name='discrp[]'   id=discrp" + idrow + " onchange='totalline(" + idrow + ");cekdiscrp(" + idrow + ")' value='0'  type='text' class='form-control rightJustified'  ></td>" +
-            "<td><input name='jumlah[]' id=jumlah" + idrow + " type='text' class='form-control rightJustified'></td>" +
+            "<td><input name='jumlah[]' id=jumlah" + idrow + " type='text' class='form-control rightJustified' readonly></td>" +
             "</tr>");
         initailizeSelect2_farmasi_barang();
         idrow++;
@@ -1019,6 +1026,8 @@ $this->load->view('template/footer');
                         document.getElementById("discrp" + x).value = formatCurrency1(data[i].discountrp);
                         if (data[i].vat == 1) {
                             document.getElementById("tax" + x).checked = true;
+                        } else {
+                            document.getElementById("tax" + x).checked = false;
                         }
                         // $('#discrp'+x).val(data[i].discountrp);
                         console.log(data[i].discountrp);

@@ -53,6 +53,19 @@ class M_global extends CI_Model
 		return $query->row();
 	}
 
+	function close_app()
+	{
+		$cabang   = $this->session->userdata('unit');
+		$tgl      = date('Y-m-d');
+		// $tgl      = '2022-12-25';
+		$sql      = $this->db->query("SELECT status from ms_close_app WHERE koders = '$cabang' and statustgl='$tgl' ")->row();
+		if($sql){
+			return $sql->status;
+		}else{
+			return 0;
+		}
+    }
+	
 
 	public function _periodebulan2()
 
@@ -2061,7 +2074,7 @@ class M_global extends CI_Model
 				[ ', tbl_barang.hargajual ,' ]
 			') AS text 
 			FROM tbl_barang
-			WHERE (tbl_barang.kodebarang like '%$str%' OR tbl_barang.namabarang like '%$str%' OR tbl_barang.satuan1 like '%$str%' OR tbl_barang.hargajual like '%$str%') order by tbl_barang.kodebarang $limm
+			WHERE (tbl_barang.kodebarang like '%$str%' OR tbl_barang.namabarang like '%$str%' OR tbl_barang.satuan1 like '%$str%' OR tbl_barang.hargajual like '%$str%') order by tbl_barang.id,tbl_barang.kodebarang $limm
 			");
 		} else {
 			$query = $this->db->query("
