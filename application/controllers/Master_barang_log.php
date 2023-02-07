@@ -72,6 +72,7 @@ class Master_barang_log extends CI_Controller {
 				'hargajual' => $this->input->post('hargajual'),
 				'hargabeli' => $this->input->post('hargabeli'),
 				'hpp' => $this->input->post('hpp'),
+				'het' => $this->input->post('het'),
 				'notax' => $this->input->post('ppn'),
 				'hargabelippn' => $this->input->post('hargabelippn'),
 				'minstock' => $this->input->post('minstock'),

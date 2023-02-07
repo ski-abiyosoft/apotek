@@ -512,15 +512,15 @@ $this->load->view('template/currency');
             swal('PURCHASE ORDER', 'Data Belum Lengkap/Belum ada transaksi ...', '');
         } else {
             swal({
-                title: 'HARGA',
-                html: "Apakah Harga Sudah Sesuai ?",
+                title: 'QUANTITY',
+                html: "Apakah Quantity yang di ajukan Sudah Sesuai ?",
                 type: 'question',
                 showCancelButton: true,
                 confirmButtonClass: 'btn btn-success',
                 cancelButtonClass: 'btn btn-success',
                 cancelButtonColor: '#d33',
                 confirmButtonText: 'Ya',
-                cancelButtonText: 'Tidak'
+                cancelButtonText: 'Belum'
             }).then(function() {
                 $.ajax({
                     url         : "<?php echo site_url('farmasi_po/ajax_add/1?ipo=') ?>" + ipo,

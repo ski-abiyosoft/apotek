@@ -362,18 +362,12 @@ class Logistik_bapb extends CI_Controller
 
 	public function getpo($po)
 	{
-		// $this->db->select('tbl_apodpolog.*, tbl_logbarang.namabarang, tbl_apodpolog.qty_po-tbl_apodpolog.qty_terima as sisa', false);
-		// $this->db->from('tbl_apodpolog');
-		// $this->db->join('tbl_logbarang','tbl_logbarang.kodebarang=tbl_apodpolog.kodebarang','left');
-		// $this->db->where('tbl_apodpolog.po_no',$po);
-		// $this->db->where('tbl_apodpolog.qty_po > tbl_apodpolog.qty_terima');	
 
-		// $data = $this->db->get()->result();	
-
-		$data = $this->db->query("SELECT tbl_apodpolog.*, tbl_logbarang.namabarang, tbl_apodpolog.qty_po-tbl_apodpolog.qty_terima as sisa 
+		$data = $this->db->query("SELECT tbl_apodpolog.*, tbl_logbarang.namabarang, (tbl_apodpolog.qty_po - tbl_apodpolog.qty_terima) as sisa 
 		FROM tbl_apodpolog
 		LEFT JOIN tbl_logbarang ON tbl_logbarang.kodebarang=tbl_apodpolog.kodebarang 
-		WHERE tbl_apodpolog.po_no = '$po' AND tbl_apodpolog.qty_po > tbl_apodpolog.qty_terima")->result();
+		WHERE tbl_apodpolog.po_no = '$po' AND tbl_apodpolog.qty_po > tbl_apodpolog.qty_terima 
+		AND tbl_apodpolog.kodebarang NOT IN (SELECT kodebarang FROM tbl_apodterimalog WHERE po_no = '$po')")->result();
 
 		echo json_encode($data);
 	}
@@ -399,15 +393,15 @@ class Logistik_bapb extends CI_Controller
 		if (!empty($supp)) {
 			$po  = $this->db->get_where('tbl_apohpolog', array('vendor_id' => $supp, 'closed' => 0))->result();
 ?>
-			<select name="kodepo" id="kodepo" class="form-control  input-medium select2me">
-				<option value="">-- Tanpa PO ---</option>
-				<?php
+<select name="kodepo" id="kodepo" class="form-control  input-medium select2me">
+  <option value="">-- Tanpa PO ---</option>
+  <?php
 				foreach ($po  as $row) {
 				?>
-					<option value="<?php echo $row->po_no; ?>"><?php echo $row->po_no; ?></option>
+  <option value="<?php echo $row->po_no; ?>"><?php echo $row->po_no; ?></option>
 
-				<?php } ?>
-			</select>
+  <?php } ?>
+</select>
 
 <?php
 
@@ -432,16 +426,29 @@ class Logistik_bapb extends CI_Controller
 			$data['akses']    = $akses;
 			$data['nomorpo']  = urut_transaksi('URUT_BHP', 19);
 			$data['ppn'] = $this->db->get_where('tbl_pajak', ['kodetax' => 'PPN'])->row_array();
-			$this->load->view('pembelian/v_logistik_bapb_add', $data);
-
-			//   $page=$this->uri->segment(3);
-			//   $limit=$this->config->item('limit_data');	
-			//   $d['nomor']= urut_transaksi('URUT_BHP', 19);		  
-			//   $this->load->view('pembelian/v_logistik_bapb_add',$d);				
+			$this->load->view('pembelian/v_logistik_bapb_add', $data);			
 		} else {
 
 			header('location:' . base_url());
 		}
+	}
+
+	function getnomorpox($vendor_id)
+	{
+		$cabang = $this->session->userdata("unit");
+		$po = $this->db->query("SELECT DISTINCT hpo.po_no as id, CONCAT(hpo.po_no,' | ',date_format(hpo.po_date,'%d-%m-%Y')) as text 
+		FROM tbl_apohpolog hpo 
+		JOIN tbl_apodpolog dpo ON hpo.po_no = dpo.po_no 
+		WHERE hpo.koders = '$cabang' 
+		AND closed = 0 AND setuju = 1
+		AND hpo.vendor_id='$vendor_id'
+		AND CONCAT( hpo.po_no , dpo.kodebarang  )  NOT IN 
+			(SELECT CONCAT( d.po_no , d.kodebarang  ) 
+			FROM tbl_apodterimalog d JOIN tbl_apohterimalog h ON d.terima_no = h.terima_no 
+			WHERE h.koders = '$cabang') 
+		GROUP BY hpo.po_no
+		HAVING COUNT(dpo.kodebarang) > 0")->result();
+		echo json_encode($po);
 	}
 
 	public function hapus()
@@ -458,51 +465,17 @@ class Logistik_bapb extends CI_Controller
 			foreach ($databeli as $row) {
 				$_qty  = $row->qty_terima;
 				$_kode = $row->kodebarang;
-				$this->db->query("UPDATE tbl_apostocklog set terima=terima- $_qty, saldoakhir= saldoakhir- $_qty where kodebarang = '$_kode' and koders = '$cabang' and gudang = '$gudang'");
+				$this->db->query("UPDATE tbl_apostocklog set terima = terima-$_qty, saldoakhir = saldoakhir-$_qty where kodebarang = '$_kode' and koders = '$cabang' and gudang = '$gudang'");
+				$this->db->query("UPDATE tbl_apodpolog SET qty_terima = qty_terima - $_qty WHERE kodebarang = '$_kode' AND koders = '$cabang' AND po_no = '$row->po_no'");
 			}
-			$this->db->delete('tbl_apohterimalog', array('terima_no' => $terima_no));
-			$this->db->delete('tbl_apodterimalog', array('terima_no' => $terima_no, 'koders' => $cabang));
+			$this->db->delete('tbl_apodterimalog', ['terima_no' => $terima_no, 'koders' => $cabang]);
+			$this->db->delete('tbl_apohterimalog', ['terima_no' => $terima_no]);
 			$this->db->query("DELETE from tbl_apoap where terima_no = '$terima_no'");
 			// $this->db->delete('tr_jurnal',array('' => $nomor));
 			echo json_encode(array("status" => 1));
 		} else {
 			header('location:' . base_url());
 		}
-
-		// $cabang   = $this->session->userdata('unit');
-		// $cek      = $this->session->userdata('level');
-		// $nomor    = $this->input->post('id');
-		// if(!empty($cek))
-		// {			
-		//   if($nomor!=""){				
-		// 		   $datalpb = $this->db->query("SELECT (SELECT gudang from tbl_apohterimalog b where b.terima_no=a.terima_no)gudang,a.* FROM tbl_apodterimalog a WHERE terima_no = '$nomor' ")->result();
-
-		// 		   foreach($datalpb as $row){	
-		// 			$gudangg    = $row->gudang;
-		// 			$_po_no    = $row->po_no;
-		// 			$_kode     = $row->kodebarang;
-		// 			$_qty      = $row->qty_terima;
-
-		// 			 $this->db->query("UPDATE tbl_apodpolog set qty_terima = qty_terima - $_qty where kodebarang = '$_kode' and po_no ='$_po_no' ");	
-
-
-		// 			 $this->db->query("UPDATE tbl_apostocklog set terima=terima- $_qty, saldoakhir= saldoakhir- $_qty where kodebarang = '$_kode'
-		// 			and koders = '$cabang' and gudang = '$gudangg'");
-		// 		   }				   				   				   		     	
-		// 	}
-
-		//    $this->db->delete('tbl_apohterimalog',array('terima_no' => $nomor));
-		//    $this->db->delete('tbl_apodterimalog',array('terima_no' => $nomor));
-		//    $this->db->delete('tbl_baranghterima',array('terima_no' => $nomor));
-		//    //$this->db->delete('inv_transaksi',array('nobukti' => $nomor));
-		//    //$this->db->delete('tr_jurnal',array('' => $nomor));	
-		//    echo json_encode(array("status" => 1));	   		   
-
-		// }else{
-
-		// 	header('location:'.base_url());
-
-		// }
 	}
 
 	function cekharga()
@@ -543,6 +516,12 @@ class Logistik_bapb extends CI_Controller
 
 		$kode = $this->input->get('kode');
 		$data = $this->M_global->_data_barang_log($kode);
+		echo json_encode($data);
+	}
+
+	public function getinfobarang2($kode)
+	{
+		$data = $this->db->query("SELECT * FROM tbl_logbarang WHERE kodebarang = '$kode'")->row();
 		echo json_encode($data);
 	}
 
@@ -593,22 +572,27 @@ class Logistik_bapb extends CI_Controller
 			$row[] = $unit->koders;
 			$row[] = $unit->userid;
 			$row[] = $unit->terima_no;
-			$row[] = $unit->terima_date;
+			$row[] = date("d-m-Y", strtotime($unit->terima_date));
 			$row[] = $unit->vendor_name;
 			$row[] = $unit->sj_no;
 			$row[] = $unit->gudang;
 			$row[] = $unit->terima_no;
-			if ($akses->uedit == 1 && $akses->udel == 1) {
-				$row[] = '
-				<a class="btn btn-sm btn-primary" href="' . base_url("logistik_bapb/edit/" . $unit->terima_no . "") . '" title="Edit" ><i class="glyphicon glyphicon-edit"></i> </a>
-				<a target="_blank" class="btn btn-sm btn-warning" href="' . base_url("logistik_bapb/cetak2/" . $unit->terima_no . "") . '" title="Edit" ><i class="glyphicon glyphicon-print"></i> </a>
-				<a class="btn btn-sm btn-danger" href="javascript:void(0)" title="Hapus" onclick="delete_data(' . "'" . $unit->terima_no . "'" . ')"><i class="glyphicon glyphicon-trash"></i> </a>';
-			} else if ($akses->uedit == 1 && $akses->udel == 0) {
-				$row[] = '<a class="btn btn-sm btn-primary" href="' . base_url("logistik_bapb/edit/" . $unit->id . "") . '" title="Edit" ><i class="glyphicon glyphicon-edit"></i> </a> ';
-			} else if ($akses->uedit == 0 && $akses->udel == 1) {
-				$row[] = '<a class="btn btn-sm btn-danger" href="javascript:void(0)" title="Hapus" onclick="delete_data(' . "'" . $unit->terima_no . "'" . ')"><i class="glyphicon glyphicon-trash"></i> </a>';
+			$cek = $this->db->query("SELECT * FROM tbl_apoap WHERE terima_no = '$unit->terima_no' AND tukarfaktur = 1")->num_rows();
+			if($cek < 1) {
+				if ($akses->uedit == 1 && $akses->udel == 1) {
+					$row[] = '
+					<a class="btn btn-sm btn-primary" href="' . base_url("logistik_bapb/edit/" . $unit->terima_no . "") . '" title="Edit" ><i class="glyphicon glyphicon-edit"></i> </a>
+					<a target="_blank" class="btn btn-sm btn-warning" href="' . base_url("logistik_bapb/cetak2/" . $unit->terima_no . "") . '" title="Edit" ><i class="glyphicon glyphicon-print"></i> </a>
+					<a class="btn btn-sm btn-danger" href="javascript:void(0)" title="Hapus" onclick="delete_data(' . "'" . $unit->terima_no . "'" . ')"><i class="glyphicon glyphicon-trash"></i> </a>';
+				} else if ($akses->uedit == 1 && $akses->udel == 0) {
+					$row[] = '<a class="btn btn-sm btn-primary" href="' . base_url("logistik_bapb/edit/" . $unit->id . "") . '" title="Edit" ><i class="glyphicon glyphicon-edit"></i> </a> ';
+				} else if ($akses->uedit == 0 && $akses->udel == 1) {
+					$row[] = '<a class="btn btn-sm btn-danger" href="javascript:void(0)" title="Hapus" onclick="delete_data(' . "'" . $unit->terima_no . "'" . ')"><i class="glyphicon glyphicon-trash"></i> </a>';
+				} else {
+					$row[] = '';
+				}
 			} else {
-				$row[] = '';
+				$row[] = '<a target="_blank" class="btn btn-sm btn-warning" href="' . base_url("logistik_bapb/cetak2/" . $unit->terima_no . "") . '" title="Edit" ><i class="glyphicon glyphicon-print"></i> </a>';
 			}
 			$data[] = $row;
 		}
@@ -660,7 +644,7 @@ class Logistik_bapb extends CI_Controller
 				$data = array(
 					'koders'      => $cabang,
 					'terima_no'   => $nobukti,
-					'terima_date' => $this->input->post('tanggal'),
+					'terima_date' => date("Y-m-d"),
 					'due_date'    => $this->input->post('jatuhtempo'),
 					'tgltukar'    => $this->input->post('tanggaltukar'),
 					'vendor_id'   => $this->input->post('supp'),
@@ -678,8 +662,8 @@ class Logistik_bapb extends CI_Controller
 					'kurs'        => $this->input->post('kurs'),
 					'kursrate'    => $this->input->post('rate'),
 					'userid'      => $userid,
-					'vatrp'      => 0,
-					'jamterima'   => date('h:i:s'),
+					'vatrp'      	=> 0,
+					'jamterima'   => date('H:i:s'),
 				);
 				$this->db->insert('tbl_apohterimalog', $data);
 			}
@@ -722,19 +706,17 @@ class Logistik_bapb extends CI_Controller
 			$ppn = $this->db->get_where('tbl_pajak', ['kodetax' => 'PPN'])->row_array();
 			$cekq = $this->db->query('select * from tbl_logbarang where kodebarang = "' . $kode . '"')->result();
 			foreach ($cekq as $cq) {
-				if($harga > $cq->hargabeli){
-					if ($cq->vat == 1) {
-						$hargabarang = $harga;
-						$hargappn = $harga * $ppn['prosentase'] / 100 + $harga;
-					} else {
-						$hargabarang = $harga;
-						$hargappn = $harga;
-					}
-					$this->db->set('hargabeli', $hargabarang);
-					$this->db->set('hargabelippn', $hargappn);
-					$this->db->where('kodebarang', $kode);
-					$this->db->update('tbl_logbarang');
+				if ($cq->vat == 1) {
+					$hargabarang = $harga;
+					$hargappn = $harga * $ppn['prosentase'] / 100 + $harga;
+				} else {
+					$hargabarang = $harga;
+					$hargappn = $harga;
 				}
+				$this->db->set('hargabeli', $hargabarang);
+				$this->db->set('hargabelippn', $hargappn);
+				$this->db->where('kodebarang', $kode);
+				$this->db->update('tbl_logbarang');
 			}
 			$sql = $this->db->query('select terima_no from tbl_apohterimalog where koders = "' . $cabang . '" and gudang = "' . $gudang . '" order by id desc limit 1')->result();
 			foreach ($sql as $s) {

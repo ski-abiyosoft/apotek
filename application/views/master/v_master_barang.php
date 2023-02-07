@@ -251,6 +251,16 @@ function edit_data(id) {
             $('[name="minstock"]').val(data.minstock);
             $('[name="leadtime"]').val(data.leadtime);
             $('[name="reorderlevel"]').val(data.reorder);
+            
+            $('[name="het"]').val(Number(data.het));
+            if(data.hargatype == 1) {
+                $('#cek_persen').show();
+                var cek1 = ((Number(data.hargajual) - Number(data.hargabelippn)) / Number(data.hargabelippn)) * 100;
+            } else {
+                $('#cek_persen').hide();
+                var cek1 = 0;
+            }
+            $('[name="persen"]').val(cek1.toFixed(0));
 
             gettarif();
 
@@ -404,7 +414,7 @@ $(document).ready(function() {
                                     <label class="control-label col-md-3">Kode&nbsp;<small style="color:red">*</small></label>
                                     <div class="col-md-9">
                                         <input name="kode" placeholder="Kode" class="form-control" maxlength="20"
-                                            type="text">
+                                            type="text" id="kode" onkeyup="ubah_kode(this.value)">
                                         <span class="help-block"></span>
                                     </div>
                                 </div>
@@ -455,6 +465,7 @@ $(document).ready(function() {
                                         </select> -->
                                         
                                         <select name="satuan" id="satuan" class="form-control">
+                                            <option value="">--- Pilih ---</option>
                                         <?php 
                                         $data = $this->db->query("SELECT * from tbl_barangsetup where apogroup='SATUAN' AND apocode<>''")->result();
                                         foreach($data as $row){ ?>
@@ -473,6 +484,7 @@ $(document).ready(function() {
                                             type="text"> -->
 
                                         <select name="satuan2" id="satuan2" class="form-control">
+                                            <option value="">--- Pilih ---</option>
                                         <?php 
                                         $data = $this->db->query("SELECT * from tbl_barangsetup where apogroup='SATUAN' AND apocode<>''")->result();
                                         foreach($data as $row){ ?>
@@ -485,6 +497,7 @@ $(document).ready(function() {
                                     </div>
                                     <div class="col-md-2">
                                         <select type="text" class="form-control" name="satuan2opr" id="satuan2opr">
+                                            <option value="">--- Pilih ---</option>
                                             <option value="1">x Kali</option>
                                             <option value="2">: Bagi</option>
                                         </select>
@@ -504,6 +517,7 @@ $(document).ready(function() {
                                             type="text"> -->
 
                                         <select name="satuan3" id="satuan3" class="form-control">
+                                            <option value="">--- Pilih ---</option>
                                         <?php 
                                         $data = $this->db->query("SELECT * from tbl_barangsetup where apogroup='SATUAN' AND apocode<>''")->result();
                                         foreach($data as $row){ ?>
@@ -515,6 +529,7 @@ $(document).ready(function() {
                                     </div>
                                     <div class="col-md-2">
                                         <select type="text" class="form-control" name="satuan3opr" id="satuan3opr">
+                                            <option value="">--- Pilih ---</option>
                                             <option value="1">x Kali</option>
                                             <option value="2">: Bagi</option>
                                         </select>
@@ -544,6 +559,7 @@ $(document).ready(function() {
                                     <label class="control-label col-md-3">Dikenakan PPN&nbsp;<small style="color:red">*</small></label>
                                     <div class="col-md-3">
                                         <select name="ppn" class="form-control" id="ppn">
+                                            <option value="">--- Pilih ---</option>
                                             <option value="1">Ya</option>
                                             <option value="0">Tidak</option>
                                         </select>
@@ -572,7 +588,7 @@ $(document).ready(function() {
                                         </select>
                                     </div>
                                     <div class="col-md-3" id="cek_persen">
-                                        <input type="text" name="persen" id="persen" class="form-control text-right" placeholder="%" onchange="dapetin(this.value)">
+                                        <input type="text" name="persen" id="persen" class="form-control text-right" placeholder="%" onkeyup="dapetin(this.value)">
                                     </div>
                                 </div>
 
@@ -606,6 +622,7 @@ $(document).ready(function() {
                                     <label class="control-label col-md-3">Status Barang&nbsp;<small style="color:red">*</small></label>
                                     <div class="col-md-9">
                                         <select name="status" class="form-control">
+                                            <option value="">--- Pilih ---</option>
                                             <option value="1">Aktif</option>
                                             <option value="0">Tidak Aktif</option>
                                         </select>
@@ -629,6 +646,7 @@ $(document).ready(function() {
                                     <label class="control-label col-md-3">Kelas Terapi&nbsp;<small style="color:red">*</small></label>
                                     <div class="col-md-9">
                                         <select name="kelasterapi" id="kelasterapi" class="form-control">
+                                            <option value="">--- Pilih ---</option>
                                             <?php 
 								$data = $this->db->query("select * from tbl_barangsetup where apogroup='KELAS_TERAPI'")->result();
 								foreach($data as $row){ ?>
@@ -642,6 +660,7 @@ $(document).ready(function() {
                                     <label class="control-label col-md-3">Golongan&nbsp;<small style="color:red">*</small></label>
                                     <div class="col-md-9">
                                         <select name="golongan" id="golongan" class="form-control">
+                                            <option value="">--- Pilih ---</option>
                                             <?php 
 								$data = $this->db->query("select * from tbl_barangsetup where apogroup='GOLONGAN_OBAT'")->result();
 								foreach($data as $row){ ?>
@@ -655,6 +674,7 @@ $(document).ready(function() {
                                     <label class="control-label col-md-3">Pabrik&nbsp;<small style="color:red">*</small></label>
                                     <div class="col-md-9">
                                         <select name="pabrik" id="pabrik" class="form-control">
+                                            <option value="">--- Pilih ---</option>
                                             <?php 
 								$data = $this->db->query("select * from tbl_barangsetup where apogroup='PABRIK_OBAT'")->result();
 								foreach($data as $row){ ?>
@@ -668,6 +688,7 @@ $(document).ready(function() {
                                     <label class="control-label col-md-3">Jenis&nbsp;<small style="color:red">*</small></label>
                                     <div class="col-md-9">
                                         <select name="jenis" id="jenis" class="form-control">
+                                            <option value="">--- Pilih ---</option>
                                             <?php 
 								$data = $this->db->query("select * from tbl_barangsetup where apogroup='JENIS_OBAT'")->result();
 								foreach($data as $row){ ?>
@@ -681,6 +702,7 @@ $(document).ready(function() {
                                     <label class="control-label col-md-3">Main Vendor&nbsp;<small style="color:red">*</small></label>
                                     <div class="col-md-9">
                                         <select id="vendor" name="vendor" class="form-control input-large">
+                                            <option value="">--- Pilih ---</option>
                                             <?php 
 								$data = $this->db->query("SELECT * from tbl_vendor ORDER BY vendor_name")->result();
 								foreach($data as $row){ ?>
@@ -922,10 +944,16 @@ function filterdata(){
                 type: "error",
                 confirmButtonText: "OK"
             });
-            $("#persen").val(hna2.toFixed(0))
+            $("#persen").val(0)
             $("#hargajual").val(0);
         } else {
-            $("#hargajual").val(hj);
+            $("#hargajual").val(hj.toFixed(0));
         }
+    }
+
+    function ubah_kode(param) {
+        let text_space = param.replaceAll(' ', '');
+        let text = text_space.toUpperCase();
+        $("#kode").val(text);
     }
 </script>

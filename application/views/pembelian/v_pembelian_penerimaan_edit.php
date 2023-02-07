@@ -265,16 +265,16 @@ $this->load->view('template/body');
                                     <table id="datatable" class="table table-hoverx table-stripedx table-borderedx table-condensed table-scrollable">
 
                                         <thead class="page-breadcrumb breadcrumb">
-                                            <th class="title-white" width="15%" style="text-align: center">Nama Barang
+                                            <th class="title-white" width="20%" style="text-align: center">Nama Barang
                                             </th>
                                             <th class="title-white" width="10%" style="text-align: center">Qty</th>
-                                            <th class="title-white" width="10%" style="text-align: center">Satuan</th>
+                                            <th class="title-white" width="5%" style="text-align: center">Satuan</th>
                                             <th class="title-white" width="10%" style="text-align: center">Harga</th>
                                             <th class="title-white" width="5%" style="text-align: center">Diskon</th>
                                             <th class="title-white" width="10%" style="text-align: center">Diskon Rp
                                             </th>
                                             <th class="title-white" width="5%" style="text-align: center">Tax</th>
-                                            <th class="title-white" width="10%" style="text-align: center">Total Harga
+                                            <th class="title-white" width="15%" style="text-align: center">Total Harga
                                             </th>
                                             <th class="title-white" width="10%" style="text-align: center">Expire</th>
                                             <th class="title-white" width="10%" style="text-align: center">PO No</th>
@@ -287,7 +287,7 @@ $this->load->view('template/body');
                                             foreach ($detil as $row) {
                                             ?>
                                                 <tr>
-                                                    <td width="15%">
+                                                    <td width="20%">
                                                         <select name="kode[]" id="kode<?php echo $no; ?>" class="select2_el_log_baranggud form-control input-largex" onchange="showbarangname(this.value, 1)">
                                                             <option value="<?= $row->kodebarang; ?>">
                                                                 <?= $row->namabarang; ?>
@@ -296,14 +296,13 @@ $this->load->view('template/body');
                                                     </td>
 
                                                     <td width="10%"><input name="qty[]" onchange="totalline(<?= $no; ?>);total();cekqty(<?= $no; ?>);changeqty(<?= $no; ?>)" value="<?= number_format($row->qty_terima); ?>" id="qty<?= $no; ?>" type="text" class="form-control rightJustified"></td>
-                                                    <td width="10%"><input name="sat[]" id="sat<?= $no; ?>" value="<?= $row->satuan; ?>" type="text" class="form-control " onkeypress="return tabE(this,event)"></td>
+                                                    <td width="5%"><input name="sat[]" id="sat<?= $no; ?>" value="<?= $row->satuan; ?>" type="text" class="form-control " onkeypress="return tabE(this,event)"></td>
                                                     <td width="10%"><input name="harga[]" onchange="totalline(<?= $no; ?>);total();cekharga(<?= $no; ?>);" value="<?= number_format($row->price); ?>" id="harga<?= $no; ?>" type="text" class="form-control rightJustified"></td>
                                                     <td width="5%"><input name="disc[]" onchange="totalline(<?= $no; ?>);total();cekdisc(<?= $no; ?>)" value="<?= $row->discount; ?>" id="disc<?= $no; ?>" type="text" class="form-control rightJustified "></td>
                                                     <td width="10%"><input name="discrp[]" onchange="totalline(<?= $no; ?>);total();cekdiscrp(<?= $no; ?>)" value="<?= number_format($row->discountrp); ?>" id="discrp<?= $no; ?>" type="text" class="form-control rightJustified "></td>
                                                     <td><input type="checkbox" name="tax[]" <?= ($row->vat == 1 ? 'checked' : '') ?> id="tax<?= $no; ?>" class="form-control" onchange="totalline(<?= $no; ?>);total()">
                                                     </td>
-
-                                                    <td width="10%"><input name="jumlah[]" value="<?= number_format($row->totalrp); ?>" id="jumlah<?= $no; ?>" type="text" class="form-control rightJustified" size="40%"></td>
+                                                    <td width="15%"><input name="jumlah[]" value="<?= number_format($row->totalrp); ?>" id="jumlah<?= $no; ?>" type="text" class="form-control rightJustified" size="40%"></td>
                                                     <td width="10%"><input name="expire[]" onchange="totalline(<?= $no; ?>);total()" value="<?= date('Y-m-d', strtotime($row->exp_date)); ?>" id="expire<?= $no; ?>" type="date" class="form-control"></td>
                                                     <td width="10%"><input name="po[]" onchange="totalline(<?= $no; ?>);total()" value="<?= $row->po_no; ?>" id="po<?= $no; ?>" type="text" class="form-control"></td>
                                                 </tr>
@@ -492,8 +491,7 @@ $this->load->view('template/footer');
     }
 
     function changeqty(id) {
-        var qtyx = $("#qty" + id).val();
-        var qty = Number(parseInt(qtyx.replaceAll(',', '')));
+        var qty = $("#qty" + id).val();
         var discx = $("#disc" + id).val();
         var disc = Number(parseInt(discx.replaceAll(',', '')));
         var kode = $("#kode" + id).val();
@@ -649,9 +647,9 @@ $this->load->view('template/footer');
             success: function(data) {
                 var vtotal = $('#_vtotal').text();
                 var total = parseInt(vtotal.replaceAll(',', ''));
-                if (total >= '5000000') {
-                    $('#materai').val("10000").change();
-                }
+                // if (total >= '5000000') {
+                //     $('#materai').val("10000").change();
+                // }
                 if (data.status == 1) {
                     swal({
                         title: "HARGA BARANG",
@@ -813,6 +811,129 @@ $this->load->view('template/footer');
 
     }
 
+    function save_y() {
+        var supp = $('[name="supp"]').val();
+        var matt = $('[name="materai"]').val();
+        var nomorpo = $('[name="nomorpo"]').val();
+        var gudang = $('[name="gudang"]').val();
+        var tanggal = $('[name="tanggal"]').val();
+        var nomor = $('[name="nomorbukti"]').val();
+        var pemb = $('[name="pembayaran"]').val();
+        var fakt = $('[name="nofaktur"]').val();
+        var sjj = $('[name="nomorsj"]').val();
+        var noterima = $('#noterima').val();
+        var total = $('#_vtotal').text();
+        var ppn_123 = $('#_vppn').text();
+        var table = document.getElementById('datatable');
+        var rowCount = table.rows.length;
+        var jfalse = 0;
+        for (var i = 1; i < rowCount; i++) {
+            var row = table.rows[i];
+            var taxz = $('#tax' + i).is(':checked');
+            if (document.getElementById('tax' + i).checked == false) {
+                jfalse = jfalse + 1;
+            }
+        }
+        if (matt == 0) {
+            matte = "Tanpa Materai";
+        } else {
+            matte = matt;
+        }
+        if (jfalse == 0) {
+            $kett = "Di Pakai Di Semua List";
+        } else {
+            $kett = "Ada <b>" + jfalse + "</b> Yang Tidak menggunakan Tax";
+        }
+        $.ajax({
+            url: '<?= site_url() ?>Logistik_bapb/update_one/?terimano=' +
+                noterima,
+            data: $('#frmpembelian').serialize(),
+            type: 'POST',
+            dataType: 'JSON',
+            success: function(data) {
+                console.log(data)
+                if (data.status == 2) {
+                    var table = document.getElementById('datatable');
+                    var rowCount = table.rows.length;
+                    totvatrp = 0;
+                    diskontotal = 0;
+                    for (i = 1; i < rowCount; i++) {
+                        var kode = $("#kode" + i).val();
+                        var qty = $("#qty" + i).val();
+                        var sat = $("#sat" + i).val();
+                        var hargax = $("#harga" + i).val();
+                        var harga = Number(parseInt(hargax.replaceAll(
+                            ',', '')));
+                        var disc = $("#disc" + i).val();
+                        var discrpx = $("#discrp" + i).val();
+                        var discrp = Number(parseInt(discrpx.replaceAll(
+                            ',', '')));
+                        var jumlahx = $("#jumlah" + i).val();
+                        var jumlah = Number(parseInt(jumlahx.replaceAll(
+                            ',', '')));
+                        var expire = $("#expire" + i).val();
+                        var po = $("#po" + i).val();
+                        var taxz = $('#tax' + i).is(':checked');
+                        if (taxz == true) {
+                            var vat = 1;
+                            var pj = $('#ppn2_').val() / 100;
+                        } else {
+                            var vat = 0;
+                            var pj = 0;
+                        }
+                        if (vat == 1) {
+                            var vatrp = jumlah * pj;
+                        } else {
+                            var vatrp = 0;
+                        }
+                        // console.log('kode : '+kode+', qty : '+qty+', sat : '+sat+', harga : '+harga+', disc : '+disc+', discrp : '+discrp+', vat : '+vat+', jumlah : '+jumlah+', expire : '+expire+', po : '+po+', pajak : '+pj+', vatrp : '+vatrp);
+                        $.ajax({
+                            url: '<?= site_url() ?>Logistik_bapb/update_multi/?kode=' +
+                                kode + '&qty=' + qty + '&sat=' +
+                                sat + '&harga=' + harga +
+                                '&disc=' + disc + '&discrp=' +
+                                discrp + '&vat=' + vat +
+                                '&jumlah=' + jumlah +
+                                '&expire=' + expire + '&po=' +
+                                po + '&vatrp=' + vatrp +
+                                '&terimano=' + noterima,
+                            data: $('#frmpembelian')
+                                .serialize(),
+                            type: 'POST',
+                            dataType: 'JSON',
+                        });
+                        totvatrp += vatrp;
+                        diskontotal += discrp;
+                    }
+                    $.ajax({
+                        url: '<?= site_url() ?>Logistik_bapb/update_one_u/?totvatrp=' +
+                            totvatrp + '&totaltagihan=' +
+                            Number(parseInt(total.replaceAll(
+                                ',', ''))) + '&ppnrp=' + Number(
+                                parseInt(ppn_123.replaceAll(',',
+                                    ''))) + '&terimano=' +
+                            noterima + '&diskontotal=' +
+                            diskontotal,
+                        data: $('#frmpembelian').serialize(),
+                        type: 'POST',
+                        dataType: 'JSON',
+                    });
+                    swal({
+                        title: "BAPB",
+                        html: "<p> No. Bukti : <b>" + data
+                            .nomor + "</b></p>" + "Tanggal : " +
+                            tanggal + "<br> Total : " + total,
+                        type: "success",
+                        confirmButtonText: "OK"
+                    }).then((value) => {
+                        location.href =
+                            "<?php echo base_url() ?>Logistik_bapb";
+                    });
+                }
+            }
+        });
+    }
+
     function savey() {
         var supp = $('[name="supp"]').val();
         var matt = $('[name="materai"]').val();
@@ -834,6 +955,16 @@ $this->load->view('template/footer');
             var taxz = $('#tax' + i).is(':checked');
             if (document.getElementById('tax' + i).checked == false) {
                 jfalse = jfalse + 1;
+            }
+            var expire    = $("#expire" + i).val(); 
+            if (expire == '' || expire == null) {
+                swal({
+                title: "Expired Date",
+                html: "<p>HARUS DI isi</p>",
+                type: "error",
+                confirmButtonText: "OK"
+                });
+                return;
             }
         }
         if (matt == 0) {
@@ -938,94 +1069,15 @@ $this->load->view('template/footer');
                         gudang == null) {
                         swal('BAPB', 'Data Belum Lengkap/Belum ada transaksi ...', '');
                     } else {
-                        $.ajax({
-                            url: '<?= site_url() ?>Logistik_bapb/update_one/?terimano=' +
-                                noterima,
-                            data: $('#frmpembelian').serialize(),
-                            type: 'POST',
-                            dataType: 'JSON',
-                            success: function(data) {
-                                console.log(data)
-                                if (data.status == 2) {
-                                    var table = document.getElementById('datatable');
-                                    var rowCount = table.rows.length;
-                                    totvatrp = 0;
-                                    diskontotal = 0;
-                                    for (i = 1; i < rowCount; i++) {
-                                        var kode = $("#kode" + i).val();
-                                        var qty = $("#qty" + i).val();
-                                        var sat = $("#sat" + i).val();
-                                        var hargax = $("#harga" + i).val();
-                                        var harga = Number(parseInt(hargax.replaceAll(
-                                            ',', '')));
-                                        var disc = $("#disc" + i).val();
-                                        var discrpx = $("#discrp" + i).val();
-                                        var discrp = Number(parseInt(discrpx.replaceAll(
-                                            ',', '')));
-                                        var jumlahx = $("#jumlah" + i).val();
-                                        var jumlah = Number(parseInt(jumlahx.replaceAll(
-                                            ',', '')));
-                                        var expire = $("#expire" + i).val();
-                                        var po = $("#po" + i).val();
-                                        var taxz = $('#tax' + i).is(':checked');
-                                        if (taxz == true) {
-                                            var vat = 1;
-                                            var pj = $('#ppn2_').val() / 100;
-                                        } else {
-                                            var vat = 0;
-                                            var pj = 0;
-                                        }
-                                        if (vat == 1) {
-                                            var vatrp = jumlah * pj;
-                                        } else {
-                                            var vatrp = 0;
-                                        }
-                                        // console.log('kode : '+kode+', qty : '+qty+', sat : '+sat+', harga : '+harga+', disc : '+disc+', discrp : '+discrp+', vat : '+vat+', jumlah : '+jumlah+', expire : '+expire+', po : '+po+', pajak : '+pj+', vatrp : '+vatrp);
-                                        $.ajax({
-                                            url: '<?= site_url() ?>Logistik_bapb/update_multi/?kode=' +
-                                                kode + '&qty=' + qty + '&sat=' +
-                                                sat + '&harga=' + harga +
-                                                '&disc=' + disc + '&discrp=' +
-                                                discrp + '&vat=' + vat +
-                                                '&jumlah=' + jumlah +
-                                                '&expire=' + expire + '&po=' +
-                                                po + '&vatrp=' + vatrp +
-                                                '&terimano=' + noterima,
-                                            data: $('#frmpembelian')
-                                                .serialize(),
-                                            type: 'POST',
-                                            dataType: 'JSON',
-                                        });
-                                        totvatrp += vatrp;
-                                        diskontotal += discrp;
-                                    }
-                                    $.ajax({
-                                        url: '<?= site_url() ?>Logistik_bapb/update_one_u/?totvatrp=' +
-                                            totvatrp + '&totaltagihan=' +
-                                            Number(parseInt(total.replaceAll(
-                                                ',', ''))) + '&ppnrp=' + Number(
-                                                parseInt(ppn_123.replaceAll(',',
-                                                    ''))) + '&terimano=' +
-                                            noterima + '&diskontotal=' +
-                                            diskontotal,
-                                        data: $('#frmpembelian').serialize(),
-                                        type: 'POST',
-                                        dataType: 'JSON',
-                                    });
-                                    swal({
-                                        title: "BAPB",
-                                        html: "<p> No. Bukti : <b>" + data
-                                            .nomor + "</b></p>" + "Tanggal : " +
-                                            tanggal + "<br> Total : " + total,
-                                        type: "success",
-                                        confirmButtonText: "OK"
-                                    }).then((value) => {
-                                        location.href =
-                                            "<?php echo base_url() ?>Logistik_bapb";
-                                    });
-                                }
-                            }
-                        });
+                        save_y();
+                    }
+                }, function(dismiss) {
+                    if (nomor == "" || total == "0.00" || total == "" || supp == null || nomorpo ==
+                        null ||
+                        gudang == null) {
+                        swal('BAPB', 'Data Belum Lengkap/Belum ada transaksi ...', '');
+                    } else {
+                        save_y();
                     }
                 });
             });

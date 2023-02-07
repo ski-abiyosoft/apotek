@@ -330,7 +330,7 @@ function cekhapus(noresep)
 function _urlcetak(nobukti)
 {
 	var baseurl = "<?php echo base_url()?>";
-	var ctk=baseurl+'penjualan_faktur/cetak/?nobukti='+nobukti;	
+	var ctk=baseurl+'penjualan_faktur/cetak2/?nobukti='+nobukti;	
 	window.open(ctk,'_blank');
 }
 	

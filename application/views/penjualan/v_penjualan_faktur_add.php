@@ -114,10 +114,10 @@ $umur          = $age_interval->y . ' Tahun ' . $age_interval->m . ' Bulan ' . $
                 <div class="form-group">
                   <label class="col-md-3 control-label">Tanggal <font color="red">*</font></label>
                   <div class="col-md-6">
-                    <input id="tanggal" name="tanggal" class="form-control input-medium" type="date" value="<?= date('Y-m-d'); ?>" />
+                    <input id="tanggal" name="tanggal" class="form-control input-medium" type="date" value="<?= date('Y-m-d'); ?>"  readonly/>
                   </div>
                   <div class="col-md-3">
-                    <input type="time" class="form-control" name="jam" id="jam" value="<?= date('H:i:s'); ?>">
+                    <input type="time" class="form-control" name="jam" id="jam" value="<?= date('H:i:s'); ?>" readonly />
                   </div>
                 </div>
               </div>
@@ -157,9 +157,9 @@ $umur          = $age_interval->y . ' Tahun ' . $age_interval->m . ' Bulan ' . $
                 <div class="form-group">
                   <label class="col-md-3 control-label">No Handphone <font color="red">*</font></label>
                   <div class="col-md-7">
-                    <input type="text" name="phone" id="phone" class="form-control">
+                    <input type="text" name="phone" id="phone" class="form-control" value="+62">
                   </div>
-                  <div class="col-md-2">
+                  <div class="col-md-2"> 
                     <input type="checkbox" id="reg_cekhp" name="reg_cekhp" value="1" class="form-control">
                   </div>
                 </div>
@@ -169,7 +169,7 @@ $umur          = $age_interval->y . ' Tahun ' . $age_interval->m . ' Bulan ' . $
             <div class="row">
               <div class="col-md-6">
                 <div class="form-group">
-                  <label class="col-md-3 control-label">Nama Pasien <font color="red">*</font></label>
+                  <label class="col-md-3 control-label">Nama Pembeli <font color="red">*</font></label>
                   <div class="col-md-9">
                     <div class="input-group input-medium">
                       
@@ -202,11 +202,11 @@ $umur          = $age_interval->y . ' Tahun ' . $age_interval->m . ' Bulan ' . $
               <div class="row">
                 <div class="col-md-12">
                   <div style="display:block;overflow:auto;white-space:nowrap;">
-                    <table id="datatable" class="table table-bordered" style="width:100%">
+                    <table id="datatable" class="table table-bordered" style="width:150%">
                       <thead class="page-breadcrumb breadcrumb">
                         <th class="title-white" width="5%" style="text-align: center">Hapus</th>
                         <th class="title-white" width="10%" style="text-align: center">Kode Barang</th>
-                        <th class="title-white" width="30%" style="text-align: center">Nama Barang</th>
+                        <th class="title-white" width="20%" style="text-align: center">Nama Barang</th>
                         <th class="title-white" width="10%" style="text-align: center">Qty</th>
                         <th class="title-white" width="5%" style="text-align: center">Satuan</th>
                         <th class="title-white" width="10%" style="text-align: center">Harga</th>
@@ -2092,6 +2092,7 @@ $this->load->view('template/footer');
     var racikan     = Number(parseInt(racikanxx.replaceAll(',', '')));
     var tanggal     = $('[name="tanggal"]').val();
     var namapasien  = $('[name="namapasien"]').val();
+    var nama_pas    = $('[name="nama_pas"]').val();
     var dokter      = $('[name="dokter"]').val();
 
     if (document.getElementById('t_manual').checked == true) {
@@ -2129,16 +2130,16 @@ $this->load->view('template/footer');
     }
 
 
-    // if (namapasien == '') {
-    //   swal({
-    //     title: "Nama Pasien",
-    //     html: "<p> Masih Kosong</b> </p>" +
-    //       "CEK LAGI",
-    //     type: "error",
-    //     confirmButtonText: "OK"
-    //   });
-    //   return;
-    // }
+    if (nama_pas == '') {
+      swal({
+        title: "Nama Pasien",
+        html: "<p> Masih Kosong</b> </p>" +
+          "CEK LAGI",
+        type: "error",
+        confirmButtonText: "OK"
+      });
+      return;
+    }
 
     if (!cekhp) {
       swal({
@@ -2275,6 +2276,7 @@ $this->load->view('template/footer');
     var gudang      = $('[name="gudang"]').val();
     var pembeli     = $('[name="pembeli"]').val();
     var namapasien  = $('[name="namapasien"]').val();
+    var nama_pas    = $('[name="nama_pas"]').val();
     var dokter      = $('[name="dokter"]').val();
     var nohp        = $('#phone').val();
 
@@ -2292,7 +2294,7 @@ $this->load->view('template/footer');
     }
 
 
-    if (namapasien == '') {
+    if (nama_pas == '') {
       swal({
         title: "Nama Pasien",
         html: "<p> Masih Kosong</b> </p>" +

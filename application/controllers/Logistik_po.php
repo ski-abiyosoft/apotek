@@ -82,8 +82,8 @@ class Logistik_po extends CI_Controller
 		foreach ($list as $rd) {
 			$no++;
 			$row = array();
-			$disetujui = $this->db->get_where('userlogin', ['uidlogin' => $rd->disetujuioleh])->row_array();
-			$dx = $disetujui['username'];
+			// $disetujui = $this->db->get_where('userlogin', ['uidlogin' => $rd->disetujuioleh])->row();
+			// $dx = $disetujui->username;
 
 			if ($rd->closed == '0' && $rd->setuju == 0) {
 				$status = '<span class="label label-sm label-warning">Open</span>';
@@ -195,7 +195,7 @@ class Logistik_po extends CI_Controller
 	public function approve()
 	{
 		$tgl = date('Y-m-d');
-		$jam = date('h:i:s');
+		$jam = date('H:i:s');
 		$cabang = $this->session->userdata('unit');
 		$id = $this->input->post('id');
 		$userid = $this->session->userdata('username');
@@ -294,21 +294,21 @@ class Logistik_po extends CI_Controller
 		$qty    = $this->input->post('qty');
 		$sat    = $this->input->post('sat');
 		$harga  = $this->input->post('harga');
-		$disc   = $this->input->post('disc');
-		$tax    = $this->input->post('tax');
+		// $disc   = $this->input->post('disc');
+		// $tax    = $this->input->post('tax');
 		$jumlah = $this->input->post('jumlah');
 
 		$jumdata = count($kode);
 		for ($i = 0; $i <= $jumdata - 1; $i++) {
 			$_harga    = str_replace(',', '', $harga[$i]);
-			$_disc     = str_replace(',', '', $disc[$i]);
+			// $_disc     = str_replace(',', '', $disc[$i]);
 			$_jumlah   = str_replace(',', '', $jumlah[$i]);
 
-			if ($tax[$i]) {
-				$_tax = 1;
-			} else {
-				$_tax = 0;
-			}
+			// if ($tax[$i]) {
+			// 	$_tax = 1;
+			// } else {
+			// 	$_tax = 0;
+			// }
 
 			$data_rinci = array(
 				'koders'       => $cabang,
@@ -316,9 +316,9 @@ class Logistik_po extends CI_Controller
 				'kodebarang'   => $kode[$i],
 				'qty_po'       => $qty[$i],
 				'price_po'     => $_harga,
-				'discount'     => $_disc,
+				// 'discount'     => $_disc,
 				'satuan'       => $sat[$i],
-				'vat'          => $_tax,
+				// 'vat'          => $_tax,
 				'total'        => $_jumlah,
 
 			);
@@ -632,13 +632,14 @@ class Logistik_po extends CI_Controller
 					}
 
 	public function cetak2($idd = '', $noo = '', $cekstk = '', $cekhrg = ''){
-		$cek       = $this->session->userdata('level');
-		$unit      = $this->session->userdata('unit');
-		$user      = $this->session->userdata('username');
-		$id        = $this->uri->segment(3);
-		$param     = $this->uri->segment(4);
-		$stokket   = $this->uri->segment(5);
-		$hrgket    = $this->uri->segment(6);
+		$cekpdf   = 1;
+		$cek      = $this->session->userdata('level');
+		$unit     = $this->session->userdata('unit');
+		$user     = $this->session->userdata('username');
+		$id       = $this->uri->segment(3);
+		$param    = $this->uri->segment(4);
+		$stokket  = $this->uri->segment(5);
+		$hrgket   = $this->uri->segment(6);
 		if (!empty($cek)) {
 			$unit 			= $this->session->userdata('unit');
 			$kop       	= $this->M_cetak->kop($unit);
@@ -663,7 +664,7 @@ class Logistik_po extends CI_Controller
 			} else {
 				$hrgg = ", ''price_po2";
 			}
-			$detil = $this->db->query("SELECT tbl_apodpolog.*, tbl_logbarang.namabarang $kett $hrgg from tbl_apodpolog inner join tbl_logbarang on tbl_apodpolog.kodebarang=tbl_logbarang.kodebarang where po_no = '$param'")->result();
+			$detil = $this->db->query("SELECT tbl_apodpolog.*, tbl_logbarang.namabarang ,IFNULL((select sum(saldoakhir)saldoakhir from tbl_apostocklog b where koders='$unit' and b.kodebarang=tbl_logbarang.kodebarang),0)ket , round(price_po) as price_po2  from tbl_apodpolog inner join tbl_logbarang on tbl_apodpolog.kodebarang=tbl_logbarang.kodebarang where po_no = '$param'")->result();
 			$chari  = '';
 			$chari .= "
                     <table style=\"border-collapse:collapse;font-family: Century Gothic; font-size:12px; color:#000;\" width=\"100%\"  border=\"0\" cellspacing=\"0\" cellpadding=\"0\">
@@ -781,7 +782,7 @@ class Logistik_po extends CI_Controller
                                    <td width=\"15%\" style=\"text-align:left; border-bottom: none; border-left: none; border-right: none; border-top: none;\"></td>
                                    <td width=\"15%\" style=\"text-align:left; border-bottom: none; border-left: none; border-right: none; border-top: none;\">Kirim Via</td>
                                    <td width=\"1%\" style=\"text-align:left; border-bottom: none; border-left: none; border-right: none; border-top: none;\">:</td>
-                                   <td width=\"15%\" style=\"text-align:left; border-bottom: none; border-left: none; border-top: none;\">$header->dikirimvia</td>
+                                   <td width=\"15%\" style=\"text-align:left; border-bottom: none; border-left: none; border-top: none;\">$header->ship_via</td>
 															</tr>
 															<tr>
 																		<td width=\"9%\" style=\"text-align:left; border-right: none; border-top: none;\">Attn</td>
@@ -798,21 +799,64 @@ class Logistik_po extends CI_Controller
                                    <td> &nbsp; </td>
                               </tr> 
                          </table>";
-			$chari .= "
-                         <table style=\"border-collapse:collapse;font-family: Tahoma; font-size:11px\" width=\"100%\" align=\"center\" border=\"1\" cellspacing=\"1\" cellpadding=\"3\">
-                              <thead>
-                                   <tr>
-                                        <td width=\"5%\" align=\"center\" style=\"text-align:center; border-right: none;\"><b>No</b></td>
-                                        <td width=\"15%\" align=\"center\" style=\"text-align:center; border-right: none; border-left: none;\"><b>Kode Barang</b></td>
-                                        <td width=\"15%\" align=\"center\" style=\"text-align:center; border-right: none; border-left: none;\"><b>Nama Obat/Produk</b></td>
-                                        <td width=\"10%\" align=\"center\" style=\"text-align:center; border-right: none; border-left: none;\"><b>Qty</b></td>
-                                        <td width=\"10%\" align=\"center\" style=\"text-align:center; border-right: none; border-left: none;\"><b>Harga</b></td>
-                                        <td width=\"15%\" align=\"center\" style=\"text-align:center; border-right: none; border-left: none;\"><b>Qty Stock Akhir</b></td>
-                                        <td width=\"15%\" align=\"center\" style=\"text-align:center; border-left: none;\"><b>Subtotal</b></td>
-                                   </tr>
-                              </thead>";
+
+			if ($stokket == '1' && $hrgket <> '1') {
+				$chari .= "
+				<table style=\"border-collapse:collapse;font-family: Tahoma; font-size:11px\" width=\"100%\" align=\"center\" border=\"1\" cellspacing=\"1\" cellpadding=\"3\">
+				<thead>
+					<tr>
+						<td bgcolor=\"#cccccc\"  width=\"10%\" align=\"center\" style=\"text-align:center;\"><b>No</b></td>
+						<td bgcolor=\"#cccccc\"  width=\"20%\" align=\"center\" style=\"text-align:center; \"><b>Kode Barang</b></td>
+						<td bgcolor=\"#cccccc\"  width=\"20%\" align=\"center\" style=\"text-align:center; \"><b>Nama Obat/Produk</b></td>
+						<td bgcolor=\"#cccccc\"  width=\"15%\" align=\"center\" style=\"text-align:center; \"><b>Qty</b></td>
+						<td bgcolor=\"#cccccc\"  width=\"15%\" align=\"center\" style=\"text-align:center; \"><b>Qty Stock Akhir</b></td>
+						<td bgcolor=\"#cccccc\"  width=\"20%\" align=\"center\" style=\"text-align:center; \"><b>Subtotal</b></td>
+					</tr>
+				</thead>";
+			} elseif ($hrgket == '1' && $stokket <> '1') {
+				$chari .= "
+				<table style=\"border-collapse:collapse;font-family: Tahoma; font-size:11px\" width=\"100%\" align=\"center\" border=\"1\" cellspacing=\"1\" cellpadding=\"3\">
+				<thead>
+					<tr>
+						<td bgcolor=\"#cccccc\"  width=\"10%\" align=\"center\" style=\"text-align:center;\"><b>No</b></td>
+						<td bgcolor=\"#cccccc\"  width=\"20%\" align=\"center\" style=\"text-align:center; \"><b>Kode Barang</b></td>
+						<td bgcolor=\"#cccccc\"  width=\"20%\" align=\"center\" style=\"text-align:center; \"><b>Nama Obat/Produk</b></td>
+						<td bgcolor=\"#cccccc\"  width=\"15%\" align=\"center\" style=\"text-align:center; \"><b>Qty</b></td>
+						<td bgcolor=\"#cccccc\"  width=\"15%\" align=\"center\" style=\"text-align:center; \"><b>Harga</b></td>
+						<td bgcolor=\"#cccccc\"  width=\"20%\" align=\"center\" style=\"text-align:center; \"><b>Subtotal</b></td>
+					</tr>
+				</thead>";
+			}elseif ($hrgket <> '1' && $stokket <> '1') {
+				$chari .= "
+				<table style=\"border-collapse:collapse;font-family: Tahoma; font-size:11px\" width=\"100%\" align=\"center\" border=\"1\" cellspacing=\"1\" cellpadding=\"3\">
+				<thead>
+					<tr>
+						<td bgcolor=\"#cccccc\"  width=\"5%\" align=\"center\" style=\"text-align:center;\"><b>No</b></td>
+						<td bgcolor=\"#cccccc\"  width=\"25%\" align=\"center\" style=\"text-align:center; \"><b>Kode Barang</b></td>
+						<td bgcolor=\"#cccccc\"  width=\"25%\" align=\"center\" style=\"text-align:center; \"><b>Nama Obat/Produk</b></td>
+						<td bgcolor=\"#cccccc\"  width=\"20%\" align=\"center\" style=\"text-align:center; \"><b>Qty</b></td>
+						<td bgcolor=\"#cccccc\"  width=\"25%\" align=\"center\" style=\"text-align:center; \"><b>Subtotal</b></td>
+					</tr>
+				</thead>";
+			}else{
+				$chari .= "
+				<table style=\"border-collapse:collapse;font-family: Tahoma; font-size:11px\" width=\"100%\" align=\"center\" border=\"1\" cellspacing=\"1\" cellpadding=\"3\">
+					 <thead>
+						  <tr>
+							   <td bgcolor=\"#cccccc\"  width=\"5%\" align=\"center\" style=\"text-align:center;\"><b>No</b></td>
+							   <td bgcolor=\"#cccccc\"  width=\"15%\" align=\"center\" style=\"text-align:center; \"><b>Kode Barang</b></td>
+							   <td bgcolor=\"#cccccc\"  width=\"15%\" align=\"center\" style=\"text-align:center; \"><b>Nama Obat/Produk</b></td>
+							   <td bgcolor=\"#cccccc\"  width=\"10%\" align=\"center\" style=\"text-align:center; \"><b>Qty</b></td>
+							   <td bgcolor=\"#cccccc\"  width=\"10%\" align=\"center\" style=\"text-align:center; \"><b>Harga</b></td>
+							   <td bgcolor=\"#cccccc\"  width=\"15%\" align=\"center\" style=\"text-align:center; \"><b>Qty Stock Akhir</b></td>
+							   <td bgcolor=\"#cccccc\"  width=\"15%\" align=\"center\" style=\"text-align:center; \"><b>Subtotal</b></td>
+						  </tr>
+					 </thead>";
+			}
+			
 			$no = 1;
 			$total = 0;
+			$total1 = '';
 			foreach ($detil as $db) {
 				if ($db->price_po2 != '') {
 					$subtotal = $db->qty_po * $db->price_po2;
@@ -821,6 +865,7 @@ class Logistik_po extends CI_Controller
 					$total1 = number_format($total, 0);
 				} else {
 					$price_po2 = $db->price_po2;
+					$subtotal = $db->qty_po * $db->price_po2;
 					$subtotal = '';
 					$total = '';
 					$total1 = '';
@@ -830,15 +875,58 @@ class Logistik_po extends CI_Controller
 				} else {
 					$subtotal1 = '';
 				}
-				$chari .= "<tbody><tr>
-																<td style=\"text-align:center; border-right: none;\">" . $no++ . "</td>
-																<td style=\"text-align:left; border-right: none; border-left: none;\">$db->kodebarang</td>
-																<td style=\"text-align:left; border-right: none; border-left: none;\">$db->namabarang</td>
-																<td style=\"text-align:right; border-right: none; border-left: none;\">" . number_format($db->qty_po,0) . "</td>
-																<td style=\"text-align:right; border-right: none; border-left: none;\">" . $price_po2 . "</td>
-																<td style=\"text-align:right; border-right: none; border-left: none;\">$db->ket</td>
-																<td style=\"text-align:right; border-left: none;\">$subtotal1</td>
-													 </tr></tbody>";
+
+				if ($stokket == '1' && $hrgket <> '1') {
+					$chari .= "
+					<tbody>
+					<tr>
+						<td style=\"text-align:center;\">" . $no++ . "</td>
+						<td style=\"text-align:center; \">$db->kodebarang</td>
+						<td style=\"text-align:left; \">$db->namabarang</td>
+						<td style=\"text-align:center; \">" . number_format($db->qty_po,0) . "</td>
+						<td style=\"text-align:right; \">" . number_format($db->ket,0) . "</td>
+						<td style=\"text-align:right; \">$subtotal1</td>
+					</tr>
+					</tbody>";
+				} elseif ($hrgket == '1' && $stokket <> '1') {
+					$chari .= "
+					<tbody>
+					<tr>
+						<td style=\"text-align:center;\">" . $no++ . "</td>
+						<td style=\"text-align:center; \">$db->kodebarang</td>
+						<td style=\"text-align:left; \">$db->namabarang</td>
+						<td style=\"text-align:center; \">" . number_format($db->qty_po,0) . "</td>
+						<td style=\"text-align:right; \">" . $price_po2 . "</td>
+						<td style=\"text-align:right; \">$subtotal1</td>
+					</tr>
+					</tbody>";
+				}elseif ($hrgket <> '1' && $stokket <> '1') {
+
+					$chari .= "
+					<tbody>
+					<tr>
+						<td style=\"text-align:center;\">" . $no++ . "</td>
+						<td style=\"text-align:center; \">$db->kodebarang</td>
+						<td style=\"text-align:left; \">$db->namabarang</td>
+						<td style=\"text-align:center; \">" . number_format($db->qty_po,0) . "</td>
+						<td style=\"text-align:right; \">$subtotal1</td>
+					</tr>
+					</tbody>";
+				}else{
+					$chari .= "
+					<tbody>
+					<tr>
+						<td style=\"text-align:center;\">" . $no++ . "</td>
+						<td style=\"text-align:center; \">$db->kodebarang</td>
+						<td style=\"text-align:left; \">$db->namabarang</td>
+						<td style=\"text-align:center; \">" . number_format($db->qty_po,0) . "</td>
+						<td style=\"text-align:right; \">" . $price_po2 . "</td>
+						<td style=\"text-align:right; \">" . number_format($db->ket,0) . "</td>
+						<td style=\"text-align:right; \">$subtotal1</td>
+					</tr>
+					</tbody>";
+				}
+				
 			}
 			$chari .= "</table>";
 			$chari .= "
@@ -921,111 +1009,198 @@ class Logistik_po extends CI_Controller
                                    <td width=\"20%\" style=\"text-align:center;\"><b> $header->username</b> </td>
                               </tr> 
                          </table>";
-			$data['prev'] = $chari;
-			$judul = $param;
+			$data['prev']    = $chari;
+			$judul           = $param;
 			echo ("<title>$judul</title>");
-			$this->M_cetak->mpdf('P', 'A4', $judul, $chari, '.PDF', 10, 10, 10, 2);
+			// $this->M_template_cetak->template($judul, $body, $position, $date, $cekpdf);
+			$data['prev'] = $chari;
+			switch ($cekpdf) {
+				case 0;
+					echo ("<title>DATA GLOBAL SKI</title>");
+					echo ($chari);
+					break;
+				case 1;
+				// $this->M_cetak->mpdf('L', 'A3', $judul, $chari, 'KASIR-01.PDF', 10, 10, 10, 1);
+				$this->M_cetak->mpdf('P', 'A4', $judul, $chari, '.PDF', 10, 10, 10, 2);
+					break;
+				case 2;
+					header("Cache-Control: no-cache, no-store, must-revalidate");
+					header("Content-Type: application/vnd-ms-excel");
+					header("Content-Disposition: attachment; filename= $judul.xls");
+					$this->load->view('app/master_cetak', $data);
+					break;
+			}
 		} else {
 			header('location:' . base_url());
 		}
 	}
 
-					// public function cetakpsn($idd = '',$noo='',$cekstk='',$cekhrg='')
-					// {
-					// 	$cek       = $this->session->userdata('level');
-					// 	$unit      = $this->session->userdata('unit');
-					// 	$user      = $this->session->userdata('username');
-					// 	$id        = $this->uri->segment(3);
-					// 	$param     = $this->uri->segment(4);
-					// 	$stokket   = $this->uri->segment(5);
-					// 	$hrgket    = $this->uri->segment(6);
-
-					// 	if(!empty($cek))
-					// 	{				  		 
-
-					// 		$unit= $this->session->userdata('unit');	 
-					// 		$profile = data_master('tbl_namers', array('koders' => $unit));
-					// 		$nama_usaha=$profile->namars;
-					// 		$alamat1  = $profile->alamat;
-					// 		$alamat2  = $profile->kota;
-
-					// 		$queryh = "SELECT * from tbl_apohpolog inner join tbl_vendor on tbl_apohpolog.vendor_id=tbl_vendor.vendor_id 
-					// 		where tbl_apohpolog.po_no = '$param'";
-
-					// 		if($stokket=='1'){
-					// 			$kett = ",IFNULL((select sum(saldoakhir)saldoakhir from tbl_barangstock b where koders='$unit' and b.kodebarang=tbl_logbarang.kodebarang),0)ket ";
-					// 		}else{
-					// 			$kett = ",''ket";
-					// 		}
-
-					// 		if($hrgket=='1'){
-					// 			$hrgg = ", price_po as price_po2 ";
-					// 		}else{
-					// 			$hrgg = ", ''price_po2";
-					// 		}
-
-					// 		$queryd = "SELECT tbl_apodpolog.*, tbl_logbarang.namabarang $kett $hrgg from tbl_apodpolog inner join tbl_logbarang on tbl_apodpolog.kodebarang=tbl_logbarang.kodebarang where po_no = '$param'";
-
-
-					// 	    	$detil  = $this->db->query($queryd)->result();
-					// 		$header = $this->db->query($queryh)->row();
-					// 		$pdf    = new simkeu_nota();
-					// 		$pdf->setID($nama_usaha,$alamat1,$alamat2);
-					// 		$pdf->setjudul('');
-					// 		$pdf->setsubjudul('');
-					// 		$pdf->addpage("P","A4");   
-					// 		$pdf->setsize("P","A4");
-					// 		$pdf->SetWidths(array(190));
-					// 		$pdf->setfont('Arial','B',18);
-					// 		$pdf->SetAligns(array('C','C','C'));
-					// 		$border    = array('BTLR');
-					// 		$size      = array('');
-					// 		$align     = array('C');
-					// 		$style     = array('B');
-					// 		$size      = array('18');
-					// 		$max       = array(20);
-					// 		$fc        = array('0');
-					// 		$hc        = array('20');
-					// 		$judul     = array('SURAT PESANAN');
-					// 		$pdf->FancyRow2(10,$judul, $fc,  $border, $align, $style, $size, $max);
-					// 		$size      = array('10');
-					// 		$align     = array('L');
-					// 		$border    = array('');
-					// 		$judul     = array('Kepada Yth:');
-					// 		$pdf->FancyRow2(10,$judul, $fc,  $border, $align, $style, $size, $max);
-					// 		$pdf->ln(1);
-					// 		$pdf->setfont('Arial','B',10);
-					// 		$pdf->SetWidths(array(10,5,90,20,5,60));
-					// 		$border    = array('LT','T','T','T','T','TR');
-					// 		$fc        = array('0','0','0','0','0','0');
-					// 		$pdf->SetFillColor(230,230,230);			
-					// 		$pdf->setfont('Arial','',9);
-					// 		$pdf->FancyRow(array('(to)',':',$header->vendor_name,'Tanggal',':',date('d-m-Y',strtotime($header->po_date))), $fc, $border);
-					// 		$border    = array('L','','','','','R');
-					// 		$pdf->FancyRow(array('','',$header->alamat,'Referensi',':',$header->ref_no), $fc, $border);
-					// 		$pdf->FancyRow(array('','','','Tgl Kirim',':',date('d-m-Y',strtotime($header->ship_date))), $fc, $border);
-					// 		$pdf->FancyRow(array('','','','Kirim Via',':',$header->ship_via), $fc, $border);
-					// 		$border    = array('LB','B','B','B','B','BR','BR');
-					// 		$pdf->FancyRow(array('Attn','',$header->contact,'','',''), $fc, $border);
-
-
-
-					// 		$pdf->Output();	
-					// 	}
-					// 	else
-					// 	{
-
-					// 		header('location:'.base_url());
-
-					// 	}
-					// }
-
-
-
-
-
-
-				}
+	public function laporan_po($dari, $sampai)
+					{
+						$cek        = $this->session->userdata('level');
+						$unit       = $this->session->userdata('unit');
+						$user       = $this->session->userdata('username');
+						if (!empty($cek)) {
+							$cabang = $this->session->userdata('unit');
+							$gudang = $this->input->get('gudang');
+							$kop       = $this->M_cetak->kop($unit);
+							$profile = data_master('tbl_namers', array('koders' => $unit));
+							$namars    = $kop['namars'];
+							$alamat    = $kop['alamat'];
+							$alamat2   = $kop['alamat2'];
+							$alamat3  = $profile->kota;
+							$kota      = $kop['kota'];
+							$phone     = $kop['phone'];
+							$whatsapp  = $kop['whatsapp'];
+							$npwp      = $kop['npwp'];
+							$chari  = '';
+							if($gudang == ''){
+								$header = $this->db->query("SELECT * FROM tbl_apohpolog WHERE po_date BETWEEN '$dari' AND '$sampai' AND koders = '$cabang'")->result();
+							} else {
+								$header = $this->db->query("SELECT * FROM tbl_apohpolog WHERE po_date BETWEEN '$dari' AND '$sampai' AND gudang = '$gudang' AND koders = '$cabang' LIMIT 1")->result();
+							}
+							$chari .= "
+                    <table style=\"border-collapse:collapse;font-family: Century Gothic; font-size:12px; color:#000;\" width=\"100%\"  border=\"0\" cellspacing=\"0\" cellpadding=\"0\">
+                         <thead>
+                              <tr>
+                                   <td rowspan=\"6\" align=\"center\">
+                                        <img src=\"" . base_url() . "assets/img/logo.png\"  width=\"70\" height=\"70\" />
+                                   </td>
+                                   <td colspan=\"20\">
+                                        <b>
+                                             <tr>
+                                                  <td style=\"font-size:10px;border-bottom: none;\"><b><br>$namars</b></td>
+                                             </tr>
+                                             <tr>
+                                                  <td style=\"font-size:9px;\">$alamat</td>
+                                             </tr>
+                                             <tr>
+                                                  <td style=\"font-size:9px;\">$alamat2</td>
+                                             </tr>
+                                             <tr>
+                                                  <td style=\"font-size:9px;\">Wa :$whatsapp    Telp :$phone </td>
+                                             </tr>
+                                             <tr>
+                                                  <td style=\"font-size:9px;\">No. NPWP : $npwp</td>
+                                             </tr>
+                                        </b>
+                                   </td>
+                              </tr>
+                         </table>";
+							$chari .= "
+                              <table style=\"border-collapse:collapse;font-family: tahoma; font-size:12px\" width=\"100%\" align=\"center\" border=\"0\">
+                                   <tr>
+                                        <td> &nbsp; </td>
+                                   </tr> 
+                              </table>";
+							$chari .= "
+                         <table style=\"border-collapse:collapse;font-family: tahoma; font-size:2px\" width=\"100%\" align=\"center\" border=\"1\">     
+                              <tr>
+                                   <td style=\"border-top: none;border-right: none;border-left: none;\"></td>
+                              </tr> 
+                         </table>";
+							$chari .= "
+                         <table style=\"border-collapse:collapse;font-family: tahoma; font-size:2px\" width=\"100%\" align=\"center\" border=\"1\">     
+                              <tr>
+                                   <td style=\"border-top: none;border-right: none;border-left: none;\"></td>
+                              </tr> 
+                         </table>";
+							$chari .= "
+                         <table style=\"border-collapse:collapse;font-family: tahoma; font-size:12px\" width=\"100%\" align=\"center\" border=\"0\">
+                              <tr>
+                                   <td> &nbsp; </td>
+                              </tr> 
+                         </table>";
+							$chari .= "
+                         <table style=\"border-collapse:collapse;font-family: Tahoma; font-size:11px\" width=\"100%\" align=\"center\" border=\"0\" cellspacing=\"1\" cellpadding=\"3\">
+                              <tr>
+                                   <td width=\"15%\" style=\"text-align:center; font-size:20px;\"><b>LAPORAN PO (Purchase Order) CABANG ".$cabang."</b></td>
+                              </tr>
+                         </table>";
+							$chari .= "
+                         <table style=\"border-collapse:collapse;font-family: tahoma; font-size:12px\" width=\"100%\" align=\"center\" border=\"0\">
+                              <tr>
+                                   <td> &nbsp; </td>
+                              </tr> 
+                         </table>";
+							$chari .= "
+                         <table style=\"border-collapse:collapse;font-family: tahoma; font-size:12px\" width=\"20%\" align=\"left\" border=\"0\">
+                              <tr>
+                                   <td>Dari Tanggal</td>
+                                   <td>:</td>
+                                   <td>".date("d-m-Y", strtotime($dari))."</td>
+                              </tr> 
+                              <tr>
+                                   <td>Sampai Tanggal</td>
+                                   <td>:</td>
+                                   <td>".date("d-m-Y", strtotime($sampai))."</td>
+                              </tr> 
+                         </table>";
+							$chari .= "
+                         <table style=\"border-collapse:collapse;font-family: tahoma; font-size:12px\" width=\"100%\" align=\"center\" border=\"0\">
+                              <tr>
+                                   <td> &nbsp; </td>
+                              </tr> 
+                         </table>";
+							$chari .= "
+                         <table style=\"border-collapse:collapse;font-family: tahoma; font-size:12px\" width=\"100%\" align=\"center\" border=\"1\" cellpadding=\"10\" cellspacing=\"10\">
+                              <thead style=\"background-color: grey;\">
+																<tr>
+																		<td style=\"text-align: center; background-color: grey; color: white;\"><b>No</b></td>
+																		<td style=\"text-align: center; background-color: grey; color: white;\"><b>No PO</b></td>
+																		<td style=\"text-align: center; background-color: grey; color: white;\"><b>Kode Barang</b></td>
+																		<td style=\"text-align: center; background-color: grey; color: white;\"><b>Nama Barang</b></td>
+																		<td style=\"text-align: center; background-color: grey; color: white;\"><b>Satuan</b></td>
+																		<td style=\"text-align: center; background-color: grey; color: white;\"><b>Qty</b></td>
+																		<td style=\"text-align: center; background-color: grey; color: white;\"><b>Harga</b></td>
+																		<td style=\"text-align: center; background-color: grey; color: white;\"><b>Diskon</b></td>
+																		<td style=\"text-align: center; background-color: grey; color: white;\"><b>Total</b></td>
+																</tr>
+															</thead>";
+							foreach($header as $h) {
+								$gudangnya = $this->db->get_where("tbl_depo", ["depocode" => $h->gudang])->row();
+								$total = $this->db->query("SELECT SUM(total) AS total FROM tbl_apodpolog WHERE po_no = '$h->po_no' LIMIT 1")->result();
+								foreach($total as $t){
+									$ttl = $t->total;
+								}
+								$chari .= "<tbody>
+														<tr>
+															<td colspan=\"3\">Gudang : <b>".$gudangnya->keterangan."</b></td>
+															<td colspan=\"5\">Tgl PO : ".date("d-m-Y", strtotime($h->po_date))."</td>
+															<td style=\"text-align: right;\"><b>".number_format($ttl)."</b></td>
+														</tr>";
+								$detail = $this->db->query("SELECT d.po_no, d.kodebarang, b.namabarang, d.satuan, d.qty_po, d.price_po, d.discount, d.total FROM tbl_apodpolog d JOIN tbl_logbarang b ON d.kodebarang = b.kodebarang WHERE d.po_no = '$h->po_no'")->result();
+								$no = 1;
+								foreach($detail as $d){
+									if($d->discount == '' || $d->discount == null){
+										$disc = 0;
+									} else {
+										$disc = number_format($d->discount);
+									}
+									$chari .= "<tr>
+															<td>".$no++."</td>
+															<td>".$d->po_no."</td>
+															<td>".$d->kodebarang."</td>
+															<td>".$d->namabarang."</td>
+															<td>".$d->satuan."</td>
+															<td style=\"text-align: right;\">".number_format($d->qty_po)."</td>
+															<td style=\"text-align: right;\">".number_format($d->price_po)."</td>
+															<td style=\"text-align: right;\">".$disc."</td>
+															<td style=\"text-align: right;\">".number_format($d->total)."</td>
+														</tr>
+													</tbody>";
+								}
+							}
+							$chari .= "</table>";
+							$data['prev'] = $chari;
+							$judul = "LAPORAN PO (Purchase Order) Dari : ".$dari." Sampai : ".$sampai;
+							echo ("<title>$judul</title>");
+							$this->M_cetak->mpdf('L', 'A4', $judul, $chari, '.PDF', 10, 10, 10, 2);
+						} else {
+							header('location:' . base_url());
+						}
+					}
+}
 
 /* End of file master_bank.php */
 /* Location: ./application/controllers/master_akun.php */

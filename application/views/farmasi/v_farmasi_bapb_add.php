@@ -1434,19 +1434,19 @@ function totalline(id) {
   var discrp      = Number(parseInt(discrpx.replaceAll(',', '')));
   jumlahz         = qty * harga - discrp;
   
-  if(harga>het){
-    swal({
-      title: "Harga Beli "+kode,
-      html: "<p>Tidak Boleh Lebih Dari HET</p>",
-      type: "error",
-      confirmButtonText: "OK"
-    });
-    $('#harga' + id).val(het);
-    document.getElementById("harga" + id).value = het;
-    // return;
-  }else{
+  // if(harga>het){
+  //   swal({
+  //     title: "Harga Beli "+kode,
+  //     html: "<p>Tidak Boleh Lebih Dari HET</p>",
+  //     type: "error",
+  //     confirmButtonText: "OK"
+  //   });
+  //   $('#harga' + id).val(het);
+  //   document.getElementById("harga" + id).value = het;
+  //   // return;
+  // }else{
 
-  }
+  // }
 
   $('#jumlah' + id).val(separateComma(jumlahz));
 

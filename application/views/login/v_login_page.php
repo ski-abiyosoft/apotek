@@ -19,7 +19,7 @@
 <link href="<?php echo base_url('assets/css/style-responsive.css');?>" rel="stylesheet" type="text/css"/>
 <link href="<?php echo base_url('assets/css/plugins.css');?>" rel="stylesheet" type="text/css"/>
 <link href="<?php echo base_url('assets/css/themes/blue.css');?>" rel="stylesheet" type="text/css"/>
-<link href="<?php echo base_url('assets/css/pages/login-soft.css');?>" rel="stylesheet" type="text/css"/>
+<link href="<?php echo base_url('assets/css/pages/login-soft.css?v=1.0');?>" rel="stylesheet" type="text/css"/>
 <link href="<?php echo base_url('assets/css/custom.css');?>" rel="stylesheet" type="text/css"/>
 <link href="<?php echo base_url('assets/img/hms.ico');?>" rel="shortcut icon" />
 <link href="<?php echo base_url('assets/plugins/gritter/css/jquery.gritter.css');?>" rel="stylesheet" type="text/css"/>

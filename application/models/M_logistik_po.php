@@ -5,8 +5,8 @@ class M_logistik_po extends CI_Model {
 
    
 	var $table = 'tbl_apohpolog';
-	var $column_order = array('id', 'koders','po_no','po_date','vendor_id','ship_date','username','dibuatoleh','proses',null); 
-	var $column_search = array('id', 'koders','po_no','po_date','vendor_id','ship_date','username','dibuatoleh','proses'); 
+	var $column_order = array('id', 'koders','po_no','po_date','vendor_id','ship_date','username','dibuatoleh','proses', 'disetujuioleh',null); 
+	var $column_search = array('id', 'koders','po_no','po_date','vendor_id','ship_date','username','dibuatoleh','proses', 'disetujuioleh'); 
 	var $order = array('id' => 'asc'); 
 
 	public function __construct()

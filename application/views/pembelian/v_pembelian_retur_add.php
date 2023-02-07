@@ -134,54 +134,30 @@ $this->load->view('template/body');
                                 <div class="col-md-12">
                                     <table id="datatable" class="table table-hoverx table-stripedx table-borderedx table-condensed table-scrollable">
                                         <thead class="page-breadcrumb breadcrumb">
-                                            <!-- <tr>
-                                                <th class="title-white" width="5%"
-                                                    style="text-align: center; width: 5%;">Delete</th>
-                                                <th class="title-white" width="5%"
-                                                    style="text-align: center; width: 5%;">Nama Barang</th>
-                                                <th class="title-white" width="5%"
-                                                    style="text-align: center; width: 5%;">Kuantitas</th>
-                                                <th class="title-white" width="5%"
-                                                    style="text-align: center; width: 10%;">Satuan</th>
-                                                <th class="title-white" width="5%"
-                                                    style="text-align: center; width: 10%;">Harga</th>
-                                                <th class="title-white" width="10%"
-                                                    style="text-align: center; width: 5%;">Tax</th>
-                                                <th class="title-white" width="5%"
-                                                    style="text-align: center; width: 5%;"></th>
-                                                <th class="title-white" width="5%"
-                                                    style="text-align: center; width: 5%;">Diskon %</th>
-                                                <th class="title-white" width="5%"
-                                                    style="text-align: center; width: 20%;">Disc Rp</th>
-                                                <th class="title-white" width="15%"
-                                                    style="text-align: center; width: 10%;">Total</th>
-                                            </tr> -->
                                             <tr>
-                                                <th style="color:white; text-align:center">Hapus</th>
-                                                <th style="color:white; text-align:center">Nama Barang</th>
-                                                <th style="color:white; text-align:center">Kuantitas</th>
-                                                <th style="color:white; text-align:center">Satuan</th>
-                                                <th style="color:white; text-align:center">Harga</th>
-                                                <th style="color:white; text-align:center">Tax</th>
-                                                <th style="color:white; text-align:center">Diskon</th>
-                                                <th style="color:white; text-align:center">Disc Rp</th>
-                                                <th style="color:white; text-align:center">Total</th>
+                                                <th style="color:white; text-align:center" width="5%">Hapus</th>
+                                                <th style="color:white; text-align:center" width="20%">Nama Barang</th>
+                                                <th style="color:white; text-align:center" width="10%">Kuantitas</th>
+                                                <th style="color:white; text-align:center" width="10%">Satuan</th>
+                                                <th style="color:white; text-align:center" width="10%">Harga</th>
+                                                <th style="color:white; text-align:center" width="10%">Tax</th>
+                                                <th style="color:white; text-align:center" width="10%">Diskon</th>
+                                                <th style="color:white; text-align:center" width="10%">Disc Rp</th>
+                                                <th style="color:white; text-align:center" width="15%">Total</th>
                                             </tr>
 
                                             <thead>
 
                                             <tbody>
-                                                <tr id="retur_no1">
+                                                <tr id="retur_tr1">
 
-                                                    <td>
-                                                        <button id="btnhapus1" type='button' onclick=hapusBarisIni(1) class='btn red' disabled><i class='fa fa-trash-o'>
+                                                    <td width="5%">
+                                                        <button id="btnhapus1" type='button' onclick='hapusBarisIni(1)' class='btn red'><i class='fa fa-trash-o'></i></button>
                                                     </td>
                                                     <td width="20%">
                                                         <select name="kode[]" id="kode1" class="select2_el_farmasi_barang form-control" onchange="showbarangname(this.value, 1)" readonly>
                                                             <option value="">--- Pilih Barang ---</option>
                                                         </select>
-                                                        <!-- <input type="text" name="kode[]" id="kode1" class="form-control"
-                                                            readonly> -->
                                                     </td>
                                                     <td width="10%">
                                                         <input name="qty[]" onchange="totalline(1);total();cekqty(1)" value="1" id="qty1" type="text" class="form-control rightJustified">
@@ -189,16 +165,19 @@ $this->load->view('template/body');
                                                     <td width="10%">
                                                         <input name="sat[]" id="sat1" type="text" class="form-control" onkeypress="return tabE(this,event)" readonly>
                                                     </td>
-                                                    <td width="15%">
+                                                    <td width="10%">
                                                         <input name="harga[]" onchange="totalline(1)" value="0" id="harga1" type="text" class="form-control rightJustified" readonly>
                                                     </td>
-                                                    <td>
-                                                        <input type="checkbox" name="tax[]" value='0' id="tax1" class="form-control" onchange="totalline(1);total();">
+                                                    <td width="10%">
+                                                        <select name='tax[]' id='tax1' class='form-control' onchange='totalline(1); total()'>
+                                                            <option value='0'>Tidak</option>
+                                                            <option value='1'>Ya</option>
+                                                        </select>
                                                     </td>
-                                                    <td width="5%">
+                                                    <td width="10%">
                                                         <input name="disc[]" onchange="totalline(1);total();cekdisc(1)" value="0" id="disc1" type="text" class="form-control rightJustified">
                                                     </td>
-                                                    <td>
+                                                    <td width="10%">
                                                         <input name="discrp[]" onchange="totalline(1);total();cekdiscrp(1)" value="0" id="discrp1" type="text" class="form-control rightJustified ">
                                                     </td>
                                                     <td width="15%">
@@ -346,13 +325,6 @@ $this->load->view('template/footer');
 ?>
 
 <script>
-    // Kiw
-    if($("input[name='tax[]']").is(":checked") !== false){
-        $(this).prop("checked", true);
-    } else {
-        $(this).prop("checked", true);
-    }
-
     $("#form_ppn").hide();
     var idrow = 2;
     var rowCount;
@@ -422,13 +394,14 @@ $this->load->view('template/footer');
             "<td><input name='qty[]'    id=qty" + idrow + " onchange='totalline(" + idrow + ");total();cekqty(" + idrow + ")' value='1'  type='text' class='form-control rightJustified'></td>" +
             "<td><input name='sat[]'    id=sat" + idrow + " type='text' class='form-control' readonly></td>" +
             "<td><input name='harga[]'  id=harga" + idrow + " onchange='totalline(" + idrow + ")' value='0'  type='text' class='form-control rightJustified' readonly></td>" +
-            "<td><input name='tax[]'  id=tax" + idrow + " onchange='totalline(" + idrow + ");total()' value='0' type='checkbox' class='form-control rightJustified'></td>" +
+            "<td><select name='tax[]' id='tax" + idrow + "' class='form-control' onchange='totalline(" + idrow + "); total()'><option value='0'>Tidak</option><option value='1'>Ya</option></select></td>" +
             "<td><input name='disc[]'   id=disc" + idrow + " onchange='totalline(" + idrow + ");total();cekdisc(" + idrow + ")' value='0'  type='text' class='form-control rightJustified'  ></td>" +
             "<td><input name='discrp[]'   id=discrp" + idrow + " onchange='totalline(" + idrow + ");cekdiscrp(" + idrow + ")' value='0'  type='text' class='form-control rightJustified'  ></td>" +
             "<td><input name='jumlah[]' id=jumlah" + idrow + " type='text' class='form-control rightJustified' readonly></td>" +
             "</tr>");
         initailizeSelect2_farmasi_barang();
         idrow++;
+        // "<td><a class='btn default' id=lupharga" + idrow + " data-toggle='modal' href='#lupharga' onclick='getidharga(this.id)'><i class='fa fa-search'></i></a></td>" +
     }
 
     function cekqty(id) {
@@ -440,11 +413,11 @@ $this->load->view('template/footer');
         var disc = Number(parseInt(discx.replaceAll(',', '')));
         var discrp = qty * harga * disc / 100;
         var jumlah = qty * harga - discrp;
-        $('#discrp' + id).val(formatCurrency1(discrp));
+        $('#discrp' + id).val(separateComma(discrp));
         $('#qty').val(qty.toFixed(0));
         // separateComma(diskon.toFixed(0))
         $('#qty' + id).val(separateComma(qty.toFixed(0)));
-        $('#jumlah' + id).val(formatCurrency1(jumlah));
+        $('#jumlah' + id).val(separateComma(jumlah));
         total();
     }
 
@@ -455,13 +428,13 @@ $this->load->view('template/footer');
         var harga = Number(parseInt(hargax.replaceAll(',', '')));
         var discx = $("#disc" + id).val();
         var disc = Number(parseInt(discx.replaceAll(',', '')));
-        var discrp = qty * harga * disc / 100;
-        if (disc == 0) {
+        if (disc < 1) {
             $("#discrp" + id).val(separateComma(0));
         } else {
+            var discrp = qty * harga * disc / 100;
             $("#discrp" + id).val(separateComma(discrp.toFixed(0)));
         }
-        total();
+        totalline(id);
     }
 
 
@@ -473,10 +446,9 @@ $this->load->view('template/footer');
         var discrpx = $("#discrp" + id).val();
         var discrp = Number(parseInt(discrpx.replaceAll(',', '')));
         $("#disc" + id).val(0);
-        $("#discrp" + id).val(formatCurrency1(discrp));
-        var subtotal = qty * harga;
-        var jumlah = subtotal - discrp;
-        $('#jumlah' + id).val(formatCurrency1(jumlah));
+        $("#discrp" + id).val(separateComma(discrp));
+        tot = qty * harga - discrp;
+        $('#jumlah' + id).val(separateComma(tot));
         total();
     }
 
@@ -569,10 +541,10 @@ $this->load->view('template/footer');
             success: function(data) {
                 var qty = $('#qty' + id).val();
                 $('#sat' + id).val(data.satuan1);
-                $('#harga' + id).val(formatCurrency1(data.hargabeli));
+                $('#harga' + id).val(separateComma(data.hargabeli));
                 var harga = data.hargabeli;
                 var jumlah = Number(parseInt(qty.replaceAll(',', ''))) * data.hargabeli;
-                $('#jumlah' + id).val(formatCurrency1(jumlah));
+                $('#jumlah' + id).val(separateComma(jumlah));
                 totalline(id);
             }
         });
@@ -628,6 +600,7 @@ $this->load->view('template/footer');
                 dataType: 'JSON',
                 success: function(data) {
                     var no = data.nomor;
+                    var bapb = data.bapb;
                     //rincian
                     var table = document.getElementById('datatable');
                     rowCount = table.rows.length;
@@ -646,24 +619,8 @@ $this->load->view('template/footer');
                         var disc = Number(discx.replace(/[^0-9\.]+/g, ""));
                         discrpx = row.cells[7].children[0].value;
                         var discrp = Number(discrpx.replace(/[^0-9\.]+/g, ""));
-                        // var kode = $("#kode" + i).val();
-                        // var qtyx = $("#qty" + i).val();
-                        // var qty = Number(qtyx.replace(/[^0-9\.]+/g, ""));
-                        // var sat = $("#sat" + i).val();
-                        // var hargax = $("#harga" + i).val();
-                        // var harga = Number(hargax.replace(/[^0-9\.]+/g, ""));
-                        // var disc = $("#disc" + i).val();
-                        // var discrpx = $("#discrp" + i).val();
-                        // var discrp = Number(discrpx.replace(/[^0-9\.]+/g, ""));
-                        // var taxx = $('#tax' + i).is(':checked');
-                        // row.cells[5].children[0]
-                        if (document.getElementById('tax'+i).checked == true) {
-                            var vat = 1;
-                        } else {
-                            var vat = 0;
-                        }
-                        // var tax = $("#tax"+i).val();
-                        // var jumlahx = $("#jumlah" + i).val();
+                        // if (row.cells[5].children[0].checked == true) {
+                        vat = row.cells[5].children[0].value;
                         var jumlahx = row.cells[8].children[0].value;
                         var jumlah = Number(jumlahx.replace(/[^0-9\.]+/g, ""));
                         if (vat == 1) {
@@ -672,10 +629,8 @@ $this->load->view('template/footer');
                             var vatrp = 0;
                         }
                         // console.log('kode : '+kode+', qty : '+qty+', sat : '+sat+', harga : '+harga+', disc : '+disc+', discrp : '+discrp+', tax : '+vat+', jumlah : '+jumlah+', pajak : '+pj+', taxrp : '+vatrp);
-                        var param = "?kode=" + kode + '&qty=' + qty + '&sat=' + sat + '&harga=' + harga + '&disc=' + disc + '&discrp=' + discrp + '&tax=' + vat + '&jumlah=' + jumlah + '&taxrp=' + vatrp + '&retur_no=' + no
-                        console.log(param);
                         $.ajax({
-                            url: '<?= site_url() ?>Pembelian_retur/save_multi/' + param,
+                            url: '<?= site_url() ?>Pembelian_retur/save_multi/?kode=' + kode + '&qty=' + qty + '&sat=' + sat + '&harga=' + harga + '&disc=' + disc + '&discrp=' + discrp + '&tax=' + vat + '&jumlah=' + jumlah + '&taxrp=' + vatrp + '&retur_no=' + no + "&bapb=" + bapb,
                             data: $('#frmpembelian').serialize(),
                             type: 'POST',
                             dataType: 'JSON',
@@ -876,9 +831,12 @@ $this->load->view('template/footer');
             diskon = eval((diskon1 / 100) * jumlah1 * harga1);
 
             tdiskon = tdiskon + diskon2;
-            if (document.getElementById('tax' + i) !== null && document.getElementById('tax' + i).checked === true) {
+            if (row.cells[5].children[0].value == 1) {
                 tppn = tppn + (eval((jumlah1 * harga1 - diskon2))) * cekppn2;
             }
+            // if (document.getElementById('tax' + i) !== null && document.getElementById('tax' + i).checked === true) {
+            //     tppn = tppn + (eval((jumlah1 * harga1 - diskon2))) * cekppn2;
+            // }
 
         }
         // console.log(tjumlah)
@@ -902,36 +860,32 @@ $this->load->view('template/footer');
     }
 
     function totalline(id) {
-        // console.log(totalline());
+
         // var table = document.getElementById('datatable');
         // var row = table.rows[id];
-        // jumlah = row.cells[1].children[0].value * row.cells[3].children[0].value;
-        // diskon = (row.cells[6].children[0].value / 100) * jumlah;
+        // var disc = $('#disc' + id).val();
+        // var qtyx = $('#qty' + id).val();
+        // var qty = Number(parseInt(qtyx.replaceAll(',', '')));
+        // var hargax = $('#harga' + id).val();
+        // var harga = Number(parseInt(hargax.replaceAll(',', '')));
+        // jumlah = qty * harga;
+        // diskon = (disc / 100) * jumlah;
         // tot = jumlah - diskon;
-        // row.cells[8].children[0].value = formatCurrency1(tot);
+        // $("#jumlah" + id).val(separateComma(tot.toFixed(0)));
         // total();
 
         var table = document.getElementById('datatable');
-        var row = table.rows[id];
-        var disc = $('#disc' + id).val();
-        var qtyx = $('#qty' + id).val();
-        var qty = Number(parseInt(qtyx.replaceAll(',', '')));
-        var hargax = $('#harga' + id).val();
-        var harga = Number(parseInt(hargax.replaceAll(',', '')));
-        jumlah = qty * harga;
-        diskon = (disc / 100) * jumlah;
-        tot = jumlah - diskon;
-        $("#jumlah" + id).val(separateComma(tot.toFixed(0)));
-        total();
-
-        // var table = document.getElementById('datatable');
-        // var row = table.rows[arr.indexOf(id) + 1];
-        // jumlah = row.cells[2].children[0].value * row.cells[4].children[0].value;
-        // diskon = (row.cells[7].children[0].value / 100) * jumlah;
-        // tot = jumlah - diskon;
-        // row.cells[9].children[0].value = tot;
-        // total();
-        // var subtotal = $('#_vsubtotal').html();
+        var rowCount = table.rows.length;
+        for (var i = 1; i < rowCount; i++) {
+            var row = table.rows[i];
+            var qty = Number(row.cells[2].children[0].value.replace(/[^0-9\.]+/g, ""));
+            var harga = Number(row.cells[4].children[0].value.replace(/[^0-9\.]+/g, ""));
+            var discrp = Number(row.cells[7].children[0].value.replace(/[^0-9\.]+/g, ""));
+            jumlah = qty * harga;
+            tot = jumlah - discrp;
+            row.cells[8].children[0].value = separateComma(tot);
+            total();
+        }
 
     }
 
@@ -1000,10 +954,10 @@ $this->load->view('template/footer');
 
                 success: function(data) {
                     for (i = 0; i <= data.length - 1; i++) {
-                        if (i == 1) {
-                            $("#btnhapus" + i).attr("disabled", true);
-                        }
-                        hapusBarisIni(i);
+                        // if (i == 1) {
+                        //     $("#btnhapus" + i).attr("disabled", true);
+                        // }
+                        // hapusBarisIni(i);
                     }
 
                     for (i = 0; i <= data.length - 1; i++) {
@@ -1013,26 +967,24 @@ $this->load->view('template/footer');
 
                         x = i + 1;
 
-                        var option = $("<option selected></option>").val(data[i].kodebarang).text(data[i]
-                            .namabarang);
+                        var option = $("<option selected></option>").val(data[i].kodebarang).text(data[i].namabarang);
                         $('#kode' + x).append(option).trigger('change');
 
                         document.getElementById("kode" + x).value = data[i].kodebarang;
-                        document.getElementById("qty" + x).value = formatCurrency1(data[i].qty_terima);
+                        document.getElementById("qty" + x).value = separateComma(Number(data[i].qty_terima));
                         document.getElementById("sat" + x).value = data[i].satuan;
-                        document.getElementById("harga" + x).value = formatCurrency1(data[i].price);
+                        document.getElementById("harga" + x).value = separateComma(data[i].price);
                         // document.getElementById("disc" + x).value = data[i].discount;
                         document.getElementById("disc" + x).value = data[i].discount;
-                        document.getElementById("discrp" + x).value = formatCurrency1(data[i].discountrp);
+                        document.getElementById("discrp" + x).value = separateComma(Number(data[i].discountrp));
                         if (data[i].vat == 1) {
-                            document.getElementById("tax" + x).checked = true;
+                            text = "Ya";
                         } else {
-                            document.getElementById("tax" + x).checked = false;
+                            text = "Tidak";
                         }
-                        // $('#discrp'+x).val(data[i].discountrp);
-                        console.log(data[i].discountrp);
+                        var option1 = $("<option selected></option>").val(data[i].vat).text(text);
+                        $('#tax' + x).append(option1).trigger('change');
                         totalline(x);
-
                     }
 
                 }

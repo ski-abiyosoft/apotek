@@ -105,20 +105,6 @@ if ($datpas) {
                          <div class="row">
                               <div class="col-md-6">
                                    <div class="form-group">
-                                        <label class="col-md-3 control-label">Member <font color="red">*</font></label>
-                                        <div class="col-md-9">
-                                             <select id="pasien" name="pasien" class="form-control select2_el_pasien" onchange="getinfopasien()" data-placeholder="Pilih..." onkeypress="return tabE(this,event)">
-                                                  <?php if ($header->rekmed) :
-                                                       $datapasien = data_master('tbl_pasien', array('rekmed' => $header->rekmed)); ?>
-                                                       <option value="<?= $header->rekmed; ?>">
-                                                            <?= $header->rekmed . ' | ' . $datapasien->namapas; ?></option>
-                                                  <?php endif; ?>
-                                             </select>
-                                        </div>
-                                   </div>
-                              </div>
-                              <div class="col-md-6">
-                                   <div class="form-group">
                                         <label class="col-md-3 control-label">Tanggal <font color="red">*</font></label>
                                         <div class="col-md-6">
                                              <input id="tanggal" name="tanggal" class="form-control input-medium" type="date" value="<?php echo date('Y-m-d', strtotime($header->tglresep)); ?>" readonly />
@@ -128,21 +114,15 @@ if ($datpas) {
                                         </div>
                                    </div>
                               </div>
-                         </div>
-                         <div class="row">
-                              <div class="col-md-6">
-                                   <div class="form-group">
-                                        <label class="col-md-3 control-label">Nama Pembeli <font color="red">*</font></label>
-                                        <div class="col-md-6">
-                                             <input type="text" name="namapasien" id="namapasien" class="form-control" value="<?= $posting->namapas; ?>">
-                                        </div>
-                                   </div>
-                              </div>
                               <div class="col-md-6">
                                    <div class="form-group">
                                         <label class="col-md-3 control-label">Alamat Kirim <font color="red">*</font></label>
                                         <div class="col-md-9">
+                                        <?php if ($header->rekmed=='Non Member') :?>
+                                             <input type="text" name="alamat" id="alamat" class="form-control" value="<?= $header->alamat; ?>" readonly>
+                                        <?php else : ?>
                                              <input type="text" name="alamat" id="alamat" class="form-control" value="<?= $datapasien->alamat; ?>" readonly>
+                                        <?php endif; ?>
                                         </div>
                                         <!-- <label class="col-md-3 control-label">No Handphone <font color="red">*</font></label>
                                         <div class="col-md-9">
@@ -153,10 +133,18 @@ if ($datpas) {
                          </div>
                          <div class="row">
                               <div class="col-md-6">
-                                   <div class="form-group">
-                                        <label class="col-md-3 control-label">Umur <font color="red">*</font></label>
-                                        <div class="col-md-6">
-                                             <input type="text" name="umurpas" id="umurpas" class="form-control" value="<?= $age_interval->y . ' Tahun ' . $age_interval->m . ' Bulan ' . $age_interval->d . ' Hari' ?>" readonly>
+                                   <div class="form-group"> 
+                                        <label class="col-md-3 control-label">Member <font color="red">*</font></label>
+                                        <div class="col-md-9">
+                                             <?php if ($header->rekmed=='Non Member') :?>
+                                                  <input type="text" name="pasien" id="pasien" class="form-control" value="NON MEMBER" readonly>
+                                             <?php else : ?>
+                                                  <select id="pasien" name="pasien" class="form-control select2_el_pasien" onchange="getinfopasien()" data-placeholder="Pilih..." onkeypress="return tabE(this,event)">
+                                                       <?php $datapasien = data_master('tbl_pasien', array('rekmed' => $header->rekmed)); ?>
+                                                       <option value="<?= $header->rekmed; ?>">
+                                                       <?= $header->rekmed . ' | ' . $datapasien->namapas; ?></option>
+                                                  </select>
+                                             <?php endif; ?>
                                         </div>
                                    </div>
                               </div>
@@ -164,7 +152,31 @@ if ($datpas) {
                                    <div class="form-group">
                                         <label class="col-md-3 control-label">No Handphone <font color="red">*</font></label>
                                         <div class="col-md-9">
+                                        <?php if ($header->rekmed=='Non Member') :?>
+                                             <input type="text" name="phone" id="phone" class="form-control" value="<?= $header->nohp; ?>" readonly>
+                                        <?php else : ?>
                                              <input type="text" name="phone" id="phone" class="form-control" value="<?= $datapasien->handphone; ?>" readonly>
+                                        <?php endif; ?>
+                                             
+                                        </div>
+                                   </div>
+                                   
+                              </div>
+                         </div>
+                         <div class="row">
+                              <!-- <div class="col-md-6">
+                                   <div class="form-group">
+                                        <label class="col-md-3 control-label">Umur <font color="red">*</font></label>
+                                        <div class="col-md-6">
+                                             <input type="text" name="umurpas" id="umurpas" class="form-control" value="<?= $age_interval->y . ' Tahun ' . $age_interval->m . ' Bulan ' . $age_interval->d . ' Hari' ?>" readonly>
+                                        </div>
+                                   </div>
+                              </div> -->
+                              <div class="col-md-6">
+                                   <div class="form-group">
+                                        <label class="col-md-3 control-label">Nama Pembeli <font color="red">*</font></label>
+                                        <div class="col-md-6">
+                                             <input type="text" name="namapasien" id="namapasien" class="form-control" value="<?= $posting->namapas; ?>">
                                         </div>
                                    </div>
                               </div>

@@ -5,6 +5,7 @@ Login page
 /* logo page */
 .login {
   background-color: #666 !important;
+  background: url(../../img/bg/4.jpg) repeat ;
   /*background-color: #1570a6 !important; */
   
   /*background-color: #000000 !important; */
