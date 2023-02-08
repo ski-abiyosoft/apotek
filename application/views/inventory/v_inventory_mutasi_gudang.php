@@ -88,7 +88,7 @@
                             &nbsp;<?php echo $this->session->userdata('unit'); ?> 
                         </span>
                       - 
-                      <span class="title-web">Farmasi <small>Mutasi Barang</small>
+                      <span class="title-web">APOTEK <small>Mutasi Barang</small>
 					</h3>
                       <ul class="page-breadcrumb breadcrumb">
 

@@ -33,7 +33,7 @@ $umur          = $age_interval->y . ' Tahun ' . $age_interval->m . ' Bulan ' . $
         &nbsp;<?= $this->session->userdata('unit'); ?>
       </span>
       -
-      <span class="title-web">Farmasi <small>Penjualan Resep</small>
+      <span class="title-web">APOTEK <small>Penjualan Resep</small>
     </h3>
     <ul class="page-breadcrumb breadcrumb">
       <li>

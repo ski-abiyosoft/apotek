@@ -20,7 +20,7 @@
                             &nbsp;<?php echo $this->session->userdata('unit'); ?> 
                         </span>
                       - 
-                      <span class="title-web">Farmasi <small>BA Penerimaan Barang</small>
+                      <span class="title-web">APOTEK <small>BA Penerimaan Barang</small>
 					</h3>
                          <ul class="page-breadcrumb breadcrumb">
 

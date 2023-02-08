@@ -20,7 +20,7 @@ class Farmasi_bapb extends CI_Controller
 			$level = $this->session->userdata('level');
 			$akses = $this->M_global->cek_menu_akses($level, 3102);
 			$this->load->helper('url');
-			$data['modul'] = 'FARMASI';
+			$data['modul'] = 'APOTEK';
 			$data['submodul'] = 'BAPB';
 			$data['link'] = 'Penerimaan Barang';
 			$data['url'] = 'farmasi_bapb';
@@ -92,7 +92,7 @@ class Farmasi_bapb extends CI_Controller
 			$level = $this->session->userdata('level');
 			$akses = $this->M_global->cek_menu_akses($level, 3102);
 			$this->load->helper('url');
-			$data['modul']    = 'FARMASI';
+			$data['modul']    = 'APOTEK';
 			$data['submodul'] = 'Berita Acara Penerimaan Barang';
 			$data['link']     = 'BA Penerimaan Barang';
 			$data['url']      = 'farmasi_bapb';
@@ -295,7 +295,7 @@ class Farmasi_bapb extends CI_Controller
 			$level    = $this->session->userdata('level');
 			$akses    = $this->M_global->cek_menu_akses($level, 3102);
 			$this->load->helper('url');
-			$data['modul']    = 'FARMASI';
+			$data['modul']    = 'APOTEK';
 			$data['submodul'] = 'Berita Acara Penerimaan Barang';
 			$data['link']     = 'BA Penerimaan Barang';
 			$data['url']      = 'farmasi_bapb';
@@ -1093,24 +1093,24 @@ class Farmasi_bapb extends CI_Controller
 
 
 			$pdf->ln(2);
-			$pdf->SetWidths(array(10, 25, 30, 15, 15, 20, 20, 20, 35));
-			$border = array('LTB', 'TB', 'TB', 'TB', 'TB', 'TB', 'TB', 'TB', 'TBR');
-			$align  = array('C', 'C', 'C', 'C', 'C', 'C', 'C', 'C', 'C');
-			$pdf->setfont('Arial', 'B', 9);
+			$pdf->SetWidths(array(10, 20, 32, 15, 15, 15, 15, 15, 18, 35));
+			$border = array('LTBR', 'LTBR', 'LTBR', 'LTBR', 'LTBR', 'LTBR', 'LTBR', 'LTBR', 'LTBR', 'LTBR');
+			$align  = array('C', 'C', 'C', 'C', 'C', 'C', 'C', 'C', 'C', 'C');
+			$pdf->setfont('Arial', 'B', 8);
 			$pdf->SetAligns(array('L', 'C', 'R'));
-			$fc = array('0', '0', '0', '0', '0', '0', '0', '0', '0');
-			$judul = array('No.', 'Kode Barang', 'Nama Barang', 'Qty', 'Satuan', 'HPP', 'Disc', 'Total', 'Po No');
+			$fc = array('0', '0', '0', '0', '0', '0', '0', '0', '0', '0');
+			$judul = array('No.', 'Kode Barang', 'Nama Barang', 'Qty', 'Satuan', 'HPP', 'Disc', 'Total', 'Expired', 'Po No');
 			$pdf->FancyRow2(8, $judul, $fc, $border, $align);
-			$pdf->setfont('Arial', '', 9);
+			$pdf->setfont('Arial', '', 8);
 			$tot = 0;
 			$subtot = 0;
 			$tdisc  = 0;
-			$border = array('L', '', '', '', '', '', '', '', 'R');
-			$align  = array('L', 'L', 'L', 'R', 'R', 'R', 'R', 'R', 'L');
-			$style = array('', '', '', '', '', '', '', '', '');
-			$size  = array('8', '8', '8', '8', '8', '8', '8', '8', '8');
-			$max   = array(2, 2, 2, 2, 2, 2, 2, 2, 2);
-			$fc     = array('0', '0', '0', '0', '0', '0', '0', '0', '0');
+			$border = array('LTBR', 'LTBR', 'LTBR', 'LTBR', 'LTBR', 'LTBR', 'LTBR', 'LTBR','LTBR', 'LTBR');
+			$align  = array('C', 'L', 'L', 'R', 'R', 'R', 'R', 'R', 'L', 'L');
+			$style = array('', '', '', '', '', '', '', '', '', '');
+			$size  = array('8', '8', '8', '8', '8', '8', '8', '8','8', '8');
+			$max   = array(2, 2, 2, 2, 2, 2, 2, 2,2, 2);
+			$fc     = array('0', '0', '0', '0', '0', '0', '0', '0','0', '0');
 			$no = 1;
 			$totitem = 0;
 			$tot = 0;
@@ -1133,6 +1133,7 @@ class Farmasi_bapb extends CI_Controller
 					number_format($db->price),
 					number_format($db->discountrp),
 					number_format($db->totalrp),
+					date('d-m-Y', strtotime($db->exp_date)),
 					$db->po_no
 				), $fc,  $border, $align, $style, $size, $max);
 

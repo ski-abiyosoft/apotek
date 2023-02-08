@@ -23,7 +23,7 @@ if ($datpas) {
                     &nbsp;<?php echo $this->session->userdata('unit'); ?>
                </span>
                -
-               <span class="title-web">Farmasi <small>Penjualan Resep</small>
+               <span class="title-web">APOTEK <small>Penjualan Resep</small>
           </h3>
           <ul class="page-breadcrumb breadcrumb">
                <li>
@@ -121,6 +121,7 @@ if ($datpas) {
                                         <?php if ($header->rekmed=='Non Member') :?>
                                              <input type="text" name="alamat" id="alamat" class="form-control" value="<?= $header->alamat; ?>" readonly>
                                         <?php else : ?>
+                                             <?php $datapasien = data_master('tbl_pasien', array('rekmed' => $header->rekmed)); ?>
                                              <input type="text" name="alamat" id="alamat" class="form-control" value="<?= $datapasien->alamat; ?>" readonly>
                                         <?php endif; ?>
                                         </div>
@@ -155,6 +156,7 @@ if ($datpas) {
                                         <?php if ($header->rekmed=='Non Member') :?>
                                              <input type="text" name="phone" id="phone" class="form-control" value="<?= $header->nohp; ?>" readonly>
                                         <?php else : ?>
+                                             <?php $datapasien = data_master('tbl_pasien', array('rekmed' => $header->rekmed)); ?>
                                              <input type="text" name="phone" id="phone" class="form-control" value="<?= $datapasien->handphone; ?>" readonly>
                                         <?php endif; ?>
                                              

@@ -564,14 +564,14 @@ class Pembelian_retur extends CI_Controller
                          <table style=\"border-collapse:collapse;font-family: Tahoma; font-size:11px\" width=\"100%\" align=\"center\" border=\"1\" cellspacing=\"1\" cellpadding=\"3\">
                               <thead>
                                    <tr>
-                                        <td width=\"5%\" align=\"center\" style=\"text-align:center; border-right: none;\"><b>No</b></td>
-                                        <td width=\"15%\" align=\"center\" style=\"text-align:center; border-right: none; border-left: none;\"><b>Kode Barang</b></td>
-                                        <td width=\"15%\" align=\"center\" style=\"text-align:center; border-right: none; border-left: none;\"><b>Nama Barang</b></td>
-                                        <td width=\"10%\" align=\"center\" style=\"text-align:center; border-right: none; border-left: none;\"><b>Qty</b></td>
-                                        <td width=\"10%\" align=\"center\" style=\"text-align:center; border-right: none; border-left: none;\"><b>Satuan</b></td>
-                                        <td width=\"10%\" align=\"center\" style=\"text-align:center; border-right: none; border-left: none;\"><b>Harga</b></td>
-                                        <td width=\"15%\" align=\"center\" style=\"text-align:center; border-right: none; border-left: none;\"><b>Diskon</b></td>
-                                        <td width=\"15%\" align=\"center\" style=\"text-align:center; border-left: none;\"><b>Total</b></td>
+                                        <td bgcolor=\"#cccccc\"  width=\"5%\" align=\"center\" style=\"text-align:center; \"><b>No</b></td>
+                                        <td bgcolor=\"#cccccc\"  width=\"15%\" align=\"center\" style=\"text-align:center; \"><b>Kode Barang</b></td>
+                                        <td bgcolor=\"#cccccc\"  width=\"15%\" align=\"center\" style=\"text-align:center; \"><b>Nama Barang</b></td>
+                                        <td bgcolor=\"#cccccc\"  width=\"10%\" align=\"center\" style=\"text-align:center; \"><b>Qty</b></td>
+                                        <td bgcolor=\"#cccccc\"  width=\"10%\" align=\"center\" style=\"text-align:center; \"><b>Satuan</b></td>
+                                        <td bgcolor=\"#cccccc\"  width=\"10%\" align=\"center\" style=\"text-align:center; \"><b>Harga</b></td>
+                                        <td bgcolor=\"#cccccc\"  width=\"15%\" align=\"center\" style=\"text-align:center; \"><b>Diskon</b></td>
+                                        <td bgcolor=\"#cccccc\"  width=\"15%\" align=\"center\" style=\"text-align:center;\"><b>Total</b></td>
                                    </tr>
                               </thead>";
       $no = 1;
@@ -583,14 +583,14 @@ class Pembelian_retur extends CI_Controller
       $ppna = $this->db->get_where('tbl_pajak', ['kodetax' => 'PPN'])->row_array();
       foreach ($detil as $db) {
         $chari .= "<tbody><tr>
-																<td style=\"text-align:center; border-right: none; border-bottom: none; border-top: none; border-left: none;\">" . $no++ . "</td>
-																<td style=\"text-align:left; border-right: none; border-bottom: none; border-top: none; border-left: none;\">$db->kodebarang</td>
-																<td style=\"text-align:left; border-right: none; border-bottom: none; border-top: none; border-left: none;\">$db->namabarang</td>
-																<td style=\"text-align:right; border-right: none; border-bottom: none; border-top: none; border-left: none;\">" . number_format($db->qty_retur) . "</td>
-																<td style=\"text-align:right; border-right: none; border-bottom: none; border-top: none; border-left: none;\">" . $db->satuan . "</td>
-																<td style=\"text-align:right; border-right: none; border-bottom: none; border-top: none; border-left: none;\">" . number_format($db->price) . "</td>
-																<td style=\"text-align:right; border-right: none; border-bottom: none; border-top: none; border-left: none;\">" . number_format($db->discountrp) . "</td>
-																<td style=\"text-align:right; border-left: none; border-bottom: none; border-top: none; border-right: none;\">" . number_format($db->totalrp) . "</td>
+																<td style=\"text-align:center; border-bottom: none; border-top: none; \">" . $no++ . "</td>
+																<td style=\"text-align:left; border-bottom: none; border-top: none; \">$db->kodebarang</td>
+																<td style=\"text-align:left; border-bottom: none; border-top: none; \">$db->namabarang</td>
+																<td style=\"text-align:right; border-bottom: none; border-top: none; \">" . number_format($db->qty_retur) . "</td>
+																<td style=\"text-align:right; border-bottom: none; border-top: none; \">" . $db->satuan . "</td>
+																<td style=\"text-align:right; border-bottom: none; border-top: none; \">" . number_format($db->price) . "</td>
+																<td style=\"text-align:right; border-bottom: none; border-top: none; \">" . number_format($db->discountrp) . "</td>
+																<td style=\"text-align:right; border-bottom: none; border-top: none; \">" . number_format($db->totalrp) . "</td>
 													 </tr></tbody>";
         $subtotal += ($db->qty_retur * $db->price);
         $diskon += ($db->discountrp);

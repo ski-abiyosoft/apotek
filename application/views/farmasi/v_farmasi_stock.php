@@ -6,7 +6,7 @@ $this->load->view('template/body');
 <div class="row">
     <div class="col-md-12">
         <h3 class="page-title">
-            <span class="title-unit">&nbsp;<?php echo $this->session->userdata('unit'); ?> </span>&nbsp;- <span class="title-web">Farmasi <small>Daftar Stok</small>
+            <span class="title-unit">&nbsp;<?php echo $this->session->userdata('unit'); ?> </span>&nbsp;- <span class="title-web">APOTEK <small>Daftar Stok</small>
         </h3>
         <ul class="page-breadcrumb breadcrumb">
             <li>

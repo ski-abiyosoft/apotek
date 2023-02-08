@@ -10,7 +10,7 @@
         &nbsp;<?php echo $this->session->userdata('unit'); ?>
       </span>
       &nbsp;-
-      <span class="title-web">Farmasi <small>Retur Pembelian</small>
+      <span class="title-web">APOTEK <small>Retur Pembelian</small>
     </h3>
     <ul class="page-breadcrumb breadcrumb">
       <li>

@@ -130,9 +130,10 @@ foreach ($header as $rowh) {
                                     <div class="form-group">
                                         <label class="col-md-3 control-label">Gudang</label>
                                         <div class="col-md-6">
-                                            <?php $sql = $this->db->query("SELECT * FROM tbl_depo WHERE depocode = '$rowh->gudang'")->row(); ?>
-                                            <input type="text" id="gudangx" value="<?= $sql->keterangan; ?>" name="gudangx" class="form-control  input-large" readonly>
+
                                             <input type="hidden" id="gudang" value="<?= $rowh->gudang; ?>" name="gudang" class="form-control  input-large" readonly>
+                                            <?php $depo = $this->db->get_where("tbl_depo", ['depocode' => $rowh->gudang])->row(); ?>
+                                            <input id="gudangq" value="<?= $depo->keterangan; ?>" name="gudangq" class="form-control  input-large" readonly>
 
 
                                         </div>
@@ -166,7 +167,7 @@ foreach ($header as $rowh) {
                                             <th class="title-white" width="10%" style="text-align: center">Satuan</th>
                                             <th class="title-white" width="15%" style="text-align: center">Harga</th>
                                             <th class="title-white" width="5%" style="text-align: center">Tax</th>
-                                            <!-- <th class="title-white" style="text-align: center"></th> -->
+                                            <th class="title-white" style="text-align: center"></th>
                                             <th class="title-white" width="5%" style="text-align: center">Diskon %</th>
                                             <th class="title-white" style="text-align: center">Diskon Rp</th>
                                             <th class="title-white" width="15%" style="text-align: center">Total Harga
@@ -189,25 +190,25 @@ foreach ($header as $rowh) {
                                                         <input name="qty[]" value="<?php echo number_format($row->qty_retur); ?>" onchange="totalline(<?php echo $no; ?>);total();cekqty(<?= $no ?>)" id="qty<?php echo $no; ?>" type="text" class="form-control rightJustified">
                                                     </td>
                                                     <td>
-                                                        <input name="sat[]" value="<?php echo $row->satuan; ?>" id="sat<?php echo $no; ?>" type="text" class="form-control " onkeypress="return tabE(this,event)" readonly>
+                                                        <input name="sat[]" value="<?php echo $row->satuan; ?>" id="sat<?php echo $no; ?>" type="text" class="form-control " onkeypress="return tabE(this,event)">
                                                     </td>
                                                     <td>
-                                                        <input name="harga[]" value="<?= number_format($row->price); ?>" onchange="totalline(<?php echo $no; ?>);total()" id="harga<?php echo $no; ?>" type="text" class="form-control rightJustified" readonly>
+                                                        <input name="harga[]" value="<?= number_format($row->price, 2); ?>" onchange="totalline(<?php echo $no; ?>);total()" id="harga<?php echo $no; ?>" type="text" class="form-control rightJustified">
                                                     </td>
                                                     <td>
                                                         <input type="checkbox" <?= ($row->tax == 1 ? 'checked' : '') ?> name="tax[]" value='<?= $row->tax; ?>' id="tax<?= $no ?>" class="form-control" onchange="totalline(<?= $no ?>);total();">
                                                     </td>
-                                                    <!-- <td>
+                                                    <td>
                                                         <a class="btn default" id="lupharga<?php echo $no; ?>" data-toggle="modal" href="#lupharga" onclick="getidharga(this.id)" disabled><i class="fa fa-search"></i></a>
-                                                    </td> -->
+                                                    </td>
                                                     <td>
                                                         <input name="disc[]" value="<?php echo number_format($row->discount); ?>" onchange="totalline(<?php echo $no; ?>);total();cekdisc(<?= $no ?>)" id="disc<?php echo $no; ?>" type="text" class="form-control rightJustified ">
                                                     </td>
                                                     <td>
-                                                        <input name="discrp[]" onchange="totalline(<?= $no ?>);total();cekdiscrp(<?= $no ?>)" value="<?php echo number_format($row->discountrp); ?>" id="discrp<?= $no ?>" type="text" class="form-control rightJustified ">
+                                                        <input name="discrp[]" onchange="totalline(<?= $no ?>);total();cekdiscrp(<?= $no ?>)" value="<?php echo number_format($row->discountrp, 2); ?>" id="discrp<?= $no ?>" type="text" class="form-control rightJustified ">
                                                     </td>
                                                     <td>
-                                                        <input name="jumlah[]" id="jumlah<?php echo $no; ?>" value="<?= number_format($row->totalrp) ?>" type="text" class="form-control rightJustified" size="40%" onchange="total()" readonly>
+                                                        <input name="jumlah[]" id="jumlah<?php echo $no; ?>" value="<?= number_format($row->totalrp, 2) ?>" type="text" class="form-control rightJustified" size="40%" onchange="total()">
                                                     </td>
 
                                                 </tr>
@@ -351,13 +352,13 @@ $this->load->view('template/footer');
             ")' value='0'  type='text' class='form-control rightJustified' readonly>";
         td5.innerHTML = "<input name='tax[]'  id=tax" + idrow + " onchange='totalline(" + idrow +
             ");total()' value='0' type='checkbox' class='form-control rightJustified'>";
-        // td6.innerHTML = "<a class='btn default' id=lupharga" + idrow +
-        //     " data-toggle='modal' href='#lupharga' onclick='getidharga(this.id)'><i class='fa fa-search'></i></a> ";
-        td6.innerHTML = "<input name='disc[]'   id=disc" + idrow + " onchange='totalline(" + idrow + ");total();cekdisc(" +
+        td6.innerHTML = "<a class='btn default' id=lupharga" + idrow +
+            " data-toggle='modal' href='#lupharga' onclick='getidharga(this.id)'><i class='fa fa-search'></i></a> ";
+        td7.innerHTML = "<input name='disc[]'   id=disc" + idrow + " onchange='totalline(" + idrow + ");total();cekdisc(" +
             idrow + ")' value='0'  type='text' class='form-control rightJustified'  >";
-        td7.innerHTML = "<input name='discrp[]'   id=discrp" + idrow + " onchange='totalline(" + idrow + ");cekdiscrp(" +
+        td8.innerHTML = "<input name='discrp[]'   id=discrp" + idrow + " onchange='totalline(" + idrow + ");cekdiscrp(" +
             idrow + ")' value='0'  type='text' class='form-control rightJustified'  >";
-        td8.innerHTML = "<input name='jumlah[]' id=jumlah" + idrow + " type='text' class='form-control rightJustified' readonly>";
+        td9.innerHTML = "<input name='jumlah[]' id=jumlah" + idrow + " type='text' class='form-control rightJustified'>";
         initailizeSelect2_log_baranggud(gud);
         idrow++;
     }
@@ -370,9 +371,9 @@ $this->load->view('template/footer');
             var hargax = $('#harga' + id).val();
             var harga = Number(parseInt(hargax.replaceAll(',', '')));
             discountrp = qty * harga * disc / 100;
-            $('#discrp' + id).val(separateComma(discountrp));
+            $('#discrp' + id).val(formatCurrency1(discountrp));
             jumlah = qty * harga - discountrp;
-            $('#jumlah' + id).val(separateComma(jumlah));
+            $('#jumlah' + id).val(formatCurrency1(jumlah));
             totalline(id);
         } else {
             var qtyx = $('#qty' + id).val();
@@ -382,7 +383,7 @@ $this->load->view('template/footer');
             var discrpx = $('#discrp' + id).val();
             var discrp = Number(parseInt(discrpx.replaceAll(',', '')));
             jumlah = qty * harga - discrp;
-            $('#jumlah' + id).val(separateComma(jumlah));
+            $('#jumlah' + id).val(formatCurrency1(jumlah));
             totalline(id);
         }
     }
@@ -399,10 +400,10 @@ $this->load->view('template/footer');
         if (disc == 0) {
             $("#discrp" + id).val(separateComma(0));
         } else {
-            $("#discrp" + id).val(separateComma(discrp));
+            $("#discrp" + id).val(formatCurrency1(discrp));
         }
         jumlah = qty * harga - discrp;
-        $('#jumlah' + id).val(separateComma(jumlah));
+        $('#jumlah' + id).val(formatCurrency1(jumlah));
         total();
     }
 
@@ -414,10 +415,10 @@ $this->load->view('template/footer');
         var discrpx = $("#discrp" + id).val();
         var discrp = Number(parseInt(discrpx.replaceAll(',', '')));
         $("#disc" + id).val(0);
-        $("#discrp" + id).val(separateComma(discrp));
+        $("#discrp" + id).val(formatCurrency1(discrp));
         tot = qty * harga - discrp;
         // console.log(tot)
-        $('#jumlah' + id).val(separateComma(tot));
+        $('#jumlah' + id).val(formatCurrency1(tot));
         // total();
     }
 
@@ -470,7 +471,7 @@ $this->load->view('template/footer');
                 var discrpx = $('#discrp' + id).val();
                 var discrp = Number(parseInt(discrpx.replaceAll(',', '')));
                 var jumlah = Number(parseInt(qty.replaceAll(',', ''))) * data.hargabelippn - discrp;
-                $('#jumlah' + id).val(separateComma(jumlah));
+                $('#jumlah' + id).val(formatCurrency1(jumlah));
                 totalline(vid);
             }
         });
@@ -689,9 +690,9 @@ $this->load->view('template/footer');
             var diskon1 = Number(diskon.replace(/[^0-9\.]+/g, ""));
             var diskon2 = Number(diskonrp.replace(/[^0-9\.]+/g, ""));
             var subtotal1 = Number(subtotal.replace(/[^0-9\.]+/g, ""));
-            // row.cells[3].children[0].value = (separateComma(harga1));
-            // row.cells[7].children[0].value = (separateComma(jumlah1 * harga1 * diskon1/100));
-            // row.cells[8].children[0].value = (separateComma(jumlah1 * harga1 - diskon2));
+            // row.cells[3].children[0].value = (formatCurrency1(harga1));
+            // row.cells[7].children[0].value = (formatCurrency1(jumlah1 * harga1 * diskon1/100));
+            // row.cells[8].children[0].value = (formatCurrency1(jumlah1 * harga1 - diskon2));
             // var subtotal1 = jumlah1 * harga1;
 
 

@@ -34,7 +34,7 @@
 
   <script type="text/javascript" src="<?php echo base_url(); ?>assets/js/signature-pad.js"></script>
 
-  <!-- <style>
+  <style>
     .select2-selection--single {
       height: 100% !important;
     }
@@ -44,7 +44,7 @@
       text-overflow: inherit !important;
       white-space: normal !important;
     }
-  </style> -->
+  </style>
 
   <style>
     .select2_el_icdind-container {

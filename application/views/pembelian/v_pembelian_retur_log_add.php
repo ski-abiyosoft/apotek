@@ -162,7 +162,7 @@ $this->load->view('template/body');
                                                 <th class="title-white" width="5%" style="text-align: center">
                                                     Tax
                                                 </th>
-                                                <!-- <th class="title-white" width="5%" style="text-align: center"></th> -->
+                                                <th class="title-white" width="5%" style="text-align: center"></th>
                                                 <th class="title-white" width="5%" style="text-align: center">
                                                     Diskon
                                                 </th>
@@ -195,11 +195,11 @@ $this->load->view('template/body');
                                                     <td>
                                                         <input type="checkbox" name="tax[]" value='0' id="tax1" class="form-control" onchange="totalline(1);total();">
                                                     </td>
-                                                    <!-- <td>
+                                                    <td>
                                                         <a class="btn default" id="lupharga1" data-toggle="modal" href="#lupharga" onclick="getidharga(this.id)">
                                                             <i class="fa fa-search"></i>
                                                         </a>
-                                                    </td> -->
+                                                    </td>
                                                     <td>
                                                         <input name="disc[]" onchange="totalline(1);total();cekdisc(1)" value="0" id="disc1" type="text" class="form-control rightJustified ">
                                                     </td>
@@ -369,12 +369,12 @@ $this->load->view('template/footer');
         td3.innerHTML = "<input name='sat[]'    id=sat" + idrow + " type='text' class='form-control' readonly >";
         td4.innerHTML = "<input name='harga[]'  id=harga" + idrow + " onchange='totalline(" + idrow + ")' value='0'  type='text' class='form-control rightJustified' readonly>";
         td5.innerHTML = "<input name='tax[]'  id=tax" + idrow + " onchange='totalline(" + idrow + ");total()' value='0' type='checkbox' class='form-control rightJustified'>";
-        td6.innerHTML = "<input name='disc[]'   id=disc" + idrow + " onchange='totalline(" + idrow + ");cekdisc(" + idrow + ")' value='0'  type='text' class='form-control rightJustified'  >";
-        td7.innerHTML = "<input name='discrp[]'   id=discrp" + idrow + " onchange='totalline(" + idrow + "); cekdiscrp(" + idrow + ")' value='0'  type='text' class='form-control rightJustified'  >";
-        td8.innerHTML = "<input name='jumlah[]' id=jumlah" + idrow + " type='text' class='form-control rightJustified'>";
+        td6.innerHTML = "<a class='btn default' id=lupharga" + idrow + " data-toggle='modal' href='#lupharga' onclick='getidharga(this.id)'><i class='fa fa-search'></i></a> ";
+        td7.innerHTML = "<input name='disc[]'   id=disc" + idrow + " onchange='totalline(" + idrow + ");cekdisc(" + idrow + ")' value='0'  type='text' class='form-control rightJustified'  >";
+        td8.innerHTML = "<input name='discrp[]'   id=discrp" + idrow + " onchange='totalline(" + idrow + "); cekdiscrp(" + idrow + ")' value='0'  type='text' class='form-control rightJustified'  >";
+        td9.innerHTML = "<input name='jumlah[]' id=jumlah" + idrow + " type='text' class='form-control rightJustified'>";
         initailizeSelect2_log_baranggud(gud);
         idrow++;
-        // td6.innerHTML = "<a class='btn default' id=lupharga" + idrow + " data-toggle='modal' href='#lupharga' onclick='getidharga(this.id)'><i class='fa fa-search'></i></a> ";
     }
 
     function cekqty(id) {
@@ -672,12 +672,12 @@ $this->load->view('template/footer');
         var qty = Number(parseInt(qtyx.replaceAll(',', '')));
         var hargax = $("#harga" + id).val();
         var harga = Number(parseInt(hargax.replaceAll(',', '')));
-        var discx = $("#disc" + id).val();
-        var disc = Number(parseInt(discx.replaceAll(',', '')));
+        var discrpx = $("#discrp" + id).val();
+        var discrp = Number(parseInt(discrpx.replaceAll(',', '')));
+        $("#disc" + id).val(0);
+        $("#discrp" + id).val(separateComma(discrp));
         var subtotal = qty * harga;
-        var diskon = subtotal * disc / 100;
-        $("#discrp" + id).val(separateComma(diskon));
-        var jumlah = subtotal - diskon;
+        var jumlah = subtotal - discrp;
         $('#jumlah' + id).val(separateComma(jumlah));
         total();
     }
@@ -925,12 +925,12 @@ $this->load->view('template/footer');
                         $('#kode' + x).append(option).trigger('change');
 
                         document.getElementById("kode" + x).value = data[i].kodebarang;
-                        document.getElementById("qty" + x).value = separateComma(Number(data[i].qty_terima));
+                        document.getElementById("qty" + x).value = separateComma(data[i].qty_terima);
                         document.getElementById("sat" + x).value = data[i].satuan;
-                        document.getElementById("harga" + x).value = separateComma(Number(data[i].price));
+                        document.getElementById("harga" + x).value = separateComma(data[i].price);
                         // document.getElementById("disc" + x).value = data[i].discount;
                         document.getElementById("disc" + x).value = data[i].discount;
-                        document.getElementById("discrp" + x).value = separateComma(Number(data[i].discountrp));
+                        document.getElementById("discrp" + x).value = separateComma(data[i].discountrp);
                         jumlah = data[i].qty_terima * data[i].price - data[i].discountrp;
                         document.getElementById("jumlah" + x).value = separateComma(jumlah);
                         if (data[i].vat == 1) {

@@ -80,7 +80,7 @@ $this->load->view('template/body');
         <h3 class="page-title">
             <span class="title-unit">&nbsp;<?php echo $this->session->userdata('unit'); ?> </span>&nbsp;
             -
-            <span class="title-web">Farmasi <small>Stock Opname</small>
+            <span class="title-web">APOTEK <small>Stock Opname</small>
         </h3>
         <ul class="page-breadcrumb breadcrumb">
             <li>

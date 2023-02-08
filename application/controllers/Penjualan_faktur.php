@@ -608,14 +608,14 @@ class Penjualan_faktur extends CI_Controller{
 				// detail 
 				$body .= "<table style=\"border-collapse:collapse;font-family: tahoma; font-size:12px\" width=\"100%\" align=\"center\" border=\"1\" cellpadding=\"5\" cellmargin=\"5\">";
 				$body .= "<tr>
-					<th>No</th>
-					<th>Kode Obat</th>
-					<th>Nama Obat</th>
-					<th>Jenis Tr</th>
-					<th>Jumlah</th>
-					<th>Harga Satuan</th>
-					<th>Diskon</th>
-					<th>Total Rp</th>
+					<th bgcolor=\"#cccccc\">No</th>
+					<th bgcolor=\"#cccccc\">Kode Obat</th>
+					<th bgcolor=\"#cccccc\">Nama Obat</th>
+					<th bgcolor=\"#cccccc\">Jenis Tr</th>
+					<th bgcolor=\"#cccccc\">Jumlah</th>
+					<th bgcolor=\"#cccccc\">Harga Satuan</th>
+					<th bgcolor=\"#cccccc\">Diskon</th>
+					<th bgcolor=\"#cccccc\">Total Rp</th>
 				</tr>";
 				// isi resep
 				$no = 1;

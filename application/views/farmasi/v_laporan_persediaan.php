@@ -10,7 +10,7 @@ $this->load->view('template/body');
                     &nbsp;<?php echo $this->session->userdata('unit'); ?>
                </span>
                -
-               <span class="title-web">Farmasi <small>Laporan Persediaan</small>
+               <span class="title-web">APOTEK <small>Laporan Persediaan</small>
           </h3>
           <ul class="page-breadcrumb breadcrumb">
 

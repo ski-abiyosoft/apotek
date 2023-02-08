@@ -87,7 +87,7 @@ tbody.scrollContent tr.alternateRow td {
                     &nbsp;<?php echo $this->session->userdata('unit'); ?>
                 </span>
                 -
-                <span class="title-web">Farmasi <small>Produksi</small>
+                <span class="title-web">APOTEK <small>Produksi</small>
             </h3>
             <ul class="page-breadcrumb breadcrumb">
 

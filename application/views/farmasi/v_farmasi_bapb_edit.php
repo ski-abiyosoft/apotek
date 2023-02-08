@@ -316,7 +316,7 @@ $this->load->view('template/body');
                             <button type='button' onclick='hapusBarisIni(<?= $no; ?>); total();' class='btn red'><i class='fa fa-trash-o'></i></button>
                           </td> -->
                           <td width="15%">
-                            <select name="kode[]" id="kode<?= $no; ?>" class="select2_el_farmasi_barangdata form-control input-largex" onchange="showbarangname(this.value, <?= $no; ?>)">
+                            <select name="kode[]" id="kode<?= $no; ?>" class="select2_el_farmasi_barangdata form-control input-medium" onchange="showbarangname(this.value, <?= $no; ?>)">
                               <option value="<?= $row->kodebarang; ?>"><?= $row->namabarang; ?>
                               </option>
                             </select>

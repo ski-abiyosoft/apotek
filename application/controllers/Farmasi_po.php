@@ -22,7 +22,7 @@ class Farmasi_po extends CI_Controller
 			$level = $this->session->userdata('level');
 			$akses = $this->M_global->cek_menu_akses($level, 3101);
 			$this->load->helper('url');
-			$data['modul'] = 'FARMASI';
+			$data['modul'] = 'APOTEK';
 			$data['submodul'] = 'Purchase Order/PO';
 			$data['link'] = 'Purchase Order/PO';
 			$data['url'] = 'farmasi_po';
@@ -41,7 +41,7 @@ class Farmasi_po extends CI_Controller
 			$level = $this->session->userdata('level');
 			$akses = $this->M_global->cek_menu_akses($level, 3101);
 			$this->load->helper('url');
-			$data['modul']    = 'FARMASI';
+			$data['modul']    = 'APOTEK';
 			$data['submodul'] = 'Purchase Order/PO';
 			$data['link']     = 'Purchase Order/PO';
 			$data['url']      = 'farmasi_po';
@@ -62,7 +62,7 @@ class Farmasi_po extends CI_Controller
 			$level            = $this->session->userdata('level');
 			$akses            = $this->M_global->cek_menu_akses($level, 3101);
 			$this->load->helper('url');
-			$data['modul']    = 'FARMASI';
+			$data['modul']    = 'APOTEK';
 			$data['submodul'] = 'Purchase Order/PO';
 			$data['link']     = 'Purchase Order/PO';
 			$data['url']      = 'farmasi_po';
@@ -190,7 +190,7 @@ class Farmasi_po extends CI_Controller
 			$level            = $this->session->userdata('level');
 			$akses            = $this->M_global->cek_menu_akses($level, 3101);
 			$this->load->helper('url');
-			$data['modul']    = 'FARMASI';
+			$data['modul']    = 'APOTEK';
 			$data['submodul'] = 'Purchase Order/PO';
 			$data['link']     = 'Purchase Order/PO';
 			$data['url']      = 'farmasi_po';

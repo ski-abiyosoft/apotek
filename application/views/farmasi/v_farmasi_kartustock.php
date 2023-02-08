@@ -10,7 +10,7 @@ $this->load->view('template/body');
                 &nbsp;<?php echo $this->session->userdata('unit'); ?>
             </span>
             -
-            <span class="title-web">Farmasi <small>Kartu Stock</small>
+            <span class="title-web">APOTEK <small>Kartu Stock</small>
         </h3>
         <ul class="page-breadcrumb breadcrumb">
 
