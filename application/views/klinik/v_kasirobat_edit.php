@@ -520,7 +520,7 @@
 												</tr>
 												<tr>
 												  <td>TOTAL TUNAI RP</td>												  
-												  <td><input type="text" class="form-control rightJustified" name="totaltunairp" id="totaltunairp" value="<?= $kasir->bayarcash;?>" onchange="total_net()" ></td>
+												  <td><input type="text" class="form-control rightJustified" name="totaltunairp" id="totaltunairp" readonly value="<?= number_format($kasir->bayarcash, 2, '.', ',') ?>" onchange="total_net()" ></td>
 												  
 												</tr>
 												<tr>
@@ -530,7 +530,7 @@
 												</tr>
 												<tr>
 													<td>KEMBALI RP</td>												  
-													<td><input type="text" class="form-control total rightJustified" name="kembalirp" id="kembalirp" value="<?= $kasir->kembali;?>" readonly></td>
+													<td><input type="text" class="form-control total rightJustified" name="kembalirp" id="kembalirp" value="<?= number_format($kasir->kembali, 2, '.', ',') ?>" readonly></td>
 													<td style="border-top:none;">
 														<span id="pertanyaan">Auto ke uang muka</span></td>
 													<td style="border-top:none;" width="10%">
@@ -554,7 +554,7 @@
 								   
 									<!--button id="btnsimpan_bayar" type="button" onclick="save_bayar()" class="btn blue"><i class="fa fa-save"></i> UPDATE</button-->
 									<a class="btn yellow print_laporan" onclick="javascript:window.open(_urlcetak(1),'_blank');" ><i class="fa fa-print"></i> CETAK KWITANSI</a>
-									<a class="btn yellow print_laporan" id="btncetak_jaminan" onclick="javascript:window.open(_urlcetak(2),'_blank');" ><i class="fa fa-print"></i> CETAK JAMINAN</a>
+									<!-- <a class="btn yellow print_laporan" id="btncetak_jaminan" onclick="javascript:window.open(_urlcetak(2),'_blank');" ><i class="fa fa-print"></i> CETAK JAMINAN</a> -->
                                        									
 									<a href="<?= base_url('kasir_obat')?>" class="btn btn red">TUTUP</a>
 									<h4><span id="error" style="display:none; color:#F00">Terjadi Kesalahan... </span> <span id="success" style="display:none; color:#0C0">Data sudah disimpan...</span></h4>								

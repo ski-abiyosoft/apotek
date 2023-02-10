@@ -201,7 +201,8 @@ $umur          = $age_interval->y . ' Tahun ' . $age_interval->m . ' Bulan ' . $
             <div class="tab-pane active" id="tab1">
               <div class="row">
                 <div class="col-md-12">
-                  <div style="display:block;overflow:auto;white-space:nowrap;">
+                  <!-- <div style="display:block;overflow:auto;white-space:nowrap;"> -->
+                  <div class="table table-hoverx table-stripedx table-borderedx table-condensed table-scrollable">
                     <table id="datatable" class="table table-bordered" style="width:150%">
                       <thead class="page-breadcrumb breadcrumb">
                         <th class="title-white" width="5%" style="text-align: center">Hapus</th>
@@ -290,8 +291,8 @@ $umur          = $age_interval->y . ' Tahun ' . $age_interval->m . ' Bulan ' . $
                               </select>
                             </td>
                             <td>
-                                <input name="expire[]" onchange="totalline(1);total()" value="" id="expire1" type="date" class="form-control">
-                              </td>
+                              <input name="expire[]" onchange="totalline(1);total()" value="" id="expire1" type="date" class="form-control">
+                            </td>
                           </tr>
                         <?php } ?>
                       </tbody>

@@ -417,8 +417,9 @@ class Pembelian_retur extends CI_Controller
 
   public function cetak()
   {
-    $cek = $this->session->userdata('level');
-    $unit = $this->session->userdata('unit');
+    $cek    = $this->session->userdata('level');
+    $unit   = $this->session->userdata('unit');
+    $avatar = $this->session->userdata('avatar_cabang');
     if (!empty($cek)) {
       $unit = $this->session->userdata('unit');
       $kop       = $this->M_cetak->kop($unit);
@@ -447,7 +448,7 @@ class Pembelian_retur extends CI_Controller
                          <thead>
                               <tr>
                                    <td rowspan=\"6\" align=\"center\">
-                                        <img src=\"" . base_url() . "assets/img/logo.png\"  width=\"70\" height=\"70\" />
+                                   <img src=\"" . base_url() . "assets/img_user/$avatar\"  width=\"70\" height=\"70\" />
                                    </td>
                                    <td colspan=\"20\">
                                         <b>

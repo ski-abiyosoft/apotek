@@ -529,13 +529,15 @@ class Farmasi_bapb extends CI_Controller
 			$cekq  = $this->db->query('select * from tbl_barang where kodebarang = "' . $kode . '"')->result();
 			foreach ($cekq as $cq) {
 				if($harga > $cq->hargabeli){
-					if ($cq->vat == 1) {
-						$hargabarang = $harga;
-						$hargappn = $harga * $ppn['prosentase'] / 100 + $harga;
-					} else {
-						$hargabarang = $harga;
-						$hargappn = $harga;
-					}
+					$hargabarang = $harga;
+					$hargappn = $harga * $ppn['prosentase'] / 100 + $harga;
+					// if ($cq->vat == 1) {
+					// 	$hargabarang = $harga;
+					// 	$hargappn = $harga * $ppn['prosentase'] / 100 + $harga;
+					// } else {
+					// 	$hargabarang = $harga;
+					// 	$hargappn = $harga;
+					// }
 					$this->db->set('hargabeli', $hargabarang);
 					$this->db->set('hargabelippn', $hargappn);
 					$this->db->where('kodebarang', $kode);

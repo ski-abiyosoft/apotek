@@ -110,13 +110,13 @@ $this->load->view('template/body');
                     <!-- <label>Gudang  : </label>
                         <select class="form-control input-large select2_el_farmasi_depo" id="gudang" name="gudang" onchange="getsogudang()"></select> -->
                     <div class="row" style="margin-bottom: 30px;">
-                        <div class="col-md-6">
+                        <div class="col-md-4">
                             <div class="row">
                                 <div class="col-md-6">
                                     <label>Gudang</label>
                                 </div>
                                 <div class="col-md-6">
-                                    <select class="form-control input-large" id="gudang" name="gudang" onchange="getsogudang(); getstokgudang();" style="margin-top:-7px;">
+                                    <select class="form-control input-large" id="gudang" name="gudang" onchange="getsogudang();" style="margin-top:-7px;">
                                         <option value="">-- Pilih --</option>
                                         <?php $sql = $this->db->query('SELECT depocode as id, keterangan as text from tbl_depo')->result(); ?>
                                         <?php foreach ($sql as $s) : ?>
@@ -127,7 +127,7 @@ $this->load->view('template/body');
                             </div>
                         </div>
                     </div>
-                    <div class="row">
+                    <!-- <div class="row">
                         <div class="col-md-6">
                             <div class="row">
                                 <div class="col-md-6">
@@ -141,7 +141,7 @@ $this->load->view('template/body');
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    </div> -->
                 </div>
             </div>
 

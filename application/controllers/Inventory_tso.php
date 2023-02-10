@@ -145,12 +145,12 @@ class Inventory_tso extends CI_Controller
 				$row[] = date('d/m/Y', strtotime($item->tglso));
 
 				$kode  		= $item->kodebarang;
-				$nama  		= $this->M_global->_data_barang($item->kodebarang)->namabarang;
-				$satuanbrg  = $this->M_global->_data_barang($item->kodebarang)->satuan1;
+				// $nama  		= $this->M_global->_data_barang($item->kodebarang)->namabarang;
+				// $satuanbrg  = $this->M_global->_data_barang($item->kodebarang)->satuan1;
 
 				$row[] = $item->kodebarang;
-				$row[] = $nama;
-				$row[] = $satuanbrg;
+				$row[] = $item->kodebarang;
+				$row[] = $item->kodebarang;
 				// if($item->saldo !=0){
 				// 	$row[] = number_format($item->saldo,0,',','.');						
 				// }
@@ -167,18 +167,21 @@ class Inventory_tso extends CI_Controller
 					// <a class="btn btn-sm btn-primary" href="javascript:void(0)" title="Edit" onclick="edit_data(' . "'" . $item->id . "'" . ')"><i class="glyphicon glyphicon-edit"></i></a>
 					// ';
 					if ($userid != $item->yangubah) {
-						$cek = $this->db->query("SELECT * FROM tbl_barangstock JOIN tbl_aposesuai ON tbl_barangstock.kodebarang=tbl_aposesuai.kodebarang WHERE tbl_barangstock.kodebarang = '$item->kodebarang' AND tbl_barangstock.koders = '$cabang' and menyetujui = '$userid' GROUP BY tbl_barangstock.id DESC")->row_array();
-						if ($userid == $cek['menyetujui']) {
-							if ($item->approve != 1) {
-								if($user_level==0){
-				
-									$row[] = 
-									'';
-										
-								}else{
-									$row[] = '<a class="btn btn-sm btn-info" href="javascript:void(0)" title="Approve" onclick="approve(' . "'" . $item->id . "'" . ",'" . $item->kodebarang . "'" . ')"><i class="glyphicon glyphicon-check"></i></a> ';
+						$cek = $this->db->query("SELECT * FROM tbl_barangstock JOIN tbl_aposesuai ON tbl_barangstock.kodebarang = tbl_aposesuai.kodebarang WHERE tbl_barangstock.kodebarang = '$item->kodebarang' AND tbl_barangstock.koders = '$cabang' and menyetujui = '$userid' GROUP BY tbl_barangstock.id DESC")->row();
+						if($cek) {
+							if ($userid == $cek->menyetujui) {
+								if ($item->approve != 1) {
+									if($user_level==0){
+					
+										$row[] = '';
+											
+									}else{
+										$row[] = '<a class="btn btn-sm btn-info" href="javascript:void(0)" title="Approve" onclick="approve(' . "'" . $item->id . "'" . ",'" . $item->kodebarang . "'" . ')"><i class="glyphicon glyphicon-check"></i></a> ';
+									}
+									
+								} else {
+									$row[] = '';
 								}
-								
 							} else {
 								$row[] = '';
 							}

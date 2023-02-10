@@ -1063,6 +1063,224 @@ class Laporan_persediaan extends CI_Controller
           }
      }
 
+     function tes_lap() {
+          $cekpdf        = $this->input->get('pdf');
+          $dari          = $this->input->get('dari');
+          $sampai        = $this->input->get('sampai');
+          $da            = $this->input->get('da');
+          $gudang        = $this->input->get('depo');
+          $laporan       = $this->input->get('laporan');
+          $keperluan     = $this->input->get('keperluan');
+          $unit        = $this->session->userdata('unit');
+          $kop           = $this->M_cetak->kop($unit);
+          $avatar        = $this->session->userdata('avatar_cabang');
+          $namars        = $kop['namars'];
+          $alamat        = $kop['alamat'];
+          $alamat2       = $kop['alamat2'];
+          $kota          = $kop['kota'];
+          $phone         = $kop['phone'];
+          $whatsapp      = $kop['whatsapp'];
+          $npwp          = $kop['npwp'];
+          $chari         = '';
+          $judul = 'apa aja';
+          $chari .= "<table style=\"border-collapse:collapse;font-family: Century Gothic; font-size:12px; color:#000;\" width=\"100%\"  border=\"0\" cellspacing=\"0\" cellpadding=\"0\">
+               <tr>
+                    <td rowspan=\"6\" align=\"center\">
+                         <img src=\"" . base_url() . "assets/img_user/$avatar\"  width=\"70\" height=\"70\" />
+                    </td>
+                    <td colspan=\"20\">
+                         <b>
+                              <tr>
+                                   <td style=\"font-size:10px;border-bottom: none;\"><b><br>$namars</b></td>
+                              </tr>
+                              <tr>
+                                   <td style=\"font-size:9px;\">$alamat</td>
+                              </tr>
+                              <tr>
+                                   <td style=\"font-size:9px;\">$alamat2</td>
+                              </tr>
+                              <tr>
+                                   <td style=\"font-size:9px;\">Wa :$whatsapp    Telp :$phone </td>
+                              </tr>
+                              <tr>
+                                   <td style=\"font-size:9px;\">No. NPWP : $npwp</td>
+                              </tr>
+                         </b>
+                    </td>
+               </tr>
+          </table><br><br>";
+          $data1 = $this->db->query("SELECT * FROM tbl_barangstock WHERE koders = '$unit' AND gudang = '$gudang'")->result();
+          $chari .= "<table style=\"border-collapse:collapse;font-family: Tahoma; font-size:11px\" width=\"100%\" align=\"center\" border=\"1\" cellspacing=\"1\" cellpadding=\"3\">
+          <tr>
+               <td style=\"border:0\" align=\"center\"><br></td>
+          </tr>
+          <tr>
+               <td width=\"3%\" align=\"center\" rowspan=\"2\"><br>No</td>
+               <td width=\"4%\" align=\"center\" rowspan=\"2\"><br>Kode Barang</td>
+               <td width=\"4%\" align=\"center\" rowspan=\"2\"><br>Nama Barang</td>
+               <td width=\"4%\" align=\"center\" rowspan=\"2\"><br>Satuan</td>
+               <td width=\"4%\" align=\"center\" rowspan=\"2\"><br>Saldo Awal</td>
+               <td width=\"24%\" align=\"center\" colspan=\"5\"><br>Persediaan Masuk</td>
+               <td width=\"24%\" align=\"center\" colspan=\"7\"><br>Persediaan Keluar</td>
+               <td width=\"4%\" align=\"center\" rowspan=\"2\"><br>SO</td>
+               <td width=\"4%\" align=\"center\" rowspan=\"2\"><br>Saldo Akhir</td>
+               <td width=\"4%\" align=\"center\" rowspan=\"2\"><br>Hpp Average</td>
+               <td width=\"4%\" align=\"center\" rowspan=\"2\"><br>Total Persediaan</td>
+          </tr>
+          <tr>
+               <td width=\"4%\" align=\"center\"><br>Pembelian</td>
+               <td width=\"4%\" align=\"center\"><br>Mutasi In</td>
+               <td width=\"4%\" align=\"center\"><br>Produksi</td>
+               <td width=\"4%\" align=\"center\"><br>Retur Jual</td>
+               <td width=\"4%\" align=\"center\"><br>Total Masuk</td>
+               <td width=\"4%\" align=\"center\"><br>Jual</td>
+               <td width=\"4%\" align=\"center\"><br>Mutasi Out</td>
+               <td width=\"4%\" align=\"center\"><br>Retur Beli</td>
+               <td width=\"4%\" align=\"center\"><br>Bahan Produksi</td>
+               <td width=\"4%\" align=\"center\"><br>BHP</td>
+               <td width=\"4%\" align=\"center\"><br>Barang Expired</td>
+               <td width=\"4%\" align=\"center\"><br>Total Keluar</td>
+          </tr>";
+          $no = 1;
+          foreach($data1 as $d1) {
+               // JEDA
+               $beli1 = $this->db->query("SELECT IF(sum(d.qty_terima) > 0, sum(d.qty_terima), 0) as qty FROM tbl_baranghterima h JOIN tbl_barangdterima d ON h.terima_no = d.terima_no WHERE h.koders = '$d1->koders' AND h.gudang = '$d1->gudang' AND d.kodebarang = '$d1->kodebarang' AND h.terima_date < '$dari'")->row();
+               $mutasi_in1 = $this->db->query("SELECT IF(sum(d.qtymove) > 0, sum(d.qtymove), 0) as qty FROM tbl_apohmove h JOIN tbl_apodmove d ON d.moveno = h.moveno WHERE h.koders = '$d1->koders' AND h.dari = '$d1->gudang' AND d.kodebarang = '$d1->kodebarang' AND h.movedate < '$dari'")->row();
+               $produksi_jadi1 = $this->db->query("SELECT IF(sum(h.qtyjadi) > 0, sum(h.qtyjadi), 0) as qty FROM tbl_apohproduksi h JOIN tbl_apodproduksi d ON d.prdno = h.prdno WHERE h.koders = '$d1->koders' AND h.gudang = '$d1->gudang' AND d.kodebarang = '$d1->kodebarang' AND h.tglproduksi < '$dari'")->row();
+               $retur_jual1 = $this->db->query("SELECT IF(sum(d.qtyretur) > 0, sum(d.qtyretur), 0) as qty FROM tbl_apohreturjual h JOIN tbl_apodreturjual d ON d.returno = h.returno WHERE h.koders = '$d1->koders' AND h.gudang = '$d1->gudang' AND d.kodebarang = '$d1->kodebarang' AND h.tglretur < '$dari'")->row();
+               $jual1 = $this->db->query("SELECT IF(qty > 0, qty, 0) as qty FROM (
+                         SELECT SUM(qty) AS qty, kodebarang, gudang, koders
+                         FROM (
+                              SELECT d.kodebarang, SUM(d.qty) AS qty, h.gudang, h.koders 
+                              FROM tbl_apodresep d
+                              JOIN tbl_apohresep h ON d.resepno = h.resepno
+                              WHERE h.gudang = '$d1->gudang' AND h.koders = '$d1->koders'
+                              AND h.tglresep < '$dari'
+                              AND d.kodebarang = '$d1->kodebarang'
+                              
+                              UNION ALL 
+                              
+                              SELECT d.kodebarang, SUM(d.qty) AS qty, h.gudang, h.koders 
+                              FROM tbl_apodetresep d
+                              JOIN tbl_apohresep h ON d.resepno = h.resepno
+                              WHERE h.gudang = '$d1->gudang' AND h.koders = '$d1->koders'
+                              AND h.tglresep < '$dari'
+                              AND d.kodebarang = '$d1->kodebarang'
+                         ) AS j
+               ) beli")->row();
+               $mutasi_out1 = $this->db->query("SELECT IF(sum(d.qtymove) > 0, sum(d.qtymove), 0) as qty FROM tbl_apohmove h JOIN tbl_apodmove d ON d.moveno = h.moveno WHERE h.koders = '$d1->koders' AND h.ke = '$d1->gudang' AND d.kodebarang = '$d1->kodebarang' AND h.movedate < '$dari'")->row();
+               $retur_beli1 = $this->db->query("SELECT IF(sum(d.qty_retur) > 0, sum(d.qty_retur), 0) as qty FROM tbl_baranghreturbeli h JOIN tbl_barangdreturbeli d ON d.retur_no = h.retur_no WHERE h.koders = '$d1->koders' AND h.gudang = '$d1->gudang' AND d.kodebarang = '$d1->kodebarang' AND h.retur_date < '$dari'")->row();
+               $bhp1 = $this->db->query("SELECT IF(SUM(d.qty) > 0, SUM(d.qty), 0) as qty FROM tbl_apohpakai h JOIN tbl_apodpakai d ON h.nobhp = d.nobhp WHERE h.koders = '$d1->koders' AND h.gudang = '$d1->gudang' AND d.kodeobat = '$d1->kodebarang' AND h.tglbhp < '$dari'")->row();
+               $produksi_bahan = $this->db->query("SELECT IF(sum(d.qty) > 0, sum(d.qty), 0) as qty FROM tbl_apohproduksi h JOIN tbl_apodproduksi d ON d.prdno = h.prdno WHERE h.koders = '$d1->koders' AND h.gudang = '$d1->gudang' AND d.kodebarang = '$d1->kodebarang' AND h.tglproduksi < '$dari'")->row();
+               $expired1 = $this->db->query("SELECT IF(SUM(d.qty) > 0, SUM(d.qty), 0) as qty FROM tbl_apohex h JOIN tbl_apodex d ON d.ed_no = h.ed_no WHERE h.koders = '$d1->koders' AND h.gudang = '$d1->gudang' AND d.kodebarang = '$d1->kodebarang' AND h.tgl_ed < '$dari'")->row();
+
+               $total_masuk1 = ($beli1->qty + $mutasi_in1->qty + $produksi_jadi1->qty + $retur_jual1->qty);
+               $total_keluar1 = ($jual1->qty + $mutasi_out1->qty + $retur_beli1->qty + $produksi_bahan->qty + $bhp1->qty + $expired1->qty);
+               $total1 = $total_masuk1 - $total_keluar1;
+
+
+
+               // Saldo saat ini
+               $barang = $this->db->query("SELECT * FROM tbl_barang WHERE kodebarang = '$d1->kodebarang'")->row();
+
+               $beli = $this->db->query("SELECT IF(sum(d.qty_terima) > 0, sum(d.qty_terima), 0) as qty FROM tbl_baranghterima h JOIN tbl_barangdterima d ON h.terima_no = d.terima_no WHERE h.koders = '$d1->koders' AND h.gudang = '$d1->gudang' AND d.kodebarang = '$d1->kodebarang' AND h.terima_date >= '$dari' AND h.terima_date <= '$sampai'")->row();
+
+               $mutasi_in = $this->db->query("SELECT IF(sum(d.qtymove) > 0, sum(d.qtymove), 0) as qty FROM tbl_apohmove h JOIN tbl_apodmove d ON d.moveno = h.moveno WHERE h.koders = '$d1->koders' AND h.dari = '$d1->gudang' AND d.kodebarang = '$d1->kodebarang' AND h.movedate >= '$dari' AND h.movedate <= '$sampai'")->row();
+
+               $produksi_jadi = $this->db->query("SELECT IF(sum(h.qtyjadi) > 0, sum(h.qtyjadi), 0) as qty FROM tbl_apohproduksi h JOIN tbl_apodproduksi d ON d.prdno = h.prdno WHERE h.koders = '$d1->koders' AND h.gudang = '$d1->gudang' AND d.kodebarang = '$d1->kodebarang' AND h.tglproduksi >= '$dari' AND h.tglproduksi <= '$sampai'")->row();
+
+               $retur_jual = $this->db->query("SELECT IF(sum(d.qtyretur) > 0, sum(d.qtyretur), 0) as qty FROM tbl_apohreturjual h JOIN tbl_apodreturjual d ON d.returno = h.returno WHERE h.koders = '$d1->koders' AND h.gudang = '$d1->gudang' AND d.kodebarang = '$d1->kodebarang' AND h.tglretur >= '$dari' AND h.tglretur <= '$sampai'")->row();
+
+               $jual = $this->db->query("SELECT IF(qty > 0, qty, 0) as qty FROM (
+                    SELECT SUM(qty) AS qty, kodebarang, gudang, koders
+                    FROM (
+                         SELECT d.kodebarang, SUM(d.qty) AS qty, h.gudang, h.koders 
+                         FROM tbl_apodresep d
+                         JOIN tbl_apohresep h ON d.resepno = h.resepno
+                         WHERE h.gudang = '$d1->gudang' AND h.koders = '$d1->koders'
+                         AND h.tglresep >= '$dari' AND h.tglresep <= '$sampai'
+                         AND d.kodebarang = '$d1->kodebarang'
+                         
+                         UNION ALL 
+                         
+                         SELECT d.kodebarang, SUM(d.qty) AS qty, h.gudang, h.koders 
+                         FROM tbl_apodetresep d
+                         JOIN tbl_apohresep h ON d.resepno = h.resepno
+                         WHERE h.gudang = '$d1->gudang' AND h.koders = '$d1->koders'
+                         AND h.tglresep >= '$dari' AND h.tglresep <= '$sampai'
+                         AND d.kodebarang = '$d1->kodebarang'
+                    ) AS j
+               ) beli")->row();
+
+               $mutasi_out = $this->db->query("SELECT IF(sum(d.qtymove) > 0, sum(d.qtymove), 0) as qty FROM tbl_apohmove h JOIN tbl_apodmove d ON d.moveno = h.moveno WHERE h.koders = '$d1->koders' AND h.ke = '$d1->gudang' AND d.kodebarang = '$d1->kodebarang' AND h.movedate >= '$dari' AND h.movedate <= '$sampai'")->row();
+
+               $retur_beli = $this->db->query("SELECT IF(sum(d.qty_retur) > 0, sum(d.qty_retur), 0) as qty FROM tbl_baranghreturbeli h JOIN tbl_barangdreturbeli d ON d.retur_no = h.retur_no WHERE h.koders = '$d1->koders' AND h.gudang = '$d1->gudang' AND d.kodebarang = '$d1->kodebarang' AND h.retur_date >= '$dari' AND h.retur_date <= '$sampai'")->row();
+
+               $bhp = $this->db->query("SELECT IF(SUM(d.qty) > 0, SUM(d.qty), 0) as qty FROM tbl_apohpakai h JOIN tbl_apodpakai d ON h.nobhp = d.nobhp WHERE h.koders = '$d1->koders' AND h.gudang = '$d1->gudang' AND d.kodeobat = '$d1->kodebarang' AND h.tglbhp >= '$dari' AND h.tglbhp <= '$sampai'")->row();
+
+               $produksi_bahan = $this->db->query("SELECT IF(sum(d.qty) > 0, sum(d.qty), 0) as qty FROM tbl_apohproduksi h JOIN tbl_apodproduksi d ON d.prdno = h.prdno WHERE h.koders = '$d1->koders' AND h.gudang = '$d1->gudang' AND d.kodebarang = '$d1->kodebarang' AND h.tglproduksi >= '$dari' AND h.tglproduksi <= '$sampai'")->row();
+
+               $expired = $this->db->query("SELECT IF(SUM(d.qty) > 0, SUM(d.qty), 0) as qty FROM tbl_apohex h JOIN tbl_apodex d ON d.ed_no = h.ed_no WHERE h.koders = '$d1->koders' AND h.gudang = '$d1->gudang' AND d.kodebarang = '$d1->kodebarang' AND h.tgl_ed >= '$dari' AND h.tgl_ed <= '$sampai'")->row();
+
+               $sox = $this->db->query("SELECT IF(sesuai > 0, sesuai, 0) as qty FROM tbl_aposesuai WHERE koders = '$d1->koders' AND kodebarang = '$d1->kodebarang' AND tglso LIKE '%$sampai%' ORDER BY id DESC LIMIT 1")->row();
+
+               if($sox) {
+                    $so = $sox->qty;
+               } else {
+                    $so = 0;
+               }
+
+               $total_masuk = ($beli->qty + $mutasi_in->qty + $produksi_jadi->qty + $retur_jual->qty);
+               $total_keluar = ($jual->qty + $mutasi_out->qty + $retur_beli->qty + $produksi_bahan->qty + $bhp->qty + $expired->qty);
+               $total = $total_masuk - $total_keluar;
+               
+               $chari .= "<tr>
+                    <td>$no</td>
+                    <td>$d1->kodebarang</td>
+                    <td>$barang->namabarang</td>
+                    <td>$barang->satuan1</td>
+                    <td>$total1</td>
+                    <td>$beli->qty</td>
+                    <td>$mutasi_in->qty</td>
+                    <td>$produksi_jadi->qty</td>
+                    <td>$retur_jual->qty</td>
+                    <td>$total_masuk</td>
+                    <td>$jual->qty</td>
+                    <td>$mutasi_out->qty</td>
+                    <td>$retur_beli->qty</td>
+                    <td>$produksi_bahan->qty</td>
+                    <td>$bhp->qty</td>
+                    <td>$expired->qty</td>
+                    <td>$total_keluar</td>
+                    <td>".($d1->saldoakhir-($total))."</td>
+                    <td>$d1->saldoakhir</td>
+                    <td>$barang->hpp</td>
+                    <td>".($barang->hpp * $d1->saldoakhir)."</td>
+               </tr>";
+               $no++;
+          }
+          $chari .= "</table>";
+          $data['prev'] = $chari;
+          $judul = '06 LAPORAN PERSEDIAAN BARANG';
+          echo ("<title>$judul</title>");
+          switch ($cekpdf) {
+               case 0;
+                    echo ("<title>REKAP PENJUALAN HARIAN</title>");
+                    echo ($chari);
+                    break;
+
+               case 1;
+                    $this->M_cetak->mpdf('L', 'A4', $judul, $chari, '.PDF', 10, 10, 10, 2);
+                    break;
+               case 2;
+                    header("Cache-Control: no-cache, no-store, must-revalidate");
+                    header("Content-Type: application/vnd-ms-excel");
+                    header("Content-Disposition: attachment; filename= $judul.xls");
+                    $this->load->view('app/master_cetak', $data);
+                    break;
+          }
+     }
+
      public function cetak2()
      {
           $cek        = $this->session->userdata('level');
