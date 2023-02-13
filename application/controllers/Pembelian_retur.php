@@ -69,8 +69,12 @@ class Pembelian_retur extends CI_Controller
 
   public function entri() {
     $cek = $this->session->userdata('level');
+    $cabang = $this->session->userdata('unit');
+    $cek_pkp = $this->db->get_where("tbl_namers", ["koders" => $cabang])->row();
+    $pkp = $cek_pkp->pkp;
     if (!empty($cek)) {
       $d['nomor']   = 'AUTO';
+      $d['pkp']   = $pkp;
       $query_ppn    = $this->db->query("SELECT * FROM tbl_pajak where kodetax='PPN'")->result();
       $d['cekppn2'] = $query_ppn[0]->prosentase / 100;
       $this->load->view('pembelian/v_pembelian_retur_add', $d);
@@ -127,6 +131,7 @@ class Pembelian_retur extends CI_Controller
     $_vtotalx   = $this->input->post('_vtotalx');
     $gudang   = $this->input->post('gudang1');
     $bapb_no  = $this->input->post('kodepu');
+    $alasan  = $this->input->post('alasan');
     $cabang   = $this->session->userdata('unit');
     $cek      = $this->session->userdata('level');
     $nobukti  = urut_transaksi('URUT_RETURBELI', 19);
@@ -138,6 +143,7 @@ class Pembelian_retur extends CI_Controller
       'retur_date' => date('Y-m-d', strtotime($this->input->post('tanggal'))),
       'invoice_no' => '',
       'gudang'     => $gudang,
+      'alasan'     => $alasan,
       'jamretur'   => date('H:i:s'),
     );
     $this->db->insert('tbl_baranghreturbeli', $data);
@@ -238,6 +244,7 @@ class Pembelian_retur extends CI_Controller
     $userid   = $this->session->userdata('username');
     $_vtotalx   = $this->input->post('_vtotalx');
     $gudang   = $this->input->post('gudang');
+    $alasan   = $this->input->post('alasan');
     $bapb_no  = $this->input->post('kodepu');
     $retur_no  = $this->input->get('retur_no');
     $cabang   = $this->session->userdata('unit');
@@ -245,6 +252,7 @@ class Pembelian_retur extends CI_Controller
     $datagudang = $this->db->get_where('tbl_baranghreturbeli', array('retur_no' => $retur_no))->row();
     $gudangx = $datagudang->gudang;
     $this->db->set('koders', $cabang);
+    $this->db->set('alasan', $alasan);
     $this->db->set('vendor_id', $this->input->post('supp'));
     $this->db->set('terima_no', $this->input->post('kodepu'));
     $this->db->set('retur_date', date('Y-m-d', strtotime($this->input->post('tanggal'))));
@@ -401,10 +409,14 @@ class Pembelian_retur extends CI_Controller
   public function edit($nomor)
   {
     $cek = $this->session->userdata('level');
+    $cabang = $this->session->userdata('unit');
+    $cek_pkp = $this->db->get_where("tbl_namers", ["koders" => $cabang])->row();
+    $pkp = $cek_pkp->pkp;
     if (!empty($cek)) {
       $header         = $this->db->get_where('tbl_baranghreturbeli', ['retur_no' => $nomor])->row();
       $detil          = $this->db->query("SELECT a.*, (SELECT namabarang FROM tbl_barang WHERE kodebarang = a.kodebarang) AS namabarang FROM tbl_barangdreturbeli a WHERE retur_no = '$nomor'");
       $d['header']    = $header;
+      $d['pkp']    = $pkp;
       $d['detil']     = $detil->result();
       $d['jumdata1']  = $detil->num_rows();
       $query_ppn      = $this->db->get_where("tbl_pajak", ['kodetax' => 'PPN'])->row();
@@ -419,6 +431,9 @@ class Pembelian_retur extends CI_Controller
   {
     $cek    = $this->session->userdata('level');
     $unit   = $this->session->userdata('unit');
+    $cabang = $this->session->userdata('unit');
+    $cek_pkp = $this->db->get_where("tbl_namers", ["koders" => $cabang])->row();
+    $pkp = $cek_pkp->pkp;
     $avatar = $this->session->userdata('avatar_cabang');
     if (!empty($cek)) {
       $unit = $this->session->userdata('unit');
@@ -604,7 +619,11 @@ class Pembelian_retur extends CI_Controller
 
         $ppn += $ppnx;
       }
-      $tot = $subtotal - $diskon + $ppn;
+      if($pkp == 1) {
+        $tot = $subtotal - $diskon;
+      } else {
+        $tot = $subtotal - $diskon + $ppn;
+      }
       $dpp = ($tot) / (111 / 100);
       $chari .= "</table>";
       $chari .= "
@@ -627,7 +646,7 @@ class Pembelian_retur extends CI_Controller
                               </tr> 
                               <tr>
                                    <td colspan=\"7\" style=\"text-align:right; border-right: none; border-bottom: none;  border-left: none; border-top: none;\"><b>Total</b> : </td>
-                                   <td width=\"15%\" style=\"text-align:right; border-right: none; border-bottom: none;  border-left: none; border-top: none;\">" . number_format($dpp) . "</td>
+                                   <td width=\"15%\" style=\"text-align:right; border-right: none; border-bottom: none;  border-left: none; border-top: none;\">" . number_format($tot) . "</td>
                               </tr> 
                          </table>";
       $chari .= "

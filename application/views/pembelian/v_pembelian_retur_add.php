@@ -88,15 +88,20 @@ $this->load->view('template/body');
                                         <label class="col-md-3 control-label">No. BAPB</label>
                                         <div class="col-md-5">
                                             <div class="input-group">
-                                                <select name="kodepu" id="kodepu" class="form-control input-medium select2me" onchange="getpoheader();getpo()">
-                                                </select>
-                                                <!-- <span class="input-group-btn">
-																<a class="btn-sm btn green" onclick="getpoheader();getpo()"><i class="fa fa-refresh"></i></a>
-																</span>	 -->
-
+                                                <select name="kodepu" id="kodepu" class="form-control input-medium select2me" onchange="getpoheader();getpo()"></select>
                                             </div>
                                         </div>
 
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="col-md-3 control-label">Gudang</label>
+                                            <div class="col-md-6">
+                                                <input class="form-control" type="text" id="gudang" name="gudang" readonly>
+                                                <input class="form-control" type="hidden" id="gudang1" name="gudang1">
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -118,13 +123,9 @@ $this->load->view('template/body');
 
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label class="col-md-3 control-label">Gudang</label>
+                                        <label class="col-md-3 control-label">Alasan <span class="text-danger">*</span></label>
                                         <div class="col-md-6">
-                                            <input class="form-control" type="text" id="gudang" name="gudang" readonly>
-                                            <input class="form-control" type="hidden" id="gudang1" name="gudang1">
-
-                                            </select>
-
+                                            <input class="form-control" type="text" id="alasan" name="alasan">
                                         </div>
                                     </div>
                                 </div>
@@ -168,12 +169,21 @@ $this->load->view('template/body');
                                                     <td width="10%">
                                                         <input name="harga[]" onchange="totalline(1)" value="0" id="harga1" type="text" class="form-control rightJustified" readonly>
                                                     </td>
-                                                    <td width="10%">
-                                                        <select name='tax[]' id='tax1' class='form-control' onchange='totalline(1); total()'>
-                                                            <option value='0'>Tidak</option>
-                                                            <option value='1'>Ya</option>
-                                                        </select>
-                                                    </td>
+                                                    <?php if($pkp == 1) : ?>
+                                                        <td width="10%">
+                                                            <select name='tax[]' id='tax1' class='form-control' onchange='totalline(1); total()'>
+                                                                <option value='1'>Ya</option>
+                                                                <option value='0'>Tidak</option>
+                                                            </select>
+                                                        </td>
+                                                    <?php else : ?>
+                                                        <td width="10%">
+                                                            <select name='tax[]' id='tax1' class='form-control' onchange='totalline(1); total()'>
+                                                                <option value='0'>Tidak</option>
+                                                                <option value='1'>Ya</option>
+                                                            </select>
+                                                        </td>
+                                                    <?php endif; ?>
                                                     <td width="10%">
                                                         <input name="disc[]" onchange="totalline(1);total();cekdisc(1)" value="0" id="disc1" type="text" class="form-control rightJustified">
                                                     </td>
@@ -227,7 +237,7 @@ $this->load->view('template/body');
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="row">
+                                    <!-- <div class="row">
                                         <div class="col-md-6">
                                             <div class="form-group">
                                                 <label class="col-md-3 control-label">Keterangan</label>
@@ -237,7 +247,7 @@ $this->load->view('template/body');
 
                                             </div>
                                         </div>
-                                    </div>
+                                    </div> -->
 
 
                                 </div>
@@ -388,17 +398,31 @@ $this->load->view('template/footer');
     function tambah() {
         var table = $("#datatable");
 
-        table.append("<tr id='retur_tr" + idrow + "'>" +
-            "<td><button id='btnhapus" + idrow + "' type='button' onclick=hapusBarisIni(" + idrow + ") class='btn red'><i class='fa fa-trash-o'></i> </button></td>" +
-            "<td><select name='kode[]' id=kode" + idrow + " onchange='showbarangname(this.value," + idrow + ")' class='select2_el_farmasi_barang form-control' ><option value=''>--- Pilih Barang ---</option></select></td>" +
-            "<td><input name='qty[]'    id=qty" + idrow + " onchange='totalline(" + idrow + ");total();cekqty(" + idrow + ")' value='1'  type='text' class='form-control rightJustified'></td>" +
-            "<td><input name='sat[]'    id=sat" + idrow + " type='text' class='form-control' readonly></td>" +
-            "<td><input name='harga[]'  id=harga" + idrow + " onchange='totalline(" + idrow + ")' value='0'  type='text' class='form-control rightJustified' readonly></td>" +
-            "<td><select name='tax[]' id='tax" + idrow + "' class='form-control' onchange='totalline(" + idrow + "); total()'><option value='0'>Tidak</option><option value='1'>Ya</option></select></td>" +
-            "<td><input name='disc[]'   id=disc" + idrow + " onchange='totalline(" + idrow + ");total();cekdisc(" + idrow + ")' value='0'  type='text' class='form-control rightJustified'  ></td>" +
-            "<td><input name='discrp[]'   id=discrp" + idrow + " onchange='totalline(" + idrow + ");cekdiscrp(" + idrow + ")' value='0'  type='text' class='form-control rightJustified'  ></td>" +
-            "<td><input name='jumlah[]' id=jumlah" + idrow + " type='text' class='form-control rightJustified' readonly></td>" +
-            "</tr>");
+        if('<?= $pkp ?>' == '1') {
+            table.append("<tr id='retur_tr" + idrow + "'>" +
+                "<td><button id='btnhapus" + idrow + "' type='button' onclick=hapusBarisIni(" + idrow + ") class='btn red'><i class='fa fa-trash-o'></i> </button></td>" +
+                "<td><select name='kode[]' id=kode" + idrow + " onchange='showbarangname(this.value," + idrow + ")' class='select2_el_farmasi_barang form-control' ><option value=''>--- Pilih Barang ---</option></select></td>" +
+                "<td><input name='qty[]'    id=qty" + idrow + " onchange='totalline(" + idrow + ");total();cekqty(" + idrow + ")' value='1'  type='text' class='form-control rightJustified'></td>" +
+                "<td><input name='sat[]'    id=sat" + idrow + " type='text' class='form-control' readonly></td>" +
+                "<td><input name='harga[]'  id=harga" + idrow + " onchange='totalline(" + idrow + ")' value='0'  type='text' class='form-control rightJustified' readonly></td>" +
+                "<td><select name='tax[]' id='tax" + idrow + "' class='form-control' onchange='totalline(" + idrow + "); total()'><option value='1'>Ya</option><option value='0'>Tidak</option></select></td>" +
+                "<td><input name='disc[]'   id=disc" + idrow + " onchange='totalline(" + idrow + ");total();cekdisc(" + idrow + ")' value='0'  type='text' class='form-control rightJustified'  ></td>" +
+                "<td><input name='discrp[]'   id=discrp" + idrow + " onchange='totalline(" + idrow + ");cekdiscrp(" + idrow + ")' value='0'  type='text' class='form-control rightJustified'  ></td>" +
+                "<td><input name='jumlah[]' id=jumlah" + idrow + " type='text' class='form-control rightJustified' readonly></td>" +
+                "</tr>");
+        } else {
+            table.append("<tr id='retur_tr" + idrow + "'>" +
+                "<td><button id='btnhapus" + idrow + "' type='button' onclick=hapusBarisIni(" + idrow + ") class='btn red'><i class='fa fa-trash-o'></i> </button></td>" +
+                "<td><select name='kode[]' id=kode" + idrow + " onchange='showbarangname(this.value," + idrow + ")' class='select2_el_farmasi_barang form-control' ><option value=''>--- Pilih Barang ---</option></select></td>" +
+                "<td><input name='qty[]'    id=qty" + idrow + " onchange='totalline(" + idrow + ");total();cekqty(" + idrow + ")' value='1'  type='text' class='form-control rightJustified'></td>" +
+                "<td><input name='sat[]'    id=sat" + idrow + " type='text' class='form-control' readonly></td>" +
+                "<td><input name='harga[]'  id=harga" + idrow + " onchange='totalline(" + idrow + ")' value='0'  type='text' class='form-control rightJustified' readonly></td>" +
+                "<td><select name='tax[]' id='tax" + idrow + "' class='form-control' onchange='totalline(" + idrow + "); total()'><option value='0'>Tidak</option><option value='1'>Ya</option></select></td>" +
+                "<td><input name='disc[]'   id=disc" + idrow + " onchange='totalline(" + idrow + ");total();cekdisc(" + idrow + ")' value='0'  type='text' class='form-control rightJustified'  ></td>" +
+                "<td><input name='discrp[]'   id=discrp" + idrow + " onchange='totalline(" + idrow + ");cekdiscrp(" + idrow + ")' value='0'  type='text' class='form-control rightJustified'  ></td>" +
+                "<td><input name='jumlah[]' id=jumlah" + idrow + " type='text' class='form-control rightJustified' readonly></td>" +
+                "</tr>");
+        }
         initailizeSelect2_farmasi_barang();
         idrow++;
         // "<td><a class='btn default' id=lupharga" + idrow + " data-toggle='modal' href='#lupharga' onclick='getidharga(this.id)'><i class='fa fa-search'></i></a></td>" +
@@ -590,7 +614,8 @@ $this->load->view('template/footer');
         var tanggal = $('[name="tanggal"]').val();
         var gudang = $('[name="gudang1"]').val();
         var total = $('#_vtotal').text();
-        if (noform == "" || total == "" || total == "0.00" || gudang == null) {
+        var alasan = $('#alasan').val();
+        if (noform == "" || total == "" || total == "0.00" || gudang == null || alasan == '') {
             swal('RETUR PEMBELIAN', 'Data Belum Lengkap/Belum ada transaksi ...', '');
         } else {
             $.ajax({
@@ -842,7 +867,11 @@ $this->load->view('template/footer');
         // console.log(tjumlah)
         var tmaterai = Number(tmateraix);
 
-        var abc = Number(tjumlah - tdiskon + tppn);
+        if('<?= $pkp ?>' == '1'){
+            var abc = Number(tjumlah - tdiskon);
+        } else {
+            var abc = Number(tjumlah - tdiskon + tppn);
+        }
         if (tmaterai == 10000) {
             var tmattotal = abc + tmaterai;
         } else {

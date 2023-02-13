@@ -115,7 +115,14 @@
                     </div>
                   </div>
                 </div>
-                <div class="col-md-6"></div>
+                <div class="col-md-6">
+                  <div class="form-group">
+                      <label class="col-md-3 control-label">Alasan <span class="text-danger">*</span></label>
+                      <div class="col-md-6">
+                          <input class="form-control" type="text" id="alasan" name="alasan" value="<?= $header->alasan; ?>">
+                      </div>
+                  </div>
+                </div>
               </div>
               <div class="row">
                 <div class="col-md-12">
@@ -392,7 +399,11 @@ $this->load->view('template/footer');
         }
     }
     // var abc = Number(tjumlah - tdiskon + tppn);
-    var abc = Number(tjumlah - tdiskon);
+    if('<?= $pkp ?>' == '1') {
+      var abc = tjumlah - tdiskon;
+    } else {
+      var abc = tjumlah - tdiskon + tppn;
+    }
     document.getElementById("_vsubtotal").innerHTML = separateComma(tjumlah.toFixed(0));
     document.getElementById("_vdiskon").innerHTML = separateComma(tdiskon.toFixed(0));
     document.getElementById("_vppn").innerHTML = separateComma(tppn.toFixed(0));
@@ -409,17 +420,31 @@ $this->load->view('template/footer');
 
   function tambah() {
     var table = $("#datatable");
-    table.append("<tr id='retur_tr" + idrow + "'>" +
-        "<td><button id='btnhapus" + idrow + "' type='button' onclick=hapusBarisIni(" + idrow + ") class='btn red'><i class='fa fa-trash-o'></i> </button></td>" +
-        "<td><select name='kode[]' id=kode" + idrow + " onchange='showbarangname(this.value," + idrow + ")' class='select2_el_farmasi_barang form-control' ><option value=''>--- Pilih Barang ---</option></select></td>" +
-        "<td><input name='qty[]'    id=qty" + idrow + " onchange='totalline(" + idrow + ");total();' value='1'  type='text' class='form-control rightJustified'></td>" +
-        "<td><input name='sat[]'    id=sat" + idrow + " type='text' class='form-control' readonly></td>" +
-        "<td><input name='harga[]'  id=harga" + idrow + " onchange='totalline(" + idrow + ")' value='0'  type='text' class='form-control rightJustified' readonly></td>" +
-        "<td><select name='tax[]' id='tax" + idrow + "' class='form-control' onchange='totalline(" + idrow + "); total()'><option value='0'>Tidak</option><option value='1'>Ya</option></select></td>" +
-        "<td><input name='disc[]'   id=disc" + idrow + " onchange='totalline(" + idrow + ");total();cekdisc(" + idrow + ")' value='0'  type='text' class='form-control rightJustified'  ></td>" +
-        "<td><input name='discrp[]'   id=discrp" + idrow + " onchange='totalline(" + idrow + ");cekdiscrp(" + idrow + ")' value='0'  type='text' class='form-control rightJustified'  ></td>" +
-        "<td><input name='jumlah[]' id=jumlah" + idrow + " type='text' class='form-control rightJustified' readonly></td>" +
-        "</tr>");
+    if('<?= $pkp ?>' == '1') {
+      table.append("<tr id='retur_tr" + idrow + "'>" +
+          "<td><button id='btnhapus" + idrow + "' type='button' onclick=hapusBarisIni(" + idrow + ") class='btn red'><i class='fa fa-trash-o'></i> </button></td>" +
+          "<td><select name='kode[]' id=kode" + idrow + " onchange='showbarangname(this.value," + idrow + ")' class='select2_el_farmasi_barang form-control' ><option value=''>--- Pilih Barang ---</option></select></td>" +
+          "<td><input name='qty[]'    id=qty" + idrow + " onchange='totalline(" + idrow + ");total();' value='1'  type='text' class='form-control rightJustified'></td>" +
+          "<td><input name='sat[]'    id=sat" + idrow + " type='text' class='form-control' readonly></td>" +
+          "<td><input name='harga[]'  id=harga" + idrow + " onchange='totalline(" + idrow + ")' value='0'  type='text' class='form-control rightJustified' readonly></td>" +
+          "<td><select name='tax[]' id='tax" + idrow + "' class='form-control' onchange='totalline(" + idrow + "); total()'><option value='1'>Ya</option><option value='0'>Tidak</option></select></td>" +
+          "<td><input name='disc[]'   id=disc" + idrow + " onchange='totalline(" + idrow + ");total();cekdisc(" + idrow + ")' value='0'  type='text' class='form-control rightJustified'  ></td>" +
+          "<td><input name='discrp[]'   id=discrp" + idrow + " onchange='totalline(" + idrow + ");cekdiscrp(" + idrow + ")' value='0'  type='text' class='form-control rightJustified'  ></td>" +
+          "<td><input name='jumlah[]' id=jumlah" + idrow + " type='text' class='form-control rightJustified' readonly></td>" +
+          "</tr>");
+    } else {
+      table.append("<tr id='retur_tr" + idrow + "'>" +
+          "<td><button id='btnhapus" + idrow + "' type='button' onclick=hapusBarisIni(" + idrow + ") class='btn red'><i class='fa fa-trash-o'></i> </button></td>" +
+          "<td><select name='kode[]' id=kode" + idrow + " onchange='showbarangname(this.value," + idrow + ")' class='select2_el_farmasi_barang form-control' ><option value=''>--- Pilih Barang ---</option></select></td>" +
+          "<td><input name='qty[]'    id=qty" + idrow + " onchange='totalline(" + idrow + ");total();' value='1'  type='text' class='form-control rightJustified'></td>" +
+          "<td><input name='sat[]'    id=sat" + idrow + " type='text' class='form-control' readonly></td>" +
+          "<td><input name='harga[]'  id=harga" + idrow + " onchange='totalline(" + idrow + ")' value='0'  type='text' class='form-control rightJustified' readonly></td>" +
+          "<td><select name='tax[]' id='tax" + idrow + "' class='form-control' onchange='totalline(" + idrow + "); total()'><option value='0'>Tidak</option><option value='1'>Ya</option></select></td>" +
+          "<td><input name='disc[]'   id=disc" + idrow + " onchange='totalline(" + idrow + ");total();cekdisc(" + idrow + ")' value='0'  type='text' class='form-control rightJustified'  ></td>" +
+          "<td><input name='discrp[]'   id=discrp" + idrow + " onchange='totalline(" + idrow + ");cekdiscrp(" + idrow + ")' value='0'  type='text' class='form-control rightJustified'  ></td>" +
+          "<td><input name='jumlah[]' id=jumlah" + idrow + " type='text' class='form-control rightJustified' readonly></td>" +
+          "</tr>");
+    }
     initailizeSelect2_farmasi_barang();
     idrow++;
   }
@@ -437,6 +462,7 @@ $this->load->view('template/footer');
     var noretur = $('#nomorbukti').val();
     var tanggal = $('#tanggal').val();
     var total = $('#_vtotal').text();
+    var alasan = $('#alasan').text();
     var pajak = cekppn2;
     $.ajax({
       url: '<?= site_url("Pembelian_retur/update_one/?retur_no=") ?>' + noretur,

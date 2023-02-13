@@ -8,6 +8,7 @@ class Master_penjamin extends CI_Controller {
 	{
 		parent::__construct();
 		$this->load->model('M_penjamin','M_penjamin');
+		$this->load->model('M_template_cetak','M_template_cetak');
 		$this->load->helper('simkeu_rpt');
 		$this->session->set_userdata('menuapp', '1000');
 		$this->session->set_userdata('submenuapp', '1107');
@@ -118,6 +119,55 @@ class Master_penjamin extends CI_Controller {
 		}
 	}
 	
+	function ctk($cekpdf=0)
+	{
+
+		// $cekpdf   = 1;
+		$position = 'P';
+		$date     = '-';
+		$body     = '';
+
+		$body.= "<table style=\"border-collapse:collapse;font-family: Times New Roman; font-size:12px\" width=\"100%\" align=\"center\" border=\"1\" cellspacing=\"1\" cellpadding=\"3\">
+			<tr>
+				<td style=\"border:0\" colspan=\"29\" align=\"center\"><br></td>                
+			</tr>
+			<tr>
+				<td bgcolor=\"#cccccc\" align=\"center\"><b>NO</b></td>
+				<td bgcolor=\"#cccccc\" align=\"center\"><b>Kode</b></td>
+				<td bgcolor=\"#cccccc\" align=\"center\"><b>Nama</b></td>
+			</tr>";
+
+			$sql =$this->db->query(
+				"SELECT*FROM tbl_penjamin order by cust_id")->result();
+
+
+			$lcno        = 0;
+			$id          = '';
+			$cust_id     = '';
+			$cust_nama   = '';
+
+			foreach ($sql as $row) {
+				$lcno       = $lcno + 1;
+				$id         = $row->id;
+				$cust_id    = $row->cust_id;
+				$cust_nama  = $row->cust_nama;
+
+				$body .= "<tr>
+
+						<td align=\"center\">$lcno</td>
+						<td align=\"center\">$cust_id</td>
+						<td align=\"center\">$cust_nama</td>
+						</tr>"; 
+			
+			}
+
+			$body  .= "</table>";
+			$judul  = 'DATA MASTER PENJAMIN';
+
+			$this->M_template_cetak->template($judul, $body, $position, $date, $cekpdf);
+		
+	}
+
 	public function cetak()
 	{
 		$cek = $this->session->userdata('level');		

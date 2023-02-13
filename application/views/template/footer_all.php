@@ -10,6 +10,7 @@
 
 
    initailizeSelect2();
+   initailizeselect2_atp();
    initailizeSelect2_promo();
    initailizeSelect2_vouchersource();
    initailizeSelect2_penjamin();
@@ -880,6 +881,39 @@
          },
          ajax: {
             url: "<?php echo base_url(); ?>app/search_farmasi_baranggud/?gud=" + gud,
+            type: "post",
+            dataType: 'json',
+            delay: 250,
+            data: function(params) {
+               return {
+                  searchTerm: params.term // search term
+               };
+            },
+
+            processResults: function(response) {
+               return {
+                  results: response
+               };
+            },
+            cache: true
+         }
+      });
+   }
+
+   function initailizeselect2_atp() {
+      $(".select2_atp").select2({
+         allowClear: true,
+         multiple: false,
+         placeholder: '--- Pilih ---',
+         //minimumInputLength: 2,
+         dropdownAutoWidth: true,
+         language: {
+            inputTooShort: function() {
+               return 'Ketikan Nomor minimal 2 huruf';
+            }
+         },
+         ajax: {
+            url: "<?php echo base_url(); ?>app/search_atp",
             type: "post",
             dataType: 'json',
             delay: 250,

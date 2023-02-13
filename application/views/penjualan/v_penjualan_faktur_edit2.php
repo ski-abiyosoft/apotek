@@ -136,9 +136,9 @@ if ($datpas) {
                               <div class="col-md-6">
                                    <div class="form-group"> 
                                         <label class="col-md-3 control-label">Member <font color="red">*</font></label>
-                                        <div class="col-md-9">
+                                        <div class="col-md-9 input-medium">
                                              <?php if ($header->rekmed=='Non Member') :?>
-                                                  <input type="text" name="pasien" id="pasien" class="form-control" value="NON MEMBER" readonly>
+                                                  <input type="text" name="pasien" id="pasien" class="form-control" value="Non Member" readonly>
                                              <?php else : ?>
                                                   <select id="pasien" name="pasien" class="form-control select2_el_pasien" onchange="getinfopasien()" data-placeholder="Pilih..." onkeypress="return tabE(this,event)">
                                                        <?php $datapasien = data_master('tbl_pasien', array('rekmed' => $header->rekmed)); ?>
@@ -182,6 +182,65 @@ if ($datpas) {
                                         </div>
                                    </div>
                               </div>
+                              <div class="col-md-6">
+                                   <div class="form-group">
+                                   <label class="col-md-3 control-label">Tgl Lahir<font color="red">*</font></label>
+                                   <div class="col-md-4">
+                                        <div class="input-group input-small">
+                                        <?php if ($header->rekmed=='Non Member') :?>
+                                             <input type="date" name="tgllahir" id="tgllahir" class="form-control" onchange="tgllahirr()" value="<?= date('Y-m-d', strtotime($header->tgllahir)); ?>">
+                                        <?php else : ?>
+                                             <?php $datapasien = data_master('tbl_pasien', array('rekmed' => $header->rekmed)); ?>
+                                             <input type="date" name="tgllahir" id="tgllahir" class="form-control" onchange="tgllahirr()" value="<?= date('Y-m-d', strtotime($datapasien->tgllahir)); ?>" readonly>
+                                        <?php endif; ?>
+
+                                        </div>
+                                   </div>
+                                   <div class="col-md-5">
+                                        <div class="input-group">
+                                        <input id="lumur" name="lumur" type="text" class="form-control" readonly>
+                                        </div>
+                                   </div>
+                                   </div>
+                              </div>
+                              
+                         </div>
+
+                         <div class="row">
+                              <div class="col-md-6">
+                                   <div class="form-group">
+                                   <label class="col-md-3 control-label">Berat Badan <font color="red">*</font></label>
+                                   <div class="col-md-9">
+                                        <div class="input-group input-medium">
+
+                                             <input type="number" name="bb" id="bb" class="form-control" value="<?= $header->bb; ?>" >
+
+                                        </div>
+                                   </div>
+                                   
+
+                                   </div>
+                              </div>
+                              <div class="col-md-6">
+                                   <div class="form-group">
+                                        <label class="col-md-3 control-label">Jenis Kelamin<font color="red">*</font></label>
+                                        <div class="col-md-3">
+                                             <select name="jkel" id="jkel" class="form-control">
+                                             <?php if ($header->rekmed=='Non Member'){ 
+                                                  $jkell=$header->jkel; ?>
+                                             <?php }else {?>
+                                                  <?php $datapasien = data_master('tbl_pasien', array('rekmed' => $header->rekmed)); 
+                                                  $jkell=$datapasien->jkel;
+                                                  ?>
+                                                 
+                                             <?php }; ?>
+                                             
+                                                  <option <?= ($jkell == 'P' ? 'selected' : '') ?> value="P">Pria</option>
+                                                  <option <?= ($jkell == 'W' ? 'selected' : '') ?> value="W">Wanita</option>
+                                             </select>
+                                        </div>
+                                   </div>
+                              </div>
                          </div>
 
                          <br>
@@ -201,21 +260,25 @@ if ($datpas) {
                               <div class="tab-pane active" id="tab1">
                                    <div class="row">
                                         <div class="col-md-12">
-                                             <table id="datatable" class="table table-hoverx table-stripedx table-borderedx table-condensed table-scrollable">
+                                             <!-- <div class="table table-hoverx table-stripedx table-borderedx table-condensed table-scrollable">     -->
+                                             <table id="datatable" class="table table-hover table-striped table-bordered table-condensed table-scrollable" >
+                                                          
+                                                  <!-- <table id="datatable" class="table table-bordered"  > -->
                                                   <thead class="page-breadcrumb breadcrumb">
                                                        <tr>
                                                             <th class="title-white" width="5%" style="text-align: center">Hapus</th>
-                                                            <th class="title-white" width="15%" style="text-align: center">Kode Barang</th>
-                                                            <th class="title-white" width="10%" style="text-align: center">Nama Barang</th>
-                                                            <th class="title-white" width="5%" style="text-align: center">Qty</th>
+                                                            <th class="title-white" width="25%" style="text-align: center">Kode Barang</th>
+                                                            <!-- <th class="title-white" width="10%" style="text-align: center">Nama Barang</th> -->
+                                                            <th class="title-white" width="15%" style="text-align: center">Qty</th>
                                                             <th class="title-white" width="5%" style="text-align: center">Satuan</th>
                                                             <th class="title-white" width="10%" style="text-align: center">Harga</th>
-                                                            <th class="title-white" width="5%" style="text-align: center">PPN</th>
-                                                            <th class="title-white" width="5%" style="text-align: center">Disc. %</th>
+                                                            <th class="title-white" width="2%" style="text-align: center">PPN</th>
+                                                            <th class="title-white" width="3%" style="text-align: center">Disc. %</th>
                                                             <th class="title-white" width="10%" style="text-align: center">Disc. Rp</th>
                                                             <th class="title-white" width="10%" style="text-align: center">Total Harga</th>
-                                                            <th class="title-white" width="10%" style="text-align: center">Keterangan</th>
-                                                            <th class="title-white" width="10%" style="text-align: center">Aturan Pakai</th>
+                                                            <th class="title-white" width="5%" style="text-align: center">Keterangan</th>
+                                                            <th class="title-white" width="5%" style="text-align: center">Aturan Pakai</th>
+                                                            <th class="title-white" width="5%" style="text-align: center">Expired Date</th>
                                                        </tr>
                                                   </thead>
                                                   <tbody>
@@ -228,18 +291,19 @@ if ($datpas) {
                                                                  <td>
                                                                       <?php if ($noedit != 1) : ?>
                                                                            <!-- <select name="kode[]" id="kode<?= $no; ?>" class="select2_el_farmasi_baranggud form-control" onchange="showbarangname(this.value, <?= $no; ?>);cekstok(this.value, <?= $no; ?>)"> -->
-                                                                           <select name="kode[]" id="kode<?= $no; ?>" class="select2_el_farmasi_baranggud form-control" onchange="showbarangname(this.value, <?= $no; ?>)">
+                                                                           <select name="kode[]" id="kode<?= $no; ?>" style="font-size: 12px;"  class="select2_el_farmasi_baranggud form-control" onchange="showbarangname(this.value, <?= $no; ?>)">
                                                                                 <option value="<?= $row->kodebarang; ?>"><?= $row->kodebarang . ' | ' . $row->namabarang1; ?></option>
                                                                            </select>
+                                                                           <input name="nama[]" id="nama<?= $no; ?>" type="hidden" class="form-control" onkeypress="return tabE(this,event)" value="<?= $row->namabarang; ?>" readonly>
                                                                       <?php else : ?>
-                                                                           <select name="kode[]" id="kode<?= $no; ?>" class="select2_el_farmasi_baranggud form-control" onchange="showbarangname(this.value, <?= $no; ?>)" disabled>
+                                                                           <select name="kode[]" id="kode<?= $no; ?>" style="font-size: 12px;"  class="select2_el_farmasi_baranggud form-control" onchange="showbarangname(this.value, <?= $no; ?>)" disabled>
                                                                                 <option value="<?= $row->kodebarang; ?>"><?= $row->kodebarang . ' | ' . $row->namabarang1; ?></option>
                                                                            </select>
+                                                                           <input name="nama[]" id="nama<?= $no; ?>" type="hidden" class="form-control" onkeypress="return tabE(this,event)" value="<?= $row->namabarang; ?>" readonly>
                                                                       <?php endif; ?>
                                                                  </td>
-                                                                 <td>
-                                                                      <input name="nama[]" id="nama<?= $no; ?>" type="text" class="form-control" onkeypress="return tabE(this,event)" value="<?= $row->namabarang; ?>" readonly>
-                                                                 </td>
+                                                                 <!-- <td>
+                                                                      </td> -->
                                                                  <td>
                                                                       <?php if ($noedit != 1) : ?>
                                                                            <input name="qty[]" onchange="total();cekqty(<?= $no ?>)" value="<?= number_format($row->qty); ?>" id="qty<?= $no; ?>" type="text" class="form-control rightJustified">
@@ -282,7 +346,7 @@ if ($datpas) {
                                                                  </td>
                                                                  <td>
                                                                       <?php if ($noedit != 1) : ?>
-                                                                           <select name="aturan_pakai" id="aturan_pakai<?= $no ?>" class="form-control select2_atp">
+                                                                           <select name="aturan_pakai" id="aturan_pakai<?= $no ?>" style="font-size: 12px;" class="form-control select2_atp">
                                                                                 <?php
                                                                                 $data = $this->db->query("SELECT * from tbl_barangsetup where  apogroup='ATURANPAKAI' ")->result();
                                                                                 foreach ($data as $rows) { ?>
@@ -290,7 +354,7 @@ if ($datpas) {
                                                                                 <?php } ?>
                                                                            </select>
                                                                       <?php else : ?>
-                                                                           <select name="aturan_pakai" id="aturan_pakai<?= $no ?>" class="form-control select2_atp" disabled>
+                                                                           <select name="aturan_pakai" id="aturan_pakai<?= $no ?>" style="font-size: 12px;" class="form-control select2_atp" disabled>
                                                                                 <?php
                                                                                 $data = $this->db->query("SELECT * from tbl_barangsetup where  apogroup='ATURANPAKAI' ")->result();
                                                                                 foreach ($data as $rows) { ?>
@@ -299,11 +363,15 @@ if ($datpas) {
                                                                            </select>
                                                                       <?php endif ?>
                                                                  </td>
+                                                                 <td>
+                                                                      <input name="expire[]" id="expire<?= $no; ?>" type="date" class="form-control rightJustified" style="width:90%;" value="<?= date('Y-m-d', strtotime($row->exp_date)); ?>">
+                                                                 </td>
                                                             </tr>
                                                        <?php $no++;
                                                        endforeach; ?>
                                                   </tbody>
                                              </table>
+                                             <!-- </div> -->
                                              <?php if ($noedit != 1) : ?>
                                                   <div class="row">
                                                        <div class="col-xs-9">
@@ -321,7 +389,7 @@ if ($datpas) {
                                         <div class="col-xs-7">
                                              <div class="wells">
                                                   <?php if ($noedit != 1) : ?>
-                                                       <button type="button" class="btn blue" onclick="ceksave()"><i class="fa fa-save"></i> Reposting</button>
+                                                       <button type="button" class="btn blue" onclick="ceksave()"><i class="fa fa-save"></i><b> Reposting</b></button>
                                                   <?php endif ?>
                                                   <a href="<?= base_url('penjualan_faktur') ?>" class="btn btn red">
                                                        <i class="fa fa-undo"></i><b> KEMBALI </b>
@@ -330,6 +398,25 @@ if ($datpas) {
                                                        <span id="error" style="display:none; color:#F00">Terjadi Kesalahan...</span>
                                                        <span id="success" style="display:none; color:#0C0"><b>Data sudah disimpan...</b></span>
                                                   </h4>
+                                             </div>
+                                        </div>
+                                        <div class="col-xs-7 invoice-block">
+                                             <div class="wells">
+                                                  <table border="0">
+                                                  <tr>
+                                                       <td>
+                                                            <button type="button" class="btn yellow" >
+                                                                 <i class="fa fa-print"></i><b> E-Ticket</b>
+                                                            </button>
+                                                            <button type="button" class="btn yellow" >
+                                                                 <i class="fa fa-print"></i><b> Telaah</b>
+                                                            </button>
+                                                            <button type="button" class="btn yellow" >
+                                                                 <i class="fa fa-print"></i><b> Copy Resep</b>
+                                                            </button>
+                                                       </td>
+                                                  </tr>
+                                                  </table>
                                              </div>
                                         </div>
                                         <div class="col-xs-5 invoice-block">
@@ -892,6 +979,13 @@ $this->load->view('template/footer_tb');
 ?>
 
 <!-- master -->
+
+<script type="text/javascript">
+  $(document).ready(function() {
+     tgllahirr(); 
+  });
+
+</script>
 <script>
      $(window).on("load", function() {
           total();
@@ -932,9 +1026,15 @@ $this->load->view('template/footer_tb');
                     $('#alamat').val(data.alamat);
                     $('#phone').val(data.phone);
                     var umur = hitung_usia(data.tgllahir);
-                    $('#umurpas').val(umur);
+                    $('#lumur').val(umur);
                }
           });
+     }
+
+     function tgllahirr() {
+          var birthDate = new Date($('#tgllahir').val());
+          var usia = hitung_usia(birthDate);
+          $('#lumur').val(usia);
      }
 
      function separateComma(val) {
@@ -963,7 +1063,7 @@ $this->load->view('template/footer_tb');
      function myFunction(id) {
           var table = document.getElementById('datatable');
           var row = table.rows[id];
-          var x = row.cells[7].children[0].value.replace(/[^0-9\.]+/g, "");
+          var x = row.cells[6].children[0].value.replace(/[^0-9\.]+/g, "");
           x.value = separateComma(x);
      }
 
@@ -985,8 +1085,8 @@ $this->load->view('template/footer_tb');
 
           table.append("<tr id='resep_no" + idrow + "'>" +
                "<td><button id='btnhapus" + idrow + "' type='button' onclick=hapusBarisIni(" + idrow + ") class='btn red'><i class='fa fa-trash-o'></i> </button></td>" +
-               "<td><select name='kode[]' id=kode" + idrow + " onchange='showbarangname(this.value," + idrow + ")' class='select2_el_farmasi_baranggud form-control input-largex' ></select></td>" +
-               "<td><input name='nama[]' id='nama" + idrow + "' type='text' class='form-control' value='' onchange='totalline(" + idrow + ")' readonly></td>" +
+               "<td><select name='kode[]' id=kode" + idrow + " onchange='showbarangname(this.value," + idrow + ")' class='select2_el_farmasi_baranggud form-control input-largex' ></select> <input name='nama[]' id='nama" + idrow + "' type='hidden' class='form-control' value='' onchange='totalline(" + idrow + ")' readonly></td>" +
+               // "<td></td>" +
                "<td><input name='qty[]' id=qty" + idrow + " onchange='totalline(" + idrow + ");cekqty(" + idrow + ")' value='1'  type='text' class='form-control rightJustified'  ></td>" +
                "<td><input name='sat[]' id=sat" + idrow + " type='text' class='form-control' readonly></td>" +
                "<td><input name='harga[]'  id=harga" + idrow + " onchange='totalline(" + idrow + ") value='0'  type='text' class='form-control rightJustified' readonly></td>" +
@@ -994,10 +1094,15 @@ $this->load->view('template/footer_tb');
                "<td><input name='disc[]' id=disc" + idrow + " onchange='totalline(" + idrow + ");cekdisc(" + idrow + ")' value='0'  type='text' class='form-control rightJustified'  ></td>" +
                "<td><input name='disc2[]' id=disc2" + idrow + " onkeyup='myFunction(" + idrow + ")' onchange='totalline(" + idrow + ");cekdiscrp(" + idrow + ")' value='0'  type='text' class='form-control rightJustified'  ></td>" +
                "<td><input name='jumlah[]' id=jumlah" + idrow + " type='text' class='form-control rightJustified' size='40%' readonly></td>" +
-               '<td><input name="aturan_pakai[]" value="" id="aturan_pakai' + idrow + '" type="text" class="form-control rightJustified "></td>' +
-               '<td><textarea name="keterangan[]" id="keterangan' + idrow + '" type="text" class="form-control" style="resize:none" rows="2"></textarea></td>' +
+               
+               "<td><textarea name='keterangan[]' id='keterangan" + idrow + "' type='text' class='form-control' style='resize:none' rows='2'></textarea></td>" +
+               "<td><select name='aturan_pakai[]' id=aturan_pakai" + idrow + " class='select2_atp form-control input-largex' ></select></td>"+
+               
+               "<td><input name='expire[]'  id=expire" + idrow + " value=''  type='date' class='form-control' style='width:90%;'></td>"+
                "</tr>");
+
           initailizeSelect2_farmasi_baranggud(gud);
+          initailizeselect2_atp();
           idrow++;
      }
 
@@ -1186,53 +1291,71 @@ $this->load->view('template/footer_tb');
      }
 
      function total() {
-          var table = document.getElementById('datatable');
-          var rowCount = table.rows.length;
-          tjumlah = 0;
-          tdiskon = 0;
-          tppn = 0;
+          var table       = document.getElementById('datatable');
+          var rowCount    = table.rows.length;
+          tjumlah         = 0;
+          tdiskon         = 0;
+          tppn            = 0;
+          // ongkir22 = 0;
           for (var i = 1; i < rowCount; i++) {
-               var row = table.rows[i];
-               jumlah = row.cells[3].children[0].value;
-               harga = row.cells[5].children[0].value;
-               diskon = row.cells[8].children[0].value;
-               var jumlah1 = Number(jumlah.replace(/[^0-9\.]+/g, ""));
-               var harga1 = Number(harga.replace(/[^0-9\.]+/g, ""));
-               var diskon1 = Number(diskon.replace(/[^0-9\.]+/g, ""));
-               var subtot = jumlah1 * harga1;
-               tjumlah += subtot;
-               diskon = eval(diskon1);
-               tdiskon += diskon;
-               var ongkosracik = $('#totp_1').val();
-               var ppn2 = (tjumlah - tdiskon) * ppn;
-               var dpp_done = (tjumlah - tdiskon) / (111 / 100);
-               var ppn_done = dpp_done * ppn;
-               var totalracik = Number(parseInt(ongkosracik.replaceAll(',', '')));
+               var row            = table.rows[i];
+               jumlah             = row.cells[2].children[0].value;
+               harga              = row.cells[4].children[0].value;
+               diskon             = row.cells[7].children[0].value;
+               var jumlah1        = Number(jumlah.replace(/[^0-9\.]+/g, ""));
+               var harga1         = Number(harga.replace(/[^0-9\.]+/g, ""));
+               var diskon1        = Number(diskon.replace(/[^0-9\.]+/g, ""));
+               var subtot         = jumlah1 * harga1;
+               tjumlah            += subtot;
+               diskon             = eval(diskon1);
+               tdiskon            += diskon;
+               var ongkosracik    = $('#totp_1').val();
+               var ppn2           = (tjumlah - tdiskon) * ppn;
+               var totalracik     = Number(parseInt(ongkosracik.replaceAll(',', '')));
                if (ongkosracik == '' || ongkosracik == null || ongkosracik == 0) {
                     totalracik_1 = 0;
                } else {
                     totalracik_1 = totalracik;
                }
-               if (document.getElementById('t_manual').checked == true) {
-                    var h_manual = 1;
-                    var totalx = $('#toto_11').val();
-               } else {
-                    var totalx = $('#totp_1').val();
-                    var h_manual = 0;
-               }
-               var totalxx = Number(parseInt(totalx.replaceAll(',', '')));
+               // <?php if($header) : ?>
+               //      <?php if ($header->ongkoskirim > 0) : ?>
+               //           var ongkirx = $("#ongkir").val();
+               //           var ongkir = Number(parseInt(ongkirx.replaceAll(',', '')));
+               //      <?php else : ?>
+               //           var ongkir = 0;
+               //      <?php endif; ?>
+               // <?php else : ?>
+               //      var ongkir = 0;
+               // <?php endif; ?>
+
+               // ongkir22 += ongkir;
+               
                // var total = tjumlah-tdiskon + ppn2;
-               var total = tjumlah - tdiskon;
-               var totals = total + totalxx;
           }
+          var dpp_done    = (tjumlah - tdiskon) / (111 / 100);
+          var ppn_done    = dpp_done * ppn;
+          var total       = tjumlah - tdiskon;
+          var totals      = total;
+          if (document.getElementById('t_manual').checked == true) {
+               var h_manual = 1;
+               var totalx = $('#toto_11').val();
+          } else {
+               var totalx = $('#totp_1').val();
+               var h_manual = 0;
+          }
+          var totalxx = Number(parseInt(totalx.replaceAll(',', '')));
+          // $("#v_ongkir").val(separateComma(ongkir));
+          // if(pembeli == 'KULIT' || pembeli == 'ONLINE'){
+          //      document.getElementById("_vongkir").innerHTML = separateComma(ongkir.toFixed(0));
+          // }
           document.getElementById("_vsubtotal").innerHTML = separateComma(tjumlah.toFixed(0));
           document.getElementById("_vdiskon").innerHTML = separateComma(tdiskon.toFixed(0));
           // document.getElementById("_vracik").innerHTML = ongkosracik;
-          document.getElementById("_vracik").innerHTML = separateComma(totalxx);
+          document.getElementById("_vracik").innerHTML = separateComma(totalxx.toFixed(0));
           document.getElementById("_vdpp").innerHTML = separateComma(dpp_done.toFixed(0));
           document.getElementById("_vppn").innerHTML = separateComma(ppn_done.toFixed(0));
-          document.getElementById("_vtotal").innerHTML = separateComma(totals.toFixed(0));
-          if (tjumlah > 0) {
+          document.getElementById("_vtotal").innerHTML = separateComma((totals + totalxx).toFixed(0));
+          if ((totals + totalxx) > 0) {
                document.getElementById("btnsimpan").disabled = false;
           } else {
                document.getElementById("btnsimpan").disabled = true;
@@ -1409,35 +1532,35 @@ $this->load->view('template/footer_tb');
      });
 
      function totalracik() {
-          var table = document.getElementById('datatableracik');
-          var rowCount = table.rows.length;
-          tjumlah = 0;
-          tdiskon = 0;
+          var table       = document.getElementById('datatableracik');
+          var rowCount    = table.rows.length;
+          tjumlah         = 0;
+          tdiskon         = 0;
           for (var i = 1; i < rowCount; i++) {
-               var row = table.rows[i];
-               jumlah = row.cells[5].children[0].value;
-               harga = row.cells[6].children[0].value;
-               uangracik = row.cells[7].children[0].value;
-               var jumlah1 = Number(jumlah.replace(/[^0-9\.]+/g, ""));
-               var harga1 = Number(harga.replace(/[^0-9\.]+/g, ""));
+               var row        = table.rows[i];
+               jumlah         = row.cells[4].children[0].value;
+               harga          = row.cells[5].children[0].value;
+               uangracik      = row.cells[6].children[0].value;
+               var jumlah1    = Number(jumlah.replace(/[^0-9\.]+/g, ""));
+               var harga1     = Number(harga.replace(/[^0-9\.]+/g, ""));
                var uangracik1 = Number(uangracik.replace(/[^0-9\.]+/g, ""));
-               var subtot = jumlah1 * harga1 + uangracik1;
-               tjumlah += subtot;
+               var subtot     = jumlah1 * harga1 + uangracik1;
+               tjumlah        += subtot;
           }
-          var diskonx = $('#disknom_1').val();
-          diskon = tjumlah * diskonx / 100;
-          var cekpajak = $('#cekpajak').val();
+          var diskonx   = $('#disknom_1').val();
+          diskon        = tjumlah * diskonx / 100;
+          var cekpajak  = $('#cekpajak').val();
           if (cekpajak != 0) {
                var tppn = (tjumlah - diskon) * ppn;
           } else {
                var tppn = 0;
           }
-          var dpp_done = (tjumlah - diskon) / (111 / 100);
-          var ppn_done = dpp_done * ppn;
+          var dpp_done        = (tjumlah - diskon) / (111 / 100);
+          var ppn_done        = dpp_done * ppn;
           $('#disk_1').val(separateComma(diskon));
-          var ongkosracikx = $('#ongra_1').val();
-          var ongkosracik = Number(parseInt(ongkosracikx.replaceAll(',', '')));
-          var totalracikan = tjumlah - diskon + ongkosracik;
+          var ongkosracikx    = $('#ongra_1').val();
+          var ongkosracik     = Number(parseInt(ongkosracikx.replaceAll(',', '')));
+          var totalracikan    = tjumlah - diskon + ongkosracik;
           document.getElementById("toto_1").value = separateComma(tjumlah.toFixed(0));
           document.getElementById("ongra_1").value = separateComma(ongkosracik.toFixed(0));
           document.getElementById("ppn_1").value = separateComma(ppn_done.toFixed(0));
@@ -1609,6 +1732,24 @@ $this->load->view('template/footer_tb');
           var dokter  = $('[name="dokter"]').val();
           var pembeli = $('[name="pembeli"]').val();
           var gudang  = $('[name="gudang"]').val();
+
+          
+          var table       = document.getElementById('datatable');
+          var rowCount    = table.rows.length;          
+          for (var i = 1; i < rowCount; i++) {
+          var expire    = $("#expire" + i).val(); 
+          if (expire == '' || expire == null) {
+               swal({
+               title: "Expired Date",
+               html: "<p>HARUS DI isi</p>",
+               type: "error",
+               confirmButtonText: "OK"
+               });
+               return;
+          }
+          }
+
+          
           if (document.getElementById('t_manual').checked == true) {
                var h_manual = 1;
                var totalx = $('#toto_11').val();
@@ -1683,10 +1824,11 @@ $this->load->view('template/footer_tb');
                                              var jumlah     = Number(parseInt(jumlahx.replaceAll(',', '')));
                                              var aturpakai  = $("#aturan_pakai" + i).val();
                                              var keterangan = $("#keterangan" + i).val();
+                                             var expire     = $("#expire" + i).val();
                                              var ppnx       = 1;
                                              var ppnrp      = (jumlah / (111 / 100)) * ppn;
                                              $.ajax({
-                                                  url: "<?= site_url('Penjualan_faktur/update_apodresep/?resepno=') ?>" + resepno + "&kodebarang=" + kode + "&namabarang=" + nama + "&qty=" + qty + "&satuan=" + sat + "&discount=" + disc + "&discrp=" + discrp + "&price=" + harga + "&totalrp=" + jumlah + "&ppn=" + ppnx + "&ppnrp=" + ppnrp + "&gudang=" + gudang + "&eresepno=" + eresepno + "&aturanpakai=" + aturpakai + "&keterangan=" + keterangan,
+                                                  url: "<?= site_url('Penjualan_faktur/update_apodresep/?resepno=') ?>" + resepno + "&kodebarang=" + kode + "&namabarang=" + nama + "&qty=" + qty + "&satuan=" + sat + "&discount=" + disc + "&discrp=" + discrp + "&price=" + harga + "&totalrp=" + jumlah + "&ppn=" + ppnx + "&ppnrp=" + ppnrp + "&gudang=" + gudang + "&eresepno=" + eresepno + "&aturanpakai=" + aturpakai + "&keterangan=" + keterangan + "&expire=" + expire,
                                                   type: "POST",
                                                   data: $('#frmpenjualan').serialize(),
                                                   dataType: "JSON",

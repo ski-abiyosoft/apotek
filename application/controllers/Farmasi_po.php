@@ -129,7 +129,7 @@ class Farmasi_po extends CI_Controller
 			if ($akses->uedit == 1 && $akses->udel == 1 && $lock == 0) {
 				$email = $this->db->get_where('tbl_vendor', ['vendor_id' => $rd->vendor_id])->row_array();
 				if ($rd->setuju == 0) {
-					if ($lvx >= 2) {
+					if ($lvx <= 2) {
 						$row[] = '
 							<a class="btn btn-sm btn-danger" href="javascript:void(0)" title="Hapus" onclick="delete_data(' . "'" . $rd->id . "'" . ",'" . $rd->po_no . "'" . ')">
 								<i class="glyphicon glyphicon-trash"></i> 
@@ -145,7 +145,7 @@ class Farmasi_po extends CI_Controller
 						$row[] = '';
 					}
 				} else {
-					if ($lvx >= 2) {
+					if ($lvx <= 2) {
 						$row[] = '
 							<a class="btn btn-sm btn-success" href="javascript:void(0)" title="Kirim Email" onclick="send_email(' . "'" . $rd->id . "'" . ",'" . $email['email'] . "'" . ')">
 								<i class="glyphicon glyphicon-envelope"></i>
@@ -392,6 +392,7 @@ class Farmasi_po extends CI_Controller
 		$data = array(
 			'koders'        => $cabang,
 			'po_no'         => $nomorpo,
+			'alasan'        => $this->input->post('alasan'),
 			'ref_no'        => $this->input->post('noref'),
 			'tglpo'         => $this->input->post('tanggal'),
 			'tglkirim'      => $this->input->post('tanggalkirim'),
@@ -591,7 +592,8 @@ class Farmasi_po extends CI_Controller
 							$chari  = '';
 							$queryh = "SELECT * from tbl_baranghpo inner join tbl_vendor on tbl_baranghpo.vendor_id=tbl_vendor.vendor_id where tbl_baranghpo.po_no = '$param'";
 							if ($stokket == '1') {
-								$kett = ", IFNULL((select sum(saldoakhir)saldoakhir from tbl_barangstock b where koders='$unit' and b.kodebarang=tbl_barang.kodebarang),0)ket ";
+								$kett = ", IFNULL((select sum(saldoakhir)saldoakhir from tbl_barangstock b where b.koders='$unit' and b.kodebarang=tbl_barang.kodebarang),0)ket ";
+								// $kett = ", (SELECT SUM(saldoakhir) FROM tbl_barangstock AS b where b.koders = '$unit' AND b.kodebarang = 'tbl_barang.kodebarang')ket";
 							} else {
 								$kett = ",''ket";
 							}
@@ -603,6 +605,7 @@ class Farmasi_po extends CI_Controller
 							$queryd = "SELECT tbl_barangdpo.*, tbl_barang.namabarang $kett $hrgg from tbl_barangdpo inner join tbl_barang on tbl_barangdpo.kodebarang=tbl_barang.kodebarang where po_no = '$param'";
 							$detil  = $this->db->query($queryd)->result();
 							$header = $this->db->query($queryh)->row();
+
 							$chari .= "
                     <table style=\"border-collapse:collapse;font-family: Century Gothic; font-size:12px; color:#000;\" width=\"100%\"  border=\"0\" cellspacing=\"0\" cellpadding=\"0\">
                          <thead>
@@ -736,47 +739,115 @@ class Farmasi_po extends CI_Controller
                                    <td> &nbsp; </td>
                               </tr> 
                          </table>";
-							$chari .= "
-                         <table style=\"border-collapse:collapse;font-family: Tahoma; font-size:11px\" width=\"100%\" align=\"center\" border=\"1\" cellspacing=\"1\" cellpadding=\"3\">
-                              <thead>
-                                   <tr>
-                                        <td width=\"5%\" align=\"center\" style=\"text-align:center; border-right: none; border-left: none;\"><b>No</b></td>
-                                        <td width=\"15%\" align=\"center\" style=\"text-align:center; border-right: none; border-left: none;\"><b>Kode Barang</b></td>
-                                        <td width=\"15%\" align=\"center\" style=\"text-align:center; border-right: none; border-left: none;\"><b>Nama Obat/Produk</b></td>
-                                        <td width=\"10%\" align=\"center\" style=\"text-align:center; border-right: none; border-left: none;\"><b>Qty</b></td>
-                                        <td width=\"10%\" align=\"center\" style=\"text-align:center; border-right: none; border-left: none;\"><b>Harga</b></td>
-                                        <td width=\"15%\" align=\"center\" style=\"text-align:center; border-right: none; border-left: none;\"><b>Qty Stock Akhir</b></td>
-                                        <td width=\"15%\" align=\"center\" style=\"text-align:center; border-left: none; border-right: none;\"><b>Subtotal</b></td>
-                                   </tr>
-                              </thead>";
+							if($cekstok == 2 && $cekhrg == 2) {
+								$chari .= "
+													 <table style=\"border-collapse:collapse;font-family: Tahoma; font-size:11px\" width=\"100%\" align=\"center\" border=\"1\" cellspacing=\"1\" cellpadding=\"3\">
+																<thead>
+																		 <tr>
+																					<td width=\"5%\" align=\"center\" style=\"text-align:center; border-right: none; border-left: none;\"><b>No</b></td>
+																					<td width=\"15%\" align=\"center\" style=\"text-align:center; border-right: none; border-left: none;\"><b>Kode Barang</b></td>
+																					<td width=\"15%\" align=\"center\" style=\"text-align:center; border-right: none; border-left: none;\"><b>Nama Obat/Produk</b></td>
+																					<td width=\"10%\" align=\"center\" style=\"text-align:center; border-right: none; border-left: none;\"><b>Qty</b></td>
+																					<td width=\"15%\" align=\"center\" style=\"text-align:center; border-left: none; border-right: none;\"><b>Subtotal</b></td>
+																		 </tr>
+																</thead>";
+							} else if($cekstok == 1 && $cekhrg == 2) {
+								$chari .= "
+													 <table style=\"border-collapse:collapse;font-family: Tahoma; font-size:11px\" width=\"100%\" align=\"center\" border=\"1\" cellspacing=\"1\" cellpadding=\"3\">
+																<thead>
+																		 <tr>
+																					<td width=\"5%\" align=\"center\" style=\"text-align:center; border-right: none; border-left: none;\"><b>No</b></td>
+																					<td width=\"15%\" align=\"center\" style=\"text-align:center; border-right: none; border-left: none;\"><b>Kode Barang</b></td>
+																					<td width=\"15%\" align=\"center\" style=\"text-align:center; border-right: none; border-left: none;\"><b>Nama Obat/Produk</b></td>
+																					<td width=\"10%\" align=\"center\" style=\"text-align:center; border-right: none; border-left: none;\"><b>Qty</b></td>
+																					<td width=\"15%\" align=\"center\" style=\"text-align:center; border-right: none; border-left: none;\"><b>Qty Stock Akhir</b></td>
+																					<td width=\"15%\" align=\"center\" style=\"text-align:center; border-left: none; border-right: none;\"><b>Subtotal</b></td>
+																		 </tr>
+																</thead>";
+							} else if ($cekstok == 2 && $cekhrg == 1) {
+								$chari .= "
+													 <table style=\"border-collapse:collapse;font-family: Tahoma; font-size:11px\" width=\"100%\" align=\"center\" border=\"1\" cellspacing=\"1\" cellpadding=\"3\">
+																<thead>
+																		 <tr>
+																					<td width=\"5%\" align=\"center\" style=\"text-align:center; border-right: none; border-left: none;\"><b>No</b></td>
+																					<td width=\"15%\" align=\"center\" style=\"text-align:center; border-right: none; border-left: none;\"><b>Kode Barang</b></td>
+																					<td width=\"15%\" align=\"center\" style=\"text-align:center; border-right: none; border-left: none;\"><b>Nama Obat/Produk</b></td>
+																					<td width=\"10%\" align=\"center\" style=\"text-align:center; border-right: none; border-left: none;\"><b>Qty</b></td>
+																					<td width=\"10%\" align=\"center\" style=\"text-align:center; border-right: none; border-left: none;\"><b>Harga</b></td>
+																					<td width=\"15%\" align=\"center\" style=\"text-align:center; border-left: none; border-right: none;\"><b>Subtotal</b></td>
+																		 </tr>
+																</thead>";
+							} else {
+								$chari .= "
+													 <table style=\"border-collapse:collapse;font-family: Tahoma; font-size:11px\" width=\"100%\" align=\"center\" border=\"1\" cellspacing=\"1\" cellpadding=\"3\">
+																<thead>
+																		 <tr>
+																					<td width=\"5%\" align=\"center\" style=\"text-align:center; border-right: none; border-left: none;\"><b>No</b></td>
+																					<td width=\"15%\" align=\"center\" style=\"text-align:center; border-right: none; border-left: none;\"><b>Kode Barang</b></td>
+																					<td width=\"15%\" align=\"center\" style=\"text-align:center; border-right: none; border-left: none;\"><b>Nama Obat/Produk</b></td>
+																					<td width=\"10%\" align=\"center\" style=\"text-align:center; border-right: none; border-left: none;\"><b>Qty</b></td>
+																					<td width=\"10%\" align=\"center\" style=\"text-align:center; border-right: none; border-left: none;\"><b>Harga</b></td>
+																					<td width=\"15%\" align=\"center\" style=\"text-align:center; border-right: none; border-left: none;\"><b>Qty Stock Akhir</b></td>
+																					<td width=\"15%\" align=\"center\" style=\"text-align:center; border-left: none; border-right: none;\"><b>Subtotal</b></td>
+																		 </tr>
+																</thead>";
+							}
 							$no = 1;
 							$total = 0;
 							foreach ($detil as $db) {
-								if ($db->price_po2 != '') {
+								if ($db->price_po2 > 0) {
 									$subtotal = $db->qty_po * $db->price_po2;
 									$price_po2 = number_format($db->price_po2);
 									$total += $subtotal;
 									$total1 = number_format($total, 0);
 								} else {
 									$price_po2 = $db->price_po2;
-									$subtotal = '';
-									$total = '';
-									$total1 = '';
+									$subtotal = 0;
+									$total = 0;
+									$total1 = 0;
 								}
-								if ($subtotal != '') {
+								if ($subtotal > 0) {
 									$subtotal1 = number_format($subtotal);
 								} else {
-									$subtotal1 = '';
+									$subtotal1 = 0;
 								}
-								$chari .= "<tbody><tr>
-																<td style=\"text-align:center; border-right: none; border-left: none; border-top: none; border-bottom: none;\">" . $no++ . "</td>
-																<td style=\"text-align:left; border-right: none; border-left: none; border-top: none; border-bottom: none;\">$db->kodebarang</td>
-																<td style=\"text-align:left; border-right: none; border-left: none; border-top: none; border-bottom: none;\">$db->namabarang</td>
-																<td style=\"text-align:right; border-right: none; border-left: none; border-top: none; border-bottom: none;\">" . number_format($db->qty_po) . "</td>
-																<td style=\"text-align:right; border-right: none; border-left: none; border-top: none; border-bottom: none;\">" . $price_po2 . "</td>
-																<td style=\"text-align:right; border-right: none; border-left: none; border-top: none; border-bottom: none;\">$db->ket</td>
-																<td style=\"text-align:right; border-left: none; border-right: none; border-top: none; border-bottom: none;\">$subtotal1</td>
-													 </tr></tbody>";
+								if($cekstok == 2 && $cekhrg == 2) {
+									$chari .= "<tbody><tr>
+																	<td style=\"text-align:center; border-right: none; border-left: none; border-top: none; border-bottom: none;\">" . $no++ . "</td>
+																	<td style=\"text-align:left; border-right: none; border-left: none; border-top: none; border-bottom: none;\">$db->kodebarang</td>
+																	<td style=\"text-align:left; border-right: none; border-left: none; border-top: none; border-bottom: none;\">$db->namabarang</td>
+																	<td style=\"text-align:right; border-right: none; border-left: none; border-top: none; border-bottom: none;\">" . number_format($db->qty_po) . "</td>
+																	<td style=\"text-align:right; border-left: none; border-right: none; border-top: none; border-bottom: none;\">$subtotal1</td>
+														 </tr></tbody>";
+								} else if($cekstok == 1 && $cekhrg == 2) {
+									$chari .= "<tbody><tr>
+																	<td style=\"text-align:center; border-right: none; border-left: none; border-top: none; border-bottom: none;\">" . $no++ . "</td>
+																	<td style=\"text-align:left; border-right: none; border-left: none; border-top: none; border-bottom: none;\">$db->kodebarang</td>
+																	<td style=\"text-align:left; border-right: none; border-left: none; border-top: none; border-bottom: none;\">$db->namabarang</td>
+																	<td style=\"text-align:right; border-right: none; border-left: none; border-top: none; border-bottom: none;\">" . number_format($db->qty_po) . "</td>
+																	<td style=\"text-align:right; border-right: none; border-left: none; border-top: none; border-bottom: none;\">". number_format($db->ket, 0, ',', '.') ."</td>
+																	<td style=\"text-align:right; border-left: none; border-right: none; border-top: none; border-bottom: none;\">$subtotal1</td>
+														 </tr></tbody>";
+								}else if($cekstok == 2 && $cekhrg == 1) {
+									$chari .= "<tbody><tr>
+																	<td style=\"text-align:center; border-right: none; border-left: none; border-top: none; border-bottom: none;\">" . $no++ . "</td>
+																	<td style=\"text-align:left; border-right: none; border-left: none; border-top: none; border-bottom: none;\">$db->kodebarang</td>
+																	<td style=\"text-align:left; border-right: none; border-left: none; border-top: none; border-bottom: none;\">$db->namabarang</td>
+																	<td style=\"text-align:right; border-right: none; border-left: none; border-top: none; border-bottom: none;\">" . number_format($db->qty_po) . "</td>
+																	<td style=\"text-align:right; border-right: none; border-left: none; border-top: none; border-bottom: none;\">" . $price_po2 . "</td>
+																	<td style=\"text-align:right; border-left: none; border-right: none; border-top: none; border-bottom: none;\">$subtotal1</td>
+														 </tr></tbody>";
+								} else {
+									$chari .= "<tbody><tr>
+																	<td style=\"text-align:center; border-right: none; border-left: none; border-top: none; border-bottom: none;\">" . $no++ . "</td>
+																	<td style=\"text-align:left; border-right: none; border-left: none; border-top: none; border-bottom: none;\">$db->kodebarang</td>
+																	<td style=\"text-align:left; border-right: none; border-left: none; border-top: none; border-bottom: none;\">$db->namabarang</td>
+																	<td style=\"text-align:right; border-right: none; border-left: none; border-top: none; border-bottom: none;\">" . number_format($db->qty_po) . "</td>
+																	<td style=\"text-align:right; border-right: none; border-left: none; border-top: none; border-bottom: none;\">" . $price_po2 . "</td>
+																	<td style=\"text-align:right; border-right: none; border-left: none; border-top: none; border-bottom: none;\">". number_format($db->ket, 0, ',', '.') ."</td>
+																	<td style=\"text-align:right; border-left: none; border-right: none; border-top: none; border-bottom: none;\">$subtotal1</td>
+														 </tr></tbody>";
+								}
 							}
 							$chari .= "</table>";
 							$chari .= "

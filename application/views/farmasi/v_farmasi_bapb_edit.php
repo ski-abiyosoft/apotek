@@ -255,7 +255,7 @@ $this->load->view('template/body');
 
                 </div>
 
-                <div class="col-md-7">
+                <!-- <div class="col-md-7">
                   <div class="form-group">
                     <label class="col-md-3 control-label">Ongkir</label>
                     <div class="col-md-4">
@@ -267,7 +267,7 @@ $this->load->view('template/body');
                     </div>
 
                   </div>
-                </div>
+                </div> -->
               </div>
 
               <div class="row">
@@ -351,7 +351,7 @@ $this->load->view('template/body');
                         <input name="het[]" onchange="totalline(<?= $no; ?>);total();" value="<?= $row->het; ?>" id="het1" type="text" class="form-control rightJustified ">
                         </td>
                           <td width="10%">
-                            <input name="expire[]" onchange="totalline(<?= $no; ?>);total()" value="<?= date('Y-m-d', strtotime($row->exp_date)); ?>" id="expire<?= $no; ?>" type="date" class="form-control">
+                            <input name="expire[]" onchange="totalline(<?= $no; ?>);total()" value="<?= date('Y-m', strtotime($row->exp_date)); ?>" id="expire<?= $no; ?>" type="month" class="form-control">
                           </td>
                           <td width="10%">
                             <input name="po[]" onchange="totalline(<?= $no; ?>);total()" value="<?= $row->po_no; ?>" id="po<?= $no; ?>" type="text" class="form-control">
@@ -467,17 +467,18 @@ $this->load->view('template/footer');
   function cekmaterai() {
     var materai = $('#materai').val();
     document.getElementById("_vmaterai").innerHTML = separateComma(materai);
-    var totalx = $('#_vtotal').text();
-    var total = Number(parseInt(totalx.replaceAll(',', '')));
-    if (materai == 10000) {
-      var total_new = total + Number(materai);
-      document.getElementById("_vtotal").innerHTML = separateComma(total_new);
-    } else if (materai == 0) {
-      var totala = $('#_vtotal').text();
-      var totalb = Number(parseInt(totala.replaceAll(',', '')));
-      var total_new = totalb - 10000;
-      document.getElementById("_vtotal").innerHTML = separateComma(total_new);
-    }
+    // var totalx = $('#_vtotal').text();
+    // var total = Number(parseInt(totalx.replaceAll(',', '')));
+    // if (materai == 10000) {
+    //   var total_new = total + Number(materai);
+    //   document.getElementById("_vtotal").innerHTML = separateComma(total_new);
+    // } else if (materai == 0) {
+    //   var totala = $('#_vtotal').text();
+    //   var totalb = Number(parseInt(totala.replaceAll(',', '')));
+    //   var total_new = totalb - 10000;
+    //   document.getElementById("_vtotal").innerHTML = separateComma(total_new);
+    // }
+    total()
     // console.log(total);
   }
 
@@ -711,8 +712,11 @@ $this->load->view('template/footer');
     document.getElementById("_vdiskon").innerHTML = separateComma(tdiskon.toFixed(0));
     document.getElementById("_vppn").innerHTML = separateComma(tppn.toFixed(0));
     document.getElementById("_vmaterai").innerHTML = separateComma(materai.toFixed(0));
-    document.getElementById("_vtotal").innerHTML = separateComma(((tjumlah - tdiskon) + tppn + materai).toFixed(
-      0));
+    if('<?= $pkp; ?>' == '1') {
+      document.getElementById("_vtotal").innerHTML = separateComma(((tjumlah - tdiskon) + materai).toFixed(0));
+    } else {
+      document.getElementById("_vtotal").innerHTML = separateComma(((tjumlah - tdiskon) + tppn + materai).toFixed(0));
+    }
   });
 
   function cekqty(id) {
@@ -766,12 +770,16 @@ $this->load->view('template/footer');
     var diskper = "<input name='disc[]'   id=disc" + idrow + " onchange='totalline(" + idrow + ");total();' value='0'  type='text' class='form-control rightJustified'  >";
 
     var diskrp = "<input name='discrp[]' id=discrp" + idrow + " onchange='totalline(" + idrow + ");' value='0'  type='text' class='form-control rightJustified'  >";
-    var taxx = "<input type='checkbox' name='tax[]' value='0' id=tax" + idrow + " onchange='totalline(" + idrow + ");total();' class='form-control'>";
+    if('<?= $pkp ?>' == '1') {
+      var taxx = "<input type='checkbox' name='tax[]' value='1' checked id=tax" + idrow + " onchange='totalline(" + idrow + ");total();' class='form-control'>";
+    } else {
+      var taxx = "<input type='checkbox' name='tax[]' value='0' id=tax" + idrow + " onchange='totalline(" + idrow + ");total();' class='form-control'>";
+    }
     var jum = "<input name='jumlah[]' id=jumlah" + idrow + " type='text' class='form-control rightJustified' size='40%' readonly>";
 
     var het = "<input name='het[]' id=het" + idrow + " onchange='totalline(" + idrow + ");' value='0'  type='text' class='form-control rightJustified'  >";
     
-    var expire = "<input name='expire[]'  id=expire" + idrow + " onchange='totalline(" + idrow + ") value=''  type='date' class='form-control'>";
+    var expire = "<input name='expire[]'  id=expire" + idrow + " onchange='totalline(" + idrow + ") value=''  type='month' class='form-control'>";
 
     var poo = "<input name='po[]'  id=po" + idrow + " onchange='totalline(" + idrow + ") value=''  type='text' class='form-control'>";
 
@@ -848,23 +856,25 @@ $this->load->view('template/footer');
     var gudang = $('[name="gudang"]').val()
     var terima_no = $('[name="noterima"]').val()
     $.ajax({
-      url: "<?= site_url('farmasi_bapb/data_awal_terima/?kode=') ?>" + kode + "&gudang=" + gudang + "&terima_no=" +
-        terima_no,
-      type: "GET",
+      url: "<?= site_url('farmasi_bapb/data_awal_terima/?kode=') ?>" + kode + "&gudang=" + gudang + "&terima_no=" +terima_no,
+      type: "POST",
       dataType: "JSON",
       success: function(data) {
-        var qty_awal = Number(data.qty_terima).toFixed(0);
-        var disc_awal = Number(data.discountrp).toFixed(0);
-        harga_peritem = disc_awal / qty_awal;
-        disc_new = qty * harga_peritem;
-        var discrp = Number(parseInt(($("#discrp" + id).val()).replaceAll(',', '')));
-        if (discrp > 0) {
-          $("#discrp" + id).val(separateComma(disc_new.toFixed(0)));
-        } else {
-          $("#discrp" + id).val(0);
+        if(data != null) {
+          // console.log(data)
+          var qty_awal = Number(data.qty_terima).toFixed(0);
+          var disc_awal = Number(data.discountrp).toFixed(0);
+          harga_peritem = disc_awal / qty_awal;
+          disc_new = qty * harga_peritem;
+          var discrp = Number(parseInt(($("#discrp" + id).val()).replaceAll(',', '')));
+          if (discrp > 0) {
+            $("#discrp" + id).val(separateComma(disc_new.toFixed(0)));
+          } else {
+            $("#discrp" + id).val(0);
+          }
+          // console.log(data)
+          total();
         }
-        // console.log(data)
-        total();
       }
     });
   }
@@ -919,8 +929,10 @@ $this->load->view('template/footer');
       type: "GET",
       dataType: "JSON",
       success: function(data) {
+        // console.log(data)
         $('#sat' + vid).val(data.satuan1);
         $('#harga' + vid).val(separateComma(data.hargabeli));
+        $('#het' + vid).val(separateComma(data.het));
         totalline(vid);
       }
     });
@@ -1264,8 +1276,11 @@ $this->load->view('template/footer');
       tdiskon += diskonrp1;
     }
     var tmaterai = Number(tmateraix);
-
-    var abc = Number(tjumlah - tdiskon + tppn);
+    if('<?= $pkp ?>' == '1'){
+      var abc = Number(tjumlah - tdiskon);
+    } else {
+      var abc = Number(tjumlah - tdiskon + tppn);
+    }
     if (tmaterai == 10000) {
       var tmattotal = abc + tmaterai;
     } else {

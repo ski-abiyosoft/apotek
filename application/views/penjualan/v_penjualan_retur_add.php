@@ -116,7 +116,8 @@ $this->load->view('template/body');
                                     <label class="col-md-3 control-label">Gudang</label>
                                     <div class="col-md-6">
                                         <div class="input-group">
-                                            <input type="text" class="form-control input-medium" placeholder="Auto" name="gudang" id="gudang" value="" readonly>
+                                            <input type="text" class="form-control input-medium" placeholder="Auto" name="nmgudang" id="nmgudang" value="" readonly>
+                                            <input type="hidden" class="form-control input-medium" placeholder="Auto" name="gudang" id="gudang">
                                             <!-- <select id="gudang" name="gudang" class="form-control select2_el_farmasi_depo input-large" data-placeholder="Pilih..." onkeypress="return tabE(this,event)">
 														 
 														
@@ -487,24 +488,24 @@ $this->load->view('template/footer');
 
 
     function savex() {
-        var resepno = document.getElementById('kwiobat').value;
-        var gudang = document.getElementById('gudang').value;
+        var resepno   = document.getElementById('kwiobat').value;
+        var gudang    = document.getElementById('gudang').value;
 
-        var table = document.getElementById('datatable');
-        var rowCount = table.rows.length;
-        var loop = rowCount - 1;
+        var table     = document.getElementById('datatable');
+        var rowCount  = table.rows.length;
+        var loop      = rowCount - 1;
 
 
-        var noform = $('[name="cust"]').val();
-        var rekmed = $('[name="rekmed"]').val();
-        var tanggal = $('[name="tanggal"]').val();
-        var gudang = $('[name="gudang"]').val();
-        var total = $('#_vtotal').text();
-        var totalx = Number(parseInt(total.replaceAll(',', '')));
-        var ppn = $('#_vppn').text();
-        var cektgll = cektgl;
-        var date_now = date_n;
-        var cekuserr = cekuser;
+        var noform    = $('[name="cust"]').val();
+        var rekmed    = $('[name="rekmed"]').val();
+        var tanggal   = $('[name="tanggal"]').val();
+        var gudang    = $('[name="gudang"]').val();
+        var total     = $('#_vtotal').text();
+        var totalx    = Number(parseInt(total.replaceAll(',', '')));
+        var ppn       = $('#_vppn').text();
+        var cektgll   = cektgl;
+        var date_now  = date_n;
+        var cekuserr  = cekuser;
         if (cekuserr == 3 || cekuserr == 2) {
             if (cektgll != date_now) {
                 swal({
@@ -911,7 +912,8 @@ $this->load->view('template/footer');
                 type: "GET",
                 dataType: "JSON",
                 success: function(data) {
-                    $('#gudang').val(data.gudang);
+                    $('#nmgudang').val(data.nm_gud); 
+                    $('#gudang').val(data.gudang); 
                     $('#rekmed').val(data.rekmed);
                     $('#resepno').val(data.resepno);
                     cektgl = data.tgll;

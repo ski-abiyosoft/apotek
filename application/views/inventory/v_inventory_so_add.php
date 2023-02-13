@@ -8,7 +8,7 @@ $this->load->view('template/body');
         <h3 class="page-title">
             <span class="title-unit">&nbsp;<?php echo $this->session->userdata('unit'); ?> </span>&nbsp;
             -
-            <span class="title-web">APOTEK <small>Stok Opname</small>
+            <span class="title-web">Farmasi <small>Stok Opname</small>
         </h3>
 
         <ul class="page-breadcrumb breadcrumb">
@@ -224,7 +224,6 @@ $this->load->view('template/footer');
                         type: "GET",
                         dataType: "JSON",
                         success: function(data) {
-                            console.log(data)
                             $('#sat' + vid).val(data.satuan1);
                             var qty = $('#qty' + vid).val();
                             $('#saldoakhir' + id).val(Math.round(data.salakhir));

@@ -467,6 +467,12 @@ class App extends CI_Controller
 		echo json_encode($this->M_global->getfarmasibarang($q));
 	}
 
+	function search_atp()
+	{
+		$q = $this->input->post('searchTerm');
+		echo json_encode($this->M_global->get_atp($q));
+	}
+	
 	function search_farmasi_baranggud()
 	{
 		$q = $this->input->post('searchTerm');

@@ -71,16 +71,17 @@ foreach ($header as $rowh) {
                                         <label class="col-md-3 control-label">Pelanggan</label>
                                         <div class="col-md-6">
                                             <div class="input-group">
-                                                <select id="cust" name="cust" class="form-control select2_el_pasien input-large" data-placeholder="Pilih..." onkeypress="return tabE(this,event)">
+                                                <select id="cust" name="cust" class="form-control select2_el_pasien input-large" data-placeholder="Pilih..." onkeypress="return tabE(this,event)" disabled>
                                                     <?php
-                                                    if ($rowh->rekmed) {
-                                                        $datapasien = data_master('tbl_pasien', array('rekmed' => $rowh->rekmed));
+                                                    if ($rowh->rekmed=='Non Member') {    
                                                     ?>
+                                                    <option value="Non Member">Non Member</option>
+                                                    <?php } else { 
+                                                        $datapasien = data_master('tbl_pasien', array('rekmed' => $rowh->rekmed));
+                                                        ?>
                                                         <option value=" <?= $rowh->rekmed; ?>">
                                                             <?= $rowh->rekmed . ' | ' . $datapasien->namapas; ?>
                                                         </option>
-                                                    <?php } else { ?>
-                                                        <option value=""></option>
                                                     <?php } ?>
                                                 </select>
                                                 </select>
@@ -157,14 +158,14 @@ foreach ($header as $rowh) {
                                 <div class="col-md-12">
 
                                     <table id="datatable" class="table table-hoverx table-stripedx table-borderedx table-condensed table-scrollable">
-                                        <thead>
-                                            <th width="35%" style="text-align: center">Nama Barang</th>
-                                            <th width="10%" style="text-align: center">Kuantitas</th>
-                                            <th width="10%" style="text-align: center">Satuan</th>
-                                            <th width="15%" style="text-align: center">Harga</th>
-                                            <th width="5%" style="text-align: center"></th>
-                                            <th width="10%" style="text-align: center">Diskon (Rp)</th>
-                                            <th width="15%" style="text-align: center">Total Harga</th>
+                                        <thead class="breadcrumb">
+                                            <th class="title-white" width="35%" style="text-align: center">Nama Barang</th>
+                                            <th class="title-white" width="10%" style="text-align: center">Kuantitas</th>
+                                            <th class="title-white" width="10%" style="text-align: center">Satuan</th>
+                                            <th class="title-white" width="15%" style="text-align: center">Harga</th>
+                                            <th class="title-white" width="5%" style="text-align: center"></th>
+                                            <th class="title-white" width="10%" style="text-align: center">Diskon (Rp)</th>
+                                            <th class="title-white" width="15%" style="text-align: center">Total Harga</th>
 
                                         </thead>
 

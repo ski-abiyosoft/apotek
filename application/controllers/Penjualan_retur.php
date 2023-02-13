@@ -20,26 +20,24 @@ class Penjualan_retur extends CI_Controller
 
 		if (!empty($cek)) {
 
-			//   $q1 = 
-			// 		"select a.*, b.namapas
-			// 		from
-			// 		   tbl_apohreturjual a left outer join
-			// 		   tbl_pasien b on a.rekmed=b.rekmed
-			// 		where
-			// 		   a.koders = '$unit'
-			// 		order by
-			// 		   a.tglretur desc";
-			$q1 = "SELECT c.returno, a.*, b.namapas, a.totalnet AS totalrp FROM tbl_apohreturjual a LEFT OUTER JOIN tbl_pasien b ON a.rekmed=b.rekmed JOIN tbl_apodreturjual AS c ON c.returno = a.returno WHERE a.koders = '$unit' GROUP BY a.returno ORDER BY a.returno DESC";
+			$q1 = "SELECT c.returno, a.*, b.namapas, a.totalnet AS totalrp 
+			FROM tbl_apohreturjual a 
+			-- LEFT OUTER JOIN tbl_pasien b ON a.rekmed=b.rekmed 
+			LEFT OUTER JOIN tbl_apoposting b ON a.resepno=b.resepno 
+			JOIN tbl_apodreturjual AS c ON c.returno = a.returno 
+			WHERE a.koders = '$unit' 
+			GROUP BY a.returno 
+			ORDER BY a.returno DESC";
 			//    $total ="";
-			$bulan  = $this->M_global->_periodebulan();
-			$nbulan = $this->M_global->_namabulan($bulan);
-			$periode = 'Periode ' . $nbulan . '-' . $this->M_global->_periodetahun();
-			$d['keu'] = $this->db->query($q1)->result();
-			$level = $this->session->userdata('level');
-			$akses = $this->M_global->cek_menu_akses($level, 3204);
-			$d['akses'] = $akses;
-			$d['periode'] = $periode;
-			$d['ppn'] = $this->db->query("SELECT * FROM tbl_pajak where kodetax='PPN'")->row();
+			$bulan           = $this->M_global->_periodebulan();
+			$nbulan          = $this->M_global->_namabulan($bulan);
+			$periode         = 'Periode ' . $nbulan . '-' . $this->M_global->_periodetahun();
+			$d['keu']        = $this->db->query($q1)->result();
+			$level           = $this->session->userdata('level');
+			$akses           = $this->M_global->cek_menu_akses($level, 3204);
+			$d['akses']      = $akses;
+			$d['periode']    = $periode;
+			$d['ppn']        = $this->db->query("SELECT * FROM tbl_pajak where kodetax='PPN'")->row();
 			$this->load->view('penjualan/v_penjualan_retur', $d);
 		} else {
 			header('location:' . base_url());
@@ -149,20 +147,20 @@ class Penjualan_retur extends CI_Controller
 
 			$pdf->setfont('Arial', 'B', 18);
 			$pdf->SetAligns(array('C', 'C', 'C'));
-			$border = array('BTLR');
-			$size   = array('');
-			$align = array('C');
-			$style = array('B');
-			$size  = array('18');
-			$max   = array(20);
-			$fc     = array('0');
-			$hc     = array('20');
-			$judul = array('RETURN PENJUALAN RESEP');
+			$border    = array('BTLR');
+			$size      = array('');
+			$align     = array('C');
+			$style     = array('B');
+			$size      = array('18');
+			$max       = array(20);
+			$fc        = array('0');
+			$hc        = array('20');
+			$judul     = array('RETURN PENJUALAN RESEP');
 			$pdf->FancyRow2(10, $judul, $fc,  $border, $align, $style, $size, $max);
-			$size  = array('10');
-			$align = array('L');
-			$border = array('');
-			$judul = array('Kepada Yth:');
+			$size      = array('10');
+			$align     = array('L');
+			$border    = array('');
+			$judul     = array('Kepada Yth:');
 			$pdf->FancyRow2(10, $judul, $fc,  $border, $align, $style, $size, $max);
 
 
@@ -184,31 +182,31 @@ class Penjualan_retur extends CI_Controller
 
 			$pdf->ln(2);
 			$pdf->SetWidths(array(10, 25, 50, 20, 20, 20, 20, 25));
-			$border = array('LTB', 'TB', 'TB', 'TB', 'TB', 'TB', 'TB', 'TBR');
-			$align  = array('C', 'C', 'C', 'C', 'C', 'C', 'C', 'C');
+			$border    = array('LRTB', 'LRTB', 'LRTB', 'LRTB', 'LRTB', 'LRTB', 'LRTB', 'LRTB');
+			$align     = array('C', 'C', 'C', 'C', 'C', 'C', 'C', 'C');
 			$pdf->setfont('Arial', 'B', 9);
 			$pdf->SetAligns(array('L', 'C', 'R'));
-			$fc = array('0', '0', '0', '0', '0', '0', '0', '0');
-			$judul = array('No.', 'Kode', 'Nama Barang', 'Qty', 'Satuan', 'Harga', 'Discount', 'Total');
+			$fc        = array('0', '0', '0', '0', '0', '0', '0', '0');
+			$judul     = array('No.', 'Kode', 'Nama Barang', 'Qty', 'Satuan', 'Harga', 'Discount', 'Total');
 			$pdf->FancyRow2(8, $judul, $fc, $border, $align);
-			$border = array('', '', '');
+			$border    = array('', '', '');
 			$pdf->setfont('Arial', '', 9);
-			$tot = 0;
-			$subtot = 0;
-			$tdisc  = 0;
-			$border = array('', '', '', '', '', '', '', '');
+			$tot       = 0;
+			$subtot    = 0;
+			$tdisc     = 0;
+			$border    = array('LRTB', 'LRTB', 'LRTB', 'LRTB', 'LRTB', 'LRTB', 'LRTB', 'LRTB');
 
-			$align  = array('L', 'L', 'L', 'R', 'C', 'R', 'R', 'R');
-			$fc = array('0', '0', '0', '0', '0', '0', '0', '0');
-			$max = array(8, 8, 8, 8, 8, 8, 8, 8);
+			$align     = array('L', 'L', 'L', 'R', 'C', 'R', 'R', 'R');
+			$fc        = array('0', '0', '0', '0', '0', '0', '0', '0');
+			$max       = array(8, 8, 8, 8, 8, 8, 8, 8);
 			$pdf->SetFillColor(0, 0, 139);
 			$pdf->settextcolor(0);
-			$no = 1;
-			$totitem = 0;
-			$tot = 0;
-			$tot1 = 0;
-			$totppn = 0;
-			$totdis = 0;
+			$no        = 1;
+			$totitem   = 0;
+			$tot       = 0;
+			$tot1      = 0;
+			$totppn    = 0;
+			$totdis    = 0;
 			foreach ($detil as $db) {
 				$totdis += $db->discountrp;
 				$totppn += $db->ppnrp;
@@ -724,42 +722,48 @@ class Penjualan_retur extends CI_Controller
 
 				public function save_one()
 				{
-					$cabang = $this->session->userdata('unit');
-					$nobukti  = urut_transaksi('APORETURJUAL', 16);
-					$noresep = $this->input->post('kwiobat');
-					$rekmed = $this->input->post('rekmed');
-					$tanggal = $this->input->post('tanggal');
-					$gudang = $this->input->post('gudang');
-					$alasan = $this->input->post('alasan');
-					$userid = $this->session->userdata('username');
-					$total   = $this->input->get('vtotal');
+					$cabang    = $this->session->userdata('unit');
+					$nobukti   = urut_transaksi('APORETURJUAL', 16);
+					$noresep   = $this->input->post('kwiobat');
+					$rekmed    = $this->input->post('rekmed');
+					$tanggal   = $this->input->post('tanggal');
+					$gudang    = $this->input->post('gudang');
+					$alasan    = $this->input->post('alasan');
+					$userid    = $this->session->userdata('username');
+					$total     = $this->input->get('vtotal');
 					$cek = $this->session->userdata('level');
 					if (!empty($cek)) {
-						$data_regist = $this->db->get_where('tbl_regist', ['rekmed' => $rekmed])->row_array();
-						$noreg = $data_regist['noreg'];
+						if($rekmed=='Non Member'){
+							$noreg='';
+						}else{
+							$data_regist = $this->db->get_where('tbl_regist', ['rekmed' => $rekmed])->row_array();
+							$noreg = $data_regist['noreg'];
+						}
 						if ($noresep != '' && $cabang != '' && $nobukti != '') {
 							$data = [
-								'koders'  => $cabang,
-								'returno' => $nobukti,
-								'resepno' => $noresep,
-								'noreg'  => $noreg,
-								'rekmed'  => $rekmed,
-								'tglretur' => date('Y-m-d', strtotime($tanggal)),
-								'gudang' => $gudang,
-								'username' => $userid,
-								'totalnet' => $total,
-								'alasan' => $alasan,
+								'koders'  	=> $cabang,
+								'returno' 	=> $nobukti,
+								'resepno' 	=> $noresep,
+								'noreg'   	=> $noreg,
+								'rekmed'  	=> $rekmed,
+								'tglretur' 	=> date('Y-m-d', strtotime($tanggal)),
+								'gudang' 	=> $gudang,
+								'username' 	=> $userid,
+								'totalnet' 	=> $total,
+								'alasan' 	=> $alasan,
 								'jamreturjual' => date('H:i:s'),
 								// str_replace(",","",$this->input->get('vtotal'))
 							];
 							$this->db->insert('tbl_apohreturjual', $data);
 						}
 						$getnamapas = $this->db->query("SELECT date(tglresep)as tgll,tbl_apoposting.* from tbl_apoposting where resepno = '$noresep'")->row();
-						$psn = $this->db->get_where('tbl_pasien', ['rekmed' => $rekmed])->row_array();
-						if ($psn['namapas'] != null || $psn['namapas'] != '') {
-							$namapas = $psn['namapas'];
-						} else {
+
+						if($rekmed=='Non Member'){
 							$namapas = $getnamapas->namapas;
+						}else{
+							$psn = $this->db->get_where('tbl_pasien', ['rekmed' => $rekmed])->row_array();
+							$namapas = $psn['namapas'];
+
 						}
 						$data_apoposting = [
 							'koders' => $cabang,
@@ -782,24 +786,24 @@ class Penjualan_retur extends CI_Controller
 
 				public function save_multi()
 				{
-					$kodebarang = $this->input->get('kodebarang');
-					$resepno = $this->input->get('resepno');
-					$loop = $this->input->get('loop');
-					$satuan = $this->input->get('satuan');
-					$jumlah = $this->input->get('jumlah');
-					$dsc = $this->input->get('dsc');
-					$ppn = $this->input->get('ppn');
-					$apodresep = $this->db->get_where('tbl_apodresep', ['resepno' => $resepno, 'kodebarang' => $kodebarang])->row_array();
-					$cabang = $this->session->userdata('unit');
-					$gudang = $this->input->post('gudang');
-					$rekmed = $this->input->post('rekmed');
-					$tanggal = $this->input->post('tanggal');
-					$userid = $this->session->userdata('username');
-					$noresep = $this->input->post('kwiobat');
-					$qty = (int)$this->input->get('qty');
-					$harga = (int)$this->input->get('harga');
-					$cek = $this->session->userdata('level');
-					$ppnxx = $this->db->query("SELECT * FROM tbl_pajak where kodetax='PPN'")->row();
+					$kodebarang    = $this->input->get('kodebarang');
+					$resepno       = $this->input->get('resepno');
+					$loop          = $this->input->get('loop');
+					$satuan        = $this->input->get('satuan');
+					$jumlah        = $this->input->get('jumlah');
+					$dsc           = $this->input->get('dsc');
+					$ppn           = $this->input->get('ppn');
+					$apodresep     = $this->db->get_where('tbl_apodresep', ['resepno' => $resepno, 'kodebarang' => $kodebarang])->row_array();
+					$cabang        = $this->session->userdata('unit');
+					$gudang        = $this->input->post('gudang');
+					$rekmed        = $this->input->post('rekmed');
+					$tanggal       = $this->input->post('tanggal');
+					$userid        = $this->session->userdata('username');
+					$noresep       = $this->input->post('kwiobat');
+					$qty           = (int)$this->input->get('qty');
+					$harga         = (int)$this->input->get('harga');
+					$cek           = $this->session->userdata('level');
+					$ppnxx         = $this->db->query("SELECT * FROM tbl_pajak where kodetax='PPN'")->row();
 					if (!empty($cek)) {
 						if ($qty <= (int)$apodresep['qty']) {
 							$qty_new = $qty;
@@ -1067,8 +1071,9 @@ class Penjualan_retur extends CI_Controller
 						$unit = $this->session->userdata('unit');
 
 						$header = $this->db->get_where('tbl_apohreturjual', array('returno' => $nomor));
-						// $detil = $this->db->query("SELECT tbl_barang.namabarang, tbl_barang.satuan1, tbl_apodreturjual.* from tbl_barang inner join tbl_apodreturjual on tbl_apodreturjual.kodebarang=tbl_barang.kodebarang where tbl_apodreturjual.returno = '$nomor' ");
+						
 						$ceking = $this->db->query("SELECT * FROM tbl_apodreturjual d WHERE returno = '$nomor' and kodebarang IN (SELECT kodebarang FROM tbl_barang)")->result();
+
 						if (empty($ceking)) {
 							$detil = $this->db->query("SELECT (select namabarang from tbl_logbarang where kodebarang=d.kodebarang) as namabarang, (SELECT satuan1 FROM tbl_logbarang WHERE kodebarang=d.kodebarang) AS satuan1, d.* from tbl_apohreturjual h join tbl_apodreturjual d on h.returno=d.returno where d.returno = '$nomor'");
 						} else {
@@ -1076,9 +1081,9 @@ class Penjualan_retur extends CI_Controller
 						}
 						// var_dump($detil); die;
 
-						$d['header']  = $header->result();
-						$d['detil']   = $detil->result();
-						$d['jumdata1'] = $detil->num_rows();
+						$d['header']    = $header->result();
+						$d['detil']     = $detil->result();
+						$d['jumdata1']  = $detil->num_rows();
 						$this->load->view('penjualan/v_penjualan_retur_edit', $d);
 					} else {
 						header('location:' . base_url());
@@ -1182,7 +1187,8 @@ class Penjualan_retur extends CI_Controller
 				public function getdataresep2()
 				{
 					$nokwitansiobat  = $this->input->get('noresep');
-					$query = "SELECT date(tglresep)as tgll,tbl_apoposting.* from tbl_apoposting where resepno = '$nokwitansiobat'";
+					$query = "SELECT date(tglresep)as tgll,
+					(select d.keterangan from tbl_depo d where d.depocode=tbl_apoposting.gudang)nm_gud,tbl_apoposting.* from tbl_apoposting where resepno = '$nokwitansiobat'";
 					$data  = $this->db->query($query)->row();
 
 					echo json_encode($data);

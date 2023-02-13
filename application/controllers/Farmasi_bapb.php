@@ -88,6 +88,8 @@ class Farmasi_bapb extends CI_Controller
 	public function add()
 	{
 		$cek = $this->session->userdata('username');
+		$cabang = $this->session->userdata('unit');
+		$cek_pkp = $this->db->get_where("tbl_namers", ["koders" => $cabang])->row();
 		if (!empty($cek)) {
 			$level = $this->session->userdata('level');
 			$akses = $this->M_global->cek_menu_akses($level, 3102);
@@ -98,6 +100,8 @@ class Farmasi_bapb extends CI_Controller
 			$data['url']      = 'farmasi_bapb';
 			$data['tanggal']  = date('d-m-Y');
 			$data['akses']    = $akses;
+			$data['pkp']    	= $cek_pkp->pkp;
+			$data['now']			= date("Y-m");
 			$data['nomorpo']  = urut_transaksi('SETUP_APO', 19);
 			$data['ppn'] = $this->db->get_where('tbl_pajak', ['kodetax' => 'PPN'])->row_array();
 			$this->load->view('farmasi/v_farmasi_bapb_add', $data);
@@ -291,6 +295,8 @@ class Farmasi_bapb extends CI_Controller
 	public function edit($id)
 	{
 		$cek = $this->session->userdata('username');
+		$cabang = $this->session->userdata('unit');
+		$cek_pkp = $this->db->get_where("tbl_namers", ["koders" => $cabang])->row();
 		if (!empty($cek)) {
 			$level    = $this->session->userdata('level');
 			$akses    = $this->M_global->cek_menu_akses($level, 3102);
@@ -309,6 +315,7 @@ class Farmasi_bapb extends CI_Controller
 
 			$data['nobukti']    = $id;
 			$data['header']     = $header;
+			$data['pkp']     = $cek_pkp->pkp;
 			$data['ppn2']       = $this->db->query("SELECT * FROM tbl_pajak where kodetax='PPN'")->row();
 			//   $data['header2']    = $header->result();
 			$data['detil']      = $detil->result();
@@ -654,6 +661,7 @@ class Farmasi_bapb extends CI_Controller
 		$ppn = $this->db->get_where('tbl_pajak', ['kodetax' => 'PPN'])->row_array();
 		$this->db->set('terima_date', $this->input->post('tanggal'));
 		$this->db->set('due_date', $this->input->post('jatuhtempo'));
+		$this->db->set('alasan', $this->input->post('alasan_ubah'));
 		$this->db->set('tgltukar', $this->input->post('tanggaltukar'));
 		$this->db->set('vendor_id', $this->input->post('supp'));
 		$this->db->set('sj_no', $this->input->post('nomorsj'));
@@ -1025,6 +1033,8 @@ class Farmasi_bapb extends CI_Controller
 	{
 		$cek = $this->session->userdata('level');
 		$unit = $this->session->userdata('unit');
+		$cek_pkp = $this->db->get_where("tbl_namers", ["koders" => $unit])->row();
+		$pkp = $cek_pkp->pkp;
 		$user = $this->session->userdata('username');
 		if (!empty($cek)) {
 
@@ -1095,24 +1105,24 @@ class Farmasi_bapb extends CI_Controller
 
 
 			$pdf->ln(2);
-			$pdf->SetWidths(array(10, 20, 32, 15, 15, 15, 15, 15, 18, 35));
-			$border = array('LTBR', 'LTBR', 'LTBR', 'LTBR', 'LTBR', 'LTBR', 'LTBR', 'LTBR', 'LTBR', 'LTBR');
-			$align  = array('C', 'C', 'C', 'C', 'C', 'C', 'C', 'C', 'C', 'C');
-			$pdf->setfont('Arial', 'B', 8);
+			$pdf->SetWidths(array(10, 25, 25, 15, 15, 15, 15, 15, 15, 18, 22));
+			$border = array('LTBR','LTBR', 'LTBR', 'LTBR', 'LTBR', 'LTBR', 'LTBR', 'LTBR', 'LTBR', 'LTBR', 'LTBR');
+			$align  = array('C','C', 'C', 'C', 'C', 'C', 'C', 'C', 'C', 'C', 'C');
+			$pdf->setfont('Arial', 'B', 9);
 			$pdf->SetAligns(array('L', 'C', 'R'));
-			$fc = array('0', '0', '0', '0', '0', '0', '0', '0', '0', '0');
-			$judul = array('No.', 'Kode Barang', 'Nama Barang', 'Qty', 'Satuan', 'HPP', 'Disc', 'Total', 'Expired', 'Po No');
-			$pdf->FancyRow2(8, $judul, $fc, $border, $align);
-			$pdf->setfont('Arial', '', 8);
+			$fc = array('0','0','0', '0', '0', '0', '0', '0', '0', '0', '0', '0');
+			$judul = array('NO', 'Kode Barang', 'Nama Barang', 'Qty', 'Satuan', 'PPN', 'HPP', 'Disc', 'Total', 'Expired', 'Po No');
+			$pdf->FancyRow2(9, $judul, $fc, $border, $align);
+			$pdf->setfont('Arial', '', 9);
 			$tot = 0;
 			$subtot = 0;
 			$tdisc  = 0;
-			$border = array('LTBR', 'LTBR', 'LTBR', 'LTBR', 'LTBR', 'LTBR', 'LTBR', 'LTBR','LTBR', 'LTBR');
-			$align  = array('C', 'L', 'L', 'R', 'R', 'R', 'R', 'R', 'L', 'L');
-			$style = array('', '', '', '', '', '', '', '', '', '');
-			$size  = array('8', '8', '8', '8', '8', '8', '8', '8','8', '8');
-			$max   = array(2, 2, 2, 2, 2, 2, 2, 2,2, 2);
-			$fc     = array('0', '0', '0', '0', '0', '0', '0', '0','0', '0');
+			$border = array('LTBR','LTBR', 'LTBR', 'LTBR', 'LTBR', 'LTBR', 'LTBR', 'LTBR', 'LTBR','LTBR', 'LTBR');
+			$align  = array('L','L', 'L', 'L', 'R', 'R', 'R', 'R', 'R', 'L', 'L');
+			$style = array('','', '', '', '', '', '', '', '', '', '');
+			$size  = array('8','8', '8', '8', '8', '8', '8', '8', '8','8', '8');
+			$max   = array(2,2, 2, 2, 2, 2, 2, 2, 2,2, 2);
+			$fc     = array('0', '0', '0', '0', '0', '0', '0', '0', '0','0', '0');
 			$no = 1;
 			$totitem = 0;
 			$tot = 0;
@@ -1132,6 +1142,7 @@ class Farmasi_bapb extends CI_Controller
 					$db->namabarang,
 					number_format($db->qty_terima),
 					$db->satuan,
+					number_format($db->vatrp),
 					number_format($db->price),
 					number_format($db->discountrp),
 					number_format($db->totalrp),
@@ -1146,7 +1157,11 @@ class Farmasi_bapb extends CI_Controller
 			$ppn = str_replace(',', '.', $header->vatrp);;
 
 			$materai = $header->materai;
-			$totalnet = $tot + $ppn + $materai - $discount;
+			if($pkp == 1) {
+				$totalnet = $tot + $materai - $discount;
+			}else {
+				$totalnet = $tot + $ppn + $materai - $discount;
+			}
 			// $totalnet = str_replace(',', '.', $header->vatrp);
 			$pdf->SetWidths(array(10, 25, 30, 15, 15, 20, 20, 20, 35));
 			$pdf->SetWidths(array(4, 40, 30, 40, 20, 20, 35));

@@ -354,8 +354,13 @@ $this->load->view('template/body');
                             type="text" class="form-control rightJustified ">
                         </td>
                         <td>
-                          <input type="checkbox" name="tax[]" value='0' id="tax1" class="form-control"
-                            onchange="totalline(1);total();">
+                          <?php if($pkp == 1) : ?>
+                            <input type="checkbox" name="tax[]" value='0' id="tax1" class="form-control" checked
+                              onchange="totalline(1);total();">
+                          <?php else : ?>
+                            <input type="checkbox" name="tax[]" value='0' id="tax1" class="form-control"
+                              onchange="totalline(1);total();">
+                          <?php endif; ?>
                         </td>
 
                         <td>
@@ -367,7 +372,7 @@ $this->load->view('template/body');
                             type="text" class="form-control rightJustified ">
                         </td>
                         <td>
-                          <input name="expire[]" onchange="totalline(1);total()" value="" id="expire1" type="date"
+                          <input name="expire[]" onchange="totalline(1);total()" value="" id="expire1" type="month"
                             class="form-control">
                         </td>
                         
@@ -602,16 +607,22 @@ function tambah() {
 
   // var taxx = "<input type='checkbox' value=0 name='tax[]' id=tax" + idrow + " onchange='totalline(" + idrow +
   //     ");total();' class='form-control'>";
-  var taxx = "<input type='checkbox' name='tax[]' value='0' id=tax" + idrow +
-    " onchange='totalline(" + idrow +
-    ");total();' class='form-control'>";
+  if('<?= $pkp; ?>' == '1') {
+    var taxx = "<input type='checkbox' name='tax[]' value='1' checked id=tax" + idrow +
+      " onchange='totalline(" + idrow +
+      ");total();' class='form-control'>";
+  } else {
+    var taxx = "<input type='checkbox' name='tax[]' value='0' id=tax" + idrow +
+      " onchange='totalline(" + idrow +
+      ");total();' class='form-control'>";
+  }
 
   var jum = "<input name='jumlah[]' id=jumlah" + idrow +
     " type='text' class='form-control rightJustified' size='40%' readonly>";
 
   var het = "<input name='het[]' id=het" + idrow + " onchange='totalline(" + idrow + ");' value='0'  type='text' class='form-control rightJustified'  >";
-    
-  var expire = "<input name='expire[]'  id=expire" + idrow + " onchange='totalline(" + idrow + ") value=''  type='date' class='form-control'>";
+  var now = '<?= $now?>';
+  var expire = "<input name='expire[]'  id=expire" + idrow + " onchange='totalline(" + idrow + ") value=''  type='month' class='form-control'>";
 
   var poo = "<input name='po[]'  id=po" + idrow + " onchange='totalline(" + idrow +
     ") value=''  type='text' class='form-control'>";
@@ -1388,6 +1399,8 @@ function total() {
       }
     });
 
+    var cekppn2 = $("#ppn2_").val() / 100;
+
     // console.log('tax ' + arr[i-1]);
     if (document.getElementById('tax' + arr[i - 1]).checked === true) {
       tppn = tppn + (eval(subtotal1 * cekppn2));
@@ -1396,7 +1409,11 @@ function total() {
   }
   var tmaterai = Number(tmateraix);
 
-  var abc = Number(tjumlah - tdiskon + tppn);
+  if('<?= $pkp; ?>' == '1') {
+    var abc = Number(tjumlah - tdiskon);
+  } else {
+    var abc = Number(tjumlah - tdiskon + tppn);
+  }
   if (tmaterai == 10000) {
     var tmattotal = abc + tmaterai;
   } else {
@@ -1466,7 +1483,7 @@ function totalline(id) {
   //    }else{
   if (document.getElementById('tax' + id).checked == true) {
     var ppn2_ = $('#ppn2_').val() / 100;
-    tot = tot * ppn2_;
+    pajak = (qty * harga) * ppn2_;
   }
 
   if (eval(diskon) > 0) {
@@ -1482,13 +1499,13 @@ function totalline(id) {
 
   row.cells[6].children[0].value = formatCurrency1(diskon);
   row.cells[8].children[0].value = formatCurrency1(tot);
-  total();
   //    }
   var vtotal = $('#_vtotal').text();
   var xtotal = parseInt(vtotal.replaceAll(',', ''));
   // if (xtotal >= '5000000') {
   //     $('#materai').val("10000").change();
   // }
+  total();
 
 }
 

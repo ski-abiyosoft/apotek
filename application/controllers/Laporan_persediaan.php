@@ -1063,7 +1063,7 @@ class Laporan_persediaan extends CI_Controller
           }
      }
 
-     function tes_lap() {
+     function lap_03() {
           $cekpdf        = $this->input->get('pdf');
           $dari          = $this->input->get('dari');
           $sampai        = $this->input->get('sampai');
@@ -1081,8 +1081,9 @@ class Laporan_persediaan extends CI_Controller
           $phone         = $kop['phone'];
           $whatsapp      = $kop['whatsapp'];
           $npwp          = $kop['npwp'];
+          $judul         = '03 Laporan Persediaan Barang';
           $chari         = '';
-          $judul = 'apa aja';
+          $data_gudang   = $this->db->query("SELECT * FROM tbl_depo WHERE depocode = '$gudang'")->row();
           $chari .= "<table style=\"border-collapse:collapse;font-family: Century Gothic; font-size:12px; color:#000;\" width=\"100%\"  border=\"0\" cellspacing=\"0\" cellpadding=\"0\">
                <tr>
                     <td rowspan=\"6\" align=\"center\">
@@ -1108,7 +1109,45 @@ class Laporan_persediaan extends CI_Controller
                          </b>
                     </td>
                </tr>
-          </table><br><br>";
+          </table>";
+          $chari .= "<table style=\"border-collapse:collapse;font-family: tahoma; font-size:12px\" width=\"100%\" align=\"center\" border=\"0\">
+               <tr>
+                    <td> &nbsp; </td>
+               </tr> 
+          </table>";
+          $chari .= "<table style=\"border-collapse:collapse;font-family: tahoma; font-size:2px\" width=\"100%\" align=\"center\" border=\"1\">     
+               <tr>
+                    <td style=\"border-top: none;border-right: none;border-left: none;\"></td>
+               </tr> 
+          </table>";
+          $chari .= "<table style=\"border-collapse:collapse;font-family: tahoma; font-size:2px\" width=\"100%\" align=\"center\" border=\"1\">     
+               <tr>
+                    <td style=\"border-top: none;border-right: none;border-left: none;\"></td>
+               </tr> 
+          </table>";
+          $chari .= "<table style=\"border-collapse:collapse;font-family: Tahoma; font-size:11px\" width=\"100%\" align=\"center\" border=\"0\" cellspacing=\"1\" cellpadding=\"3\">
+               <tr>
+                    <td width=\"15%\" style=\"text-align:center; font-size:20px;\"><b>$judul $unit</b></td>
+               </tr>
+               <tr>
+                    <td width=\"15%\" style=\"text-align:center; font-size:11px;\">Dari tgl " . date("d-m-Y", strtotime($dari)) . " Sampai tgl " . date("d-m-Y", strtotime($sampai)) . "</td>
+               </tr>
+          </table>";
+          $chari .= "<table style=\"border-collapse:collapse;font-family: tahoma; font-size:12px\" width=\"100%\" align=\"center\" border=\"0\">
+               <tr>
+                    <td> &nbsp; </td>
+               </tr> 
+          </table>";
+          $chari .= "<table style=\"border-collapse:collapse;font-family: tahoma; font-size:12px\" width=\"100%\" align=\"center\" border=\"0\" cellspacing=\"1\" cellpadding=\"3\">
+               <tr>
+                    <td width=\"8%\" style=\"text-align:left;border-bottom: none;\">Dari Gudang</td>
+                    <td width=\"2%\" style=\"text-align:center;border-bottom: none;\">:</td>
+                    <td width=\"40%\" style=\"text-align:left;border-bottom: none;\">" . $data_gudang->keterangan . "</td>
+                    <td width=\"15%\" style=\"text-align:left;border-bottom: none;\">&nbsp;</td>
+                    <td width=\"5%\" style=\"text-align:center;border-bottom: none;\">&nbsp;</td>
+                    <td width=\"30%\" style=\"text-align:left;border-bottom: none;\">&nbsp;</td>
+               </tr>
+          </table>";
           $data1 = $this->db->query("SELECT * FROM tbl_barangstock WHERE koders = '$unit' AND gudang = '$gudang'")->result();
           $chari .= "<table style=\"border-collapse:collapse;font-family: Tahoma; font-size:11px\" width=\"100%\" align=\"center\" border=\"1\" cellspacing=\"1\" cellpadding=\"3\">
           <tr>
@@ -1233,35 +1272,73 @@ class Laporan_persediaan extends CI_Controller
                $total_masuk = ($beli->qty + $mutasi_in->qty + $produksi_jadi->qty + $retur_jual->qty);
                $total_keluar = ($jual->qty + $mutasi_out->qty + $retur_beli->qty + $produksi_bahan->qty + $bhp->qty + $expired->qty);
                $total = $total_masuk - $total_keluar;
+
+               if($cekpdf == 1) {
+                    $n_total1 = number_format($total1);
+                    $n_beli_qty = number_format($beli->qty);
+                    $n_mutasi_in_qty = number_format($mutasi_in->qty);
+                    $n_produksi_jadi_qty = number_format($produksi_jadi->qty);
+                    $n_retur_jual_qty = number_format($retur_jual->qty);
+                    $n_total_masuk = number_format($total_masuk);
+                    $n_jual_qty = number_format($jual->qty);
+                    $n_mutasi_out_qty = number_format($mutasi_out->qty);
+                    $n_retur_beli_qty = number_format($retur_beli->qty);
+                    $n_produksi_bahan_qty = number_format($produksi_bahan->qty);
+                    $n_bhp_qty = number_format($bhp->qty);
+                    $n_expired_qty = number_format($expired->qty);
+                    $n_total_keluar = number_format($total_keluar);
+                    $n_so = number_format($d1->saldoakhir-($total));
+                    $n_saldoakhir = number_format($d1->saldoakhir);
+                    $n_barang_hpp = number_format($barang->hpp);
+                    $n_total_hpp = number_format($barang->hpp * $d1->saldoakhir);
+               } else {
+                    $n_total1 = round($total1);
+                    $n_beli_qty = round($beli->qty);
+                    $n_mutasi_in_qty = round($mutasi_in->qty);
+                    $n_produksi_jadi_qty = round($produksi_jadi->qty);
+                    $n_retur_jual_qty = round($retur_jual->qty);
+                    $n_total_masuk = round($total_masuk);
+                    $n_jual_qty = round($jual->qty);
+                    $n_mutasi_out_qty = round($mutasi_out->qty);
+                    $n_retur_beli_qty = round($retur_beli->qty);
+                    $n_produksi_bahan_qty = round($produksi_bahan->qty);
+                    $n_bhp_qty = round($bhp->qty);
+                    $n_expired_qty = round($expired->qty);
+                    $n_total_keluar = round($total_keluar);
+                    $n_so = round($d1->saldoakhir-($total));
+                    $n_saldoakhir = round($d1->saldoakhir);
+                    $n_barang_hpp = round($barang->hpp);
+                    $n_total_hpp = round($barang->hpp * $d1->saldoakhir);
+               }
                
                $chari .= "<tr>
                     <td>$no</td>
                     <td>$d1->kodebarang</td>
                     <td>$barang->namabarang</td>
                     <td>$barang->satuan1</td>
-                    <td>$total1</td>
-                    <td>$beli->qty</td>
-                    <td>$mutasi_in->qty</td>
-                    <td>$produksi_jadi->qty</td>
-                    <td>$retur_jual->qty</td>
-                    <td>$total_masuk</td>
-                    <td>$jual->qty</td>
-                    <td>$mutasi_out->qty</td>
-                    <td>$retur_beli->qty</td>
-                    <td>$produksi_bahan->qty</td>
-                    <td>$bhp->qty</td>
-                    <td>$expired->qty</td>
-                    <td>$total_keluar</td>
-                    <td>".($d1->saldoakhir-($total))."</td>
-                    <td>$d1->saldoakhir</td>
-                    <td>$barang->hpp</td>
-                    <td>".($barang->hpp * $d1->saldoakhir)."</td>
+                    <td style=\"text-align: right\">$total1</td>
+                    <td style=\"text-align: right\">$n_beli_qty</td>
+                    <td style=\"text-align: right\">$n_mutasi_in_qty</td>
+                    <td style=\"text-align: right\">$n_produksi_jadi_qty</td>
+                    <td style=\"text-align: right\">$n_retur_jual_qty</td>
+                    <td style=\"text-align: right\">$n_total_masuk</td>
+                    <td style=\"text-align: right\">$n_jual_qty</td>
+                    <td style=\"text-align: right\">$n_mutasi_out_qty</td>
+                    <td style=\"text-align: right\">$n_retur_beli_qty</td>
+                    <td style=\"text-align: right\">$n_produksi_bahan_qty</td>
+                    <td style=\"text-align: right\">$n_bhp_qty</td>
+                    <td style=\"text-align: right\">$n_expired_qty</td>
+                    <td style=\"text-align: right\">$n_total_keluar</td>
+                    <td style=\"text-align: right\">$n_so</td>
+                    <td style=\"text-align: right\">$n_saldoakhir</td>
+                    <td style=\"text-align: right\">$n_barang_hpp</td>
+                    <td style=\"text-align: right\">$n_total_hpp</td>
                </tr>";
                $no++;
           }
           $chari .= "</table>";
           $data['prev'] = $chari;
-          $judul = '06 LAPORAN PERSEDIAAN BARANG';
+          $judul = '03 Laporan Persediaan Barang';
           echo ("<title>$judul</title>");
           switch ($cekpdf) {
                case 0;

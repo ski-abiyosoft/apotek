@@ -279,13 +279,15 @@ $this->load->view('template/v_report');
                     // $('#report').modal('show');
                     // $('.modal-title').text('CETAK LAPORAN PENJUALAN');
                     // $("#simkeureport").html('<iframe src="<?php echo base_url(); ?>Laporan_persediaan/cetak2?dari=' + dari + '&sampai=' + sampai + '&da=' + da + '&depo=' + depo + '&laporan=' + laporan + '&keperluan=' + keperluan + '" frameborder="no" width="100%" height="520"></iframe>');
-                    var baseurl = "<?php echo base_url() ?>";
-                    var urlnya = baseurl + 'Laporan_persediaan/cetak2?dari=' + dari + '&sampai=' + sampai + '&da=' + da + '&depo=' + depo + '&laporan=' + laporan + '&keperluan=' + keperluan + "&pdf=1";
-                    window.open(urlnya, '_blank');
-               } else if(laporan=='3') {
-                    var baseurl = "<?php echo base_url() ?>";
-                    var urlnya = baseurl + 'Laporan_persediaan/tes_lap?dari=' + dari + '&sampai=' + sampai + '&da=' + da + '&depo=' + depo + '&laporan=' + laporan + '&keperluan=' + keperluan + "&pdf=1";
-                    window.open(urlnya, '_blank');
+                    if(laporan != 3) {
+                         var baseurl = "<?php echo base_url() ?>";
+                         var urlnya = baseurl + 'Laporan_persediaan/cetak2?dari=' + dari + '&sampai=' + sampai + '&da=' + da + '&depo=' + depo + '&laporan=' + laporan + '&keperluan=' + keperluan + "&pdf=1";
+                         window.open(urlnya, '_blank');
+                    } else {
+                         var baseurl = "<?php echo base_url() ?>";
+                         var urlnya = baseurl + 'Laporan_persediaan/lap_03?dari=' + dari + '&sampai=' + sampai + '&da=' + da + '&depo=' + depo + '&laporan=' + laporan + '&keperluan=' + keperluan + "&pdf=1";
+                         window.open(urlnya, '_blank');
+                    }
                } else {
                     swal({
                          title: "LAPORAN",
@@ -348,14 +350,16 @@ $this->load->view('template/v_report');
 
                     var param = '?dari=' + dari + '&sampai=' + sampai + '&da=' + da + '&depo=' + depo + '&laporan=' + laporan + '&keperluan=' + keperluan + '&pdf=2';
 
-                    url = baseurl + 'Laporan_persediaan/cetak2/' + param;
-                    window.open(url, '');
+                    if(laporan != 3) {
+                         url = baseurl + 'Laporan_persediaan/cetak2/' + param;
+                         window.open(url, '');
+                    } else {
+                         var baseurl = "<?php echo base_url() ?>";
+                         var urlnya = baseurl + 'Laporan_persediaan/lap_03?dari=' + dari + '&sampai=' + sampai + '&da=' + da + '&depo=' + depo + '&laporan=' + laporan + '&keperluan=' + keperluan + "&pdf=2";
+                         window.open(urlnya, '_blank');
+                    }
 
                     // $("#simkeureport").html('<iframe src="<?php echo base_url(); ?>Laporan_persediaan/cetak?dari=' + dari + '&sampai=' + sampai + '&da=' + da + '&depo=' + depo + '&laporan=' + laporan + '&keperluan=' + keperluan + '&pdf=2'+'" frameborder="no" width="100%" height="520"></iframe>');
-               }  else if(laporan=='3') {
-                    var baseurl = "<?php echo base_url() ?>";
-                    var urlnya = baseurl + 'Laporan_persediaan/tes_lap?dari=' + dari + '&sampai=' + sampai + '&da=' + da + '&depo=' + depo + '&laporan=' + laporan + '&keperluan=' + keperluan + "&pdf=1";
-                    window.open(urlnya, '_blank');
                } else if (laporan == 5){
                     swal({
                          title: "LAPORAN PEMUSNAHAN BARANG",

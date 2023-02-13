@@ -50,7 +50,7 @@ $this->load->view('template/body');
                     </div>
                     <button class="btn btn-success" onclick="add_data()"><i class="glyphicon glyphicon-plus"></i> Data
                         Baru</button>
-                    <div class="btn-group pull-right">
+                    <!-- <div class="btn-group pull-right">
                         <button class="btn dropdown-toggle" data-toggle="dropdown">Data <i class="fa fa-angle-down"></i>
                         </button>
                         <ul class="dropdown-menu pull-right">
@@ -63,7 +63,26 @@ $this->load->view('template/body');
                                 </a>
                             </li>
                         </ul>
-                    </div>
+                    </div> -->
+
+                    <td width="27%">
+                        <div class="btn-group " id="drp-down">
+                            <button class="btn btn-info dropdown-toggle " data-toggle="dropdown"><b>Cetak</b> <i class="fa fa-angle-down"></i></button>
+                            <ul class="dropdown-menu pull-center">
+                                <li>
+                                    <!-- <a class="btn btn-sm red print_laporan" id="cetak" href="#report" data-toggle="modal"><b>PDF</b></a> -->
+                                    <a class="btn btn-sm red print_laporan" onclick="pdf()" id="cetak" data-toggle="modal"><b>PDF</b></a>
+                                </li>
+                                <li>
+                                    <a class="btn btn-sm green " onclick="exp()" id="cetak" href="" data-toggle="modal"><b>Excel</b></a>
+                                </li>
+                                <!-- <li>
+                                    <a onclick="exp()"> Export</a> -->
+                                <!-- <a href="<?php echo base_url() ?>master_poliexport"> Export</a> -->
+                                <!-- </li> -->
+                            </ul>
+                        </div>
+                    </td>
                 </div>
                 <table id="table" class="table table-striped- table-bordered-" cellspacing="0" width="100%">
                     <thead class="breadcrumb">
@@ -313,14 +332,23 @@ $this->load->view('template/v_report');
 
 <script>
     $(document).ready(function() {
+        // $('.print_laporan').on("click", function() {
+        //     $('.modal-title').text('MASTER');
+        //     $("#simkeureport").html('<iframe src="<?php echo base_url();?>master_barang_log/ctk/1" frameborder="no" width="100%" height="420"></iframe>');
 
-        $('.print_laporan').on("click", function() {
-            $('.modal-title').text('MASTER');
-            var no_daftar = this.id;
-            $("#simkeureport").html('<iframe src="<?php echo base_url(); ?>master_policetak/' + no_daftar +
-                '" frameborder="no" width="100%" height="420"></iframe>');
-        });
+        // });
     });
+    function pdf() {
+        var baseurl   = "<?php echo base_url() ?>";
+        url           = baseurl + 'master_barang_log/ctk/1';
+        window.open(url, '');
+    }
+
+    function exp() {
+        var baseurl   = "<?php echo base_url() ?>";
+        url           = baseurl + 'master_barang_log/ctk/2';
+        window.open(url, '');
+    }
 </script>
 
 <!-- Bootstrap modal -->

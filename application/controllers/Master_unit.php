@@ -8,6 +8,7 @@ class Master_unit extends CI_Controller {
 	{
 		parent::__construct();
 		$this->load->model('M_unit','M_unit');
+		$this->load->model('M_template_cetak','M_template_cetak');
 		$this->load->helper('simkeu_rpt');
 		$this->session->set_userdata('menuapp', '1000');
 		$this->session->set_userdata('submenuapp', '1101');
@@ -187,7 +188,8 @@ class Master_unit extends CI_Controller {
 				'npwp'          => $this->input->post('npwp'),
 				'noijin'        => $this->input->post('noijin'),
 				'jabatan'       => $this->input->post('jabatan'),
-				'pkpno'         => $this->input->post('pkp'),
+				'pkpno'         => $this->input->post('pkpn'),
+				'pkp'           => $this->input->post('pkp'),
 				'tglpkp'        => $this->input->post('pkpdate'),
 				'ketbank'       => $this->input->post('bank1'),
 				'ketbank2'      => $this->input->post('bank2'),
@@ -257,7 +259,8 @@ class Master_unit extends CI_Controller {
 					'npwp'          => $this->input->post('npwp'),
 					'noijin'        => $this->input->post('noijin'),
 					'jabatan'       => $this->input->post('jabatan'),
-					'pkpno'         => $this->input->post('pkp'),
+					'pkp'         => $this->input->post('pkp'),
+					'pkpno'         => $this->input->post('pkpn'),
 					'tglpkp'        => $this->input->post('pkpdate'),
 					'ketbank'       => $this->input->post('bank1'),
 					'ketbank2'      => $this->input->post('bank2'),
@@ -312,6 +315,164 @@ class Master_unit extends CI_Controller {
 			echo json_encode($data);
 			exit();
 		}
+	}
+
+	function ctk($cekpdf=0)
+	{
+
+		// $cekpdf   = 1;
+		$position = 'L';
+		$date     = '-';
+		$body     = '';
+
+		$body.= "<table style=\"border-collapse:collapse;font-family: Times New Roman; font-size:12px\" width=\"100%\" align=\"center\" border=\"1\" cellspacing=\"1\" cellpadding=\"3\">
+			<tr>
+				<td style=\"border:0\" colspan=\"29\" align=\"center\"><br></td>                
+			</tr>
+			<tr>
+				<td bgcolor=\"#cccccc\" align=\"center\"><b>koders</b></td>
+				<td bgcolor=\"#cccccc\" align=\"center\"><b>namars</b></td>
+				<td bgcolor=\"#cccccc\" align=\"center\"><b>alamat</b></td>
+				<td bgcolor=\"#cccccc\" align=\"center\"><b>kota</b></td>
+				<td bgcolor=\"#cccccc\" align=\"center\"><b>phone</b></td>
+				<td bgcolor=\"#cccccc\" align=\"center\"><b>whatsapp</b></td>
+				<td bgcolor=\"#cccccc\" align=\"center\"><b>fax</b></td>
+				<td bgcolor=\"#cccccc\" align=\"center\"><b>email</b></td>
+				<td bgcolor=\"#cccccc\" align=\"center\"><b>website</b></td>
+				<td bgcolor=\"#cccccc\" align=\"center\"><b>pejabat1</b></td>
+				<td bgcolor=\"#cccccc\" align=\"center\"><b>jabatan1</b></td>
+				<td bgcolor=\"#cccccc\" align=\"center\"><b>pejabat2</b></td>
+				<td bgcolor=\"#cccccc\" align=\"center\"><b>jabatan2</b></td>
+				<td bgcolor=\"#cccccc\" align=\"center\"><b>jabatan3</b></td>
+				<td bgcolor=\"#cccccc\" align=\"center\"><b>pejabat3</b></td>
+				<td bgcolor=\"#cccccc\" align=\"center\"><b>jabatan4</b></td>
+				<td bgcolor=\"#cccccc\" align=\"center\"><b>pejabat4</b></td>
+				<td bgcolor=\"#cccccc\" align=\"center\"><b>namaapotik</b></td>
+				<td bgcolor=\"#cccccc\" align=\"center\"><b>apoteker</b></td>
+				<td bgcolor=\"#cccccc\" align=\"center\"><b>jabatan</b></td>
+				<td bgcolor=\"#cccccc\" align=\"center\"><b>noijin</b></td>
+				<td bgcolor=\"#cccccc\" align=\"center\"><b>npwp</b></td>
+				<td bgcolor=\"#cccccc\" align=\"center\"><b>pkpno</b></td>
+				<td bgcolor=\"#cccccc\" align=\"center\"><b>tglpkp</b></td>
+				<td bgcolor=\"#cccccc\" align=\"center\"><b>tgl_awal</b></td>
+				<td bgcolor=\"#cccccc\" align=\"center\"><b>tgl_akhir</b></td>
+				<td bgcolor=\"#cccccc\" align=\"center\"><b>alamat2</b></td>
+				<td bgcolor=\"#cccccc\" align=\"center\"><b>kodeurut</b></td>
+				<td bgcolor=\"#cccccc\" align=\"center\"><b>avatar</b></td>
+			</tr>";
+
+			$sql =$this->db->query(
+				"SELECT*FROM tbl_namers WHERE koders<>'ABI' order by koders")->result();
+
+
+			$lcno        = 0;
+			$koders      = '';
+			$namars      = '';
+			$alamat      = '';
+			$kota        = '';
+			$phone       = '';
+			$whatsapp    = '';
+			$fax         = '';
+			$email       = '';
+			$website     = '';
+			$pejabat1    = '';
+			$jabatan1    = '';
+			$pejabat2    = '';
+			$jabatan2    = '';
+			$jabatan3    = '';
+			$pejabat3    = '';
+			$jabatan4    = '';
+			$pejabat4    = '';
+			$namaapotik  = '';
+			$apoteker    = '';
+			$jabatan     = '';
+			$noijin      = '';
+			$npwp        = '';
+			$pkpno       = '';
+			$tglpkp      = '';
+			$tgl_awal    = '';
+			$tgl_akhir   = '';
+			$alamat2     = '';
+			$kodeurut    = '';
+			$avatar      = '';
+
+			
+
+
+
+
+			foreach ($sql as $row) {
+				$lcno       = $lcno + 1;
+				$koders     = $row->koders;
+				$namars     = $row->namars;
+				$alamat     = $row->alamat;
+				$kota       = $row->kota;
+				$phone      = $row->phone;
+				$whatsapp   = $row->whatsapp;
+				$fax        = $row->fax;
+				$email      = $row->email;
+				$website    = $row->website;
+				$pejabat1   = $row->pejabat1;
+				$jabatan1   = $row->jabatan1;
+				$pejabat2   = $row->pejabat2;
+				$jabatan2   = $row->jabatan2;
+				$jabatan3   = $row->jabatan3;
+				$pejabat3   = $row->pejabat3;
+				$jabatan4   = $row->jabatan4;
+				$pejabat4   = $row->pejabat4;
+				$namaapotik = $row->namaapotik;
+				$apoteker   = $row->apoteker;
+				$jabatan    = $row->jabatan;
+				$noijin     = $row->noijin;
+				$npwp       = $row->npwp;
+				$pkpno      = $row->pkpno;
+				$tglpkp     = $row->tglpkp;
+				$tgl_awal   = $row->tgl_awal;
+				$tgl_akhir  = $row->tgl_akhir;
+				$alamat2    = $row->alamat2;
+				$kodeurut   = $row->kodeurut;
+				$avatar     = $row->avatar;
+
+				$body .= "<tr>
+
+						<td align=\"center\">$koders</td>
+						<td align=\"center\">$namars</td>
+						<td align=\"center\">$alamat</td>
+						<td align=\"center\">$kota</td>
+						<td align=\"center\">$phone</td>
+						<td align=\"center\">$whatsapp</td>
+						<td align=\"center\">$fax</td>
+						<td align=\"center\">$email</td>
+						<td align=\"center\">$website</td>
+						<td align=\"center\">$pejabat1</td>
+						<td align=\"center\">$jabatan1</td>
+						<td align=\"center\">$pejabat2</td>
+						<td align=\"center\">$jabatan2</td>
+						<td align=\"center\">$jabatan3</td>
+						<td align=\"center\">$pejabat3</td>
+						<td align=\"center\">$jabatan4</td>
+						<td align=\"center\">$pejabat4</td>
+						<td align=\"center\">$namaapotik</td>
+						<td align=\"center\">$apoteker</td>
+						<td align=\"center\">$jabatan</td>
+						<td align=\"center\">$noijin</td>
+						<td align=\"center\">$npwp</td>
+						<td align=\"center\">$pkpno</td>
+						<td align=\"center\">$tglpkp</td>
+						<td align=\"center\">$tgl_awal</td>
+						<td align=\"center\">$tgl_akhir</td>
+						<td align=\"center\">$alamat2</td>
+						<td align=\"center\">$kodeurut</td>
+						<td align=\"center\">$avatar</td>
+						</tr>"; 
+			
+			}
+
+			$body  .= "</table>";
+			$judul  = 'DATA MASTER UNIT';
+
+			$this->M_template_cetak->template($judul, $body, $position, $date, $cekpdf);
+		
 	}
 	
 	public function cetak()

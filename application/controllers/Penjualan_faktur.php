@@ -25,13 +25,13 @@ class Penjualan_faktur extends CI_Controller{
 				WHERE a.koders  = '$unit' 
 				AND b.jenisjual = 1 
 				AND a.tglresep  = '$tanggal' 
-				ORDER BY a.tglresep, a.resepno DESC";
+				ORDER BY a.tglresep DESC, a.resepno DESC";
 
-			$bulan          = $this->M_global->_periodebulan();
-			$nbulan   	  = $this->M_global->_namabulan($bulan);
-			$periode        = 'Periode ' . $nbulan . '-' . $this->M_global->_periodetahun();
-			$level          = $this->session->userdata('level');
-			$akses          = $this->M_global->cek_menu_akses($level, 3201);
+			$bulan   = $this->M_global->_periodebulan();
+			$nbulan  = $this->M_global->_namabulan($bulan);
+			$periode = 'Periode ' . $nbulan . '-' . $this->M_global->_periodetahun();
+			$level   = $this->session->userdata('level');
+			$akses   = $this->M_global->cek_menu_akses($level, 3201);
 
 			if(isset($_GET["filter-eresep"])){
 				$tanggal 		= $_GET["filter-eresep"];
@@ -101,7 +101,7 @@ class Penjualan_faktur extends CI_Controller{
 						WHERE a.koders = '$unit' 
 						AND b.jenisjual = 1 
 						AND a.tglresep BETWEEN '$_tgl1' AND '$_tgl2' 
-						ORDER BY a.tglresep, a.resepno DESC";
+						ORDER BY a.tglresep desc, a.resepno DESC";
 
 				$periode = 'Periode ' . date('d-m-Y', strtotime($tgl1)) . ' s/d ' . date('d-m-Y', strtotime($tgl2));
 				$level = $this->session->userdata('level');
@@ -716,18 +716,10 @@ class Penjualan_faktur extends CI_Controller{
 					$ppn_resep = ceil($ppn_resep1);
 				}
 	
-				if ($hresep->noreg) {
-					if($this->db->query("SELECT * FROM tbl_kasir WHERE noreg = '$hresep->noreg'")->num_rows() > 0){
-						$link = "<b style='color: green; font-size: 20px; border: solid 3px green;'>LUNAS</b>";
-					} else {
-						$link = "<b style='color: red; font-size: 20px; border: solid 3px red;'>BELUM LUNAS</b>";
-					}
+				if($posting->nokwitansi<>'' || $posting->nokwitansi<> null){
+					$link = "<b style='color: green; font-size: 20px; border: solid 3px green;'>LUNAS</b>";
 				} else {
-					if($this->db->query("SELECT * FROM tbl_kasir WHERE nokwitansi = '$hresep->nokwitansi'")->num_rows() > 0){
-						$link = "<b style='color: green; font-size: 20px; border: solid 3px green;'>LUNAS</b>";
-					} else {
-						$link = "<b style='color: red; font-size: 20px; border: solid 3px red;'>BELUM LUNAS</b>";
-					}
+					$link = "<b style='color: red; font-size: 20px; border: solid 3px red;'>BELUM LUNAS</b>";
 				}
 				
 				if($cekracik > 0){
@@ -1336,9 +1328,14 @@ class Penjualan_faktur extends CI_Controller{
 					}
 	}
 
-	public function getinfobarang(){
-		$kode = $this->input->get('kode');
-		$data = $this->M_global->_data_barang($kode);
+	public function getinfobarang()
+	{		
+		$cabang = $this->session->userdata("unit");
+		$kode   = $this->input->get('kode');
+		$gudang = $this->input->get('gudang');
+		// $data = $this->M_global->_data_barang($kode);
+		$data = $this->db->query("SELECT b.*, (SELECT saldoakhir FROM tbl_barangstock WHERE kodebarang = '$kode' AND gudang = '$gudang' AND koders = '$cabang') as saldoakhir FROM tbl_barang b 
+		WHERE b.kodebarang = '$kode'")->row();
 		echo json_encode($data);
 	}
 
@@ -1403,6 +1400,8 @@ class Penjualan_faktur extends CI_Controller{
 		$c_luppreposition   = $this->input->post('luppreposition');
 		$c_luphp            = $this->input->post('luphp');
 		$c_lupalamat        = $this->input->post('lupalamat');
+		$c_jkelp            = $this->input->post('jkelp');
+		$c_tgllahirp        = $this->input->post('tgllahirp');
 		$q                  = $this->input->post('searchTerm');
 		// echo '<pre>';
 		// print_r($q);
@@ -1430,6 +1429,8 @@ class Penjualan_faktur extends CI_Controller{
 					'idpas'       => $c_lupidentitas,
 					'nocard'      => $c_no_bpjs,
 					'penjamin'    => $c_vpenjamin,
+					'jkel  '      => $c_jkelp,
+					'tgllahir'    => $c_tgllahirp,
 
 				);
 
@@ -1551,8 +1552,9 @@ class Penjualan_faktur extends CI_Controller{
 
 			// $jumdata   = (int)count($kodeo_1);
 			// $jumdata   = $this->input->get('jml');
-			$jumdataa    = count($kodeo_1);
-			$jumdata     = $jumdataa-1;
+			// $jumdataa    = count($kodeo_1);
+			// $jumdata     = $jumdataa-1;
+			$jumdata   = $this->input->get('jml');
 			$nourut    = 1;
 			$tot       = 0;
 			$tdisc     = 0;
@@ -1562,7 +1564,7 @@ class Penjualan_faktur extends CI_Controller{
 
 
 			// print_r($qty_racik_1);
-			for ($i = 0; $i <= $jumdata; $i++) {
+			for ($i = 0; $i <= ($jumdata - 1); $i++) {
 				$_kodeo_1       = $kodeo_1[$i];
 				$_namao_1       = $namao_1[$i];
 				$_sato_1        = $sato_1[$i];
@@ -1626,6 +1628,7 @@ class Penjualan_faktur extends CI_Controller{
 					}
 				}
 			}
+			echo json_encode(["status" => 1]);
 			// end detail harimas
 
 		} else {
@@ -1654,9 +1657,10 @@ class Penjualan_faktur extends CI_Controller{
 		$dokter   		= $this->input->post('dokter');
 		$nokwi    		= urut_transaksi('URUTKWT', 19);
 		$eresepstatus	= $this->input->post("eresepstatus");
-		$aturpakai		= $this->input->post("aturan_pakai");
-		$ketpakai		= $this->input->post("keterangan");
 		$gudang			= $this->input->post("gudang");
+		$ketpakai		= $this->input->post("keterangan");
+		$aturpakai		= $this->input->post("aturan_pakai");
+		$expire			= $this->input->post("expire");
 
 		// if($eresepstatus == 1){
 		// 	$noeresep	= $this->input->post("noeresep");
@@ -1779,7 +1783,11 @@ class Penjualan_faktur extends CI_Controller{
 			$jumlah  = $this->input->post('jumlah');
 
 
-			$jumdata = count($kode);
+			if($kode == '' | $kode == null) {
+				$jumdata = 0;
+			} else {
+				$jumdata = count($kode);
+			}
 
 			$nourut  = 1;
 			$tot     = 0;
@@ -1848,6 +1856,7 @@ class Penjualan_faktur extends CI_Controller{
 					'totalrp'       => $vjum,
 					'atpakai'		=> $aturpakai[$i],
 					'ket'			=> $ketpakai[$i],
+					'exp_date'		=> $expire[$i],
 				);
 
 
@@ -1897,6 +1906,9 @@ class Penjualan_faktur extends CI_Controller{
 				'kodepel'   => $this->input->post('pembeli'),
 				'alamat'    => $this->input->post('alamat'),
 				'nohp'      => $this->input->post('phone'),
+				'tgllahir'  => $this->input->post('tgllahir'),
+				'bb'        => $this->input->post('bb'),
+				'jkel'      => $this->input->post('jkel'),
 				'tglresep'  => date('Y-m-d', strtotime($this->input->post('tanggal'))),
 				'jam'       => date('H:i:s', strtotime($this->input->post('jam'))),
 				//'gudang'  => $this->input->post('gudang'),
@@ -1937,7 +1949,7 @@ class Penjualan_faktur extends CI_Controller{
 				'posting'   => 1,
 				// 'poscredit' => $tot,  // str_replace(",","",$this->input->post('totp_1')),
 				// 'poscredit' => str_replace(",", "", $this->input->get('vtotal')) + $racikanxx,
-				'poscredit' => $this->input->get('vtotal') + $racikanxx,
+				'poscredit' => $this->input->get('vtotal'),
 				'username'  => $userid,
 
 			);
@@ -2048,6 +2060,99 @@ class Penjualan_faktur extends CI_Controller{
 		} else {
 			header('location:' . base_url());
 		}
+	}
+
+	public function bayar($resepno){
+			$unit = $this->session->userdata('unit');
+			$data         = $this->db->query("SELECT date(c.tgllahir) as tanggallahir, a.* ,b.*,c.*
+			from tbl_apoposting a 
+			join tbl_apohresep b ON a.resepno=b.resepno
+			join tbl_pasien c ON a.rekmed=c.rekmed
+			where a.koders='$unit' and a.resepno = '$resepno' ")->row();
+
+
+			echo json_encode($data);
+	}
+
+	public function ajax_add_bayar()
+	{
+		$cabang       = $this->session->userdata('unit');
+		$userid       = $this->session->userdata('username');
+		$noresep      = $this->input->post('resepno');
+		$rekmed       = $this->input->post('rekmed');
+		$totalresep   = str_replace(',', '', $this->input->post('total_resep'));
+		// $totalnet     = str_replace(',', '', $this->input->post('totalnet'));
+
+		$tanggal      = date('Y-m-d');
+		$jam          = date('H:i:s');
+
+		$kwitansi     = urut_transaksi('URUTKWT', 19);
+
+		$cekhresep    = $this->db->get_where("tbl_apohresep", ['resepno' => $noresep])->num_rows();
+		if($cekhresep > 0){
+			$this->db->set("nokwitansi", $kwitansi);
+			$this->db->where("resepno", $noresep);
+			$this->db->update("tbl_apohresep");
+		}
+
+
+		//$this->_validate();
+		if ($totalresep > 0) {
+			$ttlresep = (int)$totalresep;
+		} else {
+			$ttlresep = 0 - (int)$totalresep;
+		}
+		$data = array(
+			'koders'               => $cabang,
+			'nokwitansi'           => $kwitansi,
+			'fakturpajak'          => '',
+			'rekmed'               => $rekmed,
+			'noreg'                => '',
+			'tglbayar'             => $tanggal,
+			'jambayar'             => $jam,
+			'totalpoli'            => 0,
+			'totalresep'           => $totalresep,
+			'uangmuka'             => 0,
+			'adm'                  => 0,
+			'diskon'               => 0,
+			'diskonrp'             => 0,
+			'admcredit'            => 0,
+			'totalsemua'           => $totalresep,
+			'bayarcash'            => $totalresep,
+			'bayarcard'            => 0,
+			'refund'               => 0,
+			// 'voucherrp' => $voucherrp,
+			'voucherrp1'           => 0,
+			'voucherrp2'           => 0,
+			'voucherrp3'           => 0,
+			// 'novoucher' => $this->input->post('vouchercode'), saya ganti
+			'novoucher1'           => '',
+			'novoucher2'           => '',
+			'novoucher3'           => '',
+			'cust_id'              => '',
+			'totalbayar'           => $totalresep,
+			'kembali'              => '',
+			'posbayar'             => 'APTK',
+			'dibayaroleh'          => $this->input->post('lupnamapasien'),
+			'jenisbayar'           => 1,
+			'username'             => $userid,
+			'kembalikeuangmuka'    => 0,
+			'namapasien'           => $this->input->post('lupnamapasien'),
+			'shift'                => 0,
+		);
+
+		$insert = $this->db->insert('tbl_kasir', $data);
+
+
+		$this->db->query("UPDATE tbl_apohresep set nokwitansi='$kwitansi', keluar=1 where koders = '$cabang' and resepno = '$noresep'");
+		$this->db->query("UPDATE tbl_apoposting set nokwitansi='$kwitansi', keluar=1 where koders = '$cabang' and resepno = '$noresep'");
+
+		
+		$this->db->set("ada", 0);
+		$this->db->where('rekmed', $rekmed);
+		$this->db->update('tbl_pasien');
+
+		echo json_encode(array("status" => TRUE, "nomor" => $kwitansi, "total" => $totalresep));
 	}
 
 	public function update_aporacik(){
@@ -2215,7 +2320,7 @@ class Penjualan_faktur extends CI_Controller{
 		if ($noregx == null || $noregx == 'null' || $noregx == '') {
 			$noreg = '';
 		} else {
-			$noreg = $noregx;
+			$noreg = '';
 		}
 		$rekmed   = $this->input->get('rekmed');
 		$pembeli  = $this->input->post('pembeli');
@@ -2263,24 +2368,24 @@ class Penjualan_faktur extends CI_Controller{
 		$cek = $this->session->userdata('level');
 		$cabang  = $this->session->userdata('unit');
 		if (!empty($cek)) {
-			$gudang = $this->input->get('gudang');
-			$resepno = $this->input->get('resepno');
-			$eresepno = $this->input->get('eresepno');
-			$jenispas = $this->input->get('jenispas');
-			$userid   = $this->session->userdata('username');
+			$gudang    = $this->input->get('gudang');
+			$resepno   = $this->input->get('resepno');
+			$eresepno  = $this->input->get('eresepno');
+			$jenispas  = $this->input->get('jenispas');
+			$userid    = $this->session->userdata('username');
 			$noregx    = $this->input->get('noreg');
 			if ($noregx == null || $noregx == 'null' || $noregx == '') {
 				$noreg = '';
 			} else {
-				$noreg = $noregx;
+				$noreg = '';
 			}
-			$rekmed   = $this->input->get('rekmed');
-			$pembeli  = $this->input->post('pembeli');
-			$dokter   = $this->input->get('dokter');
-			$resepno  = $this->input->get('resepno');
-			$tanggal  = $this->input->post('tanggal');
-			$pembeli  = $this->input->get('pembeli');
-			$jam  = $this->input->post('jam');
+			$rekmed    = $this->input->get('rekmed');
+			$pembeli   = $this->input->post('pembeli');
+			$dokter    = $this->input->get('dokter');
+			$resepno   = $this->input->get('resepno');
+			$tanggal   = $this->input->post('tanggal');
+			$pembeli   = $this->input->get('pembeli');
+			$jam       = $this->input->post('jam');
 
 			$this->db->query("DELETE FROM tbl_apohresep WHERE koders = '$cabang' AND resepno = '$resepno' AND gudang = '$gudang'");
 
@@ -2298,12 +2403,17 @@ class Penjualan_faktur extends CI_Controller{
 				'rekmed'    => $rekmed,
 				'kodokter'  => $dokter,
 				'jenisjual' => 1,
-				'jenispas' => $jenispas,
+				'jenispas'  => $jenispas,
 				'kodepel'   => $pembeli,
+				'tgllahir'  => $this->input->post('tgllahir'),
+				'bb'        => $this->input->post('bb'),
+				'jkel'      => $this->input->post('jkel'),
 				'tglresep'  => date('Y-m-d', strtotime($tanggal)),
 				'jam'       => date('H:i:s', strtotime($jam)),
 				'gudang'    => $gudang,
 				'username'  => $userid,
+				'alamat'    => $this->input->post('alamat'),
+				'nohp'      => $this->input->post('phone'),
 
 			];
 			// $this->db->where($where);
@@ -2320,21 +2430,22 @@ class Penjualan_faktur extends CI_Controller{
 		$cek = $this->session->userdata('level');
 		$cabang  = $this->session->userdata('unit');
 		if (!empty($cek)) {
-			$gudang = $this->input->get('gudang');	
-			$tanggal  = $this->input->post('tanggal');
-			$resepno = $this->input->get('resepno');
-			$kodebarang = $this->input->get('kodebarang');
-			$namabarang = $this->input->get('namabarang');
-			$qty = $this->input->get('qty');
-			$satuan = $this->input->get('satuan');
-			$discount = $this->input->get('discount');
-			$discrp = $this->input->get('discrp');
-			$price = $this->input->get('price');
-			$totalrp = $this->input->get('totalrp');
-			$aturpakai	= $this->input->get("aturanpakai");
-			$keterangan = $this->input->get("keterangan");
-			$ppn = $this->input->get('ppn');
-			$ppnrp = $this->input->get('ppnrp');
+			$gudang        = $this->input->get('gudang');
+			$tanggal       = $this->input->post('tanggal');
+			$resepno       = $this->input->get('resepno');
+			$kodebarang    = $this->input->get('kodebarang');
+			$namabarang    = $this->input->get('namabarang');
+			$qty           = $this->input->get('qty');
+			$satuan        = $this->input->get('satuan');
+			$discount      = $this->input->get('discount');
+			$discrp        = $this->input->get('discrp');
+			$price         = $this->input->get('price');
+			$totalrp       = $this->input->get('totalrp');
+			$aturpakai     = $this->input->get("aturanpakai");
+			$keterangan    = $this->input->get("keterangan");
+			$ppn           = $this->input->get('ppn');
+			$ppnrp         = $this->input->get('ppnrp');
+			$expire		   = $this->input->get("expire");
 			$data = [
 				'koders' => $cabang,
 				'resepno' => $resepno,
@@ -2349,7 +2460,8 @@ class Penjualan_faktur extends CI_Controller{
 				'ppn' => $ppn,
 				'ppnrp' => $ppnrp,
 				'atpakai' => $aturpakai,
-				'ket' => $keterangan
+				'ket' => $keterangan,
+				'exp_date' => $expire
 			];
 
 			$this->db->insert('tbl_apodresep', $data);

@@ -1754,7 +1754,7 @@ class M_global extends CI_Model
 
 	function getfarmasidepo($str)
 	{
-		$query = $this->db->query("SELECT depocode as id, keterangan as text from tbl_depo where (depocode like '%$str%' or keterangan like '$str%')");
+		$query = $this->db->query("SELECT depocode as id, keterangan as text from tbl_depo where (depocode like '%$str%' or keterangan like '$str%') ORDER BY depocode");
 		return $query->result();
 	}
 
@@ -2223,6 +2223,21 @@ class M_global extends CI_Model
 		//   $query = $this->db->query("SELECT kodebarang as id, concat(kodebarang,' | ',namabarang,' | ',satuan1) as text from tbl_barang order by kodebarang");	
 
 		// }
+	}
+	
+	function get_atp($str)
+	{
+		//-- saya ganti --//
+		
+		if ($str == "") {
+			$limm = "LIMIT 10";
+		} else {
+			$limm = "";
+		}
+
+		$query	= $this->db->query("SELECT apocode as id, aponame as text from tbl_barangsetup where  apogroup='ATURANPAKAI'  $limm ");
+		return $query->result();
+
 	}
 
 	function getfarmasibaranggudso($str, $gudang)

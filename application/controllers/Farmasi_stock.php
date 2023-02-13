@@ -64,11 +64,29 @@ class Farmasi_stock extends CI_Controller
 		$data = array();
 		$no = $_POST['start'];
 		foreach ($list as $unit) {
+			$cek_minstock = $this->db->query("SELECT * FROM tbl_barang WHERE kodebarang = '$unit->kodebarang'")->row();
 			$no++;
 			$row = array();
-			$row[] = $unit->koders;
-			$row[] = $unit->kodebarang;
-			$row[] = $unit->namabarang;
+			if($unit->saldoakhir < $cek_minstock->minstock) {
+				$row[] = '<div style="color: red; font-weight: bold;">'.$unit->koders.'</div>';
+			} else {
+				$row[] = '<div>'.$unit->koders.'</div>';
+			}
+			if($unit->saldoakhir < $cek_minstock->minstock) {
+				$row[] = '<div style="color: red; font-weight: bold;">'.$unit->kodebarang.'</div>';
+			} else {
+				$row[] = '<div>'.$unit->kodebarang.'</div>';
+			}
+			if($unit->saldoakhir < $cek_minstock->minstock) {
+				$row[] = '<div style="color: red; font-weight: bold;">'.$unit->namabarang.'</div>';
+			} else {
+				$row[] = '<div>'.$unit->namabarang.'</div>';
+			}
+			if($unit->saldoakhir < $cek_minstock->minstock) {
+				$row[] = '<div style="color: red; font-weight: bold;">'.$unit->satuan1.'</div>';
+			} else {
+				$row[] = '<div>'.$unit->satuan1.'</div>';
+			}
 			// $row[] = angka_rp($unit->saldoawal, 0);
 			// $row[] = angka_rp($unit->sesuai, 0);
 			// $row[] = angka_rp($unit->terima, 0);
@@ -76,9 +94,16 @@ class Farmasi_stock extends CI_Controller
 			// $row[] = angka_rp($unit->hasilso, 0);
 			$sesuaiz = $this->db->query("SELECT sum(sesuai) as sesuai FROM tbl_aposesuai WHERE kodebarang = '$unit->kodebarang' AND gudang = '$unit->gudang' AND koders = '$unit->koders'")->row();
 			$so_done = $unit->saldoakhir;
-			$row[] = $unit->satuan1;
-			$row[] = '<div class="text-right">'.number_format($so_done, 0).'</div>';
-			$row[] = $unit->gudang;
+			if($unit->saldoakhir < $cek_minstock->minstock) {
+				$row[] = '<div class="text-right" style="color: red; font-weight: bold;"><b>'.number_format($so_done, 0).'</b></div>';
+			} else {
+				$row[] = '<div class="text-right">'.number_format($so_done, 0).'</div>';
+			}
+			if($unit->saldoakhir < $cek_minstock->minstock) {
+				$row[] = '<div class="text-right" style="color: red; font-weight: bold;"><b>'.$unit->gudang.'</b></div>';
+			} else {
+				$row[] = '<div class="text-right">'.$unit->gudang.'</div>';
+			}
 
 			$row[] = '<div class="text-center">
 				<button class="btn btn-sm btn-primary" type="button" title="Show" onclick="show(' . "'" . $unit->id . "'" . ')"><i class="glyphicon glyphicon-eye-open"></i></button>
@@ -541,7 +566,7 @@ class Farmasi_stock extends CI_Controller
 			$chari .= "
 							<table style=\"border-collapse:collapse;font-family: Tahoma; font-size:11px\" width=\"100%\" align=\"center\" border=\"0\" cellspacing=\"1\" cellpadding=\"3\">
 								<tr>
-									<td width=\"15%\" style=\"text-align:center; font-size:20px;\"><b>KARTU STOK CABANG $cabang ($datars->kota)</b></td>
+									<td width=\"15%\" style=\"text-align:center; font-size:20px;\"><b>DAFTAR STOK CABANG $cabang ($datars->kota)</b></td>
 								</tr>
 							</table>";
 			$chari .= "
@@ -647,7 +672,7 @@ class Farmasi_stock extends CI_Controller
 			}
 			$chari .= "</table>";
 			$data['prev']    = $chari;
-			$judul           = "KARTU STOK CABANG $datars->kota";
+			$judul           = "DAFTAR STOK CABANG $datars->kota";
 			echo ("<title>$judul</title>");
 			$this->M_cetak->mpdf('L', 'A4', $judul, $chari, '.PDF', 10, 10, 10, 2);
 			// echo $chari;

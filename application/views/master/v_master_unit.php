@@ -52,8 +52,8 @@ $this->load->view('template/body');
                                 
                             </div>
                             <button class="btn btn-success" onclick="add_bank()"><i class="glyphicon glyphicon-plus"></i><b> Data Baru</b></button>
-                            <div class="btn-group pull-right">
-                                <button class="btn dropdown-toggle" data-toggle="dropdown">Data <i class="fa fa-angle-down"></i>
+                            <div class="btn-group">
+                                <!-- <button class="btn dropdown-toggle" data-toggle="dropdown">Data <i class="fa fa-angle-down"></i>
                                 </button>
                                 <ul class="dropdown-menu pull-right">
                                     <li>
@@ -64,7 +64,24 @@ $this->load->view('template/body');
                                             Export
                                         </a>
                                     </li>
-                                </ul>
+                                </ul> -->
+                                <td width="27%">
+                                    <div class="btn-group " id="drp-down">
+                                        <button class="btn btn-info dropdown-toggle " data-toggle="dropdown"><b>Cetak</b> <i class="fa fa-angle-down"></i></button>
+                                        <ul class="dropdown-menu pull-center">
+                                            <li>
+                                                <a class="btn btn-sm red print_laporan" id="cetak" href="#report" data-toggle="modal"><b>PDF</b></a>
+                                            </li>
+                                            <li>
+                                                <a class="btn btn-sm green " onclick="exp()" id="cetak" href="" data-toggle="modal"><b>Excel</b></a>
+                                            </li>
+                                            <!-- <li>
+                                                <a onclick="exp()"> Export</a> -->
+                                            <!-- <a href="<?php echo base_url() ?>master_poliexport"> Export</a> -->
+                                            <!-- </li> -->
+                                        </ul>
+                                    </div>
+                                </td>
                             </div>
                         </div>
                         <table id="table" class="table table-striped- table-bordered-" cellspacing="0" width="100%">
@@ -240,7 +257,8 @@ $.ajax({
         $('[name="jabatan"]').val(data.data.jabatan);
         $('[name="noijin"]').val(data.data.noijin);
         $('[name="npwp"]').val(data.data.npwp);
-        $('[name="pkp"]').val(data.data.pkpno);
+        $('[name="pkp"]').val(data.data.pkp);
+        $('[name="pkpn"]').val(data.data.pkpno);
         $('[name="pkpdate"]').val(data.data.tglpkp);
         $('[name="wahost"]').val(data.data.wahost);
         $('[name="watoken"]').val(data.data.watoken);
@@ -463,10 +481,15 @@ $(document).ready(function() {
     
     $('.print_laporan').on("click", function(){
     $('.modal-title').text('MASTER');
-    var no_daftar= this.id;
-    $("#simkeureport").html('<iframe src="<?php echo base_url();?>master_unit/cetak/'+no_daftar+'" frameborder="no" width="100%" height="420"></iframe>');
+    $("#simkeureport").html('<iframe src="<?php echo base_url();?>master_unit/ctk/1" frameborder="no" width="100%" height="420"></iframe>');
     });	
 });
+
+function exp() {
+    var baseurl   = "<?php echo base_url() ?>";
+    url           = baseurl + 'master_unit/ctk/2';
+    window.open(url, '');
+}
 
 </script>	
 
@@ -730,7 +753,20 @@ $(document).ready(function() {
                         <div class="form-group">
                             <label class="control-label col-md-4">PKP</label>
                             <div class="col-md-8">
-                                <input name="pkp" placeholder="" class="form-control" type="text">
+                                <select class="form-control" name="pkp" id="pkp">
+                                    <option value="1">Ya</option>
+                                    <option value="0">Tidak</option>
+                                </select>
+                                <span class="help-block"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label class="control-label col-md-4">PKP No</label>
+                            <div class="col-md-8">
+                                <input name="pkpn" placeholder="" class="form-control" type="text">
                                 <span class="help-block"></span>
                             </div>
                         </div>

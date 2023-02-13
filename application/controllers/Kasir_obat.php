@@ -42,7 +42,7 @@ class Kasir_obat extends CI_Controller
 		$tanggal = date('Y-m-d');
 
 		if (!empty($cek)) {
-			$resep = $this->db->query("SELECT (SELECT handphone FROM tbl_pasien b where a.rekmed=b.rekmed)hp,a.* from tbl_apoposting a where a.koders='$cabang' and tglresep = '$tanggal' and noreg = ''")->result();
+			$resep = $this->db->query("SELECT (SELECT handphone FROM tbl_pasien b where a.rekmed=b.rekmed)hp,a.* from tbl_apoposting a where a.koders='$cabang' and tglresep = '$tanggal' and noreg = '' ORDER BY tglresep desc, resepno desc")->result();
 
 			$data['resep'] = $resep;
 			$data['shift'] = $shift;
@@ -66,7 +66,7 @@ class Kasir_obat extends CI_Controller
 		$cabang = $this->session->userdata('unit');
 
 		if (!empty($cek)) {
-			$resep = $this->db->query("SELECT (SELECT handphone FROM tbl_pasien b where a.rekmed=b.rekmed)hp, a.* from tbl_apoposting a where a.koders='$cabang' and tglresep between '$_tgl1' and '$_tgl2' and noreg = ''")->result();
+			$resep = $this->db->query("SELECT (SELECT handphone FROM tbl_pasien b where a.rekmed=b.rekmed)hp, a.* from tbl_apoposting a where a.koders='$cabang' and tglresep between '$_tgl1' and '$_tgl2' and noreg = '' ORDER BY tglresep desc, resepno desc")->result();
 			$data['resep'] = $resep;
 			$data['shift'] = $shift;
 			$this->load->view('klinik/v_kasirobat_add', $data);
@@ -191,32 +191,32 @@ class Kasir_obat extends CI_Controller
 
 	public function ajax_add_bayar()
 	{
-		$cabang = $this->session->userdata('unit');
-		$shift = $this->session->userdata('shift');
-		$userid = $this->session->userdata('username');
+		$cabang         = $this->session->userdata('unit');
+		$shift          = $this->session->userdata('shift');
+		$userid         = $this->session->userdata('username');
 
-		$tanggal = date('Y-m-d');
-		$jam     = date('H:i:s');
+		$tanggal        = date('Y-m-d');
+		$jam            = date('H:i:s');
 
-		$noreg = $this->input->post('noreg');
-		$noresep = $this->input->post('noresep');
-		$fakturpajak = $this->input->post('fakturpajak');
-		$totalresep = str_replace(',', '', $this->input->post('reseprp'));
-		$diskon = str_replace(',', '', $this->input->post('diskonpr'));
-		$diskonrp = str_replace(',', '', $this->input->post('diskonrp'));
-		$uangmuka = str_replace(',', '', $this->input->post('uangmuka'));
-		$uangmukapakai = str_replace(',', '', $this->input->post('uangmukapakai'));
-		$refund = str_replace(',', '', $this->input->post('refund'));
+		$noreg          = $this->input->post('noreg');
+		$noresep        = $this->input->post('noresep');
+		$fakturpajak    = $this->input->post('fakturpajak');
+		$totalresep     = str_replace(',', '', $this->input->post('reseprp'));
+		$diskon         = str_replace(',', '', $this->input->post('diskonpr'));
+		$diskonrp       = str_replace(',', '', $this->input->post('diskonrp'));
+		$uangmuka       = str_replace(',', '', $this->input->post('uangmuka'));
+		$uangmukapakai  = str_replace(',', '', $this->input->post('uangmukapakai'));
+		$refund         = str_replace(',', '', $this->input->post('refund'));
 		$voucherrp1     = str_replace(',', '', $this->input->post('voucherrp1'));
 		$voucherrp2     = str_replace(',', '', $this->input->post('voucherrp2'));
 		$voucherrp3     = str_replace(',', '', $this->input->post('voucherrp3'));
 
-		$totalnet = str_replace(',', '', $this->input->post('totalnet'));
-		$bayarcash = str_replace(',', '', $this->input->post('totaltunairp'));
-		$bayarcard = str_replace(',', '', $this->input->post('totalelectronicrp'));
+		$totalnet       = str_replace(',', '', $this->input->post('totalnet'));
+		$bayarcash      = str_replace(',', '', $this->input->post('totaltunairp'));
+		$bayarcard      = str_replace(',', '', $this->input->post('totalelectronicrp'));
 		// $totalbayar = str_replace(',','',$this->input->post('uangpasienrp'));
-		$kembali = str_replace(',', '', $this->input->post('kembalirp'));
-		$admcredit = 0;
+		$kembali        = str_replace(',', '', $this->input->post('kembalirp'));
+		$admcredit      = 0;
 		$totalbayar     = $bayarcash + $bayarcard;
 
 		if (empty($fakturpajak)) {
@@ -284,12 +284,12 @@ class Kasir_obat extends CI_Controller
 
 		$bayar_bank = $this->input->post('bayar_bank');
 		if ($bayar_bank) {
-			$bayar_tipe = $this->input->post('bayar_tipe');
+			$bayar_tipe    = $this->input->post('bayar_tipe');
 			$bayar_nokartu = $this->input->post('bayar_nokartu');
 			$bayar_trvalid = $this->input->post('bayar_trvalid');
-			$bayar_nilai = $this->input->post('bayar_nilai');
-			$bayar_adm = $this->input->post('bayar_adm');
-			$bayar_jumlah = $this->input->post('bayar_total');
+			$bayar_nilai   = $this->input->post('bayar_nilai');
+			$bayar_adm     = $this->input->post('bayar_adm');
+			$bayar_jumlah  = $this->input->post('bayar_total');
 			$jumdata_bayar = count($bayar_bank);
 
 			for ($i = 0; $i <= $jumdata_bayar - 1; $i++) {
@@ -343,9 +343,9 @@ class Kasir_obat extends CI_Controller
 		}
 
 		//$this->db->query("update tbl_regist set keluar=1 where koders = '$cabang' and noreg = '$noreg'");
-		$this->db->query("update tbl_regist set keluar=1 where koders = '$cabang' and noreg = '$noreg'");
-		$this->db->query("update tbl_apohresep set nokwitansi='$kwitansi', keluar=1 where koders = '$cabang' and resepno = '$noresep'");
-		$this->db->query("update tbl_apoposting set nokwitansi='$kwitansi', keluar=1 where koders = '$cabang' and resepno = '$noresep'");
+		$this->db->query("UPDATE tbl_regist set keluar=1 where koders = '$cabang' and noreg = '$noreg'");
+		$this->db->query("UPDATE tbl_apohresep set nokwitansi='$kwitansi', keluar=1 where koders = '$cabang' and resepno = '$noresep'");
+		$this->db->query("UPDATE tbl_apoposting set nokwitansi='$kwitansi', keluar=1 where koders = '$cabang' and resepno = '$noresep'");
 
 		// pengembalian uang muka dari uang kembalian rp
 		$statusKembalian = $this->input->post('kembaliuang');
@@ -911,8 +911,8 @@ class Kasir_obat extends CI_Controller
 			$alamat1  = $profile->alamat;
 			$alamat2  = $profile->kota;
 
-			$qheader     = "SELECT * from tbl_apohresep where resepno = '$noresep'";
-			$ppp = $this->db->query("SELECT * from tbl_apohresep where resepno = '$noresep'")->row();
+			$qheader	= "SELECT * from tbl_apohresep where resepno = '$noresep'";
+			$ppp 		= $this->db->query("SELECT * from tbl_apohresep where resepno = '$noresep'")->row();
 			$qkasir   = "SELECT * from tbl_kasir where nokwitansi = '$nokwitansi'";
 			$qdetil      = "SELECT * from tbl_apodresep where resepno = '$noresep'";
 			$qposting    = "SELECT * from tbl_apoposting where resepno = '$noresep'";
@@ -930,10 +930,11 @@ class Kasir_obat extends CI_Controller
 			$kasir       = $this->db->query($qkasir)->row();
 			// var_dump($qvoucher);die;
 
-			$header   = $this->db->query($qheader)->row();
-			$posting     = $this->db->query($qposting)->row_array();
-			$detil       = $this->db->query($qdetil)->result();
-			$kartu       = $this->db->query($qkartu)->row();
+			$header   	= $this->db->query($qheader)->row();
+			$posting    = $this->db->query($qposting)->row_array();
+			$detil      = $this->db->query($qdetil)->result();
+			$detilr		= $this->db->query($detil_r)->result();
+			$kartu      = $this->db->query($qkartu)->row();
 
 			$query_kartu_card	= $this->db->query("SELECT * FROM tbl_kartukredit WHERE nokwitansi = '$nokwitansi'")->result();
 
@@ -1049,7 +1050,7 @@ class Kasir_obat extends CI_Controller
 				// 	), $fc, $border, $align);
 				// 	$nomor++;
 				// }
-				if ($aporacik->harga_manual != null || $aporacik->harga_manual != '') {
+				if ($aporacik->harga_manual != 0) {
 					$hrgxx = $aporacik->harga_manual;
 				} else {
 					$hrgxx = $aporacik->totalrp;
@@ -1057,9 +1058,9 @@ class Kasir_obat extends CI_Controller
 				$pdf->FancyRow(array(
 					$nomor,
 					("**$aporacik->namaracikan"),
-					number_format($aporacik->jumlahracik, 0, ',', '.'),
-					number_format($aporacik->diskonrp, 0, ',', '.'),
-					number_format((!isset($aporacik->harga_manual) ? $aporacik->totalrp : $aporacik->harga_manual), 0, ',', '.')
+					number_format($aporacik->jumlahracik, 0, '.', ','),
+					number_format($aporacik->diskonrp, 0, '.', ','),
+					number_format($hrgxx, 0, '.', ',')
 				), $fc, $border, $align);
 				$nomor++;
 			}

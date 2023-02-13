@@ -7,7 +7,7 @@ class M_template_cetak extends CI_Model {
      parent::__construct();
      $this->load->model("M_cetak");
      }
-     function template($judul, $body, $position, $date, $cekpdf)
+     function template($judul, $body, $position='L', $date, $cekpdf)
      {
           $param       = $judul;
           $unit        = $this->session->userdata('unit');
@@ -103,7 +103,8 @@ class M_template_cetak extends CI_Model {
 
                case 1;
                     echo ("<title>$judul</title>");
-                    $this->M_cetak->mpdf('L', 'A4', $judul, $chari, '.PDF', 10, 10, 10, 2);
+                    // $this->M_cetak->mpdf('L', 'A4', $judul, $chari, '.PDF', 10, 10, 10, 2);
+                    $this->M_cetak->mpdf($position, 'A4', $judul, $chari, '.PDF', 10, 10, 10, 2);
                     break;
                case 2;
                     header("Cache-Control: no-cache, no-store, must-revalidate");

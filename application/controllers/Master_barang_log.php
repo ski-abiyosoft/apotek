@@ -7,6 +7,7 @@ class Master_barang_log extends CI_Controller {
 	public function __construct(){
 		parent::__construct();
 		$this->load->model('M_barang_log','M_barang_log');
+		$this->load->model('M_template_cetak','M_template_cetak');
 		$this->load->helper('simkeu_rpt');
 		$this->session->set_userdata('menuapp', '1000');
 		$this->session->set_userdata('submenuapp', '1301');
@@ -151,6 +152,144 @@ class Master_barang_log extends CI_Controller {
 			echo json_encode($data);
 			exit();
 		}
+	}
+
+	function ctk($cekpdf=0)
+	{
+
+		// $cekpdf   = 1;
+		$position = 'L';
+		$date     = '-';
+		$body     = '';
+
+		$body.= "<table style=\"border-collapse:collapse;font-family: Times New Roman; font-size:12px\" width=\"100%\" align=\"center\" border=\"1\" cellspacing=\"1\" cellpadding=\"3\">
+			<tr>
+				<td style=\"border:0\" colspan=\"29\" align=\"center\"><br></td>                
+			</tr>
+			<tr>
+				<td bgcolor=\"#cccccc\" align=\"center\"><b>kodebarang</b></td>
+				<td bgcolor=\"#cccccc\" align=\"center\"><b>namabarang</b></td>
+				<td bgcolor=\"#cccccc\" align=\"center\"><b>icgroup</b></td>
+				<td bgcolor=\"#cccccc\" align=\"center\"><b>golongan</b></td>
+				<td bgcolor=\"#cccccc\" align=\"center\"><b>jenis</b></td>
+				<td bgcolor=\"#cccccc\" align=\"center\"><b>subjenis</b></td>
+				<td bgcolor=\"#cccccc\" align=\"center\"><b>jenisharga</b></td>
+				<td bgcolor=\"#cccccc\" align=\"center\"><b>kemasan</b></td>
+				<td bgcolor=\"#cccccc\" align=\"center\"><b>satuan1</b></td>
+				<td bgcolor=\"#cccccc\" align=\"center\"><b>satuan2</b></td>
+				<td bgcolor=\"#cccccc\" align=\"center\"><b>satuan3</b></td>
+				<td bgcolor=\"#cccccc\" align=\"center\"><b>satuan2qty</b></td>
+				<td bgcolor=\"#cccccc\" align=\"center\"><b>satuan3qty</b></td>
+				<td bgcolor=\"#cccccc\" align=\"center\"><b>hargabeli</b></td>
+				<td bgcolor=\"#cccccc\" align=\"center\"><b>hargabelippn</b></td>
+				<td bgcolor=\"#cccccc\" align=\"center\"><b>hargajual</b></td>
+				<td bgcolor=\"#cccccc\" align=\"center\"><b>hpp</b></td>
+				<td bgcolor=\"#cccccc\" align=\"center\"><b>minstock</b></td>
+				<td bgcolor=\"#cccccc\" align=\"center\"><b>maxstock</b></td>
+				<td bgcolor=\"#cccccc\" align=\"center\"><b>useredit</b></td>
+				<td bgcolor=\"#cccccc\" align=\"center\"><b>tgledit</b></td>
+				<td bgcolor=\"#cccccc\" align=\"center\"><b>userbuat</b></td>
+				<td bgcolor=\"#cccccc\" align=\"center\"><b>tglbuat</b></td>
+				<td bgcolor=\"#cccccc\" align=\"center\"><b>het</b></td>
+			</tr>";
+
+			$sql =$this->db->query(
+				"SELECT*FROM tbl_logbarang order by kodebarang")->result();
+
+
+			$lcno          = 0;
+			$kodebarang    = '';
+			$namabarang    = '';
+			$icgroup       = '';
+			$golongan      = '';
+			$jenis         = '';
+			$subjenis      = '';
+			$jenisharga    = '';
+			$kemasan       = '';
+			$satuan1       = '';
+			$satuan2       = '';
+			$satuan3       = '';
+			$satuan2qty    = '';
+			$satuan3qty    = '';
+			$hargabeli     = '';
+			$hargabelippn  = '';
+			$hargajual     = '';
+			$hpp           = '';
+			$minstock      = '';
+			$maxstock      = '';
+			$useredit      = '';
+			$tgledit       = '';
+			$userbuat      = '';
+			$tglbuat       = '';
+			$het           = '';
+
+			
+
+
+
+
+			foreach ($sql as $row) {
+				$lcno         = $lcno + 1;
+				$kodebarang   = $row->kodebarang;
+				$namabarang   = $row->namabarang;
+				$icgroup      = $row->icgroup;
+				$golongan     = $row->golongan;
+				$jenis        = $row->jenis;
+				$subjenis     = $row->subjenis;
+				$jenisharga   = $row->jenisharga;
+				$kemasan      = $row->kemasan;
+				$satuan1      = $row->satuan1;
+				$satuan2      = $row->satuan2;
+				$satuan3      = $row->satuan3;
+				$satuan2qty   = $row->satuan2qty;
+				$satuan3qty   = $row->satuan3qty;
+				$hargabeli    = $row->hargabeli;
+				$hargabelippn = $row->hargabelippn;
+				$hargajual    = $row->hargajual;
+				$hpp          = $row->hpp;
+				$minstock     = $row->minstock;
+				$maxstock     = $row->maxstock;
+				$useredit     = $row->useredit;
+				$tgledit      = $row->tgledit;
+				$userbuat     = $row->userbuat;
+				$tglbuat      = $row->tglbuat;
+				$het          = $row->het;
+
+				$body .= "<tr>
+
+						<td align=\"center\">$kodebarang</td>
+						<td align=\"center\">$namabarang</td>
+						<td align=\"center\">$icgroup</td>
+						<td align=\"center\">$golongan</td>
+						<td align=\"center\">$jenis</td>
+						<td align=\"center\">$subjenis</td>
+						<td align=\"center\">$jenisharga</td>
+						<td align=\"center\">$kemasan</td>
+						<td align=\"center\">$satuan1</td>
+						<td align=\"center\">$satuan2</td>
+						<td align=\"center\">$satuan3</td>
+						<td align=\"center\">$satuan2qty</td>
+						<td align=\"center\">$satuan3qty</td>
+						<td align=\"center\">$hargabeli</td>
+						<td align=\"center\">$hargabelippn</td>
+						<td align=\"center\">$hargajual</td>
+						<td align=\"center\">$hpp</td>
+						<td align=\"center\">$minstock</td>
+						<td align=\"center\">$maxstock</td>
+						<td align=\"center\">$useredit</td>
+						<td align=\"center\">$tgledit</td>
+						<td align=\"center\">$userbuat</td>
+						<td align=\"center\">$tglbuat</td>
+						<td align=\"center\">$het</td>
+						</tr>"; 
+			
+			}
+
+			$body  .= "</table>";
+			$judul  = 'DATA MASTER LOG BARANG';
+
+			$this->M_template_cetak->template($judul, $body, $position, $date, $cekpdf);
+		
 	}
 	
 	public function cetak()

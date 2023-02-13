@@ -107,7 +107,8 @@ $this->load->view('template/body');
                           foreach ($resep as $row) {
 
                           if($row->rekmed == 'Non Member' || $row->rekmed == 'NON MEMBER' || $row->rekmed == 'non member'){
-                            $phone  = data_master("tbl_apohresep", ["resepno" => $row->resepno])->nohp;
+                            $phone			= data_master("tbl_apohresep", array("resepno" => $row->resepno))->nohp;
+
                           } else {
                             $phone  = $row->hp;
                           }

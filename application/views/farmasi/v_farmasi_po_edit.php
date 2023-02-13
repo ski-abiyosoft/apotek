@@ -210,6 +210,16 @@ $this->load->view('template/body');
                   </div>
                 </div>
               </div>
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label class="col-md-3 control-label">Alasan Edit <span class="text-danger">*</span></label>
+                    <div class="col-md-9">
+                      <input type="text" class="form-control" name="alasan" id="alasan" value="<?= $header->alasan; ?>">
+                    </div>
+                  </div>
+                </div>
+              </div>
 
 
               <div class="row">
@@ -509,6 +519,7 @@ function showbarangname(str, id) {
 }
 
 function save() {
+  var alasan = $('[name="alasan"]').val();
   var tanggal = $('[name="tanggal"]').val();
   var nomor = $('[name="nomorbukti"]').val();
   var total = $('#_vtotal').text();
@@ -518,7 +529,7 @@ function save() {
     ipo = 0;
   }
 
-  if (nomor == "" || total == "0.00" || total == "") {
+  if (nomor == "" || total == "0.00" || total == "" || alasan == "") {
     swal('PURCHASE ORDER', 'Data Belum Lengkap/Belum ada transaksi ...', '');
   } else {
       swal({
@@ -541,7 +552,7 @@ function save() {
             data1 = JSON.parse(data);
             swal({
               title: "PURCHASE ORDER",
-              html: "<p> No. Bukti   : <b>" + data1.nomor + "</b> </p>" +
+              html: "<p> Berhasil Diupdate</p><p> No. Bukti   : <b>" + data1.nomor + "</b> </p>" +
                 "Tanggal :  " + tanggal + "<b> </p>" + "Total: " + total,
               type: "info",
               confirmButtonText: "OK"

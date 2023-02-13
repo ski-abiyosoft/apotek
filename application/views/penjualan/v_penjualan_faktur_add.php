@@ -81,10 +81,11 @@ $umur          = $age_interval->y . ' Tahun ' . $age_interval->m . ' Bulan ' . $
                   </div>
                 </div>
               </div>
+              
               <div class="col-md-6">
                 <div class="form-group">
                   <label class="col-md-3 control-label">Resep Dari <font color="red">*</font></label>
-                  <div class="col-md-9">
+                  <div class="col-md-6">
                     <input type="text" id="dokter" name="dokter" class="form-control" placeholder="dr ..">
                   </div>
                 </div>
@@ -92,12 +93,15 @@ $umur          = $age_interval->y . ' Tahun ' . $age_interval->m . ' Bulan ' . $
             </div>
 
             <div class="row">
-              <div class="col-sm-6">
-                <label class="col-md-3 control-label">DEPO <font color="red">*</font></label>
-                <div class="col-md-6">
-                  <select id="gudang" name="gudang" class="form-control select2_el_farmasi_depo" data-placeholder="Pilih..." onkeypress="return tabE(this,event)" onchange="getkodebaru(this.value)"></select>
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label class="col-md-3 control-label">DEPO <font color="red">*</font></label>
+                  <div class="col-md-6">
+                    <select id="gudang" name="gudang" class="form-control select2_el_farmasi_depo" data-placeholder="Pilih..." onkeypress="return tabE(this,event)" onchange="getkodebaru(this.value)"></select>
+                  </div>
                 </div>
               </div>
+
               <div class="col-md-6">
                 <div class="form-group">
                   <label class="col-md-3 control-label">No. Pembelian <font color="red">*</font></label>
@@ -123,7 +127,7 @@ $umur          = $age_interval->y . ' Tahun ' . $age_interval->m . ' Bulan ' . $
               </div>
               <div class="col-md-6">
                 <div class="form-group">
-                  <label class="col-md-3 control-label">Alamat <font color="red">*</font></label>
+                  <label class="col-md-3 control-label">Alamat Kirim<font color="red">*</font></label>
                   <div class="col-md-9">
                     <input type="text" name="alamat" id="alamat" class="form-control">
                   </div>
@@ -136,7 +140,7 @@ $umur          = $age_interval->y . ' Tahun ' . $age_interval->m . ' Bulan ' . $
                 <div class="form-group">
                   <label class="col-md-3 control-label">Member <font color="red">*</font></label>
                   <div class="col-md-9">
-                    <div class="input-group input-medium">
+                    <div class="input-group input-large">
                       
                       <select id="pasien" name="pasien" class="form-control select2_el_pasien" onchange="getinfopasien()" data-placeholder="Pilih..." onkeypress="return tabE(this,event)">
                         <!-- <?php $gpasraj = $this->db->query("SELECT * FROM tbl_pasien WHERE rekmed = '$heresep->rekmed'")->row(); ?> -->
@@ -155,12 +159,12 @@ $umur          = $age_interval->y . ' Tahun ' . $age_interval->m . ' Bulan ' . $
               </div>
               <div class="col-md-6">
                 <div class="form-group">
-                  <label class="col-md-3 control-label">No Handphone <font color="red">*</font></label>
-                  <div class="col-md-7">
-                    <input type="text" name="phone" id="phone" class="form-control" value="+62">
-                  </div>
-                  <div class="col-md-2"> 
-                    <input type="checkbox" id="reg_cekhp" name="reg_cekhp" value="1" class="form-control">
+                  <label class="col-md-3 control-label">Jenis Kelamin<font color="red">*</font></label>
+                  <div class="col-md-3">
+                    <select name="jkel" id="jkel" class="form-control">
+                      <option value="P">Pria</option>
+                      <option value="W">Wanita</option>
+                    </select>
                   </div>
                 </div>
               </div>
@@ -173,10 +177,53 @@ $umur          = $age_interval->y . ' Tahun ' . $age_interval->m . ' Bulan ' . $
                   <div class="col-md-9">
                     <div class="input-group input-medium">
                       
-                      <input id="nama_pas" name="nama_pas" type="text" class="form-control">
+                      <input id="nama_pas" name="nama_pas" type="text" class="form-control" style="text-transform: uppercase !important">
                     </div>
                   </div>
 
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label class="col-md-3 control-label">Tgl Lahir<font color="red">*</font></label>
+                  <div class="col-md-4">
+                    <div class="input-group input-small">
+                      <input id="tgllahir" name="tgllahir" type="date" onchange="tgllahirr()" class="form-control" >
+                    </div>
+                  </div>
+                  <div class="col-md-5">
+                    <div class="input-group">
+                      <input id="lumur" name="lumur" type="text" class="form-control" readonly>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+            </div>
+
+            <div class="row">
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label class="col-md-3 control-label">Berat Badan <font color="red">*</font></label>
+                  <div class="col-md-9">
+                    <div class="input-group input-medium">
+                      <input type="number" name="bb" id="bb" class="form-control">
+                    </div>
+                  </div>
+                  
+
+                </div>
+              </div>
+              
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label class="col-md-3 control-label">No Handphone <font color="red">*</font></label>
+                  <div class="col-md-7">
+                    <input type="text" name="phone" id="phone" class="form-control" value="+62">
+                  </div>
+                  <div class="col-md-2"> 
+                    <input type="checkbox" id="reg_cekhp" name="reg_cekhp" value="1" class="form-control">
+                  </div>
                 </div>
               </div>
             </div>
@@ -202,12 +249,12 @@ $umur          = $age_interval->y . ' Tahun ' . $age_interval->m . ' Bulan ' . $
               <div class="row">
                 <div class="col-md-12">
                   <!-- <div style="display:block;overflow:auto;white-space:nowrap;"> -->
-                  <div class="table table-hoverx table-stripedx table-borderedx table-condensed table-scrollable">
-                    <table id="datatable" class="table table-bordered" style="width:150%">
+                  <!-- <div class="table table-hoverx table-stripedx table-borderedx table-condensed table-scrollable"> -->
+                    <table id="datatable" class="table table-hover table-striped table-bordered table-condensed table-scrollable">
                       <thead class="page-breadcrumb breadcrumb">
                         <th class="title-white" width="5%" style="text-align: center">Hapus</th>
-                        <th class="title-white" width="10%" style="text-align: center">Kode Barang</th>
-                        <th class="title-white" width="20%" style="text-align: center">Nama Barang</th>
+                        <th class="title-white" width="20%" style="text-align: center">Kode Barang</th>
+                        <!-- <th class="title-white" width="20%" style="text-align: center">Nama Barang</th> -->
                         <th class="title-white" width="10%" style="text-align: center">Qty</th>
                         <th class="title-white" width="5%" style="text-align: center">Satuan</th>
                         <th class="title-white" width="10%" style="text-align: center">Harga</th>
@@ -216,7 +263,7 @@ $umur          = $age_interval->y . ' Tahun ' . $age_interval->m . ' Bulan ' . $
                         <th class="title-white" width="10%" style="text-align: center">Disc. Rp</th>
                         <th class="title-white" width="10%" style="text-align: center">Total Harga</th>
                         <th class="title-white" width="5%" style="text-align: center">Keterangan</th>
-                        <th class="title-white" width="5%" style="text-align: center">Aturan Pakai</th>
+                        <th class="title-white" width="10%" style="text-align: center">Aturan Pakai</th>
                         <th class="title-white" width="5%" style="text-align: center">Expired Date</th>
                       </thead>
                       <tbody>
@@ -227,7 +274,7 @@ $umur          = $age_interval->y . ' Tahun ' . $age_interval->m . ' Bulan ' . $
                               <td><button type='button' onclick="hapusBarisIni(<?= $no ?>)" class='btn red'><i class='fa fa-trash-o'></td>
                               <td>
                                 <!-- <select name="kode[]" id="kode<?= $no ?>" class="select2_el_farmasi_baranggud form-control input-largex" onchange="showbarangname(this.value, <?= $no ?>);cekstok(this.value, <?= $no ?>) -->
-                                <select name="kode[]" id="kode<?= $no ?>" class="select2_el_farmasi_baranggud form-control input-largex" onchange="showbarangname(this.value, <?= $no ?>)">
+                                <select name="kode[]" id="kode<?= $no ?>" style="font-size: 12px;" class="select2_el_farmasi_baranggud form-control input-largex" onchange="showbarangname(this.value, <?= $no ?>)">
                                   <option value="<?= $dval->kodeobat ?>" selected>
                                     <?php
                                     $obtl = $this->db->query("SELECT * FROM tbl_barang WHERE kodebarang = '$dval->kodeobat'")->row();
@@ -235,8 +282,9 @@ $umur          = $age_interval->y . ' Tahun ' . $age_interval->m . ' Bulan ' . $
                                     ?>
                                   </option>
                                 </select>
+                                <input name="nama[]" id="nama<?= $no ?>" type="hidden" class="form-control " onkeypress="return tabE(this,event)" value="<?= $dval->namaobat ?>">
                               </td>
-                              <td><input name="nama[]" id="nama<?= $no ?>" type="text" class="form-control " onkeypress="return tabE(this,event)" value="<?= $dval->namaobat ?>"></td>
+                              <!-- <td></td> -->
                               <td><input name="qty[]" onchange="totalline(<?= $no ?>);total()" value="<?= str_replace(".00", "", $dval->qty) ?>" id="qty<?= $no ?>" type="text" class="form-control rightJustified"></td>
                               <td><input name="sat[]" id="sat<?= $no ?>" type="text" class="form-control " onkeypress="return tabE(this,event)" value="<?= $dval->satuan ?>"></td>
                               <td><input name="harga[]" onchange="totalline(<?= $no ?>);" value="<?= number_format($dval->harga, 2, '.', ',') ?>" id="harga<?= $no ?>" type="text" class="form-control rightJustified" readonly></td>
@@ -259,8 +307,7 @@ $umur          = $age_interval->y . ' Tahun ' . $age_interval->m . ' Bulan ' . $
                                 </select>
                               </td>
                               <td>
-                                <input name="expire[]" onchange="totalline(1);total()" value="" id="expire1" type="date" class="form-control">
-                              </td>
+                                <input name="expire[]" value="" id="expire1" type="date" style="width:90%;" class="form-control">
                               </td>
                               
                             </tr>
@@ -271,8 +318,9 @@ $umur          = $age_interval->y . ' Tahun ' . $age_interval->m . ' Bulan ' . $
                             <td><button type='button' onclick=hapusBarisIni(1) class='btn red'><i class='fa fa-trash-o'></td>
                             <td>
                               <select name="kode[]" id="kode1" class="select2_el_farmasi_baranggud form-control input-largex" onchange="showbarangname(this.value, 1)"></select>
+                              <input name="nama[]" id="nama1" type="hidden" class="form-control " onkeypress="return tabE(this,event)">
                             </td>
-                            <td><input name="nama[]" id="nama1" type="text" class="form-control " onkeypress="return tabE(this,event)"></td>
+                            <!-- <td></td> -->
                             <td><input name="qty[]" onchange="totalline(1);total()" value="1" id="qty1" type="text" class="form-control rightJustified"></td>
                             <td><input name="sat[]" id="sat1" type="text" class="form-control " onkeypress="return tabE(this,event)"></td>
                             <td><input name="harga[]" onchange="totalline(1);" value="0" id="harga1" type="text" class="form-control rightJustified" readonly></td>
@@ -291,13 +339,13 @@ $umur          = $age_interval->y . ' Tahun ' . $age_interval->m . ' Bulan ' . $
                               </select>
                             </td>
                             <td>
-                              <input name="expire[]" onchange="totalline(1);total()" value="" id="expire1" type="date" class="form-control">
+                              <input name="expire[]" value="" id="expire1" type="date" style="width:90%;" class="form-control">
                             </td>
                           </tr>
                         <?php } ?>
                       </tbody>
                     </table>
-                  </div>
+                  <!-- </div> -->
                   <div class="row">
                     <div class="col-xs-9">
                       <div class="wells">
@@ -572,6 +620,7 @@ $umur          = $age_interval->y . ' Tahun ' . $age_interval->m . ' Bulan ' . $
 
                           <tr class="wells">
                             <td colspan="2">
+                              <input type="hidden" name='jml_racikan_1' id='jml_racikan_1'>
                               <button type="button" onclick="tambaho_1()" class="btn green"><i class="fa fa-plus"></i>
                               </button>
                               <!-- <button type="button" onclick="hapuso_1()" class="btn red"><i class="fa fa-trash-o"></i></button> -->
@@ -644,7 +693,7 @@ $umur          = $age_interval->y . ' Tahun ' . $age_interval->m . ' Bulan ' . $
                             <td>&nbsp;</td>
                             <td>&nbsp;</td>
                             <td>
-                              <input type="number" class="form-control rightJustified" name="ongra_1" id="ongra_1" value=0 onchange="totalo_1()" readonly>
+                              <input type="number" class="form-control rightJustified" name="ongra_1" id="ongra_1" value="0" onchange="totalo_1()">
                             </td>
                           </tr>
                           <tr>
@@ -768,9 +817,9 @@ $umur          = $age_interval->y . ' Tahun ' . $age_interval->m . ' Bulan ' . $
                             </div>
                             <div class="col-md-6">
                               <div class="form-group">
-                                  <label class="control-label col-md-3">No BPJS <font color="red">*</font></label>
+                                  <label class="control-label col-md-3">No Penjamin <font color="red">*</font></label>
                                   <div class="col-md-9">
-                                      <input name="no_bpjs" id="no_bpjs" placeholder="NO BPJS" class="form-control" type="number" >
+                                      <input name="no_bpjs" id="no_bpjs" placeholder="No Kartu" class="form-control" type="number" >
                                       <span class="help-block"></span>
                                   </div>
                               </div>
@@ -779,17 +828,16 @@ $umur          = $age_interval->y . ' Tahun ' . $age_interval->m . ' Bulan ' . $
 
                         <div class="row">
                             <div class="col-md-6">
-                            <div class="form-group">
+                              <div class="form-group">
                                   <label class="control-label col-md-3">Nama Pasien <font color="red">*</font></label>
                                   <div class="col-md-2">
-                                        <select class="form-control input-small" name="luppreposition" id="luppreposition">
-                                          
-                                            <option value="">-- Pilih --</option>
-                                            <?php
-                                            foreach (setinghms('PREP') as $row) { ?>
-                                                <option value="<?= $row->kodeset; ?>"><?= $row->keterangan; ?></option>
-                                            <?php } ?>
-                                        </select>
+                                    <select class="form-control input-small" name="luppreposition" id="luppreposition">
+                                        <option value="">-- Pilih --</option>
+                                        <?php
+                                        foreach (setinghms('PREP') as $row) { ?>
+                                            <option value="<?= $row->kodeset; ?>"><?= $row->keterangan; ?></option>
+                                        <?php } ?>
+                                    </select>
                                   </div>
                                   <div class="col-md-7">
                                         <input name="lupnamapasien" required="required" id="lupnamapasien" placeholder="Nama Pasien"  class="form-control" type="text">
@@ -808,17 +856,6 @@ $umur          = $age_interval->y . ' Tahun ' . $age_interval->m . ' Bulan ' . $
                                   </div>
                                 </div>
                               </div>
-                                <!-- <div class="form-group">
-                                    <label class="control-label col-md-3">Status</label>
-                                    <div class="col-md-9">
-                                        <select class="form-control" id="lupstatus" name="lupstatus">
-                                            <?php
-                                            foreach (setinghms('STAT') as $row) { ?>
-                                                <option value="<?= $row->kodeset; ?>"><?= $row->keterangan; ?></option>
-                                            <?php } ?>
-                                        </select>
-                                    </div>
-                                </div> -->
                             </div>
                         </div>
 
@@ -833,27 +870,33 @@ $umur          = $age_interval->y . ' Tahun ' . $age_interval->m . ' Bulan ' . $
                                   </div>
                               </div>
                             </div>
-                            <!-- <div class="col-md-6">
-                                <div class="form-group">
-
-                                    <label class="control-label col-md-3">Identitas</label>
-                                    <div class="col-md-2">
-                                      <select name="lupidentitas" id="lupidentitas" class="form-control input-small">
-                                          <option value="-">-- Pilih --</option>
-                                          <option value="KTP">KTP</option>
-                                          <option value="SIM">SIM</option>
-                                          <option value="PASPORT">PASPORT</option>
-                                          <option value="K_PELAJAR">K_PELAJAR</option>
-                                          <option value="KMAHASISWA">KMAHASISWA</option>
-                                      </select>
-
-                                    </div>
-                                    <div class="col-md-7">
-                                      <input type="text" placeholder="No Identitas" name="lupnoidentitas" id="lupnoidentitas" class="form-control">
-                                    </div>
-
+                            <div class="col-md-6">
+                              <div class="form-group">
+                                <label class="control-label col-md-3">Jenis Kelamin<font color="red">*</font></label>
+                                <div class="col-md-9">
+                                  <div class="input-group input-medium">
+                                    <select name="jkelp" id="jkelp" class="form-control">
+                                      <option value="P">Pria</option>
+                                      <option value="W">Wanita</option>
+                                    </select>
+                                  </div>
                                 </div>
-                            </div> -->
+                              </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                              <div class="form-group">
+                                <label class="control-label col-md-3">Tgl Lahir<font color="red">*</font></label>
+                                <div class="col-md-5 input-medium">
+                                  <input id="tgllahirp" name="tgllahirp" type="date" onchange="tgllahirpp()" class="form-control input-medium" >
+                                </div>
+                                <div class="col-md-4">
+                                    <input id="lumurp" name="lumurp" type="text" class="form-control" readonly>
+                                </div>
+                              </div>
+                            </div>
                         </div>
 
                     </div>
@@ -874,6 +917,8 @@ $this->load->view('template/footer');
 
 <script type="text/javascript">
   $(document).ready(function() {
+    
+    $("#btnsimpan").attr("disabled", true);
     var gudang = $("#gudang").val();
     initailizeSelect2_farmasi_baranggud(gudang);
   });
@@ -881,6 +926,18 @@ $this->load->view('template/footer');
 
   function getkodebaru(gudang) {
     initailizeSelect2_farmasi_baranggud(gudang);
+  }
+
+  function tgllahirr() {
+    var birthDate = new Date($('#tgllahir').val());
+    var usia = hitung_usia(birthDate);
+    $('#lumur').val(usia);
+  }
+
+  function tgllahirpp() {
+    var birthDate = new Date($('#tgllahirp').val());
+    var usia = hitung_usia(birthDate);
+    $('#lumurp').val(usia);
   }
 
   var idrow = 2;
@@ -915,7 +972,7 @@ $this->load->view('template/footer');
   var ppn_pajak = Number(parseInt(ppn_pajakx.replaceAll(',', ''))) / 100;
   $('.select2_pembeli').select2();
 
-  getinfopasien();
+  // getinfopasien();
 
   function cek_tab() {
 
@@ -925,14 +982,14 @@ $this->load->view('template/footer');
     var selectElement = document.getElementById('gudang');
     var opt = document.createElement('option');
     var str = $('[name=pembeli]').val();
-    var gud = 'FARMASI';
+    var gud = 'APTK';
     var cekppn2 = 0;
-    opt.value = 'FARMASI';
-    opt.innerHTML = 'FARMASI TUNAI';
+    opt.value = 'APTK';
+    opt.innerHTML = 'APOTEK';
     selectElement.appendChild(opt);
 
     <?php if (!isset($_GET["eresep"])) : ?>
-      $('#gudang').val('FARMASI');
+      $('#gudang').val('APTK');
     <?php endif; ?>
 
     initailizeSelect2_register(str);
@@ -1061,8 +1118,8 @@ $this->load->view('template/footer');
 
     table.append("<tr id='resep_tr" + idrow + "'>" +
       "<td><button id='btnhapus" + idrow + "' type='button' onclick='hapusBarisIni(" + idrow + ")' class='btn red'><i class='fa fa-trash-o'></i> </button></td>" +
-      "<td><select name='kode[]' id=kode" + idrow + " onchange='showbarangname(this.value," + idrow + ")' class='select2_el_farmasi_baranggud form-control input-largex' ></select></td>" +
-      "<td><input name='nama[]' id='nama" + idrow + "' type='text' class='form-control' value='' onchange='totalline(" + idrow + ")'></td>" +
+      "<td><select name='kode[]' id=kode" + idrow + " onchange='showbarangname(this.value," + idrow + ")' class='select2_el_farmasi_baranggud form-control input-largex' ></select> <input name='nama[]' id='nama" + idrow + "' type='hidden' class='form-control' value='' onchange='totalline(" + idrow + ")'></td>" +
+      // "<td></td>" +
       "<td><input name='qty[]' id=qty" + idrow + " onchange='totalline(" + idrow + ")' value='1'  type='text' class='form-control rightJustified'  ></td>" +
       "<td><input name='sat[]'    id=sat" + idrow + " type='text' class='form-control' ></td>" +
       "<td><input name='harga[]'  id=harga" + idrow + " onchange='totalline(" + idrow + ") value='0'  type='text' class='form-control rightJustified' readonly></td>" +
@@ -1072,7 +1129,7 @@ $this->load->view('template/footer');
       "<td><input name='jumlah[]' id=jumlah" + idrow + " type='text' class='form-control rightJustified' size='40%' readonly></td>" +
       "<td><textarea name='keterangan[]' id='keterangan" + idrow + "' type='text' class='form-control' style='resize:none' rows='2'></textarea></td>" +
       "<td><select name='aturan_pakai[]' id='aturan_pakai" + idrow + "' class='form-control select2_atp' data-placeholder='Pilih...'><option value=''>Pilih...</option><?php foreach ($atpakaix as $row) : ?> <option value='<?= $row->apocode; ?>'><?= $row->aponame; ?></option><?php endforeach; ?></select></td>" +
-      "<td><input name='expire[]' onchange='totalline(1);total()' value='' id='expire" + idrow + "' type='date' class='form-control'> </td>"+
+      "<td><input name='expire[]' onchange='totalline(1);total()' value='' id='expire" + idrow + "' type='date' style='width:90%;' class='form-control'> </td>"+
       "</tr>");
     initailizeSelect2_farmasi_baranggud(gud);
     idrow++;
@@ -1159,20 +1216,41 @@ $this->load->view('template/footer');
 
   function showbarangname(str, id) {
     var xhttp;
-    var vid = id;
+    var vid       = id;
     $('#sat' + vid).val('');
+    var qty       = $('#qty' + vid).val();
+    var gudang    = $('#gudang').val();
     $('#harga' + vid).val(0);
-    var customer = $('#cust').val();
+    var customer  = $('#cust').val();
+    
     $.ajax({
-      url: "<?= base_url(); ?>penjualan_faktur/getinfobarang/?kode=" + str,
+      url: "<?= base_url(); ?>penjualan_faktur/getinfobarang/?kode=" + str + "&gudang=" + gudang,
       type: "GET",
       dataType: "JSON",
       success: function(data) {
         //   console.log(data);
+        var saldo = Number(data.saldoakhir);
+        if (saldo < qty) {
+          swal('SALDO BARANG', 'Minus ...', '');
+          $("#kode" + vid).empty();
+          $("#btnsimpan").attr("disabled", true);
+          return;
+        }
+        if (data == null || data == '') {
+          swal('DATA BARANG', 'Kosong ...', '');
+          $("#kode" + vid).empty();
+          $("#btnsimpan").attr("disabled", true);
+          return;
+        }
+        
         $('#sat' + vid).val(data.satuan1);
         $('#nama' + vid).val(data.namabarang);
         $('#harga' + vid).val(separateComma(data.hargajual));
         totalline(vid);
+
+        if ($("#nama" + vid).val() != null || $("#nama" + vid).val() != '' || $("#sat" + vid).val() != null || $( "#sat" + vid).val() != '') {
+          $("#btnsimpan").attr("disabled", false);
+        }
       }
     });
 
@@ -1203,18 +1281,18 @@ $this->load->view('template/footer');
 
     var table = document.getElementById('datatable');
     var row = table.rows[id];
-    var harga = Number(row.cells[5].children[0].value.replace(/[^0-9\.]+/g, ""));
-    jumlah = row.cells[3].children[0].value * harga;
-    vdiskon = (row.cells[7].children[0].value / 100) * jumlah;
+    var harga = Number(row.cells[4].children[0].value.replace(/[^0-9\.]+/g, ""));
+    jumlah = row.cells[2].children[0].value * harga;
+    vdiskon = (row.cells[6].children[0].value / 100) * jumlah;
 
     if (eval(vdiskon) > 0) {
       // diskon      = (row.cells[6].children[0].value/100)* harga; saya ganti
-      diskon = (row.cells[7].children[0].value / 100) * harga * row.cells[3].children[0].value;
-      row.cells[8].children[0].value = separateComma(diskon);
+      diskon = (row.cells[6].children[0].value / 100) * harga * row.cells[2].children[0].value;
+      row.cells[7].children[0].value = separateComma(diskon);
       tot = harga - diskon;
     } else {
-      var diskon = Number(row.cells[7].children[0].value.replace(/[^0-9\.]+/g, ""));
-      row.cells[8].children[0].value = separateComma(diskon);
+      var diskon = Number(row.cells[6].children[0].value.replace(/[^0-9\.]+/g, ""));
+      row.cells[7].children[0].value = separateComma(diskon);
       tot = harga - diskon;
     }
 
@@ -1226,7 +1304,7 @@ $this->load->view('template/footer');
       tot = tot * 1.1;
     }
 
-    row.cells[9].children[0].value = separateComma(tot);
+    row.cells[8].children[0].value = separateComma(tot);
     total();
 
   }
@@ -1319,45 +1397,52 @@ $this->load->view('template/footer');
   // }
 
   function total() {
-    var cekppn2 = $('#ppn2_').val();
-    // var ongkosracik = $('#ongra_1_').val();
-    var table = document.getElementById('datatable');
-    var rowCount = table.rows.length;
-    var subtotal = 0;
-    var diskon = 0;
-    for (i = 1; i < rowCount; i++) {
-      var row = table.rows[i];
-      var qty = row.cells[3].children[0].value;
-      var hargax = row.cells[5].children[0].value;
-      var harga = Number(parseInt(hargax.replaceAll(',', '')));
-      var diskon2x = row.cells[8].children[0].value;
-      var diskon2 = Number(parseInt(diskon2x.replaceAll(',', '')));
-      var subtot = qty * harga;
-      subtotal += subtot;
-      diskon += diskon2;
-    }
-    // var ppn = subtotal * cekppn2 / 100;
-    var total = subtotal - diskon;
-    var dpp = total / (111 / 100);
-    var ppn = dpp * cekppn2 / 100;
-    var ongkosracik = $('#ongra_1').val();
-
-    // console.log(dpp);
-    // $('#toto_1').val(subtotal.toFixed(0));
-    // $('#disk_1').val(diskon.toFixed(0));
-    // $('#ppn_1').val(ppn.toFixed(0));
-    // $('#totp_1').val(total.toFixed(0));
-    // $('#ongra_1').val(total.toFixed(0));
-    document.getElementById("_vsubtotal").innerHTML = separateComma(subtotal.toFixed(0));
-    document.getElementById("_vdiskon").innerHTML = separateComma(diskon.toFixed(0));
-    document.getElementById("_vppn").innerHTML = separateComma(ppn.toFixed(0));
-    // document.getElementById("_vracik").innerHTML = separateComma(ongkosracik.toFixed(0));
-    document.getElementById("_vtotal").innerHTML = separateComma(total.toFixed(0));
-    document.getElementById("_vdpp").innerHTML = separateComma(dpp.toFixed(0));
-
-
-    document.getElementById("_vracik").innerHTML = ongkosracik;
+  var cekppn2 = $('#ppn2_').val();
+  // var ongkirx = $('#ongkir').val();
+  // var ongkirxx = Number(parseInt(ongkirx.replaceAll(',', '')));
+  // if (ongkirxx > 0) {
+  //   ongkir = ongkirxx;
+  // } else {
+  //   ongkir = 0;
+  // }
+  // var ongkosracik = $('#ongra_1_').val();
+  var table       = document.getElementById('datatable');
+  var rowCount    = table.rows.length;
+  var subtotal    = 0;
+  var diskon      = 0;
+  for (i = 1; i < rowCount; i++) {
+    var row       = table.rows[i];
+    var qtyx      = row.cells[2].children[0].value;
+    var qty       = Number(parseInt(qtyx.replaceAll(',', '')));
+    var hargax    = row.cells[4].children[0].value;
+    var harga     = Number(parseInt(hargax.replaceAll(',', '')));
+    var diskon2x  = row.cells[7].children[0].value;
+    var diskon2   = Number(parseInt(diskon2x.replaceAll(',', '')));
+    var subtot    = qty * harga;
+    subtotal      += subtot;
+    diskon        += diskon2;
   }
+  var total         = subtotal - diskon;
+  var dpp           = total / (111 / 100);
+  var ppn           = dpp * cekppn2 / 100;
+  var ongkosracik   = $('#ongra_1').val();
+  // if (subtotal > 0) {
+  //   ceknoreg();
+  //   // $("#btnsimpan").attr("disabled", false);
+  // } else {
+  //   $("#btnsimpan").attr("disabled", true);
+  // }
+  document.getElementById("_vsubtotal").innerHTML = separateComma(subtotal.toFixed(0));
+  document.getElementById("_vdiskon").innerHTML = separateComma(diskon.toFixed(0));
+  document.getElementById("_vppn").innerHTML = separateComma(ppn.toFixed(0));
+  // document.getElementById("_vongkir").innerHTML = separateComma(ongkir.toFixed(0));
+  document.getElementById("_vtotal").innerHTML = separateComma(total.toFixed(0));
+  document.getElementById("_vdpp").innerHTML = separateComma(dpp.toFixed(0));
+
+
+  document.getElementById("_vracik").innerHTML = ongkosracik;
+}
+
 
   function cekstok(str, id) {
     var gudang = $('#gudang').val();
@@ -1560,14 +1645,14 @@ $this->load->view('template/footer');
     var table = document.getElementById('datatableobat_1');
     var row = table.rows[id];
     var kode = row.cells[1].children[0].value;
-    var harga = Number(row.cells[6].children[0].value.replace(/[^0-9\.]+/g, ""));
-    var qtyjual = Number(row.cells[5].children[0].value.replace(/[^0-9\.]+/g, ""));
-    var uangr = Number(row.cells[7].children[0].value.replace(/[^0-9\.]+/g, ""));
+    var harga = Number(row.cells[5].children[0].value.replace(/[^0-9\.]+/g, ""));
+    var qtyjual = Number(row.cells[4].children[0].value.replace(/[^0-9\.]+/g, ""));
+    var uangr = Number(row.cells[6].children[0].value.replace(/[^0-9\.]+/g, ""));
     jumlah = qtyjual * harga;
     tot = jumlah + uangr;
     cekhargajualo_1(kode, harga, id);
 
-    row.cells[8].children[0].value = separateComma(tot);
+    row.cells[7].children[0].value = separateComma(tot);
     totalo_1();
     t_jual_manual();
 
@@ -1624,66 +1709,85 @@ $this->load->view('template/footer');
   });
 
   function totalo_1() {
-    var table = document.getElementById('datatableobat_1');
-    var rowCount = table.rows.length;
-    var rowCount = table.rows.length;
-    var diskonper = $('#disknom_1').val();
-    var ongkosracikx = $('#ongra_1').val();
-    var ongkosracik = Number(parseInt(ongkosracikx.replaceAll(',', '')));
-    var cek_ppnn = $('#cek_ppn').is(':checked');
-    tjumlah = 0;
-    tdiskon = 0;
+  var table = document.getElementById('datatableobat_1');
+  var rowCount = table.rows.length;
+  var diskonper = $('#disknom_1').val();
+  var ongkosracikx = $('#ongra_1').val();
+  var ongkosracik = Number(parseInt(ongkosracikx.replaceAll(',', '')));
+  var cek_ppnn = $('#cek_ppn').is(':checked');
+  tjumlah = 0;
+  tdiskon = 0;
 
 
-    for (var i = 1; i < rowCount; i++) {
-      var row = table.rows[i];
-      var qtyjual = Number(row.cells[5].children[0].value.replace(/[^0-9\.]+/g, ""));
-      var harga = Number(row.cells[6].children[0].value.replace(/[^0-9\.]+/g, ""));
-      var uangr = Number(row.cells[7].children[0].value.replace(/[^0-9\.]+/g, ""));
-      tjumlah = tjumlah + eval(qtyjual * harga) + uangr;
+  for (var i = 1; i < rowCount; i++) {
+    var row = table.rows[i];
+    var qtyjual = Number(row.cells[4].children[0].value.replace(/[^0-9\.]+/g, ""));
+    var harga = Number(row.cells[5].children[0].value.replace(/[^0-9\.]+/g, ""));
+    var uangr = Number(row.cells[6].children[0].value.replace(/[^0-9\.]+/g, ""));
+    tjumlah = tjumlah + eval(qtyjual * harga) + uangr;
 
-    }
-    total_done = tjumlah;
-
-    if (diskonper == 0) {
-      tdiskon = 0;
-    } else {
-      tdiskon = total_done * (diskonper / 100);
-    }
-
-    if (cek_ppnn == false) {
-      tppno = 0;
-    } else {
-      tppno = (tjumlah - tdiskon) * cekppn2;
-    }
-    diskon_done = tdiskon;
-    total_sppn = tjumlah - diskon_done;
-    dppx = total_sppn / (111 / 100);
-    ppn_done = dppx * ppn_pajak;
-    // total_ppn = total_sppn + ppn_done;
-    total_ppn = total_sppn;
-    // console.log(total_done);
-    // console.log(diskon_done);
-    // console.log(total_sppn);
-    // console.log(dppx.toFixed(0));
-    // console.log(ppn_done.toFixed(0));
-    // console.log(total_ppn.toFixed(0));
-    ppnc = ((tjumlah - tdiskon) / 111 / 100) * ppn_pajak;
-
-
-    document.getElementById("toto_1").value = separateComma(total_done);
-    // document.getElementById("toto_11").value = separateComma(total_done);
-    document.getElementById("disk_1").value = separateComma(diskon_done);
-    document.getElementById("ppn_1").value = separateComma(ppn_done.toFixed(0));
-    //    document.getElementById("ongra_1").innerHTML=separateComma(tjumlah-tdiskon+tppno);
-    document.getElementById("totp_1").value = separateComma((total_ppn + ongkosracik).toFixed(0));
-
-    if (tjumlah > 0) {
-      document.getElementById("btnsimpan").disabled = false;
-    } else {
-      document.getElementById("btnsimpan").disabled = true;
-    }
   }
+  total_done = tjumlah;
+
+  if (diskonper == 0) {
+    tdiskon = 0;
+  } else {
+    tdiskon = total_done * (diskonper / 100);
+  }
+
+  if (cek_ppnn == false) {
+    tppno = 0;
+  } else {
+    tppno = (tjumlah - tdiskon) * cekppn2;
+  }
+  diskon_done = tdiskon;
+  total_sppn = tjumlah - diskon_done;
+  dppx = total_sppn / (111 / 100);
+  ppn_done = dppx * ppn_pajak;
+  // total_ppn = total_sppn + ppn_done;
+  total_ppn = total_sppn;
+  // console.log(total_done);
+  // console.log(diskon_done);
+  // console.log(total_sppn);
+  // console.log(dppx.toFixed(0));
+  // console.log(ppn_done.toFixed(0));
+  // console.log(total_ppn.toFixed(0));
+  ppnc = ((tjumlah - tdiskon) / 111 / 100) * ppn_pajak;
+
+
+  document.getElementById("toto_1").value = separateComma(total_done);
+  // document.getElementById("toto_11").value = separateComma(total_done);
+  document.getElementById("disk_1").value = separateComma(diskon_done);
+  document.getElementById("ppn_1").value = separateComma(ppn_done.toFixed(0));
+  //    document.getElementById("ongra_1").innerHTML=separateComma(tjumlah-tdiskon+tppno);
+  document.getElementById("totp_1").value = separateComma((total_ppn + ongkosracik).toFixed(0));
+  var stx = $("#_vsubtotal").text();
+  var stz = Number(parseInt(stx.replaceAll(',','')));
+  if(stx == null || stx == '' || stx == 'null') {
+    var st = 0;
+  } else {
+    var st = stz;
+  }
+  if(document.getElementById("t_manual").checked == true) {
+    var totox = $("#toto_11").val();
+    var toto = Number(totox.replaceAll(',',''));
+    $("#_vracik").text(separateComma((toto).toFixed(0)));
+    // if(Number(($("#_vsubtotal").text()).replaceAll(',','')) < 1) {
+    // }
+    $("#_vtotal").text(separateComma((toto + st).toFixed(0)));
+  } else {
+    $("#_vracik").text(separateComma((total_ppn + ongkosracik).toFixed(0)));
+    // if(Number(($("#_vsubtotal").text()).replaceAll(',','')) < 1) {
+    // }
+    $("#_vtotal").text(separateComma((total_ppn + ongkosracik + st).toFixed(0)));
+  }
+
+  if (tjumlah > 0) {
+    document.getElementById("btnsimpan").disabled = false;
+  } else {
+    document.getElementById("btnsimpan").disabled = true;
+  }
+}
 
   // -- end tambahan harrimas_1 --
 
@@ -1854,126 +1958,134 @@ $this->load->view('template/footer');
   }
 
   function saveracik_1() {
-    var table       = document.getElementById('datatableobat_1');
-    var x           = document.getElementById('datatable').insertRow(idrow);
-    var rowCount    = table.rows.length;
+  // var table = document.getElementById('datatableobat_1');
+  // var x = document.getElementById('datatable').insertRow(idrow);
+  // var rowCount = table.rows.length;
 
-    // console.log(rowCount);
+  // console.log(rowCount);
 
-    var jenis_1     = $('[name="jenis_1"]').val();
-    var resman_1    = $('[name="resman_1"]').val();
-    var namaracik_1 = $('[name="namaracik_1"]').val();
-    var jumracik_1  = $('[name="jumracik_1"]').val();
-    var stajum_1    = $('[name="stajum_1"]').val();
-    var atpakai_1   = $('[name="atpakai_1"]').val();
-    var kodebarang  = $('[name="atpakai_1"]').val();
-    var carapakai   = $('[name="carapakai"]').val();
-    var nobukti     = $('#noresep').val();
+  var jenis_1       = $('[name="jenis_1"]').val();
+  var resman_1      = $('[name="resman_1"]').val();
+  var namaracik_1   = $('[name="namaracik_1"]').val();
+  var jumracik_1    = $('[name="jumracik_1"]').val();
+  var stajum_1      = $('[name="stajum_1"]').val();
+  var atpakai_1     = $('[name="atpakai_1"]').val();
+  var kodebarang    = $('[name="atpakai_1"]').val();
+  var carapakai     = $('[name="carapakai"]').val();
+  var nobukti       = $('#noresep').val();
 
-    if (document.getElementById('t_manual').checked == true) {
-      var h_manual = 1;
-      var totalx = $('#toto_11').val();
-    } else {
-      var totalx = $('#_vtotal').val();
-      var h_manual = 0;
-    }
-    var totalxx = Number(parseInt(totalx.replaceAll(',', '')));
-
-    if (document.getElementById('t_manual').checked == true) {
-      var h_manual = 1;
-    } else {
-      var h_manual = 0;
-    }
-
-    if (jenis_1 == '') {
-      swal({
-        title: "Jenis Masih Kosong",
-        html: "<p>CEK LAGI</p>",
-        type: "error",
-        confirmButtonText: "OK"
-      });
-      return;
-    }
-    if (namaracik_1 == '') {
-      swal({
-        title: "Nama Racik Masih Kosong",
-        html: "<p>CEK LAGI</p>",
-        type: "error",
-        confirmButtonText: "OK"
-      });
-      return;
-    }
-    if (jumracik_1 == '') {
-      swal({
-        title: "Jumlah Masih Kosong",
-        html: "<p>CEK LAGI</p>",
-        type: "error",
-        confirmButtonText: "OK"
-      });
-      return;
-    }
-    if (stajum_1 == '') {
-      swal({
-        title: "Pilihan Jumlah Masih Kosong",
-        html: "<p>CEK LAGI</p>",
-        type: "error",
-        confirmButtonText: "OK"
-      });
-      return;
-    }
-    if (atpakai_1 == '') {
-      swal({
-        title: "Aturan Pakai Masih Kosong",
-        html: "<p>CEK LAGI</p>",
-        type: "error",
-        confirmButtonText: "OK"
-      });
-      return;
-    }
-    var row = idrow - 1;
-    for (i = 1; i <= idrow - 1; i++) {
-      var kode1       = $('#kodeo' + i + '_1').val();
-      var nama1       = $('#namao' + i + '_1').val();
-      var satuan1     = $('#sato' + i + '_1').val();
-      var qty_racik   = $('#qty_racik' + i + '_1').val();
-      var qty_jual    = $('#qty_jual' + i + '_1').val();
-      var harga_jual  = $('#hargaoju' + i + '_1').val();
-      var uang        = $('#uangr' + i + '_1').val();
-      var total       = $('#total_hrg' + i + '_1').val();
-      var jml         = i + 1;
-      // console.log(jml-1);
-    }
-    var toto_1    = Number(parseInt($("#toto_1").val().replaceAll(',', '')));
-    var disk_1    = Number(parseInt($("#disk_1").val().replaceAll(',', '')));
-    var ppn_1     = Number(parseInt($("#ppn_1").val().replaceAll(',', '')));
-    var totp_1    = Number(parseInt($("#totp_1").val().replaceAll(',', '')));
-    var param     = '?kodeo=' + kode1 + '&namao=' + nama1 + '&satuan=' + satuan1 + '&qty_racik=' + qty_racik + '&qty_jual=' +
-      qty_jual + '&harga=' + harga_jual + '&uang=' + uang + '&total=' + total + "&jml=" + jml +
-      "&toto_1=" + toto_1 + "&disk_1=" + disk_1 + "&ppn_1=" + ppn_1 + "&totp_1=" + totp_1 + "&resman_1=" + resman_1 +
-      "&cek_rm=" + h_manual + "&harga_manual=" + totalxx;
-    // console.log(param)
-    $.ajax({
-      url: '<?= site_url() ?>penjualan_faktur/saveracik/' + param,
-      data: $('#frmpenjualan').serialize(),
-      type: "POST",
-      success: function(data) {
-        // console.log(data);
-        save();
-      },
-      error: function(data) {
-        swal({
-          title: "PENJUALAN",
-          html: "Data gagal disimpan",
-          type: "error",
-          confirmButtonText: "OK"
-        });
-
-      }
-    });
-
-
-
+  if (document.getElementById('t_manual').checked == true) {
+    var h_manual = 1;
+    var totalx = $('#toto_11').val();
+  } else {
+    var totalx = $('#_vtotal').val();
+    var h_manual = 0;
   }
+  var totalxx = Number(parseInt(totalx.replaceAll(',', '')));
+
+  if (document.getElementById('t_manual').checked == true) {
+    var h_manual = 1;
+  } else {
+    var h_manual = 0;
+  }
+
+  if (jenis_1 == '') {
+    swal({
+      title: "Jenis Masih Kosong",
+      html: "<p>CEK LAGI</p>",
+      type: "error",
+      confirmButtonText: "OK"
+    });
+    return;
+  }
+  if (namaracik_1 == '') {
+    swal({
+      title: "Nama Racik Masih Kosong",
+      html: "<p>CEK LAGI</p>",
+      type: "error",
+      confirmButtonText: "OK"
+    });
+    return;
+  }
+  if (jumracik_1 == '') {
+    swal({
+      title: "Jumlah Masih Kosong",
+      html: "<p>CEK LAGI</p>",
+      type: "error",
+      confirmButtonText: "OK"
+    });
+    return;
+  }
+  if (stajum_1 == '') {
+    swal({
+      title: "Pilihan Jumlah Masih Kosong",
+      html: "<p>CEK LAGI</p>",
+      type: "error",
+      confirmButtonText: "OK"
+    });
+    return;
+  }
+  if (atpakai_1 == '') {
+    swal({
+      title: "Aturan Pakai Masih Kosong",
+      html: "<p>CEK LAGI</p>",
+      type: "error",
+      confirmButtonText: "OK"
+    });
+    return;
+  }
+  // var row = idrow - 1;
+
+  var table = document.getElementById('datatableobat_1');
+  var rowCount = table.rows.length;
+  for (i = 1; i < rowCount; i++) {
+    var kode1       = $('#kodeo' + i + '_1').val();
+    var nama1       = $('#namao' + i + '_1').val();
+    var satuan1     = $('#sato' + i + '_1').val();
+    var qty_racik   = $('#qty_racik' + i + '_1').val();
+    var qty_jual    = $('#qty_jual' + i + '_1').val();
+    var harga_jual  = $('#hargaoju' + i + '_1').val();
+    var uang        = $('#uangr' + i + '_1').val();
+    var total       = $('#total_hrg' + i + '_1').val();
+    var jml         = i;
+    $("#jml_racikan_1").val(jml);
+  }
+  // console.log($("#jml_racikan_1").val())
+  var jmlx    = $("#jml_racikan_1").val();
+  var toto_1  = Number(parseInt($("#toto_1").val().replaceAll(',', '')));
+  var disk_1  = Number(parseInt($("#disk_1").val().replaceAll(',', '')));
+  var ppn_1   = Number(parseInt($("#ppn_1").val().replaceAll(',', '')));
+  var totp_1  = Number(parseInt($("#totp_1").val().replaceAll(',', '')));
+  var param   = '?kodeo=' + kode1 + '&namao=' + nama1 + '&satuan=' + satuan1 + '&qty_racik=' + qty_racik + '&qty_jual=' +
+    qty_jual + '&harga=' + harga_jual + '&uang=' + uang + '&total=' + total + "&jml=" + jmlx +
+    "&toto_1=" + toto_1 + "&disk_1=" + disk_1 + "&ppn_1=" + ppn_1 + "&totp_1=" + totp_1 + "&resman_1=" + resman_1 +
+    "&cek_rm=" + h_manual + "&harga_manual=" + totalxx;
+  // console.log(param)
+  $.ajax({
+    url: '<?php echo site_url() ?>penjualan_faktur/saveracik/' + param,
+    data: $('#frmpenjualan').serialize(),
+    type: "POST",
+    dataType: "JSON",
+    success: function(data) {
+      console.log(data.status)
+      if(data.status == 1) {
+        save();
+      }
+    },
+    error: function(data) {
+      swal({
+        title: "PENJUALAN",
+        html: "Data gagal disimpan",
+        type: "error",
+        confirmButtonText: "OK"
+      });
+
+    }
+  });
+
+
+
+}
 
   // function save2()
   // {	       
@@ -2077,197 +2189,161 @@ $this->load->view('template/footer');
   // }	
 
   function save() {
-    var table       = document.getElementById('datatable');
-    var rowCount    = table.rows.length;
-    // console.log(rowCount);
-    var tanggal     = $('[name="tanggal"]').val();
-    var pasien      = $('[name="pasien"]').val();
-    var gudang      = $('[name="gudang"]').val();
-    var pembeli     = $('[name="pembeli"]').val();
-    var noresep     = $('[name="noresep"]').val();
-    var nohp        = $('#phone').val();
-    var cekhp       = $('#reg_cekhp').is(':checked');
-    var jumlahtotv  = $('#_vtotal').text();
-    var jumlahtot   = Number(parseInt(jumlahtotv.replaceAll(',', '')));
-    var racikanxx   = $('#totp_1').val();
-    var racikan     = Number(parseInt(racikanxx.replaceAll(',', '')));
-    var tanggal     = $('[name="tanggal"]').val();
-    var namapasien  = $('[name="namapasien"]').val();
-    var nama_pas    = $('[name="nama_pas"]').val();
-    var dokter      = $('[name="dokter"]').val();
+  var table       = document.getElementById('datatable');
+  var rowCount    = table.rows.length;
+  // console.log(rowCount);
+  var tanggal     = $('[name="tanggal"]').val();
+  var pasien      = $('[name="pasien"]').val();
+  var gudang      = $('[name="gudang"]').val();
+  var pembeli     = $('[name="pembeli"]').val();
+  var nohp        = $('#phone').val();
+  var cekhp       = $('#reg_cekhp').is(':checked');
+  var jumlahtotv  = $('#_vtotal').text();
+  var jumlahtot   = Number(parseInt(jumlahtotv.replaceAll(',', '')));
+  var racikanxx   = $('#totp_1').val();
+  var racikan     = Number(parseInt(racikanxx.replaceAll(',', '')));
+  if (document.getElementById('t_manual').checked == true) {
+    var h_manual = 1;
+    var totalx = $('#toto_11').val();
+  } else {
+    var totalx = $('#totp_1').val();
+    var h_manual = 0;
+  }
 
-    if (document.getElementById('t_manual').checked == true) {
-      var h_manual = 1;
-      var totalx = $('#toto_11').val();
-    } else {
-      var totalx = $('#totp_1').val();
-      var h_manual = 0;
-    }
-    var total = Number(parseInt(totalx.replaceAll(',', '')));
-    // console.log(racikan)
-
-    if (nohp == '') {
+  for (var i = 1; i < rowCount; i++) {
+    var expire    = $("#expire" + i).val(); 
+    if (expire == '' || expire == null) {
       swal({
-        title: "No Hp Masih Kosong",
-        html: "<p> No.Hp : <b>" + nohp + "</b> </p>" +
-          "CEK LAGI",
+        title: "Expired Date",
+        html: "<p>HARUS DI isi</p>",
         type: "error",
         confirmButtonText: "OK"
       });
       return;
-    }
-
-    if (pembeli == 'atr' && dokter == '') {
-      dokter = '-';
-    } else if (pembeli == 'adr' && dokter == '') {
-      swal({
-        title: "Dokter Resep ",
-        html: "<p>Masih Kosong</p>" +
-          "Silahkan di Isi",
-        type: "error",
-        confirmButtonText: "OK"
-      });
-      return;
-    }
-
-
-    if (nama_pas == '') {
-      swal({
-        title: "Nama Pasien",
-        html: "<p> Masih Kosong</b> </p>" +
-          "CEK LAGI",
-        type: "error",
-        confirmButtonText: "OK"
-      });
-      return;
-    }
-
-    if (!cekhp) {
-      swal({
-        title: "Cek Kembali Nomor Hp Pasien",
-        html: "<p> No.Hp : <b>" + nohp + "</b> </p>" +
-          "Jika Sudah Benar Lakukan <br>CHECKLIST <br>di Samping Kolom No Hp",
-        type: "error",
-        confirmButtonText: "OK"
-      });
-      return;
-    }
-
-    if (pembeli == null || gudang == null || gudang == "" || pembeli == "" || jumlahtot == "0.00" || jumlahtot == "") {
-      if (gudang == "" || gudang == null) {
-        swal('PENJUALAN', 'Depo belum diisi ...', '');
-      }
-
-      if (pembeli == "" || pembeli == null) {
-        swal('PENJUALAN', 'Pembeli belum diisi ...', '');
-      }
-
-      if (total == "" || total == "0.00") {
-        swal({
-          title: "PENJUALAN",
-          html: "Belum ada item barang yang dipilih ...",
-          type: "error",
-          confirmButtonText: "OK"
-        });
-        return;
-      }
-
-    } else {
-
-      var params = '?vtotal=' + jumlahtot + "&racikan=" + total;
-
-      $.ajax({
-
-        url: '<?= site_url('penjualan_faktur/save/1') ?>' + params,
-        data: $('#frmpenjualan').serialize(),
-
-        dataType: "JSON",
-        type: 'POST',
-
-        success: function(data) {
-          if (data.status == 1) {
-            swal({
-              title: "PENJUALAN RESEP",
-              html: "<p> No. Bukti   : <b>" + data.nobukti + "</b> </p>" +
-                "Tanggal :  " + tanggal +
-                "<br><br>Biaya Terbentuk <br><b>" + jumlahtotv + "<br> </b>" +
-                "Biaya Racikan<br><b>" + totalx + '</b>',
-              // html: "DATA BERHASIL DISIMPAN !",
-              type: "info",
-              confirmButtonText: "OK"
-            }).then((value) => {
-              // bayar();
-              location.href = "<?= base_url() ?>penjualan_faktur";
-              return;
-            });
-              document.getElementById("tersimpan").value = "OK";
-              document.getElementById("noresep").value = data;
-              document.getElementById("btnsimpan").disabled = true;
-              document.getElementById("btncetak").disabled = false;
-
-            var table = document.getElementById('datatable');
-            var rowCount = table.rows.length;
-            for (let index = 1; index < rowCount; index++) {
-              // document.getElementById("kode" + index).disabled = true;
-              // document.getElementById("nama" + index).disabled = true;
-              // document.getElementById("qty" + index).disabled = true;
-              // document.getElementById("sat" + index).disabled = true;
-              // document.getElementById("harga" + index).disabled = true;
-              // document.getElementById("disc" + index).disabled = true;
-              // document.getElementById("disc2" + index).disabled = true;
-              $('#kode'+ index).attr('readonly', true);
-              $('#nama'+ index).attr('readonly', true);
-              $('#qty'+ index).attr('readonly', true);
-              $('#sat'+ index).attr('readonly', true);
-              $('#harga'+ index).attr('readonly', true);
-              $('#disc'+ index).attr('readonly', true);
-              $('#disc2'+ index).attr('readonly', true);
-            }
-            // document.getElementById("pembeli").disabled = true;
-            // document.getElementById("noreg").disabled = true;
-            // document.getElementById("pasien").disabled = true;
-            // document.getElementById("namapasien").disabled = true;
-            // document.getElementById("umurpas").disabled = true;
-            // document.getElementById("dokter").disabled = true;
-            // document.getElementById("tanggal").disabled = true;
-            // document.getElementById("alamat").disabled = true;
-            // document.getElementById("phone").disabled = true;
-            $('#pembeli').attr('readonly', true);
-            $('#noreg').attr('readonly', true);
-            $('#pasien').attr('readonly', true);
-            $('#namapasien').attr('readonly', true);
-            $('#umurpas').attr('readonly', true);
-            $('#dokter').attr('readonly', true);
-            $('#tanggal').attr('readonly', true);
-            $('#alamat').attr('readonly', true);
-            $('#phone').attr('readonly', true);
-
-
-
-          } else if (data.status == 2) {
-            swal({
-              title: "PENJUALAN RESEP",
-              html: "<p> No. Bukti   : <b>" + data.nobukti + "</b> </p>" +
-                "Tanggal :  " + tanggal +
-                "<br><br>Biaya Terbentuk <br><b>" + jumlahtotv + "</b>",
-              // html: "DATA BERHASIL DISIMPAN !",
-              type: "info",
-              confirmButtonText: "OK"
-            }).then((value) => {
-              // bayar();
-              location.href = "<?= base_url() ?>penjualan_faktur";
-              return;
-            });
-          }
-
-        },
-        error: function(data) {
-          swal('PENJUALAN', 'Data gagal disimpan ...', '');
-
-        }
-      });
     }
   }
+  var total = Number(parseInt(totalx.replaceAll(',', '')));
+
+  
+  // console.log(racikan)
+
+  if (nohp == '') {
+    swal({
+      title: "No Hp Masih Kosong",
+      html: "<p> No.Hp : <b>" + nohp + "</b> </p>" +
+        "CEK LAGI",
+      type: "error",
+      confirmButtonText: "OK"
+    });
+    return;
+  }
+
+  if (!cekhp) {
+    swal({
+      title: "Cek Kembali Nomor Hp Pasien",
+      html: "<p> No.Hp : <b>" + nohp + "</b> </p>" +
+        "Jika Sudah Benar Lakukan <br>CHECKLIST <br>di Samping Kolom No Hp",
+      type: "error",
+      confirmButtonText: "OK"
+    });
+    return;
+  }
+
+
+  if (pembeli == null || gudang == null || gudang == "" || pembeli == "" || jumlahtot == "0.00" || jumlahtot == "") {
+    if (gudang == "" || gudang == null) {
+      swal('PENJUALAN', 'Depo belum diisi ...', '');
+    }
+
+    if (pembeli == "" || pembeli == null) {
+      swal('PENJUALAN', 'Pembeli belum diisi ...', '');
+    }
+
+    if (total == "" || total == "0.00") {
+      swal({
+        title: "PENJUALAN",
+        html: "Belum ada item barang yang dipilih ...",
+        type: "error",
+        confirmButtonText: "OK"
+      });
+      return;
+    }
+
+  } else {
+    var params = '?vtotal=' + jumlahtot + "&racikan=" + total;
+    $.ajax({
+      url: '<?php echo site_url('penjualan_faktur/save/1') ?>' + params,
+      data: $('#frmpenjualan').serialize(),
+      dataType: "JSON",
+      type: 'POST',
+
+      success: function(data) {
+        if (data.status == 1) {
+          swal({
+            title: "PENJUALAN RESEP",
+            html: "<p> No. Bukti   : <b>" + data.nobukti + "</b> </p>" +
+              "Tanggal :  " + tanggal +
+              "<br><br>Biaya Terbentuk <br><b>" + jumlahtotv + "<br> </b>" +
+              "Biaya Racikan<br><b>" + totalx + '</b>',
+            // html: "DATA BERHASIL DISIMPAN !",
+            type: "info",
+            confirmButtonText: "OK"
+          }).then((value) => {
+            // bayar();
+            location.href = "<?php echo base_url() ?>penjualan_faktur";
+            return;
+          });
+          document.getElementById("tersimpan").value = "OK";
+          document.getElementById("noresep").value = data;
+          document.getElementById("btnsimpan").disabled = true;
+          document.getElementById("btncetak").disabled = false;
+
+          var table = document.getElementById('datatable');
+          var rowCount = table.rows.length;
+          for (let index = 1; index < rowCount; index++) {
+            document.getElementById("kode" + index).disabled = true;
+            document.getElementById("nama" + index).disabled = true;
+            document.getElementById("qty" + index).disabled = true;
+            document.getElementById("sat" + index).disabled = true;
+            document.getElementById("harga" + index).disabled = true;
+            document.getElementById("disc" + index).disabled = true;
+            document.getElementById("disc2" + index).disabled = true;
+          }
+          document.getElementById("pembeli").disabled = true;
+          document.getElementById("noreg").disabled = true;
+          document.getElementById("pasien").disabled = true;
+          document.getElementById("namapasien").disabled = true;
+          document.getElementById("dokter").disabled = true;
+          document.getElementById("tanggal").disabled = true;
+          document.getElementById("alamat").disabled = true;
+          document.getElementById("phone").disabled = true;
+
+
+
+        } else if (data.status == 2) {
+          swal({
+            title: "PENJUALAN RESEP",
+            html: "<p> No. Bukti   : <b>" + data.nobukti + "</b> </p>" +
+              "Tanggal :  " + tanggal +
+              "<br><br>Biaya Terbentuk <br><b>" + jumlahtot + "</b>",
+            // html: "DATA BERHASIL DISIMPAN !",
+            type: "info",
+            confirmButtonText: "OK"
+          }).then((value) => {
+            // bayar();
+            location.href = "<?php echo base_url() ?>penjualan_faktur";
+            return;
+          });
+        }
+
+      },
+      error: function(data) {
+        swal('PENJUALAN', 'Data gagal disimpan ...', '');
+
+      }
+    });
+  }
+}
 
   function bayar() {
     var table       = document.getElementById('datatable');
@@ -2378,6 +2454,12 @@ $this->load->view('template/footer');
         $('#nama_pas').val(data.namapas);
         $('#alamat').val(data.alamat);
         $('#phone').val(data.handphone);
+        $('#alamat').val(data.alamat);
+        $('#phone').val(data.handphone);
+        $('#jkel').val(data.jkel);
+        $('#tgllahir').val(data.tanggallahir);
+        $("#tgllahir").attr("disabled", true);
+        $('#lumur').val(hitung_usia(data.tanggallahir));
 
 
       }
@@ -2460,59 +2542,59 @@ $this->load->view('template/footer');
 
   /*
   $('#pembeli').on("change", function(e){
-  	e.preventDefault();
-  	  var pembeli = $('#pembeli').val();
-  		  
-  	  if(pembeli == 'LOKAL'){
-        var selectElement = document.getElementById('gudang');
-  	  var opt = document.createElement('option');
-  	  opt.value = 'FARMASI';
-  	  opt.innerHTML = 'FARMASI TUNAI';
-  	  selectElement.appendChild(opt);
-  	  $('#gudang').val('FARMASI');	  	 
-  	  }
-  	  
-  	  if(pembeli == 'LOKAL'){
-  		  
-        $('#dokter').prop('disabled',true);
-  	  } else {
-  	  $('#dokter').prop('disabled',false);	  
-  	  }
-  	  
-  	  if(pembeli == 'SPA'){
-        var selectElement = document.getElementById('gudang');
-  	  var opt = document.createElement('option');
-  	  opt.value = 'FARMASISPA';
-  	  opt.innerHTML = 'FARMASI SPA';
-  	  selectElement.appendChild(opt);
-  	  $('#gudang').val('FARMASISPA');
-  	  }
-  	  
-  	  if(pembeli == 'GIGI'){
-        var selectElement = document.getElementById('gudang');
-  	  var opt = document.createElement('option');
-  	  opt.value = 'FARMASIGIG';
-  	  opt.innerHTML = 'FARMASI GIGI';
-  	  selectElement.appendChild(opt);
-  	  $('#gudang').val('FARMASIGIG');
-  	  }
-  	  
-  	  if(pembeli == 'KULIT'){
-        var selectElement = document.getElementById('gudang');
-  	  var opt = document.createElement('option');
-  	  opt.value = 'FARMASI';
-  	  opt.innerHTML = 'FARMASI TUNAI';
-  	  selectElement.appendChild(opt);
-  	  $('#gudang').val('FARMASI');
-  	  }
-  	  
-  	if(pembeli =='KULIT' ||  pembeli =='SPA' || pembeli =='GIGI'){
-  	  $('#vnoreg').show();	
-  		  
-  	} else {
-  	  $('#vnoreg').hide();
+    e.preventDefault();
+      var pembeli = $('#pembeli').val();
         
-  	}
+      if(pembeli == 'LOKAL'){
+        var selectElement = document.getElementById('gudang');
+      var opt = document.createElement('option');
+      opt.value = 'FARMASI';
+      opt.innerHTML = 'FARMASI TUNAI';
+      selectElement.appendChild(opt);
+      $('#gudang').val('FARMASI');	  	 
+      }
+      
+      if(pembeli == 'LOKAL'){
+        
+        $('#dokter').prop('disabled',true);
+      } else {
+      $('#dokter').prop('disabled',false);	  
+      }
+      
+      if(pembeli == 'SPA'){
+        var selectElement = document.getElementById('gudang');
+      var opt = document.createElement('option');
+      opt.value = 'FARMASISPA';
+      opt.innerHTML = 'FARMASI SPA';
+      selectElement.appendChild(opt);
+      $('#gudang').val('FARMASISPA');
+      }
+      
+      if(pembeli == 'GIGI'){
+        var selectElement = document.getElementById('gudang');
+      var opt = document.createElement('option');
+      opt.value = 'FARMASIGIG';
+      opt.innerHTML = 'FARMASI GIGI';
+      selectElement.appendChild(opt);
+      $('#gudang').val('FARMASIGIG');
+      }
+      
+      if(pembeli == 'KULIT'){
+        var selectElement = document.getElementById('gudang');
+      var opt = document.createElement('option');
+      opt.value = 'FARMASI';
+      opt.innerHTML = 'FARMASI TUNAI';
+      selectElement.appendChild(opt);
+      $('#gudang').val('FARMASI');
+      }
+      
+    if(pembeli =='KULIT' ||  pembeli =='SPA' || pembeli =='GIGI'){
+      $('#vnoreg').show();	
+        
+    } else {
+      $('#vnoreg').hide();
+        
+    }
   });
   */
 

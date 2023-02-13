@@ -94,7 +94,7 @@ class M_stockopname extends CI_Model
 	{
 		$this->_get_datatables_query($cabang, $gudang);
 		$query = $this->db->get();
-		return $query->nuM_rows();
+		return $query->num_rows();
 	}
 
 	public function count_all()

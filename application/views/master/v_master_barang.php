@@ -71,12 +71,13 @@
                                         </button>
                                         <ul class="dropdown-menu pull-center">
                                             <li>
-                                                <a href="#report" class="btn btn-sm red print_laporan" data-toggle="modal" id="1">
-                                                    <i title=" CETAK PDF" class="fa fa-print"></i><b>PDF</b>&nbsp;&nbsp;</a>
+                                                <!-- <a href="#report" class="btn btn-sm red print_laporan" data-toggle="modal" id="1">
+                                                    <i title=" CETAK PDF" class="fa fa-print"></i><b>PDF</b>&nbsp;&nbsp;</a> -->
+                                                <a href="<?= base_url("master_barang/cetak/1") ?>" target="_blank" class="btn btn-sm red"><i title=" CETAK PDF" class="fa fa-print"></i><b>PDF</b>&nbsp;&nbsp;</a>
                                             </li>
                                             <li>
                                                 <a class="btn btn-sm green print_laporan_e" >
-                                                <i title=" CETAK PDF" class="fa fa-download"></i><b>EXCEL</b>&nbsp;&nbsp;
+                                                <i title=" CETAK EXCEL" class="fa fa-download"></i><b>EXCEL</b>&nbsp;&nbsp;
                                                 </a>
                                             </li>
                                         </ul>
@@ -280,7 +281,61 @@ function reload_table() {
 }
 
 function save() {
-    console.log($('#form').serialize());
+
+    var kode          = $('[name="kode"]').val();
+    var nama          = $('[name="nama"]').val();
+    var namageneric   = $('[name="namageneric"]').val();
+    var inventorycat  = $('[name="inventorycat"]').val();
+    var satuan        = $('[name="satuan"]').val();
+    var golongan      = $('[name="golongan"]').val();
+    var kelasterapi   = $('[name="kelasterapi"]').val();
+    var hargajual     = $('[name="hargajual"]').val();
+    var hna           = $('[name="hna"]').val();
+    var ppn           = $('[name="ppn"]').val();
+    var hnappn        = $('[name="hnappn"]').val(); 
+    var kemasan       = $('[name="kemasan"]').val();
+    var minstock      = $('[name="minstock"]').val();
+    var leadtime      = $('[name="leadtime"]').val();
+    var reorderlevel  = $('[name="reorderlevel"]').val();
+    var het           = $('[name="het"]').val();
+    var jenisharga    = $('[name="jenisharga"]').val();
+    var status_b      = $('[name="status"]').val();
+    var pabrik        = $('[name="pabrik"]').val();
+    var jenis_o       = $('[name="jenis"]').val();
+    var vendor        = $('[name="vendor"]').val();
+
+    if(
+        kode            == ""   || kode             == null || 
+        nama            == ""   || nama             == null || 
+        namageneric     == ""   || namageneric      == null || 
+        inventorycat    == ""   || inventorycat     == null || 
+        satuan          == ""   || satuan           == null || 
+        golongan        == ""   || golongan         == null || 
+        kelasterapi     == ""   || kelasterapi      == null || 
+        hargajual       == ""   || hargajual        == null || 
+        hna             == ""   || hna              == null || 
+        ppn             == ""   || ppn              == null || 
+        hnappn          == ""   || hnappn           == null || 
+        kemasan         == ""   || kemasan          == null || 
+        minstock        == ""   || minstock         == null || 
+        leadtime        == ""   || leadtime         == null || 
+        reorderlevel    == ""   || reorderlevel     == null || 
+        het             == ""   || het              == null || 
+        jenisharga      == ""   || jenisharga       == null || 
+        status_b        == ""   || status_b         == null || 
+        pabrik          == ""   || pabrik           == null || 
+        jenis_o         == ""   || jenis_o          == null || 
+        vendor          == ""   || vendor           == null 
+    ){
+        swal({
+            title   : "DATA MASIH BELUM LENGKAP",
+            html    : "Silahkan Di Lengkapi terlebih Dahulu..",
+            type    : "error",
+            confirmButtonText   : "OK"
+        });
+        return;
+    }
+    // console.log($('#form').serialize());
     $('#btnSave').text('saving...'); //change button text
     $('#btnSave').attr('disabled', true); //set button disable 
     var namabrg = $('[name="nama"]').val();
@@ -464,7 +519,7 @@ $(document).ready(function() {
                                         <!-- <select name="satuan" id="satuan" class="select2_el_satuan form-control ">
                                         </select> -->
                                         
-                                        <select name="satuan" id="satuan" class="form-control">
+                                        <select name="satuan" id="satuan" class="form-control" onchange="tampil_tab()">
                                             <option value="">--- Pilih ---</option>
                                         <?php 
                                         $data = $this->db->query("SELECT * from tbl_barangsetup where apogroup='SATUAN' AND apocode<>''")->result();
@@ -472,6 +527,7 @@ $(document).ready(function() {
                                         <option value="<?= $row->apocode;?>"><?= $row->aponame.' - [ '.$row->apocode.' ] ';?></option>
                                         <?php } ?>
                                         </select>
+                                        <input type="hidden" id="sat">
 
                                         <span class="help-block"></span>
                                     </div>
@@ -483,7 +539,7 @@ $(document).ready(function() {
                                         <!-- <input name="satuan2" placeholder="" class="form-control" maxlength="100"
                                             type="text"> -->
 
-                                        <select name="satuan2" id="satuan2" class="form-control">
+                                        <select name="satuan2" id="satuan2" class="form-control" onchange="tampil_tab(2)">
                                             <option value="">--- Pilih ---</option>
                                         <?php 
                                         $data = $this->db->query("SELECT * from tbl_barangsetup where apogroup='SATUAN' AND apocode<>''")->result();
@@ -497,16 +553,18 @@ $(document).ready(function() {
                                     </div>
                                     <div class="col-md-2">
                                         <select type="text" class="form-control" name="satuan2opr" id="satuan2opr">
-                                            <option value="">--- Pilih ---</option>
-                                            <option value="1">x Kali</option>
+                                            <!-- <option value="">--- Pilih ---</option> -->
                                             <option value="2">: Bagi</option>
+                                            <option value="1">x Kali</option>
                                         </select>
                                         <span class="help-block"></span>
                                     </div>
                                     <div class="col-md-2">
-                                        <input name="qtysatuan2" value="0" class="form-control" maxlength="100"
-                                            type="text">
+                                        <input name="qtysatuan2" value="0" class="form-control" maxlength="100" type="number">
                                         <span class="help-block"></span>
+                                    </div>
+                                    <div class="col-md-1">
+                                        <label id="label2" class="control-label col-md-3">&nbsp;</label>
                                     </div>
                                 </div>
 
@@ -516,7 +574,7 @@ $(document).ready(function() {
                                         <!-- <input name="satuan3" placeholder="" class="form-control" maxlength="100"
                                             type="text"> -->
 
-                                        <select name="satuan3" id="satuan3" class="form-control">
+                                        <select name="satuan3" id="satuan3" class="form-control" onchange="tampil_tab(3)">
                                             <option value="">--- Pilih ---</option>
                                         <?php 
                                         $data = $this->db->query("SELECT * from tbl_barangsetup where apogroup='SATUAN' AND apocode<>''")->result();
@@ -529,23 +587,24 @@ $(document).ready(function() {
                                     </div>
                                     <div class="col-md-2">
                                         <select type="text" class="form-control" name="satuan3opr" id="satuan3opr">
-                                            <option value="">--- Pilih ---</option>
-                                            <option value="1">x Kali</option>
+                                            <!-- <option value="">--- Pilih ---</option> -->
                                             <option value="2">: Bagi</option>
+                                            <option value="1">x Kali</option>
                                         </select>
                                         <span class="help-block"></span>
                                     </div>
                                     <div class="col-md-2">
-                                        <input name="qtysatuan3" value="0" class="form-control" maxlength="100"
-                                            type="text">
-                                        <span class="help-block"></span>
+                                        <input name="qtysatuan3" value="0" class="form-control" maxlength="100" text="number">
+                                        <span class="help-block" ></span>
+                                    </div>
+                                    <div class="col-md-1">
+                                        <label id="label3" class="control-label col-md-3">&nbsp;</label>
                                     </div>
                                 </div>
                                 <div class="form-group">
                                     <label class="control-label col-md-3">Kemasan&nbsp;<small style="color:red">*</small></label>
                                     <div class="col-md-9">
-                                        <input name="kemasan" placeholder="" class="form-control" maxlength="100"
-                                            type="text">
+                                        <input name="kemasan" placeholder="" class="form-control" maxlength="100" text="text">
                                         <span class="help-block"></span>
                                     </div>
                                 </div>
@@ -560,7 +619,7 @@ $(document).ready(function() {
                                     <div class="col-md-3">
                                         <select name="ppn" class="form-control" id="ppn">
                                             <option value="">--- Pilih ---</option>
-                                            <option value="1">Ya</option>
+                                            <option value="1" selected>Ya</option>
                                             <option value="0">Tidak</option>
                                         </select>
                                     </div>
@@ -610,7 +669,7 @@ $(document).ready(function() {
                                 </div>
 
                                 <div class="form-group">
-                                    <label class="control-label col-md-3">Nilai Persediaan Satuan&nbsp;<small style="color:red">*</small></label>
+                                    <label class="control-label col-md-3">Nilai Persediaan Satuan&nbsp;</label>
                                     <div class="col-md-9">
                                         <input name="nilaipersediaan" placeholder="" class="form-control"
                                             maxlength="100" type="text">
@@ -715,7 +774,7 @@ $(document).ready(function() {
                                 <div class="form-group">
                                     <label class="control-label col-md-3">Lead Time&nbsp;<small  style="color:red">*</small></label>
                                     <div class="col-md-4">
-                                        <input name="leadtime" value="0" class="form-control" maxlength="100" type="number">
+                                        <input name="leadtime" value="" class="form-control" maxlength="100" type="number">
                                         <span class="help-block"></span>
                                     </div>
                                     <div class="col-md-2">
@@ -727,8 +786,7 @@ $(document).ready(function() {
                                 <div class="form-group">
                                     <label class="control-label col-md-3">Disc Cash</label>
                                     <div class="col-md-9">
-                                        <input name="disccash" placeholder="" class="form-control" maxlength="100"
-                                            type="text">
+                                        <input name="disccash" placeholder="" class="form-control" maxlength="100" value="0" type="text">
                                         <span class="help-block"></span>
                                     </div>
                                 </div>
@@ -736,7 +794,7 @@ $(document).ready(function() {
                                 <div class="form-group">
                                     <label class="control-label col-md-3">Minimum Stock&nbsp;<small style="color:red">*</small></label>
                                     <div class="col-md-9">
-                                        <input name="minstock" value="0" class="form-control" maxlength="100"
+                                        <input name="minstock" value="" class="form-control" maxlength="100"
                                             type="text">
                                         <span class="help-block"></span>
                                     </div>
@@ -745,7 +803,7 @@ $(document).ready(function() {
                                 <div class="form-group">
                                     <label class="control-label col-md-3">Reorder Level&nbsp;<small style="color:red">*</small></label>
                                     <div class="col-md-9">
-                                        <input name="reorderlevel" value="0" class="form-control" maxlength="100"
+                                        <input name="reorderlevel" value="" class="form-control" maxlength="100"
                                             type="text">
                                         <span class="help-block"></span>
                                     </div>
@@ -843,6 +901,18 @@ $(document).ready(function() {
 <script>
 initailizeSelect2_vendor();
 //initailizeSelect2_kasbank();
+function tampil_tab(kolom) {
+    
+    var satuan        = $('[name="satuan"]').val();
+    if(kolom==2){
+        document.getElementById("label2").innerHTML= satuan;
+    }else if(kolom==2){
+        document.getElementById("label3").innerHTML= satuan;
+    }else{
+        document.getElementById("label2").innerHTML= satuan;
+        document.getElementById("label3").innerHTML= satuan;
+    }
+}
 
 function gettarif() {
     var xhttp;

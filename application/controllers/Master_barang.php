@@ -10,7 +10,6 @@ class Master_barang extends CI_Controller {
 		$this->session->set_userdata('menuapp', '1000');
 		$this->session->set_userdata('submenuapp', '1206');
 	}
-
 	
 	public function index(){
 		$cek = $this->session->userdata('level');				
@@ -24,8 +23,7 @@ class Master_barang extends CI_Controller {
 		}			
 	}
 
-	public function ajax_list()
-	{
+	public function ajax_list(){
 		$jenis = $this->input->get('jenis');		
 		if($jenis==1){
 		  $filter = '';
@@ -95,9 +93,9 @@ class Master_barang extends CI_Controller {
 			'satuan3opr'       => $this->input->post('satuan3opr'),
 			'kemasan'		=> $this->input->post('kemasan'),
 			'leadtime'		=> $this->input->post('leadtime'),
-			'disccash'		=> $this->input->post('disccash'),
+			'discc'		=> $this->input->post('disccash'),
 			'minstock'		=> $this->input->post('minstock'),
-			'reorderlevel'		=> $this->input->post('reorderlevel'),
+			'reorder'		=> $this->input->post('reorderlevel'),
 			'vat'           => $this->input->post('ppn'),
 			'hargabeli' => $this->input->post('hna'),
 			'hargabelippn' => $this->input->post('hnappn'),
@@ -160,8 +158,8 @@ class Master_barang extends CI_Controller {
 			'satuan2'      => $this->input->post('satuan2'),
 			'satuan3'      => $this->input->post('satuan3'),
 			'leadtime'     => $this->input->post('leadtime'),
-			'disccash'     => $this->input->post('disccash'),
-			'reorderlevel'     => $this->input->post('reorderlevel'),
+			'discc'     => $this->input->post('disccash'),
+			'reorder'     => $this->input->post('reorderlevel'),
 			'minstock'     => $this->input->post('minstock'),
 			'satuan2qty'   => $this->input->post('qtysatuan2'),
 			'satuan3qty'   => $this->input->post('qtysatuan3'),
@@ -215,7 +213,6 @@ class Master_barang extends CI_Controller {
 		echo json_encode(array("status" => TRUE));
 	}
 
-
 	private function _validate(){
 		$data = array();
 		$data['error_string'] = array();
@@ -244,10 +241,8 @@ class Master_barang extends CI_Controller {
 		}
 	}
 	
-	function cetak($cekpdf = '')
-	{
+	function cetak($cekpdf = ''){
 
-		// $cek          = $this->input->get('cekk');
 		$cek        = $cekpdf;
 		$chari      = '';
 		$cekk       = $this->session->userdata('level');
@@ -289,8 +284,9 @@ class Master_barang extends CI_Controller {
 							</b>
 						</td>
 					</tr>
-				</table>";
+			</table>";
 
+			
 			$chari .= "<table style=\"border-collapse:collapse;\" width=\"100%\"  border=\"0\" cellspacing=\"0\" cellpadding=\"0\">
 				<tr>
 					<td align=\"center\" style=\"font-size:18px;\"><b>&nbsp;</b>
@@ -310,58 +306,57 @@ class Master_barang extends CI_Controller {
 				</tr> 
 				
 				
-				</table>";
-
-		$chari .= "<table style=\"border-collapse:collapse;font-family: Times New Roman; font-size:10px\" width=\"100%\" align=\"center\" border=\"1\" cellspacing=\"1\" cellpadding=\"3\">
-
-		<thead>
-			<tr>
-				<td style=\"border:0\" align=\"center\"><br></td>                
-			</tr>
-			<tr>       
-				<td bgcolor=\"#cccccc\" width=\"10%\" align=\"center\"><b>No.</b></td>
-				<td bgcolor=\"#cccccc\" width=\"20%\" align=\"center\"><b>KODE BARANG</b></td>
-				<td bgcolor=\"#cccccc\" width=\"30%\" align=\"center\"><b>NAMA BARANG</b></td>
-				<td bgcolor=\"#cccccc\" width=\"10%\" align=\"center\"><b>SATUAN</b></td>
-				<td bgcolor=\"#cccccc\" width=\"15%\" align=\"center\"><b>HARGA BELI</b></td>
-				<td bgcolor=\"#cccccc\" width=\"15%\" align=\"center\"><b>HARGA JUAL</b></td>
-			</tr>
+			</table>";
 			
-		</thead>";
+			$chari .= "<table style=\"border-collapse:collapse;font-family: Times New Roman; font-size:10px\" width=\"100%\" align=\"center\" border=\"1\" cellspacing=\"1\" cellpadding=\"3\">
+				<thead>
+					<tr>
+						<td style=\"border:0\" align=\"center\"><br></td>                
+					</tr>
+					<tr>       
+						<td bgcolor=\"#cccccc\" width=\"10%\" align=\"center\"><b>No.</b></td>
+						<td bgcolor=\"#cccccc\" width=\"20%\" align=\"center\"><b>KODE BARANG</b></td>
+						<td bgcolor=\"#cccccc\" width=\"30%\" align=\"center\"><b>NAMA BARANG</b></td>
+						<td bgcolor=\"#cccccc\" width=\"10%\" align=\"center\"><b>SATUAN</b></td>
+						<td bgcolor=\"#cccccc\" width=\"15%\" align=\"center\"><b>HARGA BELI</b></td>
+						<td bgcolor=\"#cccccc\" width=\"15%\" align=\"center\"><b>HARGA JUAL</b></td>
+					</tr>
+					
+			</thead>";
 		
-		$data_stok     = $this->db->query("SELECT * from tbl_barang ORDER BY kodebarang")->result();
+				$data_stok     = $this->db->query("SELECT * from tbl_barang ORDER BY kodebarang")->result();
 
-		$lcno=0;
-		foreach ($data_stok as $row) {
-			$lcno          = $lcno + 1;
-			$kodebarang    = $row->kodebarang;
-			$namabarang    = $row->namabarang;
-			$satuan1       = $row->satuan1;
-			if($cek=='1'){
-				$hargabeli     = number_format($row->hargabeli,0,',','.');
-				$hargajual     = number_format($row->hargajual,0,',','.');
-			}else{
-				$hargabeli     = $row->hargabeli;
-				$hargajual     = $row->hargajual;
-			}
-			
+				$lcno=0;
+				foreach ($data_stok as $row) {
+					$lcno          = $lcno + 1;
+					$kodebarang    = $row->kodebarang;
+					$namabarang    = $row->namabarang;
+					$satuan1       = $row->satuan1;
+					if($cek=='1'){
+						$hargabeli     = number_format($row->hargabeli,0,',','.');
+						$hargajual     = number_format($row->hargajual,0,',','.');
+					}else{
+						$hargabeli     = $row->hargabeli;
+						$hargajual     = $row->hargajual;
+					}
+					
 
-			$chari .= "<tr>
-			<td align=\"center\">$lcno</td>
-			<td align=\"left\">$kodebarang </td>
-			<td align=\"left\">$namabarang</td>
-			<td align=\"left\">$satuan1  </td>
-			<td align=\"right\">$hargabeli </td>
-			<td align=\"right\">$hargajual</td>
-			</tr>
-			";
+					$chari .= "<tr>
+					<td align=\"center\">$lcno</td>
+					<td align=\"left\">$kodebarang </td>
+					<td align=\"left\">$namabarang</td>
+					<td align=\"left\">$satuan1  </td>
+					<td align=\"right\">$hargabeli </td>
+					<td align=\"right\">$hargajual</td>
+					</tr>
+					";
 
-		}
+				}
 
-		$chari .= "</table>";
+				$chari .= "</table>";
 
-		$data['prev'] = $chari;
-		$judul        = 'LAPORAN DATA BARANG';
+				$data['prev'] = $chari;
+				$judul        = 'LAPORAN DATA BARANG';
 
 			switch ($cek) {
 				case 0;
@@ -385,27 +380,20 @@ class Master_barang extends CI_Controller {
 		}
 	}
 	
-	
 	public function export(){
 		$cek = $this->session->userdata('level');		
-		if(!empty($cek))
-		{				  
-		$page=$this->uri->segment(3);
-		$limit=$this->config->item('limit_data');	
-		$d['master'] = $this->db->get("ms_unit");
-		$d['nama_usaha']=$this->config->item('nama_perusahaan');
-		$d['alamat']=$this->config->item('alamat_perusahaan');
-		$d['motto']=$this->config->item('motto');
-		
-		$this->load->view('master/unit/v_master_unit_exp',$d);				
-		}
-		else
-		{
+		if(!empty($cek)){				  
+			$page=$this->uri->segment(3);
+			$limit=$this->config->item('limit_data');	
+			$d['master'] = $this->db->get("ms_unit");
+			$d['nama_usaha']=$this->config->item('nama_perusahaan');
+			$d['alamat']=$this->config->item('alamat_perusahaan');
+			$d['motto']=$this->config->item('motto');
 			
+			$this->load->view('master/unit/v_master_unit_exp',$d);				
+		} else{
 			header('location:'.base_url());
-			
 		}
 	}
-	
 	
 }
