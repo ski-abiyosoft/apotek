@@ -202,6 +202,7 @@ $(document).ready(function() {
 
 function add_bank() {
     save_method = 'add';
+    getmargin(params = '');
     $('#form')[0].reset(); // reset form on modals
     $('.form-group').removeClass('has-error'); // clear error class
     $('.help-block').empty(); // clear error string
@@ -264,6 +265,7 @@ function edit_data(id) {
             $('[name="persen"]').val(cek1.toFixed(0));
 
             gettarif();
+            getmargin(data.kodebarang);
 
             //$('[name="dob"]').datepicker('update',data.dob);
             $('#modal_form').modal('show'); // show bootstrap modal when complete loaded
@@ -274,6 +276,19 @@ function edit_data(id) {
             alert('Error get data from ajax');
         }
     });
+}
+
+function getmargin(params) {
+    if(params == '' || params == null) {} else {
+        xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function() {
+          if (this.readyState == 4 && this.status == 200) {
+            document.getElementById("body_margin").innerHTML = this.responseText;
+          }
+        };
+        xhttp.open("GET", "<?php echo base_url(); ?>Master_barang/getmargin/" + params, true);
+        xhttp.send();
+    }
 }
 
 function reload_table() {
@@ -668,14 +683,14 @@ $(document).ready(function() {
                                     </div>
                                 </div>
 
-                                <div class="form-group">
+                                <!-- <div class="form-group">
                                     <label class="control-label col-md-3">Nilai Persediaan Satuan&nbsp;</label>
                                     <div class="col-md-9">
                                         <input name="nilaipersediaan" placeholder="" class="form-control"
                                             maxlength="100" type="text">
                                         <span class="help-block"></span>
                                     </div>
-                                </div>
+                                </div> -->
 
                                 <div class="form-group">
                                     <label class="control-label col-md-3">Status Barang&nbsp;<small style="color:red">*</small></label>
@@ -834,10 +849,11 @@ $(document).ready(function() {
                                         <table id="datatable_margin" class="table table-bordered">
                                             <thead>
                                                 <th>Cabang</th>
+                                                <th>Nilai Persediaan</th>
                                                 <th>Margin %</th>
                                                 <th>Harga Jual</th>
                                             </thead>
-                                            <tbody>
+                                            <tbody id="body_margin">
                                             </tbody>
                                         </table>
                                     </div>
@@ -925,7 +941,7 @@ function gettarif() {
             url: "<?php echo base_url();?>master_barang/getdatamargin/?barang=" + str,
             type: "GET",
             success: function(data) {
-                $('#datatable_margin tbody').append(data);
+                // $('#datatable_margin tbody').append(data);
             }
         });
     }

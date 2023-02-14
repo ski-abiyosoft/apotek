@@ -1546,6 +1546,7 @@ class Penjualan_faktur extends CI_Controller{
 			$hargaoju1     = $this->input->post('hargaoju1');
 			$uangr1        = $this->input->post('uangr1');
 			$total_hrg1    = $this->input->post('total_hrg1');
+			$exp1    = $this->input->post('exp1');
 
 
 
@@ -1566,11 +1567,12 @@ class Penjualan_faktur extends CI_Controller{
 			// print_r($qty_racik_1);
 			for ($i = 0; $i <= ($jumdata - 1); $i++) {
 				$_kodeo_1       = $kodeo_1[$i];
-				$_namao_1       = $namao_1[$i];
+				// $_namao_1       = $namao_1[$i];
 				$_sato_1        = $sato_1[$i];
 				$_qty_racik_1   = $qty_racik_1[$i];
 				$_qty_jual_1    = $qty_jual_1[$i];
 				$_uangr1        = $uangr1[$i];
+				$_exp1        = $exp1[$i];
 				// $_hargaoju1     = str_replace(',','',$hargaoju1[$i]);
 				// $_total_hrg1    = str_replace(',','',$total_hrg1[$i]);
 				$_hargaoju1     = preg_replace('/[,]/', '', $hargaoju1[$i]);
@@ -1588,6 +1590,7 @@ class Penjualan_faktur extends CI_Controller{
 				// 	}
 				// 	$id_nya = $idnya + 1;
 				// }
+				$barang = $this->db->query("SELECT * FROM tbl_barang WHERE kodebarang = '$_kodeo_1'")->row();
 
 				$datad = array(
 					// 'Resepid'     => $id_nya,
@@ -1595,14 +1598,14 @@ class Penjualan_faktur extends CI_Controller{
 					'hpp'      	  => $hpp,
 					'resepno'     => $noresepo,
 					'kodebarang'  => $_kodeo_1,
-					'namabarang'  => $_namao_1,
+					'namabarang'  => $barang->namabarang,
 					'satuan'      => $_sato_1,
 					'qtyr'        => $_qty_racik_1,
 					'qty'         => $_qty_jual_1,
 					'uangr'       => $_uangr1,
 					'price'       => $_hargaoju1,
 					'totalrp'     => $_total_hrg1,
-					'exp_date'    => date('Y-m-d'),
+					'exp_date'    => date('Y-m-d', strtotime($_exp1)),
 					'jamdresep'    => date('H-i-s'),
 				);
 
@@ -2261,7 +2264,7 @@ class Penjualan_faktur extends CI_Controller{
 			$price = $this->input->get('price');
 			$uangr = $this->input->get('uangr');
 			$totalrp = $this->input->get('totalrp');
-			$exp_date = date('Y-m-d');
+			$exp_date = date('Y-m-d', strtotime($this->input->get("exp1")));
 			$where = [
 				'resepno' => $resepno,
 				'koders' => $cabang,

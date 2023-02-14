@@ -294,7 +294,7 @@ $umur          = $age_interval->y . ' Tahun ' . $age_interval->m . ' Bulan ' . $
                               <td><input name="jumlah[]" id="jumlah<?= $no ?>" type="text" class="form-control rightJustified" size="40%" onchange="total()" value="<?= number_format($dval->totalharga, 2, '.', ',') ?>" readonly></td>
                               <td><textarea name="keterangan[]" id="keterangan<?= $no ?>" type="text" class="form-control" style="resize:none" rows="2"><?= $dval->keterangan ?></textarea></td>
                               <td>
-                                <select name="aturan_pakai[]" id="aturan_pakai<?= $no ?>" class="form-control select2_atp" data-placeholder="Pilih...">
+                                <select name="aturan_pakai[]" id="aturan_pakai<?= $no ?>" class="form-control select2_atp" style='width: 100%;' data-placeholder="Pilih...">
                                   <option value="">Pilih...</option>
                                   <?php foreach ($atpakaix as $atpx) : ?>
                                     <?php if ($dval->aturanpakai == $atpx->apocode) {
@@ -315,9 +315,9 @@ $umur          = $age_interval->y . ' Tahun ' . $age_interval->m . ' Bulan ' . $
                           }
                         } else { ?>
                           <tr id="resep_tr1">
-                            <td><button type='button' onclick=hapusBarisIni(1) class='btn red'><i class='fa fa-trash-o'></td>
+                            <td><button type='button' onclick=hapusBarisIni(1) disabled class='btn red'><i class='fa fa-trash-o'></td>
                             <td>
-                              <select name="kode[]" id="kode1" class="select2_el_farmasi_baranggud form-control input-largex" onchange="showbarangname(this.value, 1)"></select>
+                              <select name="kode[]" id="kode1" class="select2_el_farmasi_baranggud form-control" onchange="showbarangname(this.value, 1)" style="width: 100%;"></select>
                               <input name="nama[]" id="nama1" type="hidden" class="form-control " onkeypress="return tabE(this,event)">
                             </td>
                             <!-- <td></td> -->
@@ -564,18 +564,18 @@ $umur          = $age_interval->y . ' Tahun ' . $age_interval->m . ' Bulan ' . $
                           <thead class="page-breadcrumb breadcrumb">
                             <th class="title-white" width="5%" style="text-align: center">Hapus</th>
                             <th class="title-white" width="20%" style="text-align: center">Kode Obat</th>
-                            <th class="title-white" width="20%" style="text-align: center">Nama Obat</th>
                             <th class="title-white" width="5%" style="text-align: center">Satuan</th>
-                            <th class="title-white" width="10%" style="text-align: center">Qty Racik</th>
                             <th class="title-white" width="10%" style="text-align: center">Qty Jual</th>
+                            <th class="title-white" width="10%" style="text-align: center">Qty Racik</th>
                             <th class="title-white" width="10%" style="text-align: center">Harga Jual</th>
                             <th class="title-white" width="10%" style="text-align: center">Uang R</th>
                             <th class="title-white" width="15%" style="text-align: center">Total Harga</th>
+                            <th class="title-white" width="15%" style="text-align: center">Expired</th>
                           </thead>
                           <tbody>
                             <tr id="racik_no1">
                               <td>
-                                <button type='button' onclick=hapusBarisIni_1(1) class='btn red'><i class='fa fa-trash-o'>
+                                <button type='button' onclick=hapusBarisIni_1(1) disabled class='btn red'><i class='fa fa-trash-o'>
                               </td>
                               <td>
                                 <select name="kodeo_1[]" id="kodeo1_1" class="select2_el_farmasi_baranggud form-control input-large" onchange="showbarangnameo_1(this.value, 1);cekstok_1(this.value, 1)">
@@ -583,19 +583,15 @@ $umur          = $age_interval->y . ' Tahun ' . $age_interval->m . ' Bulan ' . $
                               </td>
 
                               <td>
-                                <input name="namao_1[]" id="namao1_1" type="text" class="form-control " onkeypress="return tabE(this,event)">
-                              </td>
-
-                              <td>
                                 <input name="sato_1[]" id="sato1_1" type="text" class="form-control " onkeypress="return tabE(this,event)">
                               </td>
 
                               <td>
-                                <input name="qty_racik_1[]" id="qty_racik1_1" onchange="totallineo_1(1);totalo_1()" value="1" type="text" class="form-control rightJustified">
+                                <input name="qty_jual_1[]" id="qty_jual1_1" onchange="totallineo_1(1);totalo_1(); cekqty(1)" value="1" type="text" class="form-control rightJustified">
                               </td>
 
                               <td>
-                                <input name="qty_jual_1[]" id="qty_jual1_1" onchange="totallineo_1(1);totalo_1()" value="1" type="text" class="form-control rightJustified">
+                                <input name="qty_racik_1[]" id="qty_racik1_1" onchange="totallineo_1(1);totalo_1(); cekqty(1)" value="1" type="text" class="form-control rightJustified">
                               </td>
 
 
@@ -604,11 +600,15 @@ $umur          = $age_interval->y . ' Tahun ' . $age_interval->m . ' Bulan ' . $
                               </td>
 
                               <td>
-                                <input name="uangr1[]" onchange="totallineo_1(1);" value="0" id="uangr1_1" type="text" class="form-control rightJustified" readonly>
+                                <input name="uangr1[]" onchange="totallineo_1(1);" value="0" id="uangr1_1" type="text" class="form-control rightJustified">
                               </td>
 
                               <td>
                                 <input name="total_hrg1[]" onchange="totallineo_1(1);" value="0" id="total_hrg1_1" type="text" class="form-control rightJustified" readonly>
+                              </td>
+
+                              <td>
+                                <input name='exp1[]' value='' id='exp1_1' type='date' class='form-control rightJustified'>
                               </td>
 
                             </tr>
@@ -1118,7 +1118,7 @@ $this->load->view('template/footer');
 
     table.append("<tr id='resep_tr" + idrow + "'>" +
       "<td><button id='btnhapus" + idrow + "' type='button' onclick='hapusBarisIni(" + idrow + ")' class='btn red'><i class='fa fa-trash-o'></i> </button></td>" +
-      "<td><select name='kode[]' id=kode" + idrow + " onchange='showbarangname(this.value," + idrow + ")' class='select2_el_farmasi_baranggud form-control input-largex' ></select> <input name='nama[]' id='nama" + idrow + "' type='hidden' class='form-control' value='' onchange='totalline(" + idrow + ")'></td>" +
+      "<td><select name='kode[]' id=kode" + idrow + " onchange='showbarangname(this.value," + idrow + ")' class='select2_el_farmasi_baranggud form-control' style='width: 100%;'></select> <input name='nama[]' id='nama" + idrow + "' type='hidden' class='form-control' value='' onchange='totalline(" + idrow + ")'></td>" +
       // "<td></td>" +
       "<td><input name='qty[]' id=qty" + idrow + " onchange='totalline(" + idrow + ")' value='1'  type='text' class='form-control rightJustified'  ></td>" +
       "<td><input name='sat[]'    id=sat" + idrow + " type='text' class='form-control' ></td>" +
@@ -1128,7 +1128,7 @@ $this->load->view('template/footer');
       "<td><input name='disc2[]' id=disc2" + idrow + " onchange='total();myFunction(" + idrow + ")' value='0'  type='text' class='form-control rightJustified'  ></td>" +
       "<td><input name='jumlah[]' id=jumlah" + idrow + " type='text' class='form-control rightJustified' size='40%' readonly></td>" +
       "<td><textarea name='keterangan[]' id='keterangan" + idrow + "' type='text' class='form-control' style='resize:none' rows='2'></textarea></td>" +
-      "<td><select name='aturan_pakai[]' id='aturan_pakai" + idrow + "' class='form-control select2_atp' data-placeholder='Pilih...'><option value=''>Pilih...</option><?php foreach ($atpakaix as $row) : ?> <option value='<?= $row->apocode; ?>'><?= $row->aponame; ?></option><?php endforeach; ?></select></td>" +
+      "<td><select name='aturan_pakai[]' id='aturan_pakai" + idrow + "' class='form-control select2_atp' style='width: 100%;' data-placeholder='Pilih...'><option value=''>Pilih...</option><?php foreach ($atpakaix as $row) : ?> <option value='<?= $row->apocode; ?>'><?= $row->aponame; ?></option><?php endforeach; ?></select></td>" +
       "<td><input name='expire[]' onchange='totalline(1);total()' value='' id='expire" + idrow + "' type='date' style='width:90%;' class='form-control'> </td>"+
       "</tr>");
     initailizeSelect2_farmasi_baranggud(gud);
@@ -1555,23 +1555,40 @@ $this->load->view('template/footer');
       "<td><select name='kodeo_1[]' id='kodeo" + idrowobat_1 +
       "_1' class='select2_el_farmasi_baranggud form-control input-largex' onchange='showbarangnameo_1(this.value," +
       idrowobat_1 + ");cekstok_1(this.value," + idrowobat_1 + ")'></select></td>" +
-      "<td><input name='namao_1[]'   id='namao" + idrowobat_1 + "_1' onchange='totallineo_1(" + idrowobat_1 +
-      "_1')' type='text' class='form-control'></td>" +
       "<td><input name='sato_1[]'    id='sato" + idrowobat_1 +
       "_1' type='text' class='form-control '  onkeypress='return tabE(this,event)'></td>" +
-      "<td><input name='qty_racik_1[]' id='qty_racik" + idrowobat_1 + "_1' onchange='totallineo_1(" + idrowobat_1 +
-      ");totalo_1()' value='1' type='text' class='form-control rightJustified' ></td>" +
       "<td><input name='qty_jual_1[]' id='qty_jual" + idrowobat_1 + "_1' onchange='totallineo_1(" + idrowobat_1 +
-      ");totalo_1()' value='1' type='text' class='form-control rightJustified'  ></td>" +
+      ");totalo_1(); cekqty("+idrowobat_1+")' value='1' type='text' class='form-control rightJustified'  ></td>" +
+      "<td><input name='qty_racik_1[]' id='qty_racik" + idrowobat_1 + "_1' onchange='totallineo_1(" + idrowobat_1 +
+      ");totalo_1(); cekqty("+idrowobat_1+")' value='1' type='text' class='form-control rightJustified' ></td>" +
       "<td><input name='hargaoju1[]' id='hargaoju" + idrowobat_1 + "_1' onchange='totallineo_1(" + idrowobat_1 +
       ");' value='0'  type='text' class='form-control rightJustified'  readonly></td>" +
       "<td><input name='uangr1[]' id='uangr" + idrowobat_1 + "_1' onchange='totallineo_1(" + idrowobat_1 +
-      ");' value='0'  type='text' class='form-control rightJustified' readonly></td>" +
+      ");' value='0'  type='text' class='form-control rightJustified'></td>" +
       "<td><input name='total_hrg1[]' id='total_hrg" + idrowobat_1 +
       "_1' value='0' type='text' class='form-control rightJustified'  readonly></td>" +
+      "<td><input name='exp1[]' value='' id='exp"+idrowobat_1+"_1' type='date' class='form-control rightJustified'></td>" +
       "</tr>");
     initailizeSelect2_farmasi_baranggud(gud);
     idrowobat_1++;
+  }
+
+  function cekqty(id) {
+    var qtyrx = $("#qty_racik"+id+"_1").val();
+    // var qtyr = Number(parseInt(qtyrx.replaceAll(',','')));
+    // $("#qty_jual"+id+"_1").val(Math.ceil(qtyrx));
+    var qtyjx = $("#qty_jual"+id+"_1").val();
+    var qtyj = Number(parseInt(qtyjx.replaceAll(',','')));
+    if(qtyrx > qtyj) {
+      swal({
+        title: "QTY RACIK",
+        html: "Tidak boleh lebih besar dari qty jual",
+        type: "error",
+        confirmButtonText: "OK"
+      }); 
+      $("#qty_racik"+id+"_1").val(qtyj);
+      totallineo_1(id);
+    }
   }
 
   function hapuso_1() {
@@ -1646,12 +1663,12 @@ $this->load->view('template/footer');
     var row = table.rows[id];
     var kode = row.cells[1].children[0].value;
     var harga = Number(row.cells[5].children[0].value.replace(/[^0-9\.]+/g, ""));
-    var qtyjual = Number(row.cells[4].children[0].value.replace(/[^0-9\.]+/g, ""));
+    var qtyjual = Number(row.cells[3].children[0].value.replace(/[^0-9\.]+/g, ""));
     var uangr = Number(row.cells[6].children[0].value.replace(/[^0-9\.]+/g, ""));
     jumlah = qtyjual * harga;
     tot = jumlah + uangr;
     cekhargajualo_1(kode, harga, id);
-
+    console.log(tot)
     row.cells[7].children[0].value = separateComma(tot);
     totalo_1();
     t_jual_manual();
@@ -1721,7 +1738,7 @@ $this->load->view('template/footer');
 
   for (var i = 1; i < rowCount; i++) {
     var row = table.rows[i];
-    var qtyjual = Number(row.cells[4].children[0].value.replace(/[^0-9\.]+/g, ""));
+    var qtyjual = Number(row.cells[3].children[0].value.replace(/[^0-9\.]+/g, ""));
     var harga = Number(row.cells[5].children[0].value.replace(/[^0-9\.]+/g, ""));
     var uangr = Number(row.cells[6].children[0].value.replace(/[^0-9\.]+/g, ""));
     tjumlah = tjumlah + eval(qtyjual * harga) + uangr;
@@ -1964,6 +1981,8 @@ $this->load->view('template/footer');
 
   // console.log(rowCount);
 
+  var bb       = $('[name="bb"]').val();
+  var tgllahir       = $('[name="tgllahir"]').val();
   var jenis_1       = $('[name="jenis_1"]').val();
   var resman_1      = $('[name="resman_1"]').val();
   var namaracik_1   = $('[name="namaracik_1"]').val();
@@ -1989,9 +2008,42 @@ $this->load->view('template/footer');
     var h_manual = 0;
   }
 
+  var tabler = document.getElementById('datatableobat_1');
+  var rowCountr = tabler.rows.length;
+  for (var i = 1; i < rowCountr; i++) {
+    var expire    = $("#exp" + i+"_1").val(); 
+    if ($("#kodeo"+i+"_1").val() !=  null && (expire == '' || expire == null)) {
+      swal({
+        title: "Expired Date Racik",
+        html: "<p>HARUS DI isi</p>",
+        type: "error",
+        confirmButtonText: "OK"
+      });
+      return;
+    }
+  }
+
   if (jenis_1 == '') {
     swal({
       title: "Jenis Masih Kosong",
+      html: "<p>CEK LAGI</p>",
+      type: "error",
+      confirmButtonText: "OK"
+    });
+    return;
+  }
+  if (bb == '') {
+    swal({
+      title: "Berat Badan",
+      html: "<p>CEK LAGI</p>",
+      type: "error",
+      confirmButtonText: "OK"
+    });
+    return;
+  }
+  if (tgllahir == '') {
+    swal({
+      title: "Tanggal Lahir",
       html: "<p>CEK LAGI</p>",
       type: "error",
       confirmButtonText: "OK"
@@ -2192,6 +2244,8 @@ $this->load->view('template/footer');
   var table       = document.getElementById('datatable');
   var rowCount    = table.rows.length;
   // console.log(rowCount);
+  var tgllahir     = $('[name="tgllahir"]').val();
+  var bb     = $('[name="bb"]').val();
   var tanggal     = $('[name="tanggal"]').val();
   var pasien      = $('[name="pasien"]').val();
   var gudang      = $('[name="gudang"]').val();
@@ -2212,7 +2266,7 @@ $this->load->view('template/footer');
 
   for (var i = 1; i < rowCount; i++) {
     var expire    = $("#expire" + i).val(); 
-    if (expire == '' || expire == null) {
+    if ($("#kode"+i).val() != null && (expire == '' || expire == null)) {
       swal({
         title: "Expired Date",
         html: "<p>HARUS DI isi</p>",
@@ -2224,8 +2278,42 @@ $this->load->view('template/footer');
   }
   var total = Number(parseInt(totalx.replaceAll(',', '')));
 
+  var tabler = document.getElementById('datatableobat_1');
+  var rowCountr = tabler.rows.length;
+  for (var i = 1; i < rowCountr; i++) {
+    var expire    = $("#exp" + i+"_1").val(); 
+    if ($("#kodeo"+i+"_1").val() !=  null && (expire == '' || expire == null)) {
+      swal({
+        title: "Expired Date Racik",
+        html: "<p>HARUS DI isi</p>",
+        type: "error",
+        confirmButtonText: "OK"
+      });
+      return;
+    }
+  }
   
   // console.log(racikan)
+
+  if (tgllahir == '') {
+    swal({
+      title: "Tanggal Lahir",
+      html: "Tidak boleh kosong",
+      type: "error",
+      confirmButtonText: "OK"
+    });
+    return;
+  }
+
+  if (bb == '') {
+    swal({
+      title: "Berat Badan",
+      html: "Tidak boleh kosong",
+      type: "error",
+      confirmButtonText: "OK"
+    });
+    return;
+  }
 
   if (nohp == '') {
     swal({
@@ -2250,7 +2338,7 @@ $this->load->view('template/footer');
   }
 
 
-  if (pembeli == null || gudang == null || gudang == "" || pembeli == "" || jumlahtot == "0.00" || jumlahtot == "") {
+  if (pembeli == null || gudang == null || gudang == "" || pembeli == "" || jumlahtot == "0.00" || jumlahtot == "" || bb == "" || tgllahir == "") {
     if (gudang == "" || gudang == null) {
       swal('PENJUALAN', 'Depo belum diisi ...', '');
     }

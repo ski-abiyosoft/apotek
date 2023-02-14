@@ -697,11 +697,12 @@ if ($datpas) {
                                                                            <th class="title-white" width="20%" style="text-align: center">Kode Obat</th>
                                                                            <th class="title-white" width="20%" style="text-align: center">Nama Obat</th>
                                                                            <th class="title-white" width="5%" style="text-align: center">Satuan</th>
-                                                                           <th class="title-white" width="10%" style="text-align: center">Qty Racik</th>
                                                                            <th class="title-white" width="10%" style="text-align: center">Qty Jual</th>
+                                                                           <th class="title-white" width="10%" style="text-align: center">Qty Racik</th>
                                                                            <th class="title-white" width="10%" style="text-align: center">Harga Jual</th>
                                                                            <th class="title-white" width="10%" style="text-align: center">Uang R</th>
                                                                            <th class="title-white" width="10%" style="text-align: center">Total Harga</th>
+                                                                           <th class="title-white" width="10%" style="text-align: center">Expired</th>
                                                                       </tr>
                                                                  </thead>
                                                                  <tbody>
@@ -721,19 +722,22 @@ if ($datpas) {
                                                                                      <input name="satracik[]" id="satracik1" type="text" class="form-control " onkeypress="return tabE(this,event)" readonly>
                                                                                 </td>
                                                                                 <td>
-                                                                                     <input name="qtyracik[]" id="qtyracik1" onchange="totalracik();totalracik()" type="text" class="form-control rightJustified" value="1">
+                                                                                     <input name="qtyjualracik[]" id="qtyjualracik1" onchange="totallineracik(1);totalracik(); cekqtyr(1)" type="text" class="form-control rightJustified" value="1">
                                                                                 </td>
                                                                                 <td>
-                                                                                     <input name="qtyjualracik[]" id="qtyjualracik1" onchange="totallineracik(1);totalracik()" type="text" class="form-control rightJustified" value="1">
+                                                                                     <input name="qtyracik[]" id="qtyracik1" onchange="totalracik();totalracik(); cekqtyr(1)" type="text" class="form-control rightJustified" value="1">
                                                                                 </td>
                                                                                 <td>
                                                                                      <input name="hargaracik[]" onchange="cekhargaracik(1);" id="hargaracik1" type="text" class="form-control rightJustified" readonly value="0">
                                                                                 </td>
                                                                                 <td>
-                                                                                     <input name="uangracik[]" onchange="totallineracik(1);" id="uangracik1" type="text" class="form-control rightJustified" readonly value="0">
+                                                                                     <input name="uangracik[]" onchange="totallineracik(1);" id="uangracik1" type="text" class="form-control rightJustified" value="0">
                                                                                 </td>
                                                                                 <td>
                                                                                      <input name="jumlahracik[]" onchange="totallineracik(1);" id="jumlahracik1" type="text" class="form-control rightJustified" readonly value="0">
+                                                                                </td>
+                                                                                <td>
+                                                                                     <input name="exp1[]" id="exp11" type="date" class="form-control rightJustified">
                                                                                 </td>
                                                                            </tr>
                                                                       <?php else : ?>
@@ -767,26 +771,29 @@ if ($datpas) {
                                                                                      </td>
                                                                                      <td>
                                                                                           <?php if ($noedit != 1) : ?>
-                                                                                               <input name="qtyracik[]" id="qtyracik<?= $no; ?>" onchange="totalracik();totalracik()" value="<?= number_format($rows->qtyr) ?>" type="text" class="form-control rightJustified">
+                                                                                               <input name="qtyjualracik[]" id="qtyjualracik<?= $no; ?>" onchange="totallineracik(<?= $no; ?>);totalracik(); cekqtyr(<?= $no; ?>)" value="<?= $rows->qty ?>" type="text" class="form-control rightJustified">
                                                                                           <?php else : ?>
-                                                                                               <input name="qtyracik[]" id="qtyracik<?= $no; ?>" onchange="totalracik();totalracik()" value="<?= number_format($rows->qtyr) ?>" type="text" class="form-control rightJustified" readonly>
+                                                                                               <input name="qtyjualracik[]" id="qtyjualracik<?= $no; ?>" onchange="totallineracik(<?= $no; ?>);totalracik(); cekqtyr(<?= $no; ?>)" value="<?= $rows->qty ?>" type="text" class="form-control rightJustified" readonly>
                                                                                           <?php endif ?>
                                                                                      </td>
                                                                                      <td>
                                                                                           <?php if ($noedit != 1) : ?>
-                                                                                               <input name="qtyjualracik[]" id="qtyjualracik<?= $no; ?>" onchange="totallineracik(<?= $no; ?>);totalracik()" value="<?= number_format($rows->qty) ?>" type="text" class="form-control rightJustified">
+                                                                                               <input name="qtyracik[]" id="qtyracik<?= $no; ?>" onchange="totalracik(); cekqtyr(<?= $no; ?>)" value="<?= $rows->qtyr ?>" type="text" class="form-control rightJustified">
                                                                                           <?php else : ?>
-                                                                                               <input name="qtyjualracik[]" id="qtyjualracik<?= $no; ?>" onchange="totallineracik(<?= $no; ?>);totalracik()" value="<?= number_format($rows->qty) ?>" type="text" class="form-control rightJustified" readonly>
+                                                                                               <input name="qtyracik[]" id="qtyracik<?= $no; ?>" onchange="totalracik(); cekqtyr(<?= $no; ?>)" value="<?= $rows->qtyr ?>" type="text" class="form-control rightJustified" readonly>
                                                                                           <?php endif ?>
                                                                                      </td>
                                                                                      <td>
                                                                                           <input name="hargaracik[]" onchange="cekhargaracik(<?= $no; ?>);" value="<?= number_format($rows->price) ?>" id="hargaracik<?= $no; ?>" type="text" class="form-control rightJustified" readonly>
                                                                                      </td>
                                                                                      <td>
-                                                                                          <input name="uangracik[]" onchange="totallineracik(<?= $no; ?>);" value="<?= number_format($rows->uangr) ?>" id="uangracik<?= $no; ?>" type="text" class="form-control rightJustified" readonly>
+                                                                                          <input name="uangracik[]" onchange="totallineracik(<?= $no; ?>);" value="<?= number_format($rows->uangr) ?>" id="uangracik<?= $no; ?>" type="text" class="form-control rightJustified">
                                                                                      </td>
                                                                                      <td>
                                                                                           <input name="jumlahracik[]" onchange="totallineracik(<?= $no; ?>);" id="jumlahracik<?= $no; ?>" value="<?= number_format($rows->totalrp) ?>" type="text" class="form-control rightJustified" readonly>
+                                                                                     </td>
+                                                                                     <td>
+                                                                                          <input name="exp1[]" id="exp1<?= $no; ?>" value="<?= date('Y-m-d', strtotime($rows->exp_date)) ?>" type="date" class="form-control rightJustified">
                                                                                      </td>
                                                                                 </tr>
                                                                            <?php $no++;
@@ -904,7 +911,7 @@ if ($datpas) {
                                                                            } else {
                                                                                 $ongkosracik = 0;
                                                                            } ?>
-                                                                           <input type="text" class="form-control rightJustified" name="ongra_1" id="ongra_1" value="<?= number_format($ongkosracik) ?>" onchange="totalracik()" readonly>
+                                                                           <input type="text" class="form-control rightJustified" name="ongra_1" id="ongra_1" value="<?= number_format($ongkosracik) ?>" onchange="totalracik()">
                                                                       </td>
                                                                  </tr>
                                                                  <tr>
@@ -1151,7 +1158,7 @@ $this->load->view('template/footer_tb');
      function hapusBarisIni_1(param) {
           $("#racik_no" + param).remove();
 
-          total();
+          totalracik();
      }
 
      function showbarangname(str, id) {
@@ -1379,15 +1386,34 @@ $this->load->view('template/footer_tb');
                "<td><select name='koderacik[]' id='koderacik" + idrow2 + "' class='select2_el_farmasi_baranggud form-control input-largex' onchange='showbarangnameracik(this.value," + idrow2 + ")'></select></td>" +
                "<td><input name='namaracik[]' id='namaracik" + idrow2 + "' type='text' class='form-control' readonly></td>" +
                "<td><input name='satracik[]' id='satracik" + idrow2 + "' type='text' class='form-control '  onkeypress='return tabE(this,event)' readonly></td>" +
-               "<td><input name='qtyracik[]' id='qtyracik" + idrow2 + "' value='1' type='text' class='form-control rightJustified' ></td>" +
-               "<td><input name='qtyjualracik[]' id='qtyjualracik" + idrow2 + "' onchange='totallineracik(" + idrow2 + ");totalracik()' value='1' type='text' class='form-control rightJustified'></td>" +
+               "<td><input name='qtyjualracik[]' id='qtyjualracik" + idrow2 + "' onchange='totallineracik(" + idrow2 + ");totalracik(); cekqtyr("+idrow2+")' value='1' type='text' class='form-control rightJustified'></td>" +
+               "<td><input name='qtyracik[]' id='qtyracik" + idrow2 + "' value='1' type='text' class='form-control rightJustified' onchange='cekqtyr("+idrow2+")'></td>" +
                "<td><input name='hargaracik[]' id='hargaracik" + idrow2 + "' onchange='cekhargaracik(" + idrow2 + ");' value='0'  type='text' class='form-control rightJustified'  readonly></td>" +
-               "<td><input name='uangracik[]' id='uangracik" + idrow2 + "' onchange='totallineracik(" + idrow2 + ");' value='0'  type='text' class='form-control rightJustified' readonly></td>" +
+               "<td><input name='uangracik[]' id='uangracik" + idrow2 + "' onchange='totallineracik(" + idrow2 + ");' value='0'  type='text' class='form-control rightJustified'></td>" +
                "<td><input name='jumlahracik[]' id='jumlahracik" + idrow2 + "' value='0' type='text' class='form-control rightJustified' readonly></td>" +
+               "<td><input name='exp1[]' id='exp1"+idrow2+"' type='date' class='form-control rightJustified'></td>" +
                "</tr>");
           initailizeSelect2_farmasi_baranggud(gud);
           idrow2++;
      }
+
+     function cekqtyr(id) {
+    var qtyrx = $("#qtyracik"+id).val();
+    // var qtyr = Number(parseInt(qtyrx.replaceAll(',','')));
+    // $("#qty_jual"+id+"_1").val(Math.ceil(qtyrx));
+    var qtyjx = $("#qtyjualracik"+id+"").val();
+    var qtyj = Number(parseInt(qtyjx.replaceAll(',','')));
+    if(qtyrx > qtyj) {
+      swal({
+        title: "QTY RACIK",
+        html: "Tidak boleh lebih besar dari qty jual",
+        type: "error",
+        confirmButtonText: "OK"
+      }); 
+      $("#qtyracik"+id).val(qtyj);
+      totallineracik(id);
+    }
+  }
 
      // function tambahracik() {
      //      var x = document.getElementById('datatableracik').insertRow(idrow2);
@@ -1429,11 +1455,12 @@ $this->load->view('template/footer_tb');
                "<td><select name='koderacik[]' id='koderacik" + idrow2x + "' class='select2_el_farmasi_baranggud form-control input-largex' onchange='showbarangnameracik(this.value," + idrow2x + ")'></select></td>" +
                "<td><input name='namaracik[]' id='namaracik" + idrow2x + "' type='text' class='form-control' readonly></td>" +
                "<td><input name='satracik[]' id='satracik" + idrow2x + "' type='text' class='form-control '  onkeypress='return tabE(this,event)' readonly></td>" +
-               "<td><input name='qtyracik[]' id='qtyracik" + idrow2x + "' value='1' type='text' class='form-control rightJustified' ></td>" +
                "<td><input name='qtyjualracik[]' id='qtyjualracik" + idrow2x + "' onchange='totallineracik(" + idrow2x + ");totalracik()' value='1' type='text' class='form-control rightJustified'></td>" +
+               "<td><input name='qtyracik[]' id='qtyracik" + idrow2x + "' value='1' type='text' class='form-control rightJustified' ></td>" +
                "<td><input name='hargaracik[]' id='hargaracik" + idrow2x + "' onchange='cekhargaracik(" + idrow2x + ");' value='0'  type='text' class='form-control rightJustified'  readonly></td>" +
-               "<td><input name='uangracik[]' id='uangracik" + idrow2x + "' onchange='totallineracik(" + idrow2x + ");' value='0'  type='text' class='form-control rightJustified' readonly></td>" +
+               "<td><input name='uangracik[]' id='uangracik" + idrow2x + "' onchange='totallineracik(" + idrow2x + ");' value='0'  type='text' class='form-control rightJustified'></td>" +
                "<td><input name='jumlahracik[]' id='jumlahracik" + idrow2x + "' value='0' type='text' class='form-control rightJustified' readonly></td>" +
+               "<td><input name='exp1[]' id='exp1"+idrow2x+"' value='' type='date' class='form-control rightJustified'></td>"+
                "</tr>");
           initailizeSelect2_farmasi_baranggud(gud);
           idrow2x++;
@@ -1539,8 +1566,8 @@ $this->load->view('template/footer_tb');
           for (var i = 1; i < rowCount; i++) {
                var row        = table.rows[i];
                jumlah         = row.cells[4].children[0].value;
-               harga          = row.cells[5].children[0].value;
-               uangracik      = row.cells[6].children[0].value;
+               harga          = row.cells[6].children[0].value;
+               uangracik      = row.cells[7].children[0].value;
                var jumlah1    = Number(jumlah.replace(/[^0-9\.]+/g, ""));
                var harga1     = Number(harga.replace(/[^0-9\.]+/g, ""));
                var uangracik1 = Number(uangracik.replace(/[^0-9\.]+/g, ""));
@@ -1567,7 +1594,7 @@ $this->load->view('template/footer_tb');
           document.getElementById("totp_1").value = separateComma(totalracikan.toFixed(0));
           document.getElementById("_vracik").innerHTML = separateComma(totalracikan.toFixed(0));
           total();
-          if (tjumlah > 0) {
+          if (totalracikan > 0) {
                document.getElementById("btnsimpan").disabled = false;
           } else {
                document.getElementById("btnsimpan").disabled = true;
@@ -1702,7 +1729,8 @@ $this->load->view('template/footer_tb');
                                    var uangracik    = Number(parseInt(uangracikx.replaceAll(',', '')));
                                    var jumlahracikx = $('#jumlahracik' + i).val();
                                    var jumlahracik  = Number(parseInt(jumlahracikx.replaceAll(',', '')));
-                                   var param        = '?resepno=' + nobukti + "&kodebarang=" + koderacik + "&namabarang=" + namaracik + "&qty=" + qtyracik + "&qtyr=" + qtyjualracik + "&satuan=" + satuanracik + "&price=" + hargaracik + "&uangr=" + uangracik + "&totalrp=" + jumlahracik;
+                                   var exp          = $('#exp1' + i).val();
+                                   var param        = '?resepno=' + nobukti + "&kodebarang=" + koderacik + "&namabarang=" + namaracik + "&qty=" + qtyracik + "&qtyr=" + qtyjualracik + "&satuan=" + satuanracik + "&price=" + hargaracik + "&uangr=" + uangracik + "&totalrp=" + jumlahracik + "&exp1=" + exp;
                                    // console.log(param);
                                    $.ajax({
                                         url: "<?= site_url('Penjualan_faktur/update_apodetresep/') ?>" + param,

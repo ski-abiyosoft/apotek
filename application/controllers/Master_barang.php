@@ -12,7 +12,7 @@ class Master_barang extends CI_Controller {
 	}
 	
 	public function index(){
-		$cek = $this->session->userdata('level');				
+		$cek = $this->session->userdata('level');
 		if(!empty($cek))
 		{
 			$data["ppn"] = $this->db->query("SELECT * FROM tbl_pajak")->row();
@@ -60,6 +60,18 @@ class Master_barang extends CI_Controller {
 				);
 		//output to json format
 		echo json_encode($output);
+	}
+
+	public function getmargin($kodebarang) {
+		$nilai_persediaan = $this->db->query("SELECT koders, (SUM(totalrp)/SUM(qty_terima)) AS rata FROM tbl_barangdterima WHERE kodebarang = '$kodebarang' GROUP BY koders, kodebarang")->result();
+		foreach ($nilai_persediaan as $np) { ?>
+			<tr>
+				<td><?= $np->koders; ?></td>
+				<td class="text-right"><?= number_format($np->rata, 2); ?></td>
+				<td class="text-right">0</td>
+				<td class="text-right">0</td>
+			</tr>
+		<?php }
 	}
 
 	public function ajax_edit($id){

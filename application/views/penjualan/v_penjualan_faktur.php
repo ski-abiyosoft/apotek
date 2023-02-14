@@ -497,7 +497,9 @@ function save_bayar() {
         }).then((value) => {
           //location.reload();
         //   document.getElementById("btncetak_bayar").disabled = false;
-        //   $('#nokwitansi').val(data.nomor);
+        //   $('#nokwitansi').val(data.nomor); 
+        
+            location.href = "<?= base_url()?>penjualan_faktur";
         });
 
       },
