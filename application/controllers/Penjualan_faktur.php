@@ -2072,7 +2072,7 @@ class Penjualan_faktur extends CI_Controller{
 
 	public function bayar($resepno){
 			$unit = $this->session->userdata('unit');
-			$data         = $this->db->query("SELECT date(c.tgllahir) as tanggallahir,date(a.tglresep) as tglresep1, a.* ,b.*,c.*
+			$data         = $this->db->query("SELECT date(c.tgllahir) as tanggallahir,date(a.tglresep) as tglresep1,(select cust_nama from tbl_penjamin d where d.cust_id=c.penjamin)nm_penjamin, a.* ,b.*,c.*
 			from tbl_apoposting a 
 			join tbl_apohresep b ON a.resepno=b.resepno
 			join tbl_pasien c ON a.rekmed=c.rekmed
@@ -2089,6 +2089,8 @@ class Penjualan_faktur extends CI_Controller{
 		$noresep      = $this->input->post('resepno');
 		$rekmed       = $this->input->post('rekmed');
 		$totalresep   = str_replace(',', '', $this->input->post('total_resep'));
+		$nil_aptk     = str_replace(',', '', $this->input->post('nil_aptk'));
+		$jumhutang    = str_replace(',', '', $this->input->post('juklaim'));
 		// $totalnet     = str_replace(',', '', $this->input->post('totalnet'));
 
 		$tanggal      = date('Y-m-d');
@@ -2126,7 +2128,7 @@ class Penjualan_faktur extends CI_Controller{
 			'diskonrp'             => 0,
 			'admcredit'            => 0,
 			'totalsemua'           => $totalresep,
-			'bayarcash'            => $totalresep,
+			'bayarcash'            => $nil_aptk,
 			'bayarcard'            => 0,
 			'refund'               => 0,
 			// 'voucherrp' => $voucherrp,
@@ -2138,7 +2140,7 @@ class Penjualan_faktur extends CI_Controller{
 			'novoucher2'           => '',
 			'novoucher3'           => '',
 			'cust_id'              => '',
-			'totalbayar'           => $totalresep,
+			'totalbayar'           => $nil_aptk,
 			'kembali'              => '',
 			'posbayar'             => 'APTK',
 			'dibayaroleh'          => $this->input->post('lupnamapasien'),
@@ -2163,22 +2165,22 @@ class Penjualan_faktur extends CI_Controller{
 			'tgljatuhtempo' => $tanggal,
 			'cust_id' => $this->input->post('vpenjamin'),
 			'nokwitansi' => $kwitansi,
-			'bayarcash' => $totalresep,
+			'bayarcash' => $nil_aptk,
 			// 'bayarcash' => $bayarcash,
 			'adm' => 0,
 			'totalpoli' => 0,
 			'totalradio' => 0,
 			'totallab' => 0,
 			'totalbedah' => 0,
-			'totalresep' => $totalresep,
+			'totalresep' => $nil_aptk,
 			// 'jumlahhutang' => str_replace(',', '', $this->input->post('tercover_rp')),
-			'jumlahhutang' => $totalresep,
+			'jumlahhutang' => $jumhutang,
 			'username' => $userid,
 			'namapas' => $this->input->post('lupnamapasien'),
 			'nik' => $this->input->post('lupidentitas'),
 			'cust_id2' => $this->input->post('vpenjamin'),
 			// 'nilaiklaim2' => str_replace(',', '', $this->input->post('tercover_rp2'))
-			'nilaiklaim2' => $totalresep
+			'nilaiklaim2' => 0
 		];
 
 		$insert = $this->db->insert('tbl_pap', $datapap);

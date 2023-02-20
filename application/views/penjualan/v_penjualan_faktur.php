@@ -293,7 +293,7 @@
                               <div class="form-group">
                                 <label class="control-label col-md-3">Identitas <font color="red">*</font></label>
                                 <div class="col-md-2">
-                                  <select name="lupidentitas" id="lupidentitas" class="form-control input-small" disabled>
+                                  <select name="lupidentitas" id="lupidentitas" class="form-control input-small" readonly>
                                       <option value="-">-- Pilih --</option>
                                       <option value="KTP">KTP</option>
                                       <option value="SIM">SIM</option>
@@ -346,16 +346,18 @@
                               <div class="form-group">
                                 <label class="col-md-3 control-label">Penjamin <font color="red">*</font></label>
                                 <div class="col-md-9">
-                                  <select class="form-control" style="width:100%;" id="vpenjamin" name="vpenjamin" disabled>
+                                  <!-- <select class="form-control" style="width:100%;" id="vpenjamin" name="vpenjamin" readonly>
                                     <option value="">--- Pilih ---</option>
                                     <?php $penjamin = $this->db->get("tbl_penjamin")->result();
                                     foreach($penjamin as $row){ 
-                                    // $selected = ($row->cust_id==$data->cust_nama?'selected':'');
+                                    $selected = ($row->cust_id==$data->cust_nama?'selected':'');
                                     ?>
-                                    <!-- <option <?= $selected;?> value="<?= $row->cust_id;?>"><?= $row->cust_nama;?></option> -->
+                                    <option <?= $selected;?> value="<?= $row->cust_id;?>"><?= $row->cust_nama;?></option>
                                     <option value="<?= $row->cust_id;?>"><?= $row->cust_nama;?></option>
                                     <?php } ?>
-                                  </select>
+                                  </select> -->
+                                  <input class="form-control" type="hidden" id="vpenjamin" name="vpenjamin" readonly>
+                                  <input class="form-control" type="text" id="vpenjaminb" name="vpenjaminb" readonly>
                                 </div>
                               </div>
                             </div>
@@ -410,10 +412,10 @@
                             <div class="col-md-6">
                               <div class="form-group">
                                 <label class="control-label col-md-3">Total Resep <font color="red">*</font></label>
-                                <div class="col-md-9">
-                                  <input id="total_resep" name="total_resep" onchange="tot_resep()" type="text" class="form-control input-large rightJustified" readonly>
+                                  <div class="col-md-9">
+                                  <input type="hidden"  id="total_resep"  name="total_resep" class="form-control" readonly>
+                                  <input style="text-align: right;"  id="total_resepb" name="total_resepb" type="text" class="form-control " readonly>
                                 </div>
-
                               </div>
                             </div>
                             
@@ -436,13 +438,13 @@
                             <div class="col-md-6">
                               <div class="form-group">
                                 <label class="control-label col-md-3">Nilai Apotek <font color="red">*</font></label>
-                                <div class="col-md-6">
-                                  <input type="text"  id="nil_aptk"  name="nil_aptk" onchange="tot_resep()" class="form-control input-large " >
+                                <div class="col-md-5">
+                                  <input style="text-align: right;"  type="number"  id="nil_aptk"  name="nil_aptk" class="form-control" >
                                 </div>
-                                <div class="col-md-3">
-                                  <input id="nilap" name="nilap" type="text" class="form-control input-large" >
+                                <div class="col-md-4">
+                                  <input style="text-align: right;"  id="nilap" name="nilap" type="text" class="form-control" readonly>
                                 </div>
-
+                                
                               </div>
                             </div>
                             
@@ -462,7 +464,8 @@
                               <div class="form-group">
                                 <label class="control-label col-md-3">Jumlah Klaim <font color="red">*</font></label>
                                 <div class="col-md-9">
-                                  <input id="juklaim" name="juklaim" type="text" class="form-control input-large rightJustified" readonly>
+                                  <input style="text-align: right;"  type="hidden"  id="juklaim"  name="juklaim" class="form-control" readonly>
+                                  <input style="text-align: right;"  id="juklaimb" name="juklaimb" type="text" class="form-control" readonly>
                                 </div>
 
                               </div>
@@ -510,6 +513,27 @@
 <script src="<?= base_url('assets/plugins/bootstrap-datepicker/js/bootstrap-datepicker.js')?>" type="text/javascript"></script>
 
 <script>
+
+window.onload = function(event) {
+      $('[name="nil_aptk"]').on("keyup", function(){
+            var cekkk           = $('[name="nil_aptk"]').val();
+            var cek2            = formatCurrency1(cekkk);
+            $('[name="nilap"]').val('Rp. '+cek2);
+            
+            var nil_aptk        = $('#nil_aptk').val();
+            var total_resep     = $('#total_resep').val();
+            
+            var vnil_aptk       = Number(nil_aptk.replace(/[^0-9\.]+/g, ""));
+            var vtotal_resep    = Number(total_resep.replace(/[^0-9\.]+/g, ""));
+            var totalnet        = eval(vtotal_resep) - eval(vnil_aptk)  ;
+            var totalnet2            = formatCurrency1(totalnet);
+
+            
+            $('#juklaim').val(totalnet);
+            $('[name="juklaimb"]').val('Rp. '+totalnet2);
+
+      });      
+};
 function tgllahirpp() {
     var birthDate = new Date($('#tgllahirp').val());
     var usia = hitung_usia(birthDate);
@@ -520,7 +544,7 @@ function currencyFormat (num) {
     return "" + num.toFixed(0).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,")
 }
 
-function tot_resep() 
+function tot_klaim() 
 {
   var nil_aptk    = $('#nil_aptk').val();
   var nilap       = $('#nilap').val();
@@ -623,7 +647,9 @@ function bayar(resepno) {
                 $('[name="id"]').val(data.id);
                 $('[name="rekmed"]').val(data.rekmed);
                 $('[name="lupnamapasien"]').val(data.namapas);
-                $('#vpenjamin option[value="' + data.penjamin + '"]').prop('selected', true);
+                $('[name="vpenjamin"]').val(data.penjamin);
+                $('[name="vpenjaminb"]').val(data.nm_penjamin);
+                // $('#vpenjamin option[value="' + data.penjamin + '"]').prop('selected', true);
                 $('#jkelp option[value="' + data.jkel + '"]').prop('selected', true);
                 $('#luppreposition option[value="' + data.preposisi + '"]').prop('selected', true);
                 $('#lupidentitas option[value="' + data.idpas + '"]').prop('selected', true);
@@ -635,7 +661,8 @@ function bayar(resepno) {
                 $('[name="tgllahirp"]').val(data.tanggallahir);  
                 $('[name="tgltr"]').val(data.tglresep1);  
                 $totalres = formatCurrency1(data.poscredit);
-                $('[name="total_resep"]').val($totalres);  
+                $('[name="total_resep"]').val(data.poscredit);  
+                $('[name="total_resepb"]').val($totalres);  
                 $('[name="juklaim"]').val(data.poscredit);  
                 $('[name="nil_aptk"]').val(0);  
                 $('[name="nilap"]').val(0);  
