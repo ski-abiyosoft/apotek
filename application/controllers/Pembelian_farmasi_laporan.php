@@ -1903,7 +1903,8 @@ class Pembelian_farmasi_laporan extends CI_Controller
 				$pdf->settextcolor(0);
 				$pdf->setfont('Arial', 'B', 6);
 				$pdf->Cell(8, 6, 'No', 1, 0, 'C');
-				$pdf->Cell(48.44, 6, 'Supplier', 1, 0, 'C');
+				$pdf->Cell(40, 6, 'Supplier', 1, 0, 'C');
+				$pdf->Cell(8.44, 6, 'No BAPB', 1, 0, 'C');
 				$pdf->Cell(15, 6, 'Qty', 1, 0, 'C');
 				$pdf->Cell(25.86, 6, 'Total', 1, 0, 'C');
 				$pdf->Cell(20, 6, 'Diskon', 1, 0, 'C');
@@ -1920,7 +1921,8 @@ class Pembelian_farmasi_laporan extends CI_Controller
 				$total = 0;
 				foreach ($query as $q) {
 					$pdf->Cell(8, 6, $no++, 1, 0, 'C');
-					$pdf->Cell(48.44, 6, $q->vendor_name, 1, 0, 'L');
+					$pdf->Cell(40, 6, $q->vendor_name, 1, 0, 'L');
+					$pdf->Cell(8.44, 6, $q->terima_no, 1, 0, 'L');
 					$pdf->Cell(15, 6, number_format($q->qty_terima, 0), 1, 0, 'R');
 					$pdf->Cell(25.86, 6, number_format($q->totalrp, 0), 1, 0, 'R');
 					$pdf->Cell(20, 6, number_format($q->discountrp, 0), 1, 0, 'R');
@@ -2448,19 +2450,20 @@ class Pembelian_farmasi_laporan extends CI_Controller
 					$vendor = '';
 				}
 				$judul = '04 REKAP PEMBELIAN BARANG PER SUPPLIER TOTAL';
-				$query = $this->db->query("SELECT a.vatrp, b.vat, a.materai, b.discountrp, b.qty_terima , b.discountrp, b.totalrp, (b.totalrp / b.qty_terima ) AS ratarata, c.vendor_name , c.vendor_id, a.terima_date FROM tbl_baranghterima as a JOIN tbl_barangdterima AS b ON a.terima_no = b.terima_no JOIN tbl_vendor AS c ON a.vendor_id = c.vendor_id WHERE $vendor a.koders = '$unit' and a.terima_date between '$tanggal1' and '$tanggal2'")->result();
-				$body .= "<table style=\"border-collapse:collapse;font-family: tahoma; font-size:12px\" width=\"100%\" align=\"center\" border=\"1\">
+				$query = $this->db->query("SELECT a.vatrp, b.vat, a.materai, a.terima_no, b.discountrp, b.qty_terima , b.discountrp, b.totalrp, (b.totalrp / b.qty_terima ) AS ratarata, c.vendor_name , c.vendor_id, a.terima_date FROM tbl_baranghterima as a JOIN tbl_barangdterima AS b ON a.terima_no = b.terima_no JOIN tbl_vendor AS c ON a.vendor_id = c.vendor_id WHERE $vendor a.koders = '$unit' and a.terima_date between '$tanggal1' and '$tanggal2'")->result();
+				$body .= "<table style=\"border-collapse:collapse;font-family: tahoma; font-size:12px\" width=\"100%\" align=\"center\" border=\"1\" celspacing =\"5\" celpadding=\"5\">
                     <thead>
 											<tr>
-												<td style=\"text-align: center; font-weight: bold; padding: 10px;\">No</td>
-												<td style=\"text-align: center; font-weight: bold; padding: 10px;\">Supplier</td>
-												<td style=\"text-align: center; font-weight: bold; padding: 10px;\">Tanggal</td>
-												<td style=\"text-align: center; font-weight: bold; padding: 10px;\">Qty</td>
-												<td style=\"text-align: center; font-weight: bold; padding: 10px;\">Total</td>
-												<td style=\"text-align: center; font-weight: bold; padding: 10px;\">Diskon</td>
-												<td style=\"text-align: center; font-weight: bold; padding: 10px;\">Vat Rp</td>
-												<td style=\"text-align: center; font-weight: bold; padding: 10px;\">Materai</td>
-												<td style=\"text-align: center; font-weight: bold; padding: 10px;\">Total Net</td>
+												<td style=\"text-align: center; font-weight: bold; padding: 15px;\">No</td>
+												<td style=\"text-align: center; font-weight: bold; padding: 15px;\">No BAPB</td>
+												<td style=\"text-align: center; font-weight: bold; padding: 15px;\">Supplier</td>
+												<td style=\"text-align: center; font-weight: bold; padding: 15px;\">Tanggal</td>
+												<td style=\"text-align: center; font-weight: bold; padding: 15px;\">Qty</td>
+												<td style=\"text-align: center; font-weight: bold; padding: 15px;\">Total</td>
+												<td style=\"text-align: center; font-weight: bold; padding: 15px;\">Diskon</td>
+												<td style=\"text-align: center; font-weight: bold; padding: 15px;\">Vat Rp</td>
+												<td style=\"text-align: center; font-weight: bold; padding: 15px;\">Materai</td>
+												<td style=\"text-align: center; font-weight: bold; padding: 15px;\">Total Net</td>
 											</tr>
 										</thead>";
 				$no = 1;
@@ -2482,15 +2485,16 @@ class Pembelian_farmasi_laporan extends CI_Controller
 					$totalrp = ($q->totalrp + $q->discountrp);
 					$body .= 		"<tbody>
 											<tr>
-												<td style=\"text-align: right;\">" . $no++ . "</td>
-												<td>$q->vendor_name</td>
-												<td>" . date("d-m-Y", strtotime($q->terima_date)) . "</td>
-												<td style=\"text-align: right;\">" . number_format($q->qty_terima) . "</td>
-												<td style=\"text-align: right;\">" . number_format($totalrp) . "</td>
-												<td style=\"text-align: right;\">" . number_format($q->discountrp) . "</td>
-												<td style=\"text-align: right;\">" . number_format($vatrp) . "</td>
-												<td style=\"text-align: right;\">" . number_format($q->materai) . "</td>
-												<td style=\"text-align: right;\">" . number_format($q->totalrp + $q->vatrp + $q->materai) . "</td>
+												<td style=\"text-align: right; padding: 10px;\">" . $no++ . "</td>
+												<td style=\"padding: 10px;\">$q->terima_no</td>
+												<td style=\"padding: 10px;\">$q->vendor_name</td>
+												<td style=\"padding: 10px;\">" . date("d-m-Y", strtotime($q->terima_date)) . "</td>
+												<td style=\"text-align: right; padding: 10px;\">" . number_format($q->qty_terima) . "</td>
+												<td style=\"text-align: right; padding: 10px;\">" . number_format($totalrp) . "</td>
+												<td style=\"text-align: right; padding: 10px;\">" . number_format($q->discountrp) . "</td>
+												<td style=\"text-align: right; padding: 10px;\">" . number_format($vatrp) . "</td>
+												<td style=\"text-align: right; padding: 10px;\">" . number_format($q->materai) . "</td>
+												<td style=\"text-align: right; padding: 10px;\">" . number_format($q->totalrp + $q->vatrp + $q->materai) . "</td>
 											</tr>
 										</tbody>";
 					$tqty_terima += $q->qty_terima;

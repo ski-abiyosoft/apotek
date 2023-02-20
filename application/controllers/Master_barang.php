@@ -45,9 +45,19 @@ class Master_barang extends CI_Controller {
 			$row[] = $unit->satuan1;
 			$row[] = number_format($unit->hargabeli,0,',','.');
 			$row[] = number_format($unit->hargajual,0,',','.');
+
+			$cek = $this->db->query("SELECT*from tbl_barangstock where kodebarang= '".$unit->kodebarang."' " )->num_rows();
+
+			if($cek>0){
+				$row[] = '
+					<a class="btn btn-sm btn-primary" href="javascript:void(0)" title="Edit" onclick="edit_data('."'".$unit->id."'".')"><i class="glyphicon glyphicon-edit"></i> </a>
+					<a class="btn btn-sm btn-danger" href="javascript:void(0)" title="Hapus" onclick="delete_data('."'".$unit->id."'".",'".$unit->kodebarang."'".",'".$unit->namabarang."'".')" disabled><i class="glyphicon glyphicon-trash"></i> </a>';
+			}else{
+				$row[] = '
+					<a class="btn btn-sm btn-primary" href="javascript:void(0)" title="Edit" onclick="edit_data('."'".$unit->id."'".')"><i class="glyphicon glyphicon-edit"></i> </a>
+					<a class="btn btn-sm btn-danger" href="javascript:void(0)" title="Hapus" onclick="delete_data('."'".$unit->id."'".",'".$unit->kodebarang."'".",'".$unit->namabarang."'".')"><i class="glyphicon glyphicon-trash"></i> </a>';
+			}
 						
-			$row[] = '<a class="btn btn-sm btn-primary" href="javascript:void(0)" title="Edit" onclick="edit_data('."'".$unit->id."'".')"><i class="glyphicon glyphicon-edit"></i> </a>
-				<a class="btn btn-sm btn-danger" href="javascript:void(0)" title="Hapus" onclick="delete_data('."'".$unit->id."'".",'".$unit->kodebarang."'".",'".$unit->namabarang."'".')"><i class="glyphicon glyphicon-trash"></i> </a>';
 		
 			$data[] = $row;
 		}
@@ -63,15 +73,28 @@ class Master_barang extends CI_Controller {
 	}
 
 	public function getmargin($kodebarang) {
-		$nilai_persediaan = $this->db->query("SELECT koders, (SUM(totalrp)/SUM(qty_terima)) AS rata FROM tbl_barangdterima WHERE kodebarang = '$kodebarang' GROUP BY koders, kodebarang")->result();
-		foreach ($nilai_persediaan as $np) { ?>
-			<tr>
-				<td><?= $np->koders; ?></td>
-				<td class="text-right"><?= number_format($np->rata, 2); ?></td>
-				<td class="text-right">0</td>
-				<td class="text-right">0</td>
-			</tr>
-		<?php }
+		$cek_bc = $this->db->query("SELECT * FROM tbl_barangcabang WHERE kodebarang = '$kodebarang'");
+		if($cek_bc->num_rows() < 1) {
+			$nilai_persediaan = $this->db->query("SELECT koders, (SUM(totalrp)/SUM(qty_terima)) AS rata FROM tbl_barangdterima WHERE kodebarang = '$kodebarang' GROUP BY koders, kodebarang")->result();
+			foreach ($nilai_persediaan as $np) { ?>
+				<tr>
+					<td><?= $np->koders; ?></td>
+					<td class="text-right"><?= number_format($np->rata, 2); ?></td>
+					<td class="text-right">0</td>
+					<td class="text-right">0</td>
+				</tr>
+			<?php }
+		} else {
+			$cbc = $cek_bc->result();
+			foreach ($cbc as $cbc2) { ?>
+				<tr>
+					<td><?= $cbc2->koders; ?></td>
+					<td class="text-right"><?= number_format($cbc2->nilai_persediaan, 2); ?></td>
+					<td class="text-right">0</td>
+					<td class="text-right">0</td>
+				</tr>
+			<?php }
+		}
 	}
 
 	public function ajax_edit($id){
@@ -119,6 +142,7 @@ class Master_barang extends CI_Controller {
 			'tgledit'       => tglsystem(),
 			'userbuat'      => user_login(),
 			'tglbuat'       => tglsystem(),
+			'aktif'      => $this->input->post("status"),
 		);
 		// $jumdata =  count($this->input->post('td_data_1'));
 		// $_cabang = $this->input->post('td_data_1');
@@ -189,6 +213,7 @@ class Master_barang extends CI_Controller {
 			'tgledit'      => tglsystem(),
 			'userbuat'     => user_login(),
 			'tglbuat'      => tglsystem(),
+			'aktif'      => $this->input->post("aktif"),
 		);
 		$this->M_barang->update(array('id' => $this->input->post('id')), $data);
 		$this->db->query("delete from tbl_barangcabang where kodebarang='$kodebarang'");

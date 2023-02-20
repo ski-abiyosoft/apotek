@@ -1110,7 +1110,7 @@ class Laporan_pembelian_log extends CI_Controller
 					$query = $this->db->query("SELECT a.terima_date , a.sj_no, a.vatrp , a.materai , a.koders, a.gudang, a.terima_no, (sum(c.discountrp)) as diskontotal, b.vendor_name, b.vendor_id, (sum(c.qty_terima * c.price)) as totalrp, c.vat, a.vatrp, (sum(c.totalrp) + a.vatrp + a.materai) as totalnet FROM tbl_apohterimalog AS a JOIN tbl_vendor AS b ON a.vendor_id = b.vendor_id JOIN tbl_apodterimalog AS c ON a.terima_no = c.terima_no WHERE a.vendor_id = '$vdr->vendor_id' and a.koders = '$cabang' AND a.terima_date BETWEEN '$tanggal1' AND '$tanggal2' group by a.terima_no")->result();
 					$body .= "<table style=\"border-collapse:collapse;font-family: tahoma; font-size:12px\" width=\"100%\" align=\"center\" border=\"1\" cellspacing=\"5\" cellpadding=\"5\">";
 					foreach($query as $q) {
-						$gudangx = $this->db->get_where("tbl_depo", ["depocode" => $q->gudang])->row();
+						$gudangx = $this->db->get_where("tbl_depo", ["konekpos" => "LOGISTIK", "depocode" => $q->gudang])->row();
 						$body .= "<tr>
 													<td width=\"40%\" style=\"text-align: center; border-top: none; border-left: none; border-right: none;\" colspan=\"10\">GUDANG : <b style=\"color: red;\">$gudangx->keterangan</b></td>
 												</tr>";
@@ -1189,7 +1189,7 @@ class Laporan_pembelian_log extends CI_Controller
 					$body .=	"</table>";
 				} else {
 					$vdr = $this->db->query("SELECT vendor_name, vendor_id FROM tbl_vendor d WHERE d.vendor_id IN (SELECT a.vendor_id FROM tbl_apohterimalog a WHERE a.koders='$cabang' AND a.terima_date BETWEEN '$tanggal1' AND '$tanggal2')")->result();
-					$getgud = $this->db->query("SELECT a.gudang, d.keterangan FROM tbl_apohterimalog AS a JOIN tbl_depo d ON d.depocode=a.gudang WHERE a.koders = '$cabang' AND a.terima_date BETWEEN '$tanggal1' AND '$tanggal2' GROUP BY a.gudang")->result();
+					$getgud = $this->db->query("SELECT a.gudang, d.keterangan FROM tbl_apohterimalog AS a JOIN tbl_depo d ON d.depocode=a.gudang WHERE a.koders = '$cabang' AND a.terima_date BETWEEN '$tanggal1' AND '$tanggal2' AND konekpos = 'LOGISTIK' GROUP BY a.gudang")->result();
 					foreach($getgud as $gg){
 						$body .= "<table style=\"border-collapse:collapse;font-family: tahoma; font-size:12px\" width=\"100%\" align=\"center\" border=\"1\" cellspacing=\"5\" cellpadding=\"5\">";
 						$body .= "<tr>
@@ -1217,7 +1217,7 @@ class Laporan_pembelian_log extends CI_Controller
 						$ttotalnet1 = 0;
 						$no = 1;
 						foreach($vdr as $v){
-							$query = $this->db->query("SELECT a.terima_date, d.keterangan, a.sj_no, a.vatrp , a.materai, a.gudang, a.koders, a.terima_no, (sum(c.discountrp)) as diskontotal, b.vendor_name, b.vendor_id, (sum(c.qty_terima * c.price)) as totalrp, c.vat, a.vatrp, (sum(c.totalrp) + a.vatrp + a.materai) as totalnet FROM tbl_apohterimalog AS a JOIN tbl_vendor AS b ON a.vendor_id = b.vendor_id JOIN tbl_depo d ON d.depocode=a.gudang JOIN tbl_apodterimalog AS c ON a.terima_no = c.terima_no WHERE a.vendor_id = '$v->vendor_id' and a.koders = '$cabang' AND a.terima_date BETWEEN '$tanggal1' AND '$tanggal2' group by a.terima_no")->result();
+							$query = $this->db->query("SELECT a.terima_date, d.keterangan, a.sj_no, a.vatrp , a.materai, a.gudang, a.koders, a.terima_no, (sum(c.discountrp)) as diskontotal, b.vendor_name, b.vendor_id, (sum(c.qty_terima * c.price)) as totalrp, c.vat, a.vatrp, (sum(c.totalrp) + a.vatrp + a.materai) as totalnet FROM tbl_apohterimalog AS a JOIN tbl_vendor AS b ON a.vendor_id = b.vendor_id JOIN tbl_depo d ON d.depocode=a.gudang JOIN tbl_apodterimalog AS c ON a.terima_no = c.terima_no WHERE a.vendor_id = '$v->vendor_id' and a.koders = '$cabang' AND a.terima_date BETWEEN '$tanggal1' AND '$tanggal2' AND konekpos = 'LOGISTIK' group by a.terima_no")->result();
 							$ttotalrp = 0;
 							$tdiskontotal = 0;
 							$tvatrp = 0;
@@ -1426,7 +1426,7 @@ class Laporan_pembelian_log extends CI_Controller
 				$judul = '04 REKAP PEMBELIAN BARANG PER SUPPLIER TOTAL';
 				if ($vendor != '') {
 					$vdr = $this->db->query("SELECT vendor_name, vendor_id FROM tbl_vendor d WHERE d.vendor_id IN (SELECT a.vendor_id FROM tbl_apohterimalog a WHERE a.vendor_id ='$vendor' AND a.koders='$cabang' AND a.terima_date BETWEEN '$tanggal1' AND '$tanggal2')")->row();
-					$query = $this->db->query("SELECT a.terima_no, d.keterangan, a.terima_date, a.vatrp, a.materai, b.vat, b.discountrp, b.qty_terima , b.discountrp, b.totalrp, (b.totalrp / b.qty_terima ) AS ratarata, c.vendor_name , c.vendor_id FROM tbl_apohterimalog as a JOIN tbl_depo as d ON a.gudang=d.depocode JOIN tbl_apodterimalog AS b ON a.terima_no = b.terima_no JOIN tbl_vendor AS c ON a.vendor_id = c.vendor_id WHERE a.vendor_id = '$vdr->vendor_id' and a.koders = '$cabang' and a.terima_date between '$tanggal1' and '$tanggal2'")->result();
+					$query = $this->db->query("SELECT a.terima_no, d.keterangan, a.terima_date, a.vatrp, a.materai, b.vat, b.discountrp, b.qty_terima , b.discountrp, b.totalrp, (b.totalrp / b.qty_terima ) AS ratarata, c.vendor_name , c.vendor_id FROM tbl_apohterimalog as a JOIN tbl_depo as d ON a.gudang=d.depocode JOIN tbl_apodterimalog AS b ON a.terima_no = b.terima_no JOIN tbl_vendor AS c ON a.vendor_id = c.vendor_id WHERE a.vendor_id = '$vdr->vendor_id' and a.koders = '$cabang' and a.terima_date between '$tanggal1' and '$tanggal2' AND konekpos = 'LOGISTIK'")->result();
 					$body .= "<table style=\"border-collapse:collapse;font-family: tahoma; font-size:12px\" width=\"100%\" align=\"center\" border=\"1\" cellspacing=\"5\" cellpadding=\"5\">";
 					foreach($query as $q) {
 						$body .= "<tr>
@@ -1522,7 +1522,7 @@ class Laporan_pembelian_log extends CI_Controller
 					$body .= "</table>";
 				} else {
 					$vdr = $this->db->query("SELECT vendor_name, vendor_id FROM tbl_vendor d WHERE d.vendor_id IN (SELECT a.vendor_id FROM tbl_apohterimalog a WHERE a.koders='$cabang' AND a.terima_date BETWEEN '$tanggal1' AND '$tanggal2')")->result();
-					$getgud = $this->db->query("SELECT a.gudang, d.keterangan FROM tbl_apohterimalog AS a JOIN tbl_depo d ON d.depocode=a.gudang WHERE a.koders = 'KBJ' AND a.terima_date BETWEEN '$tanggal1' AND '$tanggal2' GROUP BY a.gudang")->result();
+					$getgud = $this->db->query("SELECT a.gudang, d.keterangan FROM tbl_apohterimalog AS a JOIN tbl_depo d ON d.depocode=a.gudang WHERE a.koders = 'KBJ' AND a.terima_date BETWEEN '$tanggal1' AND '$tanggal2' AND konekpos = 'LOGISTIK' GROUP BY a.gudang")->result();
 					foreach($getgud as $gg){
 						$body .= "<table style=\"border-collapse:collapse;font-family: tahoma; font-size:12px\" width=\"100%\" align=\"center\" border=\"1\" cellspacing=\"5\" cellpadding=\"5\">";
 						$body .= "<tr>

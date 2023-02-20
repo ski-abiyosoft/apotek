@@ -1818,8 +1818,13 @@ $this->load->view('template/footer_tb');
           var totalx    = $('#_vtotal').text();
           var total     = Number(parseInt(totalx.replaceAll(',', '')));
           var nohp      = $('#phone').val();
-          var racikanxx = $('#totp_1').val();
-          var racikan   = Number(parseInt(racikanxx.replaceAll(',', '')));
+          if(document.getElementById("t_manual").checked == true) {
+               var racikanxx = $('#toto_11').val();
+               var racikan   = Number(parseInt(racikanxx.replaceAll(',', '')));
+          } else {
+               var racikanxx = $('#totp_1').val();
+               var racikan   = Number(parseInt(racikanxx.replaceAll(',', '')));
+          }
 
           console.log($('#frmpenjualan').serialize());
 

@@ -75,65 +75,6 @@
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="form-group">
-                                    <label class="col-md-3 control-label">Dari Jam</label>
-                                    <div class="col-md-9">
-                                        <input id="dari_jam" name="dari_jam" class="form-control input-medium" type="time"
-                                            value="<?php echo date('H:i');?>" />
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-12">
-                                <div class="form-group">
-                                    <label class="col-md-3 control-label">Sampai Jam</label>
-                                    <div class="col-md-9">
-                                        <input id="sampai_jam" name="sampai_jam" class="form-control input-medium" type="time"
-                                            value="<?php echo date('H:i');?>" />
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-12">
-                                <div class="form-group">
-                                    <label class="col-md-3 control-label">Jenis</label>
-                                    <div class="col-md-9">
-                                        <table>
-                                            <tr>
-                                                <td align="center" width="10%">
-                                                    <label for="label">
-                                                        <input type="radio" name="jenis" value="3" id="jenis1">
-                                                    </label>
-                                                </td>
-                                                <td>
-                                                    <label for="label" style="margin-top:15px;">All</label>
-                                                </td>
-                                                <td align="center" width="10%">
-                                                    <label for="label">
-                                                        <input type="radio" name="jenis" value="1" id="jenis2">
-                                                    </label>
-                                                </td>
-                                                <td>
-                                                    <label for="label" style="margin-top:15px;">Rajal</label>
-                                                </td>
-                                                <td align="center" width="10%">
-                                                    <label for="label">
-                                                        <input type="radio" name="jenis" value="2" id="jenis3">
-                                                    </label>
-                                                </td>
-                                                <td>
-                                                    <label for="label" style="margin-top:15px;">Ranap</label>
-                                                </td>
-                                            </tr>
-                                        </table>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-12">
-                                <div class="form-group">
                                     <label class="col-md-3 control-label">Store/depo</label>
                                     <div class="col-md-3">
                                         <select name="depo" id="depo" class="select2_depo form-control"></select>
@@ -159,8 +100,6 @@
                         &nbsp;
                         <div class="row">
                             <div class="col-md-offset-3 col-md-9">
-                                <!-- <a class=" btn btn-sm red print_laporan  print_laporan" id="cetak" href="#report"
-                                    data-toggle="modal">Cetak PDF</a> -->
                                 <a class="btn btn-sm red " onclick="cetak()">
                                     <i title=" CETAK PDF" class="fa fa-print"></i><b> CETAK </b>
                                 </a>
@@ -211,12 +150,9 @@ $('.select2_laporan').select2();
         if(laporan != ''){
             var dari        = document.getElementById('dari').value;
             var sampai      = document.getElementById('sampai').value;
-            var dari_jam    = document.getElementById('dari_jam').value;
-            var sampai_jam  = document.getElementById('sampai_jam').value;
-            var jenis       = $('input[name="jenis"]:checked').val();
             var depo        = document.getElementById('depo').value;
             var baseurl     = "<?php echo base_url() ?>";
-            var urlnya      = baseurl + 'Laporan_penjualan/cetak2/?dari=' +dari + "&dari_jam="+dari_jam+ "&sampai_jam="+sampai_jam+'&sampai=' + sampai + '&jenis=' + jenis + '&depo=' + depo + '&laporan=' + laporan+"&pdf=1";
+            var urlnya      = baseurl + 'Laporan_penjualan/cetak2/?dari='+dari+'&sampai=' + sampai + '&depo=' + depo + '&laporan=' + laporan+"&pdf=1";
             window.open(urlnya, '_blank');
         }
     }
@@ -224,10 +160,9 @@ $('.select2_laporan').select2();
 function exp() {
     var dari    = document.getElementById('dari').value;
     var sampai  = document.getElementById('sampai').value;
-    var jenis   = $('input[name="jenis"]:checked').val();
     var depo    = document.getElementById('depo').value;
     var laporan = document.getElementById('laporan').value;
-    location.href   = '<?= site_url('Laporan_penjualan/cetak2/?dari=')?>' +dari + "&dari_jam="+dari_jam+ "&sampai_jam="+sampai_jam+'&sampai=' + sampai + '&jenis=' + jenis + '&depo=' + depo + '&laporan=' + laporan+"&pdf=2";
+    location.href   = '<?= site_url('Laporan_penjualan/cetak2/?dari=')?>' +dari +'&sampai=' + sampai + '&depo=' + depo + '&laporan=' + laporan+"&pdf=2";
 
 }
 </script>

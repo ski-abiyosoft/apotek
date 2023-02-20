@@ -209,19 +209,15 @@
                                          </td>
 										
                                         <td style="text-align: center">
-                                        <?php
-                                            if ($row->keluar=='0')
-                                            { ?>
-                                                <?php
-                                                if ($row->rekmed=='Non Member' || $row->rekmed=='NON MEMBER')
-                                                    { ?>
-                                                    <a class="btn btn-sm btn-success" href="<?= base_url()?>kasir_obat/entri">
-                                                    <i class="fa fa-money"></i></a>
-                                                <?php }else{  ?>
-                                                    <a class="btn btn-sm btn-success" onclick="bayar('<?= $row->resepno;?>')">
-                                                    <i class="fa fa-money"></i></a>
-                                                <?php } ?>
-                                        <?php } ?> 
+                                            <?php
+                                            if ($row->rekmed=='Non Member' || $row->rekmed=='NON MEMBER')
+                                                { ?>
+                                                <a class="btn btn-sm btn-success" href="<?= base_url()?>kasir_obat/entri">
+                                                <i class="fa fa-money"></i></a>
+                                            <?php }else{  ?>
+                                                <a class="btn btn-sm btn-success" onclick="bayar('<?= $row->resepno;?>')">
+                                                <i class="fa fa-money"></i></a>
+                                            <?php } ?>
 
                                             
                                             <?php
@@ -282,28 +278,22 @@
                     <div class="form-body">
 
                         <div class="row">
+                            
                             <div class="col-md-6">
                               <div class="form-group">
-                                <label class="col-md-3 control-label">Penjamin <font color="red">*</font></label>
+                                <label class="control-label col-md-3">No Kwitansi <font color="red">*</font></label>
                                 <div class="col-md-9">
-                                  <select class="form-control" style="width:100%;" id="vpenjamin" name="vpenjamin" >
-                                    <option value="">--- Pilih ---</option>
-                                    <?php $penjamin = $this->db->get("tbl_penjamin")->result();
-                                    foreach($penjamin as $row){ 
-                                    // $selected = ($row->cust_id==$data->cust_nama?'selected':'');
-                                    ?>
-                                    <!-- <option <?= $selected;?> value="<?= $row->cust_id;?>"><?= $row->cust_nama;?></option> -->
-                                    <option value="<?= $row->cust_id;?>"><?= $row->cust_nama;?></option>
-                                    <?php } ?>
-                                  </select>
+                                    <input type="text" id="nokwi_kasir" name="nokwi_kasir" class="form-control" value="Auto" readonly>
+                                    <input type="hidden" id="noress" name="noress" class="form-control" value="Auto" readonly>
                                 </div>
+
                               </div>
                             </div>
                             <div class="col-md-6">
                               <div class="form-group">
                                 <label class="control-label col-md-3">Identitas <font color="red">*</font></label>
                                 <div class="col-md-2">
-                                  <select name="lupidentitas" id="lupidentitas" class="form-control input-small">
+                                  <select name="lupidentitas" id="lupidentitas" class="form-control input-small" disabled>
                                       <option value="-">-- Pilih --</option>
                                       <option value="KTP">KTP</option>
                                       <option value="SIM">SIM</option>
@@ -324,33 +314,19 @@
                         <div class="row">
                             <div class="col-md-6">
                               <div class="form-group">
-                                  <label class="control-label col-md-3">No Member
-                                    <font color="red">*</font>
-                                  </label>
-                                  <div class="col-md-9">
-                                      <input name="rekmed" id="rekmed" placeholder="Auto" class="form-control" type="text" readonly>
-                                      <input name="resepno" id="resepno" placeholder="Auto" class="form-control" type="hidden" readonly>
-                                      <span class="help-block"></span>
-                                  </div>
-                              </div>
-                            </div>
-                            <div class="col-md-6">
-                              <div class="form-group">
-                                  <label class="control-label col-md-3">No Penjamin <font color="red">*</font></label>
-                                  <div class="col-md-9">
-                                      <input name="no_bpjs" id="no_bpjs" placeholder="No Kartu" class="form-control" type="number" readonly>
-                                      <span class="help-block"></span>
-                                  </div>
-                              </div>
-                            </div>
-                        </div>
+                                <label class="control-label col-md-3">Tgl Transaksi<font color="red">*</font></label>
+                                <div class="col-md-9">
+                                  <input id="tgltr" name="tgltr" type="date" class="form-control input-large" readonly>
+                                </div>
 
-                        <div class="row">
+                              </div>
+                            </div>
+                            
                             <div class="col-md-6">
                               <div class="form-group">
                                   <label class="control-label col-md-3">Nama Pasien <font color="red">*</font></label>
                                   <div class="col-md-2">
-                                    <select class="form-control input-small" name="luppreposition" id="luppreposition">
+                                    <select class="form-control input-small" name="luppreposition" id="luppreposition" disabled>
                                         <option value="">-- Pilih --</option>
                                         <?php
                                         foreach (setinghms('PREP') as $row) { ?>
@@ -363,6 +339,27 @@
                                   </div>
                               </div>
                             </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                              <div class="form-group">
+                                <label class="col-md-3 control-label">Penjamin <font color="red">*</font></label>
+                                <div class="col-md-9">
+                                  <select class="form-control" style="width:100%;" id="vpenjamin" name="vpenjamin" disabled>
+                                    <option value="">--- Pilih ---</option>
+                                    <?php $penjamin = $this->db->get("tbl_penjamin")->result();
+                                    foreach($penjamin as $row){ 
+                                    // $selected = ($row->cust_id==$data->cust_nama?'selected':'');
+                                    ?>
+                                    <!-- <option <?= $selected;?> value="<?= $row->cust_id;?>"><?= $row->cust_nama;?></option> -->
+                                    <option value="<?= $row->cust_id;?>"><?= $row->cust_nama;?></option>
+                                    <?php } ?>
+                                  </select>
+                                </div>
+                              </div>
+                            </div>
+                            
                             <div class="col-md-6">
                               <div class="form-group">
                                 <label class="control-label col-md-3">Handphone <font color="red">*</font></label>
@@ -371,7 +368,7 @@
                                     <!-- <span class="input-group-btn">
                                       <a class="form-control">+62</a>
                                     </span> -->
-                                    <input name="luphp" id="luphp" placeholder="Dimulai Tanpa 0" class="form-control" maxlength="" type="text" value="+62">
+                                    <input name="luphp" id="luphp" placeholder="Dimulai Tanpa 0" class="form-control" maxlength="" type="text" value="+62" readonly>
                                   </div>
                                 </div>
                               </div>
@@ -382,19 +379,24 @@
                         <div class="row">
                             <div class="col-md-6">
                               <div class="form-group">
-                                  <label class="control-label col-md-3">Alamat <font color="red">*</font></label>
+                                  <label class="control-label col-md-3">No Member
+                                    <font color="red">*</font>
+                                  </label>
                                   <div class="col-md-9">
-                                      <input name="lupalamat" id="lupalamat" placeholder="Alamat Pasien" class="form-control" type="text" readonly>
+                                      <input name="rekmed" id="rekmed" placeholder="Auto" class="form-control" type="text" readonly>
+                                      <input name="resepno" id="resepno" placeholder="Auto" class="form-control" type="hidden" readonly>
                                       <span class="help-block"></span>
                                   </div>
                               </div>
                             </div>
+                            
+                            
                             <div class="col-md-6">
                               <div class="form-group">
-                                <label class="control-label col-md-3">Jenis Kelamin<font color="red">*</font></label>
+                                <label class="control-label col-md-3">Jenis Kelamin <font color="red">*</font></label>
                                 <div class="col-md-9">
                                   <div class="input-group input-medium">
-                                    <select name="jkelp" id="jkelp" class="form-control">
+                                    <select name="jkelp" id="jkelp" class="form-control" disabled>
                                       <option value="P">Pria</option>
                                       <option value="W">Wanita</option>
                                     </select>
@@ -407,7 +409,17 @@
                         <div class="row">
                             <div class="col-md-6">
                               <div class="form-group">
-                                <label class="control-label col-md-3">Tgl Lahir<font color="red">*</font></label>
+                                <label class="control-label col-md-3">Total Resep <font color="red">*</font></label>
+                                <div class="col-md-9">
+                                  <input id="total_resep" name="total_resep" onchange="tot_resep()" type="text" class="form-control input-large rightJustified" readonly>
+                                </div>
+
+                              </div>
+                            </div>
+                            
+                            <div class="col-md-6">
+                              <div class="form-group">
+                                <label class="control-label col-md-3">Tgl Lahir <font color="red">*</font></label>
                                 <div class="col-md-4">
                                   <input id="tgllahirp" name="tgllahirp" type="date" onchange="tgllahirpp()" class="form-control input-medium" readonly>
                                 </div>
@@ -420,24 +432,58 @@
                         </div>
 
                         <div class="row">
+                            
                             <div class="col-md-6">
                               <div class="form-group">
-                                <label class="control-label col-md-3">Total Resep<font color="red">*</font></label>
-                                <div class="col-md-9">
-                                  <input id="total_resep" name="total_resep" type="text" class="form-control input-medium rightJustified" readonly>
+                                <label class="control-label col-md-3">Nilai Apotek <font color="red">*</font></label>
+                                <div class="col-md-6">
+                                  <input type="text"  id="nil_aptk"  name="nil_aptk" onchange="tot_resep()" class="form-control input-large " >
+                                </div>
+                                <div class="col-md-3">
+                                  <input id="nilap" name="nilap" type="text" class="form-control input-large" >
                                 </div>
 
                               </div>
                             </div>
+                            
+                            <div class="col-md-6">
+                              <div class="form-group">
+                                  <label class="control-label col-md-3">Alamat <font color="red">*</font></label>
+                                  <div class="col-md-9">
+                                      <input name="lupalamat" id="lupalamat" placeholder="Alamat Pasien" class="form-control" type="text" readonly>
+                                      <span class="help-block"></span>
+                                  </div>
+                              </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            
+                            <div class="col-md-6">
+                              <div class="form-group">
+                                <label class="control-label col-md-3">Jumlah Klaim <font color="red">*</font></label>
+                                <div class="col-md-9">
+                                  <input id="juklaim" name="juklaim" type="text" class="form-control input-large rightJustified" readonly>
+                                </div>
+
+                              </div>
+                            </div>
+                            
+                            
                         </div>
 
                     </div>
                 </form>
             </div>
             <div class="modal-footer">
+                <button type="button" id="btncetak_bayar" onclick="urlcetak_kasir()" class="btn btn-warning"><b>
+                    <i class="fa fa-print"></i> CETAK</b>
+                </button>
                 <button type="button" id="btnsimpan_bayar" onclick="save_bayar()" class="btn btn-success"><b>
-                <i class="fa fa-money"></i> BAYAR</b></button>
-                <button type="button" class="btn btn-danger" data-dismiss="modal"><b>Batal</b></button>
+                    <i class="fa fa-money"></i> PROSES PENJAMIN</b>
+                </button>
+                <button type="button" class="btn btn-danger" data-dismiss="modal">
+                    <i class="fa fa-times"></i> Batal</b>
+                </button>
             </div>
         </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->
@@ -451,8 +497,8 @@
 	
 
 <script src="<?= base_url('assets/plugins/jquery-migrate-1.2.1.min.js')?>" type="text/javascript"></script>
-<script src="<?= base_url('assets/plugins/bootstrap/js/bootstrap.min.js')?>" type="text/javascript"></script>
-<script src="<?= base_url('assets/plugins/bootstrap-hover-dropdown/bootstrap-hover-dropdown.min.js')?>" type="text/javascript"></script>
+<!-- <script src="<?= base_url('assets/plugins/bootstrap/js/bootstrap.min.js')?>" type="text/javascript"></script> -->
+<!-- <script src="<?= base_url('assets/plugins/bootstrap-hover-dropdown/bootstrap-hover-dropdown.min.js')?>" type="text/javascript"></script> -->
 <script src="<?= base_url('assets/plugins/jquery-slimscroll/jquery.slimscroll.min.js')?>" type="text/javascript"></script>
 <script src="<?= base_url('assets/plugins/jquery.blockui.min.js')?>" type="text/javascript"></script>
 <script src="<?= base_url('assets/plugins/jquery.cokie.min.js')?>" type="text/javascript"></script>
@@ -472,6 +518,28 @@ function tgllahirpp() {
 function currencyFormat (num) {
     //return "Rp" + num.toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,")
     return "" + num.toFixed(0).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,")
+}
+
+function tot_resep() 
+{
+  var nil_aptk    = $('#nil_aptk').val();
+  var nilap       = $('#nilap').val();
+  var total_resep = $('#total_resep').val();
+  var juklaim     = $('#juklaim').val();
+
+  var vnil_aptk   = Number(nil_aptk.replace(/[^0-9\.]+/g, ""));
+  var vjuklaim    = Number(juklaim.replace(/[^0-9\.]+/g, ""));
+  var totalnet    = eval(vnil_aptk) - eval(vjuklaim) ;
+
+//   $('#total_resep').val(formatCurrency1(totalnet));
+  $('#juklaim').val(formatCurrency1(totalnet));
+
+
+//   document.getElementById('totaltunairp2').style.visibility = 'hidden';
+//   document.getElementById('selisihrp2').style.visibility = 'hidden';
+//   cekbutton();
+
+
 }
 
 function save_bayar() {
@@ -511,6 +579,15 @@ function save_bayar() {
     });
 }
 
+function urlcetak_kasir() 
+{
+    var baseurl       = "<?php echo base_url() ?>";
+    var nokwitansi    = $('[name="nokwi_kasir"]').val();
+    var noresep       = $('[name="noress"]').val();
+    var ctk           = baseurl + 'kasir_obat/cetak/?kwitansi=' + nokwitansi + '&resep=' + noresep;
+    window.open(ctk,'_blank');
+}
+
 function bayar(resepno) {
       save_method = 'add';
       $('#form')[0].reset(); // reset form on modals
@@ -525,6 +602,24 @@ function bayar(resepno) {
             dataType    : "JSON",
             success: function(data) {
 
+                if(data.nokwitansi==''){
+                    document.getElementById("btnsimpan_bayar").disabled = false;
+                    document.getElementById("btncetak_bayar").disabled = true;
+                    $('[name="nokwi_kasir"]').val('Auto');
+                    $('[name="noress"]').val('');
+
+
+                }else{
+                    document.getElementById("btnsimpan_bayar").disabled = true;
+                    document.getElementById("btncetak_bayar").disabled = false;
+                    $('[name="nokwi_kasir"]').val(data.nokwitansi);
+                    $('[name="noress"]').val(data.resepno);
+
+                } 
+                
+                if(data.nokwitansi==''){
+                }else{
+                }
                 $('[name="id"]').val(data.id);
                 $('[name="rekmed"]').val(data.rekmed);
                 $('[name="lupnamapasien"]').val(data.namapas);
@@ -538,7 +633,12 @@ function bayar(resepno) {
                 $('[name="lupnoidentitas"]').val(Number(data.noidentitas));
                 $('[name="lupalamat"]').val(data.alamat);
                 $('[name="tgllahirp"]').val(data.tanggallahir);  
-                $('[name="total_resep"]').val(data.poscredit);  
+                $('[name="tgltr"]').val(data.tglresep1);  
+                $totalres = formatCurrency1(data.poscredit);
+                $('[name="total_resep"]').val($totalres);  
+                $('[name="juklaim"]').val(data.poscredit);  
+                $('[name="nil_aptk"]').val(0);  
+                $('[name="nilap"]').val(0);  
                 tgllahirpp();
                 $('#modal_form').modal('show'); // show bootstrap modal when complete loaded
                 $('.modal-title').text('Edit Data'); // Set title to Bootstrap modal title

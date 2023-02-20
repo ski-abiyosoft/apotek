@@ -1760,7 +1760,7 @@ class M_global extends CI_Model
 
 	function getfarmasiuser2($str)
 	{
-		$query = $this->db->query("SELECT uidlogin as id, username as text from userlogin where (uidlogin like '%$str%' or username like '$str%') and user_level >= 2");
+		$query = $this->db->query("SELECT uidlogin as id, username as text from userlogin where (uidlogin like '%$str%' or username like '$str%') and user_level <= 2");
 		return $query->result();
 	}
 

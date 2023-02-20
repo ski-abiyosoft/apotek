@@ -716,10 +716,14 @@ class Penjualan_faktur extends CI_Controller{
 					$ppn_resep = ceil($ppn_resep1);
 				}
 	
-				if($posting->nokwitansi<>'' || $posting->nokwitansi<> null){
-					$link = "<b style='color: green; font-size: 20px; border: solid 3px green;'>LUNAS</b>";
-				} else {
-					$link = "<b style='color: red; font-size: 20px; border: solid 3px red;'>BELUM LUNAS</b>";
+				if($hresep->rekmed=="Non Member"){
+					if($posting->nokwitansi<>'' || $posting->nokwitansi<> null){
+						$link = "<b style='color: green; font-size: 20px; border: solid 3px green;'>LUNAS</b>";
+					} else {
+						$link = "<b style='color: red; font-size: 20px; border: solid 3px red;'>BELUM LUNAS</b>";
+					}
+				}else{
+					$link="";
 				}
 				
 				if($cekracik > 0){
@@ -1515,6 +1519,7 @@ class Penjualan_faktur extends CI_Controller{
 				'totalrp'      => str_replace(',', '', $totp_1),
 				'cek_rm'      => $cek_rm,
 				'harga_manual'      => $harga_manual,
+				'jamdresep'      => date("H:i:s"),
 			);
 
 			if ($param == 1) {
@@ -2067,7 +2072,7 @@ class Penjualan_faktur extends CI_Controller{
 
 	public function bayar($resepno){
 			$unit = $this->session->userdata('unit');
-			$data         = $this->db->query("SELECT date(c.tgllahir) as tanggallahir, a.* ,b.*,c.*
+			$data         = $this->db->query("SELECT date(c.tgllahir) as tanggallahir,date(a.tglresep) as tglresep1, a.* ,b.*,c.*
 			from tbl_apoposting a 
 			join tbl_apohresep b ON a.resepno=b.resepno
 			join tbl_pasien c ON a.rekmed=c.rekmed
@@ -2149,6 +2154,34 @@ class Penjualan_faktur extends CI_Controller{
 
 		$this->db->query("UPDATE tbl_apohresep set nokwitansi='$kwitansi', keluar=1 where koders = '$cabang' and resepno = '$noresep'");
 		$this->db->query("UPDATE tbl_apoposting set nokwitansi='$kwitansi', keluar=1 where koders = '$cabang' and resepno = '$noresep'");
+
+		$datapap = [
+			'koders' => $cabang,
+			'noreg' => "",
+			'rekmed' => $rekmed,
+			'tglposting' => $tanggal,
+			'tgljatuhtempo' => $tanggal,
+			'cust_id' => $this->input->post('vpenjamin'),
+			'nokwitansi' => $kwitansi,
+			'bayarcash' => $totalresep,
+			// 'bayarcash' => $bayarcash,
+			'adm' => 0,
+			'totalpoli' => 0,
+			'totalradio' => 0,
+			'totallab' => 0,
+			'totalbedah' => 0,
+			'totalresep' => $totalresep,
+			// 'jumlahhutang' => str_replace(',', '', $this->input->post('tercover_rp')),
+			'jumlahhutang' => $totalresep,
+			'username' => $userid,
+			'namapas' => $this->input->post('lupnamapasien'),
+			'nik' => $this->input->post('lupidentitas'),
+			'cust_id2' => $this->input->post('vpenjamin'),
+			// 'nilaiklaim2' => str_replace(',', '', $this->input->post('tercover_rp2'))
+			'nilaiklaim2' => $totalresep
+		];
+
+		$insert = $this->db->insert('tbl_pap', $datapap);
 
 		
 		$this->db->set("ada", 0);

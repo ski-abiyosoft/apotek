@@ -223,6 +223,15 @@ function edit_data(id) {
         dataType: "JSON",
         success: function(data) {
 
+            $.ajax({
+                url: "<?= site_url('Farmasi_bapb/get_np/'); ?>"+data.kodebarang,
+                type: "POST",
+                dataType: "JSON",
+                success: function(data) {
+                    $("#nilaipersediaan").val(Number(data.nilai_persediaan));
+                }
+            });
+
             $('[name="id"]').val(data.id);
             $('[name="kode"]').val(data.kodebarang);
             $('[name="nama"]').val(data.namabarang);
@@ -247,7 +256,7 @@ function edit_data(id) {
             $('[name="het"]').val(data.het);
             $('[name="hnappn"]').val(data.hargabelippn);
             $('[name="ppn"]').val(data.vat);
-            $('[name="nilaipersediaan"]').val(data.hpp.split(".00").join(""));
+            // $('[name="nilaipersediaan"]').val(data.hpp.split(".00").join(""));
             $('[name="jenisharga"]').val(data.hargatype);
             $('[name="kemasan"]').val(data.kemasan);
             $('[name="minstock"]').val(data.minstock);
@@ -265,7 +274,7 @@ function edit_data(id) {
             $('[name="persen"]').val(cek1.toFixed(0));
 
             gettarif();
-            getmargin(data.kodebarang);
+            // getmargin(data.kodebarang);
 
             //$('[name="dob"]').datepicker('update',data.dob);
             $('#modal_form').modal('show'); // show bootstrap modal when complete loaded
@@ -492,8 +501,8 @@ $(document).ready(function() {
                                 <div class="form-group">
                                     <label class="control-label col-md-3">Nama Barang&nbsp;<small style="color:red">*</small></label>
                                     <div class="col-md-9">
-                                        <input name="nama" placeholder="Uraian" class="form-control" maxlength="100"
-                                            type="text">
+                                        <input name="nama" id="nama" placeholder="Uraian" class="form-control" maxlength="100"
+                                            type="text" onkeyup="ubah_nama(this.value)">
                                         <span class="help-block"></span>
                                     </div>
                                 </div>
@@ -501,8 +510,8 @@ $(document).ready(function() {
                                 <div class="form-group">
                                     <label class="control-label col-md-3">Nama Generic&nbsp;<small style="color:red">*</small></label>
                                     <div class="col-md-9">
-                                        <input name="namageneric" placeholder="" class="form-control" maxlength="100"
-                                            type="text">
+                                        <input name="namageneric" id="namageneric" placeholder="" class="form-control" maxlength="100"
+                                            type="text" onkeyup="ubah_namagen(this.value)">
                                         <span class="help-block"></span>
                                     </div>
                                 </div>
@@ -626,7 +635,7 @@ $(document).ready(function() {
                                 <div class="form-group">
                                     <label class="control-label col-md-3">HNA&nbsp;<small style="color:red">*</small></label>
                                     <div class="col-md-3">
-                                        <input name="hna" id="hna" placeholder="" class="form-control" maxlength="100"
+                                        <input name="hna" id="hna" placeholder="" class="form-control text-right" maxlength="100"
                                             type="text">
                                         <span class="help-block"></span>
                                     </div>
@@ -642,14 +651,14 @@ $(document).ready(function() {
                                 <div class="form-group">
                                     <label class="control-label col-md-3">HNA+PPN&nbsp;<small style="color:red">*</small></label>
                                     <div class="col-md-9">
-                                        <input id="hnappn" name="hnappn" placeholder="" class="form-control" maxlength="100" type="number">
+                                        <input id="hnappn" name="hnappn" placeholder="" class="form-control text-right" maxlength="100" type="number">
                                         <span class="help-block"></span>
                                     </div>
                                 </div>
                                 <div class="form-group">
                                     <label class="control-label col-md-3">HET&nbsp;<small style="color:red">*</small></label>
                                     <div class="col-md-9">
-                                        <input id="het" name="het" placeholder="" class="form-control" maxlength="100" type="number">
+                                        <input id="het" name="het" placeholder="" class="form-control text-right" maxlength="100" type="number">
                                         <span class="help-block"></span>
                                     </div>
                                 </div>
@@ -669,7 +678,7 @@ $(document).ready(function() {
                                 <div class="form-group">
                                     <label class="control-label col-md-3">Harga Jual&nbsp;<small style="color:red">*</small></label>
                                     <div class="col-md-9">
-                                        <input name="hargajual" id="hargajual" placeholder="" class="form-control" maxlength="100" type="number">
+                                        <input name="hargajual" id="hargajual" placeholder="" class="form-control text-right" maxlength="100" type="number" onchange="cek_hj()">
                                         <span class="help-block"></span>
                                     </div>
                                 </div>
@@ -677,7 +686,7 @@ $(document).ready(function() {
                                 <div class="form-group">
                                     <label class="control-label col-md-3">Jual Jaminan</label>
                                     <div class="col-md-9">
-                                        <input name="jualjaminan" placeholder="" class="form-control" maxlength="100"
+                                        <input name="jualjaminan" placeholder="" class="form-control text-right" maxlength="100"
                                             type="text">
                                         <span class="help-block"></span>
                                     </div>
@@ -915,6 +924,21 @@ $(document).ready(function() {
 </div>
 
 <script>
+
+function cek_hj(){
+    var beli = Number($("#hna").val());
+    var jual = Number($("#hargajual").val());
+    if(jual < beli) {
+        swal({
+            title: "HARGA JUAL",
+            html: "Tidak boleh kurang dari HNA",
+            type: "error",
+            confirmButtonText: "OK"
+        });
+        $("#hargajual").val(beli);
+    }
+}
+
 initailizeSelect2_vendor();
 //initailizeSelect2_kasbank();
 function tampil_tab(kolom) {
@@ -941,7 +965,7 @@ function gettarif() {
             url: "<?php echo base_url();?>master_barang/getdatamargin/?barang=" + str,
             type: "GET",
             success: function(data) {
-                // $('#datatable_margin tbody').append(data);
+                $('#datatable_margin tbody').append(data);
             }
         });
     }
@@ -1041,5 +1065,17 @@ function filterdata(){
         let text_space = param.replaceAll(' ', '');
         let text = text_space.toUpperCase();
         $("#kode").val(text);
+    }
+
+    function ubah_nama(param) {
+        let text_space = param.replaceAll(' ', '');
+        let text = text_space.toUpperCase();
+        $("#nama").val(text);
+    }
+
+    function ubah_namagen(param) {
+        let text_space = param.replaceAll(' ', '');
+        let text = text_space.toUpperCase();
+        $("#namageneric").val(text);
     }
 </script>

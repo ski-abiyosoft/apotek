@@ -107,7 +107,12 @@ $this->load->view('template/body');
                           foreach ($resep as $row) {
 
                           if($row->rekmed == 'Non Member' || $row->rekmed == 'NON MEMBER' || $row->rekmed == 'non member'){
-                            $phone			= data_master("tbl_apohresep", array("resepno" => $row->resepno))->nohp;
+                            
+                            if($row->poscredit<0){
+                              $phone			= $this->db->query("SELECT*from tbl_apohresep where resepno IN ( select resepno from tbl_apohreturjual where returno='$row->resepno' )")->row()->nohp;
+                            }else{
+                              $phone			= data_master("tbl_apohresep", array("resepno" => $row->resepno))->nohp;
+                            }
 
                           } else {
                             $phone  = $row->hp;
@@ -669,7 +674,7 @@ $this->load->view('template/body');
 
                         <td><input type="text" class="form-control total rightJustified" name="kembalirp" id="kembalirp" value="0" readonly></td>
                         <!-- <td style="border-top:none;"><span id="pertanyaan">Auto ke uang muka</span></td> -->
-                        <td style="border-top:none;" width="10%"><input type="hidden" id="uangmukakembaliya" name="kembaliuang" checked value="1"><span id="textya"></span></td>
+                        <td style="border-top:none;" width="10%"><input type="hidden" id="uangmukakembaliya" name="kembaliuang" value="1"><span id="textya"></span></td>
                         <td style="border-top:none;" width="10%"><input type="checkbox" checked id="uangmukakembalitidak" name="kembaliuang" value="0"><span id="texttidak">Kembali ke
                                 pasien</span></td>
 
@@ -1410,38 +1415,39 @@ function pembayaran(nomor, namapas, reseprp, rekmed, noreg, hp) {
   total_net();
 }
 
-function total_net() {
-  var retur = $('#retur').val();
-  var selisih = $('#selisihrp').val();
-  var resep = $('#reseprp').val();
-  var diskonpr = $('#diskonpr').val();
-  var vdiskon = (diskonpr / 100) * vresep;
+function total_net() 
+{
+  var retur           = $('#retur').val();
+  var selisih         = $('#selisihrp').val();
+  var resep           = $('#reseprp').val();
+  var diskonpr        = $('#diskonpr').val();
+  var vdiskon         = (diskonpr / 100) * vresep;
   $('#diskonrp').val(formatCurrency1(vdiskon));
-  var diskonrp = $('#diskonrp').val();
-  var uangmukarp = $('#uangmuka').val();
-  var uangmukapakai = $('#uangmukapakai').val();
-  var refundrp = $('#refund').val();
-  var voucherrp1 = $('#voucherrp1').val();
-  var voucherrp2 = $('#voucherrp2').val();
-  var voucherrp3 = $('#voucherrp3').val();
-  var bayarcredit = $('#totalelectronicrp').val();
-  var bayartunai = $('#totaltunairp').val();
-  var uangpasienrp = $('#uangpasienrp').val();
-  var vretur = Number(retur.replace(/[^0-9\.]+/g, ""));
-  var vresep = Number(resep.replace(/[^0-9\.]+/g, ""));
-  var vdiskonrp = Number(diskonrp.replace(/[^0-9\.]+/g, ""));
-  var vuangmukarp = Number(uangmukarp.replace(/[^0-9\.]+/g, ""));
-  var vuangmukapakai = Number(uangmukapakai.replace(/[^0-9\.]+/g, ""));
-  var vrefundrp = Number(refundrp.replace(/[^0-9\.]+/g, ""));
-  var vvoucherrp1 = Number(voucherrp1.replace(/[^0-9\.]+/g, ""));
-  var vvoucherrp2 = Number(voucherrp2.replace(/[^0-9\.]+/g, ""));
-  var vvoucherrp3 = Number(voucherrp3.replace(/[^0-9\.]+/g, ""));
-  var selisih = Number(selisih.replace(/[^0-9\.]+/g, ""));
-  var vbayarcredit = Number(bayarcredit.replace(/[^0-9\.]+/g, ""));
-  var vbayartunai = Number(bayartunai.replace(/[^0-9\.]+/g, ""));
-  var totalsemua = vresep;
+  var diskonrp        = $('#diskonrp').val();
+  var uangmukarp      = $('#uangmuka').val();
+  var uangmukapakai   = $('#uangmukapakai').val();
+  var refundrp        = $('#refund').val();
+  var voucherrp1      = $('#voucherrp1').val();
+  var voucherrp2      = $('#voucherrp2').val();
+  var voucherrp3      = $('#voucherrp3').val();
+  var bayarcredit     = $('#totalelectronicrp').val();
+  var bayartunai      = $('#totaltunairp').val();
+  var uangpasienrp    = $('#uangpasienrp').val();
+  var vretur          = Number(retur.replace(/[^0-9\.]+/g, ""));
+  var vresep          = Number(resep.replace(/[^0-9\.]+/g, ""));
+  var vdiskonrp       = Number(diskonrp.replace(/[^0-9\.]+/g, ""));
+  var vuangmukarp     = Number(uangmukarp.replace(/[^0-9\.]+/g, ""));
+  var vuangmukapakai  = Number(uangmukapakai.replace(/[^0-9\.]+/g, ""));
+  var vrefundrp       = Number(refundrp.replace(/[^0-9\.]+/g, ""));
+  var vvoucherrp1     = Number(voucherrp1.replace(/[^0-9\.]+/g, ""));
+  var vvoucherrp2     = Number(voucherrp2.replace(/[^0-9\.]+/g, ""));
+  var vvoucherrp3     = Number(voucherrp3.replace(/[^0-9\.]+/g, ""));
+  var selisih         = Number(selisih.replace(/[^0-9\.]+/g, ""));
+  var vbayarcredit    = Number(bayarcredit.replace(/[^0-9\.]+/g, ""));
+  var vbayartunai     = Number(bayartunai.replace(/[^0-9\.]+/g, ""));
+  var totalsemua      = vresep;
 
-  var totalnet = eval(totalsemua) - eval(vdiskonrp) - eval(vuangmukapakai) - eval(vrefundrp) - eval(vretur) - eval(
+  var totalnet        = eval(totalsemua) - eval(vdiskonrp) - eval(vuangmukapakai) - eval(vrefundrp) - eval(vretur) - eval(
     selisih) - eval(vvoucherrp1) - eval(vvoucherrp2) - eval(vvoucherrp3);
 
   $('#totalnet').val(formatCurrency1(totalnet));

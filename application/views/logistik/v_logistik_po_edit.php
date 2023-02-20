@@ -209,6 +209,17 @@ $this->load->view('template/body');
                   </div>
                 </div>
               </div>
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label class="col-md-3 control-label">Alasan Edit <span class="text-danger">*</span></label>
+                    <div class="col-md-9">
+                      <?php if($header->alasan) { $alasa = $header->alasan; } else { $alasan = ''; } ?>
+                      <input type="text" class="form-control" name="alasan" id="alasan" value="<?= $alasan; ?>">
+                    </div>
+                  </div>
+                </div>
+              </div>
 
 
               <div class="row">
@@ -469,6 +480,7 @@ function separateComma(val) {
 function save() {
   var tanggal = $('[name="tanggal"]').val();
   var nomor = $('[name="nomorbukti"]').val();
+  var alasan = $('[name="alasan"]').val();
   var total = $('#_vtotal').text();
   if (document.getElementById('ipo').checked == true) {
     ipo = 1;
@@ -476,7 +488,7 @@ function save() {
     ipo = 0;
   }
 
-  if (nomor == "" || total == "0.00" || total == "") {
+  if (nomor == "" || total == "0.00" || total == "" || alasan == "") {
     swal('PURCHASE ORDER', 'Data Belum Lengkap/Belum ada transaksi ...', '');
   } else {
 

@@ -109,8 +109,7 @@ class Inventory_tso extends CI_Controller
 									
 									if($user_level==0){
 				
-										$row[] = 
-										'';
+										$row[] = '';
 											
 									}else{
 										$row[] = '<a class="btn btn-sm btn-info" href="javascript:void(0)" title="Approve" onclick="approve(' . "'" . $item->id . "'" . ",'" . $item->kodebarang . "'" . ')"><i class="glyphicon glyphicon-check"></i></a>';
@@ -199,8 +198,7 @@ class Inventory_tso extends CI_Controller
 						$cek = $this->db->query("SELECT * FROM tbl_barangstock JOIN tbl_aposesuai ON tbl_barangstock.kodebarang=tbl_aposesuai.kodebarang WHERE tbl_barangstock.kodebarang = '$item->kodebarang' AND tbl_barangstock.koders = '$cabang' and menyetujui = '$userid' GROUP BY tbl_barangstock.id DESC")->row_array();
 						if ($userid == $cek['menyetujui']) {
 							if ($item->approve != 1) {
-								$row[] = '<a class="btn btn-sm btn-info" href="javascript:void(0)" title="Approve" onclick="approve(' . "'" . $item->id . "'" . ",'" . $item->kodebarang . "'" . ')"><i class="glyphicon glyphicon-check"></i></a>
-							';
+								$row[] = '<a class="btn btn-sm btn-info" href="javascript:void(0)" title="Approve" onclick="approve(' . "'" . $item->id . "'" . ",'" . $item->kodebarang . "'" . ')"><i class="glyphicon glyphicon-check"></i></a>';
 							} else {
 								$row[] = '';
 							}
@@ -264,7 +262,39 @@ class Inventory_tso extends CI_Controller
 		$xxx = $sesuai->saldo + $sesuai->sesuai;
 		$tanggal = date("Y-m-d");
 		$tanggal_now = date("Y-m-d H:i:s");
-		$this->db->query("UPDATE tbl_barangstock set hasilso = $sesuai->hasilso, sesuai = $sesuai->sesuai, saldoakhir= $xxx, tglso = '$tanggal', lasttr = '$tanggal_now' where kodebarang = '$sesuai->kodebarang' and koders = '$sesuai->koders' and gudang = '$sesuai->gudang'");
+		$cek_bs = $this->db->query("SELECT * FROM tbl_barangstock where kodebarang = '$sesuai->kodebarang' and koders = '$sesuai->koders' and gudang = '$sesuai->gudang'")->num_rows();
+		if($cek_bs > 0) {
+			$this->db->query("UPDATE tbl_barangstock set hasilso = $sesuai->hasilso, sesuai = $sesuai->sesuai, saldoakhir= $xxx, tglso = '$tanggal', lasttr = '$tanggal_now' where kodebarang = '$sesuai->kodebarang' and koders = '$sesuai->koders' and gudang = '$sesuai->gudang'");
+		} else {
+			$data_bs = [
+				'terima' => 0,
+				'keluar' => 0,
+				'hasilso' => $sesuai->hasilso,
+				'saldoakhir' => $xxx,
+				'tglso' => $tanggal,
+				'lasttr' => $tanggal_now,
+				'kodebarang' => $sesuai->kodebarang,
+				'koders' => $sesuai->koders,
+				'gudang' => $sesuai->gudang,
+			];
+			$this->db->insert("tbl_barangstock", $data_bs);
+		}
+
+		$cek_barangcabang = $this->db->query("SELECT * FROM tbl_barangcabang WHERE kodebarang = '$sesuai->kodebarang' AND koders = '$sesuai->koders'");
+		if($cek_barangcabang->num_rows() > 0) {
+			$this->db->query("UPDATE tbl_barangcabang SET nilai_persediaan = '$sesuai->nilai_persediaan' WHERE kodebarang = '$sesuai->kodebarang' AND koders = '$sesuai->koders'");
+		} else {
+			$datac = [
+				'koders' => $sesuai->koders,
+				'kodebarang' => $sesuai->kodebarang,
+				'margin' => 0,
+				'hargajual' => 0,
+				'nilai_persediaan' => $sesuai->nilai_persediaan,
+			];
+			$this->db->insert("tbl_barangcabang", $datac);
+			
+		}
+		
 		echo json_encode(array("status" => 1));
 	}
 
@@ -280,7 +310,37 @@ class Inventory_tso extends CI_Controller
 			$tanggal   = date("Y-m-d");
 			$tanggal_now   = date("Y-m-d H:i:s");
 
-			$this->db->query("UPDATE tbl_barangstock set hasilso = $sesuai->hasilso, sesuai = $sesuai->sesuai, saldoakhir= $xxx, tglso = '$tanggal', lasttr = '$tanggal_now' where kodebarang = '$sesuai->kodebarang' and koders = '$sesuai->koders' and gudang = '$sesuai->gudang'");
+			$cek_bs = $this->db->query("SELECT * FROM tbl_barangstock where kodebarang = '$sesuai->kodebarang' and koders = '$sesuai->koders' and gudang = '$sesuai->gudang'")->num_rows();
+			if($cek_bs > 0) {
+				$this->db->query("UPDATE tbl_barangstock set hasilso = $sesuai->hasilso, sesuai = $sesuai->sesuai, saldoakhir= $xxx, tglso = '$tanggal', lasttr = '$tanggal_now' where kodebarang = '$sesuai->kodebarang' and koders = '$sesuai->koders' and gudang = '$sesuai->gudang'");
+			} else {
+				$data_bs = [
+					'terima' => 0,
+					'keluar' => 0,
+					'hasilso' => $sesuai->hasilso,
+					'saldoakhir' => $xxx,
+					'tglso' => $tanggal,
+					'lasttr' => $tanggal_now,
+					'kodebarang' => $sesuai->kodebarang,
+					'koders' => $sesuai->koders,
+					'gudang' => $sesuai->gudang,
+				];
+				$this->db->insert("tbl_barangstock", $data_bs);
+			}
+
+			$cek_barangcabang = $this->db->query("SELECT * FROM tbl_barangcabang WHERE kodebarang = '$sesuai->kodebarang' AND koders = '$sesuai->koders'");
+			if($cek_barangcabang->num_rows() > 0) {
+				$this->db->query("UPDATE tbl_barangcabang SET nilai_persediaan = '$sesuai->nilai_persediaan' WHERE kodebarang = '$sesuai->kodebarang' AND koders = '$sesuai->koders'");
+			} else {
+				$datac = [
+					'koders' => $sesuai->koders,
+					'kodebarang' => $sesuai->kodebarang,
+					'margin' => 0,
+					'hargajual' => 0,
+					'nilai_persediaan' => $sesuai->nilai_persediaan,
+				];
+				$this->db->insert("tbl_barangcabang", $datac);
+			}
 		}
 		$this->db->set('approve', 1);
 		$this->db->where('approve', 0);
@@ -320,6 +380,7 @@ class Inventory_tso extends CI_Controller
 			$cabang 	= $this->session->userdata('unit');
 			$typestock  = $this->input->post('typestock');
 			$yangubah  = $this->input->post('yangubah');
+			$n_persediaan  = $this->input->post('n_persediaan');
 			$yangsetuju  = $this->input->get('setuju');
 
 			$jumdata  	= count($kode);
@@ -331,6 +392,7 @@ class Inventory_tso extends CI_Controller
 				$_saldoakhir   	= $saldoakhir[$i];
 				$_plusminus   	= $plusminus[$i];
 				$_yangubah   	= $yangubah[$i];
+				$_n_persediaan   	= $n_persediaan[$i];
 
 				$barang  = $this->db->get_where('tbl_barang', array('kodebarang' => $_kode))->row();
 				$datad = array(
@@ -348,6 +410,7 @@ class Inventory_tso extends CI_Controller
 					'username' => $pic,
 					'yangubah' => $_yangubah,
 					'approve' => 0,
+					'nilai_persediaan' => $_n_persediaan,
 				);
 				$xxx = $_saldo + $_plusminus;
 				if ($_kode != "") {

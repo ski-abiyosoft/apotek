@@ -274,6 +274,7 @@ class Logistik_po extends CI_Controller
 			'ship_date' => $this->input->post('tanggalkirim'),
 			'vendor_id' => $this->input->post('supp'),
 			'username'  => $userid,
+			'alasan'      => $this->input->post('alasan'),
 			'kurs'      => $this->input->post('kurs'),
 			'kursrate'  => $this->input->post('rate'),
 			'ship_via'  => $this->input->post('dikirimvia'),
@@ -636,6 +637,7 @@ class Logistik_po extends CI_Controller
 		$cek      = $this->session->userdata('level');
 		$unit     = $this->session->userdata('unit');
 		$user     = $this->session->userdata('username');
+		$avatar     = $this->session->userdata('avatar_cabang');
 		$id       = $this->uri->segment(3);
 		$param    = $this->uri->segment(4);
 		$stokket  = $this->uri->segment(5);
@@ -671,7 +673,7 @@ class Logistik_po extends CI_Controller
                          <thead>
                               <tr>
                                    <td rowspan=\"6\" align=\"center\">
-                                        <img src=\"" . base_url() . "assets/img/logo.png\"  width=\"70\" height=\"70\" />
+                                        <img src=\"" . base_url() . "assets/img_user/$avatar\"  width=\"70\" height=\"70\" />
                                    </td>
                                    <td colspan=\"20\">
                                         <b>
@@ -1040,6 +1042,7 @@ class Logistik_po extends CI_Controller
 						$cek        = $this->session->userdata('level');
 						$unit       = $this->session->userdata('unit');
 						$user       = $this->session->userdata('username');
+						$avatar     = $this->session->userdata('avatar_cabang');
 						if (!empty($cek)) {
 							$cabang = $this->session->userdata('unit');
 							$gudang = $this->input->get('gudang');
@@ -1064,7 +1067,7 @@ class Logistik_po extends CI_Controller
                          <thead>
                               <tr>
                                    <td rowspan=\"6\" align=\"center\">
-                                        <img src=\"" . base_url() . "assets/img/logo.png\"  width=\"70\" height=\"70\" />
+                                        <img src=\"" . base_url() . "assets/img_user/$avatar\"  width=\"70\" height=\"70\" />
                                    </td>
                                    <td colspan=\"20\">
                                         <b>

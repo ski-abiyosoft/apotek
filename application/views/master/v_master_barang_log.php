@@ -487,7 +487,6 @@ $this->load->view('template/v_report');
                                     <label class="control-label col-md-3">Dikenakan PPN&nbsp;<small style="color:red">*</small></label>
                                     <div class="col-md-3">
                                         <select name="ppn" id="ppn" class="form-control">
-                                            <option value="">--- Pilih ---</option>
                                             <option value="1">Ya</option>
                                             <option value="0">Tidak</option>
                                         </select>

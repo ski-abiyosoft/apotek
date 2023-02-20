@@ -44,8 +44,12 @@ class M_stockopname extends CI_Model
 	private function _get_datatables_query($cabang, $gudang)
 	{
 		$cabang = $this->session->userdata("unit");
-		$dt = $this->db->from('(SELECT (SELECT tbl_barang.namabarang from tbl_barang where tbl_barang.kodebarang=tbl_aposesuai.kodebarang)nm, tbl_aposesuai.* 
-		FROM tbl_aposesuai)tbl_aposesuai');
+		// $dt = $this->db->from("SELECT (SELECT tbl_barang.namabarang from tbl_barang where tbl_barang.kodebarang=tbl_aposesuai.kodebarang)nm, tbl_aposesuai.* 
+		// FROM tbl_aposesuai)tbl_aposesuai WHERE kodebarang IN (SELECT kodebarang FROM tbl_barang");
+		$this->db->select("(SELECT tbl_barang.namabarang from tbl_barang where tbl_barang.kodebarang=tbl_aposesuai.kodebarang)nm, tbl_aposesuai.*");
+		$this->db->from("tbl_aposesuai");
+		$this->db->where("koders", $cabang);
+		$this->db->where("kodebarang IN (SELECT kodebarang FROM tbl_barang)");
 		// $saldo = $this->db->query("SELECT saldo FROM tbl_aposesuai WHERE koders='$cabang' AND gudang ='$gudang'");
 		// echo json_encode($saldo);
 		if ($gudang != "") {

@@ -56,7 +56,7 @@ $this->load->view('template/body');
                                              <div class="col-md-3 control-label"></div>
                                              <div class="col-md-9 control-label">
                                                   <table>
-                                                       <tr>
+                                                       <tr style='display:none;'>
                                                             <td align="center" width="20%">
                                                                  <label for="label">
                                                                       <input type="checkbox" name="depoall" value="7" id="depoall">

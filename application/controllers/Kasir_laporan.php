@@ -938,28 +938,31 @@ class Kasir_laporan extends CI_Controller
 		}
 	}
 
-	function ctk_101($cek = '', $thnn = '')
-	{
-
-		$cek          = $this->input->get('cekk');
-		$chari   	  = '';
+	function cetak_101($cek = '', $thnn = '') {
+		$shiftx          = $this->input->get('shift');
+		if($shiftx == 0 || $shiftx == null || $shiftx == 'null' || $shiftx == ''){
+			$shift = "";
+		} else if($shiftx == 1){
+			$shift = "and k.shift = 1";
+		} else {
+			$shift = "and k.shift = 2";
+		}
+		$cetak          = $this->input->get('cekk');
+		$chari   	  	= '';
 		$cekk         = $this->session->userdata('level');
-		$unit   	  = $this->session->userdata('unit');
-		$unit   	  = $this->session->userdata('unit');
+		$cabang   	  = $this->session->userdata('unit');
 		$profile      = $this->M_global->_LoadProfileLap();
 		$nama_usaha   = $profile->nama_usaha;
 		$motto        = '';
 		$alamat       = '';
 		$idlp         = $this->input->get('idlap');
-		$tgl1         = $this->input->get('tgl1');
-		$tgl2         = $this->input->get('tgl2');
+		$dari         = $this->input->get('tgl1');
+		$sampai       = $this->input->get('tgl2');
 		$dokter       = $this->input->get('dokter');
 		$cab          = $this->input->get('cabang');
-		$_tgl1        = date('Y-m-d', strtotime($tgl1));
-		$_tgl2        = date('Y-m-d', strtotime($tgl2));
-		$_peri        = 'Dari ' . date('d-m-Y', strtotime($tgl1)) . ' s/d ' . date('d-m-Y', strtotime($tgl2));
+		$_peri        = 'Dari ' . date('d-m-Y', strtotime($dari)) . ' s/d ' . date('d-m-Y', strtotime($sampai));
 		if (!empty($cekk)) {
-			$kop       = $this->M_cetak->kop($unit);
+			$kop       = $this->M_cetak->kop($cabang);
 			$namars    = $kop['namars'];
 			$alamat    = $kop['alamat'];
 			$alamat2   = $kop['alamat2'];
@@ -970,7 +973,7 @@ class Kasir_laporan extends CI_Controller
 			$chari .= "<table style=\"border-collapse:collapse;font-family: Century Gothic; font-size:12px; color:#000;\" width=\"100%\"  border=\"0\" cellspacing=\"0\" cellpadding=\"0\">
 				<tr>
 					<td rowspan=\"6\" align=\"center\">
-						<img src=\"" . base_url() . "assets/img_user/".$this->session->userdata("avatar_cabang")."\"  width=\"100\" height=\"100\" />
+						<img src=\"" . base_url() . "assets/img/logo.png\"  width=\"100\" height=\"100\" />
 					</td>
 					<td colspan=\"20\">
 						<b>
@@ -983,396 +986,249 @@ class Kasir_laporan extends CI_Controller
 					</td>
 				</tr>
 			</table>";
+
 			$chari .= "<table style=\"border-collapse:collapse;font-family: tahoma; font-size:12px\" width=\"100%\" align=\"center\" border=\"0\" cellspacing=\"1\" cellpadding=\"3\">
 				<tr>
-					<td colspan=\"21\" style=\"text-align:center;font-size:22px;border-bottom: none;color:#120292;\">
-						<b>01 LAPORAN HARIAN KASIR PENDAPATAN PER SHIFT</b>
-					</td>
-				</tr>
+					<td colspan=\"21\" style=\"text-align:center;font-size:22px;border-bottom: none;color:#120292;\"><b>01 LAPORAN HARIAN KASIR PENDAPATAN PER SHIFT</b></td>
+				</tr> 
 				<tr>
 					<td colspan=\"21\" style=\"text-align:center;font-size:15px;border-top: none;\">$_peri</td>
 				</tr>
 			</table>";
+
 			$chari .= "<table style=\"border-collapse:collapse;font-family: Times New Roman; font-size:12px\" width=\"100%\" align=\"center\" border=\"1\" cellspacing=\"1\" cellpadding=\"3\">
-				<tr>
-					<td style=\"border:0\" colspan=\"21\" align=\"center\"><br></td>                
+				<thead><tr>
+					<td bgcolor=\"#cccccc\" width=\"5%\" align=\"center\" rowspan=\"2\"><b>No.</b></td>
+					<td bgcolor=\"#cccccc\" width=\"5%\" align=\"center\" rowspan=\"2\"><b>Shift</b></td>
+					<td bgcolor=\"#cccccc\" width=\"8%\" align=\"center\" rowspan=\"2\"><b>Kwitansi</b></td>
+					<td bgcolor=\"#cccccc\" width=\"10%\" align=\"center\" rowspan=\"2\"><b>Tanggal</b></td>
+					<td bgcolor=\"#cccccc\" width=\"4%\" align=\"center\" rowspan=\"2\"><b>Nama Pasien</b></td>
+					<td bgcolor=\"#cccccc\" width=\"12%\" align=\"center\" colspan=\"2\"><b>Apotek</b></td>
+					<td bgcolor=\"#cccccc\" width=\"4%\" align=\"center\" rowspan=\"2\"><b>Selisih</b></td>
+					<td bgcolor=\"#cccccc\" width=\"8%\" align=\"center\" colspan=\"2\"><b>Diskon</b></td>
+					<td bgcolor=\"#cccccc\" width=\"4%\" align=\"center\" rowspan=\"2\"><b>Voucher</b></td>
+					<td bgcolor=\"#cccccc\" width=\"20%\" align=\"center\" colspan=\"5\"><b>Cara Bayar</b></td>
+					<td bgcolor=\"#cccccc\" width=\"4%\" align=\"center\" rowspan=\"2\"><b>Total Net</b></td>
 				</tr>
 				<tr>
-					<td rowspan=\"2\" bgcolor=\"#cccccc\" width=\"2%\" align=\"center\"><b>No.</b></td>
-					<td rowspan=\"2\" bgcolor=\"#cccccc\" width=\"5%\" align=\"center\"><b>Kwitansi</b></td>
-					<td rowspan=\"2\" bgcolor=\"#cccccc\" width=\"5%\" align=\"center\"><b>Tangal</b></td>
-					<td rowspan=\"2\" bgcolor=\"#cccccc\" width=\"7%\" align=\"center\"><b>Nama Pasien</b></td>
-					<td rowspan=\"2\" bgcolor=\"#cccccc\" width=\"3%\" align=\"center\"><b>Adm</b></td>
-					<td rowspan=\"2\" bgcolor=\"#cccccc\" width=\"4%\" align=\"center\"><b>U.Muka</b></td>
-					<td rowspan=\"2\" bgcolor=\"#cccccc\" width=\"4%\" align=\"center\"><b>J.Kulit</b></td>
-					<td rowspan=\"2\" bgcolor=\"#cccccc\" width=\"4%\" align=\"center\"><b>Resep</b></td>
-					<td rowspan=\"2\" bgcolor=\"#cccccc\" width=\"4%\" align=\"center\"><b>R/Label</b></td>
-					<td rowspan=\"2\" bgcolor=\"#cccccc\" width=\"4%\" align=\"center\"><b>J.Gigi</b></td>
-					<td rowspan=\"2\" bgcolor=\"#cccccc\" width=\"4%\" align=\"center\"><b>Lain-lain</b></td>
-					<td rowspan=\"2\" bgcolor=\"#cccccc\" width=\"4%\" align=\"center\"><b>Ord. Kirim</b></td>
-					<td rowspan=\"2\" bgcolor=\"#cccccc\" width=\"4%\" align=\"center\"><b>Ongkir</b></td>
-					<td rowspan=\"2\" bgcolor=\"#cccccc\" width=\"4%\" align=\"center\"><b>J.Spa</b></td>
-					<td rowspan=\"2\" bgcolor=\"#cccccc\" width=\"4%\" align=\"center\"><b>R/Spa</b></td>
-					<td rowspan=\"2\" bgcolor=\"#cccccc\" width=\"4%\" align=\"center\"><b>Apotek</b></td>
-					<td rowspan=\"2\" bgcolor=\"#cccccc\" width=\"5%\" align=\"center\"><b>Total</b></td>
-					<td rowspan=\"2\" bgcolor=\"#cccccc\" width=\"7%\" align=\"center\"><b>Selisih</b></td>
-					<td colspan=\"2\"  bgcolor=\"#cccccc\" width=\"5%\" align=\"center\"><b>Diskon</b></td>
-					<td rowspan=\"2\" bgcolor=\"#cccccc\" width=\"5%\" align=\"center\"><b>Voucher</b></td>
-					<td rowspan=\"2\" bgcolor=\"#cccccc\" width=\"5%\" align=\"center\"><b>Total Net</b></td>
-					<td rowspan=\"2\" bgcolor=\"#cccccc\" width=\"5%\" align=\"center\"><b>Cara Bayar</b></td>
-        </tr>
-				<tr>
-					<td bgcolor=\"#cccccc\" width=\"5%\" align=\"center\"><b>Resep</b></td>
-					<td bgcolor=\"#cccccc\" width=\"5%\" align=\"center\"><b>Tin Kon</b></td>
+					<td bgcolor=\"#cccccc\" width=\"4%\" align=\"center\"><b>Dengan Resep</b></td>
+					<td bgcolor=\"#cccccc\" width=\"4%\" align=\"center\"><b>Tanpa Resep</b></td>
+					<td bgcolor=\"#cccccc\" width=\"4%\" align=\"center\"><b>Tindakan</b></td>
+					<td bgcolor=\"#cccccc\" width=\"4%\" align=\"center\"><b>Resep</b></td>
+					<td bgcolor=\"#cccccc\" width=\"4%\" align=\"center\"><b>CS</b></td>
+					<td bgcolor=\"#cccccc\" width=\"4%\" align=\"center\"><b>DB</b></td>
+					<td bgcolor=\"#cccccc\" width=\"4%\" align=\"center\"><b>CC</b></td>
+					<td bgcolor=\"#cccccc\" width=\"4%\" align=\"center\"><b>TF</b></td>
+					<td bgcolor=\"#cccccc\" width=\"4%\" align=\"center\"><b>OL</b></td>
+				</tr></thead>";
+			$kondisi = $this->db->query("SELECT k.* FROM tbl_kasir k WHERE k.tglbayar >= '$dari' and k.tglbayar <= '$sampai' and k.koders='$cabang' $shift")->result();
+			if($kondisi) {
+				$no = 1;
+				foreach($kondisi as $kds) {
+					$query = $this->db->query(
+						"SELECT IF(k.shift = '', '-', k.shift) AS shift, k.nokwitansi, k.tglbayar, p.namapas, k.noreg, k.jambayar,
+						(CASE WHEN r.jenispas='9' THEN totalresep ELSE 0 END)dengan_resep,
+						(CASE WHEN r.jenispas='10' THEN totalresep ELSE 0 END)tanpa_resep,
+						selisihrp AS selisih,
+						k.voucherrp1 AS vc1,
+						k.voucherrp2 AS vc2,
+						k.voucherrp3 AS vc3,
+						k.diskonrp AS dis_tin,
+						k.diskonresep AS dis_res,
+						k.bayarcash - k.kembali AS cash,
+						IF(bayarcard > 0, (SELECT SUM(jumlahbayar) FROM tbl_kartukredit WHERE (kodebank = 'BCA' OR kodebank = '001') AND nokwitansi = k.nokwitansi), 0) AS bca,
+						IF(bayarcard > 0, (SELECT SUM(jumlahbayar) FROM tbl_kartukredit WHERE (kodebank = 'MNDR' OR kodebank = '002') AND nokwitansi = k.nokwitansi), 0) AS mandiri,
+						IF(bayarcard > 0, (SELECT SUM(jumlahbayar) FROM tbl_kartukredit WHERE kodebank = '003' AND nokwitansi = k.nokwitansi), 0) AS bca_tunai,
+						IF(bayarcard > 0, (SELECT SUM(jumlahbayar) FROM tbl_kartukredit WHERE cardtype = 1 AND nokwitansi = k.nokwitansi), 0) AS db,
+						IF(bayarcard > 0, (SELECT SUM(jumlahbayar) FROM tbl_kartukredit WHERE cardtype = 2 AND nokwitansi = k.nokwitansi), 0) AS cc,
+						IF(bayarcard > 0, (SELECT SUM(jumlahbayar) FROM tbl_kartukredit WHERE cardtype = 3 AND nokwitansi = k.nokwitansi), 0) AS tf,
+						IF(bayarcard > 0, (SELECT SUM(jumlahbayar) FROM tbl_kartukredit WHERE cardtype = 4 AND nokwitansi = k.nokwitansi), 0) AS ol
+						FROM tbl_kasir k
+						INNER JOIN tbl_pasien p ON p.rekmed = k.rekmed
+						LEFT JOIN tbl_apoposting pst ON pst.nokwitansi = k.nokwitansi
+						LEFT JOIN tbl_apohresep r ON pst.resepno = r.resepno
+						WHERE k.tglbayar >= '$dari' AND k.tglbayar <= '$sampai' AND k.koders='$cabang'
+						AND r.resepno IN (SELECT resepno FROM tbl_apoposting)
+						ORDER BY k.tglbayar, k.jambayar ASC"
+					)->result();
+				}
+				$dr1 = 0;
+				$tr1 = 0;
+				$selisih1 = 0;
+				$vcc1 = 0;
+				$dis_tin1 = 0;
+				$dis_res1 = 0;
+				$totalsemua1 = 0;
+				$cash1 = 0;
+				$db1 = 0;
+				$cc1 = 0;
+				$tf1 = 0;
+				$ol1 = 0;
+				$bca1 = 0;
+				$madiri1 = 0;
+				$bca_tunai1 = 0;
+				foreach($query as $query) {
+					$bca1 += $query->bca;
+					$mandiri1 += $query->mandiri;
+					$bca_tunai1 += $query->bca_tunai;
+					$dr1 += $query->dengan_resep;
+					$tr1 += $query->tanpa_resep;
+					$selisih1 += $query->selisih;
+					$vcc1 += ($query->vc1 + $query->vc2 + $query->vc3);
+					$dis_tin1 += $query->dis_tin;
+					$dis_res1 += $query->dis_res;
+					$totalsemua1 += ($query->db + $query->cc + $query->tf + $query->ol + $query->cash);
+					$cash1 += $query->cash;
+					$db1 += $query->db;
+					$cc1 += $query->cc;
+					$tf1 += $query->tf;
+					$ol1 += $query->ol;
+					if($cetak == 1) {
+						$bca = number_format($bca1);
+						$mandiri = number_format($mandiri1);
+						$bca_tunai = number_format($bca_tunai1);
+						$dr = number_format($query->dengan_resep);
+						$tr = number_format($query->tanpa_resep);
+						$selisih = number_format($query->selisih);
+						$vc1 = number_format($query->vc1);
+						$vc2 = number_format($query->vc2);
+						$vc3 = number_format($query->vc3);
+						$vc = number_format($query->vc1 + $query->vc2 + $query->vc3);
+						$dis_tin = number_format($query->dis_tin);
+						$dis_res = number_format($query->dis_res);
+						$totalsemua = number_format($query->db + $query->cc + $query->tf + $query->ol + $query->cash);
+						$cash = number_format($query->cash);
+						$db = number_format($query->db);
+						$cc = number_format($query->cc);
+						$tf = number_format($query->tf);
+						$ol = number_format($query->ol);
+						$dr2 = number_format($dr1);
+						$tr2 = number_format($tr1);
+						$selisih2 = number_format($selisih1);
+						$vcc2 = number_format($vcc1);
+						$dis_tin2 = number_format($dis_tin1);
+						$dis_res2 = number_format($dis_res1);
+						$totalsemua2 = number_format($totalsemua1);
+						$cash2 = number_format($cash1);
+						$db2 = number_format($db1);
+						$cc2 = number_format($cc1);
+						$tf2 = number_format($tf1);
+						$ol2 = number_format($ol1);
+					} else {
+						$bca = round($bca1);
+						$mandiri = round($mandiri1);
+						$bca_tunai = round($bca_tunai1);
+						$dr = round($query->dengan_resep);
+						$tr = round($query->tanpa_resep);
+						$selisih = round($query->selisih);
+						$vc1 = round($query->vc1);
+						$vc2 = round($query->vc2);
+						$vc3 = round($query->vc3);
+						$vc = round($query->vc1 + $query->vc2 + $query->vc3);
+						$dis_tin = round($query->dis_tin);
+						$dis_res = round($query->dis_res);
+						$totalsemua = round($query->db + $query->cc + $query->tf + $query->ol + $query->cash);
+						$cash = round($query->cash);
+						$db = round($query->db);
+						$cc = round($query->cc);
+						$tf = round($query->tf);
+						$ol = round($query->ol);
+						$adm2 = round($adm1);
+						$dr2 = round($dr1);
+						$tr2 = round($tr1);
+						$selisih2 = round($selisih1);
+						$vcc2 = round($vcc1);
+						$dis_tin2 = round($dis_tin1);
+						$dis_res2 = round($dis_res1);
+						$totalsemua2 = round($totalsemua1);
+						$cash2 = round($cash1);
+						$db2 = round($db1);
+						$cc2 = round($cc1);
+						$tf2 = round($tf1);
+						$ol2 = round($ol1);
+					}
+					$chari .= "<tbody><tr>
+						<td style=\"text-align: right;\">$no</td>
+						<td>$query->shift</td>
+						<td>$query->nokwitansi</td>
+						<td style=\"text-align: center;\">".date("Y-m-d", strtotime($query->tglbayar))."<br>".date("H:i:s", strtotime($query->jambayar))."</td>
+						<td>$query->namapas</td>
+						<td style=\"text-align: right;\">$dr</td>
+						<td style=\"text-align: right;\">$tr</td>
+						<td style=\"text-align: right;\">$selisih</td>
+						<td style=\"text-align: right;\">$dis_tin</td>
+						<td style=\"text-align: right;\">$dis_res</td>
+						<td style=\"text-align: right;\">$vc</td>
+						<td style=\"text-align: right;\">$cash</td>
+						<td style=\"text-align: right;\">$db</td>
+						<td style=\"text-align: right;\">$cc</td>
+						<td style=\"text-align: right;\">$tf</td>
+						<td style=\"text-align: right;\">$ol</td>
+						<td style=\"text-align: right;\">$totalsemua</td>
+					</tr></tbody>";
+					$no++;
+				}
+				$chari .= "<tfoot><tr>
+					<td bgcolor=\"#cccccc\" align=\"center\" colspan=\"5\" rowspan=\"2\"><b>Total Pendapatan Kasir</b></td>
+					<td style=\"text-align: right\">$dr2</td>
+					<td style=\"text-align: right\">$tr2</td>
+					<td style=\"text-align: right\">$selisih2</td>
+					<td style=\"text-align: right\">$dis_tin2</td>
+					<td style=\"text-align: right\">$dis_res2</td>
+					<td style=\"text-align: right\">$vcc2</td>
+					<td style=\"text-align: right\">$cash2</td>
+					<td style=\"text-align: right\">$db2</td>
+					<td style=\"text-align: right\">$cc2</td>
+					<td style=\"text-align: right\">$tf2</td>
+					<td style=\"text-align: right\">$ol2</td>
+					<td style=\"text-align: right\">$totalsemua2</td>
 				</tr>";
-
-			$sql = "
-		SELECT 
-			a.id,
-			a.koders,
-			nokwitansi,
-			b.idtr,
-			a.noreg,
-			c.kodepos,
-			a.rekmed,
-			b.preposisi,
-			b.namapas,
-			CONCAT(left(tglbayar,10),' ',jambayar)tglbayar,
-			jambayar,
-			adm,
-			totalresep as totalresep,
-			totalpoli,
-			(case when c.kodepos='KULIT' THEN totalpoli else 0 end)jkulit,
-			(case when c.kodepos='GIGI' THEN totalpoli else 0 end)jgigi,
-			(case when c.kodepos='SPA' THEN totalpoli else 0 end)jspa,
-			(case when posbayar='UANG_MUKA' THEN uangmuka else ABS(uangmuka)*-1 end )uangmuka,
-			totalsemua, IFNULL(diskonresep,0)diskonresep,
-			voucherrp1,voucherrp2,voucherrp3,diskonrp,
-			(case 
-				when jenisbayar='1' THEN 'Cash'
-				when jenisbayar='2' THEN 'Credit Card'
-				when jenisbayar='3' THEN 'Debet Card'
-				when jenisbayar='4' THEN 'Transfer'
-				when jenisbayar='5' THEN 'Online' else 'Virtual' end 
-			)nmjenisbayar,
-			jenisbayar,
-			lain,
-			bayarcash,
-			bayarcard,
-			totalbayar,
-			kembali,
-			posbayar,
-			selisihrp
-		from tbl_kasir as a
-		inner join tbl_pasien b on a.rekmed=b.rekmed 
-		LEFT JOIN tbl_regist c on a.koders=c.koders and a.noreg=c.noreg
-		where tglbayar between '$_tgl1' and '$_tgl2' and a.koders='$unit' and jenisbayar in ('1','2','3','4','5') 
-		order by tglbayar, jambayar asc
-		";
-
-
-			// union all
-
-			// select 
-			// 	a.id as id,
-			// 	a.koders as koders,
-			// 	a.resepno as nokwitansi,
-			// 	a.returno as idtr,
-			// 	a.noreg as noreg,
-			// 	0 as kodepos,
-			// 	rekmed as rekmed,
-			// 	0 as preposisi,
-			// 	(select namapas from tbl_pasien where rekmed = a.rekmed) as namapas,
-			// 	tglretur as tglbayar,
-			// 	0 as jambayar,
-			// 	0 as adm,
-			// 	-(a.totalnet) as totalresep,
-			// 	0 as totalpoli,
-			// 	0 as jkulit,
-			// 	0 as jgigi,
-			// 	0 as jspa,
-			// 	0 as uangmuka,
-			// 	0 as totalsemua,
-			// 	0 as diskonresep,
-			// 	0 as voucherrp1,
-			// 	0 as voucherrp2,
-			// 	0 as voucherrp3,
-			// 	0 as diskonrp,
-			// 	'' as nmjenisbayar,
-			// 	0 as jenisbayar,
-			// 	0 as lain,
-			// 	0 as bayarcash,
-			// 	0 as bayarcard,
-			// 	0 as totalbayar,
-			// 	0 as kembali,
-			// 	0 as posbayar,
-			// 	0 as selisihrp
-			// FROM tbl_apohreturjual as a
-			// join tbl_apodreturjual as b on a.returno = b.returno
-			// where b.terpakai = 0 AND tglretur BETWEEN '$_tgl1' and '$_tgl2' and a.koders='$unit' group by id
-
-			$query1    = $this->db->query($sql);
-
-			$lcno       = 0;
-			$no         = 0;
-			$kwitansi   = 0;
-			$tangal     = 0;
-			$nama       = 0;
-			$pasien     = 0;
-			$adm        = 0;
-			$umuka      = 0;
-			$jkulit     = 0;
-			$resep      = 0;
-			$rlabel     = 0;
-			$jgigi      = 0;
-			$lain       = 0;
-			$okirim     = 0;
-			$ongkir     = 0;
-			$jspa       = 0;
-			$rspa       = 0;
-			$apotek     = 0;
-			$total      = 0;
-			$selisih    = 0;
-			$diskon     = 0;
-			$diskonr    = 0;
-			$voucher    = 0;
-			$total      = 0;
-			$net        = 0;
-
-			$jum_adm        = 0;
-			$jum_umuka      = 0;
-			$jum_jkulit     = 0;
-			$jum_resep      = 0;
-			$jum_rlabel     = 0;
-			$jum_jgigi      = 0;
-			$jum_lain       = 0;
-			$jum_okirim     = 0;
-			$jum_ongkir     = 0;
-			$jum_jspa       = 0;
-			$jum_rspa       = 0;
-			$jum_apotek     = 0;
-			$jum_total      = 0;
-			$jum_totall     = 0;
-			$jum_selisih    = 0;
-			$jum_diskon     = 0;
-			$jum_diskon_r    = 0;
-			$jum_voucher    = 0;
-			$jum_totalnet   = 0;
-
-			$jum2_adm       = 0;
-			$jum2_umuka     = 0;
-			$jum2_jkulit    = 0;
-			$jum2_resep     = 0;
-			$jum2_rlabel    = 0;
-			$jum2_jgigi     = 0;
-			$jum2_lain      = 0;
-			$jum2_okirim    = 0;
-			$jum2_ongkir    = 0;
-			$jum2_jspa      = 0;
-			$jum2_rspa      = 0;
-			$jum2_apotek    = 0;
-			$jum2_total     = 0;
-			$jum2_totall    = 0;
-			$jum2_selisih   = 0;
-			$jum2_diskon     = 0;
-			$jum2_diskonr    = 0;
-			$jum2_voucher   = 0;
-			$jum_totalnet   = 0;
-
-
-
-			foreach ($query1->result() as $row) {
-				$lcno           = $lcno + 1;
-				$kwitansi       = $row->nokwitansi;
-				$tangal         = $row->tglbayar;
-				$namapasien     = $row->namapas;
-				$nmjenisbayar   = $row->nmjenisbayar;
-				$a_adm          = $row->adm;
-				$a_umuka        = $row->uangmuka;
-				// $a_jkulit       = $row->jkulit;
-				$a_jkulit       = $row->totalpoli;
-				$a_resep        = $row->totalresep;
-				$a_rlabel       = $row->lain;
-				$a_jgigi        = $row->jgigi;
-				$a_lain         = $row->lain;
-				$a_okirim       = $row->lain;
-				$a_ongkir       = $row->lain;
-				$a_jspa         = $row->jspa;
-				$a_rspa         = $row->lain;
-				$a_apotek       = $row->lain;
-				$a_total        = $row->adm + $row->uangmuka + $row->totalpoli + $row->totalresep + $row->lain;
-				$a_totall       = ($row->adm + $row->uangmuka + $row->totalpoli + $row->totalresep + $row->lain);
-				$a_selisih      = $row->selisihrp;
-				$a_diskon       = $row->diskonrp;
-				$a_diskonr      = $row->diskonresep;
-				$a_voucher      = $row->voucherrp1 + $row->voucherrp2 + $row->voucherrp3;
-				$a_totalnet     = $a_totall - ($row->selisihrp + $row->diskonrp + $row->diskonresep + $row->voucherrp1 + $row->voucherrp2 + $row->voucherrp3);
-
-				$adm            = angka_rp($row->adm, 0);
-				$umuka          = angka_rp($row->uangmuka, 0);
-				// $jkulit         = angka_rp($row->jkulit, 0);
-				$jkulit         = angka_rp($row->totalpoli, 0);
-				$resep          = angka_rp($row->totalresep, 0);
-				$rlabel         = angka_rp($row->lain, 0);
-				$jgigi          = angka_rp($row->jgigi, 0);
-				$lain           = angka_rp($row->lain, 0);
-				$okirim         = angka_rp($row->lain, 0);
-				$ongkir         = angka_rp($row->lain, 0);
-				$jspa           = angka_rp($row->jspa, 0);
-				$rspa           = angka_rp($row->lain, 0);
-				$apotek         = angka_rp($row->lain, 0);
-				$total          = angka_rp($row->adm + $row->uangmuka + $row->totalpoli + $row->totalresep + $row->lain, 0);
-				$totall         = ($row->adm + $row->uangmuka + $row->totalpoli + $row->totalresep + $row->lain);
-				$selisih        = angka_rp($row->selisihrp, 0);
-				$diskon         = angka_rp($row->diskonrp, 0);
-				$diskonr        = angka_rp($row->diskonresep, 0);
-				$voucher        = angka_rp($row->voucherrp1 + $row->voucherrp2 + $row->voucherrp3, 0);
-				$totalnet       = angka_rp($totall - ($row->selisihrp + $row->diskonrp + $row->diskonresep + $row->voucherrp1 + $row->voucherrp2 + $row->voucherrp3), 0);
-
-
-
-				$chari .= "<tr>
-				<td align=\"center\">$lcno      </td>
-				<td align=\"center\">$kwitansi</td>
-				<td align=\"center\">$tangal  </td>
-				<td align=\"center\">$namapasien    </td>
-				<td align=\"right\">$adm     </td>
-				<td align=\"right\">$umuka   </td>
-				<td align=\"right\">$jkulit  </td>
-				<td align=\"right\">$resep   </td>
-				<td align=\"right\">$rlabel  </td>
-				<td align=\"right\">$jgigi   </td>
-				<td align=\"right\">$lain    </td>
-				<td align=\"right\">$okirim  </td>
-				<td align=\"right\">$ongkir  </td>
-				<td align=\"right\">$jspa    </td>
-				<td align=\"right\">$rspa    </td>
-				<td align=\"right\">$apotek  </td>
-				<td align=\"right\">$total   </td>
-				<td align=\"right\">$selisih </td>
-				<td align=\"right\">$diskonr  </td>
-				<td align=\"right\">$diskon  </td>
-				<td align=\"right\">$voucher </td>
-				<td align=\"right\">$totalnet</td>
-				<td align=\"left\">$nmjenisbayar</td>
-				</tr>";
-
-				$jum_adm        += $a_adm;
-				$jum_umuka      += $a_umuka;
-				$jum_jkulit     += $a_jkulit;
-				$jum_resep      += $a_resep;
-				$jum_rlabel     += $a_rlabel;
-				$jum_jgigi      += $a_jgigi;
-				$jum_lain       += $a_lain;
-				$jum_okirim     += $a_okirim;
-				$jum_ongkir     += $a_ongkir;
-				$jum_jspa       += $a_jspa;
-				$jum_rspa       += $a_rspa;
-				$jum_apotek     += $a_apotek;
-				$jum_total      += $a_total;
-				$jum_totall     += $a_totall;
-				$jum_selisih    += $a_selisih;
-				$jum_diskon     += $a_diskon;
-				$jum_diskon_r   += $a_diskonr;
-				$jum_voucher    += $a_voucher;
-				$jum_totalnet   += $a_totalnet;
+			} else {
+				$chari .= "<tfoot><tr>
+					<td bgcolor=\"#cccccc\" align=\"center\" colspan=\"5\" rowspan=\"2\"><b>Total Pendapatan Kasir</b></td>";
 			}
+			$chari .= "<tr>
+				<td bgcolor=\"#cccccc\" align=\"center\"><b>Dengan Resep</b></td>
+				<td bgcolor=\"#cccccc\" align=\"center\"><b>Tanpa Resep</b></td>
+				<td bgcolor=\"#cccccc\" align=\"center\"><b>Selisih</b></td>
+				<td bgcolor=\"#cccccc\" align=\"center\"><b>Tindakan</b></td>
+				<td bgcolor=\"#cccccc\" align=\"center\"><b>Resep</b></td>
+				<td bgcolor=\"#cccccc\" align=\"center\"><b>Voucher</b></td>
+				<td bgcolor=\"#cccccc\" align=\"center\"><b>CS</b></td>
+				<td bgcolor=\"#cccccc\" align=\"center\"><b>DB</b></td>
+				<td bgcolor=\"#cccccc\" align=\"center\"><b>CC</b></td>
+				<td bgcolor=\"#cccccc\" align=\"center\"><b>TF</b></td>
+				<td bgcolor=\"#cccccc\" align=\"center\"><b>OL</b></td>
+				<td bgcolor=\"#cccccc\" align=\"center\"><b>Total Net</b></td>
+			</tr></tfoot>";
+			$chari .= "</table>";
 
-			$jum2_adm        = angka_rp($jum_adm, 0);
-			$jum2_umuka      = angka_rp($jum_umuka, 0);
-			$jum2_jkulit     = angka_rp($jum_jkulit, 0);
-			$jum2_resep      = angka_rp($jum_resep, 0);
-			$jum2_rlabel     = angka_rp($jum_rlabel, 0);
-			$jum2_jgigi      = angka_rp($jum_jgigi, 0);
-			$jum2_lain       = angka_rp($jum_lain, 0);
-			$jum2_okirim     = angka_rp($jum_okirim, 0);
-			$jum2_ongkir     = angka_rp($jum_ongkir, 0);
-			$jum2_jspa       = angka_rp($jum_jspa, 0);
-			$jum2_rspa       = angka_rp($jum_rspa, 0);
-			$jum2_apotek     = angka_rp($jum_apotek, 0);
-			$jum2_total      = angka_rp($jum_total, 0);
-			$jum2_totall     = angka_rp($jum_totall, 0);
-			$jum2_selisih    = angka_rp($jum_selisih, 0);
-			$jum2_diskon     = angka_rp($jum_diskon, 0);
-			$jum2_diskonr    = angka_rp($jum_diskon_r, 0);
-			$jum2_voucher    = angka_rp($jum_voucher, 0);
-			$jum2_totalnet   = angka_rp($jum_totalnet, 0);
-
-
-			$chari    .= "<tr>
-            <td colspan=\"4\" bgcolor=\"#cccccc\" align=\"center\"><b>Total Pendapatan Cashier</b></td>
-			<td bgcolor=\"#cccccc\" align=\"right\">$jum2_adm     </td>
-			<td bgcolor=\"#cccccc\" align=\"right\">$jum2_umuka   </td>
-			<td bgcolor=\"#cccccc\" align=\"right\">$jum2_jkulit  </td>
-			<td bgcolor=\"#cccccc\" align=\"right\">$jum2_resep   </td>
-			<td bgcolor=\"#cccccc\" align=\"right\">$jum2_rlabel  </td>
-			<td bgcolor=\"#cccccc\" align=\"right\">$jum2_jgigi   </td>
-			<td bgcolor=\"#cccccc\" align=\"right\">$jum2_lain    </td>
-			<td bgcolor=\"#cccccc\" align=\"right\">$jum2_okirim  </td>
-			<td bgcolor=\"#cccccc\" align=\"right\">$jum2_ongkir  </td>
-			<td bgcolor=\"#cccccc\" align=\"right\">$jum2_jspa    </td>
-			<td bgcolor=\"#cccccc\" align=\"right\">$jum2_rspa    </td>
-			<td bgcolor=\"#cccccc\" align=\"right\">$jum2_apotek  </td>
-			<td bgcolor=\"#cccccc\" align=\"right\">$jum2_total   </td>
-			<td bgcolor=\"#cccccc\" align=\"right\">$jum2_selisih </td>
-			<td bgcolor=\"#cccccc\" align=\"right\">$jum2_diskonr  </td>
-			<td bgcolor=\"#cccccc\" align=\"right\">$jum2_diskon  </td>
-			<td bgcolor=\"#cccccc\" align=\"right\">$jum2_voucher </td>
-			<td bgcolor=\"#cccccc\" align=\"right\">$jum2_totalnet</td>
-			<td bgcolor=\"#cccccc\" align=\"right\"><b></b></td>
-                       
-            </tr>";
-
-			// $chari    .= "<tr>
-			// <td colspan=\"4\" style=\"border-top:none\" align=\"right\"><b></b></td>
-			// <td style=\"border-top:none\" align=\"right\"><b></b></td>
-			// <td style=\"border-top:none\" align=\"right\"><b>0</b></td>
-			// <td style=\"border-top:none\" align=\"right\"><b></b></td>
-			// <td style=\"border-top:none\" align=\"right\"><b>0</b></td>
-			// <td style=\"border-top:none\" align=\"right\"><b></b></td>
-			// <td style=\"border-top:none\" align=\"right\"><b>0</b></td>
-			// <td style=\"border-top:none\" align=\"right\"><b></b></td>
-			// <td style=\"border-top:none\" align=\"right\"><b>0</b></td>
-			// <td style=\"border-top:none\" align=\"right\"><b></b></td>
-			// <td style=\"border-top:none\" align=\"right\"><b>0</b></td>
-			// <td style=\"border-top:none\" align=\"right\"><b></b></td>
-			// <td style=\"border-top:none\" align=\"right\"><b>0</b></td>
-			// <td style=\"border-top:none\" align=\"right\"><b></b></td>
-			// <td style=\"border-top:none\" align=\"right\"><b>0</b></td>
-			// <td style=\"border-top:none\" align=\"right\"><b></b></td>
-			// <td style=\"border-top:none\" align=\"right\"><b>0</b></td>
-			// <td style=\"border-top:none\" align=\"right\"><b></b></td>
-			// <td style=\"border-top:none\" align=\"right\"><b>0</b></td>
-			// <td style=\"border-top:none\" align=\"right\"><b></b></td>
-
-			// </tr>";
-
-			$chari    .= "<tr>
-            <td colspan=\"21\" style=\"border:none\" align=\"center\"><br></td>
-            </tr>";
+			$chari .= "<table style=\"border-collapse:collapse;font-family: Century Gothic; font-size:12px; color:#000;\" width=\"60%\" border=\"1\" cellspacing=\"3\" cellpadding=\"3\">
+			<tr>
+				<td colspan=\"22\" style=\"border:none\" align=\"center\"><br></td>
+			</tr>";
 
 			$sql = "SELECT
-			SUM(case when jenisbayar='1' THEN (adm+totalpoli+totalresep+selisihrp+uangmuka+lain)-(voucherrp1+voucherrp2+voucherrp3+diskonrp) else 0 end )as'Cash',
-			SUM(case when jenisbayar='2' THEN (adm+totalpoli+totalresep+selisihrp+uangmuka+lain)-(voucherrp1+voucherrp2+voucherrp3+diskonrp) else 0 end )as'CreditCard',
-			SUM(case when jenisbayar='3' THEN (adm+totalpoli+totalresep+selisihrp+uangmuka+lain)-(voucherrp1+voucherrp2+voucherrp3+diskonrp) else 0 end )as'DebetCard',
-			SUM(case when jenisbayar='4' THEN (adm+totalpoli+totalresep+selisihrp+uangmuka+lain)-(voucherrp1+voucherrp2+voucherrp3+diskonrp) else 0 end )as'Transfer',
-			SUM(case when jenisbayar='5' THEN (adm+totalpoli+totalresep+selisihrp+uangmuka+lain)-(voucherrp1+voucherrp2+voucherrp3+diskonrp) else 0 end )as'Online' 
+			SUM(case when jenisbayar='1' THEN (adm+totalpoli+totalresep+selisihrp+lain)-(voucherrp1+voucherrp2+voucherrp3+diskonrp) else 0 end )as'Cash',
+			SUM(case when jenisbayar='2' THEN (adm+totalpoli+totalresep+selisihrp+lain)-(voucherrp1+voucherrp2+voucherrp3+diskonrp) else 0 end )as'CreditCard',
+			SUM(case when jenisbayar='3' THEN (adm+totalpoli+totalresep+selisihrp+lain)-(voucherrp1+voucherrp2+voucherrp3+diskonrp) else 0 end )as'DebetCard',
+			SUM(case when jenisbayar='4' THEN (adm+totalpoli+totalresep+selisihrp+lain)-(voucherrp1+voucherrp2+voucherrp3+diskonrp) else 0 end )as'Transfer',
+			SUM(case when jenisbayar='5' THEN (adm+totalpoli+totalresep+selisihrp+lain)-(voucherrp1+voucherrp2+voucherrp3+diskonrp) else 0 end )as'Online' 
 			FROM(
 			SELECT adm,totalpoli,totalresep,selisihrp,lain,
-					(case when posbayar='UANG_MUKA' THEN uangmuka else ABS(uangmuka)*-1 end )uangmuka,
 					voucherrp1,voucherrp2,voucherrp3,diskonrp,
 					jenisbayar,bayarcash,bayarcard,totalbayar,kembali,posbayar
-					from tbl_kasir a
-					inner join tbl_pasien b on a.rekmed=b.rekmed 
-					where tglbayar between '$_tgl1' and '$_tgl2' and a.koders='$unit'  
+					from tbl_kasir k
+					inner join tbl_pasien b on k.rekmed=b.rekmed 
+					where tglbayar between '$dari' and '$sampai' and k.koders='$cabang'  
 			)a";
 
 			$sql2 = "SELECT 
-			sum(case when kodebank='001' then jumlahbayar else 0 end )as bca_lokal ,
-			sum(case when kodebank='002' then jumlahbayar else 0 end )as mandiri ,
-			sum(case when kodebank='003' then jumlahbayar else 0 end )as bca_tunai 
-			from tbl_kartukredit a
-			where tanggal between '$_tgl1' and '$_tgl2' and a.koders='$unit'";
+			IF(sum(case when kodebank='BCA' then jumlahbayar else 0 end ) > 0, sum(case when kodebank='BCA' then jumlahbayar else 0 end ), 0) as bca_lokal ,
+			IF(sum(case when kodebank='MNDR' then jumlahbayar else 0 end ) > 0, sum(case when kodebank='MNDR' then jumlahbayar else 0 end ), 0) as mandiri ,
+			IF(sum(case when kodebank='003' then jumlahbayar else 0 end ) > 0, sum(case when kodebank='003' then jumlahbayar else 0 end ), 0) as bca_tunai 
+			from tbl_kartukredit k
+			where tanggal between '$dari' and '$sampai' and k.koders='$cabang' $shift";
 
 			$query1    = $this->db->query($sql);
 			$query2    = $this->db->query($sql2);
@@ -1387,11 +1243,20 @@ class Kasir_laporan extends CI_Controller
 			$mandiri       = 0;
 			$bca_tunai     = 0;
 
-			$cek_cash = $this->db->query("SELECT SUM(bayarcash) AS cash FROM tbl_kasir WHERE koders = '$unit' AND tglbayar BETWEEN '$_tgl1' AND '$_tgl2'")->row();
-			$cek_debit = $this->db->query("SELECT SUM(jumlahbayar) AS debit FROM tbl_kartukredit WHERE cardtype = 1 AND koders = '$unit' AND tanggal BETWEEN '$_tgl1' AND '$_tgl2'")->row();
-			$cek_credit = $this->db->query("SELECT SUM(jumlahbayar) AS credit FROM tbl_kartukredit WHERE cardtype = 2 AND koders = '$unit' AND tanggal BETWEEN '$_tgl1' AND '$_tgl2'")->row();
-			$cek_transfer = $this->db->query("SELECT SUM(jumlahbayar) AS transfer FROM tbl_kartukredit WHERE cardtype = 3 AND koders = '$unit' AND tanggal BETWEEN '$_tgl1' AND '$_tgl2'")->row();
-			$cek_online = $this->db->query("SELECT SUM(jumlahbayar) AS online FROM tbl_kartukredit WHERE cardtype = 4 AND koders = '$unit' AND tanggal BETWEEN '$_tgl1' AND '$_tgl2'")->row();
+			$shiftt = $this->input->get('shift');
+			if($shiftt == '' || $shiftt == null){
+				$cek_cash = $this->db->query("SELECT SUM(bayarcash - kembali) AS cash FROM tbl_kasir WHERE koders = '$cabang' AND tglbayar BETWEEN '$dari' AND '$sampai'")->row();
+				$cek_debit = $this->db->query("SELECT SUM(jumlahbayar) AS debit FROM tbl_kartukredit WHERE cardtype = 1 AND koders = '$cabang' AND tanggal BETWEEN '$dari' AND '$sampai'")->row();
+				$cek_credit = $this->db->query("SELECT SUM(jumlahbayar) AS credit FROM tbl_kartukredit WHERE cardtype = 2 AND koders = '$cabang' AND tanggal BETWEEN '$dari' AND '$sampai'")->row();
+				$cek_transfer = $this->db->query("SELECT SUM(jumlahbayar) AS transfer FROM tbl_kartukredit WHERE cardtype = 3 AND koders = '$cabang' AND tanggal BETWEEN '$dari' AND '$sampai'")->row();
+				$cek_online = $this->db->query("SELECT SUM(jumlahbayar) AS online FROM tbl_kartukredit WHERE cardtype = 4 AND koders = '$cabang' AND tanggal BETWEEN '$dari' AND '$sampai'")->row();
+			} else {
+				$cek_cash = $this->db->query("SELECT SUM(bayarcash - kembali) AS cash FROM tbl_kasir WHERE koders = '$cabang' AND tglbayar BETWEEN '$dari' AND '$sampai' AND shift = '$shiftt'")->row();
+				$cek_debit = $this->db->query("SELECT SUM(jumlahbayar) AS debit FROM tbl_kartukredit WHERE cardtype = 1 AND koders = '$cabang' AND tanggal BETWEEN '$dari' AND '$sampai' AND shift = '$shiftt'")->row();
+				$cek_credit = $this->db->query("SELECT SUM(jumlahbayar) AS credit FROM tbl_kartukredit WHERE cardtype = 2 AND koders = '$cabang' AND tanggal BETWEEN '$dari' AND '$sampai' AND shift = '$shiftt'")->row();
+				$cek_transfer = $this->db->query("SELECT SUM(jumlahbayar) AS transfer FROM tbl_kartukredit WHERE cardtype = 3 AND koders = '$cabang' AND tanggal BETWEEN '$dari' AND '$sampai' AND shift = '$shiftt'")->row();
+				$cek_online = $this->db->query("SELECT SUM(jumlahbayar) AS online FROM tbl_kartukredit WHERE cardtype = 4 AND koders = '$cabang' AND tanggal BETWEEN '$dari' AND '$sampai' AND shift = '$shiftt'")->row();
+			}
 
 			foreach ($query1->result() as $row) {
 				$lcno         = $lcno + 1;
@@ -1402,47 +1267,43 @@ class Kasir_laporan extends CI_Controller
 				$Online       = angka_rp($row->Online, 0);
 
 				foreach ($query2->result() as $row2) {
-					$lcno         = $lcno + 1;
-					$bca_lokal    = angka_rp($row2->bca_lokal, 0);
-					$mandiri      = angka_rp($row2->mandiri, 0);
-					$bca_tunai    = angka_rp($row2->bca_tunai, 0);
-
-					// cash old $Cash
-					// credit old $CreditCard
-					// debit old $DebetCard
-					// transfer old $Transfer
-					// online old $Online
-
+					// IF($row2->bca_lokal > 0) { $bca_lokal = $row2->bca_lokal; } else { $bca_lokal = 0; }
+					// IF($row2->mandiri > 0) { $mandiri = $row2->mandiri; } else { $mandiri = 0; }
+					// IF($row2->bca_tunai > 0) { $bca_tunai = $row2->bca_tunai; } else { $bca_tunai = 0; }
+					// $lcno         = $lcno + 1;
+					// $bca_lokal    = angka_rp($bca_lokal, 0);
+					// $mandiri      = angka_rp($mandiri, 0);
+					// $bca_tunai    = angka_rp($bca_tunai, 0);
 					$chari    .= "
 			<tr>
-				<td colspan=\"2\" style=\"font-size:12px; border-top:none;border-left:none;border-right:none\" align=\"LEFT\"><b>TOTAL TUNAI</b></td>
-				<td style=\"border-top:none;border-left:none;border-right:none\" align=\"right\">" . number_format($cek_cash->cash, 0) . "</td>
+				<td colspan=\"3\" style=\"font-size:12px; border-top:none;border-left:none;border-right:none\" align=\"LEFT\"><b>TOTAL TUNAI</b></td>
+				<td style=\"border-top:none;border-left:none;border-right:none\" align=\"right\">" . $cash2 . "</td>
 				<td style=\"border:none\"></td>
 				<td colspan=\"3\" style=\"border:none\" align=\"LEFT\"><b>BANK BCA LOKAL</b></td>
-				<td colspan=\"2\" style=\"border:none\" align=\"right\">$bca_lokal</td>                       
-            </tr>
+				<td colspan=\"2\" style=\"border:none\" align=\"right\">$bca</td>                       
+			</tr>
 			<tr>
-				<td colspan=\"2\" style=\"font-size:12px; border-top:none;border-left:none;border-right:none\" align=\"LEFT\"><b>TOTAL KREDIT</b></td>
-				<td style=\"border-top:none;border-left:none;border-right:none\" align=\"right\">".number_format($cek_credit->credit,0)."</td>
+				<td colspan=\"3\" style=\"font-size:12px; border-top:none;border-left:none;border-right:none\" align=\"LEFT\"><b>TOTAL DEBIT</b></td>
+				<td style=\"border-top:none;border-left:none;border-right:none\" align=\"right\">".$db2."</td>
 				<td style=\"border:none\"></td>
 				<td colspan=\"3\" style=\"border:none\" align=\"LEFT\"><b>BANK MANDIRI</b></td>
 				<td colspan=\"2\" style=\"border:none\" align=\"right\">$mandiri</td>                       
-            </tr>
+			</tr>
 			<tr>
-				<td colspan=\"2\" style=\"font-size:12px; border-top:none;border-left:none;border-right:none\" align=\"LEFT\"><b>TOTAL DEBIT</b></td>
-				<td style=\"border-top:none;border-left:none;border-right:none\" align=\"right\">".number_format($cek_debit->debit,0)."</td>
+				<td colspan=\"3\" style=\"font-size:12px; border-top:none;border-left:none;border-right:none\" align=\"LEFT\"><b>TOTAL KREDIT</b></td>
+				<td style=\"border-top:none;border-left:none;border-right:none\" align=\"right\">".$cc2."</td>
 				<td style=\"border:none\"></td>
 				<td colspan=\"3\" style=\"border:none\" align=\"LEFT\"><b>BANK BCA TUNAI</b></td>
 				<td colspan=\"2\" style=\"border:none\" align=\"right\">$bca_tunai</td>                       
-            </tr>
+			</tr>
 			<tr>
-				<td colspan=\"2\" style=\"font-size:12px; border-top:none;border-left:none;border-right:none\" align=\"LEFT\"><b>TOTAL TRANSFER</b></td>
-				<td style=\"border-top:none;border-left:none;border-right:none\" align=\"right\">" . number_format($cek_transfer->transfer, 0) . "</td>                       
-            </tr>
+				<td colspan=\"3\" style=\"font-size:12px; border-top:none;border-left:none;border-right:none\" align=\"LEFT\"><b>TOTAL TRANSFER</b></td>
+				<td style=\"border-top:none;border-left:none;border-right:none\" align=\"right\">" . $tf2 . "</td>                       
+			</tr>
 			<tr>
-				<td colspan=\"2\" style=\"font-size:12px; border-top:none;border-left:none;border-right:none\" align=\"LEFT\"><b>TOTAL ONLINE</b></td>
-				<td style=\"border-top:none;border-left:none;border-right:none\" align=\"right\">" . number_format($cek_online->online, 0) . "</td>                       
-            </tr>
+				<td colspan=\"3\" style=\"font-size:12px; border-top:none;border-left:none;border-right:none\" align=\"LEFT\"><b>TOTAL ONLINE</b></td>
+				<td style=\"border-top:none;border-left:none;border-right:none\" align=\"right\">" . $ol2 . "</td>                       
+			</tr>
 			<tr><td style=\"border:none;\" colspan=\"21\"><br></td></tr>";
 				}
 			}
@@ -1494,16 +1355,13 @@ class Kasir_laporan extends CI_Controller
 			</tr>
 		</table>";
 
-
 			$data['prev'] = $chari;
-			$judul          = 'LAPORAN HARIAN KASIR PENDAFTARAN PER SHIFT';
-			switch ($cek) {
+			$judul = 'LAPORAN HARIAN KASIR PENDAFTARAN PER SHIFT';
+			switch ($cetak) {
 				case 0;
 					echo ("<title>DATA GLOBAL SKI</title>");
 					echo ($chari);
-					echo "<script>window.print();</script>";
 					break;
-
 				case 1;
 					$this->M_cetak->mpdf('L', 'A3', $judul, $chari, 'KASIR-01.PDF', 10, 10, 10, 1);
 					break;
@@ -1515,7 +1373,6 @@ class Kasir_laporan extends CI_Controller
 					break;
 			}
 		} else {
-
 			header('location:' . base_url());
 		}
 	}

@@ -170,13 +170,14 @@ class M_barang extends CI_Model {
 	}
 	
 	public function _datamargin($barang){
-		$q1=$this->db->query("SELECT a.koders, b.margin, b.hargajual from tbl_namers AS a left outer join
+		$q1=$this->db->query("SELECT a.koders, b.margin, b.hargajual, b.nilai_persediaan from tbl_namers AS a left outer join
 		tbl_barangcabang AS b on a.koders=b.koders
 		and b.kodebarang='$barang'")->result();
 		if($q1){
 		$rowcount =1;
 		foreach ($q1 as $res1) {			
 			$info['item_kode']  = $res1->koders;
+			$info['item_nilai_persediaan']  = $res1->nilai_persediaan;
 			$info['item_margin']  = $res1->margin;
 			$info['item_harga']  = $res1->hargajual;
 			$result = $this->return_row_with_data($rowcount++,$info);
@@ -196,11 +197,15 @@ class M_barang extends CI_Model {
 			</td>
 			<td id="td_<?=$rowcount;?>_2">
 				<!-- item name  -->
-				<input type="text" style="font-weight: bold-;text-align:right" name="td_data_2[]" id="td_data_<?=$rowcount;?>_2" class="form-control no-padding" onchange="calculate(<?=$rowcount;?>, this.value)" value='<?=number_format($item_margin,0,'.',',');?>'  >
+				<input type="text" style="font-weight: bold-;text-align:right" name="td_data_2[]" id="td_data_<?=$rowcount;?>_2" class="form-control no-padding" onchange="calculate(<?=$rowcount;?>, this.value)" value='<?=number_format($item_nilai_persediaan,0,'.',',');?>' readonly>
+			</td>			   
+			<td id="td_<?=$rowcount;?>_2">
+				<!-- item name  -->
+				<input type="text" style="font-weight: bold-;text-align:right" name="td_data_3[]" id="td_data_<?=$rowcount;?>_3" class="form-control no-padding" onchange="calculate(<?=$rowcount;?>, this.value)" value='<?=number_format($item_margin,0,'.',',');?>' readonly>
 			</td>			   
 			<td id="td_<?=$rowcount;?>_3">
 				<!-- item name  -->
-				<input type="text" style="font-weight: bold-;text-align:right" name="td_data_3[]" id="td_data_<?=$rowcount;?>_3" class="form-control no-padding" value='<?=number_format($item_harga,0,'.',',');?>'  >
+				<input type="text" style="font-weight: bold-;text-align:right" name="td_data_4[]" id="td_data_<?=$rowcount;?>_4" class="form-control no-padding" value='<?=number_format($item_harga,0,'.',',');?>' readonly>
 			</td>			   
 			
 			</tr>

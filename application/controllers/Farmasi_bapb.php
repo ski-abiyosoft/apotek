@@ -85,6 +85,33 @@ class Farmasi_bapb extends CI_Controller
 		echo json_encode($data);
 	}
 
+	function get_np($kodebarang) {
+		$cabang = $this->session->userdata("unit");
+		$cek_barangcabang = $this->db->query("SELECT * FROM tbl_barangcabang WHERE kodebarang = '$kodebarang' AND koders = '$cabang'");
+		if($cek_barangcabang->num_rows() > 0) {
+			$bapb = $this->db->query("SELECT koders, (SUM(totalrp)/SUM(qty_terima)) AS rata FROM tbl_barangdterima WHERE kodebarang = '$kodebarang' AND koders = '$cabang' GROUP BY koders, kodebarang LIMIT 1")->result();
+			foreach ($bapb as $key => $value) {
+				$nilai_persediaan = (int)$value->rata;
+				$this->db->query("UPDATE tbl_barangcabang SET nilai_persediaan = '$nilai_persediaan' WHERE kodebarang = '$kodebarang' AND koders = '$cabang'");
+			}
+		} else {
+			$bapb = $this->db->query("SELECT koders, (SUM(totalrp)/SUM(qty_terima)) AS rata FROM tbl_barangdterima WHERE kodebarang = '$kodebarang' AND koders = '$cabang' GROUP BY koders, kodebarang LIMIT 1")->result();
+			foreach ($bapb as $key => $value) {
+				$nilai_persediaan = (int)$value->rata;
+				$datac = [
+					'koders' => $cabang,
+					'kodebarang' => $kodebarang,
+					'margin' => 0,
+					'hargajual' => 0,
+					'nilai_persediaan' => (int)$nilai_persediaan,
+				];
+				$this->db->insert("tbl_barangcabang", $datac);
+			}
+		}
+		$data = $this->db->query("SELECT * FROM tbl_barangcabang WHERE koders = '$cabang' AND kodebarang = '$kodebarang'")->row();
+		echo json_encode($data);
+	}
+
 	public function add()
 	{
 		$cek = $this->session->userdata('username');
@@ -605,6 +632,7 @@ class Farmasi_bapb extends CI_Controller
 			}
 			// }
 		}
+		$this->get_np($kode);
 	}
 
 	public function data_awal_terima()

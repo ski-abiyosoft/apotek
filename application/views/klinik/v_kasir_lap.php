@@ -266,13 +266,14 @@ $this->load->view('template/v_report');
 		var pemb    = $('[name="pembayaran"]').val();
 		var cektgl  = hitungselisihtgl(tgl1, tgl2);
 		
-		if(idlap == '101'){
-			cek=0;
-		}else{
-			cek=cek;
-		}
+		// if(idlap == '101'){
+		// 	cek=0;
+		// }else{
+		// 	cek=cek;
+		// }
+		cek=cek;
 		if(cek < 1){
-			if(cektgl < 8){
+			// if(cektgl < 8){
 				var baseurl = "<?php echo base_url() ?>";
 				var param = '?idlap=' + idlap + '&tgl1=' + tgl1 + '&tgl2=' + tgl2 + '&dokter=' + dokter + '&cabang=' + cbg + '&unit=' + unit + '&cekk=' + cek;
 				// return baseurl+'kasir_laporan/cetak/'+param;
@@ -300,15 +301,15 @@ $this->load->view('template/v_report');
 				if (idlap == '108') {
 					return window.open(baseurl + 'kasir_laporan/ctk_108/' + param, '_blank');
 				}
-			} else {
-				swal({
-						title: "CETAK PDF MAKSIMAL",
-						html: "Hanya boleh 7 hari",
-						type: "error",
-						confirmButtonText: "OK"
-				});
-				return;
-			}
+			// } else {
+			// 	swal({
+			// 			title: "CETAK PDF MAKSIMAL",
+			// 			html: "Hanya boleh 7 hari",
+			// 			type: "error",
+			// 			confirmButtonText: "OK"
+			// 	});
+			// 	return;
+			// }
 		} else {
 			var baseurl = "<?php echo base_url() ?>";
 				var param = '?idlap=' + idlap + '&tgl1=' + tgl1 + '&tgl2=' + tgl2 + '&dokter=' + dokter + '&cabang=' + cbg + '&unit=' + unit + '&cekk=' + cek;

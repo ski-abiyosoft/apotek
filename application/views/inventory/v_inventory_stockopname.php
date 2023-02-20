@@ -163,7 +163,7 @@ $this->load->view('template/body');
 
                                 <?php } ?>
                                 
-                                <?php if ($this->session->userdata('user_level') >= 2) : ?>
+                                <?php if ($this->session->userdata('user_level') <= 2) : ?>
                                     <button type="button" class="btn btn-info" style="margin-left: 5px;" onclick="approveall()"><i class="fa fa-check"></i><b> Approve Semua</b></button>
                                 <?php endif; ?>
                                 <!-- </a> -->

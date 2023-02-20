@@ -32,8 +32,6 @@ class Laporan_penjualan extends CI_Controller
 		$cek        = $this->session->userdata('level');
 		$dari       = $this->input->get('dari');
 		$sampai     = $this->input->get('sampai');
-		$dari_jam   = $this->input->get('dari_jam');
-		$sampai_jam = $this->input->get('sampai_jam');
 		$cekpdf     = $this->input->get('pdf');
 		$cabang     = $this->session->userdata('unit');
 		$unit       = $cabang;
@@ -41,14 +39,6 @@ class Laporan_penjualan extends CI_Controller
 		$date       = "Dari Tgl : " . date("d-m-Y", strtotime($dari)) . " S/D " . date("d-m-Y", strtotime($sampai));
 		$profile    = data_master('tbl_namers', array('koders' => $unit));
 		$kota       = $profile->kota;
-		$jenisx     = $this->input->get('jenis');
-		if ($jenisx == 3) {
-			$jenis = '';
-		} else if ($jenisx == 1) {
-			$jenis = ' AND jenisjual = 1';
-		} else {
-			$jenis = ' AND jenisjual = 2';
-		}
 		$depo       = $this->input->get('depo');
 		$laporan    = $this->input->get('laporan');
 		$cabang     = $this->session->userdata('unit');
@@ -59,16 +49,16 @@ class Laporan_penjualan extends CI_Controller
 				$position   = 'L';
 				$judul = '01 LAPORAN PENJUALAN RESEP PERDOKTER';
 				if ($depo != '') {
-					$query = $this->db->query("SELECT resepno, tglresep, view_penjualan_barang.noreg, view_penjualan_barang.gudang, nadokter, (SELECT namapas FROM tbl_pasien WHERE rekmed = view_penjualan_barang.rekmed) AS namapas, namabarangoriginal AS namabarang, qty, satuan, discount, price, totalrp FROM view_penjualan_barang JOIN tbl_regist ON tbl_regist.rekmed = view_penjualan_barang.rekmed JOIN tbl_dokter ON tbl_dokter.kodokter=tbl_regist.kodokter WHERE view_penjualan_barang.koders = '$unit' AND tglresep BETWEEN '$dari' AND '$sampai' $jenis and view_penjualan_barang.gudang = '$depo' GROUP BY resepno")->result();
+					$query = $this->db->query("SELECT resepno, tglresep, view_penjualan_barang.noreg, view_penjualan_barang.gudang, nadokter, view_penjualan_barang.rekmed, (SELECT namapas FROM tbl_pasien WHERE rekmed = view_penjualan_barang.rekmed) AS namapas, namabarangoriginal AS namabarang, qty, satuan, discount, price, totalrp FROM view_penjualan_barang JOIN tbl_regist ON tbl_regist.rekmed = view_penjualan_barang.rekmed JOIN tbl_dokter ON tbl_dokter.kodokter=tbl_regist.kodokter WHERE view_penjualan_barang.koders = '$unit' AND tglresep BETWEEN '$dari' AND '$sampai' and view_penjualan_barang.gudang = '$depo' GROUP BY resepno")->result();
 				} else {
-					$query = $this->db->query("SELECT resepno, tglresep, view_penjualan_barang.noreg, view_penjualan_barang.gudang, nadokter, (SELECT namapas FROM tbl_pasien WHERE rekmed = view_penjualan_barang.rekmed) AS namapas, namabarangoriginal AS namabarang, qty, satuan, discount, price, totalrp FROM view_penjualan_barang JOIN tbl_regist ON tbl_regist.rekmed = view_penjualan_barang.rekmed JOIN tbl_dokter ON tbl_dokter.kodokter=tbl_regist.kodokter WHERE view_penjualan_barang.koders = '$unit' AND tglresep BETWEEN '$dari' AND '$sampai' $jenis GROUP BY resepno")->result();
+					$query = $this->db->query("SELECT resepno, tglresep, view_penjualan_barang.noreg, view_penjualan_barang.gudang, nadokter, view_penjualan_barang.rekmed, (SELECT namapas FROM tbl_pasien WHERE rekmed = view_penjualan_barang.rekmed) AS namapas, namabarangoriginal AS namabarang, qty, satuan, discount, price, totalrp FROM view_penjualan_barang JOIN tbl_regist ON tbl_regist.rekmed = view_penjualan_barang.rekmed JOIN tbl_dokter ON tbl_dokter.kodokter=tbl_regist.kodokter WHERE view_penjualan_barang.koders = '$unit' AND tglresep BETWEEN '$dari' AND '$sampai' GROUP BY resepno")->result();
 				}
 				$body .= "<table style=\"border-collapse:collapse;font-family: tahoma; font-size:12px\" width=\"100%\" align=\"center\" border=\"1\">
 					<tr>
 						<td bgcolor=\"#cccccc\" style=\"text-align: center; font-weight: bold; padding: 10px;\" width=\"5%\">No</td>
 						<td bgcolor=\"#cccccc\" style=\"text-align: center; font-weight: bold; padding: 10px;\" width=\"10%\">No. Tr</td>
 						<td bgcolor=\"#cccccc\" style=\"text-align: center; font-weight: bold; padding: 10px;\">Tanggal</td>
-						<td bgcolor=\"#cccccc\" style=\"text-align: center; font-weight: bold; padding: 10px;\">Noreg / Rekmed</td>
+						<td bgcolor=\"#cccccc\" style=\"text-align: center; font-weight: bold; padding: 10px;\">Rekmed</td>
 						<td bgcolor=\"#cccccc\" style=\"text-align: center; font-weight: bold; padding: 10px;\">Nama Pasien</td>
 						<td bgcolor=\"#cccccc\" style=\"text-align: center; font-weight: bold; padding: 10px;\">Resep Dari</td>
 						<td bgcolor=\"#cccccc\" style=\"text-align: center; font-weight: bold; padding: 10px;\">Nama Obat</td>
@@ -81,10 +71,10 @@ class Laporan_penjualan extends CI_Controller
 				$no = 1;
 				$total = 0;
 				foreach ($query as $q) {
-					if ($q->noreg != '') {
-						$noreg = $q->noreg;
+					if ($q->rekmed == 'Non Member') {
+						$noreg = 'Non Member';
 					} else {
-						$noreg = 'LOKAL';
+						$noreg = $q->rekmed;
 					}
 					if($cekpdf == 1){
 						$qty = number_format($q->qty);
@@ -124,27 +114,37 @@ class Laporan_penjualan extends CI_Controller
 				</tr>
 				</table>";
 			} else if ($laporan == 2) {
-				$judul = '02 LAPORAN REKAP PENJUALAN RESEP';
+				$judul = '02 LAPORAN REKAP PENJUALAN APOTEK';
 				if ($depo != '') {
 					$depox = " and gudang = '$depo'";
 				} else {
 					$depox = '';
 				}
-				$query = $this->db->query("SELECT kodebarang, satuan, namabarang, tglresep, jenispas, SUM(qty_apotik) AS qty_apotik, SUM(qty_rajal) AS qty_rajal, SUM(qty_ranap) AS qty_ranap, (rp_apotik * SUM(qty_apotik)) AS rp_apotik, (rp_rajal * SUM(qty_rajal)) AS rp_rajal, (rp_ranap * SUM(qty_ranap)) AS rp_ranap,
-				(SUM(xx.qty_apotik) + SUM(xx.qty_rajal) + SUM(xx.qty_ranap)) AS jualtotal_qty, 
-				((SUM(xx.qty_apotik)*xx.rp_apotik) + (SUM(xx.qty_rajal)*xx.rp_rajal) + (SUM(xx.qty_ranap)*xx.rp_ranap)) AS jualtotal_rp  
+				$query = $this->db->query("SELECT kodebarang, satuan, namabarang, tglresep, jenispas, SUM(qty_apotik) AS qty_apotik, (rp_apotik * SUM(qty_apotik)) AS rp_apotik, SUM(t_qty_apotik) AS t_qty_apotik, (t_rp_apotik * SUM(t_qty_apotik)) AS t_rp_apotik, (SUM(xx.qty_apotik) + SUM(xx.t_qty_apotik)) AS jualtotal_qty, ((SUM(xx.qty_apotik)*xx.rp_apotik) + ((SUM(xx.t_qty_apotik)*xx.t_rp_apotik))) AS jualtotal_rp
 				FROM
 					(
 						SELECT d.kodebarang, d.satuan, d.namabarang, h.tglresep, h.jenispas,
-						( CASE  WHEN jenispas = 7 THEN qty ELSE 0 END) AS qty_apotik,
-						( CASE WHEN jenispas = 7 THEN price ELSE 0 END) AS rp_apotik,
-						( CASE  WHEN jenispas = 8 THEN qty ELSE 0 END) AS qty_rajal,
-						( CASE WHEN jenispas = 8 THEN price ELSE 0 END) AS rp_rajal,
-						( CASE  WHEN jenispas = 9 THEN qty ELSE 0 END) AS qty_ranap,
-						( CASE WHEN jenispas = 9 THEN price ELSE 0 END) AS rp_ranap
+						( CASE  WHEN jenispas = 9 THEN qty ELSE 0 END) AS qty_apotik,
+						( CASE WHEN jenispas = 9 THEN price ELSE 0 END) AS rp_apotik,
+						( CASE  WHEN jenispas = 10 THEN qty ELSE 0 END) AS t_qty_apotik,
+						( CASE WHEN jenispas = 10 THEN price ELSE 0 END) AS t_rp_apotik
 						FROM tbl_apohresep h 
 						JOIN tbl_apodresep d ON h.resepno = d.resepno 
-						WHERE h.koders = '$unit' AND tglresep BETWEEN '$dari' AND '$sampai' $depox $jenis
+						WHERE h.koders = '$unit' AND tglresep BETWEEN '$dari' AND '$sampai' $depox
+						ORDER BY h.jam, h.tglresep ASC
+					) AS xx GROUP BY kodebarang
+				UNION ALL
+				SELECT CONCAT('** ', kodebarang) AS kodebarang, satuan, CONCAT('** ', namabarang) as namabarang, tglresep, jenispas, SUM(qty_apotik) AS qty_apotik, (rp_apotik * SUM(qty_apotik)) AS rp_apotik, SUM(t_qty_apotik) AS t_qty_apotik, (t_rp_apotik * SUM(t_qty_apotik)) AS t_rp_apotik, (SUM(xx.qty_apotik) + SUM(xx.t_qty_apotik)) AS jualtotal_qty, ((SUM(xx.qty_apotik)*xx.rp_apotik) + ((SUM(xx.t_qty_apotik)*xx.t_rp_apotik))) AS jualtotal_rp
+				FROM
+					(
+						SELECT d.kodebarang, d.satuan, d.namabarang, h.tglresep, h.jenispas,
+						( CASE  WHEN jenispas = 9 THEN qty ELSE 0 END) AS qty_apotik,
+						( CASE WHEN jenispas = 9 THEN price ELSE 0 END) AS rp_apotik,
+						( CASE  WHEN jenispas = 10 THEN qty ELSE 0 END) AS t_qty_apotik,
+						( CASE WHEN jenispas = 10 THEN price ELSE 0 END) AS t_rp_apotik
+						FROM tbl_apohresep h 
+						JOIN tbl_apodetresep d ON h.resepno = d.resepno 
+						WHERE h.koders = '$unit' AND tglresep BETWEEN '$dari' AND '$sampai' $depox
 						ORDER BY h.jam, h.tglresep ASC
 					) AS xx GROUP BY kodebarang
 				")->result();
@@ -173,20 +173,16 @@ class Laporan_penjualan extends CI_Controller
 						<td bgcolor=\"#cccccc\" style=\"text-align: center; font-weight: bold; padding: 10px;\" width=\"10%\" align=\"center\" rowspan=\"2\"><br>Kode Barang</td>
 						<td bgcolor=\"#cccccc\" style=\"text-align: center; font-weight: bold; padding: 10px;\" width=\"30%\" align=\"center\" rowspan=\"2\"><br>Nama Barang</td>
 						<td bgcolor=\"#cccccc\" style=\"text-align: center; font-weight: bold; padding: 10px;\" width=\"10%\" align=\"center\" rowspan=\"2\"><br>Satuan</td>
-						<td bgcolor=\"#cccccc\" style=\"text-align: center; font-weight: bold; padding: 10px;\" width=\"10%\" align=\"center\" colspan=\"2\"><br>Apotik</td>
-						<td bgcolor=\"#cccccc\" style=\"text-align: center; font-weight: bold; padding: 10px;\" width=\"10%\" align=\"center\" colspan=\"2\"><br>Rawat Jalan</td>
-						<td bgcolor=\"#cccccc\" style=\"text-align: center; font-weight: bold; padding: 10px;\" width=\"10%\" align=\"center\" colspan=\"2\"><br>Rawat Inap</td>
-						<td bgcolor=\"#cccccc\" style=\"text-align: center; font-weight: bold; padding: 10px;\" width=\"10%\" align=\"center\" colspan=\"2\"><br>Total</td>
+						<td bgcolor=\"#cccccc\" style=\"text-align: center; font-weight: bold; padding: 10px;\" width=\"10%\" align=\"center\" colspan=\"2\"><br>Dengan Resep</td>
+						<td bgcolor=\"#cccccc\" style=\"text-align: center; font-weight: bold; padding: 10px;\" width=\"10%\" align=\"center\" colspan=\"2\"><br>Tanpa Resep</td>
+						<td bgcolor=\"#cccccc\" style=\"text-align: center; font-weight: bold; padding: 10px;\" width=\"10%\" align=\"center\" rowspan=\"2\"><br>Total Qty</td>
+						<td bgcolor=\"#cccccc\" style=\"text-align: center; font-weight: bold; padding: 10px;\" width=\"10%\" align=\"center\" rowspan=\"2\"><br>Total Rp</td>
 					</tr>
 					<tr>
-						<td bgcolor=\"#cccccc\" style=\"text-align: center; font-weight: bold; padding: 10px;\" width=\"5%\" align=\"center\"><br>Qty</td>
-						<td bgcolor=\"#cccccc\" style=\"text-align: center; font-weight: bold; padding: 10px;\" width=\"5%\" align=\"center\"><br>Rp</td>
-						<td bgcolor=\"#cccccc\" style=\"text-align: center; font-weight: bold; padding: 10px;\" width=\"5%\" align=\"center\"><br>Qty</td>
-						<td bgcolor=\"#cccccc\" style=\"text-align: center; font-weight: bold; padding: 10px;\" width=\"5%\" align=\"center\"><br>Rp</td>
-						<td bgcolor=\"#cccccc\" style=\"text-align: center; font-weight: bold; padding: 10px;\" width=\"5%\" align=\"center\"><br>Qty</td>
-						<td bgcolor=\"#cccccc\" style=\"text-align: center; font-weight: bold; padding: 10px;\" width=\"5%\" align=\"center\"><br>Rp</td>
-						<td bgcolor=\"#cccccc\" style=\"text-align: center; font-weight: bold; padding: 10px;\" width=\"5%\" align=\"center\"><br>Qty</td>
-						<td bgcolor=\"#cccccc\" style=\"text-align: center; font-weight: bold; padding: 10px;\" width=\"5%\" align=\"center\"><br>Rp</td>
+						<td bgcolor=\"#cccccc\" style=\"text-align: center; font-weight: bold; padding: 10px;\" width=\"5%\" align=\"center\">Qty</td>
+						<td bgcolor=\"#cccccc\" style=\"text-align: center; font-weight: bold; padding: 10px;\" width=\"5%\" align=\"center\">Rp</td>
+						<td bgcolor=\"#cccccc\" style=\"text-align: center; font-weight: bold; padding: 10px;\" width=\"5%\" align=\"center\">Qty</td>
+						<td bgcolor=\"#cccccc\" style=\"text-align: center; font-weight: bold; padding: 10px;\" width=\"5%\" align=\"center\">Rp</td>
 					</tr>";
 				$no = 1;
 				foreach ($query as $q) {
@@ -196,33 +192,36 @@ class Laporan_penjualan extends CI_Controller
 					if($cekpdf == 1){
 						$qty_apotik = number_format($q->qty_apotik);
 						$rp_apotik = number_format($q->rp_apotik);
-						$qty_rajal = number_format($q->qty_rajal);
-						$rp_rajal = number_format($q->rp_rajal);
-						$qty_ranap = number_format($q->qty_ranap);
-						$rp_ranap = number_format($q->rp_ranap);
+						$t_qty_apotik = number_format($q->t_qty_apotik);
+						$t_rp_apotik = number_format($q->t_rp_apotik);
 						$jualtotal_qty = number_format($q->jualtotal_qty);
 						$jualtotal_rp = number_format($q->jualtotal_rp);
 					} else {
 						$qty_apotik = $q->qty_apotik;
 						$rp_apotik = $q->rp_apotik;
-						$qty_rajal = $q->qty_rajal;
-						$rp_lokal = $q->rp_lokal;
-						$qty_ranap = $q->qty_ranap;
-						$rp_ranap = $q->rp_ranap;
+						$t_qty_apotik = $q->t_qty_apotik;
+						$t_rp_apotik = $q->t_rp_apotik;
 						$jualtotal_qty = $q->jualtotal_qty;
 						$jualtotal_rp = $q->jualtotal_rp;
 					}
+					if(substr($kodebarang, 0, 2) == "**") {
+						$kodebarang1 = "<span style=\"color: red\">$kodebarang</span>";
+						$namabarang1 = "<span style=\"color: red\">$namabarang</span>";
+						$satuan1 = "<span style=\"color: red\">$satuan</span>";
+					} else {
+						$kodebarang1 = "<span>$kodebarang</span>";
+						$namabarang1 = "<span>$namabarang</span>";
+						$satuan1 = "<span>$satuan</span>";
+					}
 					$body .= "<tr>
 						<td align=\"center\">" . $no++ . "</td>
-						<td align=\"left\">$kodebarang</td>
-						<td align=\"left\">$namabarang</td>
-						<td align=\"left\">$satuan</td>
+						<td align=\"left\">$kodebarang1</td>
+						<td align=\"left\">$namabarang1</td>
+						<td align=\"left\">$satuan1</td>
 						<td align=\"right\">$qty_apotik</td>
 						<td align=\"right\">$rp_apotik</td>
-						<td align=\"right\">$qty_rajal</td>
-						<td align=\"right\">$rp_rajal</td>
-						<td align=\"right\">$qty_ranap</td>
-						<td align=\"right\">$rp_ranap</td>
+						<td align=\"right\">$t_qty_apotik</td>
+						<td align=\"right\">$t_rp_apotik</td>
 						<td align=\"right\">$jualtotal_qty</td>
 						<td align=\"right\">$jualtotal_rp</td>
 					</tr>";
@@ -235,15 +234,14 @@ class Laporan_penjualan extends CI_Controller
 				} else {
 					$depox = '';
 				}
-				$query = $this->db->query("
-				SELECT a.`resepno`, 
+				$query = $this->db->query("SELECT a.`resepno`, 
 				a.rekmed,
 				(SELECT namapas FROM tbl_pasien WHERE rekmed=a.rekmed) AS namapas,
 				b.totalrp,
 				b.`kodebarang`, b.`namabarang`, b.`satuan`, b.`qty`, b.`hna`
 				FROM tbl_apohresep a
 				JOIN tbl_apodresep b ON a.`resepno`=b.`resepno`
-				WHERE a.tglresep between '$dari' and '$sampai' $jenis $depox and a.koders = '$unit'
+				WHERE a.tglresep between '$dari' and '$sampai' $depox and a.koders = '$unit'
 				")->result();
 				$body .= "<table style=\"border-collapse:collapse;font-family: tahoma; font-size:12px\" width=\"100%\" align=\"center\" border=\"1\">
 					<tr>

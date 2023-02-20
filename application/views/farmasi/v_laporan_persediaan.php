@@ -50,7 +50,7 @@ $this->load->view('template/body');
                <div class="portlet-body form">
                     <form id="frmlaporan" class="form-horizontal form-bordered1" method="post">
                          <div class="form-body">
-                              <div class="row" style="margin-top:15px;">
+                              <div class="row" style="margin-top:15px;" id="sdepo">
                                    <div class="col-md-12">
                                         <div class="row" id="semua">
                                              <div class="col-md-3 control-label"></div>
@@ -183,6 +183,7 @@ $this->load->view('template/v_report');
 ?>
 
 <script>
+     $("#sdepo").hide();
      $("#semua").hide();
      // function depoallx() {
      //      // if (document.getElementById('depoall').checked === true) {

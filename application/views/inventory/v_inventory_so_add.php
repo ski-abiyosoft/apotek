@@ -251,6 +251,14 @@ $this->load->view('template/footer');
                             $('#sat' + id).val(data.satuan1);
                             var art = qty - salakhir;
                             $('#plusminus' + id).val(art);
+                            $.ajax({
+                                url: "<?= site_url('Farmasi_bapb/get_np/'); ?>"+str,
+                                type: "POST",
+                                dataType: "JSON",
+                                success: function(data) {
+                                    $("#n_persediaan"+vid).val(Number(data.nilai_persediaan));
+                                }
+                            });
                         }
                     });
                 }

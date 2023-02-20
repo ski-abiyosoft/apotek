@@ -403,11 +403,13 @@ class Farmasi_stock extends CI_Controller
 				<td bgcolor=\"#cccccc\" width=\"8%\" align=\"center\"><b>HASIL SO</b></td>
 				<td bgcolor=\"#cccccc\" width=\"10%\" align=\"center\"><b>SALDO AKHIR</b></td>
 				<td bgcolor=\"#cccccc\" width=\"10%\" align=\"center\"><b>SATUAN</b></td>
+				<td bgcolor=\"#cccccc\" width=\"10%\" align=\"center\"><b>MINIMUM STOK</b></td>
+				<td bgcolor=\"#cccccc\" width=\"10%\" align=\"center\"><b>REORDER STOK</b></td>
 			</tr>
 			
 		</thead>";
 
-		$data_stok     = $this->db->query("SELECT tbl_barangstock.*,tbl_barang.namabarang, tbl_barang.satuan1 from tbl_barangstock join tbl_barang on tbl_barang.kodebarang=tbl_barangstock.kodebarang where tbl_barangstock.koders = '$unit' and tbl_barangstock.gudang ='$gudang'")->result();
+		$data_stok     = $this->db->query("SELECT tbl_barangstock.*,tbl_barang.namabarang, tbl_barang.satuan1, tbl_barang.minstock, tbl_barang.reorder from tbl_barangstock join tbl_barang on tbl_barang.kodebarang=tbl_barangstock.kodebarang where tbl_barangstock.koders = '$unit' and tbl_barangstock.gudang ='$gudang'")->result();
 
 		$lcno=0;
 		foreach ($data_stok as $row) {
@@ -422,6 +424,8 @@ class Farmasi_stock extends CI_Controller
 				$keluar        = number_format($row->keluar, 0, ',', '.');
 				$hasilso       = number_format($row->hasilso, 0, ',', '.');
 				$saldoakhir    = number_format($row->saldoakhir, 0, ',', '.');
+				$minstock    = number_format($row->minstock, 0, ',', '.');
+				$reorder    = number_format($row->reorder, 0, ',', '.');
 			}else{
 				$saldoawal     = $row->saldoawal;
 				$sesuai        = $row->sesuai;
@@ -429,6 +433,8 @@ class Farmasi_stock extends CI_Controller
 				$keluar        = $row->keluar;
 				$hasilso       = $row->hasilso;
 				$saldoakhir    = $row->saldoakhir;
+				$minstock    = $row->minstock;
+				$reorder    = $row->reorder;
 			}
 			
 
@@ -443,6 +449,8 @@ class Farmasi_stock extends CI_Controller
 			<td style=\"\" align=\"left\">$hasilso  </td>
 			<td style=\"\" align=\"left\">$saldoakhir </td>
 			<td style=\"\" align=\"left\">$satuan1</td>
+			<td style=\"\" align=\"left\">$minstock</td>
+			<td style=\"\" align=\"left\">$reorder</td>
 			</tr>
 			";
 

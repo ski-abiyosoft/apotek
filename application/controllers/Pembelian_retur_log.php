@@ -589,7 +589,8 @@ class Pembelian_retur_log extends CI_Controller
       $pdf->FancyRow(array('Keterangan', '', 'Sub Total', number_format($subtot, 0, '.', ',')), $fc, $border, $align, 0);
       $border     = array('', '', '', '');
       // $pdf->FancyRow(array('','', 'DPP', number_format($dppz,0,'.',',')),$fc, $border, $align);
-      $pdf->FancyRow(array($header->ket1, '', 'Diskon', number_format($tdiscrp, 0, '.', ',')), $fc, $border, $align);
+      if($header->ket1 == null || $header->ket1 == "NULL") { $ket1 = ""; } else { $ket1 = $header->ket1; }
+      $pdf->FancyRow(array($ket1, '', 'Diskon', number_format($tdiscrp, 0, '.', ',')), $fc, $border, $align);
       $pdf->FancyRow(array('', '', 'PPN (11%)', number_format($ppn, 0, '.', ',')), $fc, $border, $align);
       $style      = array('', '', 'B', 'B');
       $size       = array('', '', '', '');

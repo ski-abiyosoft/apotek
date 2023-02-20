@@ -42,7 +42,7 @@ class Kasir_obat extends CI_Controller
 		$tanggal = date('Y-m-d');
 
 		if (!empty($cek)) {
-			$resep = $this->db->query("SELECT (SELECT handphone FROM tbl_pasien b where a.rekmed=b.rekmed)hp,a.* from tbl_apoposting a where a.koders='$cabang' and tglresep = '$tanggal' and noreg = '' ORDER BY tglresep desc, resepno desc")->result();
+			$resep = $this->db->query("SELECT (SELECT handphone FROM tbl_pasien b where a.rekmed=b.rekmed)hp,a.* from tbl_apoposting a where a.koders='$cabang' and tglresep = '$tanggal' and noreg = '' and rekmed='Non Member' ORDER BY tglresep desc, resepno desc")->result();
 
 			$data['resep'] = $resep;
 			$data['shift'] = $shift;
@@ -1196,11 +1196,14 @@ class Kasir_obat extends CI_Controller
 			}
 			$pdf->ln(5);
 
-			// if ($kasir->kembalikeuangmuka == 0) {
-			// 	$pdf->FancyRow(array(($kasir->kembali > 0 ? 'Kembali ke pasien' : ''), ($kasir->kembali > 0 ? ':' : ''), angka_rp($kasir->kembali, 0), '', '', ''), $fc, $border, $align, $style, $size);
-			// } else {
-			// 	$pdf->FancyRow(array(($kasir->kembali > 0 ? 'Kembali ke Uang muka' : ''), ($kasir->kembali > 0 ? ':' : ''), angka_rp($kasir->kembali, 0), '', '', ''), $fc, $border, $align, $style, $size);
-			// }
+			
+			$border = array('', '', '', '', '', '');
+
+			if ($kasir->kembalikeuangmuka == 0) {
+				$pdf->FancyRow(array(($kasir->kembali > 0 ? 'Kembali ke pasien' : ''), ($kasir->kembali > 0 ? ':' : ''), angka_rp($kasir->kembali, 0), '', '', ''), $fc, $border, $align, $style, $size);
+			} else {
+				$pdf->FancyRow(array(($kasir->kembali > 0 ? 'Kembali ke Uang muka' : ''), ($kasir->kembali > 0 ? ':' : ''), angka_rp($kasir->kembali, 0), '', '', ''), $fc, $border, $align, $style, $size);
+			}
 
 			$pdf->settextcolor(0);
 
