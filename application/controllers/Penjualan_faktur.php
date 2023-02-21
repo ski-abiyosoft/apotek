@@ -1519,7 +1519,6 @@ class Penjualan_faktur extends CI_Controller{
 				'totalrp'      => str_replace(',', '', $totp_1),
 				'cek_rm'      => $cek_rm,
 				'harga_manual'      => $harga_manual,
-				'jamdresep'      => date("H:i:s"),
 			);
 
 			if ($param == 1) {
@@ -2072,10 +2071,12 @@ class Penjualan_faktur extends CI_Controller{
 
 	public function bayar($resepno){
 			$unit = $this->session->userdata('unit');
-			$data         = $this->db->query("SELECT date(c.tgllahir) as tanggallahir,date(a.tglresep) as tglresep1,(select cust_nama from tbl_penjamin d where d.cust_id=c.penjamin)nm_penjamin, a.* ,b.*,c.*
+			$data         = $this->db->query("SELECT date(c.tgllahir) as tanggallahir,date(a.tglresep) as tglresep1,(select cust_nama from tbl_penjamin z where z.cust_id=c.penjamin)nm_penjamin,a.resepno as resepno2,a.nokwitansi as nokwitansi2,c.namapas as namapas2,a.rekmed as rekmed2, a.* ,b.*,c.*,d.*,e.*
 			from tbl_apoposting a 
 			join tbl_apohresep b ON a.resepno=b.resepno
 			join tbl_pasien c ON a.rekmed=c.rekmed
+			left join tbl_pap d ON d.nokwitansi=a.nokwitansi
+			left join tbl_kasir e ON e.nokwitansi=a.nokwitansi
 			where a.koders='$unit' and a.resepno = '$resepno' ")->row();
 
 

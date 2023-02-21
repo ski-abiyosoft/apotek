@@ -978,11 +978,11 @@ class Kasir_obat extends CI_Controller
 				$pdf->ln(2);
 			}
 			$pdf->SetWidths(array(20, 60, 40, 35, 35));
-			$border = array('TB', 'TB', 'TB', 'TB', 'TB');
-			$align  = array('L', 'L', 'R', 'R', 'R');
+			$border = array('TBRL', 'TBRL', 'TBRL', 'TBRL', 'TBRL');
+			$align  = array('C', 'C', 'C', 'C', 'C');
 			$pdf->setfont('Arial', 'B', 8);
 			$pdf->SetAligns(array('L', 'C', 'R'));
-			//$pdf->SetFillColor(0,0,139);
+			$pdf->SetFillColor(204 ,204 ,204);
 			//$pdf->settextcolor(255,255,255);
 			$fc = array('0', '0', '0', '0', '0', '0');
 			$judul = array('No.', 'Keterangan', 'Qty', 'Diskon', 'Jumlah Rp');
@@ -992,7 +992,7 @@ class Kasir_obat extends CI_Controller
 			$tot = 0;
 			$subtot = 0;
 			$tdisc  = 0;
-			$border = array('', '', '', '', '', '');
+			$border = array('TBRL', 'TBRL', 'TBRL', 'TBRL', 'TBRL', 'TBRL');
 			$align  = array('L', 'L', 'R', 'R', 'R', 'R');
 			$fc = array('0', '0', '0', '0', '0', '0');
 			$pdf->SetFillColor(0, 0, 139);
@@ -1234,6 +1234,283 @@ class Kasir_obat extends CI_Controller
 			$pdf->output($nokwitansi . '.PDF', 'I');
 		} else {
 
+			header('location:' . base_url());
+		}
+	}
+
+	public function cetak_jaminan()
+	{
+		$cek = $this->session->userdata('level');
+		$unit = $this->session->userdata('unit');
+		$user = $this->session->userdata('username');
+		$nokwitansi = $this->input->get('kwitansi');
+		$noresep    = $this->input->get('resep');
+		// $noreg = $this->input->get('noreg');
+		if (!empty($cek)) {
+			$kop       = $this->M_cetak->kop($unit);
+			$avatar = $this->session->userdata('avatar_cabang');
+			$profile = data_master('tbl_namers', array('koders' => $unit));
+			$namars    = $kop['namars'];
+			$alamat    = $kop['alamat'];
+			$alamat2   = $kop['alamat2'];
+			$alamat3  = $profile->kota;
+			$kota      = $kop['kota'];
+			$phone     = $kop['phone'];
+			$whatsapp  = $kop['whatsapp'];
+			$npwp      = $kop['npwp'];
+			$chari  = '';
+			$kasir = $this->db->query("SELECT * from tbl_kasir where nokwitansi = '$nokwitansi'")->row();
+			$pasien = $this->db->get_where("tbl_pasien", ['rekmed' => $kasir->rekmed])->row();
+			$jaminan = $this->db->query("SELECT * FROM tbl_pap WHERE koders = '$unit' AND nokwitansi = '$nokwitansi'")->result();
+			$xxx = 0;
+			foreach ($jaminan as $key => $value) {
+				$xxx += (int)$value->jumlahhutang + (int)$value->nilaiklaim2;
+			}
+			$terbilang = terbilang($xxx);
+			$chari .= "<table style=\"border-collapse:collapse;font-family: Century Gothic; font-size:12px; color:#000;\" width=\"100%\"  border=\"0\" cellspacing=\"0\" cellpadding=\"0\">
+			<thead>
+				<tr>
+					<td rowspan=\"6\" align=\"center\">
+							<img src=\"" . base_url() . "assets/img_user/$avatar\"  width=\"70\" height=\"70\" /></td>
+					</td>
+					<td colspan=\"20\">
+					<b>
+					<tr>
+							<td style=\"font-size:10px;border-bottom: none;\"><b><br>$namars</b></td>
+					</tr>
+					<tr>
+							<td style=\"font-size:9px;\">$alamat</td>
+					</tr>
+					<tr>
+							<td style=\"font-size:9px;\">$alamat2</td>
+					</tr>
+					<tr>
+							<td style=\"font-size:9px;\">Wa :$whatsapp    Telp :$phone </td>
+					</tr>
+					<tr>
+							<td style=\"font-size:9px;\">No. NPWP : $npwp</td>
+					</tr>
+					</b>
+					</td>
+				</tr>
+			</table>";
+			$chari .= "
+					<table style=\"border-collapse:collapse;font-family: tahoma; font-size:12px\" width=\"100%\" align=\"center\" border=\"0\">
+								<tr>
+										<td> &nbsp; </td>
+								</tr> 
+					</table>";
+			
+			$chari .= "
+					<table style=\"border-collapse:collapse;font-family: tahoma; font-size:2px\" width=\"100%\" align=\"center\" border=\"1\">     
+							<tr>
+										<td style=\"border-top: none;border-right: none;border-left: none;\"></td>
+							</tr> 
+					</table>";
+					
+			$chari .= "
+					<table style=\"border-collapse:collapse;font-family: tahoma; font-size:2px\" width=\"100%\" align=\"center\" border=\"1\">     
+						<tr>
+									<td style=\"border-top: none;border-right: none;border-left: none;\"></td>
+						</tr> 
+					</table>";
+			$chari .= "
+			<table style=\"border-collapse:collapse;font-family: tahoma; font-size:12px\" width=\"100%\" align=\"center\" border=\"0\">
+				<tr>
+							<td> &nbsp; </td>
+				</tr> 
+			</table>";
+			
+
+			$chari .= "
+			<table style=\"border-collapse:collapse;font-family: Tahoma; font-size:11px\" width=\"100%\" align=\"center\" border=\"0\" cellspacing=\"1\" cellpadding=\"3\">
+					<tr>
+								<td width=\"15%\" style=\"text-align:center; font-size:20px;\"><b>DOKUMEN JAMINAN</b></td>
+					</tr>
+			</table>";
+
+			$chari .= "
+					<table style=\"border-collapse:collapse;font-family: tahoma; font-size:12px\" width=\"100%\" align=\"center\" border=\"0\">
+						<tr>
+									<td> &nbsp; </td>
+						</tr> 
+					</table>";
+			$chari .= "
+					<table style=\"border-collapse:collapse;font-family: tahoma; font-size:12px\" width=\"100%\" align=\"left\" border=\"0\">     
+						<tr>
+									<td width=\"18%\" style=\"border-top: none;border-right: none;border-left: none;\">Sudah terima dari</td>
+									<td width=\"2%\" style=\"border-top: none;border-right: none;border-left: none;\"> : </td>
+									<td style=\"border-top: none;border-right: none;border-left: none;\">$kasir->dibayaroleh</td>
+						</tr> 
+						<tr>
+									<td style=\"border-top: none;border-right: none;border-left: none;\">No. Member</td>
+									<td style=\"border-top: none;border-right: none;border-left: none;\"> : </td>
+									<td style=\"border-top: none;border-right: none;border-left: none;\">$kasir->rekmed</td>
+						</tr> 
+						<tr>
+									<td style=\"border-top: none;border-right: none;border-left: none;\">Banyaknya Uang</td>
+									<td style=\"border-top: none;border-right: none;border-left: none;\"> : </td>
+									<td style=\"border-top: none;border-right: none;border-left: none;\">$terbilang</td>
+						</tr> 
+						<tr>
+									<td style=\"border-top: none;border-right: none;border-left: none;\">Untuk Jaminan</td>
+									<td style=\"border-top: none;border-right: none;border-left: none;\"> : </td>
+									<td style=\"border-top: none;border-right: none;border-left: none;\">Pemeriksaan dokter & Resep</td>
+						</tr> 
+						<tr>
+							<td style=\"border-top: none;border-right: none;border-left: none;\">Pasien</td>
+							<td style=\"border-top: none;border-right: none;border-left: none;\"> : </td>
+							<td style=\"border-top: none;border-right: none;border-left: none;\">$pasien->namapas</td>
+						</tr> 
+						<tr>
+							<td style=\"border-top: none;border-right: none;border-left: none;\">No. Kartu</td>
+							<td style=\"border-top: none;border-right: none;border-left: none;\"> : </td>
+							<td style=\"border-top: none;border-right: none;border-left: none;\">$pasien->nocard</td>
+						</tr> 
+						<tr>
+							<td style=\"border-top: none;border-right: none;border-left: none;\">NIK</td>
+							<td style=\"border-top: none;border-right: none;border-left: none;\"> : </td>
+							<td style=\"border-top: none;border-right: none;border-left: none;\">$pasien->noidentitas</td>
+						</tr> 
+						<tr>
+							<td style=\"border-top: none;border-right: none;border-left: none;\">Layanan</td>
+							<td style=\"border-top: none;border-right: none;border-left: none;\"> : </td>
+							<td style=\"border-top: none;border-right: none;border-left: none;\">RAWAT JALAN</td>
+						</tr> 
+					</table>";
+			$chari .= "
+					<table style=\"border-collapse:collapse;font-family: tahoma; font-size:12px\" width=\"100%\" align=\"center\" border=\"0\">
+							<tr>
+										<td> &nbsp; </td>
+							</tr> 
+					</table>";
+			$chari .= "
+					<table style=\"border-collapse:collapse;font-family: tahoma; font-size:12px\" width=\"100%\" align=\"center\" border=\"1\">     
+					<thead>		
+						<tr>
+							<td bgcolor=\"#cccccc\" width=\"5%\" style=\"text-align:center;\">No</td>
+							<td bgcolor=\"#cccccc\" style=\"text-align:center;\"><b>Penjamin</b></td> 
+							<td bgcolor=\"#cccccc\" style=\"text-align:center;\"><b>Tercover Rp</b></td>
+						</tr> 
+			</thead>";
+			$no = 1;
+			foreach ($jaminan as $j) {
+				$xx = $this->db->get_where("tbl_penjamin", ['cust_id' => $j->cust_id])->row();
+				$xxx = $this->db->get_where("tbl_penjamin", ['cust_id' => $j->cust_id2])->row();
+				$penjamin = $xx->cust_nama;
+				$tercover = number_format($j->jumlahhutang, 2);
+				// $cob = $xxx->cust_nama;
+				// $tercover2 = number_format($j->nilaiklaim2, 2);
+				$chari .= "<tbody>
+					<tr>
+						<td width=\"5%\" style=\"text-align:center;\">".$no++."</td>
+						<td style=\"text-align:left;\">$penjamin</td>
+						<td style=\"text-align:right;\">".$tercover."</td>
+					</tr>
+					</tbody>";
+				$totalnya = $j->jumlahhutang + $j->nilaiklaim2;
+			}
+			$chari .= "</table>";
+			$chari .= "
+				<table style=\"border-collapse:collapse;font-family: tahoma; font-size:12px\" width=\"100%\" align=\"center\" border=\"0\">
+						<tr>
+									<td> &nbsp; </td>
+						</tr> 
+				</table>";
+			$chari .= "
+				<table style=\"border-collapse:collapse;font-family: tahoma; font-size:12px\" width=\"100%\" align=\"center\" border=\"0\">
+					<tr>
+						<td>
+							<table style=\"border-collapse:collapse;font-family: tahoma; font-size:12px\" width=\"50%\" align=\"left\" border=\"0\">
+								<tr>
+									<td> &nbsp; </td>
+									<td> &nbsp; </td>
+									<td> &nbsp; </td>
+								</tr>
+								<tr>
+									<td>&nbsp;</td>
+									<td>&nbsp;</td>
+									<td>&nbsp;</td>
+								</t>
+								<tr>
+									<td> &nbsp; </td>
+									<td> &nbsp; </td>
+									<td> &nbsp; </td>
+								</t>
+							</table>
+						</td>
+						<td>
+							<table style=\"border-collapse:collapse;font-family: tahoma; font-size:14px\" width=\"50%\" align=\"right\" border=\"1\">
+								<tr>
+									<td width=\"30%\" style=\"border-right: none; border-bottom: none;\"><b>Total Rp</b></td>
+									<td width=\"5%\" style=\"border-right: none; border-left: none; border-bottom: none;\"> : </td>
+									<td width=\"65%\" style=\"text-align:right; border-left: none; border-bottom: none;\"><b>".number_format($totalnya,2)."</b></td>
+								</tr>
+								<tr>
+									<td width=\"30%\" style=\"border-right: none; border-left: none; border-bottom: none;\">&nbsp;</td>
+									<td width=\"5%\" style=\"border-right: none; border-left: none; border-bottom: none;\">&nbsp;</td>
+									<td width=\"65%\" style=\"text-align:right; border-right: none; border-left: none; border-bottom: none;\">&nbsp;</td>
+								</tr>
+							</table>
+						</td>
+					</tr> 
+				</table>";
+			$chari .= "
+				<table style=\"border-collapse:collapse;font-family: tahoma; font-size:12px\" width=\"100%\" align=\"center\" border=\"0\">
+						<tr>
+							<td> &nbsp; </td>
+						</tr> 
+				</table>";
+			$chari .= "
+				<table style=\"border-collapse:collapse;font-family: tahoma; font-size:12px\" width=\"100%\" align=\"center\" border=\"0\">
+						<tr>
+							<td> &nbsp; </td>
+						</tr> 
+				</table>";
+			$chari .= "
+				<table style=\"border-collapse:collapse;font-family: tahoma; font-size:12px\" width=\"100%\" align=\"right\" border=\"0\">
+						<tr>
+							<td width=\"50%\" style=\"text-align:center;\"> &nbsp; </td>
+							<td width=\"50%\" style=\"text-align:center;\"><b>$kota, ".date('d-m-Y', strtotime($kasir->tglbayar))."</b></td>
+						</tr> 
+						<tr>
+							<td width=\"50%\" style=\"text-align:center;\"> &nbsp; </td>
+							<td width=\"50%\" style=\"text-align:center; font-size:14px;\"><b>$namars</b></td>
+						</tr> 
+						<tr>
+							<td width=\"50%\" style=\"text-align:center;\"><b>Pasien</b></td>
+							<td width=\"50%\" style=\"text-align:center;\"><b>Cashier</b></td>
+						</tr> 
+						<tr>
+							<td width=\"50%\" style=\"text-align:center;\"> &nbsp; </td>
+							<td width=\"50%\" style=\"text-align:center;\"> &nbsp; </td>
+						</tr> 
+						<tr>
+							<td width=\"50%\" style=\"text-align:center;\"> &nbsp; </td>
+							<td width=\"50%\" style=\"text-align:center;\"> &nbsp; </td>
+						</tr> 
+						<tr>
+							<td width=\"50%\" style=\"text-align:center;\"> &nbsp; </td>
+							<td width=\"50%\" style=\"text-align:center;\"> &nbsp; </td>
+						</tr> 
+						<tr>
+							<td width=\"50%\" style=\"text-align:center;\"> &nbsp; </td>
+							<td width=\"50%\" style=\"text-align:center;\"> &nbsp; </td>
+						</tr> 
+						<tr>
+							<td width=\"50%\" style=\"text-align:center;\"> &nbsp; </td>
+							<td width=\"50%\" style=\"text-align:center;\"> &nbsp; </td>
+						</tr> 
+						<tr>
+							<td width=\"50%\" style=\"text-align:center;\">$pasien->namapas</td>
+							<td width=\"50%\" style=\"text-align:center;\">$kasir->username</td>
+						</tr> 
+				</table>";
+			$data['prev'] = $chari;
+			$judul = "CETAK DOKUMEN JAMINAN NO. KWITANSI : ".$nokwitansi;
+			echo ("<title>$judul</title>");
+			$this->M_cetak->mpdf('P', 'A4', $judul, $chari, '.PDF', 10, 10, 10, 2);
+		} else {
 			header('location:' . base_url());
 		}
 	}

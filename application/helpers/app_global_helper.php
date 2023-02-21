@@ -268,6 +268,35 @@ function angka_rp( $rp, $digit ){
 	}	
 }
 
+function konversi_satuan( $kode, $sat, $qty ){
+	$CI        = & get_instance();
+	$barang1   = $CI->db->query("SELECT * FROM tbl_barang WHERE kodebarang = '$kode' AND satuan1 = '$sat'")->row();
+	$barang2   = $CI->db->query("SELECT * FROM tbl_barang WHERE kodebarang = '$kode' AND satuan2 = '$sat'")->row();
+	$barang3   = $CI->db->query("SELECT * FROM tbl_barang WHERE kodebarang = '$kode' AND satuan3 = '$sat'")->row();
+	
+	if($barang1) {
+		$qtyx = $qty;
+	} else if($barang2) {
+		$oper_qty = $barang2->satuan2qty;
+		if($barang2->satuan2opr == 1) {
+			$qtyx = $qty * $oper_qty;
+		} else {
+			$qtyx = $qty / $oper_qty;
+		}
+	} else if($barang3) {
+		$oper_qty = $barang3->satuan3qty;
+		if($barang3->satuan3opr == 1) {
+			$qtyx = $qty * $oper_qty;
+		} else {
+			$qtyx = $qty / $oper_qty;
+		}
+	}else{
+		$qtyx = $qty;
+	}
+
+	return $qtyx;
+}
+
 function tanggal( $tgl ){
 	if($tgl=="" || $tgl=="1900-01-01 00:00:00"){
 		return "";  

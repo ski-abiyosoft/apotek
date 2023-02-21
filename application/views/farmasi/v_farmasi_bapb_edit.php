@@ -326,7 +326,23 @@ $this->load->view('template/body');
                             <input name="qty[]" onchange="totalline(<?= $no; ?>);total();cekqty(<?= $no ?>); changeqty(<?= $no; ?>)" value="<?= number_format($row->qty_terima); ?>" id="qty<?= $no; ?>" type="text" class="form-control rightJustified">
                           </td>
                           <td width="10%">
-                            <input name="sat[]" id="sat<?= $no; ?>" value="<?= $row->satuan; ?>" type="text" class="form-control" onkeypress="return tabE(this,event)" readonly>
+                            <?php 
+                            $barang = $this->db->query("SELECT * FROM (
+                              SELECT satuan1 AS satuan FROM tbl_barang WHERE kodebarang = '$row->kodebarang'
+                              UNION ALL
+                              SELECT satuan2 AS satuan FROM tbl_barang WHERE kodebarang = '$row->kodebarang'
+                              UNION ALL
+                              SELECT satuan3 AS satuan FROM tbl_barang WHERE kodebarang = '$row->kodebarang'
+                              ) AS b WHERE satuan != ''")->result(); 
+                            ?>
+                            <select name="sat[]" id="sat<?= $no; ?>" class="form-control">
+                              <?php foreach($barang as $b) : ?>
+                                <?php if($b->satuan == $row->satuan) { $cek = 'selected'; } else { $cek = ''; } ?>
+                                <?php $satuan = $this->db->query("SELECT * FROM tbl_barangsetup WHERE apogroup = 'SATUAN' AND apocode = '$b->satuan'")->row(); ?>
+                                <option value="<?= $row->satuan; ?>" <?= $cek; ?>><?= $satuan->aponame; ?></option>
+                              <?php endforeach; ?>
+                            </select>
+                            <!-- <input name="sat[]" id="sat<?= $no; ?>" value="<?= $row->satuan; ?>" type="text" class="form-control" onkeypress="return tabE(this,event)" readonly> -->
                           </td>
                           <td width="10%">
                             <input name="harga[]" onchange="totalline(<?= $no; ?>);total();cekharga(<?= $no; ?>);" value="<?= number_format($row->price); ?>" id="harga<?= $no; ?>" type="text" class="form-control rightJustified">
@@ -762,7 +778,8 @@ $this->load->view('template/footer');
 
     var qty = "<input name='qty[]' id=qty" + idrow + " onchange='totalline(" + idrow + ");cekqty(" + idrow + "); changeqty(" + idrow + ")' value=1  type='text' class='form-control rightJustified'  >";
 
-    var sat = "<input name='sat[]' id=sat" + idrow + " type='text' class='form-control' readonly> ";
+    // var sat = "<input name='sat[]' id=sat" + idrow + " type='text' class='form-control' readonly> ";
+    var sat = "<select name='sat[]' id='sat" + idrow + "' class='form-control'></select>";
 
     // var hrg="<input name='harga[]'  id=harga"+idrow+" onchange='totalline("+idrow+");' value='0'  type='text' class='form-control rightJustified' readonly> ";
     var hrg = "<input name='harga[]'  id=harga" + idrow + " onchange='totalline(" + idrow + ");cekharga(" + idrow + ");' value='0'  type='text' class='form-control rightJustified'> ";
@@ -929,11 +946,34 @@ $this->load->view('template/footer');
       type: "GET",
       dataType: "JSON",
       success: function(data) {
-        // console.log(data)
-        $('#sat' + vid).val(data.satuan1);
+        // console.log(data.satuan1)
+        // $('#sat' + vid).val(data.satuan1);
         $('#harga' + vid).val(separateComma(data.hargabeli));
         $('#het' + vid).val(separateComma(data.het));
         totalline(vid);
+        $.ajax({
+          url: "<?php echo base_url(); ?>farmasi_bapb/getinfobarang_sat/" + str,
+          type: "GET",
+          dataType: "JSON",
+          success: function(data) {
+            var opt = data;
+            var satuan = $("#sat"+vid);
+            satuan.empty();
+            $(opt).each(function() {
+              $.ajax({
+                url: "<?php echo base_url(); ?>farmasi_bapb/getinfobarang_sat2/" + this.satuan,
+                type: "GET",
+                dataType: "JSON",
+                success: function(data) {
+                  var option = $("<option/>");
+                  option.html(data.aponame);
+                  option.val(data.apocode);
+                  satuan.append(option);
+                }
+              })
+            });
+          }
+        });
       }
     });
   }

@@ -1668,7 +1668,7 @@ $this->load->view('template/footer');
     jumlah = qtyjual * harga;
     tot = jumlah + uangr;
     cekhargajualo_1(kode, harga, id);
-    console.log(tot)
+    // console.log(tot)
     row.cells[7].children[0].value = separateComma(tot);
     totalo_1();
     t_jual_manual();

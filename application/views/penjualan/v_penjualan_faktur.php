@@ -479,7 +479,10 @@
             </div>
             <div class="modal-footer">
                 <button type="button" id="btncetak_bayar" onclick="urlcetak_kasir()" class="btn btn-warning"><b>
-                    <i class="fa fa-print"></i> CETAK</b>
+                    <i class="fa fa-print"></i> Cetak Kasir</b>
+                </button>
+                <button type="button" id="btncetak_jamin" onclick="urlcetak_jamin()" class="btn btn-warning"><b>
+                    <i class="fa fa-print"></i> Cetak Penjamin</b>
                 </button>
                 <button type="button" id="btnsimpan_bayar" onclick="save_bayar()" class="btn btn-success"><b>
                     <i class="fa fa-money"></i> PROSES PENJAMIN</b>
@@ -612,6 +615,15 @@ function urlcetak_kasir()
     window.open(ctk,'_blank');
 }
 
+function urlcetak_jamin() 
+{
+    var baseurl       = "<?php echo base_url() ?>";
+    var nokwitansi    = $('[name="nokwi_kasir"]').val();
+    var noresep       = $('[name="noress"]').val();
+    var ctk           = baseurl + 'kasir_obat/cetak_jaminan/?kwitansi=' + nokwitansi + '&resep=' + noresep;
+    window.open(ctk,'_blank');
+}
+
 function bayar(resepno) {
       save_method = 'add';
       $('#form')[0].reset(); // reset form on modals
@@ -626,9 +638,10 @@ function bayar(resepno) {
             dataType    : "JSON",
             success: function(data) {
 
-                if(data.nokwitansi==''){
+                if(data.nokwitansi2=='' || data.nokwitansi2 == null){
                     document.getElementById("btnsimpan_bayar").disabled = false;
                     document.getElementById("btncetak_bayar").disabled = true;
+                    document.getElementById("btncetak_jamin").disabled = true;
                     $('[name="nokwi_kasir"]').val('Auto');
                     $('[name="noress"]').val('');
 
@@ -636,24 +649,38 @@ function bayar(resepno) {
                 }else{
                     document.getElementById("btnsimpan_bayar").disabled = true;
                     document.getElementById("btncetak_bayar").disabled = false;
-                    $('[name="nokwi_kasir"]').val(data.nokwitansi);
-                    $('[name="noress"]').val(data.resepno);
+                    document.getElementById("btncetak_jamin").disabled = false;
+                    $('[name="nokwi_kasir"]').val(data.nokwitansi2);
+                    $('[name="noress"]').val(data.resepno2);
 
                 } 
                 
-                if(data.nokwitansi==''){
+                if(data.nokwitansi2==''){
+                  
+                  $('[name="nil_aptk"]').val(0);  
+                  $('[name="nilap"]').val(0);  
+                  $('[name="juklaim"]').val(data.poscredit);  
+                  $('[name="juklaimb"]').val(formatCurrency1(data.poscredit)); 
                 }else{
+
+                  
+                  $total_klaim = data.jumlahhutang;
+                  $('[name="juklaim"]').val($total_klaim);  
+                  $('[name="juklaimb"]').val(formatCurrency1($total_klaim));  
+                  $total_nilap = Number(data.bayarcash)+Number(data.bayarcard);
+                  $('[name="nil_aptk"]').val($total_nilap);  
+                  $('[name="nilap"]').val(formatCurrency1($total_nilap));  
                 }
                 $('[name="id"]').val(data.id);
-                $('[name="rekmed"]').val(data.rekmed);
-                $('[name="lupnamapasien"]').val(data.namapas);
+                $('[name="rekmed"]').val(data.rekmed2);
+                $('[name="lupnamapasien"]').val(data.namapas2);
                 $('[name="vpenjamin"]').val(data.penjamin);
                 $('[name="vpenjaminb"]').val(data.nm_penjamin);
                 // $('#vpenjamin option[value="' + data.penjamin + '"]').prop('selected', true);
                 $('#jkelp option[value="' + data.jkel + '"]').prop('selected', true);
                 $('#luppreposition option[value="' + data.preposisi + '"]').prop('selected', true);
                 $('#lupidentitas option[value="' + data.idpas + '"]').prop('selected', true);
-                $('[name="resepno"]').val(data.resepno);
+                $('[name="resepno"]').val(data.resepno2);
                 $('[name="no_bpjs"]').val(data.nocard);
                 $('[name="luphp"]').val(data.nohp);
                 $('[name="lupnoidentitas"]').val(Number(data.noidentitas));
@@ -664,8 +691,7 @@ function bayar(resepno) {
                 $('[name="total_resep"]').val(data.poscredit);  
                 $('[name="total_resepb"]').val($totalres);  
                 $('[name="juklaim"]').val(data.poscredit);  
-                $('[name="nil_aptk"]').val(0);  
-                $('[name="nilap"]').val(0);  
+                tgllahirpp();
                 tgllahirpp();
                 $('#modal_form').modal('show'); // show bootstrap modal when complete loaded
                 $('.modal-title').text('Edit Data'); // Set title to Bootstrap modal title

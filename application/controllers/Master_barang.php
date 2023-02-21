@@ -213,7 +213,7 @@ class Master_barang extends CI_Controller {
 			'tgledit'      => tglsystem(),
 			'userbuat'     => user_login(),
 			'tglbuat'      => tglsystem(),
-			'aktif'      => $this->input->post("aktif"),
+			'aktif'      => $this->input->post("status"),
 		);
 		$this->M_barang->update(array('id' => $this->input->post('id')), $data);
 		$this->db->query("delete from tbl_barangcabang where kodebarang='$kodebarang'");

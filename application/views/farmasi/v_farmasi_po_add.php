@@ -241,7 +241,8 @@ $this->load->view('template/body');
                                                     <input name="qty[]" onchange="totalline(1);total()" value="1" id="qty1" type="text" class="form-control rightJustified">
                                                 </td>
                                                 <td>
-                                                    <input name="sat[]" id="sat1" type="text" class="form-control " onkeypress="return tabE(this,event)" readonly>
+                                                    <!-- <input name="sat[]" id="sat1" type="text" class="form-control " onkeypress="return tabE(this,event)" readonly> -->
+                                                    <select name="sat[]" id="sat1" class="form-control"></select>
                                                 </td>
                                                 <td>
                                                     <input name="harga[]" onchange="totalline(1);total();cekharga(1)" value="0" id="harga1" type="text" class="form-control rightJustified">
@@ -391,7 +392,8 @@ $this->load->view('template/currency');
 
         td3.innerHTML = "<input name='qty[]' id=qty" + idrow + " onchange='totalline(" + idrow + ")' value='1'  type='text' class='form-control rightJustified' >";
 
-        td4.innerHTML = "<input name='sat[]' id=sat" + idrow + " type='text' class='form-control'  readonly>";
+        // td4.innerHTML = "<input name='sat[]' id=sat" + idrow + " type='text' class='form-control'  readonly>";
+        td4.innerHTML = "<select name='sat[]' id='sat" + idrow + "' class='form-control'></select>";
 
         td5.innerHTML = "<input name='harga[]' id=harga" + idrow + " onchange='totalline(" + idrow + ");cekharga("+idrow+")' value='0'  type='text' class='form-control rightJustified'>";
 
@@ -454,8 +456,31 @@ $this->load->view('template/currency');
             dataType: "JSON",
             success: function(data) {
                 $('#kode' + id).val(data.kodebarang);
-                $('#sat' + id).val(data.satuan1);
+                // $('#sat' + id).val(data.satuan1);
                 $('#harga' + id).val(formatCurrency1(data.hargabeli));
+                $.ajax({
+                    url: "<?php echo base_url(); ?>farmasi_bapb/getinfobarang_sat/" + str,
+                    type: "GET",
+                    dataType: "JSON",
+                    success: function(data) {
+                        var opt = data;
+                        var satuan = $("#sat"+vid);
+                        satuan.empty();
+                        $(opt).each(function() {
+                            $.ajax({
+                                url: "<?php echo base_url(); ?>farmasi_bapb/getinfobarang_sat2/" + this.satuan,
+                                type: "GET",
+                                dataType: "JSON",
+                                success: function(data) {
+                                    var option = $("<option/>");
+                                    option.html(data.aponame);
+                                    option.val(data.apocode);
+                                    satuan.append(option);
+                                }
+                            })
+                        });
+                    }
+                });
                 totalline(id);
             }
         });

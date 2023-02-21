@@ -455,6 +455,22 @@ class Farmasi_bapb extends CI_Controller
 		echo json_encode($data);
 	}
 
+	public function getinfobarang_sat($kodebarang) {
+		$data = $this->db->query("SELECT * FROM (
+		SELECT satuan1 AS satuan FROM tbl_barang WHERE kodebarang = '$kodebarang'
+		UNION ALL
+		SELECT satuan2 AS satuan FROM tbl_barang WHERE kodebarang = '$kodebarang'
+		UNION ALL
+		SELECT satuan3 AS satuan FROM tbl_barang WHERE kodebarang = '$kodebarang'
+		) AS b WHERE satuan != ''")->result();
+		echo json_encode($data);
+	}
+
+	public function getinfobarang_sat2($data) {
+		$data = $this->db->query("SELECT * FROM tbl_barangsetup WHERE apogroup = 'SATUAN' AND apocode = '$data'")->row();
+		echo json_encode($data);
+	}
+
 	public function cekhari()
 	{
 		$kode = $this->input->get('kode');
@@ -611,11 +627,13 @@ class Farmasi_bapb extends CI_Controller
 			}
 			$stokcek = $this->db->query("SELECT * FROM tbl_barangstock WHERE kodebarang = '$kode' and koders='$cabang' and gudang='$gudang'");
 			$date_now = date('Y-m-d H:i:s');
+
+			$qtyx = konversi_satuan($kode, $sat, $qty);
 			if ($stokcek->num_rows() > 0) {
 				$stok = $stokcek->result();
 				foreach ($stok as $key => $value) {
-					$terima = (int)$value->terima + $qty;
-					$saldoakhir = (int)$value->saldoakhir + $qty;
+					$terima = (int)$value->terima + $qtyx;
+					$saldoakhir = (int)$value->saldoakhir + $qtyx;
 					$this->db->query("UPDATE tbl_barangstock set terima=$terima, saldoakhir=$saldoakhir, lasttr = '$date_now' where kodebarang='$kode' and koders='$cabang' and gudang='$gudang'");
 				}
 			} else {
@@ -624,8 +642,8 @@ class Farmasi_bapb extends CI_Controller
 					'kodebarang'   => $kode,
 					'gudang'       => $gudang,
 					'saldoawal'    => 0,
-					'terima'       => $qty,
-					'saldoakhir'   => $qty,
+					'terima'       => $qtyx,
+					'saldoakhir'   => $qtyx,
 					'lasttr'       => $date_now,
 				);
 				$this->db->insert('tbl_barangstock', $datastock);
@@ -712,8 +730,9 @@ class Farmasi_bapb extends CI_Controller
 
 		$dterima = $this->db->get_where('tbl_barangdterima', ['terima_no' => $terimano])->result();
 		foreach ($dterima as $row) {
-			$_qty  = $row->qty_terima;
+			// $_qty  = $row->qty_terima;
 			$_kode = $row->kodebarang;
+			$_qty = konversi_satuan($_kode, $row->satuan, $row->qty_terima);
 			$this->db->query("UPDATE tbl_barangstock set terima = terima - $_qty, saldoakhir = saldoakhir - $_qty where kodebarang = '$_kode' and koders = '$cabang' and gudang = '$gudang'");
 		}
 		$this->db->query("DELETE from tbl_barangdterima where terima_no = '$terimano'");
@@ -789,16 +808,17 @@ class Farmasi_bapb extends CI_Controller
 			$this->db->insert('tbl_barangdterima', $data);
 			$stokcekx = $this->db->query("SELECT * FROM tbl_barangstock WHERE kodebarang = '$kode' and koders='$cabang' and gudang='$gudang' ")->num_rows();
 			$date_now = date('Y-m-d H:i:s');
+			$qtyx = konversi_satuan($kode, $sat, $qty);
 			if ($stokcekx > 0) {
-				$this->db->query("UPDATE tbl_barangstock set terima = terima+ $qty, saldoakhir = saldoakhir + $qty, lasttr = '$date_now' where kodebarang = '$kode' and koders = '$cabang' and gudang = '$gudang'");
+				$this->db->query("UPDATE tbl_barangstock set terima = terima+ $qtyx, saldoakhir = saldoakhir + $qtyx, lasttr = '$date_now' where kodebarang = '$kode' and koders = '$cabang' and gudang = '$gudang'");
 			} else {
 				$datastock = array(
 					'koders'       => $cabang,
 					'kodebarang'   => $kode,
 					'gudang'       => $gudang,
 					'saldoawal'    => 0,
-					'terima'       => $qty,
-					'saldoakhir'   => $qty,
+					'terima'       => $qtyx,
+					'saldoakhir'   => $qtyx,
 					'lasttr'       => $date_now,
 				);
 				$this->db->insert('tbl_barangstock', $datastock);
@@ -1018,7 +1038,7 @@ class Farmasi_bapb extends CI_Controller
 		$databeli = $this->db->get_where('tbl_barangdterima', array('terima_no' => $nomor))->result();
 		foreach ($databeli as $row) {
 
-			$_qty  = $row->qty_terima;
+			$_qty = konversi_satuan($row->kodebarang, $row->satuan, $row->qty_terima);
 			$_kode = $row->kodebarang;
 
 			$this->db->query("UPDATE tbl_barangstock set terima=terima- $_qty, saldoakhir= saldoakhir- $_qty where kodebarang = '$_kode' and koders = '$cabang' and gudang = '$gudang'");

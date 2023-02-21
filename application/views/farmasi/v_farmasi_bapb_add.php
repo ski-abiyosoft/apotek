@@ -296,20 +296,17 @@ $this->load->view('template/body');
 
                     <thead class="page-breadcrumb breadcrumb">
                       <th class="title-white" width="5%" style="text-align: center">Delete</th>
-                      <th class="title-white" width="10%" style="text-align: center">Nama Barang
-                      </th>
+                      <th class="title-white" width="10%" style="text-align: center">Nama Barang</th>
                       <th class="title-white" width="10%" style="text-align: center">Qty</th>
-                      <th class="title-white" width="5%" style="text-align: center">Satuan</th>
+                      <th class="title-white" width="10%" style="text-align: center">Satuan</th>
                       <th class="title-white" width="10%" style="text-align: center">Harga</th>
                       <th class="title-white" width="5%" style="text-align: center">Disc %</th>
                       <th class="title-white" width="10%" style="text-align: center">Disc Rp</th>
                       <th class="title-white" width="5%" style="text-align: center">Tax</th>
-                      <th class="title-white" width="15%" style="text-align: center">Total Harga
-                      </th>
-                      <th class="title-white" width="15%" style="text-align: center">HET
-                      </th>
-                      <th class="title-white" width="6%" style="text-align: center">Expire</th>
-                      <th class="title-white" width="14%" style="text-align: center">PO No</th>
+                      <th class="title-white" width="10%" style="text-align: center">Total Harga</th>
+                      <th class="title-white" width="10%" style="text-align: center">HET</th>
+                      <th class="title-white" width="5%" style="text-align: center">Expire</th>
+                      <th class="title-white" width="10%" style="text-align: center">PO No</th>
 
                     </thead>
 
@@ -329,7 +326,6 @@ $this->load->view('template/body');
                           <select name="kode[]" id="kode1"
                             class="select2_el_farmasi_barangdata form-control input-large"
                             onchange="showbarangname(this.value, 1)">
-
                           </select>
                         </td>
 
@@ -338,8 +334,9 @@ $this->load->view('template/body');
                             type="text" class="form-control rightJustified">
                         </td>
                         <td>
-                          <input name="sat[]" id="sat1" type="text" class="form-control "
-                            onkeypress="return tabE(this,event)" readonly>
+                          <select name="sat[]" id="sat1" class="form-control"></select>
+                          <!-- <input name="sat[]" id="sat1" type="text" class="form-control "
+                            onkeypress="return tabE(this,event)" readonly> -->
                         </td>
                         <td>
                           <input name="harga[]" onchange="totalline(1);total(); cekharga(1)" value="0" id="harga1"
@@ -590,7 +587,8 @@ function tambah() {
     "); changeqty(" + idrow +
     ")' value=1  type='text' class='form-control rightJustified'  >";
 
-  var sat = "<input name='sat[]' id=sat" + idrow + " type='text' class='form-control' readonly> ";
+  // var sat = "<input name='sat[]' id=sat" + idrow + " type='text' class='form-control' readonly> ";
+  var sat = "<select name='sat[]' id='sat" + idrow + "' class='form-control'></select>";
 
   // var hrg="<input name='harga[]'  id=harga"+idrow+" onchange='totalline("+idrow+");' value='0'  type='text' class='form-control rightJustified' readonly> ";
   var hrg = "<input name='harga[]'  id=harga" + idrow + " onchange='totalline(" + idrow +
@@ -847,9 +845,7 @@ function cekpo2() {
 
 
 function showbarangname(str, id) {
-
   var xhttp;
-
   var vid = id;
   $.ajax({
     url: "<?php echo base_url(); ?>farmasi_bapb/getinfobarang/?kode=" + str,
@@ -857,7 +853,6 @@ function showbarangname(str, id) {
     dataType: "JSON",
     success: function(data) {
       $("#btnsave").attr("disabled", false);
-      // console.log(data);
       $('#sat' + vid).val(data.satuan1);
       $('#harga' + vid).val(formatCurrency1(data.hargabeli));
       $('#het' + vid).val(data.het);
@@ -867,10 +862,34 @@ function showbarangname(str, id) {
       // if (xtotal >= '5000000') {
       //     $('#materai').val("10000").change();
       // }
+      $.ajax({
+        url: "<?php echo base_url(); ?>farmasi_bapb/getinfobarang_sat/" + str,
+        type: "GET",
+        dataType: "JSON",
+        success: function(data) {
+          var opt = data;
+          var satuan = $("#sat"+vid);
+          satuan.empty();
+          $(opt).each(function() {
+            $.ajax({
+              url: "<?php echo base_url(); ?>farmasi_bapb/getinfobarang_sat2/" + this.satuan,
+              type: "GET",
+              dataType: "JSON",
+              success: function(data) {
+                var option = $("<option/>");
+                option.html(data.aponame);
+                option.val(data.apocode);
+                satuan.append(option);
+                if($('#nomorpo').val() != null){
+                  $("#sat"+vid).val(data.apocode).change();
+                }
+              }
+            })
+          });
+        }
+      });
     }
   });
-
-
 }
 
 function savex() {
@@ -1264,6 +1283,7 @@ function save() {
                 type: "error",
                 confirmButtonText: "OK"
               });
+              return;
             } else if (data.status == 2) {
               swal({
                 title: "BAPB",
@@ -1610,7 +1630,7 @@ function getdatapo(str) {
     hapus();
     $('[id=kode1]').val('');
     $('[id=qty1]').val('');
-    $('[id=sat1]').val('');
+    $('[id=sat1]').val('').change();
     $('[id=harga1]').val('');
     $('[id=disc1]').val('');
     totalline(1);
@@ -1633,15 +1653,25 @@ function getdatapo(str) {
 
           x = i + 1;
 
-          var option = $("<option selected></option>").val(data[i].kodebarang).text(data[i].kodebarang + ' - ' +
-            data[i].namabarang);
+          var option = $("<option selected></option>").val(data[i].kodebarang).text(data[i].kodebarang + ' - ' +data[i].namabarang);
           $('#kode' + x).append(option).trigger('change');
 
           if (data[i].vat == 1) {
             document.getElementById("tax" + x).checked = true;
           }
           document.getElementById("qty" + x).value = data[i].qty_po
-          document.getElementById("sat" + x).value = data[i].satuan;
+          // document.getElementById("sat" + x).value = data[i].satuan;
+          // $.ajax({
+          //   url: "<?php echo base_url(); ?>farmasi_bapb/getinfobarang_sat2/" + data[i].satuan,
+          //   type: "GET",
+          //   dataType: "JSON",
+          //   success: function(data) {
+              console.log(data[i].satuan)
+              // document.getElementById('sat'+x).value = data[i].satuan.change();
+              $("#sat"+x).val(data[i].satuan).change();
+              // $('#sat option[value="' + data[i].satuan + '"]').prop('selected', true);
+          //   }
+          // })
           document.getElementById("harga" + x).value = data[i].price_po;
           document.getElementById("het" + x).value = data[i].het;
           document.getElementById("disc" + x).value = data[i].discount;

@@ -222,16 +222,22 @@ function edit_data(id) {
         type: "GET",
         dataType: "JSON",
         success: function(data) {
+            console.log(data)
 
             $.ajax({
                 url: "<?= site_url('Farmasi_bapb/get_np/'); ?>"+data.kodebarang,
                 type: "POST",
                 dataType: "JSON",
                 success: function(data) {
-                    $("#nilaipersediaan").val(Number(data.nilai_persediaan));
+                    if(data) {
+                        $("#nilaipersediaan").val(Number(data.nilai_persediaan));
+                    } else {
+                        $("#nilaipersediaan").val(Number(0));
+                    }
                 }
             });
 
+            $('[name="status"]').val(data.aktif).change();
             $('[name="id"]').val(data.id);
             $('[name="kode"]').val(data.kodebarang);
             $('[name="nama"]').val(data.namabarang);

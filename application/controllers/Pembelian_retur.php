@@ -222,8 +222,9 @@ class Pembelian_retur extends CI_Controller
     $now = date("Y-m-d H:i:s");
     $this->db->insert('tbl_barangdreturbeli', $data);
     $stok = $this->db->query("select * from tbl_barangstock where kodebarang = '$kode' and gudang = '$gudang' and koders = '$cabang'")->row_array();
-    $keluar = (int)$stok['keluar'] + (int)$qty;
-    $saldoakhir = (int)$stok['saldoakhir'] - (int)$qty;
+    $qtyx = konversi_satuan($kode, $sat, $qty);
+    $keluar = (int)$stok['keluar'] + (int)$qtyx;
+    $saldoakhir = (int)$stok['saldoakhir'] - (int)$qtyx;
     $datax = [
       'keluar' => $keluar,
       // 'terima' => $terima,
@@ -262,7 +263,7 @@ class Pembelian_retur extends CI_Controller
 
     $dataretur  = $this->db->get_where('tbl_barangdreturbeli', ['retur_no' => $retur_no])->result();
     foreach ($dataretur as $row) {
-      $_qty     = $row->qty_retur;
+      $_qty = konversi_satuan($row->kodebarang, $row->satuan, $row->qty_retur);
       $_kode    = $row->kodebarang;
       $this->db->query("UPDATE tbl_barangstock set keluar=keluar-$_qty, saldoakhir=saldoakhir+$_qty where kodebarang = '$_kode' and koders = '$cabang' and gudang = '$gudang'");
     }
@@ -305,8 +306,9 @@ class Pembelian_retur extends CI_Controller
     $now = date("Y-m-d H:i:s");
     $this->db->insert('tbl_barangdreturbeli', $data);
     $stok = $this->db->query("select * from tbl_barangstock where kodebarang = '$kode' and gudang = '$gudang' and koders = '$cabang'")->row_array();
-    $keluar = (int)$stok['keluar'] + (int)$qty;
-    $saldoakhir = (int)$stok['saldoakhir'] - (int)$qty;
+    $qtyx = konversi_satuan($kode, $sat, $qty);
+    $keluar = (int)$stok['keluar'] + (int)$qtyx;
+    $saldoakhir = (int)$stok['saldoakhir'] - (int)$qtyx;
     $datax = [
       'keluar' => $keluar,
       'saldoakhir' => $saldoakhir,
@@ -718,7 +720,7 @@ class Pembelian_retur extends CI_Controller
       $gudang     = $hretur->gudang;
       $dataretur  = $this->db->get_where('tbl_barangdreturbeli', ['retur_no' => $nomor])->result();
       foreach ($dataretur as $row) {
-        $_qty     = $row->qty_retur;
+        $_qty = konversi_satuan($row->kodebarang, $row->satuan, $row->qty_retur);
         $_kode    = $row->kodebarang;
         $this->db->query("UPDATE tbl_barangstock set keluar=keluar- $_qty, saldoakhir= saldoakhir+ $_qty where kodebarang = '$_kode' and koders = '$cabang' and gudang = '$gudang'");
       }
