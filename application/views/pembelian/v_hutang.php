@@ -69,8 +69,6 @@
             </div>
             <div class="portlet-body">
                 <div class="table-toolbar">
-
-
                     <div class="btn-group">
                         <?php if($akses->uadd){?>
                         <a href="<?php echo base_url()?>hutang/entri" class="btn btn-success">
@@ -91,7 +89,7 @@
                         </button>
                         <ul class="dropdown-menu pull-right">
                             <li>
-                                <a data-toggle="modal" href="#hperiode">Ganti Periode Data</a>
+                                <a data-toggle="modal" href="#lupperiode">Ganti Periode Data</a>
                             </li>
                         </ul>
                     </div>
@@ -111,12 +109,12 @@
                                 </div>
 
                                 <div class="desc">
-                                    TOTAL HUTANG
+                                    HUTANG TERBENTUK PERIODE KINI
                                 </div>
                             </div>
 
                             <a data-toggle="modal" class="more"
-                                href="<?= base_url('hutang/detailTotalHutang?startdate='.$startdate.'&enddate='.$enddate.'&vendor='.$vendorid) ?>">
+                                href="<?= base_url('hutang/detailTotalHutang?startdate='.$startdate.'&enddate='.$enddate) ?>">
                                 Lihat Rinci<i class="m-icon-swapright m-icon-white"></i>
                             </a>
                         </div>
@@ -137,7 +135,7 @@
                             </div>
 
                             <a data-toggle="modal" class="more"
-                                href="<?= base_url('hutang/detailHutangjatuhTempo?startdate='.$startdate.'&enddate='.$enddate.'&vendor='.$vendorid) ?>">
+                                href="<?= base_url('hutang/detailHutangjatuhTempo?startdate='.$startdate.'&enddate='.$enddate) ?>">
                                 Lihat Rinci<i class="m-icon-swapright m-icon-white"></i>
                             </a>
                         </div>
@@ -153,11 +151,11 @@
 
                                 </div>
                                 <div class="desc">
-                                    RENCANA BAYAR
+                                    RENCANA BAYAR PERIODE KINI
                                 </div>
                             </div>
                             <a data-toggle="modal" class="more"
-                                href="<?= base_url('hutang/detailRencanaBayar?startdate='.$startdate.'&enddate='.$enddate.'&vendor='.$vendorid) ?>">
+                                href="<?= base_url('hutang/detailRencanaBayar?startdate='.$startdate.'&enddate='.$enddate) ?>">
                                 Lihat Rinci<i class="m-icon-swapright m-icon-white"></i>
                             </a>
                         </div>
@@ -172,11 +170,11 @@
                                     <?php echo number_format($realisasi_pembayaran,0, ',','.');?>
                                 </div>
                                 <div class="desc">
-                                    REALISASI PEMBAYARAN
+                                    REALISASI PEMBAYARAN PERIODE KINI
                                 </div>
                             </div>
                             <a data-toggle="modal" class="more"
-                                href="<?= base_url('hutang/detailRealisasiPembayaran?startdate='.$startdate.'&enddate='.$enddate.'&vendor='.$vendorid) ?>">
+                                href="<?= base_url('hutang/detailRealisasiPembayaran?startdate='.$startdate.'&enddate='.$enddate) ?>">
                                 Lihat Rinci<i class="m-icon-swapright m-icon-white"></i>
                             </a>
                         </div>
@@ -188,18 +186,12 @@
                     <thead class="breadcrumb">
                         <tr>
                             <th style="text-align: center">Cab.</th>
-                            <th style="text-align: center">User ID</th>
-                            <th style="text-align: center">AP No.</th>
-                            <th style="text-align: center">Tanggal</th>
                             <th style="text-align: center">Vendor</th>
-                            <th style="text-align: center">Keterangan</th>
-                            <th style="text-align: center">Jatuh Tempo</th>
-                            <th style="text-align: center">Total Tagihan</th>
-                            <th style="text-align: center">Total Bayar</th>
-                            <th style="text-align: center">Status</th>
-                            <!-- <th>&nbsp;</th> -->
-                            <th>Cetak</th>
-                            <!-- <th>&nbsp;</th> -->
+                            <th style="text-align: center">Saldo Awal</th>
+                            <th style="text-align: center">Penambahan Periode Kini</th>
+                            <th style="text-align: center">Pembayaran Periode Kini</th>
+                            <th style="text-align: center">Saldo Akhir</th>
+                            <th style="text-align: center">Details</th>
                         </tr>
                     </thead>
 
@@ -213,80 +205,14 @@
 									     
 									     ?>
 
-                        <tr class="show1" id="row_<?php echo $row->terima_no;?>">
-                            <td align="center"><?php echo $row->koders;?></td>
-                            <td align="center"><?php echo $row->username;?></td>
-                            <td align="center"><?php echo $row->terima_no;?></td>
-                            <td align="center"><?php echo date('d-m-Y',strtotime($row->tglinvoice));?></td>
-                            <td><?php echo $row->vendor_name;?></td>
-                            <td><?php echo $row->keterangan;?></td>
-
-
-
-                            <td align="center"><?php echo date('d-m-Y',strtotime($row->duedate));?></td>
-                            <td align="right"><?php echo number_format($row->totaltagihan,0,'.',',');?></td>
-                            <td align="right"><?php echo number_format($row->totalbayar,0,'.',',');?></td>
-                            <td style="text-align: center"><?php
-                                                 if ($row->lunas=='0')
-                                                 { ?>
-                                <span class="label label-sm label-danger">
-                                    Belum Lunas
-                                </span>
-                                <?php
-                                                 }else
-                                                 if ($row->lunas=='1')
-                                                 { ?>
-                                <span class="label label-sm label-success">
-                                    Lunas
-                                </span>
-
-                                <?php
-												 } ?>
-
-                            </td>
-                            <!-- <td style="text-align: center"> -->
-                                <?php
-                                            //    if ($row->lunas=='0')
-                                            //      { 
-                                                     ?>
-
-
-                                <!-- <a href="<?php echo base_url()?>hutang/edit/<?php echo $row->idtr;?>">Edit</a> -->
-                            <!-- </td> -->
-                            <?php 
-                            // }
-                            
-                            ?>
-                            <!-- </td> -->
-                            <td style="text-align: center">
-                                <?php
-                                               if ($row->lunas=='0')
-                                                 { ?>
-
-                                <!-- <a href="<?php echo base_url()?>hutang/cetak/<?php echo $row->idtr;?>"
-                                    target="_blank">Cetak</a> -->
-
-                                <!-- <a href="#report" class="print_laporan" data-toggle="modal"
-                                    id="<?php echo $row->idtr;?>">
-                                    <button type="button" class="btn blue" ><i class="fa fa-print"></i></button>
-                                </a> -->
-                                
-                                <a class="btn btn-sm btn-warning print_laporan" id="<?php echo $row->idtr;?>" href="#report" title="Cetak"  data-toggle="modal"><i class="glyphicon glyphicon-print"></i></a>		
-                            </td>
-                            <?php }?>
-                            </td>
-                            <!-- <td style="text-align: center"> -->
-                                <?php
-                                    // if ($row->lunas=='0')
-                                    //     { 
-                                            ?>
-                                <!-- <a href="javascript:" title="Hapus"
-                                    onclick="delete_data(<?php echo $row->idtr;?>, '<?php echo $row->terima_no;?>')">Hapus</a> -->
-                                <?php 
-                                        // }
-                                ?>
-                            <!-- </td> -->
-
+                        <tr class="show1">
+                            <td align="center"><?php echo $this->session->userdata("unit") ?></td>
+                            <td align="left"><?php echo "$row->vendor_id | $row->vendor_name";?></td>
+                            <td class="text-right"><?php echo "Rp " . accounting_number($row->saldo_awal ?? 0);?></td>
+                            <td class="text-right"><?php echo "Rp " . accounting_number($row->totaltagihan);?></td>
+                            <td class="text-right"><?php echo "Rp " . accounting_number($row->totalbayar);?></td>
+                            <td class="text-right"><?php echo "Rp " . accounting_number($row->saldo_awal + $row->totaltagihan - $row->totalbayar);?></td>
+                            <td align="center"><a class="btn blue" href="<?= base_url('hutang/details/'.$row->vendor_id.'?startdate='.$startdate.'&enddate='.$enddate) ?>"><i class="fa fa-info-circle"></i> Details</a></td>
                         </tr>
                         <?php
                                 $nomor++;
@@ -295,15 +221,6 @@
 
 
                     </tbody>
-                    <tfoot>
-
-                        <td colspan="7" style="text-align:right">Total:</td>
-                        <td style="text-align:right"></td>
-                        <td style="text-align:right"></td>
-                        <td colspan="1"></td>
-
-
-                    </tfoot>
 
                 </table>
             </div>
@@ -312,61 +229,6 @@
 </div>
 </div>
 </div>
-</div>
-
-
-<div class="modal fade" id="hperiode" tabindex="-1" role="dialog" aria-hidden="true">
-    <div class="modal-dialog modal-small">
-        <div class="modal-content">
-            <span id="nopilih">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
-                    <h4 class="modal-title">Periode Data</h4>
-                </div>
-                <div class="modal-body">
-                    <form action="#" class="form-horizontal">
-
-                        <div class="form-group">
-                            <label class="col-md-4 control-label">Mulai</label>
-                            <div class="col-md-6">
-                                <input id="tanggal1" name="tanggal1" class="form-control input-medium" type="date"
-                                    value="<?php echo date('Y-m-d');?>" />
-
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="col-md-4 control-label">Sampai</label>
-                            <div class="col-md-6">
-                                <input id="tanggal2" name="tanggal2" class="form-control input-medium" type="date"
-                                    value="<?php echo date('Y-m-d');?>" />
-
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="col-md-4 control-label">Vendor</label>
-                            <div class="col-md-6">
-                                <select style='color:black;' id="vendor" name="vendor" class="selectpicker"
-                                    data-live-search="true" data-placeholder="Pilih..."
-                                    onkeypress="return tabE(this,event)">
-                                    <option value=''>-- Pilih Vendor --</option>
-                                    <?php
-                                    foreach($list_vendor as $key){
-                                        echo "<option value='".$key->vendor_id."'>$key->vendor_name</option>";
-                                    }
-                                ?>
-                                </select>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <p align="center">
-                        <button type="button" id="btnfilter" class="btn green" onclick="filterdata()"
-                            data-dismiss="modal">Buka Data</button>
-                    </p>
-                </div>
-        </div>
-    </div>
 </div>
 
 <?php
@@ -417,6 +279,8 @@ $(document).ready(function() {
         $("#simkeureport").html('<iframe src="<?php echo base_url();?>hutang/cetak/' + param +
             '" frameborder="no" width="100%" height="520"></iframe>');
     });
+
+    $('#keuangan-keluar-list').DataTable()
 });
 
 function currencyFormat(num) {
@@ -455,7 +319,7 @@ var TableEditable = function() {
                     "sEmptyTable": "Tidak ada data",
                     "sInfoEmpty": "Tidak ada data",
                     "sInfoFiltered": " - Dipilih dari _MAX_ data",
-                    "sSearch": "Pencarian Data : ",
+                    "sSearch": "Pencarian Data:",
                     "sInfo": " Jumlah _TOTAL_ Data (_START_ - _END_)",
                     "sLengthMenu": "_MENU_ Baris",
                     "sZeroRecords": "Tida ada data",
@@ -599,9 +463,7 @@ var TableEditable = function() {
 function filterdata() {
     var tgl1 = document.getElementById("tanggal1").value;
     var tgl2 = document.getElementById("tanggal2").value;
-    var vendor = document.getElementById("vendor").value;
-    var str = '2~' + tgl1 + '~' + tgl2 + '?vendor=' + vendor;
-    location.href = "<?php echo base_url();?>hutang/filter/" + str;
+    location.href = `<?php echo base_url();?>hutang?start_date=${tgl1}&end_date=${tgl2}`;
 }
 
 
@@ -627,10 +489,4 @@ function delete_data(id, terima_no) {
         });
     }
 }
-
-jQuery(document).ready(function() {
-    TableEditable.init();
-    //    ComponentsPickers.init();
-
-});
 </script>

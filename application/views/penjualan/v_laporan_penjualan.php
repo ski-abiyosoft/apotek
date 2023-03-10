@@ -55,7 +55,7 @@
                                 <div class="form-group">
                                     <label class="col-md-3 control-label">Dari Tanggal</label>
                                     <div class="col-md-9">
-                                        <input id="dari" name="dari" class="form-control input-medium" type="date"
+                                        <input id="dari" name="dari" class="form-control" type="date"
                                             value="<?php echo date('Y-m-d');?>" />
                                     </div>
                                 </div>
@@ -66,7 +66,7 @@
                                 <div class="form-group">
                                     <label class="col-md-3 control-label">Sampai Tanggal</label>
                                     <div class="col-md-9">
-                                        <input id="sampai" name="sampai" class="form-control input-medium" type="date"
+                                        <input id="sampai" name="sampai" class="form-control" type="date"
                                             value="<?php echo date('Y-m-d');?>" />
                                     </div>
                                 </div>
@@ -76,7 +76,7 @@
                             <div class="col-md-12">
                                 <div class="form-group">
                                     <label class="col-md-3 control-label">Store/depo</label>
-                                    <div class="col-md-3">
+                                    <div class="col-md-9">
                                         <select name="depo" id="depo" class="select2_depo form-control"></select>
                                     </div>
                                 </div>
@@ -86,7 +86,7 @@
                             <div class="col-md-12">
                                 <div class="form-group">
                                     <label class="col-md-3 control-label">Laporan</label>
-                                    <div class="col-md-3">
+                                    <div class="col-md-9">
                                         <select name="laporan" id="laporan" class="select2_laporan form-control">
                                             <option value="1">01 Laporan Penjualan Resep Perdokter</option>
                                             <option value="2">02 Laporan Rekap Penjualan Resep</option>

@@ -63,6 +63,219 @@ class M_cetak extends CI_Model {
 		$this->mpdf->output($jdlsave,'I');
 	}
 
+	function mpdf_tiket($l=80,$p=190,$form='',$uk='' , $judul='',$isi='',$jdlsave='',$lMargin='',$rMargin='',$font=10,$orientasi='',$hal='',$tab='',$tMargin='')
+	{
+		ini_set("pcre.backtrack_limit", "5000000");
+		ini_set('max_execution_time', 0);
+		ini_set("memory_limit","-1");
+		set_time_limit(0);
+				// end ori
+		
+		$jam = date("H:i:s");
+		if ($hal==''){
+			$hal1=1;
+		} 
+		if($hal!==''){
+			$hal1=$hal;
+		}
+		if ($font==''){
+			$size=12;
+		}else{
+			$size=$font;
+		} 
+
+		if ($tMargin=='' ){
+			$tMargin=16;
+		}
+		
+		if($lMargin==''){
+			$lMargin=15;
+		}
+
+		if($rMargin==''){
+			$rMargin=15;
+		}
+
+		// $this->mpdf = new \Mpdf\Mpdf( array(10,20),$size,'',$lMargin,$rMargin,$tMargin);
+		$this->mpdf = new \Mpdf\Mpdf([
+			'default_font_size' => 9,
+			'margin_top' => 3,
+			'margin_left' => 5,
+			'margin_right' => 5,
+			'margin_bottom' => 1,
+			'format' => [$l, $p]
+		]);
+
+		$this->mpdf->AddPage($form,$uk);
+
+		// $this->mpdf->SetFooter('Tercetak {DATE j-m-Y H:i:s} |Halaman {PAGENO} / {nb}| ');
+
+		$this->mpdf->setTitle($judul);
+
+		$this->mpdf->writeHTML($isi);
+
+		$this->mpdf->output($jdlsave,'I');
+	}
+
+	function template($judul, $body, $position='L', $date, $cekpdf)
+	{
+		$param       = $judul;
+		$unit        = $this->session->userdata('unit');
+		$avatar      = $this->session->userdata('avatar_cabang');
+		$kop         = $this->M_cetak->kop($unit);
+		$profile     = data_master('tbl_namers', array('koders' => $unit));
+		$namars      = $kop['namars'];
+		$alamat      = $kop['alamat'];
+		$alamat2     = $kop['alamat2'];
+		$alamat3     = $profile->kota;
+		$kota        = $kop['kota'];
+		$phone       = $kop['phone'];
+		$whatsapp    = $kop['whatsapp'];
+		$npwp        = $kop['npwp'];
+		$chari       = '';
+		$chari .= "
+			<table style=\"border-collapse:collapse;font-family: Century Gothic; font-size:12px; color:#000;\" width=\"100%\"  border=\"0\" cellspacing=\"0\" cellpadding=\"0\">
+			<thead>
+				<tr>
+						<td rowspan=\"6\" align=\"center\">
+							<img src=\"" . base_url() . "assets/img_user/$avatar\"  width=\"70\" height=\"70\" />
+						</td>
+						<td colspan=\"20\">
+							<b>
+								<tr>
+									<td style=\"font-size:10px;border-bottom: none;\"><b><br>$namars</b></td>
+								</tr>
+								<tr>
+									<td style=\"font-size:9px;\">$alamat</td>
+								</tr>
+								<tr>
+									<td style=\"font-size:9px;\">$alamat2</td>
+								</tr>
+								<tr>
+									<td style=\"font-size:9px;\">Wa :$whatsapp    Telp :$phone </td>
+								</tr>
+								<tr>
+									<td style=\"font-size:9px;\">No. NPWP : $npwp</td>
+								</tr>
+							</b>
+						</td>
+				</tr>
+			</table>";
+		$chari .= "
+			<table style=\"border-collapse:collapse;font-family: tahoma; font-size:12px\" width=\"100%\" align=\"center\" border=\"0\">
+				<tr>
+						<td> &nbsp; </td>
+				</tr> 
+			</table>";
+								
+		$chari .= "
+			<table style=\"border-collapse:collapse;font-family: tahoma; font-size:2px\" width=\"100%\" align=\"center\" border=\"1\">     
+				<tr>
+						<td style=\"border-top: none;border-right: none;border-left: none;\"></td>
+				</tr> 
+			</table>";
+		$chari .= "
+			<table style=\"border-collapse:collapse;font-family: tahoma; font-size:2px\" width=\"100%\" align=\"center\" border=\"1\">     
+				<tr>
+						<td style=\"border-top: none;border-right: none;border-left: none;\"></td>
+				</tr> 
+			</table>";
+		$chari .= "
+			<table style=\"border-collapse:collapse;font-family: tahoma; font-size:12px\" width=\"100%\" align=\"center\" border=\"0\">     
+				<tr>
+						<td>&nbsp;</td>
+				</tr> 
+			</table>";
+		$chari .= "
+			<table style=\"border-collapse:collapse;font-family: Tahoma; font-size:11px\" width=\"100%\" align=\"center\" border=\"0\" cellspacing=\"1\" cellpadding=\"3\">
+				<tr>
+						<td colspan=\"20\" width=\"15%\" style=\"text-align:center; font-size:20px;\"><b>$param</b></td>
+				</tr>
+				<tr>
+						<td colspan=\"20\" width=\"15%\" style=\"text-align:center; font-size:12px;\">$date</td>
+				</tr>
+			</table>";
+		$chari .= "
+			<table style=\"border-collapse:collapse;font-family: tahoma; font-size:12px\" width=\"100%\" align=\"center\" border=\"0\">
+				<tr>
+						<td> &nbsp; </td>
+				</tr> 
+			</table>";
+		$chari .= $body;
+		$data['prev']   = $chari;
+		$judul          = $param;
+
+		switch ($cekpdf) {
+			case 0;
+				echo ("<title>$judul</title>");
+				echo ($chari);
+				break;
+
+			case 1;
+				echo ("<title>$judul</title>");
+				// $this->M_cetak->mpdf('L', 'A4', $judul, $chari, '.PDF', 10, 10, 10, 2);
+				$this->M_cetak->mpdf($position, 'A4', $judul, $chari, '.PDF', 10, 10, 10, 2);
+				break;
+			case 2;
+				header("Cache-Control: no-cache, no-store, must-revalidate");
+				header("Content-Type: application/vnd-ms-excel");
+				header("Content-Disposition: attachment; filename= $judul.xls");
+				$this->load->view('app/master_cetak', $data);
+				break;
+				
+			case 3;
+				echo ("<title>$judul</title>");
+				echo ($chari);
+				echo "<script>window.print();</script>";
+			break;
+		}
+		// $this->M_cetak->mpdf($position, 'A4', $judul, $chari, '.PDF', 10, 10, 10, 2);
+	}
+
+	function template_nota($l, $p, $judul, $body, $position, $date, $cekpdf)
+	{
+		$param       = $judul;
+		$kop         = $this->kop('ABI');
+		$namars      = $kop['namars'];
+		$alamat      = $kop['alamat'];
+		$alamat2     = $kop['alamat2'];
+		$kota        = $kop['kota'];
+		$phone       = $kop['phone'];
+		$whatsapp    = $kop['whatsapp'];
+		$npwp        = $kop['npwp'];
+		$chari       = '';
+		
+		$chari .= $body;
+		$data['prev']   = $chari;
+		$judul          = $param;
+
+		switch ($cekpdf) {
+			case 0;
+				echo ("<title>$judul</title>");
+				echo ($chari);
+				break;
+
+			case 1;
+				// echo ("<title>$judul</title>");
+				$this->M_cetak->mpdf_tiket($l,$p,$position, 'A4', $judul, $chari, '.PDF', 10, 10, 10, 2);
+				break;
+
+			case 2;
+				header("Cache-Control: no-cache, no-store, must-revalidate");
+				header("Content-Type: application/vnd-ms-excel");
+				header("Content-Disposition: attachment; filename= $judul.xls");
+				$this->load->view('app/master_cetak', $data);
+				break;
+				
+			case 3;
+				echo ("<title>$judul</title>");
+				echo ($chari);
+				echo "<script>window.print();</script>";
+			break;
+		}
+		// $this->M_cetak->mpdf($position, 'A4', $judul, $chari, '.PDF', 10, 10, 10, 2);
+	}
+
 	function kop($unit='')
 	{
 

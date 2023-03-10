@@ -66,8 +66,9 @@ class App extends CI_Controller
 		$userid   = $this->session->userdata('username');
 		$password = $this->input->post('password');
 		$cabang   = $this->input->post('cabang');
+		$shift    = $this->input->post('shift');
 		$sesi     = $this->input->post('sesi');
-		if ($userid && $password && $this->M_login->validate_user($userid, $password, $cabang)) {
+		if ($userid && $password && $this->M_login->validate_user($userid, $password, $cabang, $shift)) {
 
 			$loggedinuserid    = $this->session->username;
 			$referred_from     = $this->session->userdata('referred_from');
@@ -83,9 +84,10 @@ class App extends CI_Controller
 		$this->load->model('M_login');
 		$userid   = $this->input->post('username');
 		$password = $this->input->post('password');
-		$cabang = $this->input->post('cabang');
+		$cabang   = $this->input->post('cabang');
+		$shift    = $this->input->post('shift');
 
-		if ($userid && $password && $this->M_login->validate_user($userid, $password, $cabang)) {
+		if ($userid && $password && $this->M_login->validate_user($userid, $password, $cabang,$shift)) {
 			if ($this->M_login->cek_cabang($userid, $cabang) > 0) {
 				$loggedinuserid = $this->session->username;
 				redirect(base_url('home'));
@@ -765,6 +767,19 @@ class App extends CI_Controller
 		print_r($json);
 	}
 
+	public function getnm()
+	{
+		$id       = $this->input->get('id');
+		$query    = $this->db->query("SELECT*FROM tbl_namers where koders='$id'")->row();
+		
+		if($query){
+			echo json_encode(array("status" => "1", "nm" => $query->namars));
+		}else{
+			echo json_encode(array("status" => "2", "nm" => "Nama Tidak Di Temukan"));
+			
+		}
+	}
+
 	public function getcabang()
 	{
 		$kode = $this->input->get('uid');
@@ -789,16 +804,33 @@ class App extends CI_Controller
 		echo json_encode($data);
 	}
 
-	public function getnm()
+	public function getshift()
 	{
-		$id       = $this->input->get('id');
-		$query    = $this->db->query("SELECT*FROM tbl_namers where koders='$id'")->row();
+		$kode = $this->input->get('uid');
+		$user = $this->db->query("SELECT * FROM userlogin WHERE uidlogin = '$kode'")->row();
 		
-		if($query){
-			echo json_encode(array("status" => "1", "nm" => $query->namars));
+		echo json_encode(array("shift" => $user->shift));
+	}
+
+	public function getshift2()
+	{
+		
+		$query = $this->db->query("SELECT *FROM tbl_setinghms WHERE lset='SHF' ")->result();
+
+		if (!$query) {
+			$response = [
+				'message'	=> 'not found',
+				'data'		=> [],
+				'status'	=> false,
+			];
 		}else{
-			echo json_encode(array("status" => "2", "nm" => "Nama Tidak Di Temukan"));
-			
+			$response = [
+				'message'	=> 'Success',
+				'data'		=> $query,
+				'status'	=> true,
+			];
 		}
+		$json = json_encode($response);
+		print_r($json);
 	}
 }

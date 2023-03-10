@@ -229,6 +229,7 @@ function edit_data(id) {
                     $("#unit2[value='" + keyword + "']").attr("checked", true).val();
                 });
                 $('[name="grup"]').val(data.level);
+                $('[name="shift"]').val(data.shift);
                 $('[name="aktif"]').val(data.locked);
                 $('[name="ulev"]').val(data.user_level);
                 //$('[name="dob"]').datepicker('update',data.dob);
@@ -481,10 +482,11 @@ function myShow() {
                             <div class="form-group">
                                 <label class="control-label col-md-3">Pilihan Shift</label>
                                 <div class="col-md-9">
-                                    <select name="shift" class="form-control">
-                                        <option value="">--Pilih Grup--</option>
-                                        <option>Dengan Shift</option>
-                                        <option>Tanpa Shift</option>
+                                <select name="shift" class="form-control" required>
+                                        <?php 
+                                        foreach($shift->result_array() as $db) {?>
+                                        <option value="<?php echo $db['kodeset'];?>"><?php echo $db['keterangan'];?></option>
+                                        <?php } ?>
                                     </select>
                                     <span class="help-block"></span>
                                 </div>

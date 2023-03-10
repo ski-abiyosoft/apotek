@@ -12,7 +12,7 @@ class M_login extends CI_Model {
 	parent::__construct();
 	}
 
-	function validate_user( $uid, $password, $cabang = null ) {
+	function validate_user( $uid, $password, $cabang = null, $shift = 0 ) {
 		$this->db->from( 'userlogin' );
 		$this->db->where( 'uidlogin', $uid );
 		$this->db->where( 'pwdlogin', md5( $password ) );
@@ -25,13 +25,13 @@ class M_login extends CI_Model {
 			$this->db->where('uidlogin', $uid);
 			$this->db->update('userlogin');
 			
-			$this->set_session($cabang);
+			$this->set_session($cabang,$shift);
 			return true;
 		}
 		return false;
 	}
 	
-    function set_session($cabang) {
+    function set_session($cabang,$shift) {
 		$avatar_cabang=$this->db->query("SELECT*FROM tbl_namers where koders='$cabang'")->row();
 		$this->session->set_userdata( array(
 		    'username'       => $this->details->uidlogin,
@@ -42,6 +42,7 @@ class M_login extends CI_Model {
 			'user_level'     => $this->details->user_level,
 			'job_role'       => $this->details->job_role,
 			'unit'           => $cabang,
+			'shift'          => $shift,
 			'avatar_cabang'  => $avatar_cabang->avatar,
 			'namars'  		 => $avatar_cabang->namars,
 			'lastlogin'      => $this->details->lastlogin,

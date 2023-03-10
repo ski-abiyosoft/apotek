@@ -19,6 +19,7 @@ class Master_user extends CI_Controller {
 		{
 			$this->load->helper('url');
 			$d['grup']     = $this->db->query("SELECT*FROM ms_modul_grup order by nmgrup");
+			$d['shift']  = $this->db->query("SELECT*FROM tbl_setinghms where lset='SHFT' order by kodeset");
 			$d['uid']      = $this->db->get("tbl_namers");
 			$this->load->view('master/user/v_master_user',$d);
 		} else

@@ -86,6 +86,8 @@ class Farmasi_po extends CI_Controller
 
 	public function ajax_list($param)
 	{
+		// return $this->output->set_output(json_encode($this->input->post()));
+
 		$lvx    = $this->session->userdata('user_level');
 		$level  = $this->session->userdata('level');
 		$akses  = $this->M_global->cek_menu_akses($level, 3101);
@@ -102,12 +104,12 @@ class Farmasi_po extends CI_Controller
 		}
 
 		$data = array();
-		$no = $_POST['start'];
+		$no = isset($_POST['start']) ? $_POST['start'] : 0;
 		foreach ($list as $rd) {
 			$no++;
 			$row = array();
 			$disetujui = $this->db->get_where('userlogin', ['uidlogin' => $rd->disetujuioleh])->row_array();
-			$dx = $disetujui['username'];
+			$dx = isset($disetujui['username']) ? $disetujui['username'] : '';
 
 			if ($rd->closed == '0' && $rd->setuju == 0) {
 				$status = '<span class="label label-sm label-warning">Open</span>';
@@ -174,7 +176,7 @@ class Farmasi_po extends CI_Controller
 		}
 
 		$output = array(
-			"draw" => $_POST['draw'],
+			"draw" => isset($_POST['draw']) ? $_POST['draw'] : 1,
 			"recordsTotal" => $this->M_farmasi_po->count_all($dat[0], $bulan, $tahun),
 			"recordsFiltered" => $this->M_farmasi_po->count_filtered($dat[0],  $bulan, $tahun),
 			"data" => $data,

@@ -1209,183 +1209,196 @@ class PendaftaranVRS extends CI_Controller {
 	{
 		$cek        = $this->session->userdata('level');
 		$unit       = $this->session->userdata('unit');
-		$user       = $this->session->userdata('username');	
+		$user       = $this->session->userdata('username');
 		$noreg      = $this->input->get('noreg');
 		$umur       = $this->input->get('umur');
-		if(!empty($cek))
-		{				  
+		if (!empty($cek)) {
 			$avatar        = $this->session->userdata('avatar_cabang');
-			$get_regist = $this->db->get_where("tbl_regist", ['noreg' => $noreg])->row();
-			$get_pasien = $this->db->get_where("tbl_pasien", ['rekmed' => $get_regist->rekmed])->row();
-			$get_dokter = $this->db->get_where("tbl_dokter", ['kodokter' => $get_regist->kodokter])->row();
-			$get_hms = $this->db->get_where("tbl_setinghms", ['kodeset' => $get_regist->jenispas])->row();
-			$kop       = $this->M_cetak->kop($unit);
-			$profile   = data_master('tbl_namers', array('koders' => $unit));
-			$namars    = $kop['namars'];
-			$alamat    = $kop['alamat'];
-			$alamat2   = $kop['alamat2'];
-			$alamat3   = $profile->kota;
-			$kota      = $kop['kota'];
-			$phone     = $kop['phone'];
-			$whatsapp  = $kop['whatsapp'];
-			$npwp      = $kop['npwp'];
-			$chari     = '';
-			$chari .= " <table style=\"border-collapse:collapse;font-family: Century Gothic; font-size:16px; color:#000;\" width=\"100%\"  border=\"0\" cellspacing=\"0\" cellpadding=\"0\">
-				<thead>
+			$get_regist    = $this->db->get_where("tbl_regist", ['noreg' => $noreg])->row();
+			$get_pasien    = $this->db->get_where("tbl_pasien", ['rekmed' => $get_regist->rekmed])->row();
+			$get_dokter    = $this->db->get_where("tbl_dokter", ['kodokter' => $get_regist->kodokter])->row();
+			$get_hms       = $this->db->get_where("tbl_setinghms", ['kodeset' => $get_regist->jenispas])->row();
+			$kop           = $this->M_cetak->kop($unit);
+			$profile       = data_master('tbl_namers', array('koders' => $unit));
+			$namars        = $kop['namars'];
+			$alamat        = $kop['alamat'];
+			$alamat2       = $kop['alamat2'];
+			$alamat3       = $profile->kota;
+			$kota          = $kop['kota'];
+			$phone         = $kop['phone'];
+			$whatsapp      = $kop['whatsapp'];
+			$npwp          = $kop['npwp'];
+			$body         = '';
+
+			$body .= " <table style=\"border-collapse:collapse;font-family: Century Gothic; font-size:12px; color:#000;\" width=\"100%\"  border=\"0\" cellspacing=\"0\" cellpadding=\"0\">
+			<thead>
+				<tr>
+					<td rowspan=\"6\" align=\"center\">
+					<img src=\"" . base_url() . "assets/img_user/$avatar\"  width=\"70\" height=\"70\" /></td>
+					</td>
+					<td colspan=\"20\">
+						<b>
+							<tr>
+								<td style=\"font-size:12px;border-bottom: none;\"><b><br>$namars</b></td>
+							</tr>
+							<tr>
+								<td style=\"font-size:10px;\">$alamat</td>
+							</tr>
+							<tr>
+								<td style=\"font-size:10px;\">$alamat2</td>
+							</tr>
+							<tr>
+								<td style=\"font-size:10px;\">Wa :$whatsapp    Telp :$phone </td>
+							</tr>
+							<tr>
+								<td style=\"font-size:10px;\">No. NPWP : $npwp</td>
+							</tr>
+						</b>
+					</td>
+				</tr>
+			</table>";
+			$body .= "
+			<table style=\"border-collapse:collapse;font-family: tahoma; font-size:12px\" width=\"100%\" align=\"center\" border=\"0\">
+				<tr>
+					<td> &nbsp; </td>
+				</tr> 
+			</table>";
+
+			// $body .= "
+			// <table style=\"border-collapse:collapse;font-family: tahoma; font-size:2px\" width=\"100%\" align=\"center\" border=\"1\">     
+			// <tr>
+			// 	<td style=\"border-top: none;border-right: none;border-left: none;\"></td>
+			// </tr> 
+			// </table>";
+
+			$body .= "
+			<table style=\"margin-bottom:5px;border-collapse:collapse;font-family:Century Gothic;color:#000;border-bottom:1px dashed #000;\"  width=\"100%\" align=\"center\" border=\"0\">     
 					<tr>
-						<td rowspan=\"6\" align=\"center\">
-						<img src=\"" . base_url() . "assets/img_user/$avatar\"  width=\"70\" height=\"70\" /></td>
-						</td>
-						<td colspan=\"20\">
-							<b>
-								<tr>
-									<td style=\"font-size:16px;border-bottom: none;\"><b><br>$namars</b></td>
-								</tr>
-								<tr>
-									<td style=\"font-size:14px;\">$alamat</td>
-								</tr>
-								<tr>
-									<td style=\"font-size:14px;\">$alamat2</td>
-								</tr>
-								<tr>
-									<td style=\"font-size:14px;\">Wa :$whatsapp    Telp :$phone </td>
-								</tr>
-								<tr>
-									<td style=\"font-size:14px;\">No. NPWP : $npwp</td>
-								</tr>
-							</b>
-						</td>
+						<td style=\"border-top: none;border-right: none;border-left: none;\"></td>
+					</tr> 
+			</table>";
+
+			$body .= "
+			<table style=\"border-collapse:collapse;font-family: tahoma; font-size:10px\" width=\"100%\" align=\"center\" border=\"0\">
+					<tr>
+								<td> &nbsp; </td>
+					</tr> 
+			</table>";
+
+			$body .= "
+			<table style=\"border-collapse:collapse;font-family: Tahoma; font-size:10px\" width=\"100%\" align=\"center\" border=\"0\" cellspacing=\"1\" cellpadding=\"3\">
+					<tr>
+								<td width=\"15%\" style=\"text-align:center; font-size:20px;\"><b>TRACER NO. RM</b></td>
 					</tr>
-				</table>";
-			$chari .= "
-											<table style=\"border-collapse:collapse;font-family: tahoma; font-size:12px\" width=\"100%\" align=\"center\" border=\"0\">
-														<tr>
-																<td> &nbsp; </td>
-														</tr> 
-											</table>";
-			$chari .= "
-									<table style=\"border-collapse:collapse;font-family: tahoma; font-size:2px\" width=\"100%\" align=\"center\" border=\"1\">     
-											<tr>
-														<td style=\"border-top: none;border-right: none;border-left: none;\"></td>
-											</tr> 
-									</table>";
-			$chari .= "
-									<table style=\"border-collapse:collapse;font-family: tahoma; font-size:2px\" width=\"100%\" align=\"center\" border=\"1\">     
-											<tr>
-														<td style=\"border-top: none;border-right: none;border-left: none;\"></td>
-											</tr> 
-									</table>";
-			$chari .= "
-									<table style=\"border-collapse:collapse;font-family: tahoma; font-size:12px\" width=\"100%\" align=\"center\" border=\"0\">
-											<tr>
-														<td> &nbsp; </td>
-											</tr> 
-									</table>";
-			$chari .= "
-									<table style=\"border-collapse:collapse;font-family: Tahoma; font-size:11px\" width=\"100%\" align=\"center\" border=\"0\" cellspacing=\"1\" cellpadding=\"3\">
-											<tr>
-														<td width=\"15%\" style=\"text-align:center; font-size:30px;\"><b>TRACER NO. RM</b></td>
-											</tr>
-											<tr>
-														<td width=\"15%\" style=\"text-align:center; font-size:30px;\"><b>".$get_regist->rekmed."</b></td>
-											</tr>
-											<tr>
-														<td width=\"15%\" style=\"text-align:center; font-size:14px;\">TGL. MASUK : ".date('d-m-Y', strtotime($get_regist->tglmasuk))." ".date('H:i:s', strtotime($get_regist->jam))."</td>
-											</tr>
-									</table>";
-			$chari .= "
-									<table style=\"border-collapse:collapse;font-family: tahoma; font-size:12px\" width=\"100%\" align=\"center\" border=\"0\">
-											<tr>
-														<td> &nbsp; </td>
-											</tr> 
-									</table>";	
-			$chari .= "
-									<table style=\"border-collapse:collapse;font-family: tahoma; font-size:2px\" width=\"100%\" align=\"center\" border=\"1\">     
-											<tr>
-														<td style=\"border-top: none;border-right: none;border-left: none;\"></td>
-											</tr> 
-									</table>";
-			$chari .= "
-									<table style=\"border-collapse:collapse;font-family: tahoma; font-size:2px\" width=\"100%\" align=\"center\" border=\"1\">     
-											<tr>
-														<td style=\"border-top: none;border-right: none;border-left: none;\"></td>
-											</tr> 
-									</table>";
-			$chari .= "
-									<table style=\"border-collapse:collapse;font-family: tahoma; font-size:12px\" width=\"100%\" align=\"center\" border=\"0\">
-											<tr>
-														<td> &nbsp; </td>
-											</tr> 
-									</table>";
-			$chari .= "
-									<table style=\"border-collapse:collapse;font-family: Tahoma; font-size:14px; text-transform: uppercase;\" width=\"60%\" align=\"center\" border=\"0\" cellspacing=\"1\" cellpadding=\"3\">
-											<tr>
-														<td width=\"15%\" style=\"text-align:center; text-transform: uppercase;\">NAMA PASIEN : $get_pasien->namapas</td>
-											</tr>
-											<tr>
-														<td width=\"15%\" style=\"text-align:center; text-transform: uppercase;\">USIA/UMUR : $umur</td>
-											</tr>
-											<tr>
-														<td width=\"15%\" style=\"text-align:center; text-transform: uppercase;\">NO. KUNJUNGAN : -</td>
-											</tr>
-											<tr>
-														<td width=\"15%\" style=\"text-align:center; text-transform: uppercase;\">DOKTER POLIKLINIK : <b>$get_dokter->nadokter</b></td>
-											</tr>
-											<tr>
-														<td width=\"15%\" style=\"text-align:center; text-transform: uppercase;\">POLIKLINIK : $get_regist->kodepos</td>
-											</tr>
-											<tr>
-														<td width=\"15%\" style=\"text-align:center; text-transform: uppercase;\">CARA BAYAR : $get_hms->keterangan</td>
-											</tr>
-											<tr>
-														<td width=\"15%\" style=\"text-align:center; text-transform: uppercase;\">USER : $get_regist->username</td>
-											</tr>
-											<tr>
-														<td width=\"15%\" style=\"text-align:center; text-transform: uppercase;\">USER REGISTRASI : $get_regist->username</td>
-											</tr>
-									</table>";
-			$chari .= "
-									<table style=\"border-collapse:collapse;font-family: tahoma; font-size:12px\" width=\"100%\" align=\"center\" border=\"0\">
-											<tr>
-														<td> &nbsp; </td>
-											</tr> 
-									</table>";	
-			$chari .= "
-									<table style=\"border-collapse:collapse;font-family: tahoma; font-size:2px\" width=\"100%\" align=\"center\" border=\"1\">     
-											<tr>
-														<td style=\"border-top: none;border-right: none;border-left: none;\"></td>
-											</tr> 
-									</table>";
-			$chari .= "
-									<table style=\"border-collapse:collapse;font-family: tahoma; font-size:2px\" width=\"100%\" align=\"center\" border=\"1\">     
-											<tr>
-														<td style=\"border-top: none;border-right: none;border-left: none;\"></td>
-											</tr> 
-									</table>";
-			$chari .= "
-									<table style=\"border-collapse:collapse;font-family: tahoma; font-size:12px\" width=\"100%\" align=\"center\" border=\"0\">
-											<tr>
-														<td> &nbsp; </td>
-											</tr> 
-									</table>";
-			$chari .= "
-									<table style=\"border-collapse:collapse;font-family: Tahoma; font-size:11px\" width=\"60%\" align=\"center\" border=\"0\" cellspacing=\"1\" cellpadding=\"3\">
-											<tr>
-														<td width=\"15%\" style=\"text-align:center; font-size:25px;\"><b>SISIPKAN SEBAGAI PENGGANTI BERKAS RM YANG KELUAR</b></td>
-											</tr>
-									</table>";
-			$chari .= "
-									<table style=\"border-collapse:collapse;font-family: Tahoma; font-size:11px\" width=\"60%\" align=\"center\" border=\"0\" cellspacing=\"1\" cellpadding=\"3\">
-											<tr>
-														<td width=\"15%\" style=\"text-align:center; font-size:14px;\">TGL. CETAK : ".date('d-m-Y')." ".date("H:i:s")."</td>
-											</tr>
-									</table>";
-			$data['prev'] = $chari;
-			$judul = "TRACER NO. RM ".$get_regist->rekmed;
+					<tr>
+								<td width=\"15%\" style=\"text-align:center; font-size:12px;\"><b>" . $get_regist->rekmed . "</b></td>
+					</tr>
+					<tr>
+								<td width=\"15%\" style=\"text-align:center; font-size:10px;\">TGL. MASUK : " . date('d-m-Y', strtotime($get_regist->tglmasuk)) . " " . date('H:i:s', strtotime($get_regist->jam)) . "</td>
+					</tr>
+			</table>";
+			$body .= "
+			<table style=\"margin-bottom:5px;border-collapse:collapse;font-family:Century Gothic;color:#000;border-bottom:1px dashed #000;\" width=\"100%\" align=\"center\" border=\"0\">
+					<tr>
+								<td> &nbsp; </td>
+					</tr> 
+			</table>";
+			// $body .= "
+			// <table style=\"border-collapse:collapse;font-family: tahoma; font-size:2px\" width=\"100%\" align=\"center\" border=\"1\">     
+			// 		<tr>
+			// 					<td style=\"border-top: none;border-right: none;border-left: none;\"></td>
+			// 		</tr> 
+			// </table>";
+			// $body .= "
+			// <table style=\"border-collapse:collapse;font-family: tahoma; font-size:2px\" width=\"100%\" align=\"center\" border=\"1\">     
+			// 		<tr>
+			// 					<td style=\"border-top: none;border-right: none;border-left: none;\"></td>
+			// 		</tr> 
+			// </table>";
+			$body .= "
+			<table style=\"border-collapse:collapse;font-family: tahoma; font-size:10px\" width=\"100%\" align=\"center\" border=\"0\">
+					<tr>
+								<td> &nbsp; </td>
+					</tr> 
+			</table>";
+
+			$body .= "
+			<table style=\"border-collapse:collapse;font-family: Tahoma; font-size:12px; text-transform: uppercase;\" width=\"60%\" align=\"center\" border=\"0\" cellspacing=\"1\" cellpadding=\"3\">
+					<tr>
+								<td width=\"15%\" style=\"text-align:center; text-transform: uppercase;\">NAMA PASIEN : $get_pasien->namapas</td>
+					</tr>
+					<tr>
+								<td width=\"15%\" style=\"text-align:center; text-transform: uppercase;\">USIA/UMUR : $umur</td>
+					</tr>
+					<tr>
+								<td width=\"15%\" style=\"text-align:center; text-transform: uppercase;\">NO. KUNJUNGAN : -</td>
+					</tr>
+					<tr>
+								<td width=\"15%\" style=\"text-align:center; text-transform: uppercase;\">DOKTER POLIKLINIK : <b>$get_dokter->nadokter</b></td>
+					</tr>
+					<tr>
+								<td width=\"15%\" style=\"text-align:center; text-transform: uppercase;\">POLIKLINIK : $get_regist->kodepos</td>
+					</tr>
+					<tr>
+								<td width=\"15%\" style=\"text-align:center; text-transform: uppercase;\">CARA BAYAR : $get_hms->keterangan</td>
+					</tr>
+					<tr>
+								<td width=\"15%\" style=\"text-align:center; text-transform: uppercase;\">USER : $get_regist->username</td>
+					</tr>
+					<tr>
+								<td width=\"15%\" style=\"text-align:center; text-transform: uppercase;\">USER REGISTRASI : $get_regist->username</td>
+					</tr>
+			</table>";
+			// $body .= "
+			// <table style=\"border-collapse:collapse;font-family: tahoma; font-size:10px\" width=\"100%\" align=\"center\" border=\"0\">
+			// 		<tr>
+			// 					<td> &nbsp; </td>
+			// 		</tr> 
+			// </table>";
+
+			// $body .= "
+			// <table style=\"border-collapse:collapse;font-family: tahoma; font-size:2px\" width=\"100%\" align=\"center\" border=\"1\">     
+			// 		<tr>
+			// 					<td style=\"border-top: none;border-right: none;border-left: none;\"></td>
+			// 		</tr> 
+			// </table>";
+
+			// $body .= "
+			// <table style=\"border-collapse:collapse;font-family: tahoma; font-size:2px\" width=\"100%\" align=\"center\" border=\"1\">     
+			// 		<tr>
+			// 					<td style=\"border-top: none;border-right: none;border-left: none;\"></td>
+			// 		</tr> 
+			// </table>";
+
+			$body .= "
+			<table style=\"margin-bottom:5px;border-collapse:collapse;font-family:Century Gothic;color:#000;border-bottom:1px dashed #000;\" width=\"100%\" align=\"center\" border=\"0\">
+					<tr>
+								<td> &nbsp; </td>
+					</tr> 
+			</table>";
+
+			$body .= "
+			<table style=\"border-collapse:collapse;font-family: Tahoma; font-size:11px\" width=\"60%\" align=\"center\" border=\"0\" cellspacing=\"1\" cellpadding=\"3\">
+				<tr>
+					<td width=\"15%\" style=\"text-align:center; font-size:12px;\"><b>SISIPKAN SEBAGAI PENGGANTI BERKAS RM YANG KELUAR</b></td>
+				</tr>
+			</table>";
+
+			$body .= "
+			<table style=\"border-collapse:collapse;font-family: Tahoma; font-size:10px\" width=\"60%\" align=\"center\" border=\"0\" cellspacing=\"1\" cellpadding=\"3\">
+				<tr>
+					<td width=\"15%\" style=\"text-align:center; font-size:12px;\">TGL. CETAK : " . date('d-m-Y') . " " . date("H:i:s") . "</td>
+				</tr>
+			</table>";
+			// $data['prev'] = $chari;
+			$position    = 'P';
+			$cekpdf      = 1;
+			$judul       = "TRACER NO. RM " . $get_regist->rekmed;
 			echo ("<title>$judul</title>");
-			$this->M_cetak->mpdf('P', 'A4', $judul, $chari, '.PDF', 10, 10, 10, 2);
-		} else {	
-			header('location:'.base_url());	
+			// $this->M_cetak->mpdf('P', 'A4', $judul, $chari, '.PDF', 10, 10, 10, 2);
+			$this->M_cetak->template_nota(120, 140, $judul, $body, $position, $tglresep, $cekpdf);
+		} else {
+			header('location:' . base_url());
 		}
 	}
 	// end cetak rj 3

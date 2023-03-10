@@ -276,7 +276,7 @@ class Kasir_obat extends CI_Controller
 			'username' => $userid,
 			'kembalikeuangmuka'      => $this->input->post('kembaliuang'),
 			'namapasien' => $this->input->post('namapasien'),
-			'shift' => 0,
+			'shift' => $shift,
 		);
 
 		$insert = $this->db->insert('tbl_kasir', $data);
@@ -903,27 +903,27 @@ class Kasir_obat extends CI_Controller
 		$cek = $this->session->userdata('level');
 		$unit = $this->session->userdata('unit');
 		if (!empty($cek)) {
-			$nokwitansi = $this->input->get('kwitansi');
-			$noresep    = $this->input->get('resep');
+			$nokwitansi    = $this->input->get('kwitansi');
+			$noresep       = $this->input->get('resep');
 
-			$profile = data_master('tbl_namers', array('koders' => $unit));
-			$nama_usaha = $profile->namars;
-			$alamat1  = $profile->alamat;
-			$alamat2  = $profile->kota;
+			$profile       = data_master('tbl_namers', array('koders' => $unit));
+			$nama_usaha    = $profile->namars;
+			$alamat1       = $profile->alamat;
+			$alamat2       = $profile->kota;
 
-			$qheader	= "SELECT * from tbl_apohresep where resepno = '$noresep'";
-			$ppp 		= $this->db->query("SELECT * from tbl_apohresep where resepno = '$noresep'")->row();
-			$qkasir   = "SELECT * from tbl_kasir where nokwitansi = '$nokwitansi'";
-			$qdetil      = "SELECT * from tbl_apodresep where resepno = '$noresep'";
-			$qposting    = "SELECT * from tbl_apoposting where resepno = '$noresep'";
-			$qkartu      = "SELECT * from tbl_kartukredit where nokwitansi = '$nokwitansi'";
+			$qheader       = "SELECT * from tbl_apohresep where resepno = '$noresep'";
+			$ppp           = $this->db->query("SELECT * from tbl_apohresep where resepno = '$noresep'")->row();
+			$qkasir        = "SELECT * from tbl_kasir where nokwitansi = '$nokwitansi'";
+			$qdetil        = "SELECT * from tbl_apodresep where resepno = '$noresep'";
+			$qposting      = "SELECT * from tbl_apoposting where resepno = '$noresep'";
+			$qkartu        = "SELECT * from tbl_kartukredit where nokwitansi = '$nokwitansi'";
 			$queryr        = "SELECT * from tbl_aporacik where resepno = '$noresep' AND koders='$unit'";
-			$detil_r        = "SELECT * from tbl_apodetresep where resepno = '$noresep' AND koders='$unit'";
-			$racikan 	   = $this->db->query($queryr)->row_array();
-			$rck         = $this->db->query($detil_r)->result();
-			$aporacik = $this->db->get_where('tbl_aporacik', ['resepno' => $noresep])->row();
+			$detil_r       = "SELECT * from tbl_apodetresep where resepno = '$noresep' AND koders='$unit'";
+			$racikan       = $this->db->query($queryr)->row_array();
+			$rck           = $this->db->query($detil_r)->result();
+			$aporacik      = $this->db->get_where('tbl_aporacik', ['resepno' => $noresep])->row();
 
-			$qvoucher = $this->db->query("SELECT tbl_kasir.*, tbl_pasien.namapas
+			$qvoucher      = $this->db->query("SELECT tbl_kasir.*, tbl_pasien.namapas
 				from tbl_kasir left outer join tbl_pasien on tbl_kasir.rekmed=tbl_pasien.rekmed
 				where nokwitansi = '$nokwitansi'")->row();
 
@@ -978,22 +978,22 @@ class Kasir_obat extends CI_Controller
 				$pdf->ln(2);
 			}
 			$pdf->SetWidths(array(20, 60, 40, 35, 35));
-			$border = array('TBRL', 'TBRL', 'TBRL', 'TBRL', 'TBRL');
-			$align  = array('C', 'C', 'C', 'C', 'C');
+			$border    = array('TBRL', 'TBRL', 'TBRL', 'TBRL', 'TBRL');
+			$align     = array('C', 'C', 'C', 'C', 'C');
 			$pdf->setfont('Arial', 'B', 8);
 			$pdf->SetAligns(array('L', 'C', 'R'));
-			$pdf->SetFillColor(204 ,204 ,204);
+			$pdf->SetFillColor(255 ,255 ,255);
 			//$pdf->settextcolor(255,255,255);
-			$fc = array('0', '0', '0', '0', '0', '0');
-			$judul = array('No.', 'Keterangan', 'Qty', 'Diskon', 'Jumlah Rp');
+			$fc        = array('0', '0', '0', '0', '0', '0');
+			$judul     = array('No.', 'Keterangan', 'Qty', 'Diskon', 'Jumlah Rp');
 			$pdf->FancyRow2(8, $judul, $fc, $border, $align);
-			$border = array('', '', '');
+			$border    = array('', '', '');
 			$pdf->setfont('Arial', '', 8);
-			$tot = 0;
-			$subtot = 0;
-			$tdisc  = 0;
-			$border = array('TBRL', 'TBRL', 'TBRL', 'TBRL', 'TBRL', 'TBRL');
-			$align  = array('L', 'L', 'R', 'R', 'R', 'R');
+			$tot       = 0;
+			$subtot    = 0;
+			$tdisc     = 0;
+			$border    = array('TBRL', 'TBRL', 'TBRL', 'TBRL', 'TBRL', 'TBRL');
+			$align     = array('C', 'L', 'C', 'R', 'R', 'R');
 			$fc = array('0', '0', '0', '0', '0', '0');
 			$pdf->SetFillColor(0, 0, 139);
 			$pdf->settextcolor(0);
@@ -1200,9 +1200,9 @@ class Kasir_obat extends CI_Controller
 			$border = array('', '', '', '', '', '');
 
 			if ($kasir->kembalikeuangmuka == 0) {
-				$pdf->FancyRow(array(($kasir->kembali > 0 ? 'Kembali ke pasien' : ''), ($kasir->kembali > 0 ? ':' : ''), angka_rp($kasir->kembali, 0), '', '', ''), $fc, $border, $align, $style, $size);
+				$pdf->FancyRow(array(($kasir->kembali >= 0 ? 'Kembali ke pasien' : ''), ($kasir->kembali >= 0 ? ':' : ''), number_format($kasir->kembali, 0), '', '', ''), $fc, $border, $align, $style, $size);
 			} else {
-				$pdf->FancyRow(array(($kasir->kembali > 0 ? 'Kembali ke Uang muka' : ''), ($kasir->kembali > 0 ? ':' : ''), angka_rp($kasir->kembali, 0), '', '', ''), $fc, $border, $align, $style, $size);
+				$pdf->FancyRow(array(($kasir->kembali >= 0 ? 'Kembali ke Uang muka' : ''), ($kasir->kembali >= 0 ? ':' : ''), number_format($kasir->kembali, 0), '', '', ''), $fc, $border, $align, $style, $size);
 			}
 
 			$pdf->settextcolor(0);
@@ -1355,7 +1355,7 @@ class Kasir_obat extends CI_Controller
 						<tr>
 									<td style=\"border-top: none;border-right: none;border-left: none;\">Untuk Jaminan</td>
 									<td style=\"border-top: none;border-right: none;border-left: none;\"> : </td>
-									<td style=\"border-top: none;border-right: none;border-left: none;\">Pemeriksaan dokter & Resep</td>
+									<td style=\"border-top: none;border-right: none;border-left: none;\">Jaminan Resep</td>
 						</tr> 
 						<tr>
 							<td style=\"border-top: none;border-right: none;border-left: none;\">Pasien</td>

@@ -168,6 +168,11 @@ $(document).ready(function() {
 });
 
 
+function ubah_nama(param) {
+    let text_space = param.replaceAll(' ', '');
+    let text = text_space.toUpperCase();
+    $("#kode").val(text);
+}
 
 function add_bank()
 {
@@ -318,7 +323,7 @@ function delete_data(id)
                         <div class="form-group">
                             <label class="control-label col-md-3">Kode</label>
                             <div class="col-md-9">
-                                <input name="kode" placeholder="Kode" class="form-control input-small" maxlength="5" type="text">
+                                <input name="kode" id="kode" placeholder="Kode" class="form-control input-small" maxlength="5" type="text" onkeyup="ubah_nama(this.value)">
                                 <span class="help-block"></span>
                             </div>
                         </div>

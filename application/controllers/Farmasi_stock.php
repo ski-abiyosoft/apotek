@@ -405,6 +405,7 @@ class Farmasi_stock extends CI_Controller
 				<td bgcolor=\"#cccccc\" width=\"10%\" align=\"center\"><b>SATUAN</b></td>
 				<td bgcolor=\"#cccccc\" width=\"10%\" align=\"center\"><b>MINIMUM STOK</b></td>
 				<td bgcolor=\"#cccccc\" width=\"10%\" align=\"center\"><b>REORDER STOK</b></td>
+				<td bgcolor=\"#cccccc\" width=\"10%\" align=\"center\"><b>NILAI PERSEDIAAN</b></td>
 			</tr>
 			
 		</thead>";
@@ -417,6 +418,12 @@ class Farmasi_stock extends CI_Controller
 			$kodebarang    = $row->kodebarang;
 			$namabarang    = $row->namabarang;
 			$satuan1       = $row->satuan1;
+			$barangcabang = $this->db->query("SELECT * FROM tbl_barangcabang WHERE kodebarang = '$row->kodebarang' AND koders = '$row->koders'")->row();
+			if($barangcabang) {
+						$nilai_persediaan = $barangcabang->nilai_persediaan;
+			} else {
+						$nilai_persediaan = 0;
+			}
 			if($cek==1){
 				$saldoawal     = number_format($row->saldoawal, 0, ',', '.');
 				$sesuai        = number_format($row->sesuai, 0, ',', '.');
@@ -426,6 +433,7 @@ class Farmasi_stock extends CI_Controller
 				$saldoakhir    = number_format($row->saldoakhir, 0, ',', '.');
 				$minstock    = number_format($row->minstock, 0, ',', '.');
 				$reorder    = number_format($row->reorder, 0, ',', '.');
+				$nilai_persediaan    = number_format($nilai_persediaan, 0, ',', '.');
 			}else{
 				$saldoawal     = $row->saldoawal;
 				$sesuai        = $row->sesuai;
@@ -435,6 +443,7 @@ class Farmasi_stock extends CI_Controller
 				$saldoakhir    = $row->saldoakhir;
 				$minstock    = $row->minstock;
 				$reorder    = $row->reorder;
+				$nilai_persediaan    = $nilai_persediaan;
 			}
 			
 
@@ -451,6 +460,7 @@ class Farmasi_stock extends CI_Controller
 			<td style=\"\" align=\"left\">$satuan1</td>
 			<td style=\"\" align=\"left\">$minstock</td>
 			<td style=\"\" align=\"left\">$reorder</td>
+			<td style=\"\" align=\"left\">$nilai_persediaan</td>
 			</tr>
 			";
 

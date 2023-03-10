@@ -446,6 +446,8 @@
 																<option <?= ($k->cardtype == '2' ? 'selected' : '') ?> value="2">CREDIT CARD
 																</option>
 																<option <?= ($k->cardtype == '3' ? 'selected' : '') ?> value="3">TRANFER</option>
+																<option <?= ($k->cardtype == '4' ? 'selected' : '') ?> value="4">ONLINE</option>
+																<option <?= ($k->cardtype == '5' ? 'selected' : '') ?> value="5">QRIS</option>
 																</select>
 															</td>
 															<td width="15%"><input name="bayar_nokartu[]" id="bayar_nokartu<?= $no; ?>"
@@ -477,6 +479,8 @@
 																<option value="1">DEBIT</option>	
 																<option value="2">CREDIT CARD</option>
 																<option value="3">TRANFER</option>
+																<option value="4">ONLINE</option>
+																<option value="5">QRIS</option>
 																</select>												
 															</td>
 															<td width="15%"><input name="bayar_nokartu[]" class="form-control"></td>								

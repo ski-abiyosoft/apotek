@@ -378,17 +378,17 @@
 			$chari .= "
 							<table style=\"border-collapse:collapse;font-family: tahoma; font-size:12px\" width=\"100%\" align=\"center\" border=\"1\">
 								<tr>
-									<th width=\"5%\">No</th>
-									<th width=\"20%\">No. Bukti</th>
-									<th width=\"10%\">Tanggal</th>
-									<th width=\"10%\">Keterangan</th>
-									<th width=\"15%\">Rekanan</th>
-									<th width=\"10%\">Nilai Pembelian</th>
-									<th width=\"5%\">Terima</th>
-									<th width=\"5%\">Keluar</th>
-									<th width=\"5%\">Saldo Akhir</th>
-									<th width=\"10%\">Nilai Persediaan</th>
-									<th width=\"10%\">Total Nilai Persediaan</th>
+									<th bgcolor=\"#cccccc\" width=\"5%\">No</th>
+									<th bgcolor=\"#cccccc\" width=\"20%\">No. Bukti</th>
+									<th bgcolor=\"#cccccc\" width=\"10%\">Tanggal</th>
+									<th bgcolor=\"#cccccc\" width=\"10%\">Keterangan</th>
+									<th bgcolor=\"#cccccc\" width=\"15%\">Rekanan</th>
+									<th bgcolor=\"#cccccc\" width=\"10%\">Nilai Pembelian</th>
+									<th bgcolor=\"#cccccc\" width=\"5%\">Terima</th>
+									<th bgcolor=\"#cccccc\" width=\"5%\">Keluar</th>
+									<th bgcolor=\"#cccccc\" width=\"5%\">Saldo Akhir</th>
+									<th bgcolor=\"#cccccc\" width=\"10%\">Nilai Persediaan</th>
+									<th bgcolor=\"#cccccc\" width=\"10%\">Total Nilai Persediaan</th>
 								</tr> ";
 			$date1 = str_replace('-', '/', $dari);
 			$tomorrow = date('Y-m-d', strtotime($date1 . "-1 days"));
@@ -424,49 +424,49 @@
 					$jam          = date("H:i:s");
 				}
 			// }
-			$chari .= "							<tr>
-																<td width=\"5%\">#</td>
-																<td width=\"20%\">SALDO</td>
-																<td width=\"10%\">" . date("d-m-Y", strtotime($_tanggalawal)) . "</td>
-																<td width=\"10%\">SALDO AWAL</td>
-																<td width=\"15%\">SALDO AWAL</td>
-																<td width=\"10%\" style=\"text-align:right;\">-</td>
-																<td width=\"5%\" style=\"text-align:right;\">-</td>
-																<td width=\"5%\" style=\"text-align:right;\">-</td>
-																<td width=\"5%\" style=\"text-align:right;\">" . number_format($saldo2) . "</td>
-																<td width=\"10%\" style=\"text-align:right;\">-</td>
-																<td width=\"10%\" style=\"text-align:right;\">-</td>
-															</tr>
-															<tr>
-																<td colspan=\"11\">&nbsp;</td>
-															</tr>";
-			$date1 = str_replace('-', '/', $sampai);
-			$now = date('Y-m-d', strtotime($date1 . "+1 days"));
-			$queryx = $this->M_KartuStock->tgl($cabang, $barang, $gudang, $dari, $now);
-			$no = 1;
-			$hgr = 0;
+			$chari .= "<tr>
+				<td width=\"5%\">#</td>
+				<td width=\"20%\">SALDO</td>
+				<td width=\"10%\">" . date("d-m-Y", strtotime($_tanggalawal)) . "</td>
+				<td width=\"10%\">SALDO AWAL</td>
+				<td width=\"15%\">SALDO AWAL</td>
+				<td width=\"10%\" style=\"text-align:right;\">-</td>
+				<td width=\"5%\" style=\"text-align:right;\">-</td>
+				<td width=\"5%\" style=\"text-align:right;\">-</td>
+				<td width=\"5%\" style=\"text-align:right;\">" . number_format($saldo2) . "</td>
+				<td width=\"10%\" style=\"text-align:right;\">-</td>
+				<td width=\"10%\" style=\"text-align:right;\">-</td>
+			</tr>
+			<tr>
+				<td colspan=\"11\">&nbsp;</td>
+			</tr>";
+			$date1   = str_replace('-', '/', $sampai);
+			$now     = date('Y-m-d', strtotime($date1 . "+1 days"));
+			$queryx  = $this->M_KartuStock->tgl($cabang, $barang, $gudang, $dari, $now);
+			$no      = 1;
+			$hgr     = 0;
 			foreach ($queryx as $db) {
-				$rownya = $no++;
-				$hgr += $db->harga;
+				$rownya   = $no++;
+				$hgr      += $db->harga;
 			}
 			$no = 1;
 			$saldoxx= 0;
 			foreach ($queryx as $db) {
-				$nilai = $db->qty * $db->harga;
-				$saldox = $saldo2 + ($saldoxx += $db->terima - $db->keluar);
-				$chari .= "							<tr>
-																	<td width=\"5%\">".$no++."</td>
-																	<td width=\"20%\">$db->nomor</td>
-																	<td width=\"10%\">" . date("d-m-Y", strtotime($db->tanggal)) . "</td>
-																	<td width=\"10%\">$db->keterangan</td>
-																	<td width=\"15%\">$db->rekanan</td>
-																	<td width=\"10%\" style=\"text-align:right;\">" . number_format($nilai) . "</td>
-																	<td width=\"5%\" style=\"text-align:right;\">" . number_format($db->terima) . "</td>
-																	<td width=\"5%\" style=\"text-align:right;\">" . number_format($db->keluar) . "</td>
-																	<td width=\"5%\" style=\"text-align:right;\">" . number_format($saldox) . "</td>
-																	<td width=\"10%\" style=\"text-align:right;\">" . number_format($db->hpp) . "</td>
-																	<td width=\"10%\" style=\"text-align:right;\">" . number_format($db->totalhpp) . "</td>
-																</tr>";
+				$nilai    = $db->qty * $db->harga;
+				$saldox   = $saldo2 + ($saldoxx += $db->terima - $db->keluar);
+				$chari .= "<tr>
+					<td width=\"5%\">".$no++."</td>
+					<td width=\"20%\">$db->nomor</td>
+					<td width=\"10%\">" . date("d-m-Y", strtotime($db->tanggal)) . "</td>
+					<td width=\"10%\">$db->keterangan</td>
+					<td width=\"15%\">$db->rekanan</td>
+					<td width=\"10%\" style=\"text-align:right;\">" . number_format($nilai) . "</td>
+					<td width=\"5%\" style=\"text-align:right;\">" . number_format($db->terima) . "</td>
+					<td width=\"5%\" style=\"text-align:right;\">" . number_format($db->keluar) . "</td>
+					<td width=\"5%\" style=\"text-align:right;\">" . number_format($saldox) . "</td>
+					<td width=\"10%\" style=\"text-align:right;\">" . number_format($db->hpp) . "</td>
+					<td width=\"10%\" style=\"text-align:right;\">" . number_format($db->totalhpp) . "</td>
+				</tr>";
 			}
 			$chari .= "</table>";
 			$data['prev'] = $chari;

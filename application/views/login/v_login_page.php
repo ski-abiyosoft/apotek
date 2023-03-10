@@ -110,7 +110,7 @@
 				<label class="control-label visible-ie8 visible-ie9">Nama</label>
 				<div class="input-icon">
 					<i class="fa fa-user"></i>
-					<input class="form-control placeholder-no-fix" type="text" autocomplete="off" placeholder="Nama" id="username" name="username" onchange="getcabang()" required /><!-- onclick="getcabang()" onchange="getcabang()"/> -->
+					<input class="form-control placeholder-no-fix" type="text" autocomplete="off" placeholder="Nama" id="username" name="username" onchange="getcabang(); getshift();"" required /><!-- onclick="getcabang()" onchange="getcabang()"/> -->
 				</div>
 			</div>
 			<div class="form-group">
@@ -141,6 +141,11 @@
 					</div>
 				</div>
 			</div>
+			<div class="form-group">
+              <label class="control-label "> &nbsp; <b> Shift :</b></label>
+              <select name="shift" id="shift" class="form-control" required>
+              </select>
+            </div>
 			<div class="form-actions" style="padding:0px 30px 5px 30px;">            
 				
 				<button type="submit" class="btn blue pull-right" id="login">
@@ -489,32 +494,70 @@
 			}
 		});
 	}
-    
-/*function getcabang() { 
-	var xhttp;      
-	var str = $('[name=username]').val();
-	$('#cabang').val('');  	
-	if(str==""){
-		s
-	}  else  {
+
+	function getshift() 
+	{
+		var listcabang;
+		var uidlogin = $("#username").val();
 		$.ajax({
-			url : "<?php echo base_url();?>app/getcabang/?kode="+str,
-			type: "GET",
-			dataType: "JSON",		
-			success: function(data){		     
-				if(data.namacabang=='***'){
-					document.getElementById('password').disabled=true;  
-					//document.getElementById('username').focus();
-					swal('','Nama User Salah / Tidak Ditemukan...','');
-				} else {
-					$('#cabang').val(data.namacabang);  	
-					document.getElementById('password').disabled=false;  
-					//document.getElementById('password').focus();
-		  		}
+		url: "<?php echo base_url();?>app/getshift/?uid=" + uidlogin,
+		type: "GET",
+		dataType: "JSON",
+		success: function(data) {
+
+			if (data.shift == '1') {
+
+			var option = "<option value=''>--- Pilih Shift ---</option>"
+			$.ajax({
+				url: "<?php echo base_url();?>app/getshift2/?uid=" + uidlogin,
+				type: 'GET',
+				dataType: 'json',
+				success: function(data) {
+				if (data.message == "Success") {
+					$.each(data.data, function(index, val) {
+
+					option += "<option value='" + val.kodeset + "'>" + val.keterangan + "</option>";
+					});
+
+					$('#shift').html(option);
+				}
+				}
+			});
+
+			} else {
+			var option = "<option value='0'>--- Tanpa Shift ---</option>"
+			$('#shift').html(option);
 			}
-		});	    
-	}	
-} */
+
+		}
+		});
+	}
+    
+	/*function getcabang() { 
+		var xhttp;      
+		var str = $('[name=username]').val();
+		$('#cabang').val('');  	
+		if(str==""){
+			s
+		}  else  {
+			$.ajax({
+				url : "<?php echo base_url();?>app/getcabang/?kode="+str,
+				type: "GET",
+				dataType: "JSON",		
+				success: function(data){		     
+					if(data.namacabang=='***'){
+						document.getElementById('password').disabled=true;  
+						//document.getElementById('username').focus();
+						swal('','Nama User Salah / Tidak Ditemukan...','');
+					} else {
+						$('#cabang').val(data.namacabang);  	
+						document.getElementById('password').disabled=false;  
+						//document.getElementById('password').focus();
+					}
+				}
+			});	    
+		}	
+	} */
 		
 
     

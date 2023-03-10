@@ -86,7 +86,8 @@ function history_log($shipt='' ,$modul='' ,$aksi='' ,$trno='' ,$ket='')
 
 /* Rizki */
 /* Urut : Mengambil Last No urut Tapi Ketika Reload Akan Terinsert */
-function urut_transaksi( $trkode, $lebar){
+function urut_transaksi( $trkode, $lebar)
+{
 	$CI =& get_instance();
 	$kode_cabang = $CI->session->userdata('unit');
 	$CI->db->query("UPDATE tbl_urutrs set nourut=nourut+1 where kode_urut='$trkode' and koders='$kode_cabang' ");
@@ -112,6 +113,37 @@ function urut_transaksi( $trkode, $lebar){
 
 
 	$kode_transaksi1 = $kode_cabang.trim($param1).trim($param2).trim($param3);
+	$kode_transaksi2 = $kode_transaksi1.str_pad( $nomor_urut, $lebar-strlen($kode_transaksi1), '0', STR_PAD_LEFT );
+	return $kode_transaksi2;	
+}
+
+function urut_transaksi_kel( $trkode, $lebar)
+{
+	$CI =& get_instance();
+	$kode_cabang = 'ABI';
+	$CI->db->query("UPDATE tbl_urutrs set nourut=nourut+1 where kode_urut='$trkode' and koders='$kode_cabang' ");
+	$data_urut = $CI->db->query("SELECT * from tbl_urutrs where kode_urut='$trkode' and koders='$kode_cabang'")->row();
+	$nomor_urut = $data_urut->nourut;
+	$param1 = trim($data_urut->param1);
+	$param2 = trim($data_urut->param2);
+	$param3 = trim($data_urut->param3);
+		
+	if($param1=='TH'){
+		$param1 = date('Y'); 
+	} 
+
+	if($param2=='BL'){
+		$param2 = date('m'); 
+	} elseif($param2=='TH'){	  
+		$param2 = date('Y');   
+	} 
+
+	if($param3=='BL'){
+		$param3 = date('m'); 
+	} 
+
+
+	$kode_transaksi1 = trim($param1).trim($param2).trim($param3);
 	$kode_transaksi2 = $kode_transaksi1.str_pad( $nomor_urut, $lebar-strlen($kode_transaksi1), '0', STR_PAD_LEFT );
 	return $kode_transaksi2;	
 }
@@ -449,16 +481,6 @@ function page_permission($password){
 	}
 }
 
-/**
- * Fungsi untuk mengkonversi tanggal
- * 
- * @param string $date
- * @return string 
- */
-function local_date (string $date): string{
-	return strftime('%e %B %Y', strtotime($date));
-}
-
 /* UNIQUE FILE */
 function unique_file($path, $filename) {
 	$file_parts = explode(".", $filename);
@@ -508,5 +530,146 @@ function get_jenis_bayar () {
 		3 => "Tunai",
 	];
 }
+
+/**
+	 * Fungsi untuk mengkonversi tanggal
+	 * 
+	 * @param string $date $format
+	 * @return string 
+	 */
+	function local_date (string $date, string $format = null): string
+	{
+		ini_set('memory_limit', '-1');
+		ini_set("sqlsrv.ClientBufferMaxKBSize", 99999999999);
+		ini_set("MAX_EXECUTION_TIME", -1);
+		
+		$fmt = datefmt_create(
+            'id_ID',
+            IntlDateFormatter::FULL,
+            IntlDateFormatter::FULL,
+            'Asia/Jakarta',
+            IntlDateFormatter::GREGORIAN,
+            $format ?? 'dd MMMM yyyy'
+        );
+
+        return datefmt_format($fmt, strtotime($date));
+	}
+
+	/**
+	 * Fungsi untuk memformat angka menjadi format accounting
+	 * 
+	 * @param mixed $number
+	 * @return string
+	 */
+	function accounting_number($number): string
+	{
+		if ($number < 0) return '(' . number_format($number*-1, 2, ',', '.') . ')';
+		return number_format($number, 2, ',', '.');
+	}
+
+	/**
+	 * Fungsi untuk menghitung umur utang/piutang
+	 * 
+	 * @param string $duedate $endperiod
+	 * @return mixed
+	 */
+	function calculate_age (string $duedate, string $endperiod = '')
+	{
+		if ($endperiod == '') $endperiod = date('Y-m-d');
+
+		$unix_duedate = strtotime($duedate);
+		$unix_endperiod = strtotime($endperiod);
+
+		$age = $unix_endperiod - $unix_duedate;
+
+		if ($age < 0) return null;
+
+		return $age/86400 . ' hari';
+	}
+
+	/**
+     * Method untuk melakukan ellipsis kata
+     * 
+     * @param string $word
+     * @param int $max_length
+     * @return string
+     */
+    function ellipsis (string $word, int $max_length)
+    {
+        $word_length = strlen($word);
+        if ($word_length > $max_length){
+            $result = substr($word, 0, 20);
+            return $result . '...';
+        }
+
+        return $word;
+    }
+
+	/**
+	 * Method for checking account balance is not zero at all
+	 * 
+	 * @param array $balances
+	 * @return bool
+	 */
+	function has_values ($balances): bool
+	{
+		foreach ((array) $balances as $key => $value) {
+			if ($value != 0) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	function get_unit_name (string $unit) {
+		$CI = &get_instance();
+		return $CI->db->where('koders', $unit)->get('tbl_namers')->row()->namars;
+	}
+
+	/**
+	 * Method for sorting multidimentional array
+	 * 
+	 * @param array $array
+	 * @param string $column
+	 * @param string $type
+	 */
+	function sort_nested (array $array, string $column, string $type = "asc") {
+		// asc
+		if ($type == "asc" OR $type == "ASC") {
+			usort($array, function ($item1, $item2) use ($column) {
+				if (is_array($item1)) {
+					if ($item1[$column] == $item2[$column]) {
+						return 0;
+					}
+					return ($item1[$column] < $item2[$column]) ? -1 : 1;
+				}
+	
+				if ($item1->$column == $item2->$column) {
+					return 0;
+				}
+				return ($item1->$column < $item2->$column) ? -1 : 1;
+			});
+	
+			return array_values($array);
+		}
+
+		// desc
+		usort($array, function ($item1, $item2) use ($column) {
+			if (is_array($item1)) {
+				if ($item1[$column] == $item2[$column]) {
+					return 0;
+				}
+				return ($item1[$column] < $item2[$column]) ? 1 : -1;
+			}
+
+			if ($item1->$column == $item2->$column) {
+				return 0;
+			}
+			return ($item1->$column < $item2->$column) ? 1 : -1;
+		});
+
+		return array_values($array);
+	}
 
 ?>

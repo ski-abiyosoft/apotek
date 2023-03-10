@@ -116,7 +116,7 @@ if ($datpas) {
                               </div>
                               <div class="col-md-6">
                                    <div class="form-group">
-                                        <label class="col-md-3 control-label">Alamat Kirim <font color="red">*</font></label>
+                                        <label class="col-md-3 control-label">Alamat Kirim</label>
                                         <div class="col-md-9">
                                         <?php if ($header->rekmed=='Non Member') :?>
                                              <input type="text" name="alamat" id="alamat" class="form-control" value="<?= $header->alamat; ?>" readonly>
@@ -135,7 +135,7 @@ if ($datpas) {
                          <div class="row">
                               <div class="col-md-6">
                                    <div class="form-group"> 
-                                        <label class="col-md-3 control-label">Member <font color="red">*</font></label>
+                                        <label class="col-md-3 control-label">Member</label>
                                         <div class="col-md-9 input-medium">
                                              <?php if ($header->rekmed=='Non Member') :?>
                                                   <input type="text" name="pasien" id="pasien" class="form-control" value="Non Member" readonly>
@@ -151,7 +151,7 @@ if ($datpas) {
                               </div>
                               <div class="col-md-6">
                                    <div class="form-group">
-                                        <label class="col-md-3 control-label">No Handphone <font color="red">*</font></label>
+                                        <label class="col-md-3 control-label">No Handphone</label>
                                         <div class="col-md-9">
                                         <?php if ($header->rekmed=='Non Member') :?>
                                              <input type="text" name="phone" id="phone" class="form-control" value="<?= $header->nohp; ?>" readonly>
@@ -176,7 +176,7 @@ if ($datpas) {
                               </div> -->
                               <div class="col-md-6">
                                    <div class="form-group">
-                                        <label class="col-md-3 control-label">Nama Pembeli <font color="red">*</font></label>
+                                        <label class="col-md-3 control-label">Nama Pembeli</label>
                                         <div class="col-md-6">
                                              <input type="text" name="namapasien" id="namapasien" class="form-control" value="<?= $posting->namapas; ?>">
                                         </div>
@@ -184,7 +184,7 @@ if ($datpas) {
                               </div>
                               <div class="col-md-6">
                                    <div class="form-group">
-                                   <label class="col-md-3 control-label">Tgl Lahir<font color="red">*</font></label>
+                                   <label class="col-md-3 control-label">Tgl Lahir</label>
                                    <div class="col-md-4">
                                         <div class="input-group input-small">
                                         <?php if ($header->rekmed=='Non Member') :?>
@@ -209,7 +209,7 @@ if ($datpas) {
                          <div class="row">
                               <div class="col-md-6">
                                    <div class="form-group">
-                                   <label class="col-md-3 control-label">Berat Badan <font color="red">*</font></label>
+                                   <label class="col-md-3 control-label">Berat Badan </label>
                                    <div class="col-md-9">
                                         <div class="input-group input-medium">
 
@@ -223,7 +223,7 @@ if ($datpas) {
                               </div>
                               <div class="col-md-6">
                                    <div class="form-group">
-                                        <label class="col-md-3 control-label">Jenis Kelamin<font color="red">*</font></label>
+                                        <label class="col-md-3 control-label">Jenis Kelamin</label>
                                         <div class="col-md-3">
                                              <select name="jkel" id="jkel" class="form-control">
                                              <?php if ($header->rekmed=='Non Member'){ 
@@ -269,7 +269,7 @@ if ($datpas) {
                                                             <th class="title-white" width="5%" style="text-align: center">Hapus</th>
                                                             <th class="title-white" width="25%" style="text-align: center">Kode Barang</th>
                                                             <!-- <th class="title-white" width="10%" style="text-align: center">Nama Barang</th> -->
-                                                            <th class="title-white" width="15%" style="text-align: center">Qty</th>
+                                                            <th class="title-white" width="15%" style="text-align: center">Qty Jual</th>
                                                             <th class="title-white" width="5%" style="text-align: center">Satuan</th>
                                                             <th class="title-white" width="10%" style="text-align: center">Harga</th>
                                                             <th class="title-white" width="2%" style="text-align: center">PPN</th>
@@ -405,13 +405,13 @@ if ($datpas) {
                                                   <table border="0">
                                                   <tr>
                                                        <td>
-                                                            <button type="button" class="btn yellow" >
-                                                                 <i class="fa fa-print"></i><b> E-Ticket</b>
+                                                            <button type="button" onclick="etiket();" class="btn yellow" >
+                                                                 <i class="fa fa-print"></i><b> ETiket</b>
                                                             </button>
-                                                            <button type="button" class="btn yellow" >
+                                                            <button type="button" onclick="telaah();" class="btn yellow" >
                                                                  <i class="fa fa-print"></i><b> Telaah</b>
                                                             </button>
-                                                            <button type="button" class="btn yellow" >
+                                                            <button type="button" onclick="urlcetak_cr();" class="btn yellow" >
                                                                  <i class="fa fa-print"></i><b> Copy Resep</b>
                                                             </button>
                                                        </td>
@@ -981,6 +981,68 @@ if ($datpas) {
      </div>
 </div>
 
+<!-- Modal detail -->
+<div class="modal fade" id="modal-detail"  tabindex="-1"role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-md" >
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5><b>Daftar Resep</b></h5>
+            </div>
+            <div class="modal-body">
+                <table class="table table-bordered table-striped" id="tbl2" style="margin:auto !important">
+                    <thead>
+                        <tr class="page-breadcrumb breadcrumb">
+                            <th class="text-center title-white">Nama</th>
+                            <th class="text-center title-white">Aturan Pakai</th>
+                            <th class="text-center title-white">Check</th>
+                        </tr>
+                    </thead>
+                    <tbody id="daftar_resep"> </tbody>
+                </table>
+            </div>
+            <div class="modal-footer">
+               <button type="button" id="cetak_etiket" onclick="urlcetak_etiket()" class="btn btn-success"><b>
+                    <i class="fa fa-print"></i> CETAK</b>
+               </button>
+               <button type="button" class="btn red" data-dismiss="modal"><i class="fa fa-close"></i> Tutup</b></button>
+            </div>
+        </div>
+
+    </div>
+</div>
+<!-- Modal detail -->
+
+<!-- Modal detail -->
+<div class="modal fade" id="modal-telaah"  tabindex="-1"role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-md" >
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5><b>Daftar Telaah</b></h5>
+            </div>
+            <div class="modal-body">
+                <table class="table table-bordered table-striped" id="tbl2" style="margin:auto !important">
+                    <thead>
+                        <tr class="page-breadcrumb breadcrumb">
+                            <th class="text-center title-white">No</th>
+                            <th class="text-center title-white">Aspek Telaah</th>
+                            <th class="text-center title-white">Check</th>
+                        </tr>
+                    </thead>
+                    <tbody id="daftar_telaah"> </tbody>
+                </table>
+            </div>
+            <div class="modal-footer">
+               <button type="button" id="cetak_etiket" onclick="urlcetak_telaah()" class="btn btn-success"><b>
+                    <i class="fa fa-print"></i> CETAK</b>
+               </button>
+               <button type="button" class="btn red" data-dismiss="modal"><i class="fa fa-close"></i> Tutup</b></button>
+            </div>
+        </div>
+
+    </div>
+</div>
+<!-- Modal detail -->
+
 <?php
 $this->load->view('template/footer_tb');
 ?>
@@ -1014,6 +1076,131 @@ $this->load->view('template/footer_tb');
                $('#toto_11').attr('readonly', true);
           }
           totalracik();
+     }
+
+     function etiket() {
+          var noresep       = $('[name="noresep"]').val();
+          $.ajax({
+               url        : "<?php echo base_url(); ?>Penjualan_faktur/getctk/?noresep=" + noresep,
+               type       : "GET",
+               dataType   : "JSON",
+               success: function(data) {
+                    $('#daftar_resep').empty();
+                    $.each(data, function(key, value) { 
+                         
+                    if(value.cetak==1){ 
+                         checked = 'checked';   
+                    }else{
+                         checked = ''; 
+                    }                
+
+                    $('#daftar_resep').append("<tr>\
+                         <td>"+value.namabarang1+"</td>\
+                         <td class='text-center'>"+value.nm_atpakai+"</td>\
+                         <td style='text-align: center'><input class='form-control' type='checkbox' id='kd_barang["+value.kodebarang+"]' name='kd_barang["+value.kodebarang+"]' onclick=updt_ctk('"+value.kodebarang+"'); "+checked+"></td>\
+                    </tr>");
+                    });
+               }
+          });
+
+          $('#modal-detail').modal('show');
+     }
+
+     function telaah() {
+          var noresep       = $('[name="noresep"]').val();
+          $.ajax({
+               url        : "<?php echo base_url(); ?>Penjualan_faktur/get_telaah/?noresep=" + noresep,
+               type       : "GET",
+               dataType   : "JSON",
+               success: function(data) {
+                    $('#daftar_telaah').empty();
+                    $no = 1;
+                    $.each(data, function(key, value) { 
+                         
+                    if(value.cek==1){ 
+                         checked = 'checked';   
+                    }else{
+                         checked = ''; 
+                    }                
+
+                    $('#daftar_telaah').append("<tr>\
+                         <td class='text-center'>"+$no+"</td>\
+                         <td>"+value.aspek+"</td>\
+                         <td style='text-align: center'><input class='form-control' type='checkbox' id='kd_barang["+value.kode+"]' name='kd_barang["+value.kode+"]' onclick=updt_telaah('"+value.kode+"'); "+checked+"></td>\
+                    </tr>");
+                    $no++;
+                    });
+               }
+          });
+
+          $('#modal-telaah').modal('show');
+     }
+     
+     function updt_ctk(kd) 
+     {
+          var baseurl   = "<?php echo base_url() ?>";
+          var noresep   = $('[name="noresep"]').val();
+          if (document.getElementById('kd_barang['+kd+']').checked == true) {
+               stat = 1;
+          }else{
+               stat = 0;
+
+          }
+          $.ajax({
+               url        : "<?php echo base_url(); ?>Penjualan_faktur/updt_ctk/?kd=" + kd+ "&resep=" + noresep+ "&stat=" + stat,
+               type       : "GET",
+               dataType   : "JSON",
+               success: function(data) {
+                    
+               }
+          });
+     }
+     
+     function updt_telaah(kd) 
+     {
+          var baseurl   = "<?php echo base_url() ?>";
+          var noresep   = $('[name="noresep"]').val();
+          if (document.getElementById('kd_barang['+kd+']').checked == true) {
+               stat = 1;
+          }else{
+               stat = 0;
+
+          }
+          $.ajax({
+               url        : "<?php echo base_url(); ?>Penjualan_faktur/updt_telaah/?kd=" + kd+ "&resep=" + noresep+ "&stat=" + stat,
+               type       : "GET",
+               dataType   : "JSON",
+               success: function(data) {
+                    
+               }
+          });
+     }
+
+     function urlcetak_etiket() 
+     {
+          var baseurl       = "<?php echo base_url() ?>";
+          var noresep       = $('[name="noresep"]').val();
+          $('#modal-detail').modal('hide');
+          var ctk           = baseurl + 'penjualan_faktur/ctk_etiket/?resep=' + noresep;
+          window.open(ctk,'_blank');
+     }
+
+     function urlcetak_telaah() 
+     {
+          var baseurl       = "<?php echo base_url() ?>";
+          var noresep       = $('[name="noresep"]').val();
+          $('#modal-detail').modal('hide');
+          var ctk           = baseurl + 'penjualan_faktur/ctk_telaah/?resep=' + noresep;
+          window.open(ctk,'_blank');
+     }
+
+     function urlcetak_cr() 
+     {
+          var baseurl       = "<?php echo base_url() ?>";
+          var noresep       = $('[name="noresep"]').val();
+          $('#modal-detail').modal('hide');
+          var ctk           = baseurl + 'penjualan_faktur/ctk_cr/?resep=' + noresep;
+          window.open(ctk,'_blank');
      }
 
      var cekppn = $('#ppn2_').val();
@@ -1826,7 +2013,7 @@ $this->load->view('template/footer_tb');
                var racikan   = Number(parseInt(racikanxx.replaceAll(',', '')));
           }
 
-          console.log($('#frmpenjualan').serialize());
+          // console.log($('#frmpenjualan').serialize());
 
           $.ajax({
                url: "<?= site_url('Penjualan_faktur/update_apoposting/?total=') ?>" + total + "&racikan=" + racikan + "&resepno=" + resepno + "&gudang=" + gudang + "&rekmed=" + rekmed + "&noreg=" + noreg,

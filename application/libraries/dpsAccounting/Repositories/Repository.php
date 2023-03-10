@@ -29,15 +29,19 @@ class Repository
      * @param stdClass $data_set
      * @return bool
      */
-    public function save(stdClass $data_set): bool
+    public function save(stdClass $data_set = null): bool
     {
+        if (empty($data_set)) $data_set = $this;
+
+        $primary_key = $this->primary_key ?? 'id';
+
         // If the $data_set has id property
         if (property_exists($data_set, 'id')){
             $id = $data_set->id;
             unset($data_set->id);
 
             // Update database
-            return $this->db->update($this->table, $data_set, ['id' => $id]);
+            return $this->db->update($this->table, $data_set, [$primary_key => $id]);
         }
 
         // Otherwise, insert into table
@@ -50,9 +54,9 @@ class Repository
      * @param int $id
      * @return bool
      */
-    public function destroy(int $id): bool
+    public function destroy(int $id = null): bool
     {
-        return $this->db->delete($this->table, ["id" => $id]);
+        return $this->db->delete($this->table, ["id" => ($id ?? $this->id)]);
     }
 
     /**
@@ -81,12 +85,18 @@ class Repository
     /**
      * Method for getting record from table using its id.
      * 
-     * @param int $id
-     * @return stdClass
+     * @param string $primary_value
+     * @return object
      */
-    public function find(int $id): stdClass
+    public function find(string $primary_value)
     {
-        return $this->db->where('id', $id)->get($this->table)->row();
+        $result = $this->db->where($this->primary_key ?? 'id', $primary_value)->get($this->table)->row();
+
+        foreach ($result as $key => $value) {
+            $this->$key = $value;
+        }
+
+        return $this;
     }
 
     /**

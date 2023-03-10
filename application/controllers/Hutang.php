@@ -23,47 +23,34 @@ class Hutang extends CI_Controller {
 		if(!empty($cek))
 		{	
 			
-		  $tahun 		= $this->M_global->_periodetahun();
+		//   $tahun 		= $this->M_global->_periodetahun();
   
-		  $bulan  		= $this->M_global->_periodebulan();
-		  $nbulan 		= $this->M_global->_namabulan($bulan);
+		//   $bulan  		= $this->M_global->_periodebulan();
+		//   $nbulan 		= $this->M_global->_namabulan($bulan);
 
-		  $bln 			= count($bulan) == 1 ? '0'.$bulan : $bulan;
-		  $jmlhari 		= cal_days_in_month(CAL_GREGORIAN, $bulan, $tahun);
+		//   $bln 			= count($bulan) == 1 ? '0'.$bulan : $bulan;
+		//   $jmlhari 		= cal_days_in_month(CAL_GREGORIAN, $bulan, $tahun);
 		  
-		  $d['startdate'] 	= $tahun.'-'.$bln.'-01';
-		  $d['enddate'] 	= $tahun.'-'.$bln.'-'.$jmlhari;
+		  $d['startdate'] 	= $this->input->get('start_date') ?? date("Y-m").'-01';
+		  $d['enddate'] 	= $this->input->get('end_date') ?? date("Y-m-t", strtotime("now"));
 
 		  $dt1						= $this->M_hutang->totalHutang($unit, '', $d['startdate'], $d['enddate']);
 		  $d['total_hutang'] 		= $dt1[0]->total_hutang;
 		  $dt2						= $this->M_hutang->hutangJatuhTempo($unit, '', $d['startdate'], $d['enddate']);
 		  $d['hutang_jatuh_tempo']	= $dt2[0]->hutang_jatuh_tempo;
-		  $dt3						= $this->M_hutang->rencanaBayar($unit, '', $d['startdate'], $d['enddate']);
+		  $dt3						= $this->M_hutang->rencanaBayar($unit, $d['startdate'], $d['enddate']);
 		  $d['rencana_bayar']		= $dt3[0]->rencana_bayar;
 		  $dt4						= $this->M_hutang->realisasiPembayaran($unit, '', $d['startdate'], $d['enddate']);
 		  $d['realisasi_pembayaran']= $dt4[0]->realisasi_pembayaran;
 
-		  	  
-		  
-		  $q1 = 
-				"select *, a.id AS idtr
-				from
-				   tbl_apoap a left join
-				   tbl_vendor b
-				   on a.vendor_id=b.vendor_id
-				where
-				   a.koders = '$unit' and
-				   a.tglinvoice between '".$d['startdate']."' and '".$d['enddate']."'
-				order by
-				   a.tglinvoice, a.terima_no desc";
-
-		  $periode		= 'Periode '.ucwords(strtolower($nbulan)).' '.$this->M_global->_periodetahun();
+		  $periode		= 'Periode '.local_date($d['startdate'], "dd MMMM yyyy") . " - ".local_date($d['enddate'], "dd MMMM yyyy");
 		  $d['vendor'] 	= '';	 
 		  $d['vendorid'] = ''; 
 		  $d['keu'] = '';
 		  $d['list_vendor'] 	= $this->M_global->getListVendor(); 
-	      $d['keu'] 	= $this->db->query($q1)->result();
-          $d['periode'] = $periode;		
+	      $d['keu'] 	= $this->M_hutang->get_ap_summary($d['startdate'], $d['enddate'], $unit);
+
+          $d['periode'] = $periode;
           $level=$this->session->userdata('level');		
 		  $akses= $this->M_global->cek_menu_akses($level, 5201);
 		  $d['akses']= $akses;	
@@ -77,19 +64,50 @@ class Hutang extends CI_Controller {
 		}
 	}
 
+	/**
+	 * Method for showing vendors ap_details
+	 * 
+	 * @param string $vendor_id
+	 */
+	public function details ($vendor_id)
+	{
+		$cek = $this->session->userdata('level');		
+		$unit= $this->session->userdata('unit');	
+        		
+		if(!empty($cek))
+		{	  
+		  $d['startdate'] 	= $this->input->get('startdate');
+		  $d['enddate'] 	= $this->input->get('enddate');
+		  $periode		= 'Periode '.local_date($d['startdate'], "dd MMMM yyyy") . " - ".local_date($d['enddate'], "dd MMMM yyyy");
+	      $d['keu'] 	= $this->M_hutang->get_vendor_details($d['startdate'], $d['enddate'], urldecode($vendor_id), $unit);
+          $d['periode'] = $periode;
+		  $d['vendor'] = $this->M_hutang->get_vendor(urldecode($vendor_id));
+          $level=$this->session->userdata('level');		
+		  $akses= $this->M_global->cek_menu_akses($level, 5201);
+		  $d['akses']= $akses;	
+		  $d['unit'] = $unit;
+
+		  $this->load->view('pembelian/v_detail_hutang',$d);			   
+		} else
+		{
+			
+			header('location:'.base_url());
+			
+		}
+	}
+
 	public function detailTotalHutang(){
 		$d['subtitle']	= 'Total Hutang';
-		// $d['vendor'] 	= 'Semua Vendor';	
 		$d['periode'] 	= '';	
 		
 		$cek = $this->session->userdata('level');	
 		if(!empty($cek))
-		{		
-			$unit= $this->session->userdata('unit');
+		{
 			$d['startdate'] = $this->input->get('startdate');
 			$d['enddate'] = $this->input->get('enddate');
 			$d['vendor'] = $this->input->get('vendor');	
-			$d['data'] = $this->M_hutang->detailTotalHutang($unit, $d['vendor'], $d['startdate'], $d['enddate']);
+			$d['jenis'] = 'all';
+			$d['unit'] = $this->session->userdata('unit');
 
 			$this->load->view('pembelian/v_detailhutang',$d);	
 		} else
@@ -106,11 +124,11 @@ class Hutang extends CI_Controller {
 		$cek = $this->session->userdata('level');	
 		if(!empty($cek))
 		{		
-			$unit= $this->session->userdata('unit');
 			$d['startdate'] = $this->input->get('startdate');
 			$d['enddate'] = $this->input->get('enddate');
 			$d['vendor'] = $this->input->get('vendor');	
-			$d['data'] = $this->M_hutang->detailHutangJatuhTempo($unit, $d['vendor'], $d['startdate'], $d['enddate']);
+			$d['jenis'] = 'expired';
+			$d['unit'] = $cek = $this->session->userdata('unit');
 
 			$this->load->view('pembelian/v_detailhutang',$d);	
 		} else
@@ -121,18 +139,17 @@ class Hutang extends CI_Controller {
 	
 	public function detailRencanaBayar(){
 		$d['subtitle']	= 'Rencana Bayar';
-		// $d['vendor'] 	= 'Semua Vendor';	
-		$d['periode'] 	= '';
+		$d['periode'] 	= 'expired';
 		
 		$cek = $this->session->userdata('level');	
 		if(!empty($cek))
-		{		
-			$unit= $this->session->userdata('unit');	
+		{			
 			$d['startdate'] = $this->input->get('startdate');
 			$d['enddate'] = $this->input->get('enddate');
-			$d['vendor'] = $this->input->get('vendor');	
+			$d['vendor'] = $this->input->get('vendor');
+			$d['unit'] = $cek = $this->session->userdata('unit');
 
-			$d['data'] = $this->M_hutang->detailRencanaBayar($unit, $d['vendor'], $d['startdate'], $d['enddate']);
+			$d['jenis'] = 'payment_schedule';
 			$this->load->view('pembelian/v_detailhutang',$d);	
 		} else
 		{
@@ -142,18 +159,17 @@ class Hutang extends CI_Controller {
 
 	public function detailRealisasiPembayaran(){
 		$d['subtitle']	= 'Realisasi Pembayaran';
-		// $d['vendor'] 	= 'Semua Vendor';	
 		$d['periode'] 	= '';
 		
 		$cek = $this->session->userdata('level');	
 		if(!empty($cek))
 		{		
-			$unit= $this->session->userdata('unit');
 			$d['startdate'] = $this->input->get('startdate');
 			$d['enddate'] = $this->input->get('enddate');
-			$d['vendor'] = $this->input->get('vendor');	
+			$d['vendor'] = $this->input->get('vendor');
+			$d['unit'] = $cek = $this->session->userdata('unit');	
 
-			$d['data'] = $this->M_hutang->detailRealisasiPembayaran($unit, $d['vendor'], $d['startdate'], $d['enddate']);
+			$d['jenis'] = 'realization';
 			$this->load->view('pembelian/v_detailhutang',$d);	
 		} else
 		{
@@ -474,6 +490,7 @@ class Hutang extends CI_Controller {
 		  $ppn = $this->M_global->getProsentasePpn();
 
 		  $d['prosentase_ppn'] = $ppn[0]->prosentase;
+		  $d['vendors'] = $this->db->select('vendor_id, vendor_name')->get('tbl_vendor')->result();
 		  
 		  $this->load->view('pembelian/v_hutang_add',$d);				
 		}
@@ -718,11 +735,9 @@ class Hutang extends CI_Controller {
 
 			$data = array(
 			    'koders' 			=> $unit,
-				'notukar' 			=> $nomortukarfaktur,
 				'terima_no'			=> $nomorbukti,
 				'invoice_no' 		=> $this->input->post('nomorfaktur'),
-				
-				'tukarfaktur' 		=> 1,
+				'tukarfaktur' 		=> 0,
 				'jenis' 			=> $this->input->post('jenis_faktur'),
 				'vendor_id' 		=> $this->input->post('supplier'),
 				'acbiaya' 			=> $this->input->post('acbiaya'),
@@ -730,7 +745,7 @@ class Hutang extends CI_Controller {
 				'diambil'		 	=> $this->input->post('tanggal_ambil'),
 				'duedate'	 		=> $this->input->post('jatuh_tempo'),
 				'tglrencanabayar' 	=> $this->input->post('tanggal_rencana_bayar'),
-				'totaltagihan'	 	=> str_replace(',','',$this->input->post('jumlah_tagihan')),
+				'totaltagihan'	 	=> str_replace(',','',$this->input->post('dpp')) + str_replace(',','',$this->input->post('ppnrp')) + str_replace(',','',$this->input->post('pph')) + str_replace(',','',$this->input->post('biayalain')) + str_replace(',','',$this->input->post('materai')),
 				'materai' 			=> str_replace(',','',$this->input->post('materai')),
 				'keterangan' 		=> $this->input->post('keterangan'),
 				'dpp' 				=> str_replace(',','',$this->input->post('dpp')),
@@ -739,8 +754,6 @@ class Hutang extends CI_Controller {
 				'ppn' 				=> $this->input->post('ppn'),
 				'ppnrp' 			=> str_replace(',','',$this->input->post('ppnrp')),
 				'pph' 				=> str_replace(',','',$this->input->post('pph')),
-				
-				// 'tglmutasi' => date('Y-m-d',strtotime($this->input->post('tglmutasi'))),
 				
 				'username' => $userid,			
 			);
@@ -751,10 +764,19 @@ class Hutang extends CI_Controller {
 			
 	        if($jenis==1)
 			{
-			  $this->db->insert("tbl_apoap", $data);	
+			  $this->db->insert("tbl_apoap", $data);
+
+			  if ($this->input->post("bapb-aktiva") == "true") {
+				$this->db->update("tbl_fixedasset", ["terima_no" => NULL], ["terima_no" => $data["terima_no"]]);
+				$this->db->update("tbl_fixedasset", ["terima_no" => $data["terima_no"]], ["kodefix" => $this->input->post("kodefix")]);
+			  }
 			} else {
 			  $this->db->update('tbl_apoap', $data, $where);
-			//   echo $this->db->last_query();
+
+			  if ($this->input->post("bapb-aktiva") == "true") {
+				$this->db->update("tbl_fixedasset", ["terima_no" => NULL], ["terima_no" => $data["terima_no"]]);
+				$this->db->update("tbl_fixedasset", ["terima_no" => $data["terima_no"]], ["kodefix" => $this->input->post("kodefix")]);
+			  }
 			}
 			
 			echo $nomorbukti;
@@ -956,38 +978,15 @@ class Hutang extends CI_Controller {
 		$cek = $this->session->userdata('level');		
 		if(!empty($cek))
 		{	
-			$unit = $this->session->userdata('unit');	
-					
-			$qheader ="
-				SELECT a.*, jf.`nama` AS jenis_faktur, v.`vendor_name`, ac.`acname`
-				FROM tbl_apoap a 
-					LEFT JOIN ms_jenis_faktur jf ON a.`jenis` = jf.`id`
-					LEFT JOIN tbl_vendor v ON a.`vendor_id` = v.`vendor_id`
-					LEFT JOIN tbl_accounting ac ON a.`acbiaya` = ac.`accountno`
-				WHERE a.id = '$nomor'"; 		
-				
-			$data=$this->db->query($qheader);
-			if(count($data->result()) != 0){
-				foreach($data->result() as $row);
+			$ppn = $this->M_global->getProsentasePpn();
+			$d = [
+				"faktur" => $this->db->where("terima_no", $nomor)->get("tbl_apoap")->row(),
+				"aktiva" => $this->db->where("terima_no", $nomor)->get("tbl_fixedasset")->row(),
+				'prosentase_ppn' => $ppn[0]->prosentase,
+				'vendors' => $this->db->select('vendor_id, vendor_name')->get('tbl_vendor')->result()
+			];
 
-				$d['data'] = $row;
-				// echo "<pre>";
-				// print_r($d['data']);
-				// echo "</pre>";
-				$ppn = $this->M_global->getProsentasePpn();
-				$d['list_jenis_ppn'] = $this->M_global->getJenisPpn();
-		  		$d['prosentase_ppn'] = $ppn[0]->prosentase;
-				
-				$d['jenis_ppn']		 = 'exclude';
-				 
-				if($row->totaltagihan != $row->dpp){
-					$d['jenis_ppn']	 = 'include';
-				}
-
-				$this->load->view('pembelian/v_hutang_edit',$d);
-			} else {
-				header('location:'.base_url());
-			}
+			$this->load->view('pembelian/v_hutang_edit',$d);
 		} else {
 			header('location:'.base_url());
 		}
@@ -1019,148 +1018,162 @@ class Hutang extends CI_Controller {
 	}
 
 	
-	public function cetak($id){
-		$cek = $this->session->userdata('level');		
+	public function cetak($param){
+		$cek  = $this->session->userdata('level');		
 		if(!empty($cek))
 		{	
-			$unit= $this->session->userdata('unit');
-			$rs = $this->M_rs->getNamaRsById($unit);
-			if($rs){				
-				foreach($rs as $dtrs);
+			$unit = $this->session->userdata('unit');
+			$profile = data_master('tbl_namers', array('koders' => $unit));
+			$nama_usaha = $profile->namars;
+			$alamat1  = isset($profile->alamat) ? $profile->alamat : $profile->alamat1;
+			$alamat2  = $profile->kota;
 
-				$wa = '';$fax = '';
-				if($dtrs->whatsapp != '') $wa = " / ".$dtrs->whatsapp;
-				if($dtrs->fax != '') $fax = " / ".$dtrs->fax;
+			$header = $this->db->where("terima_no", $param)->join("tbl_vendor tv", "TRIM(ta.vendor_id) = TRIM(tv.vendor_id)", )->get("tbl_apoap ta")->row();
 
-				$telp = ($dtrs->phone)."".$wa."".$fax;
-				$dt = $this->M_hutang->getHutangById($id);
-				
-				if($dt){
-					foreach($dt as $data);
-					$judul = '';$chari = '';
-					// $chari = $this->load->view('pembelian/v_hutang_cetak',$d);
+			$pdf = new simkeu_nota();
+			$pdf->setID($nama_usaha, $alamat1, $alamat2);
+			$pdf->setjudul('');
+			$pdf->setsubjudul('');
+			$pdf->addpage("P", "A4");
+			$pdf->setsize("P", "A4");
 
-					$totaltagihan = number_format($data->totaltagihan,0,'.',',');
-					$terbilang = ucwords($this->M_global->terbilang($data->totaltagihan))." Rupiah";
-					$date_create = date_create($data->diambil);
-					$diambil = date_format($date_create,'d-m-Y');
-					$date = date('d-m-Y');
-					$penerima = '_______________';
-					
-					$chari .= "
+			$pdf->SetWidths(array(190));
 
-						<table style='border-collapse:collapse;font-family: tahoma; font-size:12px' width='100%' align='center' border='0' cellspacing='0' cellpadding='0'>
-							<b>
-								<tr >
-									<td rowspan='4' align='center' width='20%'>
-										<img src=\"" . base_url() . "assets/img/logo.png\"  width=\"75\" height=\"75\"  
-										style='padding:-1px;' />
-									</td>
-									<td>$dtrs->namars</td>
-								</tr>
-								<tr  width='80%'>
-									<td>$dtrs->alamat</td>
-								</tr>
-								<tr  width='80%'>
-									<td>$dtrs->kota</td>
-								</tr>
-								<tr  width='80%'>
-									<td>$telp</td>
-								</tr>
-							</b>
-						</table>
+			$pdf->setfont('Arial', 'B', 18);
+			$pdf->SetAligns(array('C', 'C', 'C'));
+			$border = array('BTLR');
+			$size   = array('');
+			$align = array('C');
+			$style = array('B');
+			$size  = array('18');
+			$max   = array(20);
+			$fc     = array('0');
+			$hc     = array('20');
+			$judul = array('SURAT PERNYATAAN & PEMBELIAN AKTIVA');
+			$pdf->FancyRow2(10, $judul, $fc,  $border, $align, $style, $size, $max);
+			$size  = array('10');
+			$align = array('L');
+			$border = array('');
 
-						<br>
 
-						<div width='100%' style='border-top:1px dashed black;'></div>
-						<br>
-						<table style='border-collapse:collapse;font-family: tahoma; font-size:12px' width='100%' align='center' border='0' cellspacing='0' cellpadding='3'>
 
-						<tr class='show1'>
-							<td align='left'  width='30%'>Telah Terima Dari</td>
-							<td align='center'  width='5%'>:</td>
-							<td align='left'  width='60%'>$data->vendor_name</td>
-						</tr>
-						
-						<tr class='show1'>
-							<td align='left' width='30%'>No. Kwitansi</td>
-							<td align='center'  width='5%'>:</td>
-							<td align='left'  width='60%'>$data->notukar</td>
-						</tr>
+			$pdf->ln(1);
+			$pdf->setfont('Arial', 'B', 10);
+			$pdf->SetWidths(array(20, 5, 80, 30, 5, 50));
+			$border = array('LT', 'T', 'T', 'T', 'T', 'TR');
+			$fc     = array('0', '0', '0', '0', '0', '0');
+			$pdf->SetFillColor(230, 230, 230);
+			$pdf->setfont('Arial', '', 9);
 
-						<tr class='show1'>
-							<td align='left' width='30%'>Tagihan Sebesar</td>
-							<td align='center'  width='5%'>:</td>
-							<td align='left'  width='60%'>$totaltagihan</td>
-						</tr>
 
-						<tr class='show1'>
-							<td align='left' width='30%'>Terbilang</td>
-							<td align='center'  width='5%'>:</td>
-							<td align='left'  width='60%'>$terbilang</td>
-						</tr>
+			$pdf->FancyRow(array('Terima dari', ':', $header->vendor_name, 'BAPB No.', ':', $header->terima_no), $fc, $border);
+			$border = array('L', '', '', '', '', 'R');
+			$pdf->FancyRow(array('', '', (isset($header->alamat) ? trim($header->alamat) : trim($header->alamat1)), 'Tgl Faktur', ':', date('d-m-Y', strtotime($header->tglinvoice))), $fc, $border);
+			$pdf->FancyRow(array('', '', '', 'Tgl Penerimaan', ':', date('d-m-Y', strtotime($header->tglinvoice))), $fc, $border);
+			$pdf->FancyRow(array('', '', '', 'No. Faktur', ':', $header->invoice_no), $fc, $border);
+			$border = array('LB', 'B', 'B', 'B', 'B', 'BR');
+			$pdf->FancyRow(array('', '', $header->phone, 'Gudang', ':', "AKTIVA"), $fc, $border);
 
-						<tr class='show1'>
-							<td align='left' width='30%'></td>
-							<td align='center'  width='5%'></td>
-							<td align='left'  width='60%'>
-								<table style='border-collapse:collapse;font-family: tahoma; font-size:12px' width='100%' align='center' border='0' cellspacing='0' cellpadding='0'>
-									<tr class='show1'>
-										<td align='center' width='5%'>1.</td>
-										<td width='60%'>$data->notukar</td>
-										<td align='right' width='30%'>$totaltagihan</td>
-									</tr>
-								</table>
-							</td>
-						</tr>
 
-						<tr class='show1'>
-							<td align='left' width='30%'>Guna Pembayaran</td>
-							<td align='center'  width='5%'>:</td>
-							<td align='left'  width='60%'>$data->keterangan</td>
-						</tr>
+			$pdf->ln(2);
+			$pdf->SetWidths(array(10, 25, 30, 15, 15, 20, 20, 20, 35));
+			$border = array('LTB', 'TB', 'TB', 'TB', 'TB', 'TB', 'TB', 'TB', 'TBR');
+			$align  = array('C', 'C', 'C', 'C', 'C', 'C', 'C', 'C', 'C');
+			$pdf->setfont('Arial', 'B', 9);
+			$pdf->SetAligns(array('L', 'C', 'R'));
+			$fc = array('0', '0', '0', '0', '0', '0', '0', '0', '0');
+			$judul = array('No.', 'Kode Barang', 'Nama Barang', 'Qty', 'Satuan', 'DPP', 'PPN', 'Materai', "Total");
+			$pdf->FancyRow2(8, $judul, $fc, $border, $align);
+			$pdf->setfont('Arial', '', 9);
+			$tot = 0;
+			$subtot = 0;
+			$tdisc  = 0;
+			$border = array('L', '', '', '', '', '', '', '', 'R');
+			$align  = array('L', 'L', 'L', 'R', 'R', 'R', 'R', 'R', 'R');
+			$style = array('', '', '', '', '', '', '', '', '');
+			$size  = array('8', '8', '8', '8', '8', '8', '8', '8', '8');
+			$max   = array(2, 2, 2, 2, 2, 2, 2, 2, 2);
+			$fc     = array('0', '0', '0', '0', '0', '0', '0', '0', '0');
+			$no = 1;
+			$totitem = 0;
+			$tot = 0;
+			$diskon = 0;
 
-						<tr class='show1'>
-							<td align='left' width='30%'>Dapat diambil Tanggal</td>
-							<td align='center'  width='5%'>:</td>
-							<td align='left'  width='60%'>$diambil</td>
-						</tr>
+			$detil = $this->db->where("terima_no", $param)->get("tbl_fixedasset")->result();
+			foreach ($detil as $db) {
+				$pdf->FancyRow(array(
+					$no,
+					$db->kodefix,
+					$db->namafix,
+					number_format($db->jumlah),
+					"",
+					number_format($header->dpp),
+					number_format($header->ppnrp),
+					number_format($header->materai),
+					number_format($db->nilaiaktiva)
+				), $fc,  $border, $align, $style, $size, $max);
 
-						</tbody>
-						</table>
-
-						<br>
-						<div width='100%' style='border-top:1px dashed black;'></div>
-						<br>
-
-						<table style='border-collapse:collapse;font-family: tahoma; font-size:12px' width='100%' align='center' border='0' cellspacing='0' cellpadding='0'>
-							<tr class='show1'>
-								<td align='center' width='50%'></td>
-								<td align='center' width='50%'>Jakarta, $date</td>
-							</tr>
-							<tr class='show1'>
-								<td align='center' width='50%'>Penerima:</td>
-								<td align='center' width='50%'>Keuangan</td>
-							</tr>
-						</table>
-
-						<br><br><br>
-						
-						<table style='border-collapse:collapse;font-family: tahoma; font-size:12px' width='100%' align='center' border='0' cellspacing='0' cellpadding='0'>
-							<tr class='show1'>
-								<td align='center' width='50%'><b>$penerima</b></td>
-								<td align='center' width='50%'><b>$data->username</b></td>
-							</tr>
-						</table>
-					";
-
-					$this->M_cetak->mpdf('P','A4',$judul, $chari,'Faktur_Baru_Manual.PDF', 10, 10, 10, 0);
-				} else {
-					header('location:'.base_url());
-				}
-			} else {
-				header('location:'.base_url());
+				$no++;
 			}
+			$dpp = $header->dpp;
+			$ppn = $header->ppnrp;;
+
+			$materai = $header->materai;
+			$totalnet = $header->totaltagihan;
+			// $totalnet = str_replace(',', '.', $header->vatrp);
+			$pdf->SetWidths(array(10, 25, 30, 15, 15, 20, 20, 20, 35));
+			$pdf->SetWidths(array(4, 40, 30, 40, 20, 20, 35));
+			$border = array('T', 'T', 'T', 'T', 'T', 'T', 'T');
+			$align  = array('L', 'C', 'C', 'C', 'R', 'R');
+			$style = array('', 'B', '', '', '', '');
+			$judul = array('', '', '', '', 'TOTAL', number_format($tot), '');
+			$pdf->FancyRow2(4, $judul, $fc,  $border, $align, $style, $size, $max);
+			$judul = array('', 'Form Rangkap 2', '', '', 'Discount', "0",);
+			$border = array('', 'LTR', '', '', '', '');
+			$pdf->FancyRow2(4, $judul, $fc,  $border, $align, $style, $size, $max);
+			$border = array('T', 'LTR', 'T', 'T', 'T', 'T');
+			$judul = array('', 'Merah : untuk supplier', '', '', 'DPP', number_format($dpp));
+			$border = array('', 'LTR', '', '', '', '');
+			$pdf->FancyRow2(4, $judul, $fc,  $border, $align, $style, $size, $max);
+			$border = array('T', 'LTR', 'T', 'T', 'T', 'T');
+			$judul = array('', 'Putih : untuk keuangan', '', '', 'PPN', number_format($ppn),);
+			$border = array('', 'LRB', '', '', '', '', '', '');
+			$pdf->FancyRow2(4, $judul, $fc,  $border, $align, $style, $size, $max);
+			$judul = array('', '', '', '', 'Materai', number_format($materai));
+			$border = array('', '', '', '', '', '', '');
+			$pdf->FancyRow2(4, $judul, $fc,  $border, $align, $style, $size, $max);
+			$judul = array('', '', '', '', 'Total Net', number_format($totalnet), '');
+			$border = array('', '', '', '', 'B', 'B', 'B');
+			$style = array('', 'B', '', '', 'B', 'B', '');
+			$pdf->FancyRow2(4, $judul, $fc,  $border, $align, $style, $size, $max);
+
+			$pdf->SetWidths(array(63.3, 63.3, 63.3));
+			$border = array('TBLR', 'TBLR', 'TBLR');
+			$align  = array('C', 'C', 'C');
+			$style = array('', '', '');
+			$align  = array('C', 'C', 'C');
+			$border = array('', '', '');
+			$judul = array('', '', $alamat2 . ', ' . date('d-m-Y'));
+			$pdf->ln();
+			$pdf->FancyRow2(3, $judul, $fc,  $border, $align, $style, $size, $max);
+			$align  = array('C', 'C', 'C');
+			$border = array('TBLR', 'TBLR', 'TBLR');
+			$judul = array('Diketahui oleh,', 'Diterima Oleh,', 'Dibuat Oleh,');
+			$pdf->ln();
+			$pdf->FancyRow2(5, $judul, $fc,  $border, $align, $style, $size, $max);
+			$judul = array('', '', '');
+			$pdf->FancyRow2(20, $judul, $fc,  $border, $align, $style, $size, $max);
+			$judul = array('', '', '');
+			$pdf->FancyRow2(5, $judul, $fc,  $border, $align, $style, $size, $max);
+			$judul = array($profile->pejabat3, $header->vendor_name, $this->session->userdata("nama_lengkap"));
+			$pdf->FancyRow2(5, $judul, $fc,  $border, $align, $style, $size, $max);
+
+
+
+
+			$pdf->setTitle($param);
+			$pdf->AliasNbPages();
+			$pdf->output($param . '.PDF', 'I');
 		} else
 		{
 			header('location:'.base_url());
@@ -1201,7 +1214,7 @@ class Hutang extends CI_Controller {
 			}
 
 		  	$q1 = 
-				"select *, a.id as idtr
+				"select *
 				from
 				   tbl_apoap a left outer join
 				   tbl_vendor b
@@ -1212,17 +1225,14 @@ class Hutang extends CI_Controller {
 				   $vendor 
 				order by
 				   a.tglinvoice, a.terima_no desc";
-				
-				
+
 			$periode= 'Periode '.date('d-m-Y',strtotime($_tgl1)).' s/d '.date('d-m-Y',strtotime($_tgl2));	   
 			$d['keu'] = $this->db->query($q1)->result();
 			$d['periode'] = $periode;
 			$level=$this->session->userdata('level');		
 			$akses= $this->M_global->cek_menu_akses($level, 5201);
 			$d['akses']= $akses;		  
-			// $this->load->view('pembelian/v_hutang',$d);	
-
-			// $d['data'] = $this->M_hutang->detailRealisasiPembayaran($unit, $vendor, $startdate, $enddate);		
+		
 			$this->load->view('pembelian/v_hutang_exp1',$d);
 		} else
 		{

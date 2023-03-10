@@ -918,15 +918,15 @@ function savex() {
 
     var expire    = $("#expire" + i).val(); 
 
-      if (expire == '' || expire == null) {
-        swal({
-          title: "Expired Date",
-          html: "<p>HARUS DI isi</p>",
-          type: "error",
-          confirmButtonText: "OK"
-        });
-        return;
-      }
+    if (expire == '' || expire == null) {
+      swal({
+        title: "Expired Date",
+        html: "<p>HARUS DI isi</p>",
+        type: "error",
+        confirmButtonText: "OK"
+      });
+      return;
+    }
   }
   if (matt == 0) {
     matte = "Tanpa Materai";

@@ -28,7 +28,7 @@ class M_farmasi_po extends CI_Model {
 			
 		}
 
-		if($_POST['search']['value']) 
+		if(isset($_POST['search']['value'])) 
 		{
 				$search = $_POST['search']['value'];
 				$search2= 
@@ -45,7 +45,9 @@ class M_farmasi_po extends CI_Model {
 			$search2='';
 		}
 
-		if($_POST['length'] != -1)
+		$post_length = isset($_POST['length']) ? $_POST['length'] : -1;
+
+		if($post_length != -1)
 		{
 
 			$lim1 = $_POST['start'];
@@ -188,7 +190,7 @@ class M_farmasi_po extends CI_Model {
 			
 		}
 
-		if($_POST['search']['value']) 
+		if($_POST['search']['value'])
 		{
 				$search = $_POST['search']['value'];
 				$search2= 

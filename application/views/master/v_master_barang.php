@@ -674,6 +674,7 @@ $(document).ready(function() {
                                         <select name="jenisharga" class="form-control" onchange="cek(this.value)">
                                             <option value="1">Prosentase</option>
                                             <option value="2" selected>Manual</option>
+                                            <option value="3" selected>Kelompok</option>
                                         </select>
                                     </div>
                                     <div class="col-md-3" id="cek_persen">
@@ -1046,12 +1047,12 @@ function filterdata(){
     }
 
     function dapetin(param) {
-        var hnappn = $("#hnappn").val();
-        var het = $("#het").val();
-        var beli = $("#hnappn").val();
-        hj = (beli * (param / 100)) + eval(beli);
-        hnappn2 = het - hnappn;
-        hna2 = hnappn2/hnappn * 100
+        var hnappn    = $("#hnappn").val();
+        var het       = $("#het").val();
+        var beli      = $("#hnappn").val();
+        hj            = (beli * (param / 100)) + eval(beli);
+        hnappn2       = het - hnappn;
+        hna2          = hnappn2/hnappn * 100
         // alert(hna2)
         if(param > hna2) {
             swal({

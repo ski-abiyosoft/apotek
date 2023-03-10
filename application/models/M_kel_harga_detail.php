@@ -17,6 +17,7 @@ class M_kel_harga_detail extends CI_Model {
 
 	private function _get_datatables_query()
 	{
+		$this->db->select("(SELECT a.kelompok from tbl_marginkelompok a where tbl_marginkelompokdetail.kodeharga=a.kodeharga)kelompok, tbl_marginkelompokdetail.*");
 		$this->db->from($this->table);
 		
 		
@@ -78,10 +79,11 @@ class M_kel_harga_detail extends CI_Model {
 		return $this->db->count_all_results();
 	}
 
-	public function get_by_id($id)
+	public function get_by_id($id,$koders)
 	{
+		$this->db->select("(SELECT a.kelompok from tbl_marginkelompok a where tbl_marginkelompokdetail.kodeharga=a.kodeharga)kelompok, tbl_marginkelompokdetail.*");
 		$this->db->from($this->table);
-		$this->db->where('kodeharga',$id);
+		$this->db->where(array('kodeharga' => $id,'koders' => $koders));
 		$query = $this->db->get();
 
 		return $query->row();

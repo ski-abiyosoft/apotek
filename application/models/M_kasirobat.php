@@ -27,7 +27,7 @@ class M_kasirobat extends CI_Model {
 			$tanggal = date('Y-m-d');
 			$this->db->where(array('tglbayar' => $tanggal));			
 		} else {
-		    $this->db->where(array('tglbayar >=' => $bulan,'tglbayar<= ' => $tahun));
+		    $this->db->where(array('tglbayar >= ' => $bulan,'tglbayar <= ' => $tahun));
 			
 		}
 		

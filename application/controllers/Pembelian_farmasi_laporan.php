@@ -2450,32 +2450,33 @@ class Pembelian_farmasi_laporan extends CI_Controller
 					$vendor = '';
 				}
 				$judul = '04 REKAP PEMBELIAN BARANG PER SUPPLIER TOTAL';
-				$query = $this->db->query("SELECT a.vatrp, b.vat, a.materai, a.terima_no, b.discountrp, b.qty_terima , b.discountrp, b.totalrp, (b.totalrp / b.qty_terima ) AS ratarata, c.vendor_name , c.vendor_id, a.terima_date FROM tbl_baranghterima as a JOIN tbl_barangdterima AS b ON a.terima_no = b.terima_no JOIN tbl_vendor AS c ON a.vendor_id = c.vendor_id WHERE $vendor a.koders = '$unit' and a.terima_date between '$tanggal1' and '$tanggal2'")->result();
+				$query = $this->db->query("SELECT a.vatrp,a.invoice_no, b.vat, a.materai, a.terima_no, b.discountrp, b.qty_terima , b.discountrp, b.totalrp, (b.totalrp / b.qty_terima ) AS ratarata, c.vendor_name , c.vendor_id, a.terima_date FROM tbl_baranghterima as a JOIN tbl_barangdterima AS b ON a.terima_no = b.terima_no JOIN tbl_vendor AS c ON a.vendor_id = c.vendor_id WHERE $vendor a.koders = '$unit' and a.terima_date between '$tanggal1' and '$tanggal2'")->result();
 				$body .= "<table style=\"border-collapse:collapse;font-family: tahoma; font-size:12px\" width=\"100%\" align=\"center\" border=\"1\" celspacing =\"5\" celpadding=\"5\">
                     <thead>
-											<tr>
-												<td style=\"text-align: center; font-weight: bold; padding: 15px;\">No</td>
-												<td style=\"text-align: center; font-weight: bold; padding: 15px;\">No BAPB</td>
-												<td style=\"text-align: center; font-weight: bold; padding: 15px;\">Supplier</td>
-												<td style=\"text-align: center; font-weight: bold; padding: 15px;\">Tanggal</td>
-												<td style=\"text-align: center; font-weight: bold; padding: 15px;\">Qty</td>
-												<td style=\"text-align: center; font-weight: bold; padding: 15px;\">Total</td>
-												<td style=\"text-align: center; font-weight: bold; padding: 15px;\">Diskon</td>
-												<td style=\"text-align: center; font-weight: bold; padding: 15px;\">Vat Rp</td>
-												<td style=\"text-align: center; font-weight: bold; padding: 15px;\">Materai</td>
-												<td style=\"text-align: center; font-weight: bold; padding: 15px;\">Total Net</td>
-											</tr>
-										</thead>";
-				$no = 1;
-				$tqty_terima = 0;
-				$ttotalrp = 0;
-				$ttotalrp2 = 0;
-				$tdiscountrp = 0;
-				$tvatrp = 0;
-				$tmaterai = 0;
-				$ttotalrp = 0;
-				$sql = $this->db->get_where("tbl_pajak", ["kodetax" => "PPN"])->row();
-				$pajak = $sql->prosentase / 100;
+					<tr>
+						<td bgcolor=\"#cccccc\" style=\"text-align: center; font-weight: bold; padding: 15px;\">No</td>
+						<td bgcolor=\"#cccccc\" style=\"text-align: center; font-weight: bold; padding: 15px;\">No BAPB</td>
+						<td bgcolor=\"#cccccc\" style=\"text-align: center; font-weight: bold; padding: 15px;\">No Faktur</td>
+						<td bgcolor=\"#cccccc\" style=\"text-align: center; font-weight: bold; padding: 15px;\">Supplier</td>
+						<td bgcolor=\"#cccccc\" style=\"text-align: center; font-weight: bold; padding: 15px;\">Tanggal</td>
+						<td bgcolor=\"#cccccc\" style=\"text-align: center; font-weight: bold; padding: 15px;\">Qty</td>
+						<td bgcolor=\"#cccccc\" style=\"text-align: center; font-weight: bold; padding: 15px;\">Total</td>
+						<td bgcolor=\"#cccccc\" style=\"text-align: center; font-weight: bold; padding: 15px;\">Diskon</td>
+						<td bgcolor=\"#cccccc\" style=\"text-align: center; font-weight: bold; padding: 15px;\">Vat Rp</td>
+						<td bgcolor=\"#cccccc\" style=\"text-align: center; font-weight: bold; padding: 15px;\">Materai</td>
+						<td bgcolor=\"#cccccc\" style=\"text-align: center; font-weight: bold; padding: 15px;\">Total Net</td>
+					</tr>
+				</thead>";
+				$no             = 1;
+				$tqty_terima    = 0;
+				$ttotalrp       = 0;
+				$ttotalrp2      = 0;
+				$tdiscountrp    = 0;
+				$tvatrp         = 0;
+				$tmaterai       = 0;
+				$ttotalrp       = 0;
+				$sql            = $this->db->get_where("tbl_pajak", ["kodetax" => "PPN"])->row();
+				$pajak          = $sql->prosentase / 100;
 				foreach ($query as $q) {
 					if ($q->vat == 1) {
 						$vatrp = ($q->totalrp * $pajak);
@@ -2483,89 +2484,90 @@ class Pembelian_farmasi_laporan extends CI_Controller
 						$vatrp = 0;
 					}
 					$totalrp = ($q->totalrp + $q->discountrp);
-					$body .= 		"<tbody>
-											<tr>
-												<td style=\"text-align: right; padding: 10px;\">" . $no++ . "</td>
-												<td style=\"padding: 10px;\">$q->terima_no</td>
-												<td style=\"padding: 10px;\">$q->vendor_name</td>
-												<td style=\"padding: 10px;\">" . date("d-m-Y", strtotime($q->terima_date)) . "</td>
-												<td style=\"text-align: right; padding: 10px;\">" . number_format($q->qty_terima) . "</td>
-												<td style=\"text-align: right; padding: 10px;\">" . number_format($totalrp) . "</td>
-												<td style=\"text-align: right; padding: 10px;\">" . number_format($q->discountrp) . "</td>
-												<td style=\"text-align: right; padding: 10px;\">" . number_format($vatrp) . "</td>
-												<td style=\"text-align: right; padding: 10px;\">" . number_format($q->materai) . "</td>
-												<td style=\"text-align: right; padding: 10px;\">" . number_format($q->totalrp + $q->vatrp + $q->materai) . "</td>
-											</tr>
-										</tbody>";
-					$tqty_terima += $q->qty_terima;
-					$ttotalrp += $totalrp;
-					$tdiscountrp += $q->discountrp;
-					$tvatrp += $vatrp;
-					$tmaterai += $q->materai;
-					$ttotalrp2 += ($q->totalrp + $q->vatrp + $q->materai);
+					$body .= "<tbody>
+						<tr>
+							<td style=\"text-align: right; padding: 10px;\">" . $no++ . "</td>
+							<td style=\"padding: 10px;\">$q->terima_no</td>
+							<td style=\"padding: 10px;\">$q->invoice_no</td>
+							<td style=\"padding: 10px;\">$q->vendor_name</td>
+							<td style=\"padding: 10px;\">" . date("d-m-Y", strtotime($q->terima_date)) . "</td>
+							<td style=\"text-align: right; padding: 10px;\">" . number_format($q->qty_terima) . "</td>
+							<td style=\"text-align: right; padding: 10px;\">" . number_format($totalrp) . "</td>
+							<td style=\"text-align: right; padding: 10px;\">" . number_format($q->discountrp) . "</td>
+							<td style=\"text-align: right; padding: 10px;\">" . number_format($vatrp) . "</td>
+							<td style=\"text-align: right; padding: 10px;\">" . number_format($q->materai) . "</td>
+							<td style=\"text-align: right; padding: 10px;\">" . number_format($q->totalrp + $q->vatrp + $q->materai) . "</td>
+						</tr>
+					</tbody>";
+					$tqty_terima   += $q->qty_terima;
+					$ttotalrp      += $totalrp;
+					$tdiscountrp   += $q->discountrp;
+					$tvatrp        += $vatrp;
+					$tmaterai      += $q->materai;
+					$ttotalrp2     += ($q->totalrp + $q->vatrp + $q->materai);
 				}
-				$body .= 	"<tfoot>
-										<tr>
-											<td style=\"text-align: center;\" colspan=\"3\">TOTAL</td>
-											<td style=\"text-align: right;\">" . number_format($tqty_terima) . "</td>
-											<td style=\"text-align: right;\">" . number_format($ttotalrp) . "</td>
-											<td style=\"text-align: right;\">" . number_format($tdiscountrp) . "</td>
-											<td style=\"text-align: right;\">" . number_format($tvatrp) . "</td>
-											<td style=\"text-align: right;\">" . number_format($tmaterai) . "</td>
-											<td style=\"text-align: right;\">" . number_format($ttotalrp2) . "</td>
-										</tr>
-									</tfoot>";
+				$body .="<tfoot>
+					<tr>
+						<td bgcolor=\"#cccccc\" style=\"text-align: center;\" colspan=\"5\"><b>TOTAL</b></td>
+						<td bgcolor=\"#cccccc\" style=\"text-align: right;\">" . number_format($tqty_terima) . "</td>
+						<td bgcolor=\"#cccccc\" style=\"text-align: right;\">" . number_format($ttotalrp) . "</td>
+						<td bgcolor=\"#cccccc\" style=\"text-align: right;\">" . number_format($tdiscountrp) . "</td>
+						<td bgcolor=\"#cccccc\" style=\"text-align: right;\">" . number_format($tvatrp) . "</td>
+						<td bgcolor=\"#cccccc\" style=\"text-align: right;\">" . number_format($tmaterai) . "</td>
+						<td bgcolor=\"#cccccc\" style=\"text-align: right;\">" . number_format($ttotalrp2) . "</td>
+					</tr>
+				</tfoot>";
 				$body .=	"</table>";
 				$body .= "<table style=\"border-collapse:collapse;font-family: tahoma; font-size:12px\" width=\"100%\" align=\"center\" border=\"0\">
-										<tr>
-											<td> &nbsp; </td>
-										</tr> 
-									</table>";
+							<tr>
+								<td> &nbsp; </td>
+							</tr> 
+						</table>";
 				$body .= "<table style=\"border-collapse:collapse;font-family: tahoma; font-size:12px\" width=\"100%\" align=\"center\" border=\"0\">
-										<tr>
-											<td style=\"text-align:center;\"><i>HOSPITAL MANAGEMENT SYSTEM</i></td>
-										</tr> 
-										<tr>
-											<td style=\"text-align:center;\">$kota ," . date("d-m-Y") . "</td>
-										</tr> 
-									</table>";
+					<tr>
+						<td style=\"text-align:center;\"><i>HOSPITAL MANAGEMENT SYSTEM</i></td>
+					</tr> 
+					<tr>
+						<td style=\"text-align:center;\">$kota ," . date("d-m-Y") . "</td>
+					</tr> 
+				</table>";
 				$body .= "<table style=\"border-collapse:collapse;font-family: tahoma; font-size:12px\" width=\"100%\" align=\"center\" border=\"0\">
-										<tr>
-											<td> &nbsp; </td>
-										</tr> 
-									</table>";
+					<tr>
+						<td> &nbsp; </td>
+					</tr> 
+				</table>";
 				$body .= "<table style=\"border-collapse:collapse;font-family: tahoma; font-size:12px\" width=\"70%\" align=\"center\" border=\"1\">
-										<tr>
-											<td style=\"text-align:center;\" width=\"33%\">Diketahui oleh,</td>
-											<td style=\"text-align:center;\" width=\"33%\">Diserahkan oleh,</td>
-											<td style=\"text-align:center;\" width=\"33%\">Dibuat oleh,</td>
-										</tr> 
-										<tr>
-											<td width=\"33%\" style=\"text-align:center; border-bottom:none; border-top:none;\">&nbsp;</td>
-											<td width=\"33%\" style=\"text-align:center; border-bottom:none; border-top:none;\">&nbsp;</td>
-											<td width=\"33%\" style=\"text-align:center; border-bottom:none; border-top:none;\">&nbsp;</td>
-										</tr> 
-										<tr>
-											<td width=\"33%\" style=\"text-align:center; border-bottom:none; border-top:none;\">&nbsp;</td>
-											<td width=\"33%\" style=\"text-align:center; border-bottom:none; border-top:none;\">&nbsp;</td>
-											<td width=\"33%\" style=\"text-align:center; border-bottom:none; border-top:none;\">&nbsp;</td>
-										</tr> 
-										<tr>
-											<td width=\"33%\" style=\"text-align:center; border-bottom:none; border-top:none;\">&nbsp;</td>
-											<td width=\"33%\" style=\"text-align:center; border-bottom:none; border-top:none;\">&nbsp;</td>
-											<td width=\"33%\" style=\"text-align:center; border-bottom:none; border-top:none;\">&nbsp;</td>
-										</tr> 
-										<tr>
-											<td width=\"33%\" style=\"text-align:center;\">2</td>
-											<td width=\"33%\" style=\"text-align:center;\">&nbsp;</td>
-											<td width=\"33%\" style=\"text-align:center;\">HARYANTO</td>
-										</tr> 
-										<tr>
-											<td width=\"33%\" style=\"text-align:center;\">Kepala Apoteker</td>
-											<td width=\"33%\" style=\"text-align:center;\">&nbsp;</td>
-											<td width=\"33%\" style=\"text-align:center;\">PENANGGUNG JAWAB ADMINISTRASI</td>
-										</tr> 
-									</table>";
+					<tr>
+						<td bgcolor=\"#cccccc\" style=\"text-align:center;\" width=\"33%\">Diketahui oleh,</td>
+						<td bgcolor=\"#cccccc\" style=\"text-align:center;\" width=\"33%\">Diserahkan oleh,</td>
+						<td bgcolor=\"#cccccc\" style=\"text-align:center;\" width=\"33%\">Dibuat oleh,</td>
+					</tr> 
+					<tr>
+						<td width=\"33%\" style=\"text-align:center; border-bottom:none; border-top:none;\">&nbsp;</td>
+						<td width=\"33%\" style=\"text-align:center; border-bottom:none; border-top:none;\">&nbsp;</td>
+						<td width=\"33%\" style=\"text-align:center; border-bottom:none; border-top:none;\">&nbsp;</td>
+					</tr> 
+					<tr>
+						<td width=\"33%\" style=\"text-align:center; border-bottom:none; border-top:none;\">&nbsp;</td>
+						<td width=\"33%\" style=\"text-align:center; border-bottom:none; border-top:none;\">&nbsp;</td>
+						<td width=\"33%\" style=\"text-align:center; border-bottom:none; border-top:none;\">&nbsp;</td>
+					</tr> 
+					<tr>
+						<td width=\"33%\" style=\"text-align:center; border-bottom:none; border-top:none;\">&nbsp;</td>
+						<td width=\"33%\" style=\"text-align:center; border-bottom:none; border-top:none;\">&nbsp;</td>
+						<td width=\"33%\" style=\"text-align:center; border-bottom:none; border-top:none;\">&nbsp;</td>
+					</tr> 
+					<tr>
+						<td width=\"33%\" style=\"text-align:center;\">2</td>
+						<td width=\"33%\" style=\"text-align:center;\">&nbsp;</td>
+						<td width=\"33%\" style=\"text-align:center;\">HARYANTO</td>
+					</tr> 
+					<tr>
+						<td width=\"33%\" style=\"text-align:center;\">Kepala Apoteker</td>
+						<td width=\"33%\" style=\"text-align:center;\">&nbsp;</td>
+						<td width=\"33%\" style=\"text-align:center;\">PENANGGUNG JAWAB ADMINISTRASI</td>
+					</tr> 
+				</table>";
 			} else if ($idlap == 105){
 				$position = 'L';
 				if ($vendorx != '') {

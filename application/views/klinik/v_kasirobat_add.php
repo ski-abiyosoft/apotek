@@ -587,12 +587,12 @@ $this->load->view('template/body');
                                       <option value="2">CREDIT CARD</option>
                                       <option value="3">TRANFER</option>
                                       <option value="4">ONLINE</option>
+                                      <option value="5">ONLINE</option>
                                     </select>
                                   </td>
-                                  <td><input name="bayar_nokartu[]" class="form-control" type='text' maxlength='16'>
+                                  <td><input name="bayar_nokartu[]" class="form-control" type='text' onchange="mink(1);" id="kartu1" maxlength='16'>
                                   </td>
-                                  <td><input name="bayar_trvalid[]" onchange="totalline_bayar(1)" value="0" type="text"
-                                      class="form-control rightJustified" maxlength="6"></td>
+                                  <td><input name="bayar_trvalid[]" onchange="totalline_bayar(1);mina(1);" value="0" type="text" id="aprov1" class="form-control rightJustified" maxlength="6"></td>
                                   <td><input name="bayar_nilai[]" id="bayar_nilai1" onchange="totalline_bayar(1)"
                                       value="0" type="text" class="form-control rightJustified "></td>
                                   <td><input name="bayar_adm[]" onchange="totalline_bayar(1)" value="0" type="text"
@@ -714,7 +714,7 @@ $this->load->view('template/body');
                     <button id="btnsimpan_bayar" type="button" onclick="save_bayar()" class="btn blue"><i
                         class="fa fa-save"></i><b> PROSES</b></button>
                     <button id="btncetak_bayar" type="button" onclick="javascript:window.open(_urlcetak(),'_blank');"
-                      class="btn yellow"><i class="fa fa-save"></i> CETAK KWITANSI</button>
+                      class="btn yellow"><i class="fa fa-save"></i><b> CETAK KWITANSI</b></button>
 
                     <a href="<?= base_url('kasir_obat') ?>" class="btn btn red"><i class="fa fa-undo"></i><b>
                         KEMBALI</b></a>
@@ -1025,9 +1025,10 @@ function tambah_bayar() {
     "<option value='3'>TRANFER</option>" +
     "<option value='4'>ONLINE</option>" +
     "</select>";
-  td3.innerHTML = "<input name='bayar_nokartu[]' class='form-control' type='text' maxlength='16'>";
+  td3.innerHTML = "<input name='bayar_nokartu[]' class='form-control' type='text' maxlength='16' onchange='mink(" + idrow + ")'>";
   td4.innerHTML = "<input name='bayar_trvalid[]' onchange='totalline_bayar(" + idrow2 +
-    ")' value='0' type='text' class='form-control rightJustified' maxlength='6'>";
+    ")' value='0' type='text' class='form-control rightJustified' maxlength='6' onchange='mina(" + idrow +
+    ")'>";
   td5.innerHTML = "<input id='bayar_nilai" + idrow2 + "' name='bayar_nilai[]' onchange='totalline_bayar(" + idrow2 +
     ")' value='0' type='text' class='form-control rightJustified'>";
   td6.innerHTML = "<input name='bayar_adm[]' onchange='totalline_bayar(" + idrow2 +
@@ -1037,6 +1038,36 @@ function tambah_bayar() {
   idrow2++;
 }
 
+
+function mink(id) {
+  var kartu = document.getElementById('kartu' + id).value;
+  if (kartu.length < 16) {
+    swal({
+      title: "NO KARTU",
+      html: "Harus berisi 16 digit",
+      type: "warning",
+      confirmButtonText: "OK"
+    }).then((value) => {
+      $('#kartu' + id).focus();
+    });
+    $("#btnsimpan_bayar").attr("disabled", true);
+  }
+}
+
+function mina(id) {
+  var aprov = document.getElementById('aprov' + id).value;
+  if (aprov.length < 6) {
+    swal({
+      title: "APROVAL CODE",
+      html: "Harus berisi 6 digit",
+      type: "warning",
+      confirmButtonText: "OK"
+    }).then((value) => {
+      $('#aprov' + id).focus();
+    });
+    $("#btnsimpan_bayar").attr("disabled", true);
+  }
+}
 
 function showharga(str) {
   var xhttp;
@@ -1096,10 +1127,11 @@ function cekprovider() {
 }
 
 function save_bayar() {
-  var reseprp = $('#reseprp').val();
-  var voucherrp1 = $('#voucherrp1').val();
-  var voucherrp2 = $('#voucherrp2').val();
-  var voucherrp3 = $('#voucherrp3').val();
+  var reseprp       = $('#reseprp').val();
+  var voucherrp1    = $('#voucherrp1').val();
+  var voucherrp2    = $('#voucherrp2').val();
+  var voucherrp3    = $('#voucherrp3').val();
+
   if (voucherrp1 != '' | voucherrp1 != null) {
     var vc1 = '<br>VC1 : ' + voucherrp1;
   } else {
@@ -1117,28 +1149,28 @@ function save_bayar() {
   }
 
   $("#btnsimpan_bayar").attr("disabled", true);
-  var nomor = $('[name="noresep"]').val();
-  var total = $('#totalnet').val();
+  var nomor             = $('[name="noresep"]').val();
+  var total             = $('#totalnet').val();
 
   // cek pakai uang muka apakah lebih dari tersedia uang muka
-  var uangmukapakaix = $('#uangmukapakai').val();
-  var uangmukapakai = Number(parseInt(uangmukapakaix.replaceAll(',', '')));
-  var uangmuka = $('#uangmuka').val();
-  var nuangmuka = Number(uangmuka.replace(/[^0-9\.]+/g, ""));
+  var uangmukapakaix    = $('#uangmukapakai').val();
+  var uangmukapakai     = Number(parseInt(uangmukapakaix.replaceAll(',', '')));
+  var uangmuka          = $('#uangmuka').val();
+  var nuangmuka         = Number(uangmuka.replace(/[^0-9\.]+/g, ""));
 
-  var voucherrp1 = $('#voucherrp1').val();
-  var voucherrp2 = $('#voucherrp2').val();
-  var voucherrp3 = $('#voucherrp3').val();
-  var vvoucherrp1 = Number(voucherrp1.replace(/[^0-9\.]+/g, ""));
-  var vvoucherrp2 = Number(voucherrp2.replace(/[^0-9\.]+/g, ""));
-  var vvoucherrp3 = Number(voucherrp3.replace(/[^0-9\.]+/g, ""));
-  var countv = eval(vvoucherrp1) + eval(vvoucherrp2) + eval(vvoucherrp3);
+  var voucherrp1        = $('#voucherrp1').val();
+  var voucherrp2        = $('#voucherrp2').val();
+  var voucherrp3        = $('#voucherrp3').val();
+  var vvoucherrp1       = Number(voucherrp1.replace(/[^0-9\.]+/g, ""));
+  var vvoucherrp2       = Number(voucherrp2.replace(/[^0-9\.]+/g, ""));
+  var vvoucherrp3       = Number(voucherrp3.replace(/[^0-9\.]+/g, ""));
+  var countv            = eval(vvoucherrp1) + eval(vvoucherrp2) + eval(vvoucherrp3);
 
-  var terimadari = $('#terimadari').val();
-  var nohp = $('#hpno').val();
-  var cekhp = $('#reg_cekhp').is(':checked');
-  var uangmukapakai = $('#uangmukapakai').val();
-  var uangmukapakaix = Number(parseInt(uangmukapakai.replaceAll(',', '')));
+  var terimadari        = $('#terimadari').val();
+  var nohp              = $('#hpno').val();
+  var cekhp             = $('#reg_cekhp').is(':checked');
+  var uangmukapakai     = $('#uangmukapakai').val();
+  var uangmukapakaix    = Number(parseInt(uangmukapakai.replaceAll(',', '')));
 
   if (nohp == '') {
     swal({
@@ -1148,7 +1180,7 @@ function save_bayar() {
       type: "error",
       confirmButtonText: "OK"
     });
-    // $("#btnsimpan_bayar").attr("disabled", false);
+    $("#btnsimpan_bayar").attr("disabled", false);
     return;
   }
 
@@ -1160,7 +1192,7 @@ function save_bayar() {
       type: "info",
       confirmButtonText: "OK"
     });
-    // $("#btnsimpan_bayar").attr("disabled", false);
+    $("#btnsimpan_bayar").attr("disabled", false);
     return;
   }
 
@@ -1182,7 +1214,7 @@ function save_bayar() {
         type: "error",
         confirmButtonText: "OK"
       });
-      // $("#btnsimpan_bayar").attr("disabled", false);
+      $("#btnsimpan_bayar").attr("disabled", false);
       return;
     } else {
       swal('', 'Data Belum Lengkap / Belum ada pembayaran ...', '');
@@ -1192,10 +1224,10 @@ function save_bayar() {
 
   } else {
     $.ajax({
-      url: '<?php echo site_url('kasir_obat/ajax_add_bayar') ?>',
-      data: $('#frmkonsul').serialize(),
-      type: 'POST',
-      dataType: 'json',
+      url         : '<?php echo site_url('kasir_obat/ajax_add_bayar') ?>',
+      data        : $('#frmkonsul').serialize(),
+      type        : 'POST',
+      dataType    : 'json',
 
       success: function(data) {
         document.getElementById("btnsimpan_bayar").disabled = true;

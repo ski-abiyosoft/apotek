@@ -16,20 +16,20 @@
                       <ul class="page-breadcrumb breadcrumb">
 
 						<li>
-							<i class="fa fa-home"></i>
-							<a href="<?php echo base_url();?>dashboard">
+							<i style="color:white;" class="fa fa-home"></i>
+							<a style="color:white;" href="<?php echo base_url();?>dashboard">
                                Awal
 							</a>
-							<i class="fa fa-angle-right"></i>
+							<i style="color:white;" class="fa fa-angle-right"></i>
 						</li>
 						<li>
-							<a href="#">
+							<a style="color:white;" href="#">
                                Master
 							</a>
-							<i class="fa fa-angle-right"></i>
+							<i style="color:white;" class="fa fa-angle-right"></i>
 						</li>
 						<li>
-							<a href="#">
+							<a style="color:white;" href="#">
                             Kelompok Harga
 							</a>
 						</li>
@@ -70,10 +70,10 @@
 							<table id="table" class="table table-striped- table-bordered-" cellspacing="0" width="100%">
                                <thead class="breadcrumb">
                                      <tr>
-                                         <th style="text-align: center">Kode</th>
-                                         <th style="text-align: center">Nama Kelompok Harga</th>
+                                         <th style="text-align: center;color:white;">Kode</th>
+                                         <th style="text-align: center;color:white;">Nama Kelompok Harga</th>
 										 <!-- <th style="text-align: center">Parameter</th> -->
-                                         <th style="text-align: center;width:12%;">Aksi</th>
+                                         <th style="text-align: center;color:white;width:12%;">Aksi</th>
 
                                      </tr>
                                 </thead>
@@ -96,7 +96,7 @@
 								
 									
 								</div>
-								<button class="btn btn-success" onclick="add_bank()"><i class="glyphicon glyphicon-plus"></i> Data Baru</button>
+								
                                 <div class="btn-group pull-right">
 									<button class="btn dropdown-toggle" data-toggle="dropdown">Data <i class="fa fa-angle-down"></i>
 									</button>
@@ -115,11 +115,12 @@
 							<table id="table2" class="table table-striped- table-bordered-" cellspacing="0" width="100%">
                                <thead class="breadcrumb">
                                      <tr>
-										 <th style="text-align: center">Koders</th>
-                                         <th style="text-align: center">Kode harga</th>
-                                         <th style="text-align: center">Nama Kelompok Harga</th>
-										 <th style="text-align: center">Parameter</th>
-                                         <th style="text-align: center;width:12%;">Aksi</th>
+										 <th style="color:white;text-align: center">Koders</th>
+                                         <th style="color:white;text-align: center">Kode harga</th>
+                                         <th style="color:white;text-align: center">Nama Kelompok Harga</th>
+										 <th style="color:white;text-align: center">Umum %</th>
+										 <th style="color:white;text-align: center">Member %</th>
+                                         <th style="color:white;text-align: center;width:12%;">Aksi</th>
 
                                      </tr>
                                 </thead>
@@ -202,16 +203,16 @@ $(document).ready(function() {
         },
 		
 		"oLanguage": {
-                    "sEmptyTable": "Tidak ada data",
-                    "sInfoEmpty": "Tidak ada data",
-                    "sInfoFiltered": " - Dipilih dari _MAX_ data",
-                    "sSearch": "Pencarian Data : ",
-                    "sInfo": " Jumlah _TOTAL_ Data (_START_ - _END_)",
-                    "sLengthMenu": "_MENU_ Baris",
-                    "sZeroRecords": "Tida ada data",
+                    "sEmptyTable"   : "Tidak ada data",
+                    "sInfoEmpty"    : "Tidak ada data",
+                    "sInfoFiltered" : " - Dipilih dari _MAX_ data",
+                    "sSearch"       : "Pencarian Data : ",
+                    "sInfo"         : " Jumlah _TOTAL_ Data (_START_ - _END_)",
+                    "sLengthMenu"   : "_MENU_ Baris",
+                    "sZeroRecords"  : "Tida ada data",
                     "oPaginate": {
-                        "sPrevious": "Sebelumnya",
-                        "sNext": "Berikutnya"
+                        "sPrevious"   : "Sebelumnya",
+                        "sNext"       : "Berikutnya"
                     }
                 },
 				
@@ -231,14 +232,14 @@ $(document).ready(function() {
     });
 
     //datepicker
-    $('.datepicker').datepicker({
-        autoclose: true,
-        format: "yyyy-mm-dd",
-        todayHighlight: true,
-        orientation: "top auto",
-        todayBtn: true,
-        todayHighlight: true,  
-    });
+    // $('.datepicker').datepicker({
+    //     autoclose: true,
+    //     format: "yyyy-mm-dd",
+    //     todayHighlight: true,
+    //     orientation: "top auto",
+    //     todayBtn: true,
+    //     todayHighlight: true,  
+    // });
 
     //set input/textarea/select event when change value, remove class error and remove text help block 
     $("input").change(function(){
@@ -277,23 +278,62 @@ function edit_data(id)
 
     //Ajax Load data from ajax
     $.ajax({
-        url : "<?php echo site_url('master_kel_harga/ajax_edit/')?>/" + id,
-        type: "GET",
-        dataType: "JSON",
-        success: function(data)
+        url         : "<?php echo site_url('master_kel_harga/ajax_edit/')?>/" + id,
+        type        : "GET",
+        dataType    : "JSON",
+        success     : function(data)
         {
-
 		    $('[name="kode"]').val(data.kodeharga);
             $('[name="nama"]').val(data.kelompok);
-            
-            //$('[name="dob"]').datepicker('update',data.dob);
             $('#modal_form').modal('show'); // show bootstrap modal when complete loaded
             $('.modal-title').text('Edit Data'); // Set title to Bootstrap modal title
 
         },
         error: function (jqXHR, textStatus, errorThrown)
         {
-            alert('Error get data from ajax');
+            // alert('Error get data from ajax');
+            swal({
+                    html: "Error get data from ajax",
+                    type: "error",
+                    confirmButtonText: "OK",
+                    confirmButtonColor: "red"
+                });
+        }
+    });
+}
+
+function edit_data_detail(id,koders)
+{
+    save_method = 'update';
+    $('#form')[0].reset(); // reset form on modals
+    $('.form-group').removeClass('has-error'); // clear error class
+    $('.help-block').empty(); // clear error string
+
+    //Ajax Load data from ajax
+    $.ajax({
+        url         : "<?php echo site_url('master_kel_harga/ajax_edit_detail/')?>/"+id+"/"+koders,
+        type        : "GET",
+        dataType    : "JSON",
+        success     : function(data)
+        {
+		    $('[name="koded"]').val(data.koders);
+            $('[name="kodehargar"]').val(data.kodeharga);
+            $('[name="namad"]').val(data.kelompok);
+		    $('[name="umum"]').val(data.umum);
+            $('[name="member"]').val(data.member);
+            $('#modal_form2').modal('show'); // show bootstrap modal when complete loaded
+            $('.modal-title').text('Edit Data'); // Set title to Bootstrap modal title
+
+        },
+        error: function (jqXHR, textStatus, errorThrown)
+        {
+            // alert('Error get data from ajax');
+            swal({
+                    html                : "Error get data from ajax",
+                    type                : "error",
+                    confirmButtonText   : "OK",
+                    confirmButtonColor  : "red"
+                });
         }
     });
 }
@@ -327,7 +367,64 @@ function save()
 
             if(data.status) //if success close modal and reload ajax table
             {
+                swal({
+                    html: "Data Kelompok Berhasil Tersimpan",
+                    type: "success",
+                    confirmButtonText: "Ok",
+                    confirmButtonColor: "green"
+                });
                 $('#modal_form').modal('hide');
+                reload_table();
+            }
+            else
+            {
+                for (var i = 0; i < data.inputerror.length; i++) 
+                {
+                    $('[name="'+data.inputerror[i]+'"]').parent().parent().addClass('has-error'); //select parent twice to select div form-group class and add has-error class
+                    $('[name="'+data.inputerror[i]+'"]').next().text(data.error_string[i]); //select span help-block class set text error string
+                }
+            }
+            $('#btnSave').text('Simpan'); //change button text
+            $('#btnSave').attr('disabled',false); //set button enable 
+
+
+        },
+        error: function (jqXHR, textStatus, errorThrown)
+        {
+            alert('Error adding / update data');
+            $('#btnSave').text('save'); //change button text
+            $('#btnSave').attr('disabled',false); //set button enable 
+
+        }
+    });
+}
+
+function savedetail()
+{
+    $('#btnSave').text('saving...'); //change button text
+    $('#btnSave').attr('disabled',true); //set button disable 
+    var url;
+
+    url = "<?php echo site_url('master_kel_harga/ajax_update_detail')?>";
+
+    // ajax adding data to database
+    $.ajax({
+        url         : url,
+        type        : "POST",
+        data        : $('#formd').serialize(),
+        dataType    : "JSON",
+        success: function(data)
+        {
+
+            if(data.status) //if success close modal and reload ajax table
+            {
+                swal({
+                    html: "Data Detail Berhasil Terupdate",
+                    type: "success",
+                    confirmButtonText: "Ok",
+                    confirmButtonColor: "green"
+                });
+                $('#modal_form2').modal('hide');
                 reload_table();
             }
             else
@@ -355,7 +452,19 @@ function save()
 
 function delete_data(id)
 {
-    if(confirm('Yakin data Bank dengan kode '+id+' ini akan dihapus ?'))
+    // if(confirm('Yakin data Bank dengan kode '+id+' ini akan dihapus ?'))
+    $kett = "Yakin data Kelompok <br> <b>"+id+"</b><br> ini akan dihapus ?";
+    swal({
+        title: 'KELOMPOK HARGA',
+        html: $kett,
+        type: 'question',
+        showCancelButton: true,
+        confirmButtonClass: 'btn btn-success',
+        cancelButtonClass: 'btn btn-success',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Hapus',
+        cancelButtonText: 'Batal'
+    }).then(function() 
     {
         // ajax delete data to database
         $.ajax({
@@ -365,16 +474,27 @@ function delete_data(id)
             success: function(data)
             {
                 //if success reload ajax table
+                swal({
+                    html: "Data Kelompok Berhasil Terhapus",
+                    type: "success",
+                    confirmButtonText: "Ok",
+                    confirmButtonColor: "green"
+                });
                 $('#modal_form').modal('hide');
                 reload_table();
             },
             error: function (jqXHR, textStatus, errorThrown)
             {
-                alert('Error deleting data');
+                swal({
+                    html: "Gagal Terhapus",
+                    type: "error",
+                    confirmButtonText: "Ok",
+                    confirmButtonColor: "red"
+                });
             }
         });
 
-    }
+    });
 }
 
 
@@ -407,12 +527,12 @@ function delete_data(id)
                         <div class="form-group">
                             <label class="control-label col-md-3">Kode</label>
                             <div class="col-md-9">
-                                <input name="kode" placeholder="Kode" class="form-control input-small" maxlength="5" type="text">
+                                <input name="kode" placeholder="Kode" class="form-control input-small" maxlength="5" type="text" readonly value="AUTO">
                                 <span class="help-block"></span>
                             </div>
                         </div>
                         <div class="form-group">
-                            <label class="control-label col-md-3">Kelompok</label>
+                            <label class="control-label col-md-3">Nama Kelompok</label>
                             <div class="col-md-9">
                                 <input name="nama" placeholder="Uraian" class="form-control" maxlength="100" type="text">
                                 <span class="help-block"></span>
@@ -424,8 +544,8 @@ function delete_data(id)
                 </form>
             </div>
             <div class="modal-footer">
-                <button type="button" id="btnSave" onclick="save()" class="btn btn-primary">Simpan</button>
-                <button type="button" class="btn btn-danger" data-dismiss="modal">Batal</button>
+                <button type="button" id="btnSave" onclick="save()" class="btn btn-primary"><b>Simpan</b></button>
+                <button type="button" class="btn btn-danger" data-dismiss="modal"><b>Batal</b></button>
             </div>
         </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->
@@ -440,21 +560,44 @@ function delete_data(id)
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                 <h3 class="modal-title">Data Kelompok Harga Detail</h3>
             </div>
-            <div class="modal-body form">
-                <form action="#" id="form" class="form-horizontal">
+            <div class="modal-body formd">
+                <form action="#" id="formd" class="form-horizontal">
                     <input type="hidden" value="" name="id"/> 
                     <div class="form-body">
                         <div class="form-group">
                             <label class="control-label col-md-3">Kode</label>
                             <div class="col-md-9">
-                                <input name="kode" placeholder="Kode" class="form-control input-small" maxlength="5" type="text">
+                                <input name="koded" placeholder="Kode" class="form-control input-small" maxlength="5" type="text" readonly>
                                 <span class="help-block"></span>
+                                <input name="kodehargar" placeholder="Kode" class="form-control input-small" maxlength="5" type="hidden" readonly>
                             </div>
                         </div>
                         <div class="form-group">
                             <label class="control-label col-md-3">Kelompok</label>
                             <div class="col-md-9">
-                                <input name="nama" placeholder="Uraian" class="form-control" maxlength="100" type="text">
+                                <input name="namad" placeholder="Uraian" class="form-control" maxlength="100" type="text" readonly>
+                                <span class="help-block"></span>
+                            </div>
+                        </div>			
+                        <div class="form-group">
+                            <label class="control-label col-md-3">Umum</label>
+                            <div class="col-md-5">
+                                <input name="umum" placeholder="Umum" class="form-control" maxlength="100" type="number">
+                                <span class="help-block"></span>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="control-label">%</label>
+                                <span class="help-block"></span>
+                            </div>
+                        </div>			
+                        <div class="form-group">
+                            <label class="control-label col-md-3">Member</label>
+                            <div class="col-md-5">
+                                <input name="member" placeholder="Member" class="form-control" maxlength="100" type="number">
+                                <span class="help-block"></span>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="control-label">%</label>
                                 <span class="help-block"></span>
                             </div>
                         </div>			
@@ -464,8 +607,8 @@ function delete_data(id)
                 </form>
             </div>
             <div class="modal-footer">
-                <button type="button" id="btnSave" onclick="save()" class="btn btn-primary">Simpan</button>
-                <button type="button" class="btn btn-danger" data-dismiss="modal">Batal</button>
+                <button type="button" id="btnSave" onclick="savedetail()" class="btn btn-primary"><b>Simpan</b></button>
+                <button type="button" class="btn btn-danger" data-dismiss="modal"><b>Batal</b></button>
             </div>
         </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->

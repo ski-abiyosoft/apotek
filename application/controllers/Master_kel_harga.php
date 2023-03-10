@@ -34,11 +34,21 @@ class Master_kel_harga extends CI_Controller {
 		foreach ($list as $unit) {
 			$no++;
 			$row = array();
-			$row[] = $unit->kodeharga;
+			
+			$row[] = '<div class="text-center">' . $unit->kodeharga . '</b></div>';
 			$row[] = $unit->kelompok;
 						
-			$row[] = '<a class="btn btn-sm btn-primary" href="javascript:void(0)" title="Edit" onclick="edit_data('."'".$unit->kodeharga."'".')"><i class="glyphicon glyphicon-edit"></i> </a>
-				  <a class="btn btn-sm btn-danger" href="javascript:void(0)" title="Hapus" onclick="delete_data('."'".$unit->kodeharga."'".')"><i class="glyphicon glyphicon-trash"></i> </a>';
+			$cek= $this->db->query("SELECT*FROM tbl_marginkelompokdetail WHERE kodeharga='$unit->kodeharga' and (umum<>0 or member<>0)")->num_rows();
+			if($cek>0){
+
+				$row[] = '<div class="text-center">
+						<a class="btn btn-sm btn-primary" href="javascript:void(0)" title="Edit" onclick="edit_data('."'".$unit->kodeharga."'".')"><i class="glyphicon glyphicon-edit"></i> </a></div>';
+			}else{
+
+				$row[] = '<div class="text-center">
+						<a class="btn btn-sm btn-primary" href="javascript:void(0)" title="Edit" onclick="edit_data('."'".$unit->kodeharga."'".')"><i class="glyphicon glyphicon-edit"></i> </a>
+						<a class="btn btn-sm btn-danger" href="javascript:void(0)" title="Hapus" onclick="delete_data('."'".$unit->kodeharga."'".')"><i class="glyphicon glyphicon-trash"></i> </a></div>';
+			}
 		
 			$data[] = $row;
 		}
@@ -55,19 +65,20 @@ class Master_kel_harga extends CI_Controller {
 	
 	public function ajax_list2()
 	{
-		$list = $this->M_kel_harga_detail->get_datatables();
-		$data = array();
-		$no = $_POST['start'];
+		$list   = $this->M_kel_harga_detail->get_datatables();
+		$data   = array();
+		$no     = $_POST['start'];
 		foreach ($list as $unit) {
 			$no++;
 			$row = array();
-			$row[] = $unit->koders;
-			$row[] = $unit->kodeharga;
-			$row[] = $unit->umum;
-			$row[] = $unit->member;
+			$row[] = '<div class="text-center">' . $unit->koders . '</div>';
+			$row[] = '<div class="text-center">' .$unit->kodeharga. '</div>';
+			$row[] = $unit->kelompok;
+			$row[] = '<div class="text-center">' .$unit->umum. '</div>';
+			$row[] = '<div class="text-center">' .$unit->member. '</div>';
 						
-			$row[] = '<a class="btn btn-sm btn-primary" href="javascript:void(0)" title="Edit" onclick="edit_data('."'".$unit->kodeharga."'".')"><i class="glyphicon glyphicon-edit"></i> </a>
-				  <a class="btn btn-sm btn-danger" href="javascript:void(0)" title="Hapus" onclick="delete_data('."'".$unit->kodeharga."'".')"><i class="glyphicon glyphicon-trash"></i> </a>';
+			$row[] = '
+			<div class="text-center"><a class="btn btn-sm btn-primary" href="javascript:void(0)" title="Edit" onclick="edit_data_detail('."'".$unit->kodeharga."'".','."'".$unit->koders."'".')"><i class="glyphicon glyphicon-edit"></i></a></div>';
 		
 			$data[] = $row;
 		}
@@ -88,16 +99,40 @@ class Master_kel_harga extends CI_Controller {
 		echo json_encode($data);
 	}
 
+	public function ajax_edit_detail($id,$koders)
+	{
+		$data = $this->M_kel_harga_detail->get_by_id($id,$koders);		
+		echo json_encode($data);
+	}
+
 	public function ajax_add()
 	{
 		$this->_validate();
+		// $kodeharga    = $this->input->post('kode');
+		
+		$kodeharga = urut_transaksi_kel('URUT_KELOMPOK', 3);
+		// header
 		$data = array(
-				'depocode' => $this->input->post('kode'),
-				'keterangan' => $this->input->post('nama'),
-				'konekpos' => $this->input->post('param'),
+				'kodeharga' => $kodeharga,
+				'kelompok' => $this->input->post('nama'),
 				
+		);
+		$insert       = $this->M_kel_harga->save($data);
+
+		// detail
+		$sql          = $this->db->query("SELECT koders,$kodeharga kodeharga, 0 umum,0 member  from tbl_namers")->result();
+
+		foreach($sql as $d){
+			
+			$datad = array(
+				'koders'    => $d->koders,
+				'kodeharga' => $kodeharga,
+				'umum'      => 0,
+				'member'    => 0,
 			);
-		$insert = $this->M_kel_harga->save($data);
+			$insertd    = $this->db->insert('tbl_marginkelompokdetail', $datad);
+		}
+
 		echo json_encode(array("status" => TRUE));
 	}
 
@@ -105,18 +140,52 @@ class Master_kel_harga extends CI_Controller {
 	{
 		$this->_validate();
 		$data = array(
-				'depocode' => $this->input->post('kode'),
-				'keterangan' => $this->input->post('nama'),
-				'konekpos' => $this->input->post('param'),
+				'kelompok' => $this->input->post('nama'),
 			);
-		$this->M_kel_harga->update(array('depocode' => $this->input->post('kode')), $data);
+		$this->M_kel_harga->update(array('kodeharga' => $this->input->post('kode')), $data);
 		echo json_encode(array("status" => TRUE));
+	}
+
+
+	public function ajax_update_detail()
+	{
+		$koders       = $this->input->post('koded');
+		$kodeharga    = $this->input->post('kodehargar');
+		$kelompok     = $this->input->post('namad');
+		$umum         = $this->input->post('umum');
+		$member       = $this->input->post('member');
+
+		$cek= $this->db->query("SELECT*FROM tbl_marginkelompokdetail WHERE koders='$koders' and kodeharga='$kodeharga' ");
+
+		if($cek){
+			$datad = array(
+					'umum' => $umum,
+					'member' => $member,
+				);
+			$this->M_kel_harga_detail->update(array('kodeharga' => $kodeharga,'koders' => $koders), $datad);
+			echo json_encode(array("status" => TRUE));
+		}
 	}
 
 	public function ajax_delete($id)
 	{
-		$this->M_kel_harga->delete_by_id($id);
-		echo json_encode(array("status" => TRUE));
+		// $header   = $this->M_kel_harga->delete_by_id($id);
+		$header   = $this->db->query("DELETE FROM tbl_marginkelompok WHERE kodeharga = '$id'");
+
+		if($header){
+			$detail   = $this->db->query("DELETE from tbl_marginkelompokdetail where kodeharga = '$id'");
+			if ($detail) {
+				echo json_encode(array("status" => TRUE));
+
+			} else {
+				// echo json_encode(array("status" => FALSE));
+
+			}
+		}else{
+			// echo json_encode(array("status" => TRUE));
+			
+		}
+
 	}
 
 

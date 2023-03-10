@@ -120,7 +120,7 @@ class Laporan_penjualan extends CI_Controller
 				} else {
 					$depox = '';
 				}
-				$query = $this->db->query("SELECT kodebarang, satuan, namabarang, tglresep, jenispas, SUM(qty_apotik) AS qty_apotik, (rp_apotik * SUM(qty_apotik)) AS rp_apotik, SUM(t_qty_apotik) AS t_qty_apotik, (t_rp_apotik * SUM(t_qty_apotik)) AS t_rp_apotik, (SUM(xx.qty_apotik) + SUM(xx.t_qty_apotik)) AS jualtotal_qty, ((SUM(xx.qty_apotik)*xx.rp_apotik) + ((SUM(xx.t_qty_apotik)*xx.t_rp_apotik))) AS jualtotal_rp
+				$query1 = $this->db->query("SELECT kodebarang, satuan, namabarang, tglresep, jenispas, SUM(qty_apotik) AS qty_apotik, (rp_apotik * SUM(qty_apotik)) AS rp_apotik, SUM(t_qty_apotik) AS t_qty_apotik, (t_rp_apotik * SUM(t_qty_apotik)) AS t_rp_apotik, (SUM(xx.qty_apotik) + SUM(xx.t_qty_apotik)) AS jualtotal_qty, ((SUM(xx.qty_apotik)*xx.rp_apotik) + ((SUM(xx.t_qty_apotik)*xx.t_rp_apotik))) AS jualtotal_rp
 				FROM
 					(
 						SELECT d.kodebarang, d.satuan, d.namabarang, h.tglresep, h.jenispas,
@@ -133,8 +133,8 @@ class Laporan_penjualan extends CI_Controller
 						WHERE h.koders = '$unit' AND tglresep BETWEEN '$dari' AND '$sampai' $depox
 						ORDER BY h.jam, h.tglresep ASC
 					) AS xx GROUP BY kodebarang
-				UNION ALL
-				SELECT CONCAT('** ', kodebarang) AS kodebarang, satuan, CONCAT('** ', namabarang) as namabarang, tglresep, jenispas, SUM(qty_apotik) AS qty_apotik, (rp_apotik * SUM(qty_apotik)) AS rp_apotik, SUM(t_qty_apotik) AS t_qty_apotik, (t_rp_apotik * SUM(t_qty_apotik)) AS t_rp_apotik, (SUM(xx.qty_apotik) + SUM(xx.t_qty_apotik)) AS jualtotal_qty, ((SUM(xx.qty_apotik)*xx.rp_apotik) + ((SUM(xx.t_qty_apotik)*xx.t_rp_apotik))) AS jualtotal_rp
+				")->result();
+				$query2 = $this->db->query("SELECT CONCAT('** ', kodebarang) AS kodebarang, satuan, CONCAT('** ', namabarang) as namabarang, tglresep, jenispas, SUM(qty_apotik) AS qty_apotik, (rp_apotik * SUM(qty_apotik)) AS rp_apotik, SUM(t_qty_apotik) AS t_qty_apotik, (t_rp_apotik * SUM(t_qty_apotik)) AS t_rp_apotik, (SUM(xx.qty_apotik) + SUM(xx.t_qty_apotik)) AS jualtotal_qty, ((SUM(xx.qty_apotik)*xx.rp_apotik) + ((SUM(xx.t_qty_apotik)*xx.t_rp_apotik))) AS jualtotal_rp
 				FROM
 					(
 						SELECT d.kodebarang, d.satuan, d.namabarang, h.tglresep, h.jenispas,
@@ -183,12 +183,27 @@ class Laporan_penjualan extends CI_Controller
 						<td bgcolor=\"#cccccc\" style=\"text-align: center; font-weight: bold; padding: 10px;\" width=\"5%\" align=\"center\">Rp</td>
 						<td bgcolor=\"#cccccc\" style=\"text-align: center; font-weight: bold; padding: 10px;\" width=\"5%\" align=\"center\">Qty</td>
 						<td bgcolor=\"#cccccc\" style=\"text-align: center; font-weight: bold; padding: 10px;\" width=\"5%\" align=\"center\">Rp</td>
+					</tr>
+					<tr>
+							<td style=\"\" colspan=\"10\" align=\"center\">RESEP</td>
 					</tr>";
 				$no = 1;
-				foreach ($query as $q) {
+				$t_qty_apotik1 = 0;
+				$t_rp_apotik1 = 0;
+				$t_t_qty_apotik1 = 0;
+				$t_t_rp_apotik1 = 0;
+				$t_jualtotal_qty1 = 0;
+				$t_jualtotal_rp1 = 0;
+				foreach ($query1 as $q) {
 					$kodebarang = $q->kodebarang;
 					$namabarang = $q->namabarang;
 					$satuan = $q->satuan;
+					$t_qty_apotik1 += $q->qty_apotik;
+					$t_rp_apotik1 += $q->rp_apotik;
+					$t_t_qty_apotik1 += $q->t_qty_apotik;
+					$t_t_rp_apotik1 += $q->t_rp_apotik;
+					$t_jualtotal_qty1 += $q->jualtotal_qty;
+					$t_jualtotal_rp1 += $q->jualtotal_rp;
 					if($cekpdf == 1){
 						$qty_apotik = number_format($q->qty_apotik);
 						$rp_apotik = number_format($q->rp_apotik);
@@ -196,6 +211,13 @@ class Laporan_penjualan extends CI_Controller
 						$t_rp_apotik = number_format($q->t_rp_apotik);
 						$jualtotal_qty = number_format($q->jualtotal_qty);
 						$jualtotal_rp = number_format($q->jualtotal_rp);
+
+						$t_qty_apotik11 = number_format($t_qty_apotik1);
+						$t_rp_apotik11 = number_format($t_rp_apotik1);
+						$t_t_qty_apotik11 = number_format($t_t_qty_apotik1);
+						$t_t_rp_apotik11 = number_format($t_t_rp_apotik1);
+						$t_jualtotal_qty11 = number_format($t_jualtotal_qty1);
+						$t_jualtotal_rp11 = number_format($t_jualtotal_rp1);
 					} else {
 						$qty_apotik = $q->qty_apotik;
 						$rp_apotik = $q->rp_apotik;
@@ -203,17 +225,19 @@ class Laporan_penjualan extends CI_Controller
 						$t_rp_apotik = $q->t_rp_apotik;
 						$jualtotal_qty = $q->jualtotal_qty;
 						$jualtotal_rp = $q->jualtotal_rp;
+
+						$t_qty_apotik11 = $t_qty_apotik1;
+						$t_rp_apotik11 = $t_rp_apotik1;
+						$t_t_qty_apotik11 = $t_t_qty_apotik1;
+						$t_t_rp_apotik11 = $t_t_rp_apotik1;
+						$t_jualtotal_qty11 = $t_jualtotal_qty1;
+						$t_jualtotal_rp11 = $t_jualtotal_rp1;
 					}
-					if(substr($kodebarang, 0, 2) == "**") {
-						$kodebarang1 = "<span style=\"color: red\">$kodebarang</span>";
-						$namabarang1 = "<span style=\"color: red\">$namabarang</span>";
-						$satuan1 = "<span style=\"color: red\">$satuan</span>";
-					} else {
-						$kodebarang1 = "<span>$kodebarang</span>";
-						$namabarang1 = "<span>$namabarang</span>";
-						$satuan1 = "<span>$satuan</span>";
-					}
-					$body .= "<tr>
+					$kodebarang1 = "<span>$kodebarang</span>";
+					$namabarang1 = "<span>$namabarang</span>";
+					$satuan1 = "<span>$satuan</span>";
+					$body .= "
+						<tr>
 						<td align=\"center\">" . $no++ . "</td>
 						<td align=\"left\">$kodebarang1</td>
 						<td align=\"left\">$namabarang1</td>
@@ -226,6 +250,112 @@ class Laporan_penjualan extends CI_Controller
 						<td align=\"right\">$jualtotal_rp</td>
 					</tr>";
 				}
+				$body .="<tr>
+					<td bgcolor=\"#cccccc\" colspan=\"4\" style=\"text-align: center; font-weight: bold; padding: 10px;\">TOTAL RESEP</td>
+					<td align=\"right\">$t_qty_apotik11</td>
+					<td align=\"right\">$t_rp_apotik11</td>
+					<td align=\"right\">$t_t_qty_apotik11</td>
+					<td align=\"right\">$t_t_rp_apotik11</td>
+					<td align=\"right\">$t_jualtotal_qty11</td>
+					<td align=\"right\">$t_jualtotal_rp11</td>
+				</tr>";
+				$body .= "<tr>
+						<td style=\"border: 0\" colspan=\"10\" align=\"center\"><br></td>
+				</tr>";
+				$body .= "<tr>
+							<td style=\"border:0\" align=\"center\"><br></td>
+					</tr>
+					<tr>
+						<td bgcolor=\"#cccccc\" style=\"text-align: center; font-weight: bold; padding: 10px;\" width=\"5%\" align=\"center\" rowspan=\"2\"><br>No</td>
+						<td bgcolor=\"#cccccc\" style=\"text-align: center; font-weight: bold; padding: 10px;\" width=\"10%\" align=\"center\" rowspan=\"2\"><br>Kode Barang</td>
+						<td bgcolor=\"#cccccc\" style=\"text-align: center; font-weight: bold; padding: 10px;\" width=\"30%\" align=\"center\" rowspan=\"2\"><br>Nama Barang</td>
+						<td bgcolor=\"#cccccc\" style=\"text-align: center; font-weight: bold; padding: 10px;\" width=\"10%\" align=\"center\" rowspan=\"2\"><br>Satuan</td>
+						<td bgcolor=\"#cccccc\" style=\"text-align: center; font-weight: bold; padding: 10px;\" width=\"10%\" align=\"center\" colspan=\"2\"><br>Dengan Resep</td>
+						<td bgcolor=\"#cccccc\" style=\"text-align: center; font-weight: bold; padding: 10px;\" width=\"10%\" align=\"center\" colspan=\"2\"><br>Tanpa Resep</td>
+						<td bgcolor=\"#cccccc\" style=\"text-align: center; font-weight: bold; padding: 10px;\" width=\"10%\" align=\"center\" rowspan=\"2\"><br>Total Qty</td>
+						<td bgcolor=\"#cccccc\" style=\"text-align: center; font-weight: bold; padding: 10px;\" width=\"10%\" align=\"center\" rowspan=\"2\"><br>Total Rp</td>
+					</tr>
+					<tr>
+						<td bgcolor=\"#cccccc\" style=\"text-align: center; font-weight: bold; padding: 10px;\" width=\"5%\" align=\"center\">Qty</td>
+						<td bgcolor=\"#cccccc\" style=\"text-align: center; font-weight: bold; padding: 10px;\" width=\"5%\" align=\"center\">Rp</td>
+						<td bgcolor=\"#cccccc\" style=\"text-align: center; font-weight: bold; padding: 10px;\" width=\"5%\" align=\"center\">Qty</td>
+						<td bgcolor=\"#cccccc\" style=\"text-align: center; font-weight: bold; padding: 10px;\" width=\"5%\" align=\"center\">Rp</td>
+					</tr>
+					<tr>
+							<td style=\"\" colspan=\"10\" align=\"center\">RACIK</td>
+					</tr>";
+				$no = 1;
+				$t_qty_apotik2 = 0;
+				$t_rp_apotik2 = 0;
+				$t_t_qty_apotik2 = 0;
+				$t_t_rp_apotik2 = 0;
+				$t_jualtotal_qty2 = 0;
+				$t_jualtotal_rp2 = 0;
+				foreach ($query2 as $q) {
+					$kodebarang = $q->kodebarang;
+					$namabarang = $q->namabarang;
+					$satuan = $q->satuan;
+					$t_qty_apotik2 += $q->qty_apotik;
+					$t_rp_apotik2 += $q->rp_apotik;
+					$t_t_qty_apotik2 += $q->t_qty_apotik;
+					$t_t_rp_apotik2 += $q->t_rp_apotik;
+					$t_jualtotal_qty2 += $q->jualtotal_qty;
+					$t_jualtotal_rp2 += $q->jualtotal_rp;
+					if($cekpdf == 1){
+						$qty_apotik = number_format($q->qty_apotik);
+						$rp_apotik = number_format($q->rp_apotik);
+						$t_qty_apotik = number_format($q->t_qty_apotik);
+						$t_rp_apotik = number_format($q->t_rp_apotik);
+						$jualtotal_qty = number_format($q->jualtotal_qty);
+						$jualtotal_rp = number_format($q->jualtotal_rp);
+
+						$t_qty_apotik21 = number_format($t_qty_apotik2);
+						$t_rp_apotik21 = number_format($t_rp_apotik2);
+						$t_t_qty_apotik21 = number_format($t_t_qty_apotik2);
+						$t_t_rp_apotik21 = number_format($t_t_rp_apotik2);
+						$t_jualtotal_qty21 = number_format($t_jualtotal_qty2);
+						$t_jualtotal_rp21 = number_format($t_jualtotal_rp2);
+					} else {
+						$qty_apotik = $q->qty_apotik;
+						$rp_apotik = $q->rp_apotik;
+						$t_qty_apotik = $q->t_qty_apotik;
+						$t_rp_apotik = $q->t_rp_apotik;
+						$jualtotal_qty = $q->jualtotal_qty;
+						$jualtotal_rp = $q->jualtotal_rp;
+
+						$t_qty_apotik21 = number_format($t_qty_apotik2);
+						$t_rp_apotik21 = number_format($t_rp_apotik2);
+						$t_t_qty_apotik21 = number_format($t_t_qty_apotik2);
+						$t_t_rp_apotik21 = number_format($t_t_rp_apotik2);
+						$t_jualtotal_qty21 = number_format($t_jualtotal_qty2);
+						$t_jualtotal_rp21 = number_format($t_jualtotal_rp2);
+					}
+					$kodebarang1 = "<span style=\"color: red\">$kodebarang</span>";
+					$namabarang1 = "<span style=\"color: red\">$namabarang</span>";
+					$satuan1 = "<span style=\"color: red\">$satuan</span>";
+					$body .= "
+						<tr>
+						<td align=\"center\">" . $no++ . "</td>
+						<td align=\"left\">$kodebarang1</td>
+						<td align=\"left\">$namabarang1</td>
+						<td align=\"left\">$satuan1</td>
+						<td align=\"right\">$qty_apotik</td>
+						<td align=\"right\">$rp_apotik</td>
+						<td align=\"right\">$t_qty_apotik</td>
+						<td align=\"right\">$t_rp_apotik</td>
+						<td align=\"right\">$jualtotal_qty</td>
+						<td align=\"right\">$jualtotal_rp</td>
+					</tr>";
+				}
+				$body .="<tr>
+					<td bgcolor=\"#cccccc\" colspan=\"4\" style=\"text-align: center; font-weight: bold; padding: 10px;\">TOTAL RACIK</td>
+					<td align=\"right\">$t_qty_apotik21</td>
+					<td align=\"right\">$t_rp_apotik21</td>
+					<td align=\"right\">$t_t_qty_apotik21</td>
+					<td align=\"right\">$t_t_rp_apotik21</td>
+					<td align=\"right\">$t_jualtotal_qty21</td>
+					<td align=\"right\">$t_jualtotal_rp21</td>
+				</tr>";
 			$body .= "</table>";
 			} else if ($laporan == 3) {
 				$judul = '03 LAPORAN RINCIAN PENJUALAN RESEP';

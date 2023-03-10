@@ -778,7 +778,7 @@ $this->load->view('template/body');
                               <tbody>
                                 <tr>
                                   <td>
-                                    <select name="bayar_bank[]" id="bayar_bank1" class="form-control select2_el_kasbankedc input-large">
+                                    <select name="bayar_bank[]" id="bayar_bank1" class="form-control select2_el_kasbankedc input-large" onchange="get_total(); totalline_bayar(1); cekprovider()">
                                     </select>
                                   </td>
                                   <td>
@@ -968,6 +968,16 @@ $this->load->view('template/footer_tb');
 
   $('#tabpromo').hide();
   $('#hisum').hide();
+
+
+  function get_total() {
+    var totalnetx = $("#totalnet").val();
+    var totalnet = Number(parseInt(totalnetx.replaceAll(',', '')));
+    $("#bayar_nilai1").val((totalnet));
+    document.getElementById("btnsimpan_bayar").disabled = false;
+    // console.log(totalnet)
+  }
+
 
   function cekpro(param) {
     if (param == 1) {
@@ -1204,6 +1214,28 @@ $this->load->view('template/footer_tb');
       }
     });
 
+  }
+
+  function cekprovider() {
+    var table       = document.getElementById('datatable_pembayaran');
+    var rowCount    = table.rows.length;
+    for (i = 1; i < rowCount; i++) {
+      var row           = table.rows[i];
+      var bayar_bank    = row.cells[0].children[0].value;
+      var bayar_nokartu = row.cells[2].children[0].value;
+      var bayar_trvalid = row.cells[3].children[0].value;
+      if (bayar_bank != '' || bayar_bank != null) {
+        if (bayar_nokartu == '' || bayar_nokartu == null) {
+          $("#btnsimpan_bayar").attr("disabled", true);
+        }
+        if (bayar_trvalid == '' || bayar_trvalid == null) {
+          $("#btnsimpan_bayar").attr("disabled", true);
+        }
+        if (bayar_nokartu != '' && bayar_trvalid != '') {
+          $("#btnsimpan_bayar").attr("disabled", false);
+        }
+      }
+    }
   }
 
   function save() {
@@ -1883,10 +1915,10 @@ $this->load->view('template/footer_tb');
 
   function totalline_bayar(id) {
 
-    var table = document.getElementById('datatable_pembayaran');
-    var row = table.rows[id];
-    var harga = Number(row.cells[4].children[0].value.replace(/[^0-9\.]+/g, ""));
-    var adm = Number(row.cells[5].children[0].value.replace(/[^0-9\.]+/g, ""));
+    var table   = document.getElementById('datatable_pembayaran');
+    var row     = table.rows[id];
+    var harga   = Number(row.cells[4].children[0].value.replace(/[^0-9\.]+/g, ""));
+    var adm     = Number(row.cells[5].children[0].value.replace(/[^0-9\.]+/g, ""));
     rpadm = (row.cells[5].children[0].value / 100) * harga;
     tot = harga + rpadm;
     row.cells[6].children[0].value = formatCurrency1(tot);
@@ -2210,75 +2242,80 @@ $this->load->view('template/footer_tb');
   }
 
   function total_net() {
-    var adm = $('#admrp').val();
-    var tindakan = $('#tindakanrp').val();
-    var resep = $('#reseprp_1').val();
+    var adm                   = $('#admrp').val();
+    var tindakan              = $('#tindakanrp').val();
+    var resep                 = $('#reseprp_1').val();
 
-    var vadm = Number(adm.replace(/[^0-9\.]+/g, ""));
-    var vtindakan = Number(tindakan.replace(/[^0-9\.]+/g, ""));
-    var vresep = Number(resep.replace(/[^0-9\.]+/g, ""));
+    var vadm                  = Number(adm.replace(/[^0-9\.]+/g, ""));
+    var vtindakan             = Number(tindakan.replace(/[^0-9\.]+/g, ""));
+    var vresep                = Number(resep.replace(/[^0-9\.]+/g, ""));
 
-    var vtotalrp = eval(vadm) + eval(vtindakan) + eval(vresep);
+    var vtotalrp              = eval(vadm) + eval(vtindakan) + eval(vresep);
     $('#totalrp').val(formatCurrency1(vtotalrp));
 
     // var totalrp = $('#totalrp').val();
     // var totalsemua = Number(totalrp.replace(/[^0-9\.]+/g, ""));
     // var totalrp_transaksix = $('#totalrp').val();
-    var totalrp_transaksix = $('#totalrp_transaksi').val();
-    var totalsemua = Number(totalrp_transaksix.replace(/[^0-9\.]+/g, ""));
-    var diskonrp = $('#diskonrp').val();
-    var diskonresep = $('#diskonresep').val();
-    var uangmukarp = $('#uangmuka').val();
-    var uangmukapakai = $('#uangmukapakai').val();
+    var totalrp_transaksix    = $('#totalrp_transaksi').val();
+    var totalsemua            = Number(totalrp_transaksix.replace(/[^0-9\.]+/g, ""));
+    var diskonrp              = $('#diskonrp').val();
+    var diskonresep           = $('#diskonresep').val();
+    var uangmukarp            = $('#uangmuka').val();
+    var uangmukapakai         = $('#uangmukapakai').val();
     $('#uangmukapakai').val(formatCurrency1(uangmukapakai));
-    var refundrp = $('#refund').val();
-    var voucherrp1 = $('#voucherrp1').val();
-    var voucherrp2 = $('#voucherrp2').val();
-    var voucherrp3 = $('#voucherrp3').val();
+    var refundrp              = $('#refund').val();
+    var voucherrp1            = $('#voucherrp1').val();
+    var voucherrp2            = $('#voucherrp2').val();
+    var voucherrp3            = $('#voucherrp3').val();
 
-    var vdiskonrp = Number(diskonrp.replace(/[^0-9\.]+/g, ""));
-    var vdiskonresep = Number(diskonresep.replace(/[^0-9\.]+/g, ""));
-    var vuangmukarp = Number(uangmukarp.replace(/[^0-9\.]+/g, ""));
-    var vuangmukapakai = Number(uangmukapakai.replace(/[^0-9\.]+/g, ""));
-    var vrefundrp = Number(refundrp.replace(/[^0-9\.]+/g, ""));
+    var vdiskonrp             = Number(diskonrp.replace(/[^0-9\.]+/g, ""));
+    var vdiskonresep          = Number(diskonresep.replace(/[^0-9\.]+/g, ""));
+    var vuangmukarp           = Number(uangmukarp.replace(/[^0-9\.]+/g, ""));
+    var vuangmukapakai        = Number(uangmukapakai.replace(/[^0-9\.]+/g, ""));
+    var vrefundrp             = Number(refundrp.replace(/[^0-9\.]+/g, ""));
 
-    var vvoucherrp1 = Number(voucherrp1.replace(/[^0-9\.]+/g, ""));
-    var vvoucherrp2 = Number(voucherrp2.replace(/[^0-9\.]+/g, ""));
-    var vvoucherrp3 = Number(voucherrp3.replace(/[^0-9\.]+/g, ""));
+    var vvoucherrp1           = Number(voucherrp1.replace(/[^0-9\.]+/g, ""));
+    var vvoucherrp2           = Number(voucherrp2.replace(/[^0-9\.]+/g, ""));
+    var vvoucherrp3           = Number(voucherrp3.replace(/[^0-9\.]+/g, ""));
 
-    var countv = eval(vvoucherrp1) + eval(vvoucherrp2) + eval(vvoucherrp3);
+    var countv                = eval(vvoucherrp1) + eval(vvoucherrp2) + eval(vvoucherrp3);
     // console.log(countv);
 
     // var totalnet = eval(totalsemua) - eval(vdiskonrp) - eval(vuangmukapakai) - eval(vrefundrp) - eval(vvoucherrp1) - eval(
     //   vvoucherrp2) - eval(vvoucherrp3) - eval(vdiskonresep);
 
     // husain tambahan
-    var tercover = $("#tercover_rp").val();
-    var tercover2 = $("#tercover_rp2").val();
-    var totalrpx = $("#totalrp_transaksi").val();
-    var totalrp = Number(parseInt(totalrpx.replaceAll(',','')));
-    var trp = Number(parseInt(tercover.replaceAll(',','')));
-    var trp2 = Number(parseInt(tercover2.replaceAll(',','')));
-    total_cover = trp + trp2;
-    hasil = totalrp - total_cover;
+    var tercover    = $("#tercover_rp").val();
+    var tercover2   = $("#tercover_rp2").val();
+    var totalrpx    = $("#totalrp_transaksi").val();
+    var totalrp     = Number(parseInt(totalrpx.replaceAll(',','')));
+    var trp         = Number(parseInt(tercover.replaceAll(',','')));
+    var trp2        = Number(parseInt(tercover2.replaceAll(',','')));
+    total_cover     = trp + trp2;
+    hasil           = totalrp - total_cover;
     // end husain
 
     // var totalnet = eval(totalsemua) - eval(vdiskonrp) - eval(vuangmukapakai) - eval(vrefundrp) - eval(vvoucherrp1) - eval(vvoucherrp2) - eval(vvoucherrp3);
     // husain change
     var totalnet = eval(hasil) - eval(vuangmukapakai) - eval(vrefundrp) - eval(vvoucherrp1) - eval(vvoucherrp2) - eval(vvoucherrp3);
     // end husain
-    var bayarcredit = $('#totalelectronicrp').val();
-    var bayartunai = $('#totaltunairp').val();
+    var bayarcredit   = $('#totalelectronicrp').val();
+    var bayartunai    = $('#totaltunairp').val();
     $('#totaltunairp').val(formatCurrency1(bayartunai));
-    var selisihrp = $('#selisihrp').val();
+    var selisihrp     = $('#selisihrp').val();
 
-    var vbayarcredit = Number(bayarcredit.replace(/[^0-9\.]+/g, ""));
-    var vbayartunai = Number(bayartunai.replace(/[^0-9\.]+/g, ""));
-    var vselisihrp = Number(selisihrp.replace(/[^0-9\.]+/g, ""));
+    var vbayarcredit  = Number(bayarcredit.replace(/[^0-9\.]+/g, ""));
+    var vbayartunai   = Number(bayartunai.replace(/[^0-9\.]+/g, ""));
+    var vselisihrp    = Number(selisihrp.replace(/[^0-9\.]+/g, ""));
 
     $('#totalnet').val(formatCurrency1(totalnet));
     var kembali = (eval(vbayarcredit) + eval(vbayartunai) + eval(vselisihrp)) - eval(totalnet);
     $('#kembalirp').val(formatCurrency1(kembali));
+    if(kembali<0){
+      document.getElementById("btnsimpan_bayar").disabled = true;
+    }else{
+      document.getElementById("btnsimpan_bayar").disabled = false;
+    }
 
     if (vuangmukarp > 0 || vbayartunai != 0 || vbayarcredit != 0) {
       document.getElementById('pertanyaan').style.visibility = 'visible';
@@ -2299,6 +2336,18 @@ $this->load->view('template/footer_tb');
       document.getElementById('uangmukakembaliya').style.visibility = 'hidden';
       document.getElementById('uangmukakembalitidak').style.visibility = 'hidden';
       document.getElementById('texttidak').style.visibility = 'hidden';
+    }
+  }
+
+  function cekbutton() {
+    var ttlrp = $("#totaltunairp").val();
+    var ttl = angka(ttlrp);
+    var kembalirp = $("#kembalirp").val();
+    var kembali = angka(kembalirp);
+    if (kembali >= 0 && ttl >= 0) {
+      $("#btnsimpan_bayar").attr("disabled", false);
+    } else {
+      $("#btnsimpan_bayar").attr("disabled", true);
     }
   }
 

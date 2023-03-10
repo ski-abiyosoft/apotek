@@ -620,6 +620,7 @@ class Kasir_konsul extends CI_Controller
 		// // die;
 		$cabang   = $this->session->userdata('unit');
 		$userid   = $this->session->userdata('username');
+		$shift   = $this->session->userdata('shift');
 
 		$tanggal  = date('Y-m-d');
 		$jam      = date('H:i:s');
@@ -753,6 +754,7 @@ class Kasir_konsul extends CI_Controller
 				'diskonresep'	=> $diskonresep,
 				'namapasien' => $pas->namapas,
 				'resepno' => $eresepz,
+				'shift' => $shift,
 			];
 		$insert = $this->db->insert('tbl_kasir', $data);
 		// husain add
@@ -869,8 +871,8 @@ class Kasir_konsul extends CI_Controller
 			date_default_timezone_set('Asia/Jakarta');
 			$jam =  date('H:i:s');
 			// insert ke tabel kasir
-			$this->db->query("INSERT INTO tbl_kasir (koders, nokwitansi, noreg, rekmed, tglbayar, jambayar, adm, totalpoli, totalresep, uangmuka, umuka, admcredit, totalsemua, voucherrp1, voucherrp2, voucherrp3, diskonrp, lain, bayarcash, bayarcard, totalbayar, kembali, dibayaroleh, posbayar, username, shipt, kasirtype, kodokter, diskon, prosenksr, lainket)
-			VALUES ('$cabang', '$kwitansi_uangmuka_kembalian', '$noreg', '$rekmed', '$date', '$jam', '0', '0', '0', '$kembali', '0', '0', '0', 0, 0, 0, 0, 0, 0, 0, 0, 0, 'sisa kembalian dari $rekmed', 'UANG_MUKA', '$userid', 0, 0, '-', '0', '0', 'sisa kembalian dari $rekmed')");
+			$this->db->query("INSERT INTO tbl_kasir (koders, nokwitansi, noreg, rekmed, tglbayar, jambayar, adm, totalpoli, totalresep, uangmuka, umuka, admcredit, totalsemua, voucherrp1, voucherrp2, voucherrp3, diskonrp, lain, bayarcash, bayarcard, totalbayar, kembali, dibayaroleh, posbayar, username, shipt, kasirtype, kodokter, diskon, prosenksr, lainket, shift)
+			VALUES ('$cabang', '$kwitansi_uangmuka_kembalian', '$noreg', '$rekmed', '$date', '$jam', '0', '0', '0', '$kembali', '0', '0', '0', 0, 0, 0, 0, 0, 0, 0, 0, 0, 'sisa kembalian dari $rekmed', 'UANG_MUKA', '$userid', 0, 0, '-', '0', '0', 'sisa kembalian dari $rekmed', '$shift')");
 			$get_id = $this->db->query("SELECT * FROM tbl_kasir where koders = '$cabang' ORDER BY id DESC LIMIT 1")->result();
 			foreach ($get_id as $gi) {
 				$id_nya = (int)$gi->id - 1;

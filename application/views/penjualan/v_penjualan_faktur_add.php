@@ -71,7 +71,7 @@ $umur          = $age_interval->y . ' Tahun ' . $age_interval->m . ' Bulan ' . $
               <div class="col-md-6">
                 <div class="form-group">
                   <label class="col-md-3 control-label">Pembeli <font color="red">*</font></label>
-                  <div class="col-md-6">
+                  <div class="col-md-7">
                     <select id="pembeli" name="pembeli" class="form-control select2_pembeli" onchange="getdataklinik()">
                       <!-- <option value="RAJAL">Rawat Jalan</option>
                                             <option value="RANAP">Rawat Inap</option> -->
@@ -85,7 +85,7 @@ $umur          = $age_interval->y . ' Tahun ' . $age_interval->m . ' Bulan ' . $
               <div class="col-md-6">
                 <div class="form-group">
                   <label class="col-md-3 control-label">Resep Dari <font color="red">*</font></label>
-                  <div class="col-md-6">
+                  <div class="col-md-9">
                     <input type="text" id="dokter" name="dokter" class="form-control" placeholder="dr ..">
                   </div>
                 </div>
@@ -96,7 +96,7 @@ $umur          = $age_interval->y . ' Tahun ' . $age_interval->m . ' Bulan ' . $
               <div class="col-md-6">
                 <div class="form-group">
                   <label class="col-md-3 control-label">DEPO <font color="red">*</font></label>
-                  <div class="col-md-6">
+                  <div class="col-md-7">
                     <select id="gudang" name="gudang" class="form-control select2_el_farmasi_depo" data-placeholder="Pilih..." onkeypress="return tabE(this,event)" onchange="getkodebaru(this.value)"></select>
                   </div>
                 </div>
@@ -105,7 +105,7 @@ $umur          = $age_interval->y . ' Tahun ' . $age_interval->m . ' Bulan ' . $
               <div class="col-md-6">
                 <div class="form-group">
                   <label class="col-md-3 control-label">No. Pembelian <font color="red">*</font></label>
-                  <div class="col-md-6">
+                  <div class="col-md-9">
                     <input type="hidden" name="eresepstatus" value="1">
                     <input type="text" id="noresep" name="noresep" class="form-control" readonly placeholder="AUTO">
                   </div>
@@ -118,7 +118,7 @@ $umur          = $age_interval->y . ' Tahun ' . $age_interval->m . ' Bulan ' . $
                 <div class="form-group">
                   <label class="col-md-3 control-label">Tanggal <font color="red">*</font></label>
                   <div class="col-md-6">
-                    <input id="tanggal" name="tanggal" class="form-control input-medium" type="date" value="<?= date('Y-m-d'); ?>"  readonly/>
+                    <input id="tanggal" name="tanggal" class="form-control" type="date" value="<?= date('Y-m-d'); ?>"  readonly/>
                   </div>
                   <div class="col-md-3">
                     <input type="time" class="form-control" name="jam" id="jam" value="<?= date('H:i:s'); ?>" readonly />
@@ -127,7 +127,7 @@ $umur          = $age_interval->y . ' Tahun ' . $age_interval->m . ' Bulan ' . $
               </div>
               <div class="col-md-6">
                 <div class="form-group">
-                  <label class="col-md-3 control-label">Alamat Kirim<font color="red">*</font></label>
+                  <label class="col-md-3 control-label">Alamat Kirim</label>
                   <div class="col-md-9">
                     <input type="text" name="alamat" id="alamat" class="form-control">
                   </div>
@@ -138,7 +138,7 @@ $umur          = $age_interval->y . ' Tahun ' . $age_interval->m . ' Bulan ' . $
             <div class="row">
               <div class="col-md-6">
                 <div class="form-group">
-                  <label class="col-md-3 control-label">Member <font color="red">*</font></label>
+                  <label class="col-md-3 control-label">Member</label>
                   <div class="col-md-9">
                     <div class="input-group input-large">
                       
@@ -159,7 +159,7 @@ $umur          = $age_interval->y . ' Tahun ' . $age_interval->m . ' Bulan ' . $
               </div>
               <div class="col-md-6">
                 <div class="form-group">
-                  <label class="col-md-3 control-label">Jenis Kelamin<font color="red">*</font></label>
+                  <label class="col-md-3 control-label">Jenis Kelamin</label>
                   <div class="col-md-3">
                     <select name="jkel" id="jkel" class="form-control">
                       <option value="P">Pria</option>
@@ -173,28 +173,21 @@ $umur          = $age_interval->y . ' Tahun ' . $age_interval->m . ' Bulan ' . $
             <div class="row">
               <div class="col-md-6">
                 <div class="form-group">
-                  <label class="col-md-3 control-label">Nama Pembeli <font color="red">*</font></label>
-                  <div class="col-md-9">
-                    <div class="input-group input-medium">
-                      
+                  <label class="col-md-3 control-label">Nama Pembeli</label>
+                  <div class="col-md-6">
                       <input id="nama_pas" name="nama_pas" type="text" class="form-control" style="text-transform: uppercase !important">
-                    </div>
                   </div>
 
                 </div>
               </div>
               <div class="col-md-6">
                 <div class="form-group">
-                  <label class="col-md-3 control-label">Tgl Lahir<font color="red">*</font></label>
+                  <label class="col-md-3 control-label">Tgl Lahir</label>
                   <div class="col-md-4">
-                    <div class="input-group input-small">
                       <input id="tgllahir" name="tgllahir" type="date" onchange="tgllahirr()" class="form-control" >
-                    </div>
                   </div>
                   <div class="col-md-5">
-                    <div class="input-group">
                       <input id="lumur" name="lumur" type="text" class="form-control" readonly>
-                    </div>
                   </div>
                 </div>
               </div>
@@ -204,20 +197,21 @@ $umur          = $age_interval->y . ' Tahun ' . $age_interval->m . ' Bulan ' . $
             <div class="row">
               <div class="col-md-6">
                 <div class="form-group">
-                  <label class="col-md-3 control-label">Berat Badan <font color="red">*</font></label>
-                  <div class="col-md-9">
-                    <div class="input-group input-medium">
+                  <label class="col-md-3 control-label">Berat Badan</label>
+                  <div class="col-md-6">
                       <input type="number" name="bb" id="bb" class="form-control">
-                    </div>
                   </div>
-                  
-
+                  <div class="col-md-3">
+                     <span class="input-group-btn">
+                        <label class="control-label"> &nbsp;&nbsp;&nbsp; <b> Kg </b></label>
+                      </span>
+                  </div>
                 </div>
               </div>
               
               <div class="col-md-6">
                 <div class="form-group">
-                  <label class="col-md-3 control-label">No Handphone <font color="red">*</font></label>
+                  <label class="col-md-3 control-label">No Handphone</label>
                   <div class="col-md-7">
                     <input type="text" name="phone" id="phone" class="form-control" value="+62">
                   </div>
@@ -255,7 +249,7 @@ $umur          = $age_interval->y . ' Tahun ' . $age_interval->m . ' Bulan ' . $
                         <th class="title-white" width="5%" style="text-align: center">Hapus</th>
                         <th class="title-white" width="20%" style="text-align: center">Kode Barang</th>
                         <!-- <th class="title-white" width="20%" style="text-align: center">Nama Barang</th> -->
-                        <th class="title-white" width="10%" style="text-align: center">Qty</th>
+                        <th class="title-white" width="10%" style="text-align: center">Qty Jual</th>
                         <th class="title-white" width="5%" style="text-align: center">Satuan</th>
                         <th class="title-white" width="10%" style="text-align: center">Harga</th>
                         <th class="title-white" width="2%" style="text-align: center">PPN</th>
@@ -818,7 +812,7 @@ $umur          = $age_interval->y . ' Tahun ' . $age_interval->m . ' Bulan ' . $
                             <div class="col-md-6">
                               <div class="form-group">
                                   <label class="control-label col-md-3">No Penjamin <font color="red">*</font></label>
-                                  <div class="col-md-9">
+                                  <div class="col-md-6">
                                       <input name="no_bpjs" id="no_bpjs" placeholder="No Kartu" class="form-control" type="number" >
                                       <span class="help-block"></span>
                                   </div>
@@ -847,13 +841,11 @@ $umur          = $age_interval->y . ' Tahun ' . $age_interval->m . ' Bulan ' . $
                             <div class="col-md-6">
                               <div class="form-group">
                                 <label class="control-label col-md-3">Handphone <font color="red">*</font></label>
-                                <div class="col-md-9">
-                                  <div class="input-group input-medium">
+                                <div class="col-md-6">
                                     <!-- <span class="input-group-btn">
                                       <a class="form-control">+62</a>
                                     </span> -->
                                     <input name="luphp" id="luphp" placeholder="Dimulai Tanpa 0" class="form-control" maxlength="" type="text" value="+62">
-                                  </div>
                                 </div>
                               </div>
                             </div>
@@ -872,14 +864,12 @@ $umur          = $age_interval->y . ' Tahun ' . $age_interval->m . ' Bulan ' . $
                             </div>
                             <div class="col-md-6">
                               <div class="form-group">
-                                <label class="control-label col-md-3">Jenis Kelamin<font color="red">*</font></label>
-                                <div class="col-md-9">
-                                  <div class="input-group input-medium">
+                                <label class="control-label col-md-3">Jenis Kelamin</label>
+                                <div class="col-md-6">
                                     <select name="jkelp" id="jkelp" class="form-control">
                                       <option value="P">Pria</option>
                                       <option value="W">Wanita</option>
                                     </select>
-                                  </div>
                                 </div>
                               </div>
                             </div>
@@ -888,7 +878,7 @@ $umur          = $age_interval->y . ' Tahun ' . $age_interval->m . ' Bulan ' . $
                         <div class="row">
                             <div class="col-md-6">
                               <div class="form-group">
-                                <label class="control-label col-md-3">Tgl Lahir<font color="red">*</font></label>
+                                <label class="control-label col-md-3">Tgl Lahir</label>
                                 <div class="col-md-5 input-medium">
                                   <input id="tgllahirp" name="tgllahirp" type="date" onchange="tgllahirpp()" class="form-control input-medium" >
                                 </div>
@@ -903,8 +893,8 @@ $umur          = $age_interval->y . ' Tahun ' . $age_interval->m . ' Bulan ' . $
                 </form>
             </div>
             <div class="modal-footer">
-                <button type="button" id="btnSave_pass" onclick="save_pasien()" class="btn btn-primary">Simpan</button>
-                <button type="button" class="btn btn-danger" data-dismiss="modal">Batal</button>
+                <button type="button" id="btnSave_pass" onclick="save_pasien()" class="btn btn-primary"><b>Simpan</b></button>
+                <button type="button" class="btn btn-danger" data-dismiss="modal"><b>Batal</b></button>
             </div>
         </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->
@@ -923,6 +913,23 @@ $this->load->view('template/footer');
     initailizeSelect2_farmasi_baranggud(gudang);
   });
 
+  $('#luppreposition').on('change', function() {
+    var prep = this.value;
+    $.ajax({
+      url: "<?php echo base_url();?>app/getvaluesetinghms/?kode=" + prep,
+      type: "GET",
+      dataType: 'json',
+      success: function(data) {
+        var hasil = eval(data.data.valuerp);
+        if (hasil == 2) {
+          $('#jkelp').val('W');
+        } else {
+          $('#jkelp').val('P');
+        }
+
+      }
+    });
+  });
 
   function getkodebaru(gudang) {
     initailizeSelect2_farmasi_baranggud(gudang);
@@ -1847,31 +1854,146 @@ $this->load->view('template/footer');
         var v_lupnamapasien   = $('[name="lupnamapasien"]').val();
         var v_luphp           = $('[name="luphp"]').val();
         var v_lupalamat       = $('[name="lupalamat"]').val();
+        var v_tgllahir        = $('[name="tgllahirp"]').val();
 
-        if (
-            v_vpenjamin == '' || v_vpenjamin == null ||
-            v_lupidentitas == '' || v_lupidentitas == null ||
-            v_lupnoidentitas == '' || v_lupnoidentitas == null ||
-            v_no_bpjs == '' || v_no_bpjs == null ||
-            v_luppreposition == '' || v_luppreposition == null ||
-            v_lupnamapasien == '' || v_lupnamapasien == null ||
-            v_luphp == '' || v_luphp == null ||
-            v_lupalamat == '' || v_lupalamat == null
-            ) {
-            $('#modal_form').modal('hide');
-            swal({
-                title: "DATA BELUM LENGKAP",
-                html: " Silahkan Di Lengkapi dahulu .!!!",
-                type: "error",
-                confirmButtonText: "OK"
-            }).then((value) => {
-                $('#modal_form').modal('show');
-            });
-
-            $('#btnSave_pass').text('save'); //change button text
-            $('#btnSave_pass').attr('disabled', false); //set button enable 
-            return;
+        if ( v_vpenjamin == '' || v_vpenjamin == null ) {
+          $('#modal_form').modal('hide');
+          swal({
+            title               : "PENJAMIN",
+            html                : " Tidak Boleh Kosong .!!!",
+            type                : "error",
+            confirmButtonText   : "OK"
+          }).then((value) => {
+            $('#modal_form').modal('show');
+          });
+          $('#btnSave_pass').text('SIMPAN');
+          $('#btnSave_pass').attr('disabled', false);
+          return;
         }
+
+        if ( v_luppreposition == '' || v_luppreposition == null ) {
+          $('#modal_form').modal('hide');
+          swal({
+            title               : "PREPOSISI",
+            html                : " Tidak Boleh Kosong .!!!",
+            type                : "error",
+            confirmButtonText   : "OK"
+          }).then((value) => {
+            $('#modal_form').modal('show');
+          });
+          $('#btnSave_pass').text('SIMPAN');
+          $('#btnSave_pass').attr('disabled', false);
+          return;
+        }
+
+        if ( v_lupnamapasien == '' || v_lupnamapasien == null ) {
+          $('#modal_form').modal('hide');
+          swal({
+            title               : "NAMA PASIEN",
+            html                : " Tidak Boleh Kosong .!!!",
+            type                : "error",
+            confirmButtonText   : "OK"
+          }).then((value) => {
+            $('#modal_form').modal('show');
+          });
+          $('#btnSave_pass').text('SIMPAN');
+          $('#btnSave_pass').attr('disabled', false);
+          return;
+        }
+
+        
+        if ( v_lupalamat == '' || v_lupalamat == null ) {
+          $('#modal_form').modal('hide');
+          swal({
+            title               : "ALAMAT",
+            html                : " Tidak Boleh Kosong .!!!",
+            type                : "error",
+            confirmButtonText   : "OK"
+          }).then((value) => {
+            $('#modal_form').modal('show');
+          });
+          $('#btnSave_pass').text('SIMPAN');
+          $('#btnSave_pass').attr('disabled', false);
+          return;
+        }
+
+        if ( v_tgllahir == '' || v_tgllahir == null ) {
+          $('#modal_form').modal('hide');
+          swal({
+            title               : "TANGGAL LAHIR",
+            html                : " Tidak Boleh Kosong .!!!",
+            type                : "error",
+            confirmButtonText   : "OK"
+          }).then((value) => {
+            $('#modal_form').modal('show');
+          });
+          $('#btnSave_pass').text('SIMPAN');
+          $('#btnSave_pass').attr('disabled', false);
+          return;
+        }
+
+        if ( v_lupidentitas == '' || v_lupidentitas == null ) {
+          $('#modal_form').modal('hide');
+          swal({
+            title               : "IDENTITAS",
+            html                : " Tidak Boleh Kosong .!!!",
+            type                : "error",
+            confirmButtonText   : "OK"
+          }).then((value) => {
+            $('#modal_form').modal('show');
+          });
+          $('#btnSave_pass').text('SIMPAN');
+          $('#btnSave_pass').attr('disabled', false);
+          return;
+        }
+
+        if ( v_lupnoidentitas == '' || v_lupnoidentitas == null ) {
+          $('#modal_form').modal('hide');
+          swal({
+            title               : "NO IDENTITAS",
+            html                : " Tidak Boleh Kosong .!!!",
+            type                : "error",
+            confirmButtonText   : "OK"
+          }).then((value) => {
+            $('#modal_form').modal('show');
+          });
+          $('#btnSave_pass').text('SIMPAN');
+          $('#btnSave_pass').attr('disabled', false);
+          return;
+        }
+
+        if ( v_no_bpjs == '' || v_no_bpjs == null ) {
+          $('#modal_form').modal('hide');
+          swal({
+            title               : "NO PENJAMIN",
+            html                : " Tidak Boleh Kosong .!!!",
+            type                : "error",
+            confirmButtonText   : "OK"
+          }).then((value) => {
+            $('#modal_form').modal('show');
+          });
+          $('#btnSave_pass').text('SIMPAN');
+          $('#btnSave_pass').attr('disabled', false);
+          return;
+        }
+
+        if ( v_luphp == '' || v_luphp == null ) {
+          $('#modal_form').modal('hide');
+          swal({
+            title               : "NO HP",
+            html                : " Tidak Boleh Kosong .!!!",
+            type                : "error",
+            confirmButtonText   : "OK"
+          }).then((value) => {
+            $('#modal_form').modal('show');
+          });
+          $('#btnSave_pass').text('SIMPAN');
+          $('#btnSave_pass').attr('disabled', false);
+          return;
+        }
+
+
+
 
 
         url = "<?= site_url('penjualan_faktur/save_pasien') ?>";
@@ -1916,10 +2038,10 @@ $this->load->view('template/footer');
                         // swal('PASIEN','Data Pasien sudah terdaftar ...','');
                         $('#modal_form').modal('hide');
                         swal({
-                            title: "PASIEN",
-                            html: " Data Pasien sudah terdaftar .!!",
-                            type: "error",
-                            confirmButtonText: "OK"
+                            title   : "PASIEN",
+                            html    : " Data Pasien sudah terdaftar .!! <br> CEK LAGI..",
+                            type    : "error",
+                            confirmButtonText   : "OK"
                         }).then((value) => {
                             $('#modal_form').modal('show');
                         });
@@ -2275,6 +2397,17 @@ $this->load->view('template/footer');
       });
       return;
     }
+    
+    var aturan_pakai    = $("#aturan_pakai" + i).val(); 
+    if ($("#kode"+i).val() != null && (aturan_pakai == '' || aturan_pakai == null)) {
+      swal({
+        title               : "Aturan Pakai",
+        html                : "<p>HARUS DI isi</p>",
+        type                : "error",
+        confirmButtonText   : "OK"
+      });
+      return;
+    }
   }
   var total = Number(parseInt(totalx.replaceAll(',', '')));
 
@@ -2295,57 +2428,58 @@ $this->load->view('template/footer');
   
   // console.log(racikan)
 
-  if (tgllahir == '') {
-    swal({
-      title: "Tanggal Lahir",
-      html: "Tidak boleh kosong",
-      type: "error",
-      confirmButtonText: "OK"
-    });
-    return;
-  }
+  // if (tgllahir == '') {
+  //   swal({
+  //     title: "Tanggal Lahir",
+  //     html: "Tidak boleh kosong",
+  //     type: "error",
+  //     confirmButtonText: "OK"
+  //   });
+  //   return;
+  // }
 
-  if (bb == '') {
-    swal({
-      title: "Berat Badan",
-      html: "Tidak boleh kosong",
-      type: "error",
-      confirmButtonText: "OK"
-    });
-    return;
-  }
+  // if (bb == '') {
+  //   swal({
+  //     title: "Berat Badan",
+  //     html: "Tidak boleh kosong",
+  //     type: "error",
+  //     confirmButtonText: "OK"
+  //   });
+  //   return;
+  // }
 
-  if (nohp == '') {
-    swal({
-      title: "No Hp Masih Kosong",
-      html: "<p> No.Hp : <b>" + nohp + "</b> </p>" +
-        "CEK LAGI",
-      type: "error",
-      confirmButtonText: "OK"
-    });
-    return;
-  }
+  // if (nohp == '') {
+  //   swal({
+  //     title: "No Hp Masih Kosong",
+  //     html: "<p> No.Hp : <b>" + nohp + "</b> </p>" +
+  //       "CEK LAGI",
+  //     type: "error",
+  //     confirmButtonText: "OK"
+  //   });
+  //   return;
+  // }
 
-  if (!cekhp) {
-    swal({
-      title: "Cek Kembali Nomor Hp Pasien",
-      html: "<p> No.Hp : <b>" + nohp + "</b> </p>" +
-        "Jika Sudah Benar Lakukan <br>CHECKLIST <br>di Samping Kolom No Hp",
-      type: "error",
-      confirmButtonText: "OK"
-    });
-    return;
-  }
+  // if (!cekhp) {
+  //   swal({
+  //     title: "Cek Kembali Nomor Hp Pasien",
+  //     html: "<p> No.Hp : <b>" + nohp + "</b> </p>" +
+  //       "Jika Sudah Benar Lakukan <br>CHECKLIST <br>di Samping Kolom No Hp",
+  //     type: "error",
+  //     confirmButtonText: "OK"
+  //   });
+  //   return;
+  // }
 
 
-  if (pembeli == null || gudang == null || gudang == "" || pembeli == "" || jumlahtot == "0.00" || jumlahtot == "" || bb == "" || tgllahir == "") {
+  // if (pembeli == null || gudang == null || gudang == "" || pembeli == "" || jumlahtot == "0.00" || jumlahtot == "" || bb == "" || tgllahir == "") {
+  if (gudang == null || gudang == "" || jumlahtot == "0.00" || jumlahtot == "") {
     if (gudang == "" || gudang == null) {
       swal('PENJUALAN', 'Depo belum diisi ...', '');
     }
 
-    if (pembeli == "" || pembeli == null) {
-      swal('PENJUALAN', 'Pembeli belum diisi ...', '');
-    }
+    // if (pembeli == "" || pembeli == null) {
+    //   swal('PENJUALAN', 'Pembeli belum diisi ...', '');
+    // }
 
     if (total == "" || total == "0.00") {
       swal({
