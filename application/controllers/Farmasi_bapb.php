@@ -127,7 +127,7 @@ class Farmasi_bapb extends CI_Controller
 			$data['url']      = 'farmasi_bapb';
 			$data['tanggal']  = date('d-m-Y');
 			$data['akses']    = $akses;
-			$data['pkp']    	= $cek_pkp->pkp;
+			$data['pkp']    	= strlen($cek_pkp->pkpno) > 0 ? true : false;
 			$data['now']			= date("Y-m");
 			$data['nomorpo']  = urut_transaksi('SETUP_APO', 19);
 			$data['ppn'] = $this->db->get_where('tbl_pajak', ['kodetax' => 'PPN'])->row_array();
