@@ -1621,7 +1621,6 @@
             },
 
             processResults: function(response) {
-               console.log(response);
                return {
                   results: response
                };

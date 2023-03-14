@@ -149,7 +149,8 @@
 								</div>
 
 							</div>
-							<table class="table table-striped table-hover table-bordered" id="keuangan-keluar-list">
+							<div class="table-responsive">
+                <table class="table table-striped table-hover table-bordered" id="keuangan-keluar-list" width="100%" style="overflow-x:auto;">
                             <thead>
                                      <tr class="page-breadcrumb breadcrumb">
                                          <th class="title-white" style="text-align: center">Cab.</th>
@@ -212,10 +213,10 @@
                                             <?php
                                             if ($row->rekmed=='Non Member' || $row->rekmed=='NON MEMBER')
                                                 { ?>
-                                                <a class="btn btn-sm btn-success" href="<?= base_url()?>kasir_obat/entri">
+                                                <a class="btn btn-sm btn-success" href="<?= base_url()?>kasir_obat/entri" style="margin-bottom: 10px;">
                                                 <i class="fa fa-money"></i></a>
                                             <?php }else{  ?>
-                                                <a class="btn btn-sm btn-success" onclick="bayar('<?= $row->resepno;?>')">
+                                                <a class="btn btn-sm btn-success" onclick="bayar('<?= $row->resepno;?>')" style="margin-bottom: 10px;">
                                                 <i class="fa fa-money"></i></a>
                                             <?php } ?>
 
@@ -223,25 +224,25 @@
                                             <?php
                                                if ($row->keluar=='0')
                                                  { ?>
-											 <a class="btn btn-sm btn-primary" href="<?= base_url()?>penjualan_faktur/edit/<?= $row->resepno;?>">
+											 <a class="btn btn-sm btn-primary" href="<?= base_url()?>penjualan_faktur/edit/<?= $row->resepno;?>" style="margin-bottom: 10px;">
                                              <i class="glyphicon glyphicon-edit" title="Edit"></i></a>
                                             <?php }?>
                                             <?php
                                             if ($row->keluar=='1')
                                                 { ?>
-											 <a class="btn btn-sm btn-info" href="<?= base_url()?>penjualan_faktur/edit/<?= $row->resepno;?>/1"><i class="glyphicon glyphicon-eye-open"></i></a>
+											 <a class="btn btn-sm btn-info" href="<?= base_url()?>penjualan_faktur/edit/<?= $row->resepno;?>/1" style="margin-bottom: 10px;"><i class="glyphicon glyphicon-eye-open"></i></a>
 
-                                             <a class="btn btn-sm btn-warning" onclick="_urlcetak('<?= $row->resepno;?>')" title="Cetak">
+                                             <a class="btn btn-sm btn-warning" onclick="_urlcetak('<?= $row->resepno;?>')" title="Cetak" style="margin-bottom: 10px;">
                                                 <i class="glyphicon glyphicon-print"></i></a>
                                             <?php }?>
                                            <?php
                                             if ($row->keluar=='0')
                                                 { ?>
                                                 <!-- <a class="btn btn-sm btn-danger" href="<?= base_url()?>penjualan_faktur/delete/<?= $row->resepno;?>/1" title="Delete"> -->
-                                                <a class="btn btn-sm btn-danger" onclick="cekhapus('<?= $row->resepno;?>')" title="Delete">
+                                                <a class="btn btn-sm btn-danger" onclick="cekhapus('<?= $row->resepno;?>')" title="Delete" style="margin-bottom: 10px;">
                                                 <i class="glyphicon glyphicon-remove"></i></a>
 
-                                                <a class="btn btn-sm btn-warning" onclick="_urlcetak('<?= $row->resepno;?>')" title="Cetak">
+                                                <a class="btn btn-sm btn-warning" onclick="_urlcetak('<?= $row->resepno;?>')" title="Cetak" style="margin-bottom: 10px;">
                                                 <i class="glyphicon glyphicon-print"></i></a>
                                             <?php }?>
                                         </td>
@@ -253,9 +254,9 @@
 
 
                                      </tbody>
-                                    
-
+                                  
 							</table>
+              </div>
 						</div>
                         <br /><br />
 					</div>

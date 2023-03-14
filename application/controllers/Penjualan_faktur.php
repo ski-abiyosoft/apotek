@@ -1618,7 +1618,7 @@ class Penjualan_faktur extends CI_Controller{
 			$d['nomor'] = urut_transaksi('URUT_BHP', 19);
 			$d['ppn'] = $this->db->get_where('tbl_pajak', ['kodetax' => 'PPN'])->row_array();
 			$d['atpakaix'] = $this->db->query("SELECT * from tbl_barangsetup where  apogroup='ATURANPAKAI' ")->result();
-			$this->load->view('penjualan/v_penjualan_faktur_add', $d);
+			$this->load->view('penjualan/v_penjualan_faktur_add2', $d);
 		} else {
 
 			header('location:' . base_url());
@@ -1755,9 +1755,16 @@ class Penjualan_faktur extends CI_Controller{
 		$cabang = $this->session->userdata("unit");
 		$kode   = $this->input->get('kode');
 		$gudang = $this->input->get('gudang');
-		// $data = $this->M_global->_data_barang($kode);
-		$data = $this->db->query("SELECT b.*, (SELECT saldoakhir FROM tbl_barangstock WHERE kodebarang = '$kode' AND gudang = '$gudang' AND koders = '$cabang') as saldoakhir FROM tbl_barang b 
-		WHERE b.kodebarang = '$kode'")->row();
+		// $data = $this->db->query("SELECT b.*, (SELECT saldoakhir FROM tbl_barangstock WHERE kodebarang = '$kode' AND gudang = '$gudang' AND koders = '$cabang') as saldoakhir FROM tbl_barang b 
+		// WHERE b.kodebarang = '$kode'")->row();
+		$data = $this->db->query("SELECT b.*, bc.saldoakhir FROM tbl_barang b JOIN tbl_barangstock bc ON b.kodebarang = bc.kodebarang WHERE bc.koders = '$cabang' AND bc.gudang = '$gudang' AND b.kodebarang = '$kode' GROUP BY bc.kodebarang")->row();
+		echo json_encode($data);
+	}
+
+	public function ceksaldoakhir($kode) {
+		$cabang = $this->session->userdata("unit");
+		$gudang = $this->input->get("gudang");
+		$data = $this->db->query("SELECT * FROM tbl_barangstock WHERE kodebarang = '$kode' AND gudang = '$gudang' AND koders = '$cabang'")->row();
 		echo json_encode($data);
 	}
 

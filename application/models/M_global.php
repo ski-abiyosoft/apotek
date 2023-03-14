@@ -2163,7 +2163,6 @@ class M_global extends CI_Model
 	
 	function getfarmasibaranggud($str, $gudang)
 	{
-		//-- saya ganti --//
 		$unit = $this->session->userdata('unit');
 		if ($str == "") {
 			$limm = "LIMIT 10";
@@ -2172,57 +2171,27 @@ class M_global extends CI_Model
 		}
 
 		if ($unit != "" && $gudang != "" && $gudang != "null") {
-
-			// $query = $this->db->query("SELECT kodebarang as id, concat(' [ ', kodebarang ,' ] ',' - ',' [ ', namabarang ,' ] ',' - ',' [ ', satuan1 ,' ] ',' - ',' [ ', salakhir ,' ] ',' - ',' [ ', hargabeli ,' ]',' - ',' [ ', hargajual ,' ]') as text FROM(
-			// SELECT
-			// kodebarang,namabarang,satuan1,hargabeli, hargajual,
-			// IFNULL((select sum(saldoakhir)saldoakhir from tbl_barangstock b where koders='$unit' and gudang='$gudang' and b.kodebarang=a.kodebarang),0)salakhir
-			// from tbl_barang a WHERE (kodebarang like '%$str%' or namabarang like '$str%')
-			// )c
-			// order by kodebarang $limm");
-
-			$query	= $this->db->query("SELECT a.kodebarang AS id, CONCAT('[ ', a.kodebarang ,' ] - [ ', b.namabarang ,' ] - [ ', b.satuan1 ,' ] - [ ', FORMAT(a.saldoakhir, 0) ,' ] - [ ', FORMAT(b.hargabeli, 0) ,' ] - [ ', FORMAT(b.hargajual, 0) ,' ]') AS text 
-			FROM tbl_barangstock AS a 
-			LEFT JOIN tbl_barang AS b ON b.kodebarang = a.kodebarang 
-			WHERE a.koders ='$unit' 
-			AND a.gudang ='$gudang' 
-			AND (b.namabarang LIKE '%$str%' OR b.kodebarang LIKE '%$str%') 
-			AND b.namabarang IS NOT NULL 
-			GROUP BY b.kodebarang ASC $limm ");
-
-			// $query	= $this->db->query('SELECT a.kodebarang AS id, CONCAT("[ ", a.kodebarang," ] - [ ", a.namabarang," ] - [", a.satuan1," ] - [ ", FORMAT(IFNULL((
-			// 	SELECT SUM(saldoakhir)
-			// 	FROM tbl_barangstock
-			// 	WHERE koders = "'. $unit .'" AND gudang = "'. $gudang .'" AND kodebarang = a.kodebarang),0), 0)," ] - [ ", FORMAT(a.hargabeli, 0)," ] - [ ", FORMAT(a.hargajual, 0)," ]") AS TEXT
-			// 	FROM tbl_barang AS a
-			// 	LEFT JOIN tbl_barangstock AS b ON b.kodebarang = a.kodebarang
-			// 	WHERE b.saldoakhir > 0 
-			// 	AND a.kodebarang LIKE "%'. $str .'%" 
-			// 	OR a.namabarang LIKE "%'. $str .'%"
-			// 	ORDER BY a.kodebarang '. $limm);
+			// $query	= $this->db->query("SELECT a.kodebarang AS id, CONCAT('[ ', a.kodebarang ,' ] - [ ', b.namabarang ,' ] - [ ', b.satuan1 ,' ] - [ ', FORMAT(a.saldoakhir, 0) ,' ] - [ ', FORMAT(b.hargabeli, 0) ,' ] - [ ', FORMAT(b.hargajual, 0) ,' ]') AS text 
+			// FROM tbl_barangstock AS a 
+			// LEFT JOIN tbl_barang AS b ON b.kodebarang = a.kodebarang 
+			// WHERE a.koders ='$unit' 
+			// AND a.gudang ='$gudang' 
+			// AND (b.namabarang LIKE '%$str%' OR b.kodebarang LIKE '%$str%') 
+			// AND b.namabarang IS NOT NULL 
+			// GROUP BY b.kodebarang ASC $limm ");
+			// return $query->result();
+			$query = $this->db->query("SELECT b.kodebarang AS id, CONCAT('[ ', b.kodebarang ,' ] - [ ', b.namabarang ,' ] - [ ', b.satuan1 ,' ] - [ ', FORMAT(bc.saldoakhir, 0) ,' ] - [ ', FORMAT(b.hargabeli, 0) ,' ] - [ ', FORMAT(b.hargajual, 0) ,' ]') AS text FROM tbl_barang b LEFT JOIN tbl_barangstock bc ON b.kodebarang = bc.kodebarang WHERE bc.koders = '$unit' AND bc.gudang = '$gudang' AND (b.namabarang LIKE '%$str%' OR b.kodebarang LIKE '%$str%') GROUP BY bc.kodebarang LIMIT 10");
 			return $query->result();
 		} else {
-
 			$query = $this->db->query("SELECT kodebarang as id, concat('-- PILIH GUDANG DAHULU --') as text FROM(
 				SELECT
 				kodebarang,namabarang,satuan1,hargabeli,hargajual,
 				IFNULL((select sum(saldoakhir)saldoakhir from tbl_barangstock b where koders='$unit' and gudang='' and b.kodebarang=a.kodebarang),0)salakhir
-				from tbl_barang a where (kodebarang like '%$str%' or namabarang like '$str%') 
+				from tbl_barang a
 				)c
 				order by kodebarang LIMIT 1");
-
 			return $query->result();
 		}
-
-		// if($unit != ""){
-
-		//   $query = $this->db->query("SELECT kodebarang as id, concat(kodebarang,' | ',namabarang,' | ',satuan1) as text from tbl_barang where (kodebarang  like '%$str%' or namabarang like '$str%') order by kodebarang");
-
-		// } else {
-
-		//   $query = $this->db->query("SELECT kodebarang as id, concat(kodebarang,' | ',namabarang,' | ',satuan1) as text from tbl_barang order by kodebarang");	
-
-		// }
 	}
 	
 	function get_atp($str)
