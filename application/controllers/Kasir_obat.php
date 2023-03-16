@@ -1237,6 +1237,346 @@ class Kasir_obat extends CI_Controller
 			header('location:' . base_url());
 		}
 	}
+	
+	public function cetak_kasir_nota()
+	{
+		$cek = $this->session->userdata('level');
+		$unit = $this->session->userdata('unit');
+		if (!empty($cek)) {
+			$nokwitansi    = $this->input->get('kwitansi');
+			$noresep       = $this->input->get('resep');
+
+			$profile       = data_master('tbl_namers', array('koders' => $unit));
+			$nama_usaha    = $profile->namars;
+			$alamat1       = $profile->alamat;
+			$alamat2       = $profile->kota;
+
+			$qheader       = "SELECT * from tbl_apohresep where resepno = '$noresep'";
+			$ppp           = $this->db->query("SELECT * from tbl_apohresep where resepno = '$noresep'")->row();
+			$qkasir        = "SELECT * from tbl_kasir where nokwitansi = '$nokwitansi'";
+			$qdetil        = "SELECT * from tbl_apodresep where resepno = '$noresep'";
+			$qposting      = "SELECT * from tbl_apoposting where resepno = '$noresep'";
+			$qkartu        = "SELECT * from tbl_kartukredit where nokwitansi = '$nokwitansi'";
+			$queryr        = "SELECT * from tbl_aporacik where resepno = '$noresep' AND koders='$unit'";
+			$detil_r       = "SELECT * from tbl_apodetresep where resepno = '$noresep' AND koders='$unit'";
+			$racikan       = $this->db->query($queryr)->row_array();
+			$rck           = $this->db->query($detil_r)->result();
+			$aporacik      = $this->db->get_where('tbl_aporacik', ['resepno' => $noresep])->row();
+
+			$qvoucher      = $this->db->query("SELECT tbl_kasir.*, tbl_pasien.namapas
+				from tbl_kasir left outer join tbl_pasien on tbl_kasir.rekmed=tbl_pasien.rekmed
+				where nokwitansi = '$nokwitansi'")->row();
+
+			$kasir       = $this->db->query($qkasir)->row();
+			// var_dump($qvoucher);die;
+
+			$header   	= $this->db->query($qheader)->row();
+			$posting    = $this->db->query($qposting)->row_array();
+			$detil      = $this->db->query($qdetil)->result();
+			$detilr		= $this->db->query($detil_r)->result();
+			$kartu      = $this->db->query($qkartu)->row();
+
+			$query_kartu_card	= $this->db->query("SELECT * FROM tbl_kartukredit WHERE nokwitansi = '$nokwitansi'")->result();
+
+			$pdf = new simkeu_nota();
+			$pdf->setID($nama_usaha, $alamat1, $alamat2);
+			$pdf->setjudul('');
+			$pdf->setsubjudul('');
+			$pdf->addpage("P", "A4");
+			$pdf->setsize("P", "A4");
+			$pdf->SetWidths(array(70, 30, 90));
+			$border = array('T', '', 'BT');
+			$size   = array('', '', '');
+			$pdf->setfont('Arial', 'B', 18);
+			$pdf->SetAligns(array('C', 'C', 'C'));
+			$align = array('L', 'C', 'L');
+			$style = array('', '', 'B');
+			$size  = array('12', '', '18');
+			$max   = array(5, 5, 20);
+			$judul = array('Kepada :', '', 'Faktur Penjualan');
+			$fc     = array('0', '0', '0');
+			$hc     = array('20', '20', '20');
+			//$pdf->FancyRow2(10,$judul, $fc,  $border, $align, $style, $size, $max);
+			//$pdf->ln(1);
+			if($kasir){
+				$pdf->setfont('Arial', 'B', 10);
+				$pdf->SetWidths(array(25, 10, 50, 15, 25, 10, 55));
+				$border = array('', '', '', '', '', '', '');
+				$fc     = array('0', '0', '0', '0', '0', '0', '0');
+				$pdf->SetFillColor(230, 230, 230);
+				$pdf->setfont('Arial', '', 8);
+				$pdf->FancyRow(array('No. Kwitansi', ':', $nokwitansi, '', 'No. Registrasi', ':', $kasir->noreg), $fc, $border);
+				$pdf->FancyRow(array('Nama Pasien', ':', $posting['namapas'], '', 'No. Member', ':', $kasir->rekmed), $fc, $border);
+				if($header){
+					if($header->kodepel == 'KIRIM'){
+						$pdf->FancyRow(array('Jam', ':', $kasir->jambayar, '', 'Ongkos Kirim', ':', number_format($header->ongkoskirim, 0)), $fc, $border);
+					} else {
+						$pdf->FancyRow(array('Jam', ':', $kasir->jambayar, '', '', '', ''), $fc, $border);
+					}
+				}
+				$pdf->FancyRow(array('Dibayar Oleh', ':', $kasir->dibayaroleh, '', '', '', ''), $fc, $border);
+				$pdf->ln(2);
+			}
+			$pdf->SetWidths(array(20, 60, 40, 35, 35));
+			$border    = array('TBRL', 'TBRL', 'TBRL', 'TBRL', 'TBRL');
+			$align     = array('C', 'C', 'C', 'C', 'C');
+			$pdf->setfont('Arial', 'B', 8);
+			$pdf->SetAligns(array('L', 'C', 'R'));
+			$pdf->SetFillColor(255 ,255 ,255);
+			//$pdf->settextcolor(255,255,255);
+			$fc        = array('0', '0', '0', '0', '0', '0');
+			$judul     = array('No.', 'Keterangan', 'Qty', 'Diskon', 'Jumlah Rp');
+			$pdf->FancyRow2(8, $judul, $fc, $border, $align);
+			$border    = array('', '', '');
+			$pdf->setfont('Arial', '', 8);
+			$tot       = 0;
+			$subtot    = 0;
+			$tdisc     = 0;
+			$border    = array('TBRL', 'TBRL', 'TBRL', 'TBRL', 'TBRL', 'TBRL');
+			$align     = array('C', 'L', 'C', 'R', 'R', 'R');
+			$fc = array('0', '0', '0', '0', '0', '0');
+			$pdf->SetFillColor(0, 0, 139);
+			$pdf->settextcolor(0);
+			$nomor = 1;
+			$ppn   = 0;
+			$dpp   = 0;
+
+			if($detil){
+				foreach ($detil as $db) {
+					$tot = $tot + $db->totalrp;
+					$ppn = $ppn + $db->ppnrp;
+					$dpp = $dpp + $db->price;
+	
+					$pdf->FancyRow(array(
+						$nomor,
+						$db->namabarang,
+						number_format($db->qty, 0),
+						number_format($db->discrp, 0, '.', ','),
+						number_format($db->totalrp, 0, '.', ',')
+					), $fc, $border, $align);
+	
+					$nomor++;
+				}
+			} else {
+				$detil = $this->db->query("SELECT d.qtyretur as qty, d.discountrp as discrp, d.*, (SELECT namabarang FROM tbl_barang WHERE kodebarang=d.kodebarang) as namabarang FROM tbl_apodreturjual d WHERE d.returno = '$noresep'")->result();
+				foreach ($detil as $db) {
+					$tot = $tot + $db->totalrp;
+					$ppn = $ppn + $db->ppnrp;
+					$dpp = $dpp + $db->price;
+	
+					$pdf->FancyRow(array(
+						$nomor,
+						$db->namabarang,
+						number_format($db->qty, 0),
+						number_format($db->discrp, 0, '.', ','),
+						number_format($db->totalrp, 0, '.', ',')
+					), $fc, $border, $align);
+	
+					$nomor++;
+				}
+			}
+			if ($racikan != null && $rck != null) {
+				// foreach ($rck as $rck) {
+
+
+				// 	$diskon = $rck->qty * $rck->price * $racikan['diskon'] / 100;
+				// 	$ttlrp = $rck->qty * $rck->price;
+				// 	$pdf->FancyRow(array(
+				// 		$nomor,
+				// 		("** $rck->namabarang"),
+				// 		number_format($rck->qty, 0, ',', '.'),
+				// 		'-',
+				// 		number_format((!isset($rck->totalrp) ? 0 : $rck->totalrp), 0, ',', '.')
+				// 	), $fc, $border, $align);
+				// 	$nomor++;
+				// }
+				if ($aporacik->harga_manual != 0) {
+					$hrgxx = $aporacik->harga_manual;
+				} else {
+					$hrgxx = $aporacik->totalrp;
+				}
+				$pdf->FancyRow(array(
+					$nomor,
+					("**$aporacik->namaracikan"),
+					number_format($aporacik->jumlahracik, 0, '.', ','),
+					number_format($aporacik->diskonrp, 0, '.', ','),
+					number_format($hrgxx, 0, '.', ',')
+				), $fc, $border, $align);
+				$nomor++;
+			}
+
+			$total_voucher  = $kasir->voucherrp1 + $kasir->voucherrp2 + $kasir->voucherrp3;
+			// var_dump($total_voucher);die;
+			$total_potongan = $total_voucher + $kasir->diskonrp;
+			$actual_total	= $kasir->totalresep - $total_potongan;
+			$cekdulu = $this->db->query("SELECT * FROM tbl_apohreturjual WHERE returno = '$noresep'")->row();
+			if($cekdulu){
+				$actual_totalx = $cekdulu->totalnet;
+			} else {
+				if($actual_total < 0){
+					$actual_totalx = 0;
+				} else {
+					$actual_totalx = $actual_total;
+				}
+			}
+
+			// if($kasir->totalrp < 1){
+			// $pdf->FancyRow(array('', 'Adm', '', '' ,'' ),$fc, $border, $align);
+			if ($kasir->voucherrp1 != 0) {
+				$vc1 = $kasir->voucherrp1;
+			} else {
+				$vc1 = 0;
+			}
+			if ($kasir->voucherrp2 != 0) {
+				$vc2 = $kasir->voucherrp2;
+			} else {
+				$vc2 = 0;
+			}
+			if ($kasir->voucherrp3 != 0) {
+				$vc3 = $kasir->voucherrp3;
+			} else {
+				$vc3 = 0;
+			}
+			if ($vc1 != 0) {
+				$pdf->FancyRow(array('Voucher ',  $kasir->novoucher1, '', '', '' . number_format($kasir->voucherrp1, 0, '.', ',')), $fc, $border, $align);
+			}
+			if ($vc2 != 0) {
+				$pdf->FancyRow(array('Voucher',  $kasir->novoucher2, '', '', '' . number_format($kasir->voucherrp2, 0, '.', ',')), $fc, $border, $align);
+			}
+			if ($vc3 != 0) {
+				$pdf->FancyRow(array('Voucher',  $kasir->novoucher3, '', '', '' . number_format($kasir->voucherrp3, 0, '.', ',')), $fc, $border, $align);
+			}
+			// if($kasir->voucherrp1 != "" || $kasir->voucherrp2 != "" || $kasir->voucherrp3 != ""){
+			// 	$pdf->FancyRow(array('Voucher',  $kasir->novoucher1,'', '',''. number_format($total_voucher, 0, '.', ',')),$fc, $border, $align);
+			// }
+
+			// if($kasir->diskonrp != ""){
+			// 	$pdf->FancyRow(array($nomor+1, 'Diskon', '', '','-'. number_format($kasir->diskonrp, 0, '.', ',')),$fc, $border, $align);
+			// }
+			// }
+			// $pdf->FancyRow(array('', 'Diskon', '', '' ,''),$fc, $border, $align);
+
+			// $_ket11 = $_ket1 = $_ket2 = $_ket3 = $_ket4 = '';
+			// if($kartu){
+			// if($kartu->cardtype==1){
+			// 	$_ket1 = 'DEBIT NO'; 
+			// } elseif($kartu->cardtype==2){
+			// 	$_ket1 = 'CREDIT CARD NO'; 
+			// }	elseif($kartu->cardtype==3){
+			// 	$_ket1 = 'TRANSFER NO'; 
+			// }	
+			// $bank = data_master('tbl_edc',array('bankcode' => $kartu->kodebank));			  
+			// if($bank){
+			// 	$_ket2 = $bank->namabank;  
+			// }
+
+			// $_ket4 = angka_rp($kartu->totalcardrp,0);
+			// $_ket11= $kartu->nootorisasi;
+			// $_ket3 = $kartu->nocard;
+
+			// }	
+
+			$pdf->SetWidths(array(30, 15, 45, 30, 35, 35));
+
+			$border    = array('', '', '', '', '', '');
+			$align     = array('L', 'C', 'L', 'L', 'R', 'R');
+			$fc        = array('0', '0', '0', '0', '0', '0');
+			$style     = array('B', 'B', 'B', 'B', 'B', 'B');
+			$size      = array('', '', '', '', '', '');
+			$border    = array('', '', '', '', '', '');
+			$border    = array('T', 'T', 'T', 'T', 'T', 'T');
+			$pdf->FancyRow(array('', '', '', '', '', ''), $fc, $border, $align, $style, $size);
+
+			$fc = array('0', '0', '0', '0', '0', '0');
+			$border = array('', '', '', 'LT', 'T', 'RT');
+			$lastborder = array('', '', '', 'LB', 'B', 'RB');
+			$sideborder = array('', '', '', 'L', '', 'R');
+			if($header){
+				if($header->kodepel == 'KIRIM'){
+					$pdf->FancyRow(
+						array(
+							($kasir->bayarcash > 0) ? 'Cash Rp' : '', ($kasir->bayarcash > 0) ? ':' : '', ($kasir->bayarcash > 0) ? angka_rp($kasir->bayarcash, 0) : "", 
+							'Total Rp', ':', number_format($actual_totalx, 2, '.', ',')
+						), $fc, $border, $align, $style, $size
+					);
+				} else {
+					$pdf->FancyRow(array(($kasir->bayarcash > 0) ? 'Cash Rp' : '', ($kasir->bayarcash > 0) ? ':' : '', ($kasir->bayarcash > 0) ? angka_rp($kasir->bayarcash, 0) : "", 'Total Rp', ':', number_format($actual_totalx, 2, '.', ',')), $fc, $border, $align, $style, $size);
+				}
+			} else {
+				$pdf->FancyRow(array(($kasir->bayarcash > 0) ? 'Cash Rp' : '', ($kasir->bayarcash > 0) ? ':' : '', ($kasir->bayarcash > 0) ? angka_rp($kasir->bayarcash, 0) : "", 'Total Rp', ':', number_format($actual_totalx, 2, '.', ',')), $fc, $border, $align, $style, $size);
+			}
+			$pdf->FancyRow(array(($kasir->uangmuka > 0) ? "Uang Muka Rp" : "", ($kasir->uangmuka > 0) ? ":" : "", ($kasir->uangmuka > 0) ? angka_rp($kasir->uangmuka, 0) : "", 'Pembulatan', ':', number_format(0, 2, '.', ',')), $fc, $lastborder, $align, $style, $size);
+			$pdf->ln(5);
+
+			foreach ($query_kartu_card as $cckey => $ccval) {
+				$query_nama_bank	= $this->db->query("SELECT * FROM tbl_edc WHERE bankcode = '$ccval->kodebank'")->row();
+				switch ($ccval->cardtype) {
+					case 1:
+						$cardType = "DEBIT NO";
+						break;
+					case 2:
+						$cardType = "CREDIT NO";
+						break;
+					case 3:
+						$cardType = "TRANSFER NO";
+						break;
+					case 4:
+						$cardType = "ONLINE";
+						break;
+				}
+
+				$nocard_length	= count(array($ccval->nocard)) - 4;
+				$nocard			= substr($ccval->nocard, 0, $nocard_length) . "XXXX";
+
+				$pdf->FancyRow(array("Bank Penerbit", ":", $query_nama_bank->namabank), $fc, $border, $align, $style, $size);
+				$pdf->FancyRow(array($cardType, ":", $nocard), $fc, $border, $align, $style, $size);
+				$pdf->FancyRow(array("Approval Code", ":", $ccval->nootorisasi), $fc, $border, $align, $style, $size);
+				$pdf->FancyRow(array("Nominal", ":", "Rp " . number_format($ccval->jumlahbayar, 0, ',', '.')), $fc, $border, $align, $style, $size);
+				$pdf->ln(5);
+			}
+			$pdf->ln(5);
+
+			
+			$border = array('', '', '', '', '', '');
+
+			if ($kasir->kembalikeuangmuka == 0) {
+				$pdf->FancyRow(array(($kasir->kembali >= 0 ? 'Kembali ke pasien' : ''), ($kasir->kembali >= 0 ? ':' : ''), number_format($kasir->kembali, 0), '', '', ''), $fc, $border, $align, $style, $size);
+			} else {
+				$pdf->FancyRow(array(($kasir->kembali >= 0 ? 'Kembali ke Uang muka' : ''), ($kasir->kembali >= 0 ? ':' : ''), number_format($kasir->kembali, 0), '', '', ''), $fc, $border, $align, $style, $size);
+			}
+
+			$pdf->settextcolor(0);
+
+			$pdf->SetWidths(array(63, 64, 63));
+			$border = array('', '', '');
+			$fc     = array('0', '0', '0');
+			$align  = array('C', 'C', 'C');
+			
+			$pdf->FancyRow(array('', '', $alamat2 . ', ' . date('d-m-Y', strtotime($kasir->tglbayar))), $fc, $border, $align);
+			$pdf->FancyRow(array('', '', $nama_usaha), $fc, $border, $align);
+			$pdf->FancyRow(array('Pasien', 'Ruang Obat', 'Cashier'), $fc, $border, $align);
+			$pdf->ln(20);
+			$pdf->SetWidths(array(63, 64, 63));
+			$pdf->SetFont('Arial', '', 8);
+			$pdf->SetAligns(array('C', 'C', 'C'));
+			$border = array('', '', '');
+			$fc     = array('0', '0', '0');
+			$pdf->FancyRow(array('', '', ''), $fc, $border, $align);
+			$border = array('', '', '');
+			$fc     = array('0', '0', '0');
+			$pdf->FancyRow(array($posting['namapas'], '', $kasir->username), $fc, $border, $align);
+
+
+
+			$pdf->AliasNbPages();
+			$pdf->setTitle($nokwitansi);
+			// $pdf->output('./uploads/obat/' . $nokwitansi . '.PDF', 'F');
+			$pdf->output($nokwitansi . '.PDF', 'I');
+		} else {
+
+			header('location:' . base_url());
+		}
+	}
 
 	public function cetak_jaminan()
 	{
@@ -1510,6 +1850,259 @@ class Kasir_obat extends CI_Controller
 			$judul = "CETAK DOKUMEN JAMINAN NO. KWITANSI : ".$nokwitansi;
 			echo ("<title>$judul</title>");
 			$this->M_cetak->mpdf('P', 'A4', $judul, $chari, '.PDF', 10, 10, 10, 2);
+		} else {
+			header('location:' . base_url());
+		}
+	}
+	
+	public function cetak_jaminan_nota()
+	{
+		$cek          = $this->session->userdata('level');
+		$unit         = $this->session->userdata('unit');
+		$user         = $this->session->userdata('username');
+		$nokwitansi   = $this->input->get('kwitansi');
+		$noresep      = $this->input->get('resep');
+		// $noreg = $this->input->get('noreg');
+		if (!empty($cek)) {
+			$kop       = $this->M_cetak->kop($unit);
+			$avatar    = $this->session->userdata('avatar_cabang');
+			$profile   = data_master('tbl_namers', array('koders' => $unit));
+			$namars    = $kop['namars'];
+			$alamat    = $kop['alamat'];
+			$alamat2   = $kop['alamat2'];
+			$alamat3   = $profile->kota;
+			$kota      = $kop['kota'];
+			$phone     = $kop['phone'];
+			$whatsapp  = $kop['whatsapp'];
+			$npwp      = $kop['npwp'];
+			$chari     = '';
+			$kasir     = $this->db->query("SELECT * from tbl_kasir where nokwitansi = '$nokwitansi'")->row();
+			$pasien    = $this->db->get_where("tbl_pasien", ['rekmed' => $kasir->rekmed])->row();
+			$jaminan   = $this->db->query("SELECT * FROM tbl_pap WHERE koders = '$unit' AND nokwitansi = '$nokwitansi'")->result();
+			$xxx       = 0;
+			foreach ($jaminan as $key => $value) {
+				$xxx += (int)$value->jumlahhutang + (int)$value->nilaiklaim2;
+			}
+			$terbilang = terbilang($xxx);
+			$chari .= "<table style=\"border-collapse:collapse;font-family: Century Gothic; font-size:10px; color:#000;\" width=\"100%\" border=\"0\" >
+			<thead>
+				<tr>
+				
+					<td rowspan=\"7\" align=\"center\">
+							<img src=\"" . base_url() . "assets/img_user/$avatar\"  width=\"70\" height=\"70\" /></td>
+					</td>
+				</tr>
+				<tr>
+					<td colspan=\"5\">
+						<tr>
+								<td align=\"center\" style=\"font-size:8px;border-bottom: none;\"><b><br>$namars</b></td>
+						</tr>
+						<tr>
+								<td align=\"center\" style=\"font-size:7px;\">$alamat</td>
+						</tr>
+						<tr>
+								<td align=\"center\" style=\"font-size:7px;\">$alamat2</td>
+						</tr>
+						<tr>
+								<td align=\"center\" style=\"font-size:7px;\">Wa :$whatsapp    Telp :$phone </td>
+						</tr>
+						<tr>
+								<td align=\"center\" style=\"font-size:7px;\">No. NPWP : $npwp</td>
+						</tr>
+					</td>
+				</tr>
+			</table>";
+			$chari .= "
+					<table style=\"border-collapse:collapse;font-family: tahoma; font-size:5px\" width=\"100%\" align=\"center\" border=\"0\">
+								<tr>
+										<td> &nbsp; </td>
+								</tr> 
+					</table>";
+			
+			$chari .= "
+					<table style=\"border-collapse:collapse;font-family: tahoma; font-size:2px\" width=\"100%\" align=\"center\" border=\"1\">     
+						<tr>
+							<td style=\"border-top: none;border-right: none;border-left: none;\"></td>
+						</tr> 
+					</table>";
+					
+
+			$chari .= "
+			<table style=\"border-collapse:collapse;font-family: Tahoma; font-size:10px\" width=\"100%\" align=\"center\" border=\"0\" cellspacing=\"1\" cellpadding=\"3\">
+				<tr>
+					<td width=\"15%\" style=\"text-align:center; font-size:15px;\"><b>DOKUMEN JAMINAN</b></td>
+				</tr>
+			</table>";
+
+			$chari .= "
+					<table style=\"border-collapse:collapse;font-family: tahoma; font-size:10px\" width=\"100%\" align=\"center\" border=\"0\">
+						<tr>
+									<td> &nbsp; </td>
+						</tr> 
+					</table>";
+			$chari .= "
+					<table style=\"border-collapse:collapse;font-family: tahoma; font-size:10px\" width=\"100%\" align=\"left\" border=\"0\">     
+						<tr>
+							<td width=\"35%\" style=\"border-top: none;border-right: none;border-left: none;\">Sudah terima dari</td>
+							<td width=\"2%\" style=\"border-top: none;border-right: none;border-left: none;\"> : </td>
+							<td style=\"border-top: none;border-right: none;border-left: none;\">$kasir->dibayaroleh</td>
+						</tr> 
+						<tr>
+							<td style=\"border-top: none;border-right: none;border-left: none;\">No. Member</td>
+							<td style=\"border-top: none;border-right: none;border-left: none;\"> : </td>
+							<td style=\"border-top: none;border-right: none;border-left: none;\">$kasir->rekmed</td>
+						</tr> 
+						<tr>
+							<td style=\"border-top: none;border-right: none;border-left: none;\">Banyaknya Uang</td>
+							<td style=\"border-top: none;border-right: none;border-left: none;\"> : </td>
+							<td style=\"border-top: none;border-right: none;border-left: none;\">$terbilang</td>
+						</tr> 
+						<tr>
+							<td style=\"border-top: none;border-right: none;border-left: none;\">Untuk Jaminan</td>
+							<td style=\"border-top: none;border-right: none;border-left: none;\"> : </td>
+							<td style=\"border-top: none;border-right: none;border-left: none;\">Jaminan Resep</td>
+						</tr> 
+						<tr>
+							<td style=\"border-top: none;border-right: none;border-left: none;\">Pasien</td>
+							<td style=\"border-top: none;border-right: none;border-left: none;\"> : </td>
+							<td style=\"border-top: none;border-right: none;border-left: none;\">$pasien->namapas</td>
+						</tr> 
+						<tr>
+							<td style=\"border-top: none;border-right: none;border-left: none;\">No. Kartu</td>
+							<td style=\"border-top: none;border-right: none;border-left: none;\"> : </td>
+							<td style=\"border-top: none;border-right: none;border-left: none;\">$pasien->nocard</td>
+						</tr> 
+						<tr>
+							<td style=\"border-top: none;border-right: none;border-left: none;\">NIK</td>
+							<td style=\"border-top: none;border-right: none;border-left: none;\"> : </td>
+							<td style=\"border-top: none;border-right: none;border-left: none;\">$pasien->noidentitas</td>
+						</tr> 
+						<tr>
+							<td style=\"border-top: none;border-right: none;border-left: none;\">Layanan</td>
+							<td style=\"border-top: none;border-right: none;border-left: none;\"> : </td>
+							<td style=\"border-top: none;border-right: none;border-left: none;\">RAWAT JALAN</td>
+						</tr> 
+					</table>";
+			$chari .= "
+					<table style=\"border-collapse:collapse;font-family: tahoma; font-size:10px\" width=\"100%\" align=\"center\" border=\"0\" cellspacing=\"1\" cellpadding=\"1\">
+							<tr>
+								<td> &nbsp; </td>
+							</tr> 
+					</table>";
+			$chari .= "
+					<table style=\"border-collapse:collapse;font-family: tahoma; font-size:10px\" width=\"100%\" align=\"center\" border=\"1\">     
+					<thead>		
+						<tr>
+							<td bgcolor=\"#cccccc\" width=\"30%\" style=\"text-align:center;\">No</td>
+							<td bgcolor=\"#cccccc\" width=\"40%\" style=\"text-align:center;\"><b>Penjamin</b></td> 
+							<td bgcolor=\"#cccccc\" width=\"30%\" style=\"text-align:center;\"><b>Tercover Rp</b></td>
+						</tr> 
+			</thead>";
+			$no = 1;
+			foreach ($jaminan as $j) {
+				$xx = $this->db->get_where("tbl_penjamin", ['cust_id' => $j->cust_id])->row();
+				$xxx = $this->db->get_where("tbl_penjamin", ['cust_id' => $j->cust_id2])->row();
+				$penjamin = $xx->cust_nama;
+				$tercover = number_format($j->jumlahhutang, 2);
+				// $cob = $xxx->cust_nama;
+				// $tercover2 = number_format($j->nilaiklaim2, 2);
+				$chari .= "<tbody>
+					<tr>
+						<td style=\"text-align:center;\">".$no++."</td>
+						<td style=\"text-align:left;\">$penjamin</td>
+						<td style=\"text-align:right;\">".$tercover."</td>
+					</tr>
+					</tbody>";
+				$totalnya = $j->jumlahhutang + $j->nilaiklaim2;
+			}
+			$chari .= "</table>";
+			$chari .= "
+				<table style=\"border-collapse:collapse;font-family: tahoma; font-size:10px\" width=\"100%\" align=\"center\" border=\"0\">
+						<tr>
+							<td> &nbsp; </td>
+						</tr> 
+				</table>";
+			$chari .= "
+				<table style=\"border-collapse:collapse;font-family: tahoma; font-size:10px\" width=\"100%\" align=\"center\" border=\"0\">
+					<tr>
+						<td>
+							<table style=\"border-collapse:collapse;font-family: tahoma; font-size:10px\" width=\"50%\" align=\"left\" border=\"0\">
+								<tr>
+									<td> &nbsp; </td>
+									<td> &nbsp; </td>
+									<td> &nbsp; </td>
+								</tr>
+							</table>
+						</td>
+						<td>
+							<table style=\"border-collapse:collapse;font-family: tahoma; font-size:10px\" width=\"60%\" align=\"right\" border=\"0\">
+								<tr>
+									<td width=\"40%\" style=\"border-top: 1px solid #000;border-bottom: 1px solid #000;	\"><b>Total Rp</b></td>
+									<td width=\"10%\" style=\"border-top: 1px solid #000;border-bottom: 1px solid #000;\"> : </td>
+									<td width=\"50%\" style=\"text-align:right; border-top: 1px solid #000;border-bottom: 1px solid #000;\"><b>".number_format($totalnya,2)."</b></td>
+								</tr>
+								<tr>
+									<td colspan=\"3\" style\"border-right: none; border-left: none; border-bottom: none;\">&nbsp;</td>
+								</tr>
+							</table>
+						</td>
+					</tr> 
+				</table>";
+			$chari .= "
+				<table style=\"border-collapse:collapse;font-family: tahoma; font-size:10px\" width=\"100%\" align=\"center\" border=\"0\">
+						<tr>
+							<td> &nbsp; </td>
+						</tr> 
+				</table>";
+			$chari .= "
+				<table style=\"border-collapse:collapse;font-family: tahoma; font-size:10px\" width=\"100%\" align=\"center\" border=\"0\">
+						<tr>
+							<td> &nbsp; </td>
+						</tr> 
+				</table>";
+			$chari .= "
+				<table style=\"border-collapse:collapse;font-family: tahoma; font-size:10px\" width=\"100%\" align=\"right\" border=\"0\">
+						<tr>
+							<td width=\"50%\" style=\"text-align:center;\"> &nbsp; </td>
+							<td width=\"50%\" style=\"text-align:center;\"><b>$kota, ".date('d-m-Y', strtotime($kasir->tglbayar))."</b></td>
+						</tr> 
+						<tr>
+							<td width=\"50%\" style=\"text-align:center;\"> &nbsp; </td>
+							<td width=\"50%\" style=\"text-align:center; font-size:10px;\"><b>$namars</b></td>
+						</tr> 
+						<tr>
+							<td width=\"50%\" style=\"text-align:center;\"><b>Pasien</b></td>
+							<td width=\"50%\" style=\"text-align:center;\"><b>Cashier</b></td>
+						</tr> 
+						<tr>
+							<td width=\"50%\" style=\"text-align:center;\"> &nbsp; </td>
+							<td width=\"50%\" style=\"text-align:center;\"> &nbsp; </td>
+						</tr> 
+						<tr>
+							<td width=\"50%\" style=\"text-align:center;\"> &nbsp; </td>
+							<td width=\"50%\" style=\"text-align:center;\"> &nbsp; </td>
+						</tr> 
+						<tr>
+							<td width=\"50%\" style=\"text-align:center;\"> &nbsp; </td>
+							<td width=\"50%\" style=\"text-align:center;\"> &nbsp; </td>
+						</tr> 
+						<tr>
+							<td width=\"50%\" style=\"text-align:center;\"> &nbsp; </td>
+							<td width=\"50%\" style=\"text-align:center;\"> &nbsp; </td>
+						</tr> 
+						<tr>
+							<td width=\"50%\" style=\"text-align:center;\"> &nbsp; </td>
+							<td width=\"50%\" style=\"text-align:center;\"> &nbsp; </td>
+						</tr> 
+						<tr>
+							<td width=\"50%\" style=\"text-align:center;\">$pasien->namapas</td>
+							<td width=\"50%\" style=\"text-align:center;\">$kasir->username</td>
+						</tr> 
+				</table>";
+			$data['prev'] = $chari;
+			$judul = "CETAK DOKUMEN JAMINAN NO. KWITANSI : ".$nokwitansi;
+			// echo ("<title>$judul</title>");
+			$this->M_cetak->mpdf_tiket(80,190,'P', 'A4', $judul, $chari, '.PDF', 10, 10, 10, 2);
 		} else {
 			header('location:' . base_url());
 		}

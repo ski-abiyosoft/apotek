@@ -28,6 +28,15 @@ class Pendaftaran extends CI_Controller {
 			header('location:'.base_url());
 		}			
 	}
+
+	public function cek_noidentitas($param) {
+		$data = $this->db->query("SELECT * FROM tbl_pasien WHERE noidentitas = '$param'")->num_rows();
+		if($data > 0) {
+			echo json_encode(["status" => 1]);
+		} else {
+			echo json_encode(["status" => 0]);
+		}
+	}
 	
 	public function edit( $id )
 	{

@@ -533,8 +533,8 @@ function save() {
     swal('PURCHASE ORDER', 'Data Belum Lengkap/Belum ada transaksi ...', '');
   } else {
       swal({
-        title: 'HARGA',
-        html: "Apakah Harga Sudah Sesuai ?",
+        title: 'QUANTITY',
+        html: "Apakah Quantity yang di ajukan Sudah Sesuai ?",
         type: 'question',
         showCancelButton: true,
         confirmButtonClass: 'btn btn-success',

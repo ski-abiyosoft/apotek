@@ -216,7 +216,27 @@
                                                 <a class="btn btn-sm btn-success" href="<?= base_url()?>kasir_obat/entri" style="margin-bottom: 10px;">
                                                 <i class="fa fa-money"></i></a>
                                             <?php }else{  ?>
-                                                <a class="btn btn-sm btn-success" onclick="bayar('<?= $row->resepno;?>')" style="margin-bottom: 10px;">
+                                              <?php
+                                                $cek = $this->db->get_where("tbl_hset_farma", ["koders" => $this->session->userdata("unit")])->row();
+                                                $cek2 = $this->db->get_where("tbl_apohresep", ["resepno" => $row->resepno])->row();
+                                                if($cek) {
+                                                  if($cek2->kodepel == "adr") {
+                                                    $cek3 = $this->db->get_where("tbl_apodresep", ["resepno" => $row->resepno])->num_rows();
+                                                    $cek4 = $this->db->get_where("tbl_aporacik", ["resepno" => $row->resepno])->num_rows();
+                                                    if($cek4 > 0) {
+                                                      $uangracik = $cek->uang_racik * $cek4;
+                                                    } else {
+                                                      $uangracik = 0;
+                                                    }
+                                                    $uangr = ($cek->uang_r * $cek3) + $uangracik;
+                                                  } else {
+                                                    $uangr = 0;
+                                                  }
+                                                } else {
+                                                  $uangr = 0;
+                                                }
+                                              ?>
+                                                <a class="btn btn-sm btn-success" onclick="bayar('<?= $row->resepno;?>', '<?= $uangr;?>')" style="margin-bottom: 10px;">
                                                 <i class="fa fa-money"></i></a>
                                             <?php } ?>
 
@@ -413,9 +433,14 @@
                             <div class="col-md-6">
                               <div class="form-group">
                                 <label class="control-label col-md-3">Total Resep <font color="red">*</font></label>
-                                  <div class="col-md-9">
+                                <div class="col-md-3">
                                   <input type="hidden"  id="total_resep"  name="total_resep" class="form-control" readonly>
                                   <input style="text-align: right;"  id="total_resepb" name="total_resepb" type="text" class="form-control " readonly>
+                                </div>
+                                <label class="control-label col-md-3">Uang Resep <font color="red">*</font></label>
+                                <div class="col-md-3">
+                                  <input style="text-align: right;"  id="uangr" name="uangr" type="hidden" class="form-control " readonly>
+                                  <input style="text-align: right;"  id="uangrr" name="uangrr" type="text" class="form-control " readonly>
                                 </div>
                               </div>
                             </div>
@@ -438,14 +463,11 @@
                             
                             <div class="col-md-6">
                               <div class="form-group">
-                                <label class="control-label col-md-3">Nilai Apotek <font color="red">*</font></label>
-                                <div class="col-md-5">
-                                  <input style="text-align: right;"  type="number"  id="nil_aptk"  name="nil_aptk" class="form-control" >
+                                <label class="control-label col-md-3">Total Semua <font color="red">*</font></label>
+                                <div class="col-md-9">
+                                  <input style="text-align: right;"  type="hidden"  id="total_semua"  name="total_semua" class="form-control" readonly>
+                                  <input style="text-align: right;"  id="total_semuab" name="total_semuab" type="text" class="form-control" readonly>
                                 </div>
-                                <div class="col-md-4">
-                                  <input style="text-align: right;"  id="nilap" name="nilap" type="text" class="form-control" readonly>
-                                </div>
-                                
                               </div>
                             </div>
                             
@@ -460,19 +482,28 @@
                             </div>
                         </div>
                         <div class="row">
-                            
                             <div class="col-md-6">
                               <div class="form-group">
-                                <label class="control-label col-md-3">Jumlah Klaim <font color="red">*</font></label>
+                                <label class="control-label col-md-3">Nilai Apotek <font color="red">*</font></label>
+                                <div class="col-md-5">
+                                  <input style="text-align: right;"  type="number"  id="nil_aptk"  name="nil_aptk" class="form-control" >
+                                </div>
+                                <div class="col-md-4">
+                                  <input style="text-align: right;"  id="nilap" name="nilap" type="text" class="form-control" readonly>
+                                </div>
+                              </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                          <div class="col-md-6">
+                            <div class="form-group">
+                              <label class="control-label col-md-3">Jumlah Klaim <font color="red">*</font></label>
                                 <div class="col-md-9">
                                   <input style="text-align: right;"  type="hidden"  id="juklaim"  name="juklaim" class="form-control" readonly>
                                   <input style="text-align: right;"  id="juklaimb" name="juklaimb" type="text" class="form-control" readonly>
                                 </div>
-
-                              </div>
                             </div>
-                            
-                            
+                          </div>
                         </div>
 
                     </div>
@@ -520,16 +551,17 @@
 
 window.onload = function(event) {
       $('[name="nil_aptk"]').on("keyup", function(){
+            var uangr           = $('[name="uangr"]').val();
             var cekkk           = $('[name="nil_aptk"]').val();
-            var cek2            = formatCurrency1(cekkk);
-            $('[name="nilap"]').val('Rp. '+cek2);
+            var cek2            = formatCurrency1(eval(cekkk) + eval(uangr));
+            $('[name="nilap"]').val('Rp. '+(eval(cekkk)));
             
             var nil_aptk        = $('#nil_aptk').val();
             var total_resep     = $('#total_resep').val();
             
             var vnil_aptk       = Number(nil_aptk.replace(/[^0-9\.]+/g, ""));
             var vtotal_resep    = Number(total_resep.replace(/[^0-9\.]+/g, ""));
-            var totalnet        = eval(vtotal_resep) - eval(vnil_aptk)  ;
+            var totalnet        = eval(vtotal_resep) - eval(vnil_aptk) + eval(uangr) ;
             var totalnet2            = formatCurrency1(totalnet);
 
             
@@ -618,14 +650,34 @@ function urlcetak_kasir()
 
 function urlcetak_jamin() 
 {
-    var baseurl       = "<?php echo base_url() ?>";
-    var nokwitansi    = $('[name="nokwi_kasir"]').val();
-    var noresep       = $('[name="noress"]').val();
-    var ctk           = baseurl + 'kasir_obat/cetak_jaminan/?kwitansi=' + nokwitansi + '&resep=' + noresep;
-    window.open(ctk,'_blank');
+
+  swal({
+      title              : 'CETAK',
+      html               : "<p>PILIH FORMAT</p>",
+      type               : 'question',
+      showCancelButton   : true,
+      confirmButtonClass : 'btn btn-success',
+      cancelButtonClass  : 'btn btn-danger',
+      confirmButtonText  : 'FORMAT NOTA',
+      cancelButtonText   : 'FORMAT PDF'
+  }).then(function() {
+      var baseurl       = "<?php echo base_url() ?>";
+      var nokwitansi    = $('[name="nokwi_kasir"]').val();
+      var noresep       = $('[name="noress"]').val();
+      var ctk           = baseurl + 'kasir_obat/cetak_jaminan_nota/?kwitansi=' + nokwitansi + '&resep=' + noresep;
+      window.open(ctk,'_blank');
+  },function(dismiss) {
+      var baseurl       = "<?php echo base_url() ?>";
+      var nokwitansi    = $('[name="nokwi_kasir"]').val();
+      var noresep       = $('[name="noress"]').val();
+      var ctk           = baseurl + 'kasir_obat/cetak_jaminan/?kwitansi=' + nokwitansi + '&resep=' + noresep;
+      window.open(ctk,'_blank');
+  });
+  
+
 }
 
-function bayar(resepno) {
+function bayar(resepno, uangr) {
       save_method = 'add';
       $('#form')[0].reset(); // reset form on modals
       $('.form-group').removeClass('has-error'); // clear error class
@@ -660,12 +712,12 @@ function bayar(resepno) {
                   
                   $('[name="nil_aptk"]').val(0);  
                   $('[name="nilap"]').val(0);  
-                  $('[name="juklaim"]').val(data.poscredit);  
-                  $('[name="juklaimb"]').val(formatCurrency1(data.poscredit)); 
+                  $('[name="juklaim"]').val(eval(data.poscredit) + eval(uangr));  
+                  $('[name="juklaimb"]').val(formatCurrency1(eval(data.poscredit) + eval(uangr))); 
                 }else{
 
                   
-                  $total_klaim = data.jumlahhutang;
+                  $total_klaim = eval(data.jumlahhutang) + eval(uangr);
                   $('[name="juklaim"]').val($total_klaim);  
                   $('[name="juklaimb"]').val(formatCurrency1($total_klaim));  
                   $total_nilap = Number(data.bayarcash)+Number(data.bayarcard);
@@ -689,13 +741,20 @@ function bayar(resepno) {
                 $('[name="tgllahirp"]').val(data.tanggallahir);  
                 $('[name="tgltr"]').val(data.tglresep1);  
                 $totalres = formatCurrency1(data.poscredit);
+                $total_semua = formatCurrency1(eval(data.poscredit) + eval(uangr));
+                $uangr = formatCurrency1(uangr);
                 $('[name="total_resep"]').val(data.poscredit);  
                 $('[name="total_resepb"]').val($totalres);  
-                $('[name="juklaim"]').val(data.poscredit);  
+                console.log(eval(data.poscredit) + eval(uangr))
+                $('[name="total_semua"]').val(eval(data.poscredit) + eval(uangr));  
+                $('[name="total_semuab"]').val($total_semua);  
+                $('[name="uangr"]').val(uangr);  
+                $('[name="uangrr"]').val($uangr);  
+                $('[name="juklaim"]').val(eval(data.poscredit) + eval(uangr));  
                 tgllahirpp();
                 tgllahirpp();
                 $('#modal_form').modal('show'); // show bootstrap modal when complete loaded
-                $('.modal-title').text('Edit Data'); // Set title to Bootstrap modal title
+                $('.modal-title').text('PROSES BAYAR'); // Set title to Bootstrap modal title
 
             },
             error: function(jqXHR, textStatus, errorThrown) {
@@ -706,55 +765,70 @@ function bayar(resepno) {
 
 function cekhapus(noresep)
 {
-
-    swal({
-		title: "Hapus Resep : <b>"+noresep+"</b>  ?",
-		text: "",
-		type: 'info',
-		showCancelButton: true,
-		confirmButtonClass: 'btn btn-success',
-		cancelButtonClass: 'btn btn-success',
-		confirmButtonColor: '#227dff',
-		cancelButtonColor: '#d33',
-		confirmButtonText: 'Ya',     
-		cancelButtonText: 'TIDAK',     
-    }).then(function () {
-            $.ajax( {
-                dataType: 'html',
-                type: "POST",
-                url: "<?= base_url(); ?>penjualan_faktur/delete/"+noresep,	
-                cache: false,
-                success: function (data) {
-                    swal({
-                        title: "Resep Berhasil Di Hapus",
-                        html: "<b>"+noresep+"</b> <br> ",
-                        type: "success",
-                        confirmButtonText: "OK" 
-                    }).then((value) => {
-						// bayar();
-                        // var table = $('#keuangan-keluar-list').dataTable();
-                        // table.ajax.reload();
-						location.href = "<?= base_url()?>penjualan_faktur";
-                        return;
-                    });
-                },
-                    error:function(data){
-                    swal('RESEP','Data gagal di hapus ...','');	
-                            
-                }
-            } );
-    }, function (dismiss) {
-		if (dismiss === 'cancel') {
-			return;
-		}
-	});
+  swal({
+  title: "Hapus Resep : <b>"+noresep+"</b>  ?",
+  text: "",
+  type: 'info',
+  showCancelButton: true,
+  confirmButtonClass: 'btn btn-success',
+  cancelButtonClass: 'btn btn-success',
+  confirmButtonColor: '#227dff',
+  cancelButtonColor: '#d33',
+  confirmButtonText: 'Ya',     
+  cancelButtonText: 'TIDAK',     
+  }).then(function () {
+        $.ajax( {
+            dataType: 'html',
+            type: "POST",
+            url: "<?= base_url(); ?>penjualan_faktur/delete/"+noresep,	
+            cache: false,
+            success: function (data) {
+                swal({
+                    title: "Resep Berhasil Di Hapus",
+                    html: "<b>"+noresep+"</b> <br> ",
+                    type: "success",
+                    confirmButtonText: "OK" 
+                }).then((value) => {
+        // bayar();
+                    // var table = $('#keuangan-keluar-list').dataTable();
+                    // table.ajax.reload();
+        location.href = "<?= base_url()?>penjualan_faktur";
+                    return;
+                });
+            },
+                error:function(data){
+                swal('RESEP','Data gagal di hapus ...','');	
+                        
+            }
+        } );
+  }, function (dismiss) {
+    if (dismiss === 'cancel') {
+      return;
+    }
+  });
 }
 
 function _urlcetak(nobukti)
 {
-	var baseurl = "<?= base_url()?>";
-	var ctk=baseurl+'penjualan_faktur/cetak2/?nobukti='+nobukti;	
-	window.open(ctk,'_blank');
+
+  swal({
+      title              : 'CETAK',
+      html               : "<p>PILIH FORMAT</p>",
+      type               : 'question',
+      showCancelButton   : true,
+      confirmButtonClass : 'btn btn-success',
+      cancelButtonClass  : 'btn btn-danger',
+      confirmButtonText  : 'FORMAT NOTA',
+      cancelButtonText   : 'FORMAT PDF'
+  }).then(function() {
+      var baseurl   = "<?= base_url()?>";
+      var ctk       = baseurl+'penjualan_faktur/cetak2_nota/?nobukti='+nobukti;
+      window.open(ctk,'_blank');
+  },function(dismiss) {
+      var baseurl   = "<?= base_url()?>";
+      var ctk       = baseurl+'penjualan_faktur/cetak2/?nobukti='+nobukti;
+      window.open(ctk,'_blank');
+  });
 }
 	
 var TableEditable = function () {

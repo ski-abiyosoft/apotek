@@ -1056,12 +1056,8 @@ $this->load->view('template/footer');
                         document.getElementById("disc" + x).value = data[i].discount;
                         document.getElementById("discrp" + x).value = separateComma(Number(data[i].discountrp));
                         if (data[i].vat == 1) {
-                            text = "Ya";
-                        } else {
-                            text = "Tidak";
+                            document.getElementById("tax" + x).checked = true;
                         }
-                        var option1 = $("<option selected></option>").val(data[i].vat).text(text);
-                        $('#tax' + x).append(option1).trigger('change');
                         totalline(x);
                     }
 

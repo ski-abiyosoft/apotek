@@ -369,7 +369,7 @@ $this->load->view('template/body');
                             type="text" class="form-control rightJustified ">
                         </td>
                         <td>
-                          <input name="expire[]" onchange="totalline(1);total()" value="" id="expire1" type="month"
+                          <input name="expire[]" onchange="totalline(1);total(); cekexp(1)" value="" id="expire1" type="month"
                             class="form-control">
                         </td>
                         
@@ -620,7 +620,7 @@ function tambah() {
 
   var het = "<input name='het[]' id=het" + idrow + " onchange='totalline(" + idrow + ");' value='0'  type='text' class='form-control rightJustified'  >";
   var now = '<?= $now?>';
-  var expire = "<input name='expire[]'  id=expire" + idrow + " onchange='totalline(" + idrow + ") value=''  type='month' class='form-control'>";
+  var expire = "<input name='expire[]'  id=expire" + idrow + " onchange='totalline(" + idrow + "); cekexp("+idrow+")' value=''  type='month' class='form-control'>";
 
   var poo = "<input name='po[]'  id=po" + idrow + " onchange='totalline(" + idrow +
     ") value=''  type='text' class='form-control'>";
@@ -649,6 +649,20 @@ function tambah() {
   // if (total >= '5000000') {
   //     $('#materai').val("10000").change();
   // }
+}
+
+function cekexp(id) {
+  var now = '<?= date("Y-m"); ?>';
+  var exp = $("#expire"+id).val();
+  if(exp < now) {
+    $("#expire"+id).val(now);
+    swal({
+      title: "Expired Date",
+      html: "Tidak bisa lebih kecil dari Bulan dan Tahun saat ini!",
+      type: "error",
+      confirmButtonText: "OK"
+    });
+  }
 }
 
 function cekharga(id) {

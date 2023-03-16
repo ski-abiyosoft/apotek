@@ -258,6 +258,16 @@ $this->load->view('template/body');
                                     </div>
                                 </div>
                             </div>
+                            <div class="row">
+                                <div class="col-md-5">
+                                    <div class="form-group">
+                                        <label class="col-md-3 control-label">Alasan <span class="text-danger">*</span></label>
+                                        <div class="col-md-9">
+                                            <input id="alasan" name="alasan" class="form-control" type="text"/>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
 
                             <div class="row">
                                 <div class="col-md-12">
@@ -944,12 +954,22 @@ $this->load->view('template/footer');
         var pemb = $('[name="pembayaran"]').val();
         var fakt = $('[name="nofaktur"]').val();
         var sjj = $('[name="nomorsj"]').val();
+        var alasan = $('[name="alasan"]').val();
         var noterima = $('#noterima').val();
         var total = $('#_vtotal').text();
         var ppn_123 = $('#_vppn').text();
         var table = document.getElementById('datatable');
         var rowCount = table.rows.length;
         var jfalse = 0;
+        if(alasan == '' || alasan == null) {
+            swal({
+                title: "ALASAN",
+                html: "<p>HARUS DI isi</p>",
+                type: "error",
+                confirmButtonText: "OK"
+            });
+            return;
+        }
         for (var i = 1; i < rowCount; i++) {
             var row = table.rows[i];
             var taxz = $('#tax' + i).is(':checked');

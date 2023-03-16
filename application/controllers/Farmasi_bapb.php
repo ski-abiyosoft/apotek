@@ -1089,7 +1089,7 @@ class Farmasi_bapb extends CI_Controller
 			$unit = $this->session->userdata('unit');
 			$profile = data_master('tbl_namers', array('koders' => $unit));
 			$nama_usaha = $profile->namars;
-			$alamat1  = $profile->alamat;
+			$alamat1  = $profile->alamat."<br>".$profile->alamat2;
 			$alamat2  = $profile->kota;
 
 			$param = $this->input->get('id');

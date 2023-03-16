@@ -108,8 +108,13 @@ $this->load->view('template/body');
 
                           if($row->rekmed == 'Non Member' || $row->rekmed == 'NON MEMBER' || $row->rekmed == 'non member'){
                             
-                            if($row->poscredit<0){
-                              $phone			= $this->db->query("SELECT*from tbl_apohresep where resepno IN ( select resepno from tbl_apohreturjual where returno='$row->resepno' )")->row()->nohp;
+                            if($row->poscredit < 0){
+                              $phonex			= $this->db->query("SELECT*from tbl_apohresep where resepno IN ( select resepno from tbl_apohreturjual where returno='$row->resepno' )")->row();
+                              if($phonex) {
+                                $phone			= $phonex->nohp;
+                              } else {
+                                $phone			= "+62";
+                              }
                             }else{
                               $phone			= data_master("tbl_apohresep", array("resepno" => $row->resepno))->nohp;
                             }
@@ -138,11 +143,27 @@ $this->load->view('template/body');
                         <td style="text-align: center">
                         
                           <?php if ($row->keluar == 0) : ?>
-                          <a class="btn btn yellow" href="javascript:void(0)" title="Bayar"
-                            onclick="pembayaran('<?= $row->resepno; ?>','<?= $row->namapas; ?>','<?= number_format($row->poscredit, 0, '.', ','); ?>','<?= $row->rekmed; ?>','<?= $row->noreg; ?>','<?= $phone; ?>')"><i
-                              class="glyphicon glyphicon-money"></i><b>Bayar </b></a>
-
-
+                            <?php
+                              $cek = $this->db->get_where("tbl_hset_farma", ["koders" => $this->session->userdata("unit")])->row();
+                              $cek2 = $this->db->get_where("tbl_apohresep", ["resepno" => $row->resepno])->row();
+                              if($cek) {
+                                if($cek2->kodepel == "adr") {
+                                  $cek3 = $this->db->get_where("tbl_apodresep", ["resepno" => $row->resepno])->num_rows();
+                                  $cek4 = $this->db->get_where("tbl_aporacik", ["resepno" => $row->resepno])->num_rows();
+                                  if($cek4 > 0) {
+                                    $uangracik = $cek->uang_racik * $cek4;
+                                  } else {
+                                    $uangracik = 0;
+                                  }
+                                  $uangr = ($cek->uang_r * $cek3) + $uangracik;
+                                } else {
+                                  $uangr = 0;
+                                }
+                              } else {
+                                $uangr = 0;
+                              }
+                            ?>
+                          <a class="btn btn yellow" href="javascript:void(0)" title="Bayar" onclick="pembayaran('<?= $row->resepno; ?>','<?= $row->namapas; ?>','<?= number_format($row->poscredit, 0, '.', ','); ?>','<?= $row->rekmed; ?>','<?= $row->noreg; ?>','<?= $phone; ?>','<?= $uangr; ?>')"><i class="glyphicon glyphicon-money"></i><b>Bayar </b></a>
                           <a class="btn btn blue"
                             href="<?php echo base_url() ?>penjualan_faktur/edit/<?php echo $row->resepno; ?>"><b>Resep</b></a>
                           <?php else : ?>
@@ -227,8 +248,14 @@ $this->load->view('template/body');
 
                           <tr>
                             <td>TOTAL RESEP RP</td>
-                            <td><input type="text" class="form-control rightJustified" name="reseprp" id="reseprp"
-                                value="0" readonly></td>
+                            <td><input type="text" class="form-control rightJustified" name="reseprp" id="reseprp" value="0" readonly></td>
+
+                          </tr>
+                          <tr>
+                            <td>UANG RESEP RP</td>
+                            <td>
+                              <input type="text" class="form-control rightJustified" name="uangr" id="uangr" value="0" readonly>
+                            </td>
 
                           </tr>
 
@@ -690,8 +717,7 @@ $this->load->view('template/body');
                     <tr>
                       <td>No. Hp</td>
                       <td>
-                        <input type="text" class="form-control total leftJustified" name="hpno" id="hpno" value=""
-                          readonly>
+                        <input type="text" class="form-control total leftJustified" name="hpno" id="hpno" value="">
 
                       </td>
                       <td>
@@ -1436,13 +1462,14 @@ function getuangmuka() {
 
 
 
-function pembayaran(nomor, namapas, reseprp, rekmed, noreg, hp) {
+function pembayaran(nomor, namapas, reseprp, rekmed, noreg, hp, uangr) {
   $('#noresep').val(nomor);
   $('#namapasien').val(namapas);
   $('#reseprp').val(reseprp);
   $('#rekmed').val(rekmed);
   $('#noreg').val(noreg);
   $('#hpno').val(hp);
+  $('#uangr').val(uangr);
   $('.nav-pills a[href="#tab2"]').tab('show');
   total_net();
 }
@@ -1465,6 +1492,7 @@ function total_net()
   var bayarcredit     = $('#totalelectronicrp').val();
   var bayartunai      = $('#totaltunairp').val();
   var uangpasienrp    = $('#uangpasienrp').val();
+  var uangr           = $('#uangr').val();
   var vretur          = Number(retur.replace(/[^0-9\.]+/g, ""));
   var vresep          = Number(resep.replace(/[^0-9\.]+/g, ""));
   var vdiskonrp       = Number(diskonrp.replace(/[^0-9\.]+/g, ""));
@@ -1479,8 +1507,7 @@ function total_net()
   var vbayartunai     = Number(bayartunai.replace(/[^0-9\.]+/g, ""));
   var totalsemua      = vresep;
 
-  var totalnet        = eval(totalsemua) - eval(vdiskonrp) - eval(vuangmukapakai) - eval(vrefundrp) - eval(vretur) - eval(
-    selisih) - eval(vvoucherrp1) - eval(vvoucherrp2) - eval(vvoucherrp3);
+  var totalnet        = eval(totalsemua) - eval(vdiskonrp) - eval(vuangmukapakai) - eval(vrefundrp) - eval(vretur) - eval( selisih) - eval(vvoucherrp1) - eval(vvoucherrp2) - eval(vvoucherrp3) + eval(uangr);
 
   $('#totalnet').val(formatCurrency1(totalnet));
   $('#totaltunairp').val(formatCurrency1(bayartunai));

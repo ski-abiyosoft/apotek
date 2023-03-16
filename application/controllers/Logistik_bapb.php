@@ -803,6 +803,7 @@ class Logistik_bapb extends CI_Controller
 		$userid   = $this->session->userdata('username');
 		$gudang   = $this->input->post('gudang');
 		$faktur   = $this->input->post('nofaktur');
+		$alasan   = $this->input->post('alasan');
 		$terimano   = $this->input->get('terimano');
 		$tanggal  = date('Y-m-d');
 		$jam      = date('H:i:s');
@@ -828,6 +829,7 @@ class Logistik_bapb extends CI_Controller
 		$this->db->set('diskontotal', $this->input->post('diskonrp'));
 		$this->db->set('term', $this->input->post('pembayaran'));
 		$this->db->set('jenisbeli', $jenisbeli);
+		$this->db->set('alasan', $alasan);
 		$this->db->set('userid', $userid);
 		$this->db->set('ppn', $ppn['prosentase']);
 		$this->db->where('koders', $cabang);

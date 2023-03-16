@@ -1100,7 +1100,7 @@
 
    function initailizeSelect2_farmasi_baranggud(gud) {
       $(".select2_el_farmasi_baranggud").select2({
-         allowClear: true,
+         allowClear: false,
          multiple: false,
          placeholder: '--- Pilih Barang ---',
          //minimumInputLength: 2,
