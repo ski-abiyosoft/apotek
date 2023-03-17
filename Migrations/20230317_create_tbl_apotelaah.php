@@ -1,5 +1,7 @@
 <?php
 
+require "Database.php";
+
 $query_string = "DROP TABLE IF EXISTS `tbl_apotelaah`;";
 
 Database::exec($query_string);
