@@ -3,6 +3,17 @@ $this->load->view('template/header');
 $this->load->view('template/body');
 ?>
 
+<style>
+  .select2-selection--single {
+    height: 100% !important;
+  }
+
+  .select2-selection__rendered {
+    word-wrap: break-word !important;
+    text-overflow: inherit !important;
+    white-space: normal !important;
+  }
+</style>
 
 <div class="row">
   <div class="col-md-12">
@@ -324,7 +335,7 @@ $this->load->view('template/body');
                                                     </select> -->
                           <!-- <select name="kode[]" id="kode1" class="select2_el_farmasi_barang form-control input-largex" onchange="showbarangname(this.value, 1)"> -->
                           <select name="kode[]" id="kode1"
-                            class="select2_el_farmasi_barangdata form-control input-large"
+                            class="select2_el_farmasi_barangdata form-control"
                             onchange="showbarangname(this.value, 1)">
                           </select>
                         </td>
@@ -335,8 +346,6 @@ $this->load->view('template/body');
                         </td>
                         <td>
                           <select name="sat[]" id="sat1" class="form-control"></select>
-                          <!-- <input name="sat[]" id="sat1" type="text" class="form-control "
-                            onkeypress="return tabE(this,event)" readonly> -->
                         </td>
                         <td>
                           <input name="harga[]" onchange="totalline(1);total(); cekharga(1)" value="0" id="harga1"
@@ -376,10 +385,6 @@ $this->load->view('template/body');
                         <td>
                           <input name="po[]" onchange="totalline(1);total()" value="" id="po1" type="text"
                             class="form-control">
-                        </td>
-
-                        <td>
-                          <input type="hidden" name="vatr[]" value=0 id="vatr" class="form-control">
                         </td>
 
                       </tr>
@@ -572,7 +577,6 @@ function tambah() {
   var td10 = x.insertCell(9);
   var td11 = x.insertCell(10);
   var td12 = x.insertCell(11);
-  var td13 = x.insertCell(12);
 
   var button = "<td id='kolom" + idrow + "'><button type='button' onclick=hapusBarisIni(" + idrow + ") id=btnhapus" +
     idrow + " class='btn red'><i class='fa fa-trash-o'></i> - " + idrow + "</button></td>";
@@ -625,8 +629,6 @@ function tambah() {
   var poo = "<input name='po[]'  id=po" + idrow + " onchange='totalline(" + idrow +
     ") value=''  type='text' class='form-control'>";
 
-  var vatrp = "<input type='hidden' name='vatrp[]' value=0 id='vatrp" + idrow + "'>";
-
   td1.innerHTML   = button;
   td2.innerHTML   = akun;
   td3.innerHTML   = qty;
@@ -639,7 +641,6 @@ function tambah() {
   td10.innerHTML  = het;
   td11.innerHTML  = expire;
   td12.innerHTML  = poo;
-  td13.innerHTML  = vatrp;
   // initailizeSelect2_farmasi_barang();
   initailizeSelect2_farmasi_barangdata();
   idrow++;

@@ -373,10 +373,13 @@ function Header()
    $this->SetFont('Arial','',8);
    $this->cell(0,4,$dataunit->alamat,0,1);     
    $this->cell(10);
+   $this->cell(0,4,$dataunit->alamat2,0,1);     
+   $this->cell(10);
    $this->SetFont('Arial','',8);
    $this->cell(0,4,$dataunit->whatsapp.', '.$dataunit->phone,0,1);     
    $this->cell(10);
-   $this->cell(0,4,'No. NPWP: '.$dataunit->npwp,0,1);    
+   $this->cell(0,4,'No. NPWP: '.$dataunit->npwp,0,1);     
+   $this->ln(5);  
    //$this->SetTextColor(128);
    /*$this->cell(10);
    $this->ln(2);

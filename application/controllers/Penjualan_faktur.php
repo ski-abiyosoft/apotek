@@ -1682,11 +1682,11 @@ class Penjualan_faktur extends CI_Controller{
 					if($cekpdf == 1) {
 						$jum_racik1   = number_format($jum_racik1);
 						$sub_racik2   = number_format($sub_racik1);
-						$total_racik1 = number_format($total_racik1);
+						$total_racik2 = number_format($total_racik1);
 					} else {
 						$jum_racik1   = ceil($jum_racik1);
 						$sub_racik2   = ceil($sub_racik1);
-						$total_racik1 = ceil($total_racik1);
+						$total_racik2 = ceil($total_racik1);
 					}
 
 				}
@@ -1698,7 +1698,7 @@ class Penjualan_faktur extends CI_Controller{
 					<td bgcolor=\"#eeeff1\" style=\"text-align: center;\"><b>$jum_racik1</b></td>
 					<td bgcolor=\"#eeeff1\" style=\"text-align: right;\"><b>$sub_racik2</b></td>
 					<td bgcolor=\"#eeeff1\" style=\"text-align: right;\"><b>$diskon_racik1</b></td>
-					<td bgcolor=\"#eeeff1\" style=\"text-align: right;\"><b>$total_racik1</b></td>
+					<td bgcolor=\"#eeeff1\" style=\"text-align: right;\"><b>$total_racik2</b></td>
 				</tr>";	
 					
 			} else {
@@ -1844,7 +1844,7 @@ class Penjualan_faktur extends CI_Controller{
 			</tr> 
 			<tr>
 				<td width=\"50%\" style=\"text-align:center;\"> &nbsp; </td>
-				<td width=\"50%\" style=\"text-align:center; font-size:10px;\"><b>$namars</b></td>
+				<td width=\"50%\" style=\"text-align:center; font-size:10px;\"><b>$h_namars</b></td>
 			</tr> 
 			<tr>
 				<td style=\"text-align: center;\"><b>Pasien</b></td>
@@ -1880,6 +1880,7 @@ class Penjualan_faktur extends CI_Controller{
 			</table>";
 			// $this->M_template_cetak->template($judul, $body, $position, $tglresep, $cekpdf);
 			$this->M_cetak->template_nota(80,190,$judul, $body, $position, $tglresep, $cekpdf);
+			// echo ($body);
 		} else {
 			header('location:' . base_url());
 		}
@@ -2842,6 +2843,11 @@ class Penjualan_faktur extends CI_Controller{
 			$totp_1      			= $this->input->get('totp_racik_1');
 			$resep_manual     = $this->input->get('resman_racik_1');
 			$cek_rm      			= $this->input->get('cek_rm1');
+			if($cek_rm == null || $cek_rm == "") {
+				$cek_rm = 0;
+			} else {
+				$cek_rm = $cek_rm;
+			}
 			$harga_manual     = $this->input->post('toto_racik_1');
 			$cekppn_1 				= $ppn_pajak_ins;
 			$ppn_1 						= (($totp_1) / (111 / 100)) * $ppn_pajak_ins;
@@ -2953,128 +2959,130 @@ class Penjualan_faktur extends CI_Controller{
 				}
 			}
 
-			// RACIKAN 1
+			// RACIKAN 2
 			$noresepo    			= $nobukti;
-			$jenis_2     			= $this->input->post('jenis_2');
 			$namaracik_2 			= $this->input->post('namaracik_2');
-			$jumracik_2  			= $this->input->post('jumracik_2');
-			$stajum_2    			= $this->input->post('stajum_2');
-			$atpakai_2   			= $this->input->post('atpakai_2');
-			$toto_2      			= $this->input->get('toto_racikan_2');
-			$disknom_2   			= $this->input->post('disknom_racik_2');
-			$disk_2      			= $this->input->get('disk_racik_2');
-			$ongra_2     			= $this->input->post('ongra_racik_2');
-			$carapakai_2     	= $this->input->post('carapakai_2');
-			$totp_2      			= $this->input->get('totp_racik_2');
-			$resep_manual_2   = $this->input->get('resman_racik_2');
-			$cek_rm_2      		= $this->input->get('cek_rm2');
-			$harga_manual_2   = $this->input->post('toto_racik_2');
-			$cekppn_2 				= $ppn_pajak_ins;
-			$ppn_2 						= (($totp_2) / (111 / 100)) * $ppn_pajak_ins;
-			$cekid2						= $this->db->query("SELECT id from tbl_aporacik order by id desc limit 1")->result();
-			foreach ($cekid2 as $row2) {
-				$idd2    = $row2->id;
-				if ($idd2 == null) {
-					$idd2 	= 0;
-				} else {
-					$idd2 	= $idd2;
-				}
-				$id_ok2  = $idd2 + 1;
-			}
-			$data = [
-				'id'		   			=> $id_ok2,
-				'noracik'      	=> 2,
-				'koders'       	=> $cabang,
-				'resepno'      	=> $noresepo,
-				'jenisracik'   	=> $jenis_2,
-				'namaracikan'  	=> $namaracik_2,
-				'aturanpakai'  	=> $atpakai_2,
-				'jumlahracik'  	=> $jumracik_2,
-				'kemasanracik' 	=> $stajum_2,
-				'carapakai'  		=> $carapakai_2,
-				'subtotal'     	=> $toto_2,
-				'diskon'       	=> $disknom_2,
-				'resep_manual' 	=> $resep_manual,
-				'diskonrp'     	=> str_replace(',', '', $disk_2),
-				'ppn'          	=> $cekppn_2,
-				'ppnrp'        	=> str_replace(',', '', $ppn_2),
-				'ongkosracik'  	=> str_replace(',', '', $ongra_2),
-				'totalrp'      	=> str_replace(',', '', $totp_2),
-				'cek_rm'      	=> $cek_rm_2,
-				'harga_manual'  => str_replace(',', '', $harga_manual_2),
-			];
-
-			if ($param == 1) {
-				$this->db->insert('tbl_aporacik', $data);
-			} else {
-				$data['tgledit']   = date('Y-m-d');
-				$data['jamedit']   = date('H:i:s');
-				$data['useredit']  = $userid;
-				$this->db->update('tbl_aporacik', $data, array('resepno' => $noresepo));
-			}
-			$koderacik_2      	= $this->input->post('koderacik_2');
-			$namaracik_2      	= $this->input->post('nama_racik_2');
-			$satracik_2       	= $this->input->post('satracik_2');
-			$qty_jual_racik_2   = $this->input->post('qty_jualracik_2');
-			$qty_racik_racik_2  = $this->input->post('qty_racik_racik_2');
-			$hargajual_racik_2  = $this->input->post('hargajualracik_2');
-			$total_hrg_racik_2  = $this->input->post('total_hrg_racik_2');
-			$exp_racik_2    		= $this->input->post('exp_racik_2');
-
-			$jumdata2   = $this->input->get('jml2');
-			$nourut2    = 1;
-			$tot2       = 0;
-			$tdisc2     = 0;
-			$tothpp2    = 0;
-
-			for ($i = 0; $i <= ($jumdata2 - 1); $i++) {
-				$_koderacik_2       		= $koderacik_2[$i];
-				$_namaracik_2       		= $namaracik_2[$i];
-				$_satracik_2        		= $satracik_2[$i];
-				$_qty_racik_racik_2   	= $qty_racik_racik_2[$i];
-				$_qty_jual_racik_2    	= $qty_jual_racik_2[$i];
-				$_exp_racik_2        		= $exp_racik_2[$i];
-				$_hargajual_racik_2     = preg_replace('/[,]/', '', $hargajual_racik_2[$i]);
-				$_total_hrg_racik_2     = preg_replace('/[,]/', '', $total_hrg_racik_2[$i]);
-				$hpp12 									= $this->db->get_where('tbl_barang', ['kodebarang' => $_koderacik_2])->row_array();
-				$hpp2 									= $hpp12['hpp'];
-				$barang2 								= $this->db->query("SELECT * FROM tbl_barang WHERE kodebarang = '$_koderacik_2'")->row();
-
-				$datad = [
-					'koders'      => $cabang,
-					'resepid'     => 2,
-					'hpp'      	  => $hpp2,
-					'resepno'     => $noresepo,
-					'kodebarang'  => $_koderacik_2,
-					'namabarang'  => $barang->namabarang,
-					'satuan'      => $_satracik_2,
-					'qtyr'        => $_qty_racik_racik_2,
-					'qty'         => $_qty_jual_racik_2,
-					'uangr'       => 0,
-					'price'       => $_hargajual_racik_2,
-					'totalrp'     => $_total_hrg_racik_2,
-					'exp_date'    => date('Y-m-d H:i:s', strtotime($_exp_racik_2)),
-					'jamdresep'   => date('H:i:s'),
-				];
-				
-				if ($_koderacik_2 != "") {
-					$this->db->insert('tbl_apodetresep', $datad);
-					$cekstok = $this->db->query("SELECT * FROM tbl_barangstock WHERE kodebarang = '$_koderacik_2' AND koders = '$cabang'  AND gudang = '$gudang'")->num_rows();
-					$date_now = date('Y-m-d H:i:s');
-					if($cekstok > 0){
-						$this->db->query("UPDATE tbl_barangstock SET keluar = keluar + $_qty_jual_racik_2, saldoakhir = saldoakhir - $_qty_jual_racik_2, lasttr = '$date_now' WHERE kodebarang = '$_koderacik_2' AND koders = '$cabang'  AND gudang = '$gudang'");
+			if($namaracik_2 != '' || $namaracik_2 != null) {
+				$jenis_2     			= $this->input->post('jenis_2');
+				$jumracik_2  			= $this->input->post('jumracik_2');
+				$stajum_2    			= $this->input->post('stajum_2');
+				$atpakai_2   			= $this->input->post('atpakai_2');
+				$toto_2      			= $this->input->get('toto_racikan_2');
+				$disknom_2   			= $this->input->post('disknom_racik_2');
+				$disk_2      			= $this->input->get('disk_racik_2');
+				$ongra_2     			= $this->input->post('ongra_racik_2');
+				$carapakai_2     	= $this->input->post('carapakai_2');
+				$totp_2      			= $this->input->get('totp_racik_2');
+				$resep_manual_2   = $this->input->get('resman_racik_2');
+				$cek_rm_2      		= $this->input->get('cek_rm2');
+				$harga_manual_2   = $this->input->post('toto_racik_2');
+				$cekppn_2 				= $ppn_pajak_ins;
+				$ppn_2 						= (($totp_2) / (111 / 100)) * $ppn_pajak_ins;
+				$cekid2						= $this->db->query("SELECT id from tbl_aporacik order by id desc limit 1")->result();
+				foreach ($cekid2 as $row2) {
+					$idd2    = $row2->id;
+					if ($idd2 == null) {
+						$idd2 	= 0;
 					} else {
-						$datastock = [
-							'koders'       => $cabang,
-							'kodebarang'   => $_koderacik_2,
-							'gudang'       => $gudang,
-							'saldoawal'    => 0,
-							'terima'    	 => 0,
-							'keluar'       => $_qty_jual_racik_2,
-							'saldoakhir'   => 0 - $_qty_jual_racik_2,
-							'lasttr'       => $date_now,
-						];
-						$this->db->insert('tbl_barangstock', $datastock);
+						$idd2 	= $idd2;
+					}
+					$id_ok2  = $idd2 + 1;
+				}
+				$data = [
+					'id'		   			=> $id_ok2,
+					'noracik'      	=> 2,
+					'koders'       	=> $cabang,
+					'resepno'      	=> $noresepo,
+					'jenisracik'   	=> $jenis_2,
+					'namaracikan'  	=> $namaracik_2,
+					'aturanpakai'  	=> $atpakai_2,
+					'jumlahracik'  	=> $jumracik_2,
+					'kemasanracik' 	=> $stajum_2,
+					'carapakai'  		=> $carapakai_2,
+					'subtotal'     	=> $toto_2,
+					'diskon'       	=> $disknom_2,
+					'resep_manual' 	=> $resep_manual,
+					'diskonrp'     	=> str_replace(',', '', $disk_2),
+					'ppn'          	=> $cekppn_2,
+					'ppnrp'        	=> str_replace(',', '', $ppn_2),
+					'ongkosracik'  	=> str_replace(',', '', $ongra_2),
+					'totalrp'      	=> str_replace(',', '', $totp_2),
+					'cek_rm'      	=> $cek_rm_2,
+					'harga_manual'  => str_replace(',', '', $harga_manual_2),
+				];
+	
+				if ($param == 1) {
+					$this->db->insert('tbl_aporacik', $data);
+				} else {
+					$data['tgledit']   = date('Y-m-d');
+					$data['jamedit']   = date('H:i:s');
+					$data['useredit']  = $userid;
+					$this->db->update('tbl_aporacik', $data, array('resepno' => $noresepo));
+				}
+				$koderacik_2      	= $this->input->post('koderacik_2');
+				$namaracik_2      	= $this->input->post('nama_racik_2');
+				$satracik_2       	= $this->input->post('satracik_2');
+				$qty_jual_racik_2   = $this->input->post('qty_jualracik_2');
+				$qty_racik_racik_2  = $this->input->post('qty_racik_racik_2');
+				$hargajual_racik_2  = $this->input->post('hargajualracik_2');
+				$total_hrg_racik_2  = $this->input->post('total_hrg_racik_2');
+				$exp_racik_2    		= $this->input->post('exp_racik_2');
+	
+				$jumdata2   = $this->input->get('jml2');
+				$nourut2    = 1;
+				$tot2       = 0;
+				$tdisc2     = 0;
+				$tothpp2    = 0;
+	
+				for ($i = 0; $i <= ($jumdata2 - 1); $i++) {
+					$_koderacik_2       		= $koderacik_2[$i];
+					$_namaracik_2       		= $namaracik_2[$i];
+					$_satracik_2        		= $satracik_2[$i];
+					$_qty_racik_racik_2   	= $qty_racik_racik_2[$i];
+					$_qty_jual_racik_2    	= $qty_jual_racik_2[$i];
+					$_exp_racik_2        		= $exp_racik_2[$i];
+					$_hargajual_racik_2     = preg_replace('/[,]/', '', $hargajual_racik_2[$i]);
+					$_total_hrg_racik_2     = preg_replace('/[,]/', '', $total_hrg_racik_2[$i]);
+					$hpp12 									= $this->db->get_where('tbl_barang', ['kodebarang' => $_koderacik_2])->row_array();
+					$hpp2 									= $hpp12['hpp'];
+					$barang2 								= $this->db->query("SELECT * FROM tbl_barang WHERE kodebarang = '$_koderacik_2'")->row();
+	
+					$datad = [
+						'koders'      => $cabang,
+						'resepid'     => 2,
+						'hpp'      	  => $hpp2,
+						'resepno'     => $noresepo,
+						'kodebarang'  => $_koderacik_2,
+						'namabarang'  => $barang->namabarang,
+						'satuan'      => $_satracik_2,
+						'qtyr'        => $_qty_racik_racik_2,
+						'qty'         => $_qty_jual_racik_2,
+						'uangr'       => 0,
+						'price'       => $_hargajual_racik_2,
+						'totalrp'     => $_total_hrg_racik_2,
+						'exp_date'    => date('Y-m-d H:i:s', strtotime($_exp_racik_2)),
+						'jamdresep'   => date('H:i:s'),
+					];
+					
+					if ($_koderacik_2 != "") {
+						$this->db->insert('tbl_apodetresep', $datad);
+						$cekstok = $this->db->query("SELECT * FROM tbl_barangstock WHERE kodebarang = '$_koderacik_2' AND koders = '$cabang'  AND gudang = '$gudang'")->num_rows();
+						$date_now = date('Y-m-d H:i:s');
+						if($cekstok > 0){
+							$this->db->query("UPDATE tbl_barangstock SET keluar = keluar + $_qty_jual_racik_2, saldoakhir = saldoakhir - $_qty_jual_racik_2, lasttr = '$date_now' WHERE kodebarang = '$_koderacik_2' AND koders = '$cabang'  AND gudang = '$gudang'");
+						} else {
+							$datastock = [
+								'koders'       => $cabang,
+								'kodebarang'   => $_koderacik_2,
+								'gudang'       => $gudang,
+								'saldoawal'    => 0,
+								'terima'    	 => 0,
+								'keluar'       => $_qty_jual_racik_2,
+								'saldoakhir'   => 0 - $_qty_jual_racik_2,
+								'lasttr'       => $date_now,
+							];
+							$this->db->insert('tbl_barangstock', $datastock);
+						}
 					}
 				}
 			}
@@ -3535,10 +3543,11 @@ class Penjualan_faktur extends CI_Controller{
 	{
 		$cabang       = $this->session->userdata('unit');
 		$userid       = $this->session->userdata('username');
-		$shift       = $this->session->userdata('shift');
+		$shift        = $this->session->userdata('shift');
 		$noresep      = $this->input->post('resepno');
 		$rekmed       = $this->input->post('rekmed');
 		$totalresep   = str_replace(',', '', $this->input->post('total_resep'));
+		$total_semua  = str_replace(',', '', $this->input->post('total_semua'));
 		$nil_aptk     = str_replace(',', '', $this->input->post('nil_aptk'));
 		$jumhutang    = str_replace(',', '', $this->input->post('juklaim'));
 		// $totalnet     = str_replace(',', '', $this->input->post('totalnet'));
@@ -3571,13 +3580,13 @@ class Penjualan_faktur extends CI_Controller{
 			'tglbayar'             => $tanggal,
 			'jambayar'             => $jam,
 			'totalpoli'            => 0,
-			'totalresep'           => $totalresep,
+			'totalresep'           => $total_semua,
 			'uangmuka'             => 0,
 			'adm'                  => 0,
 			'diskon'               => 0,
 			'diskonrp'             => 0,
 			'admcredit'            => 0,
-			'totalsemua'           => $totalresep,
+			'totalsemua'           => $total_semua,
 			'bayarcash'            => $nil_aptk,
 			'bayarcard'            => 0,
 			'refund'               => 0,
@@ -3590,7 +3599,7 @@ class Penjualan_faktur extends CI_Controller{
 			'novoucher2'           => '',
 			'novoucher3'           => '',
 			'cust_id'              => '',
-			'totalbayar'           => $nil_aptk,
+			'totalbayar'           => $total_semua,
 			'kembali'              => '',
 			'posbayar'             => 'APTK',
 			'dibayaroleh'          => $this->input->post('lupnamapasien'),
@@ -3622,7 +3631,7 @@ class Penjualan_faktur extends CI_Controller{
 			'totalradio' => 0,
 			'totallab' => 0,
 			'totalbedah' => 0,
-			'totalresep' => $nil_aptk,
+			'totalresep' => $total_semua,
 			// 'jumlahhutang' => str_replace(',', '', $this->input->post('tercover_rp')),
 			'jumlahhutang' => $jumhutang,
 			'username' => $userid,
@@ -3640,7 +3649,7 @@ class Penjualan_faktur extends CI_Controller{
 		$this->db->where('rekmed', $rekmed);
 		$this->db->update('tbl_pasien');
 
-		echo json_encode(array("status" => TRUE, "nomor" => $kwitansi, "total" => $totalresep));
+		echo json_encode(array("status" => TRUE, "nomor" => $kwitansi, "total" => $total_semua));
 	}
 
 	public function update_aporacik(){

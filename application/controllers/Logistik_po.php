@@ -138,6 +138,9 @@ class Logistik_po extends CI_Controller
 							<a class="btn btn-sm btn-primary" href="' . base_url("logistik_po/show/" . $rd->id . "") . '" title="Show" >
 								<i class="glyphicon glyphicon-eye-open"></i> 
 							</a>
+							<a class="btn btn-sm btn-warning" onclick="javascript:cekctk(' . "'" . $rd->id . "'" . ",'" . $rd->po_no . "'" . ');" title="Cetak1" >
+								<i class="glyphicon glyphicon-print"></i>
+							</a>
 						';
 					}
 				}

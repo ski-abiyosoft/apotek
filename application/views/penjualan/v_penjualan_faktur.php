@@ -162,46 +162,46 @@
 										 <th class="title-white" style="text-align: center">Tanggal</th>
 										 <th class="title-white" style="text-align: center">Jumlah Rp</th>
 										 <!-- <th class="title-white" style="text-align: center">No. Kwitansi</th> -->
-                                         <th class="title-white" style="text-align: center">Status</th>
-                                         <th class="title-white" style="text-align: center">Action</th>
+                      <th class="title-white" style="text-align: center">Status</th>
+                      <th class="title-white" style="text-align: center">Action</th>
 										 <!-- <th>&nbsp;</th>
                                          <th>&nbsp;</th>                                          -->
-                                     </tr>
-                                     </thead>
+                    </tr>
+                    </thead>
 
-                                    
-                                     <tbody>
-                                     <?php
-                                      
-                                       $nomor = 1;
-                                       foreach ($keu as $row)
-                                       {   
+                  
+                    <tbody>
+                    <?php
+                    
+                      $nomor = 1;
+                      foreach ($keu as $row)
+                      {   
 									     
 									     ?>
 
-                                     <tr class="show1" id="row_<?= $row->resepno;?>">
+                      <tr class="show1" id="row_<?= $row->resepno;?>">
 									     <td align="center"><?= $row->koders;?></td>	
 									     <td align="center"><?= $row->username;?></td>										 
-                                         <td align="center"><?= $row->resepno;?></td>										 
+                        <td align="center"><?= $row->resepno;?></td>										 
 										 <!-- <td align="center"><?= $row->noreg;?></td>										  -->
 										 <td align="center"><b><?= $row->rekmed;?></b></td>										 
 										 <td align="center"><?= $row->namapas;?></td>										 
-                                         <td align="center"><?= date('d-m-Y',strtotime($row->tglresep));?></td>										 
-                                         <td align="right"><?= number_format($row->poscredit,0,',','.');?></td>
+                        <td align="center"><?= date('d-m-Y',strtotime($row->tglresep));?></td>										 
+                        <td align="right"><?= number_format($row->poscredit,0,',','.');?></td>
 										 <!-- <td><?= $row->nokwitansi;?></td> -->
                                          
-                                         <td style="text-align: center"><?php
-                                                 if ($row->keluar=='0')
-                                                 { ?>
+                        <td style="text-align: center"><?php
+                              if ($row->keluar=='0')
+                              { ?>
 										           <span class="label label-sm label-warning">
 											          Belum Lunas
 										           </span>
 										           <?php
-                                                 }else
-                                                 if ($row->keluar=='1')
-                                                 { ?>
-                                                   <span class="label label-sm label-success">
-                                                     Lunas
+                              }else
+                              if ($row->keluar=='1')
+                              { ?>
+                                <span class="label label-sm label-success">
+                                  Lunas
 										           </span>
 
 										           <?php
@@ -553,8 +553,8 @@ window.onload = function(event) {
       $('[name="nil_aptk"]').on("keyup", function(){
             var uangr           = $('[name="uangr"]').val();
             var cekkk           = $('[name="nil_aptk"]').val();
-            var cek2            = formatCurrency1(eval(cekkk) + eval(uangr));
-            $('[name="nilap"]').val('Rp. '+(eval(cekkk)));
+            var cek2            = formatCurrency1(eval(cekkk));
+            $('[name="nilap"]').val('Rp. '+(cek2));
             
             var nil_aptk        = $('#nil_aptk').val();
             var total_resep     = $('#total_resep').val();
@@ -562,7 +562,7 @@ window.onload = function(event) {
             var vnil_aptk       = Number(nil_aptk.replace(/[^0-9\.]+/g, ""));
             var vtotal_resep    = Number(total_resep.replace(/[^0-9\.]+/g, ""));
             var totalnet        = eval(vtotal_resep) - eval(vnil_aptk) + eval(uangr) ;
-            var totalnet2            = formatCurrency1(totalnet);
+            var totalnet2       = formatCurrency1(totalnet);
 
             
             $('#juklaim').val(totalnet);
@@ -717,7 +717,7 @@ function bayar(resepno, uangr) {
                 }else{
 
                   
-                  $total_klaim = eval(data.jumlahhutang) + eval(uangr);
+                  $total_klaim = eval(data.jumlahhutang);
                   $('[name="juklaim"]').val($total_klaim);  
                   $('[name="juklaimb"]').val(formatCurrency1($total_klaim));  
                   $total_nilap = Number(data.bayarcash)+Number(data.bayarcard);
