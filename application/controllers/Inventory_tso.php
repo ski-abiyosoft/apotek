@@ -368,51 +368,51 @@ class Inventory_tso extends CI_Controller
 		$cek = $this->session->userdata('level');
 
 		if (!empty($cek)) {
-			$userid   	= $this->session->userdata('username');
-			$pic      	= $this->input->post('pic');
-			$tanggal  	= $this->input->post('tanggal');
-			$kode  		= $this->input->post('kode');
-			$saldoakhir = $this->input->post('saldoakhir');
-			$plusminus = $this->input->post('plusminus');
-			$qty   		= $this->input->post('qty');
-			$sat   		= $this->input->post('sat');
-			$gudang  	= $this->input->post('gudang');
-			$cabang 	= $this->session->userdata('unit');
-			$typestock  = $this->input->post('typestock');
-			$yangubah  = $this->input->post('yangubah');
+			$userid        = $this->session->userdata('username');
+			$pic           = $this->input->post('pic');
+			$tanggal       = $this->input->post('tanggal');
+			$kode          = $this->input->post('kode');
+			$saldoakhir    = $this->input->post('saldoakhir');
+			$plusminus     = $this->input->post('plusminus');
+			$qty           = $this->input->post('qty');
+			$sat           = $this->input->post('sat');
+			$gudang        = $this->input->post('gudang');
+			$cabang        = $this->session->userdata('unit');
+			$typestock     = $this->input->post('typestock');
+			$yangubah      = $this->input->post('yangubah');
 			$n_persediaan  = $this->input->post('n_persediaan');
-			$yangsetuju  = $this->input->get('setuju');
+			$yangsetuju    = $this->input->get('setuju');
 
-			$jumdata  	= count($kode);
+			$jumdata       = count($kode);
 
 			$nourut = 1;
 			for ($i = 0; $i <= $jumdata - 1; $i++) {
-				$_kode   	= $kode[$i];
-				$_qty   	= $qty[$i];
-				$_saldoakhir   	= $saldoakhir[$i];
-				$_plusminus   	= $plusminus[$i];
-				$_yangubah   	= $yangubah[$i];
-				$_n_persediaan   	= $n_persediaan[$i];
+				$_kode          = $kode[$i];
+				$_qty           = $qty[$i];
+				$_saldoakhir    = $saldoakhir[$i];
+				$_plusminus     = $plusminus[$i];
+				$_yangubah      = $yangubah[$i];
+				$_n_persediaan  = $n_persediaan[$i];
 
 				$barang  = $this->db->get_where('tbl_barang', array('kodebarang' => $_kode))->row();
 				$datad = array(
-					'koders' => $this->session->userdata('unit'),
-					'gudang' => $gudang,
-					'type' => $typestock,
-					'tglso' => date('Y-m-d', strtotime($tanggal)),
-					'tglentry' => date('Y-m-d'),
-					'jamentry' => date('H:i:s'),
-					'kodebarang' => $_kode,
-					'hasilso' => $_qty,
-					'sesuai' => $_plusminus,
-					'saldo' => $_saldoakhir,
-					'hpp' => $barang->hpp,
-					'username' => $pic,
-					'yangubah' => $_yangubah,
-					'approve' => 0,
-					'nilai_persediaan' => $_n_persediaan,
+					'koders'             => $this->session->userdata('unit'),
+					'gudang'             => $gudang,
+					'type'               => $typestock,
+					'tglso'              => date('Y-m-d', strtotime($tanggal)),
+					'tglentry'           => date('Y-m-d'),
+					'jamentry'           => date('H:i:s'),
+					'kodebarang'         => $_kode,
+					'hasilso'            => $_qty,
+					'sesuai'             => $_plusminus,
+					'saldo'              => $_saldoakhir,
+					'hpp'                => $barang->hpp,
+					'username'           => $pic,
+					'yangubah'           => $_yangubah,
+					'approve'            => 0,
+					'nilai_persediaan'   => $_n_persediaan,
 				);
-				$xxx = $_saldo + $_plusminus;
+				// $xxx = $_saldo + $_plusminus;
 				if ($_kode != "") {
 					if ($param == 1) {
 						$this->db->insert('tbl_aposesuai', $datad);

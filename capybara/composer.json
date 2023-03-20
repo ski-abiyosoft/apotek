@@ -1,0 +1,23 @@
+{
+    "name": "ski/capybara",
+    "description": "PHP tools for SQL database versioning and migration.",
+    "type": "library",
+    "license": "Apache 2.0",
+    "authors": [
+        {
+            "name": "it-abiyosoft",
+            "email": "it.abiyosoft@gmail.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {},
+    "autoload": {
+        "psr-4": {
+            "Services\\": "App/Services",
+            "Interfaces\\": "App/Interfaces",
+            "Helpers\\": "App/Helpers",
+            "Facades\\": "App/Facades",
+            "Connections\\": "App/Connections"
+        }
+    }
+}

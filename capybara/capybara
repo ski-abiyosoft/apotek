@@ -1,0 +1,41 @@
+#!/usr/bin/env php
+<?php
+
+include __DIR__ . '/Bootstrap.php';
+
+if (isset($argv[1])) {
+    switch ($argv[1]) {
+        case 'migrate':
+            App::migrate();
+            break;
+    
+        case "make:migration":
+            $migration_name = $argv[2];
+            $name_array = explode("_", $migration_name);
+            $is_creation = $name_array[0] == 'create' ? TRUE : FALSE;
+            $auto_name = "";
+    
+            for ($i = 1; $i < count($name_array); $i++) {
+                if ($i == 1) {
+                    $auto_name .= $name_array[$i];
+                }else {
+                    $auto_name .= "_{$name_array[$i]}";
+                }
+            }
+    
+            $table_name = isset($argv[3]) ? $argv[3] : $auto_name;
+    
+            App::make_migration($migration_name, $is_creation, $table_name);
+            break;
+    
+        case 'test':
+            App::test();
+            break;
+        
+        default:
+            echo "We do not provide that command bro!";
+            break;
+    }
+}else {
+    echo "\033[92mHello, I am \033[44;97mCapybara\033[0;92m! Start creating your migration using \033[42;97mphp capybara make:migration create_sample_table\033[0m";
+}
