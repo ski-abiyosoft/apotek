@@ -267,9 +267,21 @@ $this->load->view('template/footer');
     }
 
     function save() {
-        var noform = $('[name="pic"]').val();
-        var tanggal = $('[name="tanggal"]').val();
-        var setuju = $('#yangsetuju').val();
+        var noform    = $('[name="pic"]').val();
+        var tanggal   = $('[name="tanggal"]').val();
+        var setuju    = $('#yangsetuju').val(); 
+
+        if (setuju == "" || setuju == null) {
+            swal({
+                title               : "YANG MENYETUJUI",
+                html                : "WAJIB DI ISI..",
+                type                : "error",
+                confirmButtonText   : "OK"
+            });
+            return;
+        }
+
+        
         if (noform == "") {
             swal('STOK OPNAME', 'Petugas belum diisi ...', '');
         } else {

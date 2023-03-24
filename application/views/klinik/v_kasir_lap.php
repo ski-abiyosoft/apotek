@@ -63,7 +63,7 @@ $this->load->view('template/body');
             <div class="row">
               <div class="col-md-10">
                 <div class="form-group">
-                  <label class="col-md-3 control-label">KLINIK ESTETIKA</label>
+                  <label class="col-md-3 control-label">CABANG</label>
                   <div class="col-md-7">
                     <B><input style="background-color:#99ff33; color:black" type="text" name="cabang" id="cabang"
                         class="form-control" disabled> </B>
@@ -132,7 +132,7 @@ $this->load->view('template/body');
 
             </div>
 
-            <div class="row">
+            <!-- <div class="row">
               <div class="col-md-10">
                 <div class="form-group">
                   <label class="col-md-3 control-label">Dokter</label>
@@ -142,7 +142,6 @@ $this->load->view('template/body');
                   </div>
                 </div>
               </div>
-
 
             </div>
             <div class="row">
@@ -155,9 +154,7 @@ $this->load->view('template/body');
                   </div>
                 </div>
               </div>
-
-
-            </div>
+            </div> -->
             <div class="row" id="cck">
               <div class="col-md-10">
                 <div class="form-group">
@@ -210,10 +207,8 @@ $this->load->view('template/body');
                 <!-- <a class="btn btn-sm blue print_laporan" onclick="javascript:window.open(_urlcetak(0),'_blank');" ><i title="CETAK PDF" class="glyphicon glyphicon-file"></i><b> LAYAR </b></a> -->
 
                 <!-- <a class="btn btn-sm blue print_laporan" onclick="javascript:window.open(_urlcetak(0),'_blank');"><i title="TAMPIL" class="glyphicon glyphicon-file"></i><b> LAYAR </b></a> -->
-                <a class="btn btn-sm red print_laporan" onclick="_urlcetak(1);"><i title="CETAK PDF"
-                    class="glyphicon glyphicon-print"></i><b> PDF </b></a>
-                <a class="btn btn-sm green print_laporan" onclick="javascript:window.open(_urlcetak(2),'_blank');"><i
-                    title="CETAK PDF" class="fa fa-download"></i><b> EXCEL </b></a>
+                <a class="btn btn-sm red print_laporan" onclick="_urlcetak(1);"><i title="CETAK PDF" class="glyphicon glyphicon-print"></i><b> PDF </b></a>
+                <a class="btn btn-sm green print_laporan" onclick="javascript:window.open(_urlcetak(2),'_blank');"><i title="CETAK PDF" class="fa fa-download"></i><b> EXCEL </b></a>
 
                 <br>
                 <br>
@@ -277,16 +272,18 @@ function cabb() {
 }
 
 function _urlcetak(cek) {
-  var baseurl = "<?php echo base_url() ?>";
-  var idlap = $('[name="idlap"]').val();
-  var tgl1 = $('[name="tanggal1"]').val();
-  var tgl2 = $('[name="tanggal2"]').val();
-  var dokter = $('[name="dokter"]').val();
-  var unit = $('[name="unit"]').val();
-  var cbg = $('[name="cabang"]').val();
-  var pemb = $('[name="pembayaran"]').val();
-  var shift = $('[name="shift"]').val();
-  var param = '?idlap=' + idlap + '&tgl1=' + tgl1 + '&tgl2=' + tgl2 + '&dokter=' + dokter + '&cabang=' + cbg +
+  var baseurl   = "<?php echo base_url() ?>";
+  var idlap     = $('[name="idlap"]').val();
+  var tgl1      = $('[name="tanggal1"]').val();
+  var tgl2      = $('[name="tanggal2"]').val();
+  // var dokter    = $('[name="dokter"]').val();
+  // var unit      = $('[name="unit"]').val();
+  var dokter    = null;
+  var unit      = null;
+  var cbg       = $('[name="cabang"]').val();
+  var pemb      = $('[name="pembayaran"]').val();
+  var shift     = $('[name="shift"]').val();
+  var param     = '?idlap=' + idlap + '&tgl1=' + tgl1 + '&tgl2=' + tgl2 + '&dokter=' + dokter + '&cabang=' + cbg +
     '&unit=' + unit + '&cekk=' + cek + '&shift=' + shift;
 
   // return baseurl+'kasir_laporan/cetak/'+param;

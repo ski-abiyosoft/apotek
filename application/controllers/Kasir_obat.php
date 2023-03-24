@@ -919,8 +919,10 @@ class Kasir_obat extends CI_Controller
 			$qkartu        = "SELECT * from tbl_kartukredit where nokwitansi = '$nokwitansi'";
 			$queryr        = "SELECT * from tbl_aporacik where resepno = '$noresep' AND koders='$unit'";
 			$detil_r       = "SELECT * from tbl_apodetresep where resepno = '$noresep' AND koders='$unit'";
+			$qracik_res    = "SELECT (SELECT aponame FROM tbl_barangsetup b where a.aturanpakai=b.apocode )ap,a.*  FROM tbl_aporacik a WHERE resepno = '$noresep' AND koders = '$unit'";
 			$racikan       = $this->db->query($queryr)->row_array();
 			$rck           = $this->db->query($detil_r)->result();
+			$racik_res     = $this->db->query($qracik_res)->result();
 			$aporacik      = $this->db->get_where('tbl_aporacik', ['resepno' => $noresep])->row();
 
 			$qvoucher      = $this->db->query("SELECT tbl_kasir.*, tbl_pasien.namapas
@@ -1050,26 +1052,30 @@ class Kasir_obat extends CI_Controller
 				// 	), $fc, $border, $align);
 				// 	$nomor++;
 				// }
-				if ($aporacik->harga_manual != 0) {
-					$hrgxx = $aporacik->harga_manual;
-				} else {
-					$hrgxx = $aporacik->totalrp;
+				foreach($racik_res as $racik){
+					if ($racik->harga_manual != 0) {
+						$hrgxx = $racik->harga_manual;
+					} else {
+						$hrgxx = $racik->totalrp;
+					}
+					$pdf->FancyRow(array(
+						$nomor,
+						("**$racik->namaracikan"),
+						number_format($racik->jumlahracik, 0, '.', ','),
+						number_format($racik->diskonrp, 0, '.', ','),
+						number_format($hrgxx, 0, '.', ',')
+					), $fc, $border, $align);
+					$nomor++;
+
 				}
-				$pdf->FancyRow(array(
-					$nomor,
-					("**$aporacik->namaracikan"),
-					number_format($aporacik->jumlahracik, 0, '.', ','),
-					number_format($aporacik->diskonrp, 0, '.', ','),
-					number_format($hrgxx, 0, '.', ',')
-				), $fc, $border, $align);
-				$nomor++;
+				
 			}
 
-			$total_voucher  = $kasir->voucherrp1 + $kasir->voucherrp2 + $kasir->voucherrp3;
+			$total_voucher   = $kasir->voucherrp1 + $kasir->voucherrp2 + $kasir->voucherrp3;
 			// var_dump($total_voucher);die;
-			$total_potongan = $total_voucher + $kasir->diskonrp;
-			$actual_total	= $kasir->totalresep - $total_potongan;
-			$cekdulu = $this->db->query("SELECT * FROM tbl_apohreturjual WHERE returno = '$noresep'")->row();
+			$total_potongan  = $total_voucher + $kasir->diskonrp;
+			$actual_total    = $kasir->totalresep - $total_potongan;
+			$cekdulu         = $this->db->query("SELECT * FROM tbl_apohreturjual WHERE returno = '$noresep'")->row();
 			if($cekdulu){
 				$actual_totalx = $cekdulu->totalnet;
 			} else {

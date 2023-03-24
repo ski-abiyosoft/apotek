@@ -339,6 +339,7 @@
                           <option value="2">2</option>
                           <option value="3">3</option>
                           <option value="4">4</option>
+                          <option value="5">5</option>
                         </select>
                       </td>
                     </tr>
@@ -918,6 +919,388 @@
                       </div>
                     </div>
                   </div>
+                  <div class="portlet box blue" id="racik4">
+                    <div class="portlet-title">
+                      <div class="caption">
+                        <span class="title-white"><b>RACIKAN KE - 4</b></span>
+                      </div>
+                    </div>
+                    <div class="portlet-body form">
+                      <div class="form-body">
+                        <table class="table" border="0" width="100%">
+                          <tr bgcolor="#c7f2ff">
+                            <td width="10%" class="control-labelh rightJustified">JENIS</td>
+                            <td width="20%" colspan="2">
+                              <select id="jenis_4" name="jenis_4" class="form-control select2_all" style="width: 100%;" data-placeholder="Pilih...">
+                                <option value="">Pilih...</option>
+                                <?php
+                                  $data = $this->db->query("SELECT * from tbl_barangsetup where apogroup ='JENISRACIK'")->result();
+                                  foreach ($data as $row) {
+                                ?>
+                                  <option value="<?= $row->apocode; ?>"><?= $row->aponame; ?></option>
+                                <?php } ?>
+                              </select>
+                            </td>
+                            <td width="15%" class="control-labelh rightJustified">NAMA RACIKAN</td>
+                            <td width="20%">
+                              <input type="text" class="form-control " name="namaracik_4" id="namaracik_4" value="" Placeholder="Nama">
+                            </td>
+                            <td> &nbsp; </td>
+                            <td width="15%" class="control-labelh rightJustified">CARA PAKAI</td>
+                            <td>
+                              <select name="carapakai_4" id="carapakai_4" class="form-control select2_all" style="width: 100%;" data-placeholder="Pilih...">
+                                <option value="">Pilih...</option>
+                                <option value="DIMINUM"> DIMINUM </option>
+                                <option value="DIOLES"> DIOLES </option>
+                                <option value="DITETES"> DITETES </option>
+                              </select>
+                            </td>
+                          </tr>
+                          <tr bgcolor="#c7f2ff">
+                            <td class="control-labelh rightJustified">JUMLAH</td>
+                            <td width="8%">
+                              <input type="number" class="form-control " name="jumracik_4" id="jumracik_4">
+                            </td>
+                            <td width="12%">
+                              <select name="stajum_4" id="stajum_4" class="form-control select2_all" style="width: 100%;" data-placeholder="Pilih...">
+                                <option value="">Pilih...</option>
+                                <?php
+                                $data = $this->db->query("SELECT * from tbl_barangsetup where  apogroup='KEMASANRACIK' ")->result();
+                                foreach ($data as $row) {
+                                ?>
+                                  <option value="<?= $row->apocode; ?>">
+                                    <?= $row->aponame; ?></option>
+                                <?php } ?>
+                              </select>
+                            </td>
+                            <td class="control-labelh rightJustified">ATURAN PAKAI</td>
+                            <td>
+                              <select name="atpakai_4" id="atpakai_4" class="form-control select2_all" style="width: 100%;" data-placeholder="Pilih...">
+                                <option value="">Pilih...</option>
+                                <?php
+                                $data = $this->db->query("SELECT * from tbl_barangsetup where  apogroup='ATURANPAKAI' ")->result();
+                                foreach ($data as $row) {
+                                ?>
+                                  <option value="<?= $row->apocode; ?>">
+                                    <?= $row->aponame; ?></option>
+                                <?php } ?>
+                              </select>
+                            </td>
+                            <td>&nbsp;</td>
+                            <td class="control-labelh rightJustified" type="hidden" width="15%"></td>
+                            <td>&nbsp;</td>
+                          </tr>
+                          <tr>
+                            <td colspan="7">&nbsp;</td>
+                          </tr>
+                        </table>
+                        <table id="datatble_racikan4" class="table table-hoverx table-stripedx table-borderedx table-condensed table-scrollable">
+                          <thead class="page-breadcrumb breadcrumb">
+                            <th class="title-white" width="5%" style="text-align: center">Hapus</th>
+                            <th class="title-white" width="20%" style="text-align: center">Kode Obat</th>
+                            <th class="title-white" width="5%" style="text-align: center">Satuan</th>
+                            <th class="title-white" width="10%" style="text-align: center">Qty Jual</th>
+                            <th class="title-white" width="10%" style="text-align: center">Qty Racik</th>
+                            <th class="title-white" width="10%" style="text-align: center">Harga Jual</th>
+                            <th class="title-white" width="15%" style="text-align: center">Total Harga</th>
+                            <th class="title-white" width="15%" style="text-align: center">Expired</th>
+                          </thead>
+                          <tbody>
+                            <tr id="racik4_no1">
+                              <td>
+                                <button type='button' onclick=hapusBarisIni_racik4(1) disabled class='btn btn-primary'><i class='fa fa-trash-o'>
+                              </td>
+                              <td>
+                                <select name="koderacik_4[]" id="koderacik_41" class="select2_el_farmasi_baranggud form-control" onchange="showbarangname_racik_4(this.value, 1)" style="width: 100%;"></select>
+                                <input name="nama_racik_4[]" id="nama_racik_41" type="hidden" class="form-control">
+                              </td>
+                              <td>
+                                <input name="satracik_4[]" id="satracik_41" type="text" class="form-control" readonly>
+                              </td>
+                              <td>
+                                <input name="qty_jualracik_4[]" id="qty_jualracik_41" onchange="totalline_racik_4(1); total_racik_4(); cekqty_racik_4(1); cekstok_racik_4(1)" value="1" type="text" class="form-control rightJustified">
+                              </td>
+                              <td>
+                                <input name="qty_racik_racik_4[]" id="qty_racik_racik_41" onchange="totalline_racik_4(1); total_racik_4(); cekqty_racik_4(1)" value="1" type="text" class="form-control rightJustified">
+                              </td>
+                              <td>
+                                <input name="hargajualracik_4[]" onchange="totalline_racik_4(1);" value="0" id="hargajualracik_41" type="text" class="form-control rightJustified" readonly>
+                              </td>
+                              <td>
+                                <input name="total_hrg_racik_4[]" onchange="totalline_racik_4(1);" value="0" id="total_hrg_racik_41" type="text" class="form-control rightJustified" readonly>
+                              </td>
+                              <td>
+                                <input name='exp_racik_4[]' id='exp_racik_41' type='date' class='form-control rightJustified'>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                        <table class="table" border="0" width="100%">
+                          <tr class="wells">
+                            <td colspan="2">
+                              <input type="hidden" name='jml_racikan_4' id='jml_racikan_4'>
+                              <button type="button" onclick="tambah_racikan_4()" class="btn green"><i class="fa fa-plus"></i></button>
+                            </td>
+                            <td class="control-labelh leftJustified">TOTAL</td>
+                            <td width="6%">&nbsp;</td>
+                            <td width="2%">&nbsp;</td>
+                            <td width="15%">
+                              <input type="text" class="form-control rightJustified" name="toto_racikan_4" id="toto_racikan_4" value=0 readonly>
+                            </td>
+                          </tr>
+                          <tr>
+                            <td width="30%" rowspan="6" class="control-labelh leftJustified">Resep Manual Dari Dokter
+                              <textarea type="text" class="form-control " name="resman_racik_4" id="resman_racik_4" value=""></textarea>
+                            </td>
+                            <td rowspan="6" width="30%">&nbsp;</td>
+                          </tr>
+                          <tr>
+                            <td class="control-labelh leftJustified">DISKON</td>
+                            <td>
+                              <input type="text" class="form-control rightJustified" name="disknom_racik_4" id="disknom_racik_4" value="0" onchange="total_racik_4()">
+                            </td>
+                            <td class="control-labelh leftJustified"><b>%</b></td>
+                            <td>
+                              <input type="text" class="form-control rightJustified" name="disk_racik_4" id="disk_racik_4" value="0" readonly>
+                            </td>
+                          </tr>
+                          <tr>
+                            <td class="control-labelh leftJustified">
+                              <label for="ppn">PPN</label>
+                            </td>
+                            <td>
+                              <input class='form-control' type="checkbox" name="cek_ppn_racik_4" id="cek_ppn_racik_4" onchange="cek_ppn4()" disabled>
+                            </td>
+                            <td>&nbsp;</td>
+                            <td>
+                              <input type="text" class="form-control rightJustified" name="ppn_racik_4" id="ppn_racik_4" value="0" readonly>
+                            </td>
+                          </tr>
+                          <tr>
+                            <td class="control-labelh leftJustified">ONGKOS RACIK</td>
+                            <td>&nbsp;</td>
+                            <td>&nbsp;</td>
+                            <td>
+                              <input type="text" class="form-control rightJustified" name="ongra_racik_4" id="ongra_racik_4" value="0" onchange="total_racik_4()">
+                            </td>
+                          </tr>
+                          <tr>
+                            <td class="control-labelh leftJustified">TOTAL+PPN</td>
+                            <td>&nbsp;</td>
+                            <td>&nbsp;</td>
+                            <td>
+                              <input type="text" class="form-control rightJustified" name="totp_racik_4" id="totp_racik_4" value=0 readonly>
+                              <input type="hidden" id="ppn_pajak_racik_4" name="ppn_pajak_racik_4" value="<?= $ppn['prosentase']; ?>">
+                            </td>
+                          </tr>
+                          <tr>
+                            <td width="10%" class="control-labelh leftJustified">TOTAL JUAL PASIEN</td>
+                            <td width="6%">
+                              <input type="checkbox" class="form-control" name="t_manual_racik_4" id="t_manual_racik_4" onclick="cekmanual_racik_4()">
+                            </td>
+                            <td width="2%">
+                              &nbsp;
+                            </td>
+                            <td width="15%">
+                              <input type="text" class="form-control rightJustified" name="toto_racik_4" id="toto_racik_4" value="0" readonly onchange="t_jual_manual_racik_4()">
+                            </td>
+                          </tr>
+                          </tr>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="portlet box green" id="racik5">
+                    <div class="portlet-title">
+                      <div class="caption">
+                        <span class="title-white"><b>RACIKAN KE - 5</b></span>
+                      </div>
+                    </div>
+                    <div class="portlet-body form">
+                      <div class="form-body">
+                        <table class="table" border="0" width="100%">
+                          <tr bgcolor="#c7f2ff">
+                            <td width="10%" class="control-labelh rightJustified">JENIS</td>
+                            <td width="20%" colspan="2">
+                              <select id="jenis_5" name="jenis_5" class="form-control select2_all" style="width: 100%;" data-placeholder="Pilih...">
+                                <option value="">Pilih...</option>
+                                <?php
+                                  $data = $this->db->query("SELECT * from tbl_barangsetup where apogroup ='JENISRACIK'")->result();
+                                  foreach ($data as $row) {
+                                ?>
+                                  <option value="<?= $row->apocode; ?>"><?= $row->aponame; ?></option>
+                                <?php } ?>
+                              </select>
+                            </td>
+                            <td width="15%" class="control-labelh rightJustified">NAMA RACIKAN</td>
+                            <td width="20%">
+                              <input type="text" class="form-control " name="namaracik_5" id="namaracik_5" value="" Placeholder="Nama">
+                            </td>
+                            <td> &nbsp; </td>
+                            <td width="15%" class="control-labelh rightJustified">CARA PAKAI</td>
+                            <td>
+                              <select name="carapakai_5" id="carapakai_5" class="form-control select2_all" style="width: 100%;" data-placeholder="Pilih...">
+                                <option value="">Pilih...</option>
+                                <option value="DIMINUM"> DIMINUM </option>
+                                <option value="DIOLES"> DIOLES </option>
+                                <option value="DITETES"> DITETES </option>
+                              </select>
+                            </td>
+                          </tr>
+                          <tr bgcolor="#c7f2ff">
+                            <td class="control-labelh rightJustified">JUMLAH</td>
+                            <td width="8%">
+                              <input type="number" class="form-control " name="jumracik_5" id="jumracik_5">
+                            </td>
+                            <td width="12%">
+                              <select name="stajum_5" id="stajum_5" class="form-control select2_all" style="width: 100%;" data-placeholder="Pilih...">
+                                <option value="">Pilih...</option>
+                                <?php
+                                $data = $this->db->query("SELECT * from tbl_barangsetup where  apogroup='KEMASANRACIK' ")->result();
+                                foreach ($data as $row) {
+                                ?>
+                                  <option value="<?= $row->apocode; ?>">
+                                    <?= $row->aponame; ?></option>
+                                <?php } ?>
+                              </select>
+                            </td>
+                            <td class="control-labelh rightJustified">ATURAN PAKAI</td>
+                            <td>
+                              <select name="atpakai_5" id="atpakai_5" class="form-control select2_all" style="width: 100%;" data-placeholder="Pilih...">
+                                <option value="">Pilih...</option>
+                                <?php
+                                $data = $this->db->query("SELECT * from tbl_barangsetup where  apogroup='ATURANPAKAI' ")->result();
+                                foreach ($data as $row) {
+                                ?>
+                                  <option value="<?= $row->apocode; ?>">
+                                    <?= $row->aponame; ?></option>
+                                <?php } ?>
+                              </select>
+                            </td>
+                            <td>&nbsp;</td>
+                            <td class="control-labelh rightJustified" type="hidden" width="15%"></td>
+                            <td>&nbsp;</td>
+                          </tr>
+                          <tr>
+                            <td colspan="7">&nbsp;</td>
+                          </tr>
+                        </table>
+                        <table id="datatble_racikan5" class="table table-hoverx table-stripedx table-borderedx table-condensed table-scrollable">
+                          <thead class="page-breadcrumb breadcrumb">
+                            <th class="title-white" width="5%" style="text-align: center">Hapus</th>
+                            <th class="title-white" width="20%" style="text-align: center">Kode Obat</th>
+                            <th class="title-white" width="5%" style="text-align: center">Satuan</th>
+                            <th class="title-white" width="10%" style="text-align: center">Qty Jual</th>
+                            <th class="title-white" width="10%" style="text-align: center">Qty Racik</th>
+                            <th class="title-white" width="10%" style="text-align: center">Harga Jual</th>
+                            <th class="title-white" width="15%" style="text-align: center">Total Harga</th>
+                            <th class="title-white" width="15%" style="text-align: center">Expired</th>
+                          </thead>
+                          <tbody>
+                            <tr id="racik5_no1">
+                              <td>
+                                <button type='button' onclick=hapusBarisIni_racik5(1) disabled class='btn green'><i class='fa fa-trash-o'>
+                              </td>
+                              <td>
+                                <select name="koderacik_5[]" id="koderacik_51" class="select2_el_farmasi_baranggud form-control" onchange="showbarangname_racik_5(this.value, 1)" style="width: 100%;"></select>
+                                <input name="nama_racik_5[]" id="nama_racik_51" type="hidden" class="form-control">
+                              </td>
+                              <td>
+                                <input name="satracik_5[]" id="satracik_51" type="text" class="form-control" readonly>
+                              </td>
+                              <td>
+                                <input name="qty_jualracik_5[]" id="qty_jualracik_51" onchange="totalline_racik_5(1); total_racik_5(); cekqty_racik_5(1); cekstok_racik_5(1)" value="1" type="text" class="form-control rightJustified">
+                              </td>
+                              <td>
+                                <input name="qty_racik_racik_5[]" id="qty_racik_racik_51" onchange="totalline_racik_5(1); total_racik_5(); cekqty_racik_5(1)" value="1" type="text" class="form-control rightJustified">
+                              </td>
+                              <td>
+                                <input name="hargajualracik_5[]" onchange="totalline_racik_5(1);" value="0" id="hargajualracik_51" type="text" class="form-control rightJustified" readonly>
+                              </td>
+                              <td>
+                                <input name="total_hrg_racik_5[]" onchange="totalline_racik_5(1);" value="0" id="total_hrg_racik_51" type="text" class="form-control rightJustified" readonly>
+                              </td>
+                              <td>
+                                <input name='exp_racik_5[]' id='exp_racik_51' type='date' class='form-control rightJustified'>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                        <table class="table" border="0" width="100%">
+                          <tr class="wells">
+                            <td colspan="2">
+                              <input type="hidden" name='jml_racikan_5' id='jml_racikan_5'>
+                              <button type="button" onclick="tambah_racikan_5()" class="btn green"><i class="fa fa-plus"></i></button>
+                            </td>
+                            <td class="control-labelh leftJustified">TOTAL</td>
+                            <td width="6%">&nbsp;</td>
+                            <td width="2%">&nbsp;</td>
+                            <td width="15%">
+                              <input type="text" class="form-control rightJustified" name="toto_racikan_5" id="toto_racikan_5" value=0 readonly>
+                            </td>
+                          </tr>
+                          <tr>
+                            <td width="30%" rowspan="6" class="control-labelh leftJustified">Resep Manual Dari Dokter
+                              <textarea type="text" class="form-control " name="resman_racik_5" id="resman_racik_5" value=""></textarea>
+                            </td>
+                            <td rowspan="6" width="30%">&nbsp;</td>
+                          </tr>
+                          <tr>
+                            <td class="control-labelh leftJustified">DISKON</td>
+                            <td>
+                              <input type="text" class="form-control rightJustified" name="disknom_racik_5" id="disknom_racik_5" value="0" onchange="total_racik_5()">
+                            </td>
+                            <td class="control-labelh leftJustified"><b>%</b></td>
+                            <td>
+                              <input type="text" class="form-control rightJustified" name="disk_racik_5" id="disk_racik_5" value="0" readonly>
+                            </td>
+                          </tr>
+                          <tr>
+                            <td class="control-labelh leftJustified">
+                              <label for="ppn">PPN</label>
+                            </td>
+                            <td>
+                              <input class='form-control' type="checkbox" name="cek_ppn_racik_5" id="cek_ppn_racik_5" onchange="cek_ppn5()" disabled>
+                            </td>
+                            <td>&nbsp;</td>
+                            <td>
+                              <input type="text" class="form-control rightJustified" name="ppn_racik_5" id="ppn_racik_5" value="0" readonly>
+                            </td>
+                          </tr>
+                          <tr>
+                            <td class="control-labelh leftJustified">ONGKOS RACIK</td>
+                            <td>&nbsp;</td>
+                            <td>&nbsp;</td>
+                            <td>
+                              <input type="text" class="form-control rightJustified" name="ongra_racik_5" id="ongra_racik_5" value="0" onchange="total_racik_5()">
+                            </td>
+                          </tr>
+                          <tr>
+                            <td class="control-labelh leftJustified">TOTAL+PPN</td>
+                            <td>&nbsp;</td>
+                            <td>&nbsp;</td>
+                            <td>
+                              <input type="text" class="form-control rightJustified" name="totp_racik_5" id="totp_racik_5" value=0 readonly>
+                              <input type="hidden" id="ppn_pajak_racik_5" name="ppn_pajak_racik_5" value="<?= $ppn['prosentase']; ?>">
+                            </td>
+                          </tr>
+                          <tr>
+                            <td width="10%" class="control-labelh leftJustified">TOTAL JUAL PASIEN</td>
+                            <td width="6%">
+                              <input type="checkbox" class="form-control" name="t_manual_racik_5" id="t_manual_racik_5" onclick="cekmanual_racik_5()">
+                            </td>
+                            <td width="2%">
+                              &nbsp;
+                            </td>
+                            <td width="15%">
+                              <input type="text" class="form-control rightJustified" name="toto_racik_5" id="toto_racik_5" value="0" readonly onchange="t_jual_manual_racik_5()">
+                            </td>
+                          </tr>
+                          </tr>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
                 </div>
                 <div class="col-md-12">
                   <div class="row">
@@ -1101,6 +1484,8 @@
     var ppn_pajak = Number($("#ppn_pajak_racik_1").val()) / 100;
     $("#racik2").hide();
     $("#racik3").hide();
+    $("#racik4").hide();
+    $("#racik5").hide();
   });
 
   function separateComma(val) {
@@ -1137,14 +1522,32 @@
       $("#racik1").show();
       $("#racik2").hide();
       $("#racik3").hide();
+      $("#racik4").hide();
+      $("#racik5").hide();
     } else if(isi == 2) {
       $("#racik1").hide();
       $("#racik2").show();
       $("#racik3").hide();
+      $("#racik4").hide();
+      $("#racik5").hide();
     } else if(isi == 3) {
       $("#racik1").hide();
       $("#racik2").hide();
       $("#racik3").show();
+      $("#racik4").hide();
+      $("#racik5").hide();
+    } else if(isi == 4) {
+      $("#racik1").hide();
+      $("#racik2").hide();
+      $("#racik3").hide();
+      $("#racik4").show();
+      $("#racik5").hide();
+    } else {
+      $("#racik1").hide();
+      $("#racik2").hide();
+      $("#racik3").hide();
+      $("#racik4").hide();
+      $("#racik5").show();
     }
   }
 </script>
@@ -1413,6 +1816,8 @@
   var rowCount;
   var rowCount2;
   var rowCount3;
+  var rowCount4;
+  var rowCount5;
   var arr = [1];
   var idrow = 2;
   
@@ -1652,19 +2057,53 @@
     var total         = subtotal - diskon;
     var dpp           = total / (111 / 100);
     var ppn           = dpp * cekppn2 / 100;
-    var ongkosracikx   =  Number(parseInt(($('#totp_racik_1').val()).replaceAll(',','')))
-    if(ongkosracikx < 1) {
-      ongkosracik = 0;
-    } else {
-      ongkosracik = ongkosracikx;
+    if(document.getElementById("t_manual_racik_1").checked == true) {
+      var toto1x = $("#toto_racik_1").val();
+      var toto1 = Number(toto1x.replaceAll(',',''));     
+    } else if(document.getElementById("t_manual_racik_1").checked == false) {
+      $("#toto_racik_1").val(0);
+      var toto1x = $("#totp_racik_1").val();
+      var toto1 = Number(toto1x.replaceAll(',',''));
+    }
+    if(document.getElementById("t_manual_racik_2").checked == true) {
+      var toto2x = $("#toto_racik_2").val();
+      var toto2 = Number(toto2x.replaceAll(',',''));     
+    } else if(document.getElementById("t_manual_racik_2").checked == false) {
+      $("#toto_racik_2").val(0);
+      var toto2x = $("#totp_racik_2").val();
+      var toto2 = Number(toto2x.replaceAll(',',''));
+    }
+    if(document.getElementById("t_manual_racik_3").checked == true) {
+      var toto3x = $("#toto_racik_3").val();
+      var toto3 = Number(toto3x.replaceAll(',',''));     
+    } else if(document.getElementById("t_manual_racik_3").checked == false) {
+      $("#toto_racik_3").val(0);
+      var toto3x = $("#totp_racik_3").val();
+      var toto3 = Number(toto3x.replaceAll(',',''));
+    }
+    if(document.getElementById("t_manual_racik_4").checked == true) {
+      var toto4x = $("#toto_racik_4").val();
+      var toto4 = Number(toto4x.replaceAll(',',''));     
+    } else if(document.getElementById("t_manual_racik_4").checked == false) {
+      $("#toto_racik_4").val(0);
+      var toto4x = $("#totp_racik_4").val();
+      var toto4 = Number(toto4x.replaceAll(',',''));
+    }
+    if(document.getElementById("t_manual_racik_5").checked == true) {
+      var toto5x = $("#toto_racik_5").val();
+      var toto5 = Number(toto5x.replaceAll(',',''));     
+    } else if(document.getElementById("t_manual_racik_5").checked == false) {
+      $("#toto_racik_5").val(0);
+      var toto5x = $("#totp_racik_5").val();
+      var toto5 = Number(toto5x.replaceAll(',',''));
     }
     
     document.getElementById("_vsubtotal").innerHTML = separateComma(subtotal.toFixed(0));
     document.getElementById("_vdiskon").innerHTML = separateComma(diskon.toFixed(0));
     document.getElementById("_vppn").innerHTML = separateComma(ppn.toFixed(0));
-    document.getElementById("_vtotal").innerHTML = separateComma((total+ongkosracik).toFixed(0));
+    document.getElementById("_vtotal").innerHTML = separateComma((total+toto1+toto2+toto3+toto4+toto5).toFixed(0));
     document.getElementById("_vdpp").innerHTML = separateComma(dpp.toFixed(0));
-    document.getElementById("_vracik").innerHTML = separateComma(ongkosracik.toFixed(0));
+    document.getElementById("_vracik").innerHTML = separateComma((toto1+toto2+toto3+toto4+toto5).toFixed(0));
   }
 
   function ceksaldoakhir(id) {
@@ -1722,6 +2161,12 @@
     var tanggal     = $('[name="tanggal"]').val();
     var gudang      = $('[name="gudang"]').val();
     var pembeli     = $('[name="pembeli"]').val();
+    
+    // cek jenis pembeli
+    if(pembeli == 'atr') {
+      $("#pembeli").val('adr').change();
+      getdataklinik();
+    }
     var namapasien  = $('[name="namapasien"]').val();
     var nama_pas    = $('[name="nama_pas"]').val();
     var dokter      = $('[name="dokter"]').val();
@@ -1787,6 +2232,18 @@
     var jumlahtot   = Number(parseInt(jumlahtotv.replaceAll(',', '')));
     var racikanxx   = $('#totp_racik_1').val();
     var racikan     = Number(parseInt(racikanxx.replaceAll(',', '')));
+    var dokter = $("#dokter").val();
+    if(pembeli == 'adr') {
+      if(dokter == '' || dokter == null) {
+        swal({
+          title: "Resep Dari",
+          html: "<p>HARUS DI ISI</p>",
+          type: "error",
+          confirmButtonText: "OK"
+        });
+        return;
+      }
+    }
     if (document.getElementById('t_manual_racik_1').checked == true) {
       var h_manual = 1;
       var totalx = $('#toto_racikan_1').val();
@@ -1799,7 +2256,7 @@
       if ($("#kode"+i).val() != null && (expire == '' || expire == null)) {
         swal({
           title: "Expired Date",
-          html: "<p>HARUS DI isi</p>",
+          html: "<p>HARUS DI ISI</p>",
           type: "error",
           confirmButtonText: "OK"
         });
@@ -1809,7 +2266,7 @@
       if ($("#kode"+i).val() != null && (aturan_pakai == '' || aturan_pakai == null)) {
         swal({
           title               : "Aturan Pakai",
-          html                : "<p>HARUS DI isi</p>",
+          html                : "<p>HARUS DI ISI</p>",
           type                : "error",
           confirmButtonText   : "OK"
         });
@@ -1824,7 +2281,7 @@
       if ($("#koderacik_1"+i).val() !=  null && (expire == '' || expire == null)) {
         swal({
           title: "Expired Date Racik",
-          html: "<p>HARUS DI isi</p>",
+          html: "<p>HARUS DI ISI</p>",
           type: "error",
           confirmButtonText: "OK"
         });
@@ -1912,7 +2369,11 @@
   var idrowobat_2 = 2;
   var idrowobat_3 = 2;
   var idrowobat_4 = 2;
+  var idrowobat_5 = 2;
   var cekppn2 = '<?= $ppn["prosentase"] / 100; ?>';
+  var cekppn3 = '<?= $ppn["prosentase"] / 100; ?>';
+  var cekppn4 = '<?= $ppn["prosentase"] / 100; ?>';
+  var cekppn5 = '<?= $ppn["prosentase"] / 100; ?>';
 
   // RACIKAN 1
 
@@ -2090,14 +2551,33 @@
   }
 
   function t_jual_manual_racik_1() {
+    var y = $("#totp_racik_1").val();
+    var yy = Number(parseInt(y.replaceAll(',', '')));
     var x = $("#toto_racik_1").val();
     var xx = Number(parseInt(x.replaceAll(',', '')));
-    $("#toto_racik_1").val(separateComma(xx));
+    if (document.getElementById('t_manual_racik_1').checked == true) {
+      if(xx < yy) {
+        $("#toto_racik_1").val(separateComma(yy));
+        swal({
+          title: "TOTAL PENJUALAN PASIEN",
+          html: "Tidak bisa lebih kecil dari TOTAL + PPN!",
+          type: "error",
+          confirmButtonText: "OK"
+        });
+      } else {
+        $("#toto_racik_1").val(separateComma(xx));
+      }
+    } else {
+      $("#toto_racik_1").val(separateComma(xx));
+    }
     total_racik_2();
   }
 
   function cekmanual_racik_1() {
     if (document.getElementById('t_manual_racik_1').checked == true) {
+      var hargax = $("#totp_racik_1").val();
+      var harga = Number(parseInt(hargax.replaceAll(',','')));
+      $("#toto_racik_1").val(separateComma(harga));
       $('#toto_racik_1').attr('readonly', false);
     } else {
       $('#toto_racik_1').attr('readonly', true);
@@ -2283,14 +2763,33 @@
   }
 
   function t_jual_manual_racik_2() {
+    var y = $("#totp_racik_2").val();
+    var yy = Number(parseInt(y.replaceAll(',', '')));
     var x = $("#toto_racik_2").val();
     var xx = Number(parseInt(x.replaceAll(',', '')));
-    $("#toto_racik_2").val(separateComma(xx));
+    if (document.getElementById('t_manual_racik_2').checked == true) {
+      if(xx < yy) {
+        $("#toto_racik_2").val(separateComma(yy));
+        swal({
+          title: "TOTAL PENJUALAN PASIEN",
+          html: "Tidak bisa lebih kecil dari TOTAL + PPN!",
+          type: "error",
+          confirmButtonText: "OK"
+        });
+      } else {
+        $("#toto_racik_2").val(separateComma(xx));
+      }
+    } else {
+      $("#toto_racik_2").val(separateComma(xx));
+    }
     total_racik_2();
   }
 
   function cekmanual_racik_2() {
     if (document.getElementById('t_manual_racik_2').checked == true) {
+      var hargax = $("#totp_racik_2").val();
+      var harga = Number(parseInt(hargax.replaceAll(',','')));
+      $("#toto_racik_2").val(separateComma(harga));
       $('#toto_racik_2').attr('readonly', false);
     } else {
       $('#toto_racik_2').attr('readonly', true);
@@ -2476,14 +2975,33 @@
   }
 
   function t_jual_manual_racik_3() {
+    var y = $("#totp_racik_3").val();
+    var yy = Number(parseInt(y.replaceAll(',', '')));
     var x = $("#toto_racik_3").val();
     var xx = Number(parseInt(x.replaceAll(',', '')));
-    $("#toto_racik_3").val(separateComma(xx));
+    if (document.getElementById('t_manual_racik_3').checked == true) {
+      if(xx < yy) {
+        $("#toto_racik_3").val(separateComma(yy));
+        swal({
+          title: "TOTAL PENJUALAN PASIEN",
+          html: "Tidak bisa lebih kecil dari TOTAL + PPN!",
+          type: "error",
+          confirmButtonText: "OK"
+        });
+      } else {
+        $("#toto_racik_3").val(separateComma(xx));
+      }
+    } else {
+      $("#toto_racik_3").val(separateComma(xx));
+    }
     total_racik_3();
   }
 
   function cekmanual_racik_3() {
     if (document.getElementById('t_manual_racik_3').checked == true) {
+      var hargax = $("#totp_racik_3").val();
+      var harga = Number(parseInt(hargax.replaceAll(',','')));
+      $("#toto_racik_3").val(separateComma(harga));
       $('#toto_racik_3').attr('readonly', false);
     } else {
       $('#toto_racik_3').attr('readonly', true);
@@ -2492,7 +3010,430 @@
   }
 
   function total_racik_3() {
+    total_racik_4();
+  }
+  
+  // RACIKAN 4
 
+  function tambah_racikan_4() {
+    var gud = $('[name="gudang"]').val();
+    if(gud == '' || gud == null) {
+      gud = 'APTK';
+    } else {
+      gud = gud;
+    }
+    var table = $("#datatble_racikan4");
+
+    table.append(`<tr id="racik4_no`+idrowobat_4+`">
+      <td>
+        <button type='button' onclick="hapusBarisIni_racik4(`+idrowobat_4+`)" class='btn blue'><i class='fa fa-trash-o'></i></button>
+      </td>
+      <td>
+        <select name="koderacik_4[]" id="koderacik_4`+idrowobat_4+`" class="select2_el_farmasi_baranggud form-control" onchange="showbarangcek_racik4(this.value, `+idrowobat_4+`)" style="width: 100%;"></select>
+        <input name="nama_racik_4[]" id="nama_racik_4`+idrowobat_4+`" type="hidden" class="form-control">
+      </td>
+      <td>
+        <input name="satracik_4[]" id="satracik_4`+idrowobat_4+`" type="text" class="form-control" readonly>
+      </td>
+      <td>
+        <input name="qty_jualracik_4[]" id="qty_jualracik_4`+idrowobat_4+`" onchange="totalline_racik_4(`+idrowobat_4+`); total_racik_4(); cekqty_racik_4(`+idrowobat_4+`); cekstok_racik_4(`+idrowobat_4+`)" value="1" type="text" class="form-control rightJustified">
+      </td>
+      <td>
+        <input name="qty_racik_racik_4[]" id="qty_racik_racik_4`+idrowobat_4+`" onchange="totalline_racik_4(`+idrowobat_4+`); total_racik_4(); cekqty_racik_4(`+idrowobat_4+`)" value="1" type="text" class="form-control rightJustified">
+      </td>
+      <td>
+        <input name="hargajualracik_4[]" onchange="totalline_racik_4(`+idrowobat_4+`);" value="0" id="hargajualracik_4`+idrowobat_4+`" type="text" class="form-control rightJustified" readonly>
+      </td>
+      <td>
+        <input name="total_hrg_racik_4[]" onchange="totalline_racik_4(`+idrowobat_4+`);" value="0" id="total_hrg_racik_4`+idrowobat_4+`" type="text" class="form-control rightJustified" readonly>
+      </td>
+      <td>
+        <input name='exp_racik_4[]' id='exp_racik_4`+idrowobat_4+`' type='date' class='form-control rightJustified'>
+      </td>
+    </tr>`);
+    initailizeSelect2_farmasi_baranggud(gud);
+    idrowobat_4++;
+    $('.select2_all').select2();
+  }
+
+  function hapusBarisIni_racik4(param) {
+    $("#racik4_no" + param).remove();
+    total_racik_4();
+  }
+
+  function showbarangcek_racik4(str, id) {
+    var table = document.getElementById('datatble_racikan4');
+    var rowCount = table.rows.length;
+    for (var i = 1; i < (rowCount - 1); i++) {
+      var row = table.rows[i];
+      kode = row.cells[1].children[0].value;
+      if (kode == str) {
+        $("#koderacik_4" + id).empty();
+        $("#satracik_4" + id).val("");
+        $("#qty_jualracik_4" + id).val(1);
+        $("#qty_racik_racik_4" + id).val(1);
+        $("#hargajualracik_4" + id).val(0);
+        $("#_racik_4" + id).val(0);
+        $("#total_hrg_racik_4" + id).val(0);
+        $("#exp_racik_4" + id).val("");
+        swal({
+          title: "BARANG",
+          html: "Sudah ada, silahkan pilih barang lain",
+          type: "warning",
+          confirmButtonText: "OK"
+        });
+      } else {
+        showbarangname_racik_4(str, id);
+      }
+    }
+  }
+
+  function showbarangname_racik_4(str, id) {
+    var xhttp;
+    var vid = id;
+    $('#satracik_4' + vid).val('');
+    var qty = $('#qty_jualracik_4' + vid).val();
+    var gudang = $('#gudang').val();
+    if(gudang == null || gudang == '') {
+      gudang = 'APTK';
+    } else {
+      gudang = gudang;
+    }
+    $('#hargajualracik_4' + vid).val(0);
+    var customer  = $('#cust').val();
+    $.ajax({
+      url: "<?= base_url(); ?>penjualan_faktur/getinfobarang/?kode=" + str + "&gudang=" + gudang,
+      type: "GET",
+      dataType: "JSON",
+      success: function(data) {
+        var saldo = Number(data.saldoakhir);
+        if (saldo < qty) {
+          $("#koderacik_4" + vid).empty();
+          $("#nama_racik_4" + vid).val("");
+          $("#qty_jualracik_4" + vid).val(1);
+          $("#qty_racik_racik_4" + vid).val(1);
+          $("#hargajualracik_4" + vid).val(0);
+          $("#btnsimpan").attr("disabled", true);
+          totalline_racik_4(vid);
+          swal('SALDO BARANG', 'Minus ...', '');
+        } else {
+          $("#nama_racik_4" + vid).val(data.namabarang);
+          $('#satracik_4' + vid).val(data.satuan1);
+          $('#hargajualracik_4' + vid).val(separateComma(data.hargajual));
+          totalline_racik_4(vid);
+          if ($("#nama_racik_4" + vid).val() != null || $( "#nama_racik_4" + vid).val() != '' ||$("#satracik_4" + vid).val() != null || $( "#satracik_4" + vid).val() != '') {
+            $("#btnsimpan").attr("disabled", false);
+          }
+        }
+      }
+    });
+  }
+
+  function cekqty_racik_4(id) {
+    var qtyrx = $("#qty_racik_racik_4"+id).val();
+    var qtyjx = $("#qty_jualracik_4"+id).val();
+    var qtyj = Number(parseInt(qtyjx.replaceAll(',','')));
+    if(qtyrx > qtyj) {
+      swal({
+        title: "QTY RACIK",
+        html: "Tidak boleh lebih besar dari qty jual",
+        type: "error",
+        confirmButtonText: "OK"
+      }); 
+      $("#qty_racik_racik_4"+id).val(qtyj);
+      totalline_racik_4(id);
+    }
+  }
+
+  function cekstok_racik_4(id) {
+    var qtyjx = $("#qty_jualracik_4"+id).val();
+    var qty = Number(parseInt(qtyjx.replaceAll(',','')));
+    var kode = $("#koderacik_4"+id).val();
+    var gudang = $("#gudang").val();
+    if(gudang == null || gudang == '') {
+      gudang = 'APTK';
+    } else {
+      gudang = gudang;
+    }
+    $.ajax({
+      url: "<?= site_url('Penjualan_faktur/ceksaldoakhir/'); ?>"+kode+"?gudang="+gudang,
+      type: "POST",
+      dataType: "JSON",
+      success: function(data) {
+        if(qty > data.saldoakhir) {
+          $("#qty_jualracik_4"+id).val(Number(data.saldoakhir));
+          swal({
+            title : "QTY JUAL",
+            html : "Melebihi saldo akhir",
+            type : "error",
+            confirmButtonText : "OK"
+          })
+        }
+        totalline_racik_4(id);
+      }
+    });
+  }
+
+  function totalline_racik_4(id) {
+    var table4 = document.getElementById('datatble_racikan4');
+    var row4 = table4.rows[id];
+    var kode4 = row4.cells[1].children[0].value;
+    var harga4 = Number(row4.cells[5].children[0].value.replace(/[^0-9\.]+/g, ""));
+    var qtyjual4 = Number(row4.cells[3].children[0].value.replace(/[^0-9\.]+/g, ""));
+    jumlah4 = qtyjual4 * harga4;
+    row4.cells[6].children[0].value = separateComma(jumlah4);
+    total_racik_4();
+    t_jual_manual_racik_4();
+  }
+
+  function t_jual_manual_racik_4() {
+    var y = $("#totp_racik_4").val();
+    var yy = Number(parseInt(y.replaceAll(',', '')));
+    var x = $("#toto_racik_4").val();
+    var xx = Number(parseInt(x.replaceAll(',', '')));
+    if (document.getElementById('t_manual_racik_4').checked == true) {
+      if(xx < yy) {
+        $("#toto_racik_4").val(separateComma(yy));
+        swal({
+          title: "TOTAL PENJUALAN PASIEN",
+          html: "Tidak bisa lebih kecil dari TOTAL + PPN!",
+          type: "error",
+          confirmButtonText: "OK"
+        });
+      } else {
+        $("#toto_racik_4").val(separateComma(xx));
+      }
+    } else {
+      $("#toto_racik_4").val(separateComma(xx));
+    }
+    total_racik_4();
+  }
+
+  function cekmanual_racik_4() {
+    if (document.getElementById('t_manual_racik_4').checked == true) {
+      var hargax = $("#totp_racik_4").val();
+      var harga = Number(parseInt(hargax.replaceAll(',','')));
+      $("#toto_racik_4").val(separateComma(harga));
+      $('#toto_racik_4').attr('readonly', false);
+    } else {
+      $('#toto_racik_4').attr('readonly', true);
+    }
+    total_racik_4();
+  }
+
+  function total_racik_4() {
+    total_racik_5();
+  }
+
+  // RACIKAN 5
+
+  function tambah_racikan_5() {
+    var gud = $('[name="gudang"]').val();
+    if(gud == '' || gud == null) {
+      gud = 'APTK';
+    } else {
+      gud = gud;
+    }
+    var table = $("#datatble_racikan5");
+
+    table.append(`<tr id="racik5_no`+idrowobat_5+`">
+      <td>
+        <button type='button' onclick="hapusBarisIni_racik5(`+idrowobat_5+`)" class='btn green'><i class='fa fa-trash-o'></i></button>
+      </td>
+      <td>
+        <select name="koderacik_5[]" id="koderacik_5`+idrowobat_5+`" class="select2_el_farmasi_baranggud form-control" onchange="showbarangcek_racik5(this.value, `+idrowobat_5+`)" style="width: 100%;"></select>
+        <input name="nama_racik_5[]" id="nama_racik_5`+idrowobat_5+`" type="hidden" class="form-control">
+      </td>
+      <td>
+        <input name="satracik_5[]" id="satracik_5`+idrowobat_5+`" type="text" class="form-control" readonly>
+      </td>
+      <td>
+        <input name="qty_jualracik_5[]" id="qty_jualracik_5`+idrowobat_5+`" onchange="totalline_racik_5(`+idrowobat_5+`); total_racik_5(); cekqty_racik_5(`+idrowobat_5+`); cekstok_racik_5(`+idrowobat_5+`)" value="1" type="text" class="form-control rightJustified">
+      </td>
+      <td>
+        <input name="qty_racik_racik_5[]" id="qty_racik_racik_5`+idrowobat_5+`" onchange="totalline_racik_5(`+idrowobat_5+`); total_racik_5(); cekqty_racik_5(`+idrowobat_5+`)" value="1" type="text" class="form-control rightJustified">
+      </td>
+      <td>
+        <input name="hargajualracik_5[]" onchange="totalline_racik_5(`+idrowobat_5+`);" value="0" id="hargajualracik_5`+idrowobat_5+`" type="text" class="form-control rightJustified" readonly>
+      </td>
+      <td>
+        <input name="total_hrg_racik_5[]" onchange="totalline_racik_5(`+idrowobat_5+`);" value="0" id="total_hrg_racik_5`+idrowobat_5+`" type="text" class="form-control rightJustified" readonly>
+      </td>
+      <td>
+        <input name='exp_racik_5[]' id='exp_racik_5`+idrowobat_5+`' type='date' class='form-control rightJustified'>
+      </td>
+    </tr>`);
+    initailizeSelect2_farmasi_baranggud(gud);
+    idrowobat_5++;
+    $('.select2_all').select2();
+  }
+
+  function hapusBarisIni_racik5(param) {
+    $("#racik5_no" + param).remove();
+    total_racik_5();
+  }
+
+  function showbarangcek_racik5(str, id) {
+    var table = document.getElementById('datatble_racikan5');
+    var rowCount = table.rows.length;
+    for (var i = 1; i < (rowCount - 1); i++) {
+      var row = table.rows[i];
+      kode = row.cells[1].children[0].value;
+      if (kode == str) {
+        $("#koderacik_5" + id).empty();
+        $("#satracik_5" + id).val("");
+        $("#qty_jualracik_5" + id).val(1);
+        $("#qty_racik_racik_5" + id).val(1);
+        $("#hargajualracik_5" + id).val(0);
+        $("#_racik_5" + id).val(0);
+        $("#total_hrg_racik_5" + id).val(0);
+        $("#exp_racik_5" + id).val("");
+        swal({
+          title: "BARANG",
+          html: "Sudah ada, silahkan pilih barang lain",
+          type: "warning",
+          confirmButtonText: "OK"
+        });
+      } else {
+        showbarangname_racik_5(str, id);
+      }
+    }
+  }
+
+  function showbarangname_racik_5(str, id) {
+    var xhttp;
+    var vid = id;
+    $('#satracik_5' + vid).val('');
+    var qty = $('#qty_jualracik_5' + vid).val();
+    var gudang = $('#gudang').val();
+    if(gudang == null || gudang == '') {
+      gudang = 'APTK';
+    } else {
+      gudang = gudang;
+    }
+    $('#hargajualracik_5' + vid).val(0);
+    var customer  = $('#cust').val();
+    $.ajax({
+      url: "<?= base_url(); ?>penjualan_faktur/getinfobarang/?kode=" + str + "&gudang=" + gudang,
+      type: "GET",
+      dataType: "JSON",
+      success: function(data) {
+        var saldo = Number(data.saldoakhir);
+        if (saldo < qty) {
+          $("#koderacik_5" + vid).empty();
+          $("#nama_racik_5" + vid).val("");
+          $("#qty_jualracik_5" + vid).val(1);
+          $("#qty_racik_racik_5" + vid).val(1);
+          $("#hargajualracik_5" + vid).val(0);
+          $("#btnsimpan").attr("disabled", true);
+          totalline_racik_5(vid);
+          swal('SALDO BARANG', 'Minus ...', '');
+        } else {
+          $("#nama_racik_5" + vid).val(data.namabarang);
+          $('#satracik_5' + vid).val(data.satuan1);
+          $('#hargajualracik_5' + vid).val(separateComma(data.hargajual));
+          totalline_racik_5(vid);
+          if ($("#nama_racik_5" + vid).val() != null || $( "#nama_racik_5" + vid).val() != '' ||$("#satracik_5" + vid).val() != null || $( "#satracik_5" + vid).val() != '') {
+            $("#btnsimpan").attr("disabled", false);
+          }
+        }
+      }
+    });
+  }
+
+  function cekqty_racik_5(id) {
+    var qtyrx = $("#qty_racik_racik_5"+id).val();
+    var qtyjx = $("#qty_jualracik_5"+id).val();
+    var qtyj = Number(parseInt(qtyjx.replaceAll(',','')));
+    if(qtyrx > qtyj) {
+      swal({
+        title: "QTY RACIK",
+        html: "Tidak boleh lebih besar dari qty jual",
+        type: "error",
+        confirmButtonText: "OK"
+      }); 
+      $("#qty_racik_racik_5"+id).val(qtyj);
+      totalline_racik_5(id);
+    }
+  }
+
+  function cekstok_racik_5(id) {
+    var qtyjx = $("#qty_jualracik_5"+id).val();
+    var qty = Number(parseInt(qtyjx.replaceAll(',','')));
+    var kode = $("#koderacik_5"+id).val();
+    var gudang = $("#gudang").val();
+    if(gudang == null || gudang == '') {
+      gudang = 'APTK';
+    } else {
+      gudang = gudang;
+    }
+    $.ajax({
+      url: "<?= site_url('Penjualan_faktur/ceksaldoakhir/'); ?>"+kode+"?gudang="+gudang,
+      type: "POST",
+      dataType: "JSON",
+      success: function(data) {
+        if(qty > data.saldoakhir) {
+          $("#qty_jualracik_5"+id).val(Number(data.saldoakhir));
+          swal({
+            title : "QTY JUAL",
+            html : "Melebihi saldo akhir",
+            type : "error",
+            confirmButtonText : "OK"
+          })
+        }
+        totalline_racik_5(id);
+      }
+    });
+  }
+
+  function totalline_racik_5(id) {
+    var table5 = document.getElementById('datatble_racikan5');
+    var row5 = table5.rows[id];
+    var kode5 = row5.cells[1].children[0].value;
+    var harga5 = Number(row5.cells[5].children[0].value.replace(/[^0-9\.]+/g, ""));
+    var qtyjual5 = Number(row5.cells[3].children[0].value.replace(/[^0-9\.]+/g, ""));
+    jumlah5 = qtyjual5 * harga5;
+    row5.cells[6].children[0].value = separateComma(jumlah5);
+    total_racik_5();
+    t_jual_manual_racik_5();
+  }
+
+  function t_jual_manual_racik_5() {
+    var y = $("#totp_racik_5").val();
+    var yy = Number(parseInt(y.replaceAll(',', '')));
+    var x = $("#toto_racik_5").val();
+    var xx = Number(parseInt(x.replaceAll(',', '')));
+    if (document.getElementById('t_manual_racik_5').checked == true) {
+      if(xx < yy) {
+        $("#toto_racik_5").val(separateComma(yy));
+        swal({
+          title: "TOTAL PENJUALAN PASIEN",
+          html: "Tidak bisa lebih kecil dari TOTAL + PPN!",
+          type: "error",
+          confirmButtonText: "OK"
+        });
+      } else {
+        $("#toto_racik_5").val(separateComma(xx));
+      }
+    } else {
+      $("#toto_racik_5").val(separateComma(xx));
+    }
+    total_racik_5();
+  }
+
+  function cekmanual_racik_5() {
+    if (document.getElementById('t_manual_racik_5').checked == true) {
+      var hargax = $("#totp_racik_5").val();
+      var harga = Number(parseInt(hargax.replaceAll(',','')));
+      $("#toto_racik_5").val(separateComma(harga));
+      $('#toto_racik_5').attr('readonly', false);
+    } else {
+      $('#toto_racik_5').attr('readonly', true);
+    }
+    total_racik_5();
+  }
+
+  function total_racik_5() {
     // RACIKAN 
 
     var table = document.getElementById('datatble_racikan1');
@@ -2618,8 +3559,92 @@
     document.getElementById("disk_racik_3").value = separateComma(diskon_done3.toFixed(0));
     document.getElementById("ppn_racik_3").value = separateComma(ppn_done3.toFixed(0));
     document.getElementById("totp_racik_3").value = separateComma((totpracik3).toFixed(0));
+
+    // RACIKAN 4
+
+    var table4 = document.getElementById('datatble_racikan4');
+    var rowCount4 = table4.rows.length;
+    var diskonper4 = $('#disknom_racik_4').val();
+    var ongkosracik4x = $('#ongra_racik_4').val();
+    var ongkosracik4 = Number(parseInt(ongkosracik4x.replaceAll(',', '')));
+    $('#ongra_racik_4').val(separateComma(ongkosracik4));
+    var cek_ppnn4 = $('#cek_ppn_racik_4').is(':checked');
+    var ppn_pajak4 = Number($("#ppn_pajak_racik_4").val()) / 100;
+    tjumlah4 = 0;
+    tdiskon4 = 0;
+    for (var i = 1; i < rowCount4; i++) {
+      var row4 = table4.rows[i];
+      var qtyjual4 = Number(row4.cells[3].children[0].value.replace(/[^0-9\.]+/g, ""));
+      var harga4 = Number(row4.cells[5].children[0].value.replace(/[^0-9\.]+/g, ""));
+      tjumlah4 = tjumlah4 + eval(qtyjual4 * harga4);
+    }
+    total_done4 = tjumlah4;
+    if (diskonper4 == 0) {
+      tdiskon4 = 0;
+    } else {
+      tdiskon4 = total_done4 * (diskonper4 / 100);
+    }
+    if (cek_ppnn4 == false) {
+      tppno4 = 0;
+    } else {
+      tppno4 = (tjumlah4 - tdiskon4) * cekppn4;
+    }
+    diskon_done4 = tdiskon4;
+    total_sppn4 = tjumlah4 - diskon_done4;
+    dpp4x = total_sppn4 / (111 / 100);
+    ppn_done4 = dpp4x * ppn_pajak4;
+    total_ppn4 = total_sppn4;
+    ppnc4 = ((tjumlah4 - tdiskon4) / 111 / 100) * ppn_pajak4;
+    totpracik4 = total_ppn4 + ongkosracik4;
     
-    // GABUNGAN RACIK 1, 2, 3
+    document.getElementById("toto_racikan_4").value = separateComma(total_done4);
+    document.getElementById("disk_racik_4").value = separateComma(diskon_done4.toFixed(0));
+    document.getElementById("ppn_racik_4").value = separateComma(ppn_done4.toFixed(0));
+    document.getElementById("totp_racik_4").value = separateComma((totpracik4).toFixed(0));
+
+    // RACIKAN 5
+
+    var table5 = document.getElementById('datatble_racikan5');
+    var rowCount5 = table5.rows.length;
+    var diskonper5 = $('#disknom_racik_5').val();
+    var ongkosracik5x = $('#ongra_racik_5').val();
+    var ongkosracik5 = Number(parseInt(ongkosracik5x.replaceAll(',', '')));
+    $('#ongra_racik_5').val(separateComma(ongkosracik5));
+    var cek_ppnn5 = $('#cek_ppn_racik_5').is(':checked');
+    var ppn_pajak5 = Number($("#ppn_pajak_racik_5").val()) / 100;
+    tjumlah5 = 0;
+    tdiskon5 = 0;
+    for (var i = 1; i < rowCount5; i++) {
+      var row5 = table5.rows[i];
+      var qtyjual5 = Number(row5.cells[3].children[0].value.replace(/[^0-9\.]+/g, ""));
+      var harga5 = Number(row5.cells[5].children[0].value.replace(/[^0-9\.]+/g, ""));
+      tjumlah5 = tjumlah5 + eval(qtyjual5 * harga5);
+    }
+    total_done5 = tjumlah5;
+    if (diskonper5 == 0) {
+      tdiskon5 = 0;
+    } else {
+      tdiskon5 = total_done5 * (diskonper5 / 100);
+    }
+    if (cek_ppnn5 == false) {
+      tppno5 = 0;
+    } else {
+      tppno5 = (tjumlah5 - tdiskon5) * cekppn5;
+    }
+    diskon_done5 = tdiskon5;
+    total_sppn5 = tjumlah5 - diskon_done5;
+    dpp5x = total_sppn5 / (111 / 100);
+    ppn_done5 = dpp5x * ppn_pajak5;
+    total_ppn5 = total_sppn5;
+    ppnc5 = ((tjumlah5 - tdiskon5) / 111 / 100) * ppn_pajak5;
+    totpracik5 = total_ppn5 + ongkosracik5;
+    
+    document.getElementById("toto_racikan_5").value = separateComma(total_done5);
+    document.getElementById("disk_racik_5").value = separateComma(diskon_done5.toFixed(0));
+    document.getElementById("ppn_racik_5").value = separateComma(ppn_done5.toFixed(0));
+    document.getElementById("totp_racik_5").value = separateComma((totpracik5).toFixed(0));
+    
+    // GABUNGAN RACIK 1, 2, 3, 4, 5
     var stx = $("#_vsubtotal").text();
     var stz = Number(parseInt(stx.replaceAll(',','')));
     if(stx == null || stx == '' || stx == 'null') {
@@ -2627,77 +3652,61 @@
     } else {
       var st = stz;
     }
-    if(document.getElementById("t_manual_racik_1").checked == true && document.getElementById("t_manual_racik_2").checked == false && document.getElementById("t_manual_racik_3").checked == false) {
+
+    // RACIKAN 1
+    if(document.getElementById("t_manual_racik_1").checked == true) {
       var totox = $("#toto_racik_1").val();
       var toto = Number(totox.replaceAll(',',''));
-      var toto2x = $("#totp_racik_2").val();
-      var toto2 = Number(toto2x.replaceAll(',',''));
-      var toto3x = $("#totp_racik_3").val();
-      var toto3 = Number(toto3x.replaceAll(',',''));
-      var vracik = toto + toto2 + toto3;
-      $("#_vracik").text(separateComma((vracik).toFixed(0)));
-      $("#_vtotal").text(separateComma((vracik + st).toFixed(0)));
-    } else if(document.getElementById("t_manual_racik_1").checked == false && document.getElementById("t_manual_racik_2").checked == true && document.getElementById("t_manual_racik_3").checked == false) {
+    } else if(document.getElementById("t_manual_racik_1").checked == false) {
+      $("#toto_racik_1").val(0);
       var totox = $("#totp_racik_1").val();
       var toto = Number(totox.replaceAll(',',''));
-      var toto2x = $("#toto_racik_2").val();
-      var toto2 = Number(toto2x.replaceAll(',',''));
-      var toto3x = $("#totp_racik_3").val();
-      var toto3 = Number(toto3x.replaceAll(',',''));
-      var vracik = toto + toto2 + toto3;
-      $("#_vracik").text(separateComma((vracik).toFixed(0)));
-      $("#_vtotal").text(separateComma((vracik + st).toFixed(0)));
-    } else if(document.getElementById("t_manual_racik_1").checked == true && document.getElementById("t_manual_racik_2").checked == true && document.getElementById("t_manual_racik_3").checked == false) {
-      var totox = $("#toto_racik_1").val();
-      var toto = Number(totox.replaceAll(',',''));
-      var toto2x = $("#toto_racik_2").val();
-      var toto2 = Number(toto2x.replaceAll(',',''));
-      var toto3x = $("#totp_racik_3").val();
-      var toto3 = Number(toto3x.replaceAll(',',''));
-      var vracik = toto + toto2 + toto3;
-      $("#_vracik").text(separateComma((vracik).toFixed(0)));
-      $("#_vtotal").text(separateComma((vracik + st).toFixed(0)));
-    } else if(document.getElementById("t_manual_racik_1").checked == false && document.getElementById("t_manual_racik_2").checked == true && document.getElementById("t_manual_racik_3").checked == true) {
-      var totox = $("#totp_racik_1").val();
-      var toto = Number(totox.replaceAll(',',''));
-      var toto2x = $("#toto_racik_2").val();
-      var toto2 = Number(toto2x.replaceAll(',',''));
-      var toto3x = $("#toto_racik_3").val();
-      var toto3 = Number(toto3x.replaceAll(',',''));
-      var vracik = toto + toto2 + toto3;
-      $("#_vracik").text(separateComma((vracik).toFixed(0)));
-      $("#_vtotal").text(separateComma((vracik + st).toFixed(0)));
-    } else if(document.getElementById("t_manual_racik_1").checked == false && document.getElementById("t_manual_racik_2").checked == false && document.getElementById("t_manual_racik_3").checked == true) {
-      var totox = $("#totp_racik_1").val();
-      var toto = Number(totox.replaceAll(',',''));
-      var toto2x = $("#totp_racik_2").val();
-      var toto2 = Number(toto2x.replaceAll(',',''));
-      var toto3x = $("#toto_racik_3").val();
-      var toto3 = Number(toto3x.replaceAll(',',''));
-      var vracik = toto + toto2 + toto3;
-      $("#_vracik").text(separateComma((vracik).toFixed(0)));
-      $("#_vtotal").text(separateComma((vracik + st).toFixed(0)));
-    } else if(document.getElementById("t_manual_racik_1").checked == true && document.getElementById("t_manual_racik_2").checked == true && document.getElementById("t_manual_racik_3").checked == true) {
-      var totox = $("#toto_racik_1").val();
-      var toto = Number(totox.replaceAll(',',''));
-      var toto2x = $("#toto_racik_2").val();
-      var toto2 = Number(toto2x.replaceAll(',',''));
-      var toto3x = $("#toto_racik_3").val();
-      var toto3 = Number(toto3x.replaceAll(',',''));
-      var vracik = toto + toto2 + toto3;
-      $("#_vracik").text(separateComma((vracik).toFixed(0)));
-      $("#_vtotal").text(separateComma((vracik + st).toFixed(0)));
-    } else if(document.getElementById("t_manual_racik_1").checked == false && document.getElementById("t_manual_racik_2").checked == false && document.getElementById("t_manual_racik_3").checked == false) {
-      var totox = $("#totp_racik_1").val();
-      var toto = Number(totox.replaceAll(',',''));
-      var toto2x = $("#totp_racik_2").val();
-      var toto2 = Number(toto2x.replaceAll(',',''));
-      var toto3x = $("#totp_racik_3").val();
-      var toto3 = Number(toto3x.replaceAll(',',''));
-      var vracik13 = toto + toto2 + toto3;
-      $("#_vracik").text(separateComma((vracik13).toFixed(0)));
-      $("#_vtotal").text(separateComma((vracik13 + st).toFixed(0)));
     }
+
+    // RACIKAN 2
+    if(document.getElementById("t_manual_racik_2").checked == true) {
+      var toto2x = $("#toto_racik_2").val();
+      var toto2 = Number(toto2x.replaceAll(',',''));     
+    } else if(document.getElementById("t_manual_racik_2").checked == false) {
+      $("#toto_racik_2").val(0);
+      var toto2x = $("#totp_racik_2").val();
+      var toto2 = Number(toto2x.replaceAll(',',''));
+    }
+    
+    // RACIKAN 3
+    if(document.getElementById("t_manual_racik_3").checked == true) {
+      var toto3x = $("#toto_racik_3").val();
+      var toto3 = Number(toto3x.replaceAll(',',''));     
+    } else if(document.getElementById("t_manual_racik_3").checked == false) {
+      $("#toto_racik_3").val(0);
+      var toto3x = $("#totp_racik_3").val();
+      var toto3 = Number(toto3x.replaceAll(',',''));
+    }
+    
+    // RACIKAN 4
+    if(document.getElementById("t_manual_racik_4").checked == true) {
+      var toto4x = $("#toto_racik_4").val();
+      var toto4 = Number(toto4x.replaceAll(',',''));     
+    } else if(document.getElementById("t_manual_racik_4").checked == false) {
+      $("#toto_racik_4").val(0);
+      var toto4x = $("#totp_racik_4").val();
+      var toto4 = Number(toto4x.replaceAll(',',''));
+    }
+
+    // RACIKAN 5
+    if(document.getElementById("t_manual_racik_5").checked == true) {
+      var toto5x = $("#toto_racik_5").val();
+      var toto5 = Number(toto5x.replaceAll(',',''));     
+    } else if(document.getElementById("t_manual_racik_5").checked == false) {
+      $("#toto_racik_5").val(0);
+      var toto5x = $("#totp_racik_5").val();
+      var toto5 = Number(toto5x.replaceAll(',',''));
+    }
+
+    var vracik = toto + toto2 + toto3 + toto4 + toto5;
+    $("#_vracik").text(separateComma((vracik).toFixed(0)));
+    $("#_vtotal").text(separateComma((vracik + st).toFixed(0)));
+
     if (tjumlah > 0) {
       document.getElementById("btnsimpan_racik1").disabled = false;
     } else {
@@ -2874,6 +3883,58 @@
       }
     }
 
+    // RACIKAN 4
+
+    var jenis_4       = $('[name="jenis_4"]').val();
+    var resman_4      = $('[name="resman_racik_4"]').val();
+    var namaracik_4   = $('[name="namaracik_4"]').val();
+    var jumracik_4    = $('[name="jumracik_4"]').val();
+    var stajum_4      = $('[name="stajum_4"]').val();
+    var atpakai_4     = $('[name="atpakai_4"]').val();
+    var carapakai     = $('[name="carapakai_4"]').val();
+    var nobukti       = $('#noresep').val();
+
+    var table4        = document.getElementById('datatble_racikan4');
+    var rowCount4     = table4.rows.length;
+    for (i = 1; i < rowCount4; i++) {
+      var expire      = $("#exp_racik_4" + i).val(); 
+      if ($("#koderacik_4"+i).val() !=  null && (expire == '' || expire == null)) {
+        swal({
+          title: "Expired Date Racik",
+          html: "<p>HARUS DI isi</p>",
+          type: "error",
+          confirmButtonText: "OK"
+        });
+        return;
+      }
+    }
+
+    // RACIKAN 5
+
+    var jenis_5       = $('[name="jenis_5"]').val();
+    var resman_5      = $('[name="resman_racik_5"]').val();
+    var namaracik_5   = $('[name="namaracik_5"]').val();
+    var jumracik_5    = $('[name="jumracik_5"]').val();
+    var stajum_5      = $('[name="stajum_5"]').val();
+    var atpakai_5     = $('[name="atpakai_5"]').val();
+    var carapakai     = $('[name="carapakai_5"]').val();
+    var nobukti       = $('#noresep').val();
+
+    var table5        = document.getElementById('datatble_racikan5');
+    var rowCount5     = table5.rows.length;
+    for (i = 1; i < rowCount5; i++) {
+      var expire      = $("#exp_racik_5" + i).val(); 
+      if ($("#koderacik_5"+i).val() !=  null && (expire == '' || expire == null)) {
+        swal({
+          title: "Expired Date Racik",
+          html: "<p>HARUS DI isi</p>",
+          type: "error",
+          confirmButtonText: "OK"
+        });
+        return;
+      }
+    }
+
     if($("#koderacik_21").val() != null) {
       if (document.getElementById('t_manual_racik_2').checked == true) {
         var h_manual2    = 1;
@@ -2960,7 +4021,7 @@
       var ppn_2           = Number(parseInt($("#ppn_racik_2").val().replaceAll(',', '')));
       var totp_racik_2    = Number(parseInt($("#totp_racik_2").val().replaceAll(',', '')));
 
-      if($("#koderacik3_1").val() != null) {
+      if($("#koderacik_31").val() != null) {
         if (document.getElementById('t_manual_racik_3').checked == true) {
           var h_manual3    = 1;
           var totalx3      = $('#toto_racikan_3').val();
@@ -3046,9 +4107,193 @@
         var ppn_3           = Number(parseInt($("#ppn_racik_3").val().replaceAll(',', '')));
         var totp_racik_3    = Number(parseInt($("#totp_racik_3").val().replaceAll(',', '')));
 
-        var param           = "?toto_racikan_1=" + toto_racikan_1 + "&disk_racik_1=" + disk_racik_1 + "&totp_racik_1=" + totp_racik_1 + "&resman_racik_1=" + resman_1 + "&cek_rm1=" + h_manual + "&jml1=" + jmlx1 + "&harga_manual1=" + totalxx + 
-        "&toto_racikan_2=" + toto_racikan_2 + "&disk_racik_2=" + disk_racik_2 + "&totp_racik_2=" + totp_racik_2 + "&resman_racik_2=" + resman_2 + "&cek_rm2=" + h_manual2 + "&jml2=" + jmlx2 + "&harga_manual2=" + totalxx2 +
-        "&toto_racikan_3=" + toto_racikan_3 + "&disk_racik_3=" + disk_racik_3 + "&totp_racik_3=" + totp_racik_3 + "&resman_racik_3=" + resman_3 + "&cek_rm3=" + h_manual3 + "&jml3=" + jmlx3 + "&harga_manual3=" + totalxx3;
+        if($("#koderacik_41").val() != null) {
+          if (document.getElementById('t_manual_racik_4').checked == true) {
+            var h_manual4    = 1;
+            var totalx4      = $('#toto_racikan_4').val();
+          } else {
+            var totalx4      = $('#_vtotal').val();
+            var h_manual4    = 0;
+          }
+      
+          var totalxx4       = Number(parseInt(totalx.replaceAll(',', '')));
+          if (document.getElementById('t_manual_racik_4').checked == true) {
+            var h_manual4    = 1;
+          } else {
+            var h_manual4    = 0;
+          }
+      
+          if (jenis_4 == '') {
+            swal({
+              title: "Jenis Masih Kosong",
+              html: "<p>CEK LAGI</p>",
+              type: "error",
+              confirmButtonText: "OK"
+            });
+            return;
+          }
+      
+          if (namaracik_4 == '') {
+            swal({
+              title: "Nama Racik Masih Kosong",
+              html: "<p>CEK LAGI</p>",
+              type: "error",
+              confirmButtonText: "OK"
+            });
+            return;
+          }
+      
+          if (jumracik_4 == '') {
+            swal({
+              title: "Jumlah Masih Kosong",
+              html: "<p>CEK LAGI</p>",
+              type: "error",
+              confirmButtonText: "OK"
+            });
+            return;
+          }
+      
+          if (stajum_4 == '') {
+            swal({
+              title: "Pilihan Jumlah Masih Kosong",
+              html: "<p>CEK LAGI</p>",
+              type: "error",
+              confirmButtonText: "OK"
+            });
+            return;
+          }
+      
+          if (atpakai_4 == '') {
+            swal({
+              title: "Aturan Pakai Masih Kosong",
+              html: "<p>CEK LAGI</p>",
+              type: "error",
+              confirmButtonText: "OK"
+            });
+            return;
+          }
+      
+          var table4 = document.getElementById('datatble_racikan4');
+          var rowCount4 = table4.rows.length;
+          for (i = 1; i < rowCount4; i++) {
+            var kode4       = $('#koderacik_4' + i).val();
+            var nama4       = $('#nama_racik_4' + i).val();
+            var satuan4     = $('#satracik_4' + i).val();
+            var qty_jual4   = $('#qty_jualracik_4' + i).val();
+            var qty_racik4  = $('#qty_racik_racik_4' + i).val();
+            var harga_jual4 = $('#hargajualracik_4' + i).val();
+            var total4      = $('#total_hrg_racik_4' + i).val();
+            var jml4        = i;
+            $("#jml_racikan_4").val(jml4);
+          }
+      
+          var jmlx4            = $("#jml_racikan_4").val();
+          var toto_racikan_4  = Number(parseInt($("#toto_racikan_4").val().replaceAll(',', '')));
+          var disk_racik_4    = Number(parseInt($("#disk_racik_4").val().replaceAll(',', '')));
+          var ppn_4           = Number(parseInt($("#ppn_racik_4").val().replaceAll(',', '')));
+          var totp_racik_4    = Number(parseInt($("#totp_racik_4").val().replaceAll(',', '')));
+
+          if($("#koderacik_51").val() != null) {
+            if (document.getElementById('t_manual_racik_5').checked == true) {
+              var h_manual5    = 1;
+              var totalx5      = $('#toto_racikan_5').val();
+            } else {
+              var totalx5      = $('#_vtotal').val();
+              var h_manual5    = 0;
+            }
+        
+            var totalxx5       = Number(parseInt(totalx.replaceAll(',', '')));
+            if (document.getElementById('t_manual_racik_5').checked == true) {
+              var h_manual5    = 1;
+            } else {
+              var h_manual5    = 0;
+            }
+        
+            if (jenis_5 == '') {
+              swal({
+                title: "Jenis Masih Kosong",
+                html: "<p>CEK LAGI</p>",
+                type: "error",
+                confirmButtonText: "OK"
+              });
+              return;
+            }
+        
+            if (namaracik_5 == '') {
+              swal({
+                title: "Nama Racik Masih Kosong",
+                html: "<p>CEK LAGI</p>",
+                type: "error",
+                confirmButtonText: "OK"
+              });
+              return;
+            }
+        
+            if (jumracik_5 == '') {
+              swal({
+                title: "Jumlah Masih Kosong",
+                html: "<p>CEK LAGI</p>",
+                type: "error",
+                confirmButtonText: "OK"
+              });
+              return;
+            }
+        
+            if (stajum_5 == '') {
+              swal({
+                title: "Pilihan Jumlah Masih Kosong",
+                html: "<p>CEK LAGI</p>",
+                type: "error",
+                confirmButtonText: "OK"
+              });
+              return;
+            }
+        
+            if (atpakai_5 == '') {
+              swal({
+                title: "Aturan Pakai Masih Kosong",
+                html: "<p>CEK LAGI</p>",
+                type: "error",
+                confirmButtonText: "OK"
+              });
+              return;
+            }
+        
+            var table5 = document.getElementById('datatble_racikan5');
+            var rowCount5 = table5.rows.length;
+            for (i = 1; i < rowCount5; i++) {
+              var kode5       = $('#koderacik_5' + i).val();
+              var nama5       = $('#nama_racik_5' + i).val();
+              var satuan5     = $('#satracik_5' + i).val();
+              var qty_jual5   = $('#qty_jualracik_5' + i).val();
+              var qty_racik5  = $('#qty_racik_racik_5' + i).val();
+              var harga_jual5 = $('#hargajualracik_5' + i).val();
+              var total5      = $('#total_hrg_racik_5' + i).val();
+              var jml5        = i;
+              $("#jml_racikan_5").val(jml5);
+            }
+        
+            var jmlx5            = $("#jml_racikan_5").val();
+            var toto_racikan_5  = Number(parseInt($("#toto_racikan_5").val().replaceAll(',', '')));
+            var disk_racik_5    = Number(parseInt($("#disk_racik_5").val().replaceAll(',', '')));
+            var ppn_5           = Number(parseInt($("#ppn_racik_5").val().replaceAll(',', '')));
+            var totp_racik_5    = Number(parseInt($("#totp_racik_5").val().replaceAll(',', '')));
+            var param           = "?toto_racikan_1=" + toto_racikan_1 + "&disk_racik_1=" + disk_racik_1 + "&totp_racik_1=" + totp_racik_1 + "&resman_racik_1=" + resman_1 + "&cek_rm1=" + h_manual + "&jml1=" + jmlx1 + "&harga_manual1=" + totalxx + 
+            "&toto_racikan_2=" + toto_racikan_2 + "&disk_racik_2=" + disk_racik_2 + "&totp_racik_2=" + totp_racik_2 + "&resman_racik_2=" + resman_2 + "&cek_rm2=" + h_manual2 + "&jml2=" + jmlx2 + "&harga_manual2=" + totalxx2 +
+            "&toto_racikan_3=" + toto_racikan_3 + "&disk_racik_3=" + disk_racik_3 + "&totp_racik_3=" + totp_racik_3 + "&resman_racik_3=" + resman_3 + "&cek_rm3=" + h_manual3 + "&jml3=" + jmlx3 + "&harga_manual3=" + totalxx3 +
+            "&toto_racikan_4=" + toto_racikan_4 + "&disk_racik_4=" + disk_racik_4 + "&totp_racik_4=" + totp_racik_4 + "&resman_racik_4=" + resman_4 + "&cek_rm4=" + h_manual4 + "&jml4=" + jmlx4 + "&harga_manual4=" + totalxx4 +
+            "&toto_racikan_5=" + toto_racikan_5 + "&disk_racik_5=" + disk_racik_5 + "&totp_racik_5=" + totp_racik_5 + "&resman_racik_5=" + resman_5 + "&cek_rm5=" + h_manual5 + "&jml5=" + jmlx5 + "&harga_manual5=" + totalxx5;
+          } else {
+            var param           = "?toto_racikan_1=" + toto_racikan_1 + "&disk_racik_1=" + disk_racik_1 + "&totp_racik_1=" + totp_racik_1 + "&resman_racik_1=" + resman_1 + "&cek_rm1=" + h_manual + "&jml1=" + jmlx1 + "&harga_manual1=" + totalxx + 
+            "&toto_racikan_2=" + toto_racikan_2 + "&disk_racik_2=" + disk_racik_2 + "&totp_racik_2=" + totp_racik_2 + "&resman_racik_2=" + resman_2 + "&cek_rm2=" + h_manual2 + "&jml2=" + jmlx2 + "&harga_manual2=" + totalxx2 +
+            "&toto_racikan_3=" + toto_racikan_3 + "&disk_racik_3=" + disk_racik_3 + "&totp_racik_3=" + totp_racik_3 + "&resman_racik_3=" + resman_3 + "&cek_rm3=" + h_manual3 + "&jml3=" + jmlx3 + "&harga_manual3=" + totalxx3 +
+            "&toto_racikan_4=" + toto_racikan_4 + "&disk_racik_4=" + disk_racik_4 + "&totp_racik_4=" + totp_racik_4 + "&resman_racik_4=" + resman_4 + "&cek_rm4=" + h_manual4 + "&jml4=" + jmlx4 + "&harga_manual4=" + totalxx4;
+          }
+        } else {
+          var param           = "?toto_racikan_1=" + toto_racikan_1 + "&disk_racik_1=" + disk_racik_1 + "&totp_racik_1=" + totp_racik_1 + "&resman_racik_1=" + resman_1 + "&cek_rm1=" + h_manual + "&jml1=" + jmlx1 + "&harga_manual1=" + totalxx + 
+          "&toto_racikan_2=" + toto_racikan_2 + "&disk_racik_2=" + disk_racik_2 + "&totp_racik_2=" + totp_racik_2 + "&resman_racik_2=" + resman_2 + "&cek_rm2=" + h_manual2 + "&jml2=" + jmlx2 + "&harga_manual2=" + totalxx2 +
+          "&toto_racikan_3=" + toto_racikan_3 + "&disk_racik_3=" + disk_racik_3 + "&totp_racik_3=" + totp_racik_3 + "&resman_racik_3=" + resman_3 + "&cek_rm3=" + h_manual3 + "&jml3=" + jmlx3 + "&harga_manual3=" + totalxx3;
+        }
       } else {
         var param           = "?toto_racikan_1=" + toto_racikan_1 + "&disk_racik_1=" + disk_racik_1 + "&totp_racik_1=" + totp_racik_1 + "&resman_racik_1=" + resman_1 + "&cek_rm1=" + h_manual + "&jml1=" + jmlx1 + "&harga_manual1=" + totalxx + 
         "&toto_racikan_2=" + toto_racikan_2 + "&disk_racik_2=" + disk_racik_2 + "&totp_racik_2=" + totp_racik_2 + "&resman_racik_2=" + resman_2 + "&cek_rm2=" + h_manual2 + "&jml2=" + jmlx2 + "&harga_manual2=" + totalxx2;

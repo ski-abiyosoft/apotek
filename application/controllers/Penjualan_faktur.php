@@ -724,7 +724,7 @@ class Penjualan_faktur extends CI_Controller{
 			}
 
 			// if($hresep->rekmed=="Non Member"){
-			// 	if($posting->nokwitansi<>'' || $posting->nokwitansi<> null){
+			// 	if($posting->nokwitansi<>'' || $posting->nokwitansi<table> null){
 			// 		$link = "<b style='color: green; font-size: 20px; border: solid 3px green;'>LUNAS</b>";
 			// 	} else {
 			// 		$link = "<b style='color: red; font-size: 20px; border: solid 3px red;'>BELUM LUNAS</b>";
@@ -974,6 +974,7 @@ class Penjualan_faktur extends CI_Controller{
 			$dresep				= $this->db->query("SELECT (SELECT aponame FROM tbl_barangsetup b where a.atpakai=b.apocode limit 1 )ap,a.*  FROM tbl_apodresep a WHERE resepno = '$param' AND koders = '$unit'")->result();
 			$racik				= $this->db->query("SELECT (SELECT aponame FROM tbl_barangsetup b where a.aturanpakai=b.apocode )ap,a.*  FROM tbl_aporacik a WHERE resepno = '$param' AND koders = '$unit'")->row();
 			$racik_res				= $this->db->query("SELECT (SELECT aponame FROM tbl_barangsetup b where a.aturanpakai=b.apocode )ap,a.*  FROM tbl_aporacik a WHERE resepno = '$param' AND koders = '$unit'")->result();
+			
 			$cekracik			= $this->db->query("SELECT * FROM tbl_aporacik WHERE resepno = '$param' AND koders = '$unit'")->num_rows();
 			$detresep			= $this->db->query("SELECT * FROM tbl_apodetresep WHERE resepno = '$param' AND koders = '$unit'")->result();
 			if($pasien){
@@ -1122,16 +1123,42 @@ class Penjualan_faktur extends CI_Controller{
 			$ppn_resep1    = $dpp_resep1 * $pajak;
 			// resep racik
 			// jika ada
+			
+			$body .= "</table>";
+			
 			if($cekracik > 0) 
 			{
+				$body .= "<table style=\"border-collapse:collapse;font-family: tahoma; font-size:12px\" width=\"100%\" align=\"center\" border=\"0\" cellpadding=\"5\" cellmargin=\"5\">
+					<tr>
+						<td>&nbsp;</td>
+					</tr>
+				</table>";
+				$body .= "<table style=\"border-collapse:collapse;font-family: tahoma; font-size:12px\" width=\"100%\" align=\"center\" border=\"0\" cellpadding=\"5\" cellmargin=\"5\">
+					<tr>
+						<td>&nbsp;</td>
+					</tr>
+				</table>";
+				$body .= "<table style=\"border-collapse:collapse;font-family: tahoma; font-size:12px\" width=\"100%\" align=\"center\" border=\"1\" cellpadding=\"5\" cellmargin=\"5\">";
+				$body .= "<tr>
+					<th bgcolor=\"#cccccc\">No</th>
+					<th bgcolor=\"#cccccc\">Resep No</th>
+					<th bgcolor=\"#cccccc\">Nama Obat</th>
+					<th bgcolor=\"#cccccc\">Aturan Pakai</th>
+					<th bgcolor=\"#cccccc\">Jumlah</th>
+					<th bgcolor=\"#cccccc\">Harga Satuan</th>
+					<th bgcolor=\"#cccccc\">Diskon</th>
+					<th bgcolor=\"#cccccc\">Total Rp</th>
+				</tr>";
 				$jum_racik1       = 0;
 				$sub_racik1       = 0;
 				$diskon_racik1    = 0;
 				$total_racik1     = 0;
+				$tsemuax          = 0;
 
+				$nox = 1;
 				foreach($racik_res as $racik){
 					$jum_racik = $racik->jumlahracik;
-					if((int)$racik->harga_manual > 0){
+					if((int)$racik->cek_rm > 0){
 						$harga_total = (int)$racik->harga_manual;
 					} else {
 						$harga_total = (int)$racik->totalrp;
@@ -1147,7 +1174,7 @@ class Penjualan_faktur extends CI_Controller{
 						$diskon 	= ceil($racik->diskonrp);
 					}
 					$body .= "<tr>
-						<td style=\"text-align: right;\">".$no."</td>
+						<td style=\"text-align: right;\">".$nox."</td>
 						<td style=\"text-align: left;\">$racik->resepno</td>
 						<td style=\"text-align: left;\"><span style=\"color:red;\">** $racik->namaracikan</span> </td>
 						<td style=\"text-align: center;\">$racik->ap</td>
@@ -1158,11 +1185,6 @@ class Penjualan_faktur extends CI_Controller{
 					</tr>";
 
 					// racik
-					if((int)$racik->harga_manual > 0){
-						$harga_total = $racik->harga_manual;
-					} else {
-						$harga_total = $racik->totalrp;
-					}
 					$satuan       = $harga_total / $racik->jumlahracik;
 
 					$sub_racik       = ceil($satuan);
@@ -1172,17 +1194,19 @@ class Penjualan_faktur extends CI_Controller{
 					$jum_racik1    += $jum_racik;
 					$sub_racik1    += $sub_racik;
 					$diskon_racik1 += $diskon_racik;
-					$total_racik1  += $total_racik;
+					// $total_racik1  += $total_racik;					
+					$tsemuax       += $harga_total;
 
 					if($cekpdf == 1) {
 						$jum_racik1   = number_format($jum_racik1);
 						$sub_racik2   = number_format($sub_racik1);
-						$total_racik1 = number_format($total_racik1);
+						$total_racik1 = number_format($tsemuax);
 					} else {
 						$jum_racik1   = ceil($jum_racik1);
 						$sub_racik2   = ceil($sub_racik1);
-						$total_racik1 = ceil($total_racik1);
+						$total_racik1 = ceil($tsemuax);
 					}
+					$nox++;
 
 				}
 
@@ -1198,9 +1222,10 @@ class Penjualan_faktur extends CI_Controller{
 					
 			} else {
 				$jum_racik = 0;
+				$tsemuax = 0;
 			}
 
-			$body .= "</table>";
+			// $body .= "</table>";
 
 			// space
 			$body .= "<table style=\"border-collapse:collapse;font-family: tahoma; font-size:12px\" width=\"100%\" align=\"center\" border=\"0\" cellpadding=\"5\" cellmargin=\"5\">
@@ -1218,26 +1243,29 @@ class Penjualan_faktur extends CI_Controller{
 			}
 
 			// if($hresep->rekmed=="Non Member"){
-			// 	if($posting->nokwitansi<>'' || $posting->nokwitansi<> null){
+			// 	if($posting->nokwitansi<>'' || $posting->nokwitansi<table> null){
 			// 		$link = "<b style='color: green; font-size: 20px; border: solid 3px green;'>LUNAS</b>";
 			// 	} else {
 			// 		$link = "<b style='color: red; font-size: 20px; border: solid 3px red;'>BELUM LUNAS</b>";
 			// 	}
 			// }else{
-				$link="";
+					$link="";
 			// }
 			
 			if($cekracik > 0){
+				$tsemua = 0;
+
 				$dpp_racik3    = 0;
 				$ppn_racik3    = 0;
 				$total_racik3  = 0;
 
 				foreach($racik_res as $racik){	
-					if((int)$racik->harga_manual > 0){
+					if((int)$racik->cek_rm > 0){
 						$harga_total = $racik->harga_manual;
 					} else {
 						$harga_total = $racik->totalrp;
 					}
+					$tsemua += $harga_total;
 
 					$dpp_racik1    = $harga_total / (111 / 100);
 					$ppn_racik1    = $dpp_racik1 * $pajak;
@@ -1281,6 +1309,7 @@ class Penjualan_faktur extends CI_Controller{
 					</tr>
 				</table>";
 			} else {
+				$tsemua = 0;
 				$body .= "<table style=\"border-collapse:collapse;font-family: tahoma; font-size:12px;\" width=\"100%\" align=\"center\" border=\"0\" cellpadding=\"5\" cellmargin=\"5\">
 					<tr>
 						<td width=\"50%\" style=\"text-align: right;\" colspan=\"3\">$link</td>
@@ -1299,17 +1328,9 @@ class Penjualan_faktur extends CI_Controller{
 				</tr>
 			</table>";
 			// total
-			if($cekracik > 0){
-				if((int)$racik->harga_manual > 0){
-					$racikan = $racik->harga_manual;
-				} else {
-					$racikan = $racik->totalrp;
-				}
-			} else {
-				$racikan = 0;
-			}
+
 			$resepan = $total_resep1;
-			$total_semua1 = $racikan + $resepan;
+			$total_semua1 = $tsemua + $resepan;
 			if($cekpdf == 1){
 				$total_semua = number_format($total_semua1);
 			} else {
@@ -1398,107 +1419,113 @@ class Penjualan_faktur extends CI_Controller{
 	public function cetak2_nota() 
 	{
 		setlocale(LC_ALL, 'id_ID.utf8');
-		$cek       = $this->session->userdata('level');
-		$unit      = $this->session->userdata('unit');
-		$user      = $this->session->userdata('username');
-		$nobukti   = $this->input->get('nobukti');
-		$cekpdf    = 1;
-		$body      = '';
-		$date      = '';
-		$judul     = 'Nota Pengeluaran';
-		$profile   = data_master('tbl_namers', array('koders' => $unit));
-		$kota      = $profile->kota;
-		$position  = 'P';
-		$kop       = $this->M_cetak->kop($unit);
-		$avatar    = $this->session->userdata('avatar_cabang');
-		$profile   = data_master('tbl_namers', array('koders' => $unit));
-		$h_namars    = $kop['namars'];
-		$h_alamat    = $kop['alamat'];
-		$h_alamat2   = $kop['alamat2'];
-		$h_alamat3   = $profile->kota;
-		$h_kota      = $kop['kota'];
-		$h_phone     = $kop['phone'];
-		$h_whatsapp  = $kop['whatsapp'];
-		$h_npwp      = $kop['npwp'];
+		$cek       		= $this->session->userdata('level');
+		$unit      		= $this->session->userdata('unit');
+		$user      		= $this->session->userdata('username');
+		$nobukti   		= $this->input->get('nobukti');
+		$cekpdf    		= 1;
+		$body      		= '';
+		$date      		= '';
+		$judul     		= 'Nota Pengeluaran';
+		$profile   		= data_master('tbl_namers', array('koders' => $unit));
+		$kota      		= $profile->kota;
+		$position  		= 'P';
+		$kop       		= $this->M_cetak->kop($unit);
+		$avatar    		= $this->session->userdata('avatar_cabang');
+		$profile   		= data_master('tbl_namers', array('koders' => $unit));
+		$h_namars    	= $kop['namars'];
+		$h_alamat    	= $kop['alamat'];
+		$h_alamat2   	= $kop['alamat2'];
+		$h_alamat3   	= $profile->kota;
+		$h_kota      	= $kop['kota'];
+		$h_phone     	= $kop['phone'];
+		$h_whatsapp  	= $kop['whatsapp'];
+		$h_npwp      	= $kop['npwp'];
 
 		if (!empty($cek)) {
 			$param        = $this->input->get('nobukti');
 			$hresep				= $this->db->query("SELECT (CASE WHEN a.kodepel='adr'  THEN 'Dengan Resep' ELSE 'Tanpa Resep' END  )nmpel ,a.* FROM tbl_apohresep a WHERE resepno = '$param'")->row();
 			$posting			= $this->db->query("SELECT * FROM tbl_apoposting WHERE resepno = '$param'")->row();
-			$userid			= $this->db->query("SELECT * FROM userlogin WHERE uidlogin = '$posting->username'")->row();
+			$userid				= $this->db->query("SELECT * FROM userlogin WHERE uidlogin = '$posting->username'")->row();
 			$pasien				= $this->db->query("SELECT (select cust_nama from tbl_penjamin b where b.cust_id=a.penjamin)nm_penjamin,a.* FROM tbl_pasien a WHERE rekmed = '$hresep->rekmed'")->row();
 			$dresep				= $this->db->query("SELECT (SELECT aponame FROM tbl_barangsetup b where a.atpakai=b.apocode limit 1 )ap,a.*  FROM tbl_apodresep a WHERE resepno = '$param' AND koders = '$unit'")->result();
+			$dresep_jml		= $this->db->query("SELECT (SELECT aponame FROM tbl_barangsetup b where a.atpakai=b.apocode limit 1 )ap,a.*  FROM tbl_apodresep a WHERE resepno = '$param' AND koders = '$unit'")->num_rows();
 			$racik				= $this->db->query("SELECT (SELECT aponame FROM tbl_barangsetup b where a.aturanpakai=b.apocode )ap,a.*  FROM tbl_aporacik a WHERE resepno = '$param' AND koders = '$unit'")->row();
-			$racik_res				= $this->db->query("SELECT (SELECT aponame FROM tbl_barangsetup b where a.aturanpakai=b.apocode )ap,a.*  FROM tbl_aporacik a WHERE resepno = '$param' AND koders = '$unit'")->result();
+			$racik_res		= $this->db->query("SELECT (SELECT aponame FROM tbl_barangsetup b where a.aturanpakai=b.apocode )ap,a.*  FROM tbl_aporacik a WHERE resepno = '$param' AND koders = '$unit'")->result();
 			$cekracik			= $this->db->query("SELECT * FROM tbl_aporacik WHERE resepno = '$param' AND koders = '$unit'")->num_rows();
 			$detresep			= $this->db->query("SELECT * FROM tbl_apodetresep WHERE resepno = '$param' AND koders = '$unit'")->result();
-			if($pasien){
-
+			if($pasien) {
 				$namapas    = $pasien->namapas;
 				$rekmed     = $pasien->rekmed;
 				$alamat     = $pasien->alamat;
 				$penjamin   = $pasien->nm_penjamin;
 				$nocard     = $pasien->nocard;
 				$handphone  = $pasien->handphone;
-			}else{
+			} else {
 				$namapas= $posting->namapas;
 				$rekmed = 'Non Member';
 				$alamat = $hresep->alamat;
 			}
 
+			// header
 			$body .= "<table style=\"border-collapse:collapse;font-family: Century Gothic; font-size:10px; color:#000;\" width=\"100%\" border=\"0\" >
-			<thead>
 				<tr>
-				
 					<td rowspan=\"7\" align=\"center\">
-							<img src=\"" . base_url() . "assets/img_user/$avatar\"  width=\"70\" height=\"70\" /></td>
+						<img src=\"" . base_url() . "assets/img_user/$avatar\"  width=\"70\" height=\"70\" /></td>
 					</td>
 				</tr>
 				<tr>
 					<td colspan=\"5\">
 						<tr>
-								<td align=\"center\" style=\"font-size:8px;border-bottom: none;\"><b><br>$h_namars</b></td>
+							<td align=\"center\" style=\"font-size:8px;border-bottom: none;\"><b><br>$h_namars</b></td>
 						</tr>
 						<tr>
-								<td align=\"center\" style=\"font-size:7px;\">$h_alamat</td>
+							<td align=\"center\" style=\"font-size:7px;\">$h_alamat</td>
 						</tr>
 						<tr>
-								<td align=\"center\" style=\"font-size:7px;\">$h_alamat2</td>
+							<td align=\"center\" style=\"font-size:7px;\">$h_alamat2</td>
 						</tr>
 						<tr>
-								<td align=\"center\" style=\"font-size:7px;\">Wa :$h_whatsapp    Telp :$h_phone </td>
+							<td align=\"center\" style=\"font-size:7px;\">Wa :$h_whatsapp    Telp :$h_phone </td>
 						</tr>
 						<tr>
-								<td align=\"center\" style=\"font-size:7px;\">No. NPWP : $h_npwp</td>
+							<td align=\"center\" style=\"font-size:7px;\">No. NPWP : $h_npwp</td>
 						</tr>
 					</td>
 				</tr>
 			</table>";
-			$body .= "
-					<table style=\"border-collapse:collapse;font-family: tahoma; font-size:5px\" width=\"100%\" align=\"center\" border=\"0\">
-								<tr>
-										<td> &nbsp; </td>
-								</tr> 
-					</table>";
+
+			// space
+			$body .= "<table style=\"border-collapse:collapse;font-family: tahoma; font-size:5px\" width=\"100%\" align=\"center\" border=\"0\">
+				<tr>
+					<td>&nbsp;</td>
+				</tr> 
+			</table>";
 			
+			// border
 			$body .= "
-					<table style=\"border-collapse:collapse;font-family: tahoma; font-size:2px\" width=\"100%\" align=\"center\" border=\"1\">     
+               <table style=\"border-collapse:collapse;font-family: tahoma; font-size:2px\" width=\"100%\" align=\"center\" border=\"1\">     
+                    <tr>
+                         <td style=\"border-top: none;border-right: none;border-left: none;\"></td>
+                    </tr> 
+               </table>";
+			$body .= "
+				<table style=\"border-collapse:collapse;font-family: tahoma; font-size:2px\" width=\"100%\" align=\"center\" border=\"1\">     
 						<tr>
 							<td style=\"border-top: none;border-right: none;border-left: none;\"></td>
 						</tr> 
-					</table>";
-
-			$body .= "
-			<table style=\"border-collapse:collapse;font-family: tahoma; font-size:5px\" width=\"100%\" align=\"center\" border=\"0\">
-						<tr>
-								<td> &nbsp; </td>
-						</tr> 
+				</table>";
+			
+			   // space
+			$body .= "<table style=\"border-collapse:collapse;font-family: tahoma; font-size:5px\" width=\"100%\" align=\"center\" border=\"0\">
+			<tr>
+				<td>&nbsp;</td>
+			</tr> 
 			</table>";
-			// header
-			// $date 				= new DateTime($hresep->tglresep);
-			// $tglresep 		= strftime('%A, %d %B %Y', $date->getTimestamp());
-			$date 			= substr($hresep->tglresep,0,10);
+
+			$date 				= substr($hresep->tglresep,0,10);
 			$tglresep 		= $this->M_cetak->tanggal_format_indonesia($date);
+
 			$body .= "<table style=\"border-collapse:collapse;font-family: tahoma; font-size:8px\" width=\"100%\" align=\"center\" border=\"0\">
 				<tr>
 					<td width=\"17%\">No. Resep</td>
@@ -1510,7 +1537,6 @@ class Penjualan_faktur extends CI_Controller{
 					<td width=\"25%\">$tglresep</td>
 				</tr>
 				<tr>
-				
 					<td width=\"17%\">No. Member</td>
 					<td width=\"3%\">:</td>
 					<td width=\"25%\"><b>$rekmed</b></td>
@@ -1528,9 +1554,8 @@ class Penjualan_faktur extends CI_Controller{
 					<td width=\"3%\">:</td>
 					<td width=\"25%\">$alamat</td>
 				</tr>";
-			if($pasien){
-			$body .= "
-				<tr>
+			if($pasien) {
+				$body .= "<tr>
 					<td width=\"17%\">Penjamin</td>
 					<td width=\"3%\">:</td>
 					<td width=\"25%\">$penjamin</td>
@@ -1548,108 +1573,124 @@ class Penjualan_faktur extends CI_Controller{
 			}
 
 			$body .= "</table>";
+
 			// space
 			$body .= "<table style=\"border-collapse:collapse;font-family: tahoma; font-size:8px\" width=\"100%\" align=\"center\" border=\"0\" cellpadding=\"5\" cellmargin=\"5\">
 				<tr>
 					<td>&nbsp;</td>
 				</tr>
 			</table>";
-			// detail 
-			$body .= "<table style=\"border-collapse:collapse;font-family: tahoma; font-size:10px\" width=\"100%\" align=\"center\" border=\"1\" cellpadding=\"5\" cellmargin=\"5\">";
-			$body .= "<tr>
-				<th bgcolor=\"#cccccc\">No</th>
-				<th bgcolor=\"#cccccc\">Kode Obat</th>
-				<th bgcolor=\"#cccccc\">Nama Obat</th>
-				<th bgcolor=\"#cccccc\">Aturan Pakai</th>
-				<th bgcolor=\"#cccccc\">Jumlah</th>
-				<th bgcolor=\"#cccccc\">Harga Satuan</th>
-				<th bgcolor=\"#cccccc\">Diskon</th>
-				<th bgcolor=\"#cccccc\">Total Rp</th>
-			</tr>";
-			// isi resep
-			$no              = 1;
-			$jum_resep       = 0;
-			$sub_resep1      = 0;
-			$diskon_resep1   = 0;
-			$total_resep1    = 0;
-			$price1          = 0;
-			foreach($dresep as $d) {
-				$jum_resep       += $d->qty;
-				$sub_resep1      += ($d->qty * $d->price);
-				$diskon_resep1   += ($d->discrp);
-				$total_resep1    += ($d->totalrp);
-				$price1          += ($d->price);
+
+			if($dresep_jml > 0) {
+				// detail 
+				$body .= "<table style=\"border-collapse:collapse;font-family: tahoma; font-size:10px\" width=\"100%\" align=\"center\" border=\"1\" cellpadding=\"5\" cellmargin=\"5\">
+				<tr>
+					<th>No</th>
+					<th>Kode</th>
+					<th>Nama</th>
+					<th>At Pakai</th>
+					<th>Jumlah</th>
+					<th>Harga Satuan</th>
+					<th>Diskon</th>
+					<th>Total Rp</th>
+				</tr>";
+				// isi resep
+				$no              = 1;
+				$jum_resep       = 0;
+				$sub_resep1      = 0;
+				$diskon_resep1   = 0;
+				$total_resep1    = 0;
+				$price1          = 0;
+				foreach($dresep as $d) {
+					$jum_resep       += $d->qty;
+					$sub_resep1      += ($d->qty * $d->price);
+					$diskon_resep1   += ($d->discrp);
+					$total_resep1    += ($d->totalrp);
+					$price1          += ($d->price);
+					if($cekpdf == 1){
+						$qty        = number_format($d->qty);
+						$price      = number_format($d->price);
+						$discrp     = number_format($d->discrp);
+						$totalrp    = number_format($d->totalrp);
+					} else {
+						$qty        = ceil($d->qty);
+						$price      = ceil($d->price);
+						$discrp     = ceil($d->discrp);
+						$totalrp    = ceil($d->totalrp);
+					}
+					$body .= "<tr>
+						<td style=\"text-align: right;\">".$no++."</td>
+						<td style=\"text-align: left;\">$d->kodebarang</td>
+						<td style=\"text-align: left;\">$d->namabarang</td>
+						<td style=\"text-align: center;\">$d->ap</td>
+						<td style=\"text-align: center;\">$qty</td>
+						<td style=\"text-align: right;\">$price</td>
+						<td style=\"text-align: right;\">$discrp</td>
+						<td style=\"text-align: right;\">$totalrp</td>
+					</tr>";
+				}
 				if($cekpdf == 1){
-					$qty        = number_format($d->qty);
-					$price      = number_format($d->price);
-					$discrp     = number_format($d->discrp);
-					$totalrp    = number_format($d->totalrp);
+					$jum_obat       = number_format($jum_resep);
+					$diskon_resep   = number_format($diskon_resep1);
+					$total_resep    = number_format($total_resep1);
+					$jum_price      = number_format($price1);
 				} else {
-					$qty        = ceil($d->qty);
-					$price      = ceil($d->price);
-					$discrp     = ceil($d->discrp);
-					$totalrp    = ceil($d->totalrp);
+					$jum_obat       = ceil($jum_resep);
+					$diskon_resep   = ceil($diskon_resep1);
+					$total_resep    = ceil($total_resep1);
+					$jum_price      = ceil($price1);
 				}
 				$body .= "<tr>
-					<td style=\"text-align: right;\">".$no++."</td>
-					<td style=\"text-align: left;\">$d->kodebarang</td>
-					<td style=\"text-align: left;\">$d->namabarang</td>
-					<td style=\"text-align: center;\">$d->ap</td>
-					<td style=\"text-align: center;\">$qty</td>
-					<td style=\"text-align: right;\">$price</td>
-					<td style=\"text-align: right;\">$discrp</td>
-					<td style=\"text-align: right;\">$totalrp</td>
+					<td colspan=\"4\" style=\"text-align: center;\"><b>Total Resep</b></td>
+					<td style=\"text-align: center;\"><b>$jum_obat</b></td>
+					<td style=\"text-align: right;\"><b>$jum_price</b></td>
+					<td style=\"text-align: right;\"><b>$diskon_resep</b></td>
+					<td style=\"text-align: right;\"><b>$total_resep</b></td>
 				</tr>";
-			}
-			// resep
-			if($cekpdf == 1){
-				$jum_obat       = number_format($jum_resep);
-				$diskon_resep   = number_format($diskon_resep1);
-				$total_resep    = number_format($total_resep1);
-				$jum_price      = number_format($price1);
+				$body .= "</table>";
 			} else {
-				$jum_obat       = ceil($jum_resep);
-				$diskon_resep   = ceil($diskon_resep1);
-				$total_resep    = ceil($total_resep1);
-				$jum_price      = ceil($price1);
+				$total_resep1 = 0;
 			}
-			$body .= "<tr>
-					<td bgcolor=\"#eeeff1\" colspan=\"4\" style=\"text-align: center;\"><b>Total Resep</b></td>
-					<td bgcolor=\"#eeeff1\" style=\"text-align: center;\"><b>$jum_obat</b></td>
-					<td bgcolor=\"#eeeff1\" style=\"text-align: right;\"><b>$jum_price</b></td>
-					<td bgcolor=\"#eeeff1\" style=\"text-align: right;\"><b>$diskon_resep</b></td>
-					<td bgcolor=\"#eeeff1\" style=\"text-align: right;\"><b>$total_resep</b></td>
-				</tr>";	
-				
+
+			// resep
 			$ppn           = $this->db->query("SELECT * FROM tbl_pajak WHERE kodetax = 'PPN'")->row();
 			$pajak         = (int)$ppn->prosentase / 100;
 			$dpp_resep1    = $total_resep1 / (111 / 100);
 			$ppn_resep1    = $dpp_resep1 * $pajak;
-			// resep racik
-			// jika ada
-			if($cekracik > 0) 
-			{
+
+			// racik
+			if($cekracik > 0) {
+				$body .= "<table style=\"border-collapse:collapse;font-family: tahoma; font-size:10px\" width=\"100%\" align=\"center\" border=\"1\" cellpadding=\"5\" cellmargin=\"5\">
+				<tr>
+					<th bgcolor=\"#cccccc\">No</th>
+					<th bgcolor=\"#cccccc\">Resep No</th>
+					<th bgcolor=\"#cccccc\">Nama Obat</th>
+					<th bgcolor=\"#cccccc\">Aturan Pakai</th>
+					<th bgcolor=\"#cccccc\">Jumlah</th>
+					<th bgcolor=\"#cccccc\">Harga Satuan</th>
+					<th bgcolor=\"#cccccc\">Diskon</th>
+					<th bgcolor=\"#cccccc\">Total Rp</th>
+				</tr>";
 				$jum_racik1       = 0;
 				$sub_racik1       = 0;
 				$diskon_racik1    = 0;
 				$total_racik1     = 0;
-
-				foreach($racik_res as $racik){
-					$jum_racik = $racik->jumlahracik;
-					if((int)$racik->harga_manual > 0){
-						$harga_total = (int)$racik->harga_manual;
+				foreach($racik_res as $racik) {
+					$jum_racik 			= $racik->jumlahracik;
+					if((int)$racik->harga_manual > 0) {
+						$harga_total 	= (int)$racik->harga_manual;
 					} else {
-						$harga_total = (int)$racik->totalrp;
+						$harga_total 	= (int)$racik->totalrp;
 					}
-					$harga_satuan = $harga_total / (int)$racik->jumlahracik;
-					if($cekpdf == 1){
-						$total 		= number_format($harga_total);
-						$satuan 	= number_format($harga_satuan);
-						$diskon 	= number_format($racik->diskonrp);
+					$harga_satuan 	= $harga_total / (int)$racik->jumlahracik;
+					if($cekpdf == 1) {
+						$total 				= number_format($harga_total);
+						$satuan 			= number_format($harga_satuan);
+						$diskon 			= number_format($racik->diskonrp);
 					} else {
-						$total 		= ceil($harga_total);
-						$satuan 	= ceil($harga_satuan);
-						$diskon 	= ceil($racik->diskonrp);
+						$total 				= ceil($harga_total);
+						$satuan 			= ceil($harga_satuan);
+						$diskon 			= ceil($racik->diskonrp);
 					}
 					$body .= "<tr>
 						<td style=\"text-align: right;\">".$no."</td>
@@ -1663,22 +1704,19 @@ class Penjualan_faktur extends CI_Controller{
 					</tr>";
 
 					// racik
-					if((int)$racik->harga_manual > 0){
-						$harga_total = $racik->harga_manual;
+					if((int)$racik->harga_manual > 0) {
+						$harga_total 	= $racik->harga_manual;
 					} else {
-						$harga_total = $racik->totalrp;
+						$harga_total 	= $racik->totalrp;
 					}
-					$satuan       = $harga_total / $racik->jumlahracik;
-
-					$sub_racik       = ceil($satuan);
-					$diskon_racik    = ceil($racik->diskonrp);
-					$total_racik     = ceil($harga_total);
-
+					$satuan       	= $harga_total / $racik->jumlahracik;
+					$sub_racik      = ceil($satuan);
+					$diskon_racik   = ceil($racik->diskonrp);
+					$total_racik    = ceil($harga_total);
 					$jum_racik1    += $jum_racik;
 					$sub_racik1    += $sub_racik;
 					$diskon_racik1 += $diskon_racik;
 					$total_racik1  += $total_racik;
-
 					if($cekpdf == 1) {
 						$jum_racik1   = number_format($jum_racik1);
 						$sub_racik2   = number_format($sub_racik1);
@@ -1688,24 +1726,19 @@ class Penjualan_faktur extends CI_Controller{
 						$sub_racik2   = ceil($sub_racik1);
 						$total_racik2 = ceil($total_racik1);
 					}
-
+					$no++;
 				}
-
-				
-
 				$body .= "<tr>
 					<td bgcolor=\"#eeeff1\" colspan=\"4\" style=\"text-align: center;\"><b>Total Racik</b></td>
 					<td bgcolor=\"#eeeff1\" style=\"text-align: center;\"><b>$jum_racik1</b></td>
 					<td bgcolor=\"#eeeff1\" style=\"text-align: right;\"><b>$sub_racik2</b></td>
 					<td bgcolor=\"#eeeff1\" style=\"text-align: right;\"><b>$diskon_racik1</b></td>
 					<td bgcolor=\"#eeeff1\" style=\"text-align: right;\"><b>$total_racik2</b></td>
-				</tr>";	
-					
+				</tr>";
+				$body .= "</table>";
 			} else {
 				$jum_racik = 0;
 			}
-
-			$body .= "</table>";
 
 			// space
 			$body .= "<table style=\"border-collapse:collapse;font-family: tahoma; font-size:8px\" width=\"100%\" align=\"center\" border=\"0\" cellpadding=\"5\" cellmargin=\"5\">
@@ -1713,6 +1746,7 @@ class Penjualan_faktur extends CI_Controller{
 					<td>&nbsp;</td>
 				</tr>
 			</table>";
+
 			// aritmatika
 			if($cekpdf == 1) {
 				$dpp_resep = number_format($dpp_resep1);
@@ -1721,53 +1755,37 @@ class Penjualan_faktur extends CI_Controller{
 				$dpp_resep = ceil($dpp_resep1);
 				$ppn_resep = ceil($ppn_resep1);
 			}
-
-			// if($hresep->rekmed=="Non Member"){
-			// 	if($posting->nokwitansi<>'' || $posting->nokwitansi<> null){
-			// 		$link = "<b style='color: green; font-size: 20px; border: solid 3px green;'>LUNAS</b>";
-			// 	} else {
-			// 		$link = "<b style='color: red; font-size: 20px; border: solid 3px red;'>BELUM LUNAS</b>";
-			// 	}
-			// }else{
-				$link="";
-			// }
 			
 			if($cekracik > 0){
-				$dpp_racik3    = 0;
-				$ppn_racik3    = 0;
-				$total_racik3  = 0;
-
+				$dpp_racik3   = 0;
+				$ppn_racik3   = 0;
+				$total_racik3 = 0;
+				$tsemua       = 0;
 				foreach($racik_res as $racik){	
-					if((int)$racik->harga_manual > 0){
+					if((int)$racik->cek_rm > 0){
 						$harga_total = $racik->harga_manual;
 					} else {
 						$harga_total = $racik->totalrp;
 					}
-
+					$tsemua 			+= $harga_total;
 					$dpp_racik1    = $harga_total / (111 / 100);
 					$ppn_racik1    = $dpp_racik1 * $pajak;
-
 					$dpp_racik2    = ceil($dpp_racik1);
 					$ppn_racik2    = ceil($ppn_racik1);
-
 					$dpp_racik3    += $dpp_racik2;
 					$ppn_racik3    += $ppn_racik2;
-
 					if($cekpdf == 1) {
-						$dpp_racik       = number_format($dpp_racik3);
-						$ppn_racik       = number_format($ppn_racik3);
+						$dpp_racik    = number_format($dpp_racik3);
+						$ppn_racik    = number_format($ppn_racik3);
 					} else {
-						$dpp_racik       = ceil($dpp_racik3);
-						$ppn_racik       = ceil($ppn_racik3);
-					}
-					
+						$dpp_racik    = ceil($dpp_racik3);
+						$ppn_racik    = ceil($ppn_racik3);
+					}	
 				}
-
 				$body .= "<table style=\"border-collapse:collapse;font-family: tahoma; font-size:8px;\" width=\"100%\" align=\"center\" border=\"0\" cellpadding=\"5\" cellmargin=\"5\">
 					<tr>
-						<td width=\"100%\" style=\"text-align: right;\" colspan=\"6\">$link</td>
+						<td width=\"100%\" style=\"text-align: right;\" colspan=\"6\"></td>
 					</tr>
-					
 					<tr>
 						<td width=\"33%\" style=\"text-align: right;\">DPP Resep</td>
 						<td width=\"2%\">:</td>
@@ -1786,9 +1804,10 @@ class Penjualan_faktur extends CI_Controller{
 					</tr>
 				</table>";
 			} else {
+				$tsemua = 0;
 				$body .= "<table style=\"border-collapse:collapse;font-family: tahoma; font-size:8px;\" width=\"100%\" align=\"center\" border=\"0\" cellpadding=\"5\" cellmargin=\"5\">
 					<tr>
-						<td width=\"50%\" style=\"text-align: right;\" colspan=\"3\">$link</td>
+						<td width=\"50%\" style=\"text-align: right;\" colspan=\"3\"></td>
 					</tr>
 					<tr>
 						<td width=\"83%\" style=\"text-align: right;\">PPN Resep</td>
@@ -1804,23 +1823,13 @@ class Penjualan_faktur extends CI_Controller{
 				</tr>
 			</table>";
 			// total
-			if($cekracik > 0){
-				if((int)$racik->harga_manual > 0){
-					$racikan = $racik->harga_manual;
-				} else {
-					$racikan = $racik->totalrp;
-				}
-			} else {
-				$racikan = 0;
-			}
-			$resepan = $total_resep1;
-			$total_semua1 = $racikan + $resepan;
+			$resepan 				= $total_resep1;
+			$total_semua1 	= $tsemua + $resepan;
 			if($cekpdf == 1){
-				$total_semua = number_format($total_semua1);
+				$total_semua 	= number_format($total_semua1);
 			} else {
-				$total_semua = ceil($total_semua1);
+				$total_semua 	= ceil($total_semua1);
 			}
-			
 			$body .= "<table style=\"border-collapse:collapse;font-family: tahoma; font-size:10px; font-weight: bold;\" width=\"100%\" align=\"center\" border=\"0\" cellpadding=\"5\" cellmargin=\"5\">
 				<tr>
 					<td width=\"50%\">&nbsp;</td>
@@ -1838,27 +1847,26 @@ class Penjualan_faktur extends CI_Controller{
 
 			// tanda tangan
 			$body .= "<table style=\"border-collapse:collapse;font-family: tahoma; font-size:8px\" width=\"100%\" align=\"center\" border=\"0\" cellpadding=\"5\" cellmargin=\"5\">
-			<tr>
-				<td width=\"50%\" style=\"text-align:center;\"> &nbsp; </td>
-				<td width=\"50%\" style=\"text-align:center;\"><b>$kota, $tglresep</b></td>
-			</tr> 
-			<tr>
-				<td width=\"50%\" style=\"text-align:center;\"> &nbsp; </td>
-				<td width=\"50%\" style=\"text-align:center; font-size:10px;\"><b>$h_namars</b></td>
-			</tr> 
-			<tr>
-				<td style=\"text-align: center;\"><b>Pasien</b></td>
-				<td style=\"text-align: center;\"><b>Kasir</b></td>
-			</tr>
-			<tr>
-				<td>&nbsp;</td>
-				<td>&nbsp;</td>
-			</tr>
-			<tr>
-				<td width=\"33%\" style=\"text-align: center;\">(&nbsp; $namapas &nbsp;)</td>
-				<td width=\"34%\" style=\"text-align: center;\">(&nbsp;" .$userid->username. "&nbsp;)</td>
-			</tr>
-				
+				<tr>
+					<td width=\"50%\" style=\"text-align:center;\"> &nbsp; </td>
+					<td width=\"50%\" style=\"text-align:center;\"><b>$kota, $tglresep</b></td>
+				</tr> 
+				<tr>
+					<td width=\"50%\" style=\"text-align:center;\"> &nbsp; </td>
+					<td width=\"50%\" style=\"text-align:center; font-size:8px;\"><b>$h_namars</b></td>
+				</tr> 
+				<tr>
+					<td style=\"text-align: center;\"><b>Pasien</b></td>
+					<td style=\"text-align: center;\"><b>Kasir</b></td>
+				</tr>
+				<tr>
+					<td>&nbsp;</td>
+					<td>&nbsp;</td>
+				</tr>
+				<tr>
+					<td width=\"33%\" style=\"text-align: center;\">(&nbsp; $namapas &nbsp;)</td>
+					<td width=\"34%\" style=\"text-align: center;\">(&nbsp;" .$userid->username. "&nbsp;)</td>
+				</tr>
 			</table>";
 
 			// space
@@ -1870,8 +1878,8 @@ class Penjualan_faktur extends CI_Controller{
 
 			$now = new DateTime(date("Y-m-d"));
 			// pencetak
-			$body .= "<table style=\"border-collapse:collapse;font-family: tahoma; font-size:8px\" width=\"100%\" align=\"right\" border=\"0\" cellpadding=\"5\" cellmargin=\"5\">";
-			$body .= "<tr>
+			$body .= "<table style=\"border-collapse:collapse;font-family: tahoma; font-size:8px\" width=\"100%\" align=\"right\" border=\"0\" cellpadding=\"5\" cellmargin=\"5\">
+				<tr>
 					<td style=\"text-align: right;\">Dicetak pada : ".strftime('%A, %d %B %Y', $now->getTimestamp())."</td>
 				</tr>
 				<tr>
@@ -1879,7 +1887,7 @@ class Penjualan_faktur extends CI_Controller{
 				</tr>
 			</table>";
 			// $this->M_template_cetak->template($judul, $body, $position, $tglresep, $cekpdf);
-			$this->M_cetak->template_nota(80,190,$judul, $body, $position, $tglresep, $cekpdf);
+			$this->M_cetak->template_nota(75,190,$judul, $body, $position, $tglresep, $cekpdf);
 			// echo ($body);
 		} else {
 			header('location:' . base_url());
@@ -2960,7 +2968,6 @@ class Penjualan_faktur extends CI_Controller{
 			}
 
 			// RACIKAN 2
-			$noresepo    			= $nobukti;
 			$namaracik_2 			= $this->input->post('namaracik_2');
 			if($namaracik_2 != '' || $namaracik_2 != null) {
 				$jenis_2     			= $this->input->post('jenis_2');
@@ -2988,7 +2995,7 @@ class Penjualan_faktur extends CI_Controller{
 					}
 					$id_ok2  = $idd2 + 1;
 				}
-				$data = [
+				$data2 = [
 					'id'		   			=> $id_ok2,
 					'noracik'      	=> 2,
 					'koders'       	=> $cabang,
@@ -3001,7 +3008,7 @@ class Penjualan_faktur extends CI_Controller{
 					'carapakai'  		=> $carapakai_2,
 					'subtotal'     	=> $toto_2,
 					'diskon'       	=> $disknom_2,
-					'resep_manual' 	=> $resep_manual,
+					'resep_manual' 	=> $resep_manual_2,
 					'diskonrp'     	=> str_replace(',', '', $disk_2),
 					'ppn'          	=> $cekppn_2,
 					'ppnrp'        	=> str_replace(',', '', $ppn_2),
@@ -3012,7 +3019,7 @@ class Penjualan_faktur extends CI_Controller{
 				];
 	
 				if ($param == 1) {
-					$this->db->insert('tbl_aporacik', $data);
+					$this->db->insert('tbl_aporacik', $data2);
 				} else {
 					$data['tgledit']   = date('Y-m-d');
 					$data['jamedit']   = date('H:i:s');
@@ -3047,13 +3054,13 @@ class Penjualan_faktur extends CI_Controller{
 					$hpp2 									= $hpp12['hpp'];
 					$barang2 								= $this->db->query("SELECT * FROM tbl_barang WHERE kodebarang = '$_koderacik_2'")->row();
 	
-					$datad = [
+					$datad2 = [
 						'koders'      => $cabang,
 						'resepid'     => 2,
 						'hpp'      	  => $hpp2,
 						'resepno'     => $noresepo,
 						'kodebarang'  => $_koderacik_2,
-						'namabarang'  => $barang->namabarang,
+						'namabarang'  => $barang2->namabarang,
 						'satuan'      => $_satracik_2,
 						'qtyr'        => $_qty_racik_racik_2,
 						'qty'         => $_qty_jual_racik_2,
@@ -3065,13 +3072,13 @@ class Penjualan_faktur extends CI_Controller{
 					];
 					
 					if ($_koderacik_2 != "") {
-						$this->db->insert('tbl_apodetresep', $datad);
-						$cekstok = $this->db->query("SELECT * FROM tbl_barangstock WHERE kodebarang = '$_koderacik_2' AND koders = '$cabang'  AND gudang = '$gudang'")->num_rows();
+						$this->db->insert('tbl_apodetresep', $datad2);
+						$cekstok2 = $this->db->query("SELECT * FROM tbl_barangstock WHERE kodebarang = '$_koderacik_2' AND koders = '$cabang'  AND gudang = '$gudang'")->num_rows();
 						$date_now = date('Y-m-d H:i:s');
-						if($cekstok > 0){
+						if($cekstok2 > 0){
 							$this->db->query("UPDATE tbl_barangstock SET keluar = keluar + $_qty_jual_racik_2, saldoakhir = saldoakhir - $_qty_jual_racik_2, lasttr = '$date_now' WHERE kodebarang = '$_koderacik_2' AND koders = '$cabang'  AND gudang = '$gudang'");
 						} else {
-							$datastock = [
+							$datastock2 = [
 								'koders'       => $cabang,
 								'kodebarang'   => $_koderacik_2,
 								'gudang'       => $gudang,
@@ -3081,7 +3088,388 @@ class Penjualan_faktur extends CI_Controller{
 								'saldoakhir'   => 0 - $_qty_jual_racik_2,
 								'lasttr'       => $date_now,
 							];
-							$this->db->insert('tbl_barangstock', $datastock);
+							$this->db->insert('tbl_barangstock', $datastock2);
+						}
+					}
+				}
+			}
+
+			// RACIKAN 3
+			$namaracik_3 			= $this->input->post('namaracik_3');
+			if($namaracik_3 != '' || $namaracik_3 != null) {
+				$jenis_3     			= $this->input->post('jenis_3');
+				$jumracik_3  			= $this->input->post('jumracik_3');
+				$stajum_3    			= $this->input->post('stajum_3');
+				$atpakai_3   			= $this->input->post('atpakai_3');
+				$toto_3      			= $this->input->get('toto_racikan_3');
+				$disknom_3   			= $this->input->post('disknom_racik_3');
+				$disk_3      			= $this->input->get('disk_racik_3');
+				$ongra_3     			= $this->input->post('ongra_racik_3');
+				$carapakai_3     	= $this->input->post('carapakai_3');
+				$totp_3      			= $this->input->get('totp_racik_3');
+				$resep_manual_3   = $this->input->get('resman_racik_3');
+				$cek_rm_3      		= $this->input->get('cek_rm3');
+				$harga_manual_3   = $this->input->post('toto_racik_3');
+				$cekppn_3 				= $ppn_pajak_ins;
+				$ppn_3 						= (($totp_3) / (111 / 100)) * $ppn_pajak_ins;
+				$cekid3						= $this->db->query("SELECT id from tbl_aporacik order by id desc limit 1")->result();
+				foreach ($cekid3 as $row3) {
+					$idd3    = $row3->id;
+					if ($idd3 == null) {
+						$idd3 	= 0;
+					} else {
+						$idd3 	= $idd3;
+					}
+					$id_ok3  = $idd3 + 1;
+				}
+				$data3 = [
+					'id'		   			=> $id_ok3,
+					'noracik'      	=> 3,
+					'koders'       	=> $cabang,
+					'resepno'      	=> $noresepo,
+					'jenisracik'   	=> $jenis_3,
+					'namaracikan'  	=> $namaracik_3,
+					'aturanpakai'  	=> $atpakai_3,
+					'jumlahracik'  	=> $jumracik_3,
+					'kemasanracik' 	=> $stajum_3,
+					'carapakai'  		=> $carapakai_3,
+					'subtotal'     	=> $toto_3,
+					'diskon'       	=> $disknom_3,
+					'resep_manual' 	=> $resep_manual_3,
+					'diskonrp'     	=> str_replace(',', '', $disk_3),
+					'ppn'          	=> $cekppn_3,
+					'ppnrp'        	=> str_replace(',', '', $ppn_3),
+					'ongkosracik'  	=> str_replace(',', '', $ongra_3),
+					'totalrp'      	=> str_replace(',', '', $totp_3),
+					'cek_rm'      	=> $cek_rm_3,
+					'harga_manual'  => str_replace(',', '', $harga_manual_3),
+				];
+	
+				if ($param == 1) {
+					$this->db->insert('tbl_aporacik', $data3);
+				} else {
+					$data['tgledit']   = date('Y-m-d');
+					$data['jamedit']   = date('H:i:s');
+					$data['useredit']  = $userid;
+					$this->db->update('tbl_aporacik', $data3, array('resepno' => $noresepo));
+				}
+				$koderacik_3      	= $this->input->post('koderacik_3');
+				$namaracik_3      	= $this->input->post('nama_racik_3');
+				$satracik_3       	= $this->input->post('satracik_3');
+				$qty_jual_racik_3   = $this->input->post('qty_jualracik_3');
+				$qty_racik_racik_3  = $this->input->post('qty_racik_racik_3');
+				$hargajual_racik_3  = $this->input->post('hargajualracik_3');
+				$total_hrg_racik_3  = $this->input->post('total_hrg_racik_3');
+				$exp_racik_3    		= $this->input->post('exp_racik_3');
+	
+				$jumdata3   = $this->input->get('jml3');
+				$nourut3    = 1;
+				$tot3       = 0;
+				$tdisc3     = 0;
+				$tothpp3    = 0;
+	
+				for ($i = 0; $i <= ($jumdata3 - 1); $i++) {
+					$_koderacik_3       		= $koderacik_3[$i];
+					$_namaracik_3       		= $namaracik_3[$i];
+					$_satracik_3        		= $satracik_3[$i];
+					$_qty_racik_racik_3   	= $qty_racik_racik_3[$i];
+					$_qty_jual_racik_3    	= $qty_jual_racik_3[$i];
+					$_exp_racik_3        		= $exp_racik_3[$i];
+					$_hargajual_racik_3     = preg_replace('/[,]/', '', $hargajual_racik_3[$i]);
+					$_total_hrg_racik_3     = preg_replace('/[,]/', '', $total_hrg_racik_3[$i]);
+					$hpp13 									= $this->db->get_where('tbl_barang', ['kodebarang' => $_koderacik_3])->row_array();
+					$hpp3 									= $hpp13['hpp'];
+					$barang3 								= $this->db->query("SELECT * FROM tbl_barang WHERE kodebarang = '$_koderacik_3'")->row();
+	
+					$datad3 = [
+						'koders'      => $cabang,
+						'resepid'     => 3,
+						'hpp'      	  => $hpp3,
+						'resepno'     => $noresepo,
+						'kodebarang'  => $_koderacik_3,
+						'namabarang'  => $barang3->namabarang,
+						'satuan'      => $_satracik_3,
+						'qtyr'        => $_qty_racik_racik_3,
+						'qty'         => $_qty_jual_racik_3,
+						'uangr'       => 0,
+						'price'       => $_hargajual_racik_3,
+						'totalrp'     => $_total_hrg_racik_3,
+						'exp_date'    => date('Y-m-d H:i:s', strtotime($_exp_racik_3)),
+						'jamdresep'   => date('H:i:s'),
+					];
+					
+					if ($_koderacik_3 != "") {
+						$this->db->insert('tbl_apodetresep', $datad3);
+						$cekstok3 = $this->db->query("SELECT * FROM tbl_barangstock WHERE kodebarang = '$_koderacik_3' AND koders = '$cabang'  AND gudang = '$gudang'")->num_rows();
+						$date_now = date('Y-m-d H:i:s');
+						if($cekstok3 > 0){
+							$this->db->query("UPDATE tbl_barangstock SET keluar = keluar + $_qty_jual_racik_3, saldoakhir = saldoakhir - $_qty_jual_racik_3, lasttr = '$date_now' WHERE kodebarang = '$_koderacik_3' AND koders = '$cabang'  AND gudang = '$gudang'");
+						} else {
+							$datastock3 = [
+								'koders'       => $cabang,
+								'kodebarang'   => $_koderacik_3,
+								'gudang'       => $gudang,
+								'saldoawal'    => 0,
+								'terima'    	 => 0,
+								'keluar'       => $_qty_jual_racik_3,
+								'saldoakhir'   => 0 - $_qty_jual_racik_3,
+								'lasttr'       => $date_now,
+							];
+							$this->db->insert('tbl_barangstock', $datastock3);
+						}
+					}
+				}
+			}
+
+			// RACIKAN 4
+			$namaracik_4 			= $this->input->post('namaracik_4');
+			if($namaracik_4 != '' || $namaracik_4 != null) {
+				$jenis_4     			= $this->input->post('jenis_4');
+				$jumracik_4  			= $this->input->post('jumracik_4');
+				$stajum_4    			= $this->input->post('stajum_4');
+				$atpakai_4   			= $this->input->post('atpakai_4');
+				$toto_4      			= $this->input->get('toto_racikan_4');
+				$disknom_4   			= $this->input->post('disknom_racik_4');
+				$disk_4      			= $this->input->get('disk_racik_4');
+				$ongra_4     			= $this->input->post('ongra_racik_4');
+				$carapakai_4     	= $this->input->post('carapakai_4');
+				$totp_4      			= $this->input->get('totp_racik_4');
+				$resep_manual_4   = $this->input->get('resman_racik_4');
+				$cek_rm_4      		= $this->input->get('cek_rm4');
+				$harga_manual_4   = $this->input->post('toto_racik_4');
+				$cekppn_4 				= $ppn_pajak_ins;
+				$ppn_4 						= (($totp_4) / (111 / 100)) * $ppn_pajak_ins;
+				$cekid4						= $this->db->query("SELECT id from tbl_aporacik order by id desc limit 1")->result();
+				foreach ($cekid4 as $row4) {
+					$idd4    = $row4->id;
+					if ($idd4 == null) {
+						$idd4 	= 0;
+					} else {
+						$idd4 	= $idd4;
+					}
+					$id_ok4  = $idd4 + 1;
+				}
+				$data4 = [
+					'id'		   			=> $id_ok4,
+					'noracik'      	=> 4,
+					'koders'       	=> $cabang,
+					'resepno'      	=> $noresepo,
+					'jenisracik'   	=> $jenis_4,
+					'namaracikan'  	=> $namaracik_4,
+					'aturanpakai'  	=> $atpakai_4,
+					'jumlahracik'  	=> $jumracik_4,
+					'kemasanracik' 	=> $stajum_4,
+					'carapakai'  		=> $carapakai_4,
+					'subtotal'     	=> $toto_4,
+					'diskon'       	=> $disknom_4,
+					'resep_manual' 	=> $resep_manual_4,
+					'diskonrp'     	=> str_replace(',', '', $disk_4),
+					'ppn'          	=> $cekppn_4,
+					'ppnrp'        	=> str_replace(',', '', $ppn_4),
+					'ongkosracik'  	=> str_replace(',', '', $ongra_4),
+					'totalrp'      	=> str_replace(',', '', $totp_4),
+					'cek_rm'      	=> $cek_rm_4,
+					'harga_manual'  => str_replace(',', '', $harga_manual_4),
+				];
+	
+				if ($param == 1) {
+					$this->db->insert('tbl_aporacik', $data4);
+				} else {
+					$data['tgledit']   = date('Y-m-d');
+					$data['jamedit']   = date('H:i:s');
+					$data['useredit']  = $userid;
+					$this->db->update('tbl_aporacik', $data4, array('resepno' => $noresepo));
+				}
+				$koderacik_4      	= $this->input->post('koderacik_4');
+				$namaracik_4      	= $this->input->post('nama_racik_4');
+				$satracik_4       	= $this->input->post('satracik_4');
+				$qty_jual_racik_4   = $this->input->post('qty_jualracik_4');
+				$qty_racik_racik_4  = $this->input->post('qty_racik_racik_4');
+				$hargajual_racik_4  = $this->input->post('hargajualracik_4');
+				$total_hrg_racik_4  = $this->input->post('total_hrg_racik_4');
+				$exp_racik_4    		= $this->input->post('exp_racik_4');
+	
+				$jumdata4   = $this->input->get('jml4');
+				$nourut4    = 1;
+				$tot4       = 0;
+				$tdisc4     = 0;
+				$tothpp4    = 0;
+	
+				for ($i = 0; $i <= ($jumdata4 - 1); $i++) {
+					$_koderacik_4       		= $koderacik_4[$i];
+					$_namaracik_4       		= $namaracik_4[$i];
+					$_satracik_4        		= $satracik_4[$i];
+					$_qty_racik_racik_4   	= $qty_racik_racik_4[$i];
+					$_qty_jual_racik_4    	= $qty_jual_racik_4[$i];
+					$_exp_racik_4        		= $exp_racik_4[$i];
+					$_hargajual_racik_4     = preg_replace('/[,]/', '', $hargajual_racik_4[$i]);
+					$_total_hrg_racik_4     = preg_replace('/[,]/', '', $total_hrg_racik_4[$i]);
+					$hpp14 									= $this->db->get_where('tbl_barang', ['kodebarang' => $_koderacik_4])->row_array();
+					$hpp4 									= $hpp14['hpp'];
+					$barang4 								= $this->db->query("SELECT * FROM tbl_barang WHERE kodebarang = '$_koderacik_4'")->row();
+	
+					$datad4 = [
+						'koders'      => $cabang,
+						'resepid'     => 4,
+						'hpp'      	  => $hpp4,
+						'resepno'     => $noresepo,
+						'kodebarang'  => $_koderacik_4,
+						'namabarang'  => $barang4->namabarang,
+						'satuan'      => $_satracik_4,
+						'qtyr'        => $_qty_racik_racik_4,
+						'qty'         => $_qty_jual_racik_4,
+						'uangr'       => 0,
+						'price'       => $_hargajual_racik_4,
+						'totalrp'     => $_total_hrg_racik_4,
+						'exp_date'    => date('Y-m-d H:i:s', strtotime($_exp_racik_4)),
+						'jamdresep'   => date('H:i:s'),
+					];
+					
+					if ($_koderacik_4 != "") {
+						$this->db->insert('tbl_apodetresep', $datad4);
+						$cekstok4 = $this->db->query("SELECT * FROM tbl_barangstock WHERE kodebarang = '$_koderacik_4' AND koders = '$cabang'  AND gudang = '$gudang'")->num_rows();
+						$date_now = date('Y-m-d H:i:s');
+						if($cekstok4 > 0){
+							$this->db->query("UPDATE tbl_barangstock SET keluar = keluar + $_qty_jual_racik_4, saldoakhir = saldoakhir - $_qty_jual_racik_4, lasttr = '$date_now' WHERE kodebarang = '$_koderacik_4' AND koders = '$cabang'  AND gudang = '$gudang'");
+						} else {
+							$datastock4 = [
+								'koders'       => $cabang,
+								'kodebarang'   => $_koderacik_4,
+								'gudang'       => $gudang,
+								'saldoawal'    => 0,
+								'terima'    	 => 0,
+								'keluar'       => $_qty_jual_racik_4,
+								'saldoakhir'   => 0 - $_qty_jual_racik_4,
+								'lasttr'       => $date_now,
+							];
+							$this->db->insert('tbl_barangstock', $datastock4);
+						}
+					}
+				}
+			}
+
+			// RACIKAN 5
+			$namaracik_5 			= $this->input->post('namaracik_5');
+			if($namaracik_5 != '' || $namaracik_5 != null) {
+				$jenis_5     			= $this->input->post('jenis_5');
+				$jumracik_5  			= $this->input->post('jumracik_5');
+				$stajum_5    			= $this->input->post('stajum_5');
+				$atpakai_5   			= $this->input->post('atpakai_5');
+				$toto_5      			= $this->input->get('toto_racikan_5');
+				$disknom_5   			= $this->input->post('disknom_racik_5');
+				$disk_5      			= $this->input->get('disk_racik_5');
+				$ongra_5     			= $this->input->post('ongra_racik_5');
+				$carapakai_5     	= $this->input->post('carapakai_5');
+				$totp_5      			= $this->input->get('totp_racik_5');
+				$resep_manual_5   = $this->input->get('resman_racik_5');
+				$cek_rm_5      		= $this->input->get('cek_rm5');
+				$harga_manual_5   = $this->input->post('toto_racik_5');
+				$cekppn_5 				= $ppn_pajak_ins;
+				$ppn_5 						= (($totp_5) / (111 / 100)) * $ppn_pajak_ins;
+				$cekid5						= $this->db->query("SELECT id from tbl_aporacik order by id desc limit 1")->result();
+				foreach ($cekid5 as $row5) {
+					$idd5    = $row5->id;
+					if ($idd5 == null) {
+						$idd5 	= 0;
+					} else {
+						$idd5 	= $idd5;
+					}
+					$id_ok5  = $idd5 + 1;
+				}
+				$data5 = [
+					'id'		   			=> $id_ok5,
+					'noracik'      	=> 5,
+					'koders'       	=> $cabang,
+					'resepno'      	=> $noresepo,
+					'jenisracik'   	=> $jenis_5,
+					'namaracikan'  	=> $namaracik_5,
+					'aturanpakai'  	=> $atpakai_5,
+					'jumlahracik'  	=> $jumracik_5,
+					'kemasanracik' 	=> $stajum_5,
+					'carapakai'  		=> $carapakai_5,
+					'subtotal'     	=> $toto_5,
+					'diskon'       	=> $disknom_5,
+					'resep_manual' 	=> $resep_manual_5,
+					'diskonrp'     	=> str_replace(',', '', $disk_5),
+					'ppn'          	=> $cekppn_5,
+					'ppnrp'        	=> str_replace(',', '', $ppn_5),
+					'ongkosracik'  	=> str_replace(',', '', $ongra_5),
+					'totalrp'      	=> str_replace(',', '', $totp_5),
+					'cek_rm'      	=> $cek_rm_5,
+					'harga_manual'  => str_replace(',', '', $harga_manual_5),
+				];
+	
+				if ($param == 1) {
+					$this->db->insert('tbl_aporacik', $data5);
+				} else {
+					$data['tgledit']   = date('Y-m-d');
+					$data['jamedit']   = date('H:i:s');
+					$data['useredit']  = $userid;
+					$this->db->update('tbl_aporacik', $data5, array('resepno' => $noresepo));
+				}
+				$koderacik_5      	= $this->input->post('koderacik_5');
+				$namaracik_5      	= $this->input->post('nama_racik_5');
+				$satracik_5       	= $this->input->post('satracik_5');
+				$qty_jual_racik_5   = $this->input->post('qty_jualracik_5');
+				$qty_racik_racik_5  = $this->input->post('qty_racik_racik_5');
+				$hargajual_racik_5  = $this->input->post('hargajualracik_5');
+				$total_hrg_racik_5  = $this->input->post('total_hrg_racik_5');
+				$exp_racik_5    		= $this->input->post('exp_racik_5');
+	
+				$jumdata5   = $this->input->get('jml5');
+				$nourut5    = 1;
+				$tot5       = 0;
+				$tdisc5     = 0;
+				$tothpp5    = 0;
+	
+				for ($i = 0; $i <= ($jumdata5 - 1); $i++) {
+					$_koderacik_5       		= $koderacik_5[$i];
+					$_namaracik_5       		= $namaracik_5[$i];
+					$_satracik_5        		= $satracik_5[$i];
+					$_qty_racik_racik_5   	= $qty_racik_racik_5[$i];
+					$_qty_jual_racik_5    	= $qty_jual_racik_5[$i];
+					$_exp_racik_5        		= $exp_racik_5[$i];
+					$_hargajual_racik_5     = preg_replace('/[,]/', '', $hargajual_racik_5[$i]);
+					$_total_hrg_racik_5     = preg_replace('/[,]/', '', $total_hrg_racik_5[$i]);
+					$hpp15 									= $this->db->get_where('tbl_barang', ['kodebarang' => $_koderacik_5])->row_array();
+					$hpp5 									= $hpp15['hpp'];
+					$barang5 								= $this->db->query("SELECT * FROM tbl_barang WHERE kodebarang = '$_koderacik_5'")->row();
+	
+					$datad5 = [
+						'koders'      => $cabang,
+						'resepid'     => 5,
+						'hpp'      	  => $hpp5,
+						'resepno'     => $noresepo,
+						'kodebarang'  => $_koderacik_5,
+						'namabarang'  => $barang5->namabarang,
+						'satuan'      => $_satracik_5,
+						'qtyr'        => $_qty_racik_racik_5,
+						'qty'         => $_qty_jual_racik_5,
+						'uangr'       => 0,
+						'price'       => $_hargajual_racik_5,
+						'totalrp'     => $_total_hrg_racik_5,
+						'exp_date'    => date('Y-m-d H:i:s', strtotime($_exp_racik_5)),
+						'jamdresep'   => date('H:i:s'),
+					];
+					
+					if ($_koderacik_5 != "") {
+						$this->db->insert('tbl_apodetresep', $datad5);
+						$cekstok5 = $this->db->query("SELECT * FROM tbl_barangstock WHERE kodebarang = '$_koderacik_5' AND koders = '$cabang'  AND gudang = '$gudang'")->num_rows();
+						$date_now = date('Y-m-d H:i:s');
+						if($cekstok5 > 0){
+							$this->db->query("UPDATE tbl_barangstock SET keluar = keluar + $_qty_jual_racik_5, saldoakhir = saldoakhir - $_qty_jual_racik_5, lasttr = '$date_now' WHERE kodebarang = '$_koderacik_5' AND koders = '$cabang'  AND gudang = '$gudang'");
+						} else {
+							$datastock5 = [
+								'koders'       => $cabang,
+								'kodebarang'   => $_koderacik_5,
+								'gudang'       => $gudang,
+								'saldoawal'    => 0,
+								'terima'    	 => 0,
+								'keluar'       => $_qty_jual_racik_5,
+								'saldoakhir'   => 0 - $_qty_jual_racik_5,
+								'lasttr'       => $date_now,
+							];
+							$this->db->insert('tbl_barangstock', $datastock5);
 						}
 					}
 				}
@@ -3093,16 +3481,17 @@ class Penjualan_faktur extends CI_Controller{
 	}
 
 	public function save($param){
-		$hasil    		= 0;
-		$vnoreg   		= '';
-		$rekmed   		= '';
-		$unit     		= $this->session->userdata('unit');
-		$cabang   		= $this->session->userdata('unit');
-		$cek      		= $this->session->userdata('level');
-		$userid   		= $this->session->userdata('username');
-		$racikanxx    	= $this->input->get('racikan');
-		$noreg    		= $this->input->post('noreg');
-		$rekmed   		= $this->input->post('pasien');
+		$hasil        = 0;
+		$vnoreg       = '';
+		$rekmed       = '';
+		$unit         = $this->session->userdata('unit');
+		$shift        = $this->session->userdata('shift');
+		$cabang       = $this->session->userdata('unit');
+		$cek          = $this->session->userdata('level');
+		$userid       = $this->session->userdata('username');
+		$racikanxx    = $this->input->get('racikan');
+		$noreg        = $this->input->post('noreg');
+		$rekmed       = $this->input->post('pasien');
 		if($rekmed){
 			$rekmed =$rekmed;
 		}else{
@@ -3176,7 +3565,7 @@ class Penjualan_faktur extends CI_Controller{
 			} else if ($pembeli == 'LOKAL') {
 				$jenispas = 2;
 			} else if ($pembeli == 'KIRIM') {
-				$jenispas = 3;
+				$jenispas = 4;
 			} else if ($pembeli == 'SPA') {
 				$jenispas = 4;
 			} else if ($pembeli == 'GIGI') {
@@ -3370,6 +3759,7 @@ class Penjualan_faktur extends CI_Controller{
 				//'gudang'  => $this->input->post('gudang'),
 				'gudang'    => $gudang,
 				'username'  => $userid,
+				'shift'  	=> $shift,
 
 			);
 
@@ -3383,9 +3773,10 @@ class Penjualan_faktur extends CI_Controller{
 			}
 
 			//posting
-			$namapasx = $this->input->post('namapasien');
+			$namapasx = $this->input->post('nama_pas');
 			if($namapasx == ''){
 				$namapas = "UMUM";
+				// $namapas = $this->input->post('nama_pas');
 			}else{
 				$namapas = $this->input->post('nama_pas');
 			}

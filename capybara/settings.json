@@ -1,7 +1,7 @@
 {
     "driver": "mysql",
     "host": "localhost",
-    "username": "admin",
-    "password": "root123",
-    "database": "mencoba"
+    "username": "admin_apt",
+    "password": "NonaManis@1441",
+    "database": "ski_pharma"
 }
