@@ -1054,9 +1054,9 @@ class Penjualan_faktur extends CI_Controller{
 			$body .= "<table style=\"border-collapse:collapse;font-family: tahoma; font-size:12px\" width=\"100%\" align=\"center\" border=\"1\" cellpadding=\"5\" cellmargin=\"5\">";
 			$body .= "<tr>
 				<th bgcolor=\"#cccccc\">No</th>
-				<th bgcolor=\"#cccccc\">Kode Obat</th>
-				<th bgcolor=\"#cccccc\">Nama Obat</th>
-				<th bgcolor=\"#cccccc\">Aturan Pakai</th>
+				<th bgcolor=\"#cccccc\">Kode</th>
+				<th bgcolor=\"#cccccc\">Nama</th>
+				<th bgcolor=\"#cccccc\">At Pakai</th>
 				<th bgcolor=\"#cccccc\">Jumlah</th>
 				<th bgcolor=\"#cccccc\">Harga Satuan</th>
 				<th bgcolor=\"#cccccc\">Diskon</th>
@@ -1115,7 +1115,8 @@ class Penjualan_faktur extends CI_Controller{
 					<td bgcolor=\"#eeeff1\" style=\"text-align: right;\"><b>$jum_price</b></td>
 					<td bgcolor=\"#eeeff1\" style=\"text-align: right;\"><b>$diskon_resep</b></td>
 					<td bgcolor=\"#eeeff1\" style=\"text-align: right;\"><b>$total_resep</b></td>
-				</tr>";	
+				</tr>
+				</table>";	
 				
 			$ppn           = $this->db->query("SELECT * FROM tbl_pajak WHERE kodetax = 'PPN'")->row();
 			$pajak         = (int)$ppn->prosentase / 100;
@@ -1124,7 +1125,6 @@ class Penjualan_faktur extends CI_Controller{
 			// resep racik
 			// jika ada
 			
-			$body .= "</table>";
 			
 			if($cekracik > 0) 
 			{
@@ -1133,21 +1133,23 @@ class Penjualan_faktur extends CI_Controller{
 						<td>&nbsp;</td>
 					</tr>
 				</table>";
+
 				$body .= "<table style=\"border-collapse:collapse;font-family: tahoma; font-size:12px\" width=\"100%\" align=\"center\" border=\"0\" cellpadding=\"5\" cellmargin=\"5\">
 					<tr>
 						<td>&nbsp;</td>
 					</tr>
 				</table>";
+
 				$body .= "<table style=\"border-collapse:collapse;font-family: tahoma; font-size:12px\" width=\"100%\" align=\"center\" border=\"1\" cellpadding=\"5\" cellmargin=\"5\">";
 				$body .= "<tr>
-					<th bgcolor=\"#cccccc\">No</th>
-					<th bgcolor=\"#cccccc\">Resep No</th>
-					<th bgcolor=\"#cccccc\">Nama Obat</th>
-					<th bgcolor=\"#cccccc\">Aturan Pakai</th>
-					<th bgcolor=\"#cccccc\">Jumlah</th>
-					<th bgcolor=\"#cccccc\">Harga Satuan</th>
-					<th bgcolor=\"#cccccc\">Diskon</th>
-					<th bgcolor=\"#cccccc\">Total Rp</th>
+					<th width=\"10%\" bgcolor=\"#cccccc\">No</th>
+					<th width=\"20%\" bgcolor=\"#cccccc\">Resep</th>
+					<th width=\"20%\" bgcolor=\"#cccccc\">Nama</th>
+					<th width=\"10%\" bgcolor=\"#cccccc\">At Pakai</th>
+					<th width=\"10%\" bgcolor=\"#cccccc\">Jumlah</th>
+					<th width=\"10%\" bgcolor=\"#cccccc\">Harga Satuan</th>
+					<th width=\"10%\" bgcolor=\"#cccccc\">Diskon</th>
+					<th width=\"10%\" bgcolor=\"#cccccc\">Total Rp</th>
 				</tr>";
 				$jum_racik1       = 0;
 				$sub_racik1       = 0;
@@ -1155,7 +1157,7 @@ class Penjualan_faktur extends CI_Controller{
 				$total_racik1     = 0;
 				$tsemuax          = 0;
 
-				$nox = 1;
+				$nox              = 1;
 				foreach($racik_res as $racik){
 					$jum_racik = $racik->jumlahracik;
 					if((int)$racik->cek_rm > 0){
@@ -1185,7 +1187,7 @@ class Penjualan_faktur extends CI_Controller{
 					</tr>";
 
 					// racik
-					$satuan       = $harga_total / $racik->jumlahracik;
+					$satuan          = $harga_total / $racik->jumlahracik;
 
 					$sub_racik       = ceil($satuan);
 					$diskon_racik    = ceil($racik->diskonrp);
@@ -1218,7 +1220,8 @@ class Penjualan_faktur extends CI_Controller{
 					<td bgcolor=\"#eeeff1\" style=\"text-align: right;\"><b>$sub_racik2</b></td>
 					<td bgcolor=\"#eeeff1\" style=\"text-align: right;\"><b>$diskon_racik1</b></td>
 					<td bgcolor=\"#eeeff1\" style=\"text-align: right;\"><b>$total_racik1</b></td>
-				</tr>";	
+				</tr>
+				</table>";	
 					
 			} else {
 				$jum_racik = 0;
@@ -1468,7 +1471,7 @@ class Penjualan_faktur extends CI_Controller{
 			}
 
 			// header
-			$body .= "<table style=\"border-collapse:collapse;font-family: Century Gothic; font-size:10px; color:#000;\" width=\"100%\" border=\"0\" >
+			$body .= "<table style=\"border-collapse:collapse;font-family: Century Gothic; font-size:12px; color:#000;\" width=\"100%\" border=\"0\" >
 				<tr>
 					<td rowspan=\"7\" align=\"center\">
 						<img src=\"" . base_url() . "assets/img_user/$avatar\"  width=\"70\" height=\"70\" /></td>
@@ -1477,26 +1480,26 @@ class Penjualan_faktur extends CI_Controller{
 				<tr>
 					<td colspan=\"5\">
 						<tr>
-							<td align=\"center\" style=\"font-size:8px;border-bottom: none;\"><b><br>$h_namars</b></td>
+							<td align=\"center\" style=\"font-size:10px;border-bottom: none;\"><b><br>$h_namars</b></td>
 						</tr>
 						<tr>
-							<td align=\"center\" style=\"font-size:7px;\">$h_alamat</td>
+							<td align=\"center\" style=\"font-size:9px;\">$h_alamat</td>
 						</tr>
 						<tr>
-							<td align=\"center\" style=\"font-size:7px;\">$h_alamat2</td>
+							<td align=\"center\" style=\"font-size:9px;\">$h_alamat2</td>
 						</tr>
 						<tr>
-							<td align=\"center\" style=\"font-size:7px;\">Wa :$h_whatsapp    Telp :$h_phone </td>
+							<td align=\"center\" style=\"font-size:9px;\">Wa :$h_whatsapp    Telp :$h_phone </td>
 						</tr>
 						<tr>
-							<td align=\"center\" style=\"font-size:7px;\">No. NPWP : $h_npwp</td>
+							<td align=\"center\" style=\"font-size:9px;\">No. NPWP : $h_npwp</td>
 						</tr>
 					</td>
 				</tr>
 			</table>";
 
 			// space
-			$body .= "<table style=\"border-collapse:collapse;font-family: tahoma; font-size:5px\" width=\"100%\" align=\"center\" border=\"0\">
+			$body .= "<table style=\"border-collapse:collapse;font-family: arial; font-size:5px\" width=\"100%\" align=\"center\" border=\"0\">
 				<tr>
 					<td>&nbsp;</td>
 				</tr> 
@@ -1504,20 +1507,20 @@ class Penjualan_faktur extends CI_Controller{
 			
 			// border
 			$body .= "
-               <table style=\"border-collapse:collapse;font-family: tahoma; font-size:2px\" width=\"100%\" align=\"center\" border=\"1\">     
+               <table style=\"border-collapse:collapse;font-family: arial; font-size:2px\" width=\"100%\" align=\"center\" border=\"1\">     
                     <tr>
                          <td style=\"border-top: none;border-right: none;border-left: none;\"></td>
                     </tr> 
                </table>";
 			$body .= "
-				<table style=\"border-collapse:collapse;font-family: tahoma; font-size:2px\" width=\"100%\" align=\"center\" border=\"1\">     
+				<table style=\"border-collapse:collapse;font-family: arial; font-size:2px\" width=\"100%\" align=\"center\" border=\"1\">     
 						<tr>
 							<td style=\"border-top: none;border-right: none;border-left: none;\"></td>
 						</tr> 
 				</table>";
 			
 			   // space
-			$body .= "<table style=\"border-collapse:collapse;font-family: tahoma; font-size:5px\" width=\"100%\" align=\"center\" border=\"0\">
+			$body .= "<table style=\"border-collapse:collapse;font-family: arial; font-size:5px\" width=\"100%\" align=\"center\" border=\"0\">
 			<tr>
 				<td>&nbsp;</td>
 			</tr> 
@@ -1526,7 +1529,7 @@ class Penjualan_faktur extends CI_Controller{
 			$date 				= substr($hresep->tglresep,0,10);
 			$tglresep 		= $this->M_cetak->tanggal_format_indonesia($date);
 
-			$body .= "<table style=\"border-collapse:collapse;font-family: tahoma; font-size:8px\" width=\"100%\" align=\"center\" border=\"0\">
+			$body .= "<table style=\"border-collapse:collapse;font-family: arial; font-size:10px\" width=\"100%\" align=\"center\" border=\"0\">
 				<tr>
 					<td width=\"17%\">No. Resep</td>
 					<td width=\"3%\">:</td>
@@ -1575,7 +1578,7 @@ class Penjualan_faktur extends CI_Controller{
 			$body .= "</table>";
 
 			// space
-			$body .= "<table style=\"border-collapse:collapse;font-family: tahoma; font-size:8px\" width=\"100%\" align=\"center\" border=\"0\" cellpadding=\"5\" cellmargin=\"5\">
+			$body .= "<table style=\"border-collapse:collapse;font-family: arial; font-size:10px\" width=\"100%\" align=\"center\" border=\"0\" cellspacing=\"1\" cellpadding=\"3\">
 				<tr>
 					<td>&nbsp;</td>
 				</tr>
@@ -1583,16 +1586,16 @@ class Penjualan_faktur extends CI_Controller{
 
 			if($dresep_jml > 0) {
 				// detail 
-				$body .= "<table style=\"border-collapse:collapse;font-family: tahoma; font-size:10px\" width=\"100%\" align=\"center\" border=\"1\" cellpadding=\"5\" cellmargin=\"5\">
+				$body .= "<table style=\"border-collapse:collapse;font-family: arial; font-size:12px\" width=\"100%\" align=\"center\" border=\"1\" cellspacing=\"1\" cellpadding=\"3\">
 				<tr>
-					<th>No</th>
-					<th>Kode</th>
-					<th>Nama</th>
-					<th>At Pakai</th>
-					<th>Jumlah</th>
-					<th>Harga Satuan</th>
-					<th>Diskon</th>
-					<th>Total Rp</th>
+					<th style=\"text-align: center; border-right: none;border-left: none;\" width=\"10%\">No</th>
+					<th style=\"text-align: center; border-right: none;border-left: none;\" width=\"10%\">Kode</th>
+					<th style=\"text-align: center; border-right: none;border-left: none;\" width=\"20%\">Nama</th>
+					<th style=\"text-align: center; border-right: none;border-left: none;\" width=\"15%\">At Pakai</th>
+					<th style=\"text-align: center; border-right: none;border-left: none;\" width=\"10%\">Jumlah</th>
+					<th style=\"text-align: center; border-right: none;border-left: none;\" width=\"10%\">Harga Sat</th>
+					<th style=\"text-align: center; border-right: none;border-left: none;\" width=\"10%\">Diskon</th>
+					<th style=\"text-align: center; border-right: none;border-left: none;\" width=\"15%\">Total Rp</th>
 				</tr>";
 				// isi resep
 				$no              = 1;
@@ -1619,14 +1622,14 @@ class Penjualan_faktur extends CI_Controller{
 						$totalrp    = ceil($d->totalrp);
 					}
 					$body .= "<tr>
-						<td style=\"text-align: right;\">".$no++."</td>
-						<td style=\"text-align: left;\">$d->kodebarang</td>
-						<td style=\"text-align: left;\">$d->namabarang</td>
-						<td style=\"text-align: center;\">$d->ap</td>
-						<td style=\"text-align: center;\">$qty</td>
-						<td style=\"text-align: right;\">$price</td>
-						<td style=\"text-align: right;\">$discrp</td>
-						<td style=\"text-align: right;\">$totalrp</td>
+						<td style=\"text-align: center; border-right: none;border-left: none;\">".$no++."</td>
+						<td style=\"text-align: left; border-right: none;border-left: none;\">$d->kodebarang</td>
+						<td style=\"text-align: left; border-right: none;border-left: none;\">$d->namabarang</td>
+						<td style=\"text-align: center; border-right: none;border-left: none;\">$d->ap</td>
+						<td style=\"text-align: center; border-right: none;border-left: none;\">$qty</td>
+						<td style=\"text-align: right; border-right: none;border-left: none;\">$price</td>
+						<td style=\"text-align: right; border-right: none;border-left: none;\">$discrp</td>
+						<td style=\"text-align: right; border-right: none;border-left: none;\">$totalrp</td>
 					</tr>";
 				}
 				if($cekpdf == 1){
@@ -1641,11 +1644,11 @@ class Penjualan_faktur extends CI_Controller{
 					$jum_price      = ceil($price1);
 				}
 				$body .= "<tr>
-					<td colspan=\"4\" style=\"text-align: center;\"><b>Total Resep</b></td>
-					<td style=\"text-align: center;\"><b>$jum_obat</b></td>
-					<td style=\"text-align: right;\"><b>$jum_price</b></td>
-					<td style=\"text-align: right;\"><b>$diskon_resep</b></td>
-					<td style=\"text-align: right;\"><b>$total_resep</b></td>
+					<td colspan=\"4\" style=\"text-align: center; border-right: none;border-left: none;\"><b>Total Resep</b></td>
+					<td style=\"text-align: center; border-right: none;border-left: none;\"><b>$jum_obat</b></td>
+					<td style=\"text-align: right; border-right: none;border-left: none;\"><b>$jum_price</b></td>
+					<td style=\"text-align: right; border-right: none;border-left: none;\"><b>$diskon_resep</b></td>
+					<td style=\"text-align: right; border-right: none;border-left: none;\"><b>$total_resep</b></td>
 				</tr>";
 				$body .= "</table>";
 			} else {
@@ -1660,21 +1663,30 @@ class Penjualan_faktur extends CI_Controller{
 
 			// racik
 			if($cekracik > 0) {
-				$body .= "<table style=\"border-collapse:collapse;font-family: tahoma; font-size:10px\" width=\"100%\" align=\"center\" border=\"1\" cellpadding=\"5\" cellmargin=\"5\">
+				$body .= "<table style=\"border-collapse:collapse;font-family: arial; font-size:5px\" width=\"100%\" align=\"center\" border=\"0\" cellspacing=\"1\" cellpadding=\"3\">
 				<tr>
-					<th bgcolor=\"#cccccc\">No</th>
-					<th bgcolor=\"#cccccc\">Resep No</th>
-					<th bgcolor=\"#cccccc\">Nama Obat</th>
-					<th bgcolor=\"#cccccc\">Aturan Pakai</th>
-					<th bgcolor=\"#cccccc\">Jumlah</th>
-					<th bgcolor=\"#cccccc\">Harga Satuan</th>
-					<th bgcolor=\"#cccccc\">Diskon</th>
-					<th bgcolor=\"#cccccc\">Total Rp</th>
+					<td colspan=\"5\" style=\"text-align: center\">&nbsp;</td>
+				</tr></table>";
+				$body .= "<table style=\"border-collapse:collapse;font-family: arial; font-size:10px\" width=\"100%\" align=\"center\" border=\"0\" cellspacing=\"1\" cellpadding=\"3\">
+				<tr>
+					<td colspan=\"5\" style=\"text-align: center\">&nbsp;** Racikan **</td>
+				</tr></table>";
+				$body .= "<table style=\"border-collapse:collapse;font-family: arial; font-size:12px\" width=\"100%\" align=\"center\" border=\"1\" cellspacing=\"1\" cellpadding=\"3\">
+				<tr>
+					<th style=\"text-align: center; border-right: none;border-left: none;\" width=\"10%\">No</th>
+					<th style=\"text-align: center; border-right: none;border-left: none;\" width=\"10%\">Resep</th>
+					<th style=\"text-align: center; border-right: none;border-left: none;\" width=\"25%\">Nama</th>
+					<th style=\"text-align: center; border-right: none;border-left: none;\" width=\"15%\">At Pakai</th>
+					<th style=\"text-align: center; border-right: none;border-left: none;\" width=\"10%\">Jumlah</th>
+					<th style=\"text-align: center; border-right: none;border-left: none;\" width=\"10%\">Harga Sat</th>
+					<th style=\"text-align: center; border-right: none;border-left: none;\" width=\"10%\">Diskon</th>
+					<th style=\"text-align: center; border-right: none;border-left: none;\" width=\"10%\">Total Rp</th>
 				</tr>";
 				$jum_racik1       = 0;
 				$sub_racik1       = 0;
 				$diskon_racik1    = 0;
 				$total_racik1     = 0;
+				$nor              = 1;
 				foreach($racik_res as $racik) {
 					$jum_racik 			= $racik->jumlahracik;
 					if((int)$racik->harga_manual > 0) {
@@ -1693,14 +1705,14 @@ class Penjualan_faktur extends CI_Controller{
 						$diskon 			= ceil($racik->diskonrp);
 					}
 					$body .= "<tr>
-						<td style=\"text-align: right;\">".$no."</td>
-						<td style=\"text-align: left;\">$racik->resepno</td>
-						<td style=\"text-align: left;\"><span style=\"color:red;\">** $racik->namaracikan</span> </td>
-						<td style=\"text-align: center;\">$racik->ap</td>
-						<td style=\"text-align: center;\">$racik->jumlahracik</td>
-						<td style=\"text-align: right;\">$satuan</td>
-						<td style=\"text-align: right;\">$diskon</td>
-						<td style=\"text-align: right;\">$total</td>
+						<td style=\"text-align: center; border-right: none;border-left: none;\">".$nor."</td>
+						<td style=\"text-align: left; border-right: none;border-left: none;\">$racik->resepno</td>
+						<td style=\"text-align: left; border-right: none;border-left: none;\"><span style=\"color:red; border-right: none;border-left: none;\">** $racik->namaracikan</span> </td>
+						<td style=\"text-align: center; border-right: none;border-left: none;\">$racik->ap</td>
+						<td style=\"text-align: center; border-right: none;border-left: none;\">$racik->jumlahracik</td>
+						<td style=\"text-align: right; border-right: none;border-left: none;\">$satuan</td>
+						<td style=\"text-align: right; border-right: none;border-left: none;\">$diskon</td>
+						<td style=\"text-align: right; border-right: none;border-left: none;\">$total</td>
 					</tr>";
 
 					// racik
@@ -1726,14 +1738,14 @@ class Penjualan_faktur extends CI_Controller{
 						$sub_racik2   = ceil($sub_racik1);
 						$total_racik2 = ceil($total_racik1);
 					}
-					$no++;
+					$nor++;
 				}
 				$body .= "<tr>
-					<td bgcolor=\"#eeeff1\" colspan=\"4\" style=\"text-align: center;\"><b>Total Racik</b></td>
-					<td bgcolor=\"#eeeff1\" style=\"text-align: center;\"><b>$jum_racik1</b></td>
-					<td bgcolor=\"#eeeff1\" style=\"text-align: right;\"><b>$sub_racik2</b></td>
-					<td bgcolor=\"#eeeff1\" style=\"text-align: right;\"><b>$diskon_racik1</b></td>
-					<td bgcolor=\"#eeeff1\" style=\"text-align: right;\"><b>$total_racik2</b></td>
+					<td colspan=\"4\" style=\"text-align: center; border-right: none;border-left: none; \"><b>Total Racik</b></td>
+					<td style=\"text-align: center; border-right: none;border-left: none; \"><b>$jum_racik1</b></td>
+					<td style=\"text-align: right; border-right: none;border-left: none; \"><b>$sub_racik2</b></td>
+					<td style=\"text-align: right; border-right: none;border-left: none; \"><b>$diskon_racik1</b></td>
+					<td style=\"text-align: right; border-right: none;border-left: none; \"><b>$total_racik2</b></td>
 				</tr>";
 				$body .= "</table>";
 			} else {
@@ -1741,7 +1753,7 @@ class Penjualan_faktur extends CI_Controller{
 			}
 
 			// space
-			$body .= "<table style=\"border-collapse:collapse;font-family: tahoma; font-size:8px\" width=\"100%\" align=\"center\" border=\"0\" cellpadding=\"5\" cellmargin=\"5\">
+			$body .= "<table style=\"border-collapse:collapse;font-family: arial; font-size:10px\" width=\"100%\" align=\"center\" border=\"0\" cellspacing=\"1\" cellpadding=\"3\">
 				<tr>
 					<td>&nbsp;</td>
 				</tr>
@@ -1782,7 +1794,7 @@ class Penjualan_faktur extends CI_Controller{
 						$ppn_racik    = ceil($ppn_racik3);
 					}	
 				}
-				$body .= "<table style=\"border-collapse:collapse;font-family: tahoma; font-size:8px;\" width=\"100%\" align=\"center\" border=\"0\" cellpadding=\"5\" cellmargin=\"5\">
+				$body .= "<table style=\"border-collapse:collapse;font-family: tahoma; font-size:10px;\" width=\"100%\" align=\"center\" border=\"0\" cellspacing=\"1\" cellpadding=\"3\">
 					<tr>
 						<td width=\"100%\" style=\"text-align: right;\" colspan=\"6\"></td>
 					</tr>
@@ -1805,7 +1817,7 @@ class Penjualan_faktur extends CI_Controller{
 				</table>";
 			} else {
 				$tsemua = 0;
-				$body .= "<table style=\"border-collapse:collapse;font-family: tahoma; font-size:8px;\" width=\"100%\" align=\"center\" border=\"0\" cellpadding=\"5\" cellmargin=\"5\">
+				$body .= "<table style=\"border-collapse:collapse;font-family: tahoma; font-size:10px;\" width=\"100%\" align=\"center\" border=\"0\" cellspacing=\"1\" cellpadding=\"3\">
 					<tr>
 						<td width=\"50%\" style=\"text-align: right;\" colspan=\"3\"></td>
 					</tr>
@@ -1817,7 +1829,7 @@ class Penjualan_faktur extends CI_Controller{
 				</table>";
 			}
 			// space
-			$body .= "<table style=\"border-collapse:collapse;font-family: tahoma; font-size:8px\" width=\"100%\" align=\"center\" border=\"0\" cellpadding=\"5\" cellmargin=\"5\">
+			$body .= "<table style=\"border-collapse:collapse;font-family: tahoma; font-size:10px\" width=\"100%\" align=\"center\" border=\"0\" cellspacing=\"1\" cellpadding=\"3\">
 				<tr>
 					<td>&nbsp;</td>
 				</tr>
@@ -1830,7 +1842,7 @@ class Penjualan_faktur extends CI_Controller{
 			} else {
 				$total_semua 	= ceil($total_semua1);
 			}
-			$body .= "<table style=\"border-collapse:collapse;font-family: tahoma; font-size:10px; font-weight: bold;\" width=\"100%\" align=\"center\" border=\"0\" cellpadding=\"5\" cellmargin=\"5\">
+			$body .= "<table style=\"border-collapse:collapse;font-family: tahoma; font-size:12px; font-weight: bold;\" width=\"100%\" align=\"center\" border=\"0\" cellspacing=\"1\" cellpadding=\"3\">
 				<tr>
 					<td width=\"50%\">&nbsp;</td>
 					<td width=\"30%\" style=\"text-align: right;border-bottom: 1px solid #000;border-top: 1px solid #000;\">Total</td>
@@ -1839,21 +1851,21 @@ class Penjualan_faktur extends CI_Controller{
 			</table>";
 
 			// space
-			$body .= "<table style=\"border-collapse:collapse;font-family: tahoma; font-size:8px\" width=\"100%\" align=\"center\" border=\"0\" cellpadding=\"5\" cellmargin=\"5\">
+			$body .= "<table style=\"border-collapse:collapse;font-family: tahoma; font-size:10px\" width=\"100%\" align=\"center\" border=\"0\" cellspacing=\"1\" cellpadding=\"3\">
 				<tr>
 					<td>&nbsp;</td>
 				</tr>
 			</table>";
 
 			// tanda tangan
-			$body .= "<table style=\"border-collapse:collapse;font-family: tahoma; font-size:8px\" width=\"100%\" align=\"center\" border=\"0\" cellpadding=\"5\" cellmargin=\"5\">
+			$body .= "<table style=\"border-collapse:collapse;font-family: tahoma; font-size:10px\" width=\"100%\" align=\"center\" border=\"0\" cellspacing=\"1\" cellpadding=\"3\">
 				<tr>
 					<td width=\"50%\" style=\"text-align:center;\"> &nbsp; </td>
 					<td width=\"50%\" style=\"text-align:center;\"><b>$kota, $tglresep</b></td>
 				</tr> 
 				<tr>
 					<td width=\"50%\" style=\"text-align:center;\"> &nbsp; </td>
-					<td width=\"50%\" style=\"text-align:center; font-size:8px;\"><b>$h_namars</b></td>
+					<td width=\"50%\" style=\"text-align:center; font-size:10px;\"><b>$h_namars</b></td>
 				</tr> 
 				<tr>
 					<td style=\"text-align: center;\"><b>Pasien</b></td>
@@ -1870,7 +1882,7 @@ class Penjualan_faktur extends CI_Controller{
 			</table>";
 
 			// space
-			$body .= "<table style=\"border-collapse:collapse;font-family: tahoma; font-size:8px\" width=\"100%\" align=\"center\" border=\"0\" cellpadding=\"5\" cellmargin=\"5\">
+			$body .= "<table style=\"border-collapse:collapse;font-family: tahoma; font-size:10px\" width=\"100%\" align=\"center\" border=\"0\" cellspacing=\"1\" cellpadding=\"3\">
 				<tr>
 					<td>&nbsp;</td>
 				</tr>
@@ -1878,7 +1890,7 @@ class Penjualan_faktur extends CI_Controller{
 
 			$now = new DateTime(date("Y-m-d"));
 			// pencetak
-			$body .= "<table style=\"border-collapse:collapse;font-family: tahoma; font-size:8px\" width=\"100%\" align=\"right\" border=\"0\" cellpadding=\"5\" cellmargin=\"5\">
+			$body .= "<table style=\"border-collapse:collapse;font-family: tahoma; font-size:10px\" width=\"100%\" align=\"right\" border=\"0\" cellspacing=\"1\" cellpadding=\"3\">
 				<tr>
 					<td style=\"text-align: right;\">Dicetak pada : ".strftime('%A, %d %B %Y', $now->getTimestamp())."</td>
 				</tr>
