@@ -258,8 +258,7 @@ $this->load->view('template/body');
                     </label>
                     <div class="col-md-9">
                       <select id="pembayaran" name="pembayaran" id="pembayaran"
-                        class="form-control select2_el_pembayaran" data-placeholder="Pilih..."
-                        onchange="cekjt(this.value)">
+                        class="form-control select2_el_pembayaran" data-placeholder="Pilih..." onchange="cekjt(this.value)">
                       </select>
                     </div>
 

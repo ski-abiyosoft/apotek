@@ -5,7 +5,7 @@
 	?>	
 
 	
-	<!-- <link href="<?= base_url('css/font_css.css')?>" rel="stylesheet" type="text/css"/> -->
+	<link href="<?= base_url('css/font_css.css')?>" rel="stylesheet" type="text/css"/>
 	<link href="<?= base_url('assets/plugins/uniform/css/uniform.default.css')?>" rel="stylesheet" type="text/css"/>
 	<link href="<?= base_url('assets/plugins/select2/select2.css')?>" rel="stylesheet" type="text/css" />
 	<link href="<?= base_url('assets/plugins/select2/select2-metronic.css')?>" rel="stylesheet" type="text/css" />
@@ -16,6 +16,10 @@
         .toolbar {
             float: left;
         }
+
+        /* * {font-family: 'Dot Matrix';} */
+
+        
     </style>
 			<div class="row">
 				<div class="col-md-12">
