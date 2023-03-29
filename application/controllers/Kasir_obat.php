@@ -109,6 +109,10 @@ class Kasir_obat extends CI_Controller
 
 			$dataresep = $this->db->query("SELECT * from tbl_apoposting where nokwitansi='$nokwitansi'")->row();
 
+			
+			
+			
+
 			if ($dataresep) {
 				$noresep = $dataresep->resepno;
 			} else {
@@ -126,7 +130,32 @@ class Kasir_obat extends CI_Controller
 			$row[] = $namapas;
 			$row[] = $unit->rekmed;
 			$row[] = date('d-m-Y', strtotime($unit->tglbayar));
-			$row[] = $jenisbayar[$unit->jenisbayar];
+			
+			if($unit->bayarcash > 0 && $unit->bayarcard > 0){
+				$sql = $this->db->get_where("tbl_kartukredit", ["nokwitansi" => $nokwitansi])->result();
+				$cek = [];
+				foreach($sql as $s) {
+
+					$nm_jenis= $this->db->get_where("tbl_setinghms",["kodeset" => $s->cardtype,"lset" => "card"])->row();
+					
+					$cek[] = $jenisbayar[$unit->jenisbayar].','.$nm_jenis->keterangan;
+				}
+				$row[] = $cek;
+			}else if($unit->bayarcash < 1 &&$unit->bayarcard > 0){
+				$sql = $this->db->get_where("tbl_kartukredit", ["nokwitansi" => $nokwitansi])->result();
+				$cek = [];
+				foreach($sql as $s) {
+
+					$nm_jenis= $this->db->get_where("tbl_setinghms",["kodeset" => $s->cardtype,"lset" => "card"])->row();
+					
+					$cek[] = $nm_jenis->keterangan;
+				}
+				$row[] = $cek;
+			} else {
+				$row[] = $jenisbayar[$unit->jenisbayar];
+			}
+
+			
 			$row[] = $unit->totalsemua;
 			$row[] = $unit->lainket;
 			//if($sisa>0){			
@@ -1176,26 +1205,33 @@ class Kasir_obat extends CI_Controller
 
 			foreach ($query_kartu_card as $cckey => $ccval) {
 				$query_nama_bank	= $this->db->query("SELECT * FROM tbl_edc WHERE bankcode = '$ccval->kodebank'")->row();
-				switch ($ccval->cardtype) {
-					case 1:
-						$cardType = "DEBIT NO";
-						break;
-					case 2:
-						$cardType = "CREDIT NO";
-						break;
-					case 3:
-						$cardType = "TRANSFER NO";
-						break;
-					case 4:
-						$cardType = "ONLINE";
-						break;
-				}
+
+				$nm_jenis= $this->db->get_where("tbl_setinghms",["kodeset" => $ccval->cardtype,"lset" => "card"])->row();
+
+
+				// switch ($ccval->cardtype) {
+				// 	case 1:
+				// 		$cardType = "DEBIT NO";
+				// 		break;
+				// 	case 2:
+				// 		$cardType = "CREDIT NO";
+				// 		break;
+				// 	case 3:
+				// 		$cardType = "TRANSFER NO";
+				// 		break;
+				// 	case 4:
+				// 		$cardType = "ONLINE";
+				// 		break;
+				// 	case 5:
+				// 		$cardType = "QRIS";
+				// 		break;
+				// }
 
 				$nocard_length	= count(array($ccval->nocard)) - 4;
 				$nocard			= substr($ccval->nocard, 0, $nocard_length) . "XXXX";
 
 				$pdf->FancyRow(array("Bank Penerbit", ":", $query_nama_bank->namabank), $fc, $border, $align, $style, $size);
-				$pdf->FancyRow(array($cardType, ":", $nocard), $fc, $border, $align, $style, $size);
+				$pdf->FancyRow(array($nm_jenis->keterangan, ":", $nocard), $fc, $border, $align, $style, $size);
 				$pdf->FancyRow(array("Approval Code", ":", $ccval->nootorisasi), $fc, $border, $align, $style, $size);
 				$pdf->FancyRow(array("Nominal", ":", "Rp " . number_format($ccval->jumlahbayar, 0, ',', '.')), $fc, $border, $align, $style, $size);
 				$pdf->ln(5);

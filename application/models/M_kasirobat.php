@@ -5,9 +5,9 @@ class M_kasirobat extends CI_Model {
 
 	var $table = 'tbl_kasir';
 	var $column_order = array('id','nokwitansi','koders','noreg','rekmed','tglbayar','jambayar',
-	'uangmuka','dibayaroleh','namapasien','username','totalsemua','totalbayar','lainket',null); 
+	'uangmuka','dibayaroleh','namapasien','username','totalsemua','totalbayar','bayarcard','lainket',null); 
 	var $column_search = array('id','nokwitansi','koders','noreg','rekmed','tglbayar','jambayar',
-	'uangmuka','dibayaroleh','namapasien','username','totalsemua','totalbayar','lainket');
+	'uangmuka','dibayaroleh','namapasien','username','totalsemua','totalbayar','bayarcard','lainket');
 	var $order = array('id' => 'desc'); 
 
 	public function __construct()

@@ -436,7 +436,7 @@
 														<tr>
 															<td width="20%">
 																<select name="bayar_bank[]" id="bayar_bank<?= $no; ?>"
-																class="select2_el_kasbank form-control input-large">
+																class="select2_el_kasbankedc  form-control input-large">
 																<option value="<?= $k->bankcode; ?>"><?= $k->namabank; ?></option>
 																</select>
 															</td>

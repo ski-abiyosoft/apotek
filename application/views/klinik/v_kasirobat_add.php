@@ -614,7 +614,7 @@ $this->load->view('template/body');
                                       <option value="2">CREDIT CARD</option>
                                       <option value="3">TRANFER</option>
                                       <option value="4">ONLINE</option>
-                                      <option value="5">ONLINE</option>
+                                      <option value="5">QRIS</option>
                                     </select>
                                   </td>
                                   <td><input name="bayar_nokartu[]" class="form-control" type='text' onchange="mink(1);" id="kartu1" maxlength='16'>

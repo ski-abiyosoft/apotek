@@ -118,12 +118,12 @@
 							   <label class="col-md-4 control-label">Cara Pembayaran <font color="red"></font></label>
 								<div class="col-md-8">
 								   <select readonly name="" id="pembayaran" class="form-control">
-								     <option value="1">Cash</option>
-									 <option value="2">Credit Card</option>
-									 <option value="3">Debet Card</option>
-									 <option value="4">Transfer</option>
-									 <option value="5">Online</option>
-                                   </select> 								   
+											<option value="0">Cash</option>
+											<option value="1">DEBIT</option>
+											<option value="2">CREDIT CARD</option>
+											<option value="3">TRANFER</option>
+											<option value="4">ONLINE</option>
+										</select> 								   
 								</div>
 								</div>
 						</div>
