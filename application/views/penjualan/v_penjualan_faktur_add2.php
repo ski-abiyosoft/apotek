@@ -2012,27 +2012,35 @@
   }
 
   function totalline(id) {
-    var table = document.getElementById('datatable');
-    var row = table.rows[id];
-    var harga = Number(row.cells[4].children[0].value.replace(/[^0-9\.]+/g, ""));
-    jumlah = row.cells[2].children[0].value * harga;
-    vdiskon = (row.cells[6].children[0].value / 100) * jumlah;
-    if (eval(vdiskon) > 0) {
-      diskon = (row.cells[6].children[0].value / 100) * harga * row.cells[2].children[0].value;
-      row.cells[7].children[0].value = separateComma(diskon);
-      tot = harga - diskon;
-    } else {
-      var diskon = Number(row.cells[6].children[0].value.replace(/[^0-9\.]+/g, ""));
-      row.cells[7].children[0].value = separateComma(diskon);
-      tot = harga - diskon;
-    }
-    tot = jumlah - diskon;
-    kode = row.cells[1].children[0].value;
-    cekhargajual(kode, harga, id);
-    if (document.getElementById('ppn' + id).checked == true) {
-      tot = tot * 1.1;
-    }
-    row.cells[8].children[0].value = separateComma(tot);
+    // var table = document.getElementById('datatable');
+    // var row = table.rows[id];
+    // var harga = Number(row.cells[4].children[0].value.replace(/[^0-9\.]+/g, ""));
+    // jumlah = row.cells[2].children[0].value * harga;
+    // vdiskon = (row.cells[6].children[0].value / 100) * jumlah;
+    // if (eval(vdiskon) > 0) {
+    //   diskon = (row.cells[6].children[0].value / 100) * harga * row.cells[2].children[0].value;
+    //   row.cells[7].children[0].value = separateComma(diskon);
+    //   tot = harga - diskon;
+    // } else {
+    //   var diskon = Number(row.cells[6].children[0].value.replace(/[^0-9\.]+/g, ""));
+    //   row.cells[7].children[0].value = separateComma(diskon);
+    //   tot = harga - diskon;
+    // }
+    // tot = jumlah - diskon;
+    // kode = row.cells[1].children[0].value;
+    // cekhargajual(kode, harga, id);
+    // if (document.getElementById('ppn' + id).checked == true) {
+    //   tot = tot * 1.1;
+    // }
+    // row.cells[8].children[0].value = separateComma(tot);
+    var hargax = $("#harga"+id).val();
+    var harga = Number(parseInt(hargax.replaceAll(',','')));
+    var qtyx = $("#qty"+id).val();
+    var qty = Number(parseInt(qtyx.replaceAll(',','')));
+    var discx = $("#disc"+id).val();
+    var disc = Number(parseInt(discx.replaceAll(',','')));
+    var jumlah = harga * qty;
+    var dikon = (disc / 100) * jumlah;
     total();
   }
 

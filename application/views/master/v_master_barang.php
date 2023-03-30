@@ -1075,14 +1075,14 @@ function filterdata(){
     }
 
     function ubah_nama(param) {
-        let text_space = param.replaceAll(' ', '');
-        let text = text_space.toUpperCase();
-        $("#nama").val(text);
+        // let text_space = param.replaceAll(' ', '');
+        // let text = text_space.toUpperCase();
+        // $("#nama").val(text);
     }
 
     function ubah_namagen(param) {
-        let text_space = param.replaceAll(' ', '');
-        let text = text_space.toUpperCase();
-        $("#namageneric").val(text);
+        // let text_space = param.replaceAll(' ', '');
+        // let text = text_space.toUpperCase();
+        // $("#namageneric").val(text);
     }
 </script>

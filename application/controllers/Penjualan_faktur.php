@@ -1245,6 +1245,27 @@ class Penjualan_faktur extends CI_Controller{
 				$ppn_resep = ceil($ppn_resep1);
 			}
 
+			// uangr			
+			$cek = $this->db->get_where("tbl_hset_farma", ["koders" => $this->session->userdata("unit")])->row();
+			$cek2 = $this->db->get_where("tbl_apohresep", ["resepno" => $hresep->resepno])->row();
+			if($cek) {
+				if($cek2->kodepel == "adr") {
+				$cek3 = $this->db->get_where("tbl_apodresep", ["resepno" => $hresep->resepno])->num_rows();
+				$cek4 = $this->db->get_where("tbl_aporacik", ["resepno" => $hresep->resepno])->num_rows();
+				if($cek4 > 0) {
+					$uangracik = $cek->uang_racik * $cek4;
+				} else {
+					$uangracik = 0;
+				}
+				
+				$uangr = ($cek->uang_r * $cek3) + $uangracik;
+				} else {
+				$uangr = 0;
+				}
+			} else {
+				$uangr = 0;
+			}
+
 			// if($hresep->rekmed=="Non Member"){
 			// 	if($posting->nokwitansi<>'' || $posting->nokwitansi<table> null){
 			// 		$link = "<b style='color: green; font-size: 20px; border: solid 3px green;'>LUNAS</b>";
@@ -1310,6 +1331,12 @@ class Penjualan_faktur extends CI_Controller{
 						<td width=\"2%\">:</td>
 						<td width=\"15%\" style=\"text-align: right;\">$ppn_racik</td>
 					</tr>
+					<tr>
+						<td colspan=\"3\" width=\"50%\">&nbsp;</td>
+						<td width=\"33%\" style=\"text-align: right;\">Uang R</td>
+						<td width=\"2%\">:</td>
+						<td width=\"15%\" style=\"text-align: right;\">$uangr</td>
+					</tr>
 				</table>";
 			} else {
 				$tsemua = 0;
@@ -1322,6 +1349,11 @@ class Penjualan_faktur extends CI_Controller{
 						<td width=\"2%\">:</td>
 						<td width=\"15%\" style=\"text-align: right;\">$ppn_resep</td>
 					</tr>
+					<tr>
+						<td width=\"83%\" style=\"text-align: right;\">Uang R</td>
+						<td width=\"2%\">:</td>
+						<td width=\"15%\" style=\"text-align: right;\">$uangr</td>
+					</tr>
 				</table>";
 			}
 			// space
@@ -1333,7 +1365,7 @@ class Penjualan_faktur extends CI_Controller{
 			// total
 
 			$resepan = $total_resep1;
-			$total_semua1 = $tsemua + $resepan;
+			$total_semua1 = $tsemua + $resepan + $uangr;
 			if($cekpdf == 1){
 				$total_semua = number_format($total_semua1);
 			} else {
@@ -1767,6 +1799,27 @@ class Penjualan_faktur extends CI_Controller{
 				$dpp_resep = ceil($dpp_resep1);
 				$ppn_resep = ceil($ppn_resep1);
 			}
+
+			// uangr			
+			$cek = $this->db->get_where("tbl_hset_farma", ["koders" => $this->session->userdata("unit")])->row();
+			$cek2 = $this->db->get_where("tbl_apohresep", ["resepno" => $hresep->resepno])->row();
+			if($cek) {
+				if($cek2->kodepel == "adr") {
+				$cek3 = $this->db->get_where("tbl_apodresep", ["resepno" => $hresep->resepno])->num_rows();
+				$cek4 = $this->db->get_where("tbl_aporacik", ["resepno" => $hresep->resepno])->num_rows();
+				if($cek4 > 0) {
+					$uangracik = $cek->uang_racik * $cek4;
+				} else {
+					$uangracik = 0;
+				}
+				
+				$uangr = ($cek->uang_r * $cek3) + $uangracik;
+				} else {
+				$uangr = 0;
+				}
+			} else {
+				$uangr = 0;
+			}
 			
 			if($cekracik > 0){
 				$dpp_racik3   = 0;
@@ -1811,6 +1864,12 @@ class Penjualan_faktur extends CI_Controller{
 						<td width=\"2%\">:</td>
 						<td width=\"15%\" style=\"text-align: right;\">$ppn_racik</td>
 					</tr>
+					<tr>
+						<td colspan=\"3\" width=\"50%\">&nbsp;</td>
+						<td width=\"33%\" style=\"text-align: right;\">Uang R</td>
+						<td width=\"2%\">:</td>
+						<td width=\"15%\" style=\"text-align: right;\">$uangr</td>
+					</tr>
 				</table>";
 			} else {
 				$tsemua = 0;
@@ -1819,6 +1878,11 @@ class Penjualan_faktur extends CI_Controller{
 						<td width=\"83%\" style=\"text-align: right;\">PPN Resep</td>
 						<td width=\"2%\">:</td>
 						<td width=\"15%\" style=\"text-align: right;\">$ppn_resep</td>
+					</tr>
+					<tr>
+						<td width=\"83%\" style=\"text-align: right;\">Uang R</td>
+						<td width=\"2%\">:</td>
+						<td width=\"15%\" style=\"text-align: right;\">$uangr</td>
 					</tr>
 				</table>";
 			}
@@ -1829,8 +1893,8 @@ class Penjualan_faktur extends CI_Controller{
 				</tr>
 			</table>";
 			// total
-			$resepan 				= $total_resep1;
-			$total_semua1 	= $tsemua + $resepan;
+			$resepan         = $total_resep1;
+			$total_semua1    = $tsemua + $resepan + $uangr ;
 			if($cekpdf == 1){
 				$total_semua 	= number_format($total_semua1);
 			} else {
