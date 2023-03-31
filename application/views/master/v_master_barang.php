@@ -508,7 +508,7 @@ $(document).ready(function() {
                                     <label class="control-label col-md-3">Nama Barang&nbsp;<small style="color:red">*</small></label>
                                     <div class="col-md-9">
                                         <input name="nama" id="nama" placeholder="Uraian" class="form-control" maxlength="100"
-                                            type="text" onkeyup="ubah_nama(this.value)">
+                                            type="text" onchange="ubah_nama(this.value)">
                                         <span class="help-block"></span>
                                     </div>
                                 </div>
@@ -1074,17 +1074,25 @@ function filterdata(){
         $("#kode").val(text);
     }
 
-    function ubah_nama(param) {
+    function ubah_nama() 
+    {
         
-        let result = param.match(".");
-        
-        if(!result)
-        {
-            alert('aaa');
-        }
-        // let text_space = param.replaceAll(' ', '');
-        // let text = text_space.toUpperCase();
-        // $("#nama").val(text);
+        // var param = $('[name="nama"]').val();
+        // var result = param.match('.');
+
+        // if(result)
+        // {
+        //     swal({
+        //         title   : "NAMA ",
+        //         html    : "Tidak Boleh Menggunakan TITIK [.] ganti dengan strip [-]",
+        //         type    : "error",
+        //         confirmButtonText   : "OK"
+        //     });
+        //     let text = param.replaceAll('.', '-');
+        //     // let text = text_space.toUpperCase();
+        //     $("#nama").val(text);
+        //     return;
+        // }
     }
 
     function ubah_namagen(param) {
