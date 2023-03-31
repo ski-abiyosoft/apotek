@@ -2033,14 +2033,28 @@
     //   tot = tot * 1.1;
     // }
     // row.cells[8].children[0].value = separateComma(tot);
-    var hargax = $("#harga"+id).val();
-    var harga = Number(parseInt(hargax.replaceAll(',','')));
-    var qtyx = $("#qty"+id).val();
-    var qty = Number(parseInt(qtyx.replaceAll(',','')));
-    var discx = $("#disc"+id).val();
-    var disc = Number(parseInt(discx.replaceAll(',','')));
-    var jumlah = harga * qty;
-    var dikon = (disc / 100) * jumlah;
+    var hargax    = $("#harga"+id).val();
+    var harga     = Number(parseInt(hargax.replaceAll(',','')));
+    var qtyx      = $("#qty"+id).val();
+    var qty       = Number(parseInt(qtyx.replaceAll(',','')));
+    var discx     = $("#disc"+id).val();
+    var disc      = Number(parseInt(discx.replaceAll(',','')));
+    var jumlah    = harga * qty;
+    var diskon    = (disc / 100) * jumlah;
+    if(diskon > 0) {
+      $("#disc2"+id).val(separateComma(diskon));
+      var tot   = jumlah - diskon;
+    } else {
+      var disc2x    = $("#disc2"+id).val();
+      var disc2     = Number(parseInt(disc2x.replaceAll(',','')));
+      var tot       = jumlah - disc2;
+    }
+    var kode    = $("#kode"+id).val();
+    cekhargajual(kode, harga, id);
+    if($("ppn"+id).checked == true) {
+      var tot = tot * "<?= $ppn['prosentase'] / 100; ?>";
+    }
+    $("#jumlah"+id).val(separateComma(tot));
     total();
   }
 

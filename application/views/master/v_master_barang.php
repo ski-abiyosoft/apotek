@@ -1075,6 +1075,13 @@ function filterdata(){
     }
 
     function ubah_nama(param) {
+        
+        let result = param.match(".");
+        
+        if(!result)
+        {
+            alert('aaa');
+        }
         // let text_space = param.replaceAll(' ', '');
         // let text = text_space.toUpperCase();
         // $("#nama").val(text);

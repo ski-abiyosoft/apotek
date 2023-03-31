@@ -234,7 +234,7 @@
                                                     }
                                                     $uangr = ($cek->uang_r * $cek3) + $uangracik;
                                                   } else {
-                                                    $uangr = 0;
+                                                    $uangr = $cek->uang_r;
                                                   }
                                                 } else {
                                                   $uangr = 0;

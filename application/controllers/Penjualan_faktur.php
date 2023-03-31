@@ -1248,19 +1248,20 @@ class Penjualan_faktur extends CI_Controller{
 			// uangr			
 			$cek = $this->db->get_where("tbl_hset_farma", ["koders" => $this->session->userdata("unit")])->row();
 			$cek2 = $this->db->get_where("tbl_apohresep", ["resepno" => $hresep->resepno])->row();
+			$cek3    = $this->db->get_where("tbl_apodresep", ["resepno" => $hresep->resepno])->num_rows();
+			$cek4    = $this->db->get_where("tbl_aporacik", ["resepno" => $hresep->resepno])->num_rows();
 			if($cek) {
 				if($cek2->kodepel == "adr") {
-				$cek3 = $this->db->get_where("tbl_apodresep", ["resepno" => $hresep->resepno])->num_rows();
-				$cek4 = $this->db->get_where("tbl_aporacik", ["resepno" => $hresep->resepno])->num_rows();
-				if($cek4 > 0) {
-					$uangracik = $cek->uang_racik * $cek4;
+					
+					if($cek4 > 0) {
+						$uangracik = $cek->uang_racik * $cek4;
+					} else {
+						$uangracik = 0;
+					}
+					
+					$uangr = ($cek->uang_r * $cek3) + $uangracik;
 				} else {
-					$uangracik = 0;
-				}
-				
-				$uangr = ($cek->uang_r * $cek3) + $uangracik;
-				} else {
-				$uangr = 0;
+					$uangr = $cek->uang_r * $cek3;
 				}
 			} else {
 				$uangr = 0;
@@ -1803,19 +1804,20 @@ class Penjualan_faktur extends CI_Controller{
 			// uangr			
 			$cek = $this->db->get_where("tbl_hset_farma", ["koders" => $this->session->userdata("unit")])->row();
 			$cek2 = $this->db->get_where("tbl_apohresep", ["resepno" => $hresep->resepno])->row();
+			$cek3 = $this->db->get_where("tbl_apodresep", ["resepno" => $hresep->resepno])->num_rows();
+			$cek4 = $this->db->get_where("tbl_aporacik", ["resepno" => $hresep->resepno])->num_rows();
 			if($cek) {
-				if($cek2->kodepel == "adr") {
-				$cek3 = $this->db->get_where("tbl_apodresep", ["resepno" => $hresep->resepno])->num_rows();
-				$cek4 = $this->db->get_where("tbl_aporacik", ["resepno" => $hresep->resepno])->num_rows();
-				if($cek4 > 0) {
-					$uangracik = $cek->uang_racik * $cek4;
-				} else {
-					$uangracik = 0;
-				}
+				if($cek2->kodepel == "adr") 
+				{				
+					if($cek4 > 0) {
+						$uangracik = $cek->uang_racik * $cek4;
+					} else {
+						$uangracik = 0;
+					}
 				
-				$uangr = ($cek->uang_r * $cek3) + $uangracik;
+					$uangr = ($cek->uang_r * $cek3) + $uangracik;
 				} else {
-				$uangr = 0;
+					$uangr = $cek->uang_r * $cek3;
 				}
 			} else {
 				$uangr = 0;

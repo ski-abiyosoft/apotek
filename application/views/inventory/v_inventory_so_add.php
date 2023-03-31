@@ -269,7 +269,14 @@ $this->load->view('template/footer');
     function save() {
         var noform    = $('[name="pic"]').val();
         var tanggal   = $('[name="tanggal"]').val();
-        var setuju    = $('#yangsetuju').val(); 
+        var typestock = $('[name="typestock"]').val();
+
+        if(typestock=='so'){
+            typestock1= 'STOCK OPNAME';
+        }else{
+            typestock1= 'ADJUSMENT';
+        }
+        var setuju    = $('#yangsetuju').val();
 
         if (setuju == "" || setuju == null) {
             swal({
@@ -283,7 +290,7 @@ $this->load->view('template/footer');
 
         
         if (noform == "") {
-            swal('STOK OPNAME', 'Petugas belum diisi ...', '');
+            swal(typestock1, 'Petugas belum diisi ...', '');
         } else {
             $.ajax({
                 url: '<?php echo site_url('inventory_tso/save/1?setuju=') ?>' + setuju,
@@ -291,9 +298,9 @@ $this->load->view('template/footer');
                 type: 'POST',
                 success: function(data) {
                     swal({
-                        title: "STOK OPNAME",
-                        html: "<p>Nama Petugas   : <b>" + noform + "</b> </p>" + "Tanggal :  " + tanggal,
-                        type: "info",
+                        title   : typestock1,
+                        html    : "<p>Nama Petugas   : <b>" + noform + "</b> </p>" + "Tanggal :  " + tanggal,
+                        type    : "info",
                         confirmButtonText: "OK"
                     }).then((value) => {
                         location.href = "<?php echo base_url() ?>inventory_tso";
@@ -301,7 +308,7 @@ $this->load->view('template/footer');
 
                 },
                 error: function(data) {
-                    swal('STOK OPNAME', 'Data gagal disimpan ...', '');
+                    swal(typestock1, 'Data gagal disimpan ...', '');
                 }
             });
         }
