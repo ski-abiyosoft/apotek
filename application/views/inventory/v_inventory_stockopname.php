@@ -116,7 +116,7 @@ $this->load->view('template/body');
                                     <label>Gudang</label>
                                 </div>
                                 <div class="col-md-6">
-                                    <select class="form-control input-large" id="gudang" name="gudang" onchange="getsogudang(); getstokgudang();" style="margin-top:-7px;">
+                                    <select class="form-control input-large" id="gudang" name="gudang" onchange="getsogudang();" style="margin-top:-7px;">
                                         <option value="">-- Pilih --</option>
                                         <?php $sql = $this->db->query('SELECT depocode as id, keterangan as text from tbl_depo')->result(); ?>
                                         <?php foreach ($sql as $s) : ?>
