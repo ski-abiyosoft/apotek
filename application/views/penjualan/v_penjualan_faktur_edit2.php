@@ -322,16 +322,16 @@ if ($datpas) {
                                                                  </td>
                                                                  <td>
                                                                       <?php if ($noedit != 1) : ?>
-                                                                           <input name="disc[]" onchange="cekdisc(<?= $no; ?>)" value="<?= $row->discount; ?>" id="disc<?= $no; ?>" type="text" class="form-control rightJustified ">
+                                                                           <input name="disc[]" onchange="cekdisc(<?= $no; ?>);totalline(<?= $no; ?>);" value="<?= $row->discount; ?>" id="disc<?= $no; ?>" type="text" class="form-control rightJustified ">
                                                                       <?php else : ?>
-                                                                           <input name="disc[]" onchange="cekdisc(<?= $no; ?>)" value="<?= $row->discount; ?>" id="disc<?= $no; ?>" type="text" class="form-control rightJustified " readonly>
+                                                                           <input name="disc[]" onchange="cekdisc(<?= $no; ?>);totalline(<?= $no; ?>);" value="<?= $row->discount; ?>" id="disc<?= $no; ?>" type="text" class="form-control rightJustified " readonly>
                                                                       <?php endif ?>
                                                                  </td>
                                                                  <td>
                                                                       <?php if ($noedit != 1) : ?>
-                                                                           <input name="disc2[]" onchange="cekdiscrp(<?= $no; ?>)" value="<?= number_format($row->discrp); ?>" id="disc2<?= $no; ?>" type="text" onkeyup="myFunction(<?= $no; ?>)" class="form-control rightJustified ">
+                                                                           <input name="disc2[]" onchange="myFunction(<?= $no; ?>);cekdiscrp(<?= $no; ?>);totalline(<?= $no; ?>);" value="<?= number_format($row->discrp); ?>" id="disc2<?= $no; ?>" type="text" class="form-control rightJustified ">
                                                                       <?php else : ?>
-                                                                           <input name="disc2[]" onchange="cekdiscrp(<?= $no; ?>)" value="<?= number_format($row->discrp); ?>" id="disc2<?= $no; ?>" type="text" onkeyup="myFunction(<?= $no; ?>)" class="form-control rightJustified " readonly>
+                                                                           <input name="disc2[]" onchange="myFunction(<?= $no; ?>);cekdiscrp(<?= $no; ?>);totalline(<?= $no; ?>);" value="<?= number_format($row->discrp); ?>" id="disc2<?= $no; ?>" type="text" class="form-control rightJustified " readonly>
                                                                       <?php endif ?>
                                                                  </td>
                                                                  <td>
@@ -1255,10 +1255,23 @@ $this->load->view('template/footer_tb');
      }
 
      function myFunction(id) {
-          var table = document.getElementById('datatable');
-          var row = table.rows[id];
-          var x = row.cells[6].children[0].value.replace(/[^0-9\.]+/g, "");
-          x.value = separateComma(x);
+          var table   = document.getElementById('datatable');
+          var row     = table.rows[id];
+          var x       = row.cells[6].children[0].value.replace(/[^0-9\.]+/g, "");
+          x.value     = separateComma(x);
+
+          var discrp  = $("#disc2" + id).val();
+          var jumlahx = $("#jumlah" + id).val();
+          var jumlah  = Number(parseInt(jumlahx.replaceAll(',', '')));
+          var total   = jumlah - discrp;
+          
+          if (discrp == "") {
+               $("#disc2" + id).val("0");
+               $("#jumlah" + id).val(jumlahx);
+          } else {
+               $("#jumlah" + id).val(separateComma(total));
+               $("#disc2" + id).val(separateComma(discrp));
+          }
      }
 
      function hapusBarisIni(param) {
@@ -1286,7 +1299,7 @@ $this->load->view('template/footer_tb');
                "<td><input name='harga[]'  id=harga" + idrow + " onchange='totalline(" + idrow + ") value='0'  type='text' class='form-control rightJustified' readonly></td>" +
                "<td><input type='checkbox' name='ppn[]'  checked  id=ppn" + idrow + " onchange='totalline(" + idrow + ")' class='form-control' disabled ></td>" +
                "<td><input name='disc[]' id=disc" + idrow + " onchange='totalline(" + idrow + ");cekdisc(" + idrow + ")' value='0'  type='text' class='form-control rightJustified'  ></td>" +
-               "<td><input name='disc2[]' id=disc2" + idrow + " onkeyup='myFunction(" + idrow + ")' onchange='totalline(" + idrow + ");cekdiscrp(" + idrow + ")' value='0'  type='text' class='form-control rightJustified'  ></td>" +
+               "<td><input name='disc2[]' id=disc2" + idrow + " onchange='myFunction(" + idrow + ");totalline(" + idrow + ");cekdiscrp(" + idrow + ");' value='0'  type='text' class='form-control rightJustified'  ></td>" +
                "<td><input name='jumlah[]' id=jumlah" + idrow + " type='text' class='form-control rightJustified' size='40%' readonly></td>" +
                
                "<td><textarea name='keterangan[]' id='keterangan" + idrow + "' type='text' class='form-control' style='resize:none' rows='2'></textarea></td>" +
@@ -1472,14 +1485,29 @@ $this->load->view('template/footer_tb');
      }
 
      function totalline(id) {
-          var hargax = $('#harga' + id).val();
-          var harga = Number(parseInt(hargax.replaceAll(',', '')));
-          var qtyx = $('#qty' + id).val();
-          var qty = Number(parseInt(qtyx.replaceAll(',', '')));
+          var hargax    = $('#harga' + id).val();
+          var harga     = Number(parseInt(hargax.replaceAll(',', '')));
+          var qtyx      = $('#qty' + id).val();
+          var qty       = Number(parseInt(qtyx.replaceAll(',', '')));
           $('#qty' + id).val(separateComma(qty));
-          var discrpx = $('#disc2' + id).val();
-          var discrpxx = Number(parseInt(discrpx.replaceAll(',', '')));
-          totalx = (qty * harga) - discrpxx;
+          // var discrpx   = $('#disc2' + id).val();
+          // var discrpxx  = Number(parseInt(discrpx.replaceAll(',', '')));
+
+          var discx     = $("#disc"+id).val();
+          var disc      = Number(parseInt(discx.replaceAll(',','')));
+          var jumlah    = harga * qty;
+          var diskon    = (disc / 100) * jumlah;
+          if(diskon > 0) {
+               $("#disc2"+id).val(separateComma(diskon));
+               var totalx   = jumlah - diskon;
+          } else {
+               
+               var disc2x   = $("#disc2"+id).val();
+               var disc2    = Number(parseInt(disc2x.replaceAll(',','')));
+               // alert(disc2);
+               var totalx   = jumlah - disc2;
+          }
+          // totalx        = jumlah - discrpxx;
           $('#jumlah' + id).val(separateComma(totalx));
           total();
      }

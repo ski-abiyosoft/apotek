@@ -238,8 +238,8 @@
                         <td><input name="sat[]" id="sat1" type="text" class="form-control " onkeypress="return tabE(this,event)"></td>
                         <td><input name="harga[]" onchange="totalline(1);" value="0" id="harga1" type="text" class="form-control rightJustified" readonly></td>
                         <td><input type="checkbox" name="ppn[]" id="ppn1" class="form-control" onchange="totalline(1);total()" disabled></td>
-                        <td><input name="disc[]" onchange="totalline(1)" value="0" id="disc1" type="text" class="form-control rightJustified "></td>
-                        <td><input name="disc2[]" value="0" id="disc21" type="text" onchange="total();myFunction(1)" class="form-control rightJustified "></td>
+                        <td><input name="disc[]" onchange="cekdisc(1);totalline(1)" value="0" id="disc1" type="text" class="form-control rightJustified "></td>
+                        <td><input name="disc2[]" value="0" id="disc21" type="text" onchange="total();myFunction(1);totalline(1)" class="form-control rightJustified "></td>
                         <td><input name="jumlah[]" id="jumlah1" type="text" class="form-control rightJustified" size="40%" onchange="total()" readonly></td>
                         <td><textarea name="keterangan[]" id="keterangan1" type="text" class="form-control" style="resize:none" rows="2"></textarea></td>
                         <td>
@@ -1886,8 +1886,8 @@
       <td><input name="sat[]" id="sat`+idrow+`" type="text" class="form-control"></td>
       <td><input name="harga[]" onchange="totalline(`+idrow+`);" value="0" id="harga`+idrow+`" type="text" class="form-control rightJustified" readonly></td>
       <td><input type="checkbox" name="ppn[]" id="ppn`+idrow+`" class="form-control" onchange="totalline(`+idrow+`);total()" disabled></td>
-      <td><input name="disc[]" onchange="totalline(`+idrow+`)" value="0" id="disc`+idrow+`" type="text" class="form-control rightJustified "></td>
-      <td><input name="disc2[]" value="0" id="disc2`+idrow+`" type="text" onchange="total();myFunction(`+idrow+`)" class="form-control rightJustified "></td>
+      <td><input name="disc[]" onchange="cekdisc(`+idrow+`);totalline(`+idrow+`)" value="0" id="disc`+idrow+`" type="text" class="form-control rightJustified "></td>
+      <td><input name="disc2[]" value="0" id="disc2`+idrow+`" type="text" onchange="total();myFunction(`+idrow+`);totalline(`+idrow+`)" class="form-control rightJustified "></td>
       <td><input name="jumlah[]" id="jumlah`+idrow+`" type="text" class="form-control rightJustified" size="40%" onchange="total()" readonly></td>
       <td><textarea name="keterangan[]" id="keterangan`+idrow+`" type="text" class="form-control" style="resize:none" rows="2"></textarea></td>
       <td>
@@ -2009,6 +2009,52 @@
       $("#jumlah" + id).val(separateComma(total));
       $("#disc2" + id).val(separateComma(discrp));
     }
+  }
+
+  function cekdisc(id) {
+      var qtyx    = $('#qty' + id).val();
+      var qty     = Number(parseInt(qtyx.replaceAll(',', '')));
+      var hargax  = $('#harga' + id).val();
+      var harga   = Number(parseInt(hargax.replaceAll(',', '')));
+      var discx   = $('#disc' + id).val();
+      if (discx >= 100) {
+            swal({
+                title: "DISKON %",
+                html: "<p>MAKSIMAL 100%</p>",
+                type: "error",
+                confirmButtonText: "OK"
+            }).then((value) => {
+                $('#disc' + id).val(0);
+                var discrp = 0;
+                $('#disc2' + id).val(discrp);
+                totalx = (qty * harga) - discrp;
+                $('#jumlah' + id).val(separateComma(totalx));
+                total();
+            });
+      } else {
+            var disc       = discx;
+            discrp         = qty * harga * disc / 100;
+            $('#disc2' + id).val(separateComma(discrp));
+            var discrpx    = $('#disc2' + id).val();
+            var discrpxx   = Number(parseInt(discrpx.replaceAll(',', '')));
+            totalx         = (qty * harga) - discrpxx;
+            $('#jumlah' + id).val(separateComma(totalx));
+            total();
+      }
+  }
+
+  function cekdiscrp(id) {
+      $('#disc' + id).val('0');
+      var qtyx        = $('#qty' + id).val();
+      var qty         = Number(parseInt(qtyx.replaceAll(',', '')));
+      var hargax      = $('#harga' + id).val();
+      var harga       = Number(parseInt(hargax.replaceAll(',', '')));
+      var discrpx     = $('#disc2' + id).val();
+      var discrpxx    = Number(parseInt(discrpx.replaceAll(',', '')));
+      $('#disc2' + id).val(separateComma(discrpxx));
+      totalx = (qty * harga) - discrpxx;
+      $('#jumlah' + id).val(separateComma(totalx));
+      total();
   }
 
   function totalline(id) {
