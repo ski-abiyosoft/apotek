@@ -966,17 +966,19 @@ class Penjualan_faktur extends CI_Controller{
 		$namars    = $kop['namars'];
 		$kota      = $kop['kota'];
 		if (!empty($cek)) {
-			$param        = $this->input->get('nobukti');
-			$hresep				= $this->db->query("SELECT (CASE WHEN a.kodepel='adr'  THEN 'Dengan Resep' ELSE 'Tanpa Resep' END  )nmpel ,a.* FROM tbl_apohresep a WHERE resepno = '$param'")->row();
-			$posting			= $this->db->query("SELECT * FROM tbl_apoposting WHERE resepno = '$param'")->row();
-			$userid			= $this->db->query("SELECT * FROM userlogin WHERE uidlogin = '$posting->username'")->row();
-			$pasien				= $this->db->query("SELECT (select cust_nama from tbl_penjamin b where b.cust_id=a.penjamin)nm_penjamin,a.* FROM tbl_pasien a WHERE rekmed = '$hresep->rekmed'")->row();
-			$dresep				= $this->db->query("SELECT (SELECT aponame FROM tbl_barangsetup b where a.atpakai=b.apocode limit 1 )ap,a.*  FROM tbl_apodresep a WHERE resepno = '$param' AND koders = '$unit'")->result();
-			$racik				= $this->db->query("SELECT (SELECT aponame FROM tbl_barangsetup b where a.aturanpakai=b.apocode )ap,a.*  FROM tbl_aporacik a WHERE resepno = '$param' AND koders = '$unit'")->row();
-			$racik_res				= $this->db->query("SELECT (SELECT aponame FROM tbl_barangsetup b where a.aturanpakai=b.apocode )ap,a.*  FROM tbl_aporacik a WHERE resepno = '$param' AND koders = '$unit'")->result();
+			$param       = $this->input->get('nobukti');
+			$hresep      = $this->db->query("SELECT (CASE WHEN a.kodepel='adr'  THEN 'Dengan Resep' ELSE 'Tanpa Resep' END  )nmpel ,a.* FROM tbl_apohresep a WHERE resepno = '$param'")->row();
+			$posting     = $this->db->query("SELECT * FROM tbl_apoposting WHERE resepno = '$param'")->row();
+			$userid      = $this->db->query("SELECT * FROM userlogin WHERE uidlogin = '$posting->username'")->row();
+			$pasien      = $this->db->query("SELECT (select cust_nama from tbl_penjamin b where b.cust_id=a.penjamin)nm_penjamin,a.* FROM tbl_pasien a WHERE rekmed = '$hresep->rekmed'")->row();
+			$dresep      = $this->db->query("SELECT (SELECT aponame FROM tbl_barangsetup b where a.atpakai=b.apocode limit 1 )ap,a.*  FROM tbl_apodresep a WHERE resepno = '$param' AND koders = '$unit'")->result();
+			$racik       = $this->db->query("SELECT (SELECT aponame FROM tbl_barangsetup b where a.aturanpakai=b.apocode )ap,a.*  FROM tbl_aporacik a WHERE resepno = '$param' AND koders = '$unit'")->row();
+			$racik_res   = $this->db->query("SELECT (SELECT aponame FROM tbl_barangsetup b where a.aturanpakai=b.apocode )ap,a.*  FROM tbl_aporacik a WHERE resepno = '$param' AND koders = '$unit'")->result();
+
+			$qkasir        = "SELECT * from tbl_kasir where nokwitansi = '$hresep->nokwitansi'";
 			
-			$cekracik			= $this->db->query("SELECT * FROM tbl_aporacik WHERE resepno = '$param' AND koders = '$unit'")->num_rows();
-			$detresep			= $this->db->query("SELECT * FROM tbl_apodetresep WHERE resepno = '$param' AND koders = '$unit'")->result();
+			$cekracik    = $this->db->query("SELECT * FROM tbl_aporacik WHERE resepno = '$param' AND koders = '$unit'")->num_rows();
+			$detresep    = $this->db->query("SELECT * FROM tbl_apodetresep WHERE resepno = '$param' AND koders = '$unit'")->result();
 			if($pasien){
 
 				$namapas    = $pasien->namapas;
@@ -1357,6 +1359,82 @@ class Penjualan_faktur extends CI_Controller{
 					</tr>
 				</table>";
 			}
+
+			if ($hresep->nokwitansi){
+				$kasir       = $this->db->query($qkasir)->row();
+
+				$body .= "<table style=\"border-collapse:collapse;font-family: tahoma; font-size:12px;\" width=\"100%\" align=\"center\" border=\"0\" cellpadding=\"3\" cellmargin=\"3\">
+					<tr>
+						<td style=\"text-align: left;\" colspan=\"3\"></td>
+					</tr>
+					<tr>
+						<td width=\"20%\" style=\"text-align: left;\"><b>Cash</b></td>
+						<td width=\"2%\">:</td>
+						<td width=\"78%\" style=\"text-align: left;\">$kasir->bayarcash </td>
+					</tr>
+				</table>";
+
+
+				$query_kartu_card	= $this->db->query("SELECT * FROM tbl_kartukredit WHERE nokwitansi = '$hresep->nokwitansi'");
+				foreach ($query_kartu_card->result() as $ccval) 
+				{
+					$query_nama_bank	= $this->db->query("SELECT * FROM tbl_edc WHERE bankcode = '$ccval->kodebank'")->row();
+
+					switch ($ccval->cardtype) {
+						case 1:
+							$cardType = "DEBIT NO";
+							break;
+						case 2:
+							$cardType = "CREDIT NO";
+							break;
+						case 3:
+							$cardType = "TRANSFER NO";
+							break;
+						case 4:
+							$cardType = "ONLINE";
+							break;
+						case 5:
+							$cardType = "QRIS";
+							break;
+					}
+
+					
+					$nocard_length   = count(array($ccval->nocard)) - 4;
+					$nocard          = substr($ccval->nocard, 0, $nocard_length) . "XXXX";
+					$jumbar          = number_format($ccval->jumlahbayar, 0, ',', '.');
+
+
+					$body .= "<table style=\"border-collapse:collapse;font-family: tahoma; font-size:12px;\" width=\"100%\" align=\"center\" border=\"0\" cellpadding=\"3\" cellmargin=\"3\">
+						<tr>
+							<td style=\"text-align: left;\" colspan=\"3\"></td>
+						</tr>
+						<tr>
+							<td width=\"20%\" style=\"text-align: left;\"><b>Bank Penerbit</b></td>
+							<td width=\"2%\">:</td>
+							<td width=\"78%\" style=\"text-align: left;\">$query_nama_bank->namabank</td>
+						</tr>
+						<tr>
+							<td width=\"20%\" style=\"text-align: left;\"><b>$cardType</b></td>
+							<td width=\"2%\">:</td>
+							<td width=\"78%\" style=\"text-align: left;\">$nocard</td>
+						</tr>
+						<tr>
+							<td width=\"20%\" style=\"text-align: left;\"><b>Approval Code</b></td>
+							<td width=\"2%\">:</td>
+							<td width=\"78%\" style=\"text-align: left;\">$ccval->nootorisasi</td>
+						</tr>
+						<tr>
+							<td width=\"20%\" style=\"text-align: left;\"><b>Nominal</b></td>
+							<td width=\"2%\">:</td>
+							<td width=\"78%\" style=\"text-align: left;\">Rp. $jumbar</td>
+						</tr>
+					</table>";
+				}
+				
+			}
+
+			
+
 			// space
 			$body .= "<table style=\"border-collapse:collapse;font-family: tahoma; font-size:12px\" width=\"100%\" align=\"center\" border=\"0\" cellpadding=\"5\" cellmargin=\"5\">
 				<tr>
@@ -1488,6 +1566,9 @@ class Penjualan_faktur extends CI_Controller{
 			$dresep_jml		= $this->db->query("SELECT (SELECT aponame FROM tbl_barangsetup b where a.atpakai=b.apocode limit 1 )ap,a.*  FROM tbl_apodresep a WHERE resepno = '$param' AND koders = '$unit'")->num_rows();
 			$racik				= $this->db->query("SELECT (SELECT aponame FROM tbl_barangsetup b where a.aturanpakai=b.apocode )ap,a.*  FROM tbl_aporacik a WHERE resepno = '$param' AND koders = '$unit'")->row();
 			$racik_res		= $this->db->query("SELECT (SELECT aponame FROM tbl_barangsetup b where a.aturanpakai=b.apocode )ap,a.*  FROM tbl_aporacik a WHERE resepno = '$param' AND koders = '$unit'")->result();
+			
+			$qkasir        = "SELECT * from tbl_kasir where nokwitansi = '$hresep->nokwitansi'";			
+
 			$cekracik			= $this->db->query("SELECT * FROM tbl_aporacik WHERE resepno = '$param' AND koders = '$unit'")->num_rows();
 			$detresep			= $this->db->query("SELECT * FROM tbl_apodetresep WHERE resepno = '$param' AND koders = '$unit'")->result();
 			if($pasien) {
@@ -1887,6 +1968,79 @@ class Penjualan_faktur extends CI_Controller{
 						<td width=\"15%\" style=\"text-align: right;\">$uangr</td>
 					</tr>
 				</table>";
+			}
+
+			if ($hresep->nokwitansi){
+
+				$kasir       = $this->db->query($qkasir)->row();
+
+				$body .= "<table style=\"border-collapse:collapse;font-family: tahoma; font-size:10px;\" width=\"100%\" align=\"center\" border=\"0\" cellpadding=\"3\" cellmargin=\"3\">
+					<tr>
+						<td style=\"text-align: left;\" colspan=\"3\"></td>
+					</tr>
+					<tr>
+						<td width=\"20%\" style=\"text-align: left;\"><b>Cash</b></td>
+						<td width=\"2%\">:</td>
+						<td width=\"78%\" style=\"text-align: left;\">$kasir->bayarcash </td>
+					</tr>
+				</table>";
+
+				$query_kartu_card	= $this->db->query("SELECT * FROM tbl_kartukredit WHERE nokwitansi = '$hresep->nokwitansi'")->result();
+				foreach ($query_kartu_card as $ccval) 
+				{
+					$query_nama_bank	= $this->db->query("SELECT * FROM tbl_edc WHERE bankcode = '$ccval->kodebank'")->row();
+
+					switch ($ccval->cardtype) {
+						case 1:
+							$cardType = "DEBIT NO";
+							break;
+						case 2:
+							$cardType = "CREDIT NO";
+							break;
+						case 3:
+							$cardType = "TRANSFER NO";
+							break;
+						case 4:
+							$cardType = "ONLINE";
+							break;
+						case 5:
+							$cardType = "QRIS";
+							break;
+					}
+
+					
+					$nocard_length   = count(array($ccval->nocard)) - 4;
+					$nocard          = substr($ccval->nocard, 0, $nocard_length) . "XXXX";
+					$jumbar          = number_format($ccval->jumlahbayar, 0, ',', '.');
+
+
+					$body .= "<table style=\"border-collapse:collapse;font-family: tahoma; font-size:10px;\" width=\"100%\" align=\"center\" border=\"0\" cellpadding=\"3\" cellmargin=\"3\">
+						<tr>
+							<td style=\"text-align: left;\" colspan=\"3\"></td>
+						</tr>
+						<tr>
+							<td width=\"40%\" style=\"text-align: left;\">Bank Penerbit</td>
+							<td width=\"2%\">:</td>
+							<td width=\"58%\" style=\"text-align: left;\">$query_nama_bank->namabank</td>
+						</tr>
+						<tr>
+							<td width=\"20%\" style=\"text-align: left;\">$cardType</td>
+							<td width=\"2%\">:</td>
+							<td width=\"78%\" style=\"text-align: left;\">$nocard</td>
+						</tr>
+						<tr>
+							<td width=\"20%\" style=\"text-align: left;\">Approval Code</td>
+							<td width=\"2%\">:</td>
+							<td width=\"78%\" style=\"text-align: left;\">$ccval->nootorisasi</td>
+						</tr>
+						<tr>
+							<td width=\"20%\" style=\"text-align: left;\">Nominal</td>
+							<td width=\"2%\">:</td>
+							<td width=\"78%\" style=\"text-align: left;\">Rp. $jumbar</td>
+						</tr>
+					</table>";
+				}
+				
 			}
 			// space
 			$body .= "<table style=\"border-collapse:collapse;font-family: 'Dot Matrix'; font-size:5px\" width=\"100%\" align=\"center\" border=\"0\" cellspacing=\"1\" cellpadding=\"3\">
