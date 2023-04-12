@@ -736,8 +736,9 @@ class Penjualan_retur extends CI_Controller
 						if($rekmed=='Non Member'){
 							$noreg='';
 						}else{
-							$data_regist = $this->db->get_where('tbl_regist', ['rekmed' => $rekmed])->row_array();
-							$noreg = $data_regist['noreg'];
+							// $data_regist = $this->db->get_where('tbl_regist', ['rekmed' => $rekmed])->row_array();
+							// $noreg = $data_regist['noreg'];
+							$noreg='';
 						}
 						if ($noresep != '' && $cabang != '' && $nobukti != '') {
 							$data = [
