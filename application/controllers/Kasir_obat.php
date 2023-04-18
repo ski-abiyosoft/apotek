@@ -108,9 +108,28 @@ class Kasir_obat extends CI_Controller
 			$nokwitansi = $unit->nokwitansi;
 
 			$dataresep = $this->db->query("SELECT * from tbl_apoposting where nokwitansi='$nokwitansi'")->row();
-
 			
-			
+			// uangr			
+			$cek = $this->db->get_where("tbl_hset_farma", ["koders" => $this->session->userdata("unit")])->row();
+			$cek2 = $this->db->get_where("tbl_apohresep", ["resepno" => $dataresep->resepno])->row();
+			$cek3    = $this->db->get_where("tbl_apodresep", ["resepno" => $dataresep->resepno])->num_rows();
+			$cek4    = $this->db->get_where("tbl_aporacik", ["resepno" => $dataresep->resepno])->num_rows();
+			if($cek) {
+				if($cek2->kodepel == "adr") {
+					
+					if($cek4 > 0) {
+						$uangracik = $cek->uang_racik * $cek4;
+					} else {
+						$uangracik = 0;
+					}
+					
+					$uangr = ($cek->uang_r * $cek3) + $uangracik;
+				} else {
+					$uangr = $cek->uang_r * $cek3;
+				}
+			} else {
+				$uangr = 0;
+			}
 			
 
 			if ($dataresep) {
@@ -156,7 +175,7 @@ class Kasir_obat extends CI_Controller
 			}
 
 			
-			$row[] = $unit->totalsemua;
+			$row[] = $unit->totalsemua + $uangr;
 			$row[] = $unit->lainket;
 			//if($sisa>0){			
 				$row[] =
@@ -954,6 +973,29 @@ class Kasir_obat extends CI_Controller
 			$racik_res     = $this->db->query($qracik_res)->result();
 			$aporacik      = $this->db->get_where('tbl_aporacik', ['resepno' => $noresep])->row();
 
+			// uangr			
+			$cek = $this->db->get_where("tbl_hset_farma", ["koders" => $this->session->userdata("unit")])->row();
+			$cek2 = $this->db->get_where("tbl_apohresep", ["resepno" => $noresep])->row();
+			$cek3    = $this->db->get_where("tbl_apodresep", ["resepno" => $noresep])->num_rows();
+			$cek4    = $this->db->get_where("tbl_aporacik", ["resepno" => $noresep])->num_rows();
+			if($cek) {
+				if($cek2->kodepel == "adr") {
+					
+					if($cek4 > 0) {
+						$uangracik = $cek->uang_racik * $cek4;
+					} else {
+						$uangracik = 0;
+					}
+					
+					$uangr = ($cek->uang_r * $cek3) + $uangracik;
+				} else {
+					$uangr = $cek->uang_r * $cek3;
+				}
+			} else {
+				$uangr = 0;
+			}
+
+
 			$qvoucher      = $this->db->query("SELECT tbl_kasir.*, tbl_pasien.namapas
 				from tbl_kasir left outer join tbl_pasien on tbl_kasir.rekmed=tbl_pasien.rekmed
 				where nokwitansi = '$nokwitansi'")->row();
@@ -1201,6 +1243,18 @@ class Kasir_obat extends CI_Controller
 				$pdf->FancyRow(array(($kasir->bayarcash > 0) ? 'Cash Rp' : '', ($kasir->bayarcash > 0) ? ':' : '', ($kasir->bayarcash > 0) ? angka_rp($kasir->bayarcash, 0) : "", 'Total Rp', ':', number_format($actual_totalx, 2, '.', ',')), $fc, $border, $align, $style, $size);
 			}
 			$pdf->FancyRow(array(($kasir->uangmuka > 0) ? "Uang Muka Rp" : "", ($kasir->uangmuka > 0) ? ":" : "", ($kasir->uangmuka > 0) ? angka_rp($kasir->uangmuka, 0) : "", 'Pembulatan', ':', number_format(0, 2, '.', ',')), $fc, $lastborder, $align, $style, $size);
+			$pdf->ln(5);
+
+			
+			$fc        = array('0', '0', '0', '0', '0', '0');
+			$border    = array('', '', '', '', '', '');
+			$pdf->FancyRow(array("","", "",
+			 'Uang R', ':', number_format($uangr, 2, '.', ',')), 
+			 $fc, 
+			 $border, 
+			 $align, 
+			 $style, 
+			 $size);
 			$pdf->ln(5);
 
 			foreach ($query_kartu_card as $cckey => $ccval) {

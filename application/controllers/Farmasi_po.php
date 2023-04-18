@@ -47,6 +47,7 @@ class Farmasi_po extends CI_Controller
 			$data['url']      = 'farmasi_po';
 			$data['tanggal']  = date('d-m-Y');
 			$data['akses']    = $akses;
+			$data['interpo'] = $this->db->get_where("tbl_setinghms", ["kodeset" => "IPO"])->row();
 			//$data['nomorpo']=urut_transaksi('SETUP_APO', 19);
 			$data['nomorpo'] = 'Auto';
 			$this->load->view('farmasi/v_farmasi_po_add', $data);

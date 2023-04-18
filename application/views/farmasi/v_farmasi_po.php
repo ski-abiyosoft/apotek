@@ -59,10 +59,12 @@
                                 if($cek==0){?> 
                                 <?php }else{ ?>
 
-                                    <a href="<?php echo base_url()?><?= $url.'/add'?>" class="btn btn-success">
+                                    <a id="tambah" href="<?php echo base_url()?><?= $url.'/add'?>" class="btn btn-success">
                                         <i class="fa fa-plus"></i>
                                         <b>Transaksi Baru</b>
                                     </a>
+
+                                    <a type="button" class="btn green" href="<?= site_url("Pareto");?>">Pareto</a>
 
                                 <?php } ?>
                             
@@ -133,6 +135,7 @@
 var save_method; //for save method string
 var sfilter;
 var table;
+close_app(); 
 
 $(document).ready(function() {
 
@@ -215,7 +218,22 @@ $(document).ready(function() {
 
 });
 
-
+function close_app() 
+{
+    $.ajax({
+        url         : '<?php echo base_url(); ?>lock_so/close_app',
+        type        : "POST",
+        dataType    : "json",
+        success:function(data){
+                if (data == 1) {
+                    $('#tambah').attr('disabled',true);
+                }else{
+                    $('#tambah').attr('disabled',false);
+                }
+            }                                     
+    });
+        
+}  
 
 function add_data() {
 
