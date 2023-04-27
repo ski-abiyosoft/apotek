@@ -144,20 +144,23 @@ $this->load->view('template/body');
                         
                           <?php if ($row->keluar == 0) : ?>
                             <?php
+                              // uangr			
                               $cek = $this->db->get_where("tbl_hset_farma", ["koders" => $this->session->userdata("unit")])->row();
                               $cek2 = $this->db->get_where("tbl_apohresep", ["resepno" => $row->resepno])->row();
+                              $cek3    = $this->db->get_where("tbl_apodresep", ["resepno" => $row->resepno])->num_rows();
+                              $cek4    = $this->db->get_where("tbl_aporacik", ["resepno" => $row->resepno])->num_rows();
                               if($cek) {
                                 if($cek2->kodepel == "adr") {
-                                  $cek3 = $this->db->get_where("tbl_apodresep", ["resepno" => $row->resepno])->num_rows();
-                                  $cek4 = $this->db->get_where("tbl_aporacik", ["resepno" => $row->resepno])->num_rows();
+                                  
                                   if($cek4 > 0) {
                                     $uangracik = $cek->uang_racik * $cek4;
                                   } else {
                                     $uangracik = 0;
                                   }
+                                  
                                   $uangr = ($cek->uang_r * $cek3) + $uangracik;
                                 } else {
-                                  $uangr = $cek->uang_r;
+                                  $uangr = $cek->uang_r * $cek3;
                                 }
                               } else {
                                 $uangr = 0;
@@ -256,7 +259,6 @@ $this->load->view('template/body');
                             <td>
                               <input type="text" class="form-control rightJustified" name="uangr" id="uangr" value="0" readonly>
                             </td>
-
                           </tr>
 
                         </table>
@@ -418,7 +420,7 @@ $this->load->view('template/body');
               </div>
               <div class="row">
                 <div class="col-md-12">
-                  <div class="portlet box blue">
+                  <div class="portlet box red">
                     <div class="portlet-title">
                       <div class="caption">
                         <i class="fa fa-reorder"></i><b>PENGURANGAN</b>
@@ -573,18 +575,16 @@ $this->load->view('template/body');
                 </div>
 
                 <div class="col-md-12">
-                  <div class="portlet ">
+                  <div class="portlet box yellow">
                     <div class="portlet-title">
                       <div class="caption">
-                        <i class="fa fa-reorder"></i>
-                        <span class="label label-warning title-white"><b>PEMBAYARAN</b></span>
+                        <i class="fa fa-reorder"></i><b>PEMBAYARAN</b>
                       </div>
                     </div>
 
-                    <span class="label label-info title-white"><b>ELECTRONIC (DEBET/CREDIT/TRANFER/EMONEY)</b></span>
-                    <div class="portlet-body form">
-
+                    <div class="portlet-body form">                      
                       <div class="form-body">
+                        <span class="label label-info title-white"><b>ELECTRONIC (DEBET/CREDIT/TRANFER/EMONEY)</b></span>
                         <div class="row">
                           <div class="col-md-12">
                             <table width="100%" id="datatable_pembayaran"

@@ -218,9 +218,8 @@ class Kasir_obat extends CI_Controller
 			$data['id'] = $id;
 
 			$qkasir = $this->db->query("SELECT tbl_kasir.*, tbl_pasien.namapas
-				from tbl_kasir left outer join tbl_pasien on tbl_kasir.rekmed=tbl_pasien.rekmed
-				where tbl_kasir.id = '$id'")->row();
-
+				from tbl_kasir left outer join tbl_pasien on tbl_kasir.rekmed=tbl_pasien.rekmed where tbl_kasir.id = '$id'")->row();
+			
 			$data['kasir'] = $qkasir;
 
 			$noreg = $qkasir->noreg;
@@ -228,9 +227,37 @@ class Kasir_obat extends CI_Controller
 
 			$qresep = $this->db->query("SELECT * from tbl_apoposting where nokwitansi = '$kwitansi'")->row_array();
 
+			$qhresep = $this->db->query("SELECT * from tbl_apohresep where nokwitansi = '$kwitansi'")->row();
+
+			// uangr			
+			$cek = $this->db->get_where("tbl_hset_farma", ["koders" => $this->session->userdata("unit")])->row();
+			$cek2 = $this->db->get_where("tbl_apohresep", ["resepno" => $qhresep->resepno])->row();
+			$cek3    = $this->db->get_where("tbl_apodresep", ["resepno" => $qhresep->resepno])->num_rows();
+			$cek4    = $this->db->get_where("tbl_aporacik", ["resepno" => $qhresep->resepno])->num_rows();
+			if($cek) {
+				if($cek2->kodepel == "adr") {
+					
+					if($cek4 > 0) {
+						$uangracik = $cek->uang_racik * $cek4;
+					} else {
+						$uangracik = 0;
+					}
+					
+					$uangr = ($cek->uang_r * $cek3) + $uangracik;
+				} else {
+					$uangr = $cek->uang_r * $cek3;
+				}
+			} else {
+				$uangr = 0;
+			}
+
+
+
 			$data['kredit'] = $this->db->query("SELECT k.*, b.* FROM tbl_kartukredit k join tbl_edc b on k.kodebank=b.bankcode WHERE k.nokwitansi = '$qkasir->nokwitansi'")->result();
 			$data['kasir'] = $qkasir;
 			$data['resep'] = $qresep;
+			$data['hresep'] = $qhresep;
+			$data['uangr'] = $uangr;
 			$this->load->view('klinik/v_kasirobat_edit', $data);
 		} else {
 			header('location:' . base_url());
