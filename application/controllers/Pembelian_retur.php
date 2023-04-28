@@ -106,6 +106,17 @@ class Pembelian_retur extends CI_Controller
     $data = $this->db->query("SELECT left(terima_date,10)terima_date1,(select keterangan from tbl_depo b where a.gudang=b.depocode)nm_gud,a.* from tbl_baranghterima a where terima_no='$kodepo'")->row();
     echo json_encode($data);
   }
+  
+  public function get_bapb() {
+    
+    $vendor       = $this->input->get('vendor');
+    $startdate    = $this->input->get('startdate');
+    $enddate      = $this->input->get('enddate');
+    $cabang       = $this->session->userdata('unit');
+
+    $data = $this->db->query("SELECT * from tbl_baranghterima where vendor_id = '$vendor' and koders='$cabang' and terima_date between '$startdate' and  '$enddate' and terima_no in (select terima_no from tbl_apoap where tukarfaktur=0) and terima_no not in (select terima_no from tbl_baranghreturbeli)")->result();
+    echo json_encode($data);
+  }
 
   public function getpo($po) {
     $data = $this->db->query("SELECT tbl_barangdterima.*, tbl_barang.namabarang FROM tbl_barangdterima LEFT JOIN tbl_barang ON tbl_barang.kodebarang=tbl_barangdterima.kodebarang WHERE terima_no = '$po'")->result();
@@ -128,14 +139,14 @@ class Pembelian_retur extends CI_Controller
   public function save_one()
   {
     $userid   = $this->session->userdata('username');
-    $_vtotalx   = $this->input->post('_vtotalx');
+    $_vtotalx = $this->input->post('_vtotalx');
     $gudang   = $this->input->post('gudang1');
     $bapb_no  = $this->input->post('kodepu');
-    $alasan  = $this->input->post('alasan');
+    $alasan   = $this->input->post('alasan');
     $cabang   = $this->session->userdata('unit');
     $cek      = $this->session->userdata('level');
     $nobukti  = urut_transaksi('URUT_RETURBELI', 19);
-    $data = array(
+    $data     = array(
       'koders'     => $cabang,
       'retur_no'   => $nobukti,
       'vendor_id'  => $this->input->post('supp'),

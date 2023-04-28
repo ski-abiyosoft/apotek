@@ -68,8 +68,10 @@ $this->load->view('template/body');
                                     <div class="form-group">
                                         <label class="col-md-3 control-label">Pemasok</label>
                                         <div class="col-md-6">
-                                            <select id="supp" name="supp" class="form-control select2_el_vendor" onchange="showpo()">
+                                            <select id="supp" name="supp" class="form-control select2_el_vendor">
                                             </select>
+                                            <!-- <select id="supp" name="supp" class="form-control select2_el_vendor" onchange="showpo()">
+                                            </select> -->
                                         </div>
                                     </div>
                                 </div>
@@ -85,13 +87,18 @@ $this->load->view('template/body');
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label class="col-md-3 control-label">No. BAPB</label>
-                                        <div class="col-md-5">
-                                            <div class="input-group">
-                                                <select name="kodepu" id="kodepu" class="form-control input-medium select2me" onchange="getpoheader();getpo()"></select>
-                                            </div>
+                                        <label class="col-md-3 control-label">Tanggal</label>
+                                        <div class="col-md-3">
+                                            <input id="tanggal" name="tanggal" class="form-control" type="date" value="<?php echo date('Y-m-d'); ?>" />
                                         </div>
-
+                                        <div class="col-md-1">
+                                            <span class="input-group-btn">
+                                                <label class="control-label"> <b> s/d </b></label>
+                                            </span>                                    
+                                        </div>
+                                        <div class="col-md-3">
+                                            <input id="tanggal2" name="tanggal2" class="form-control" type="date" value="<?php echo date('Y-m-d'); ?>" />
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="col-md-6">
@@ -110,14 +117,13 @@ $this->load->view('template/body');
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label class="col-md-3 control-label">Tanggal</label>
-                                        <div class="col-md-4">
-                                            <input id="tanggal" name="tanggal" class="form-control input-medium" type="date" value="<?php echo date('Y-m-d'); ?>" />
-
+                                        <label class="col-md-3 control-label">No. BAPB</label>
+                                        <div class="col-md-5">
+                                            <div class="input-group">
+                                                <!-- <select name="kodepu" id="kodepu" class="form-control input-medium select2me" onchange="getpoheader();getpo()"></select> -->
+                                                <button type="button" class="btn btn-sm blue" onclick="search_bapb()" ><i class="fa fa-search"></i><b> Ambil BAPB</b></button>
+                                            </div>
                                         </div>
-
-
-
                                     </div>
                                 </div>
 
@@ -129,6 +135,19 @@ $this->load->view('template/body');
                                         </div>
                                     </div>
                                 </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="col-md-3 control-label"></label>
+                                        <div class="col-md-5">
+                                            <div class="">
+                                               <input class="form-control" type="text" name="kodepu" id="kodepu" readonly>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
                             </div>
 
                             <div class="row">
@@ -330,6 +349,33 @@ $this->load->view('template/body');
 </div>
 </div>
 </div>
+
+<!-- Modal bapb -->
+<div class="modal fade" role="dialog" id="list_bapb" aria-hidden="true">
+    <div class="modal-dialog modal-small">
+        <div class="modal-content">
+            <div class="modal-header" style="background-color:#c50c0c;color:#fff">
+                <h4><b>Daftar No BAPB</b></h4>
+            </div>
+            <div class="modal-body">
+                <table class="table table-bordered table-striped" id="tbl2" style="margin:auto !important">
+                    <thead>
+                        <tr class="page-breadcrumb breadcrumb">                            
+                            <th style="text-align: center">No BPAB/No Transaksi</th>
+                            <th style="text-align: center">Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody id="daftar_bapb"></tbody>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn red" data-dismiss="modal">Tutup</button>
+            </div>
+        </div>
+
+    </div>
+</div>
+<!-- Modal bapb -->
 
 <?php
 $this->load->view('template/footer');
@@ -987,6 +1033,68 @@ $this->load->view('template/footer');
         xhttp.send();
     }
 
+    function search_bapb()
+    {
+        
+        var supp        = $('#supp').val();
+        var tanggal     = $('#tanggal').val();
+        var tanggal2    = $('#tanggal2').val();
+        
+        if(supp=='' || supp == null) {
+            swal({
+                title   : "Pemasok",
+                html    : "Wajib di Pilih",
+                type    : "error",
+                confirmButtonText   : "OK"
+            });
+            return;
+        }
+
+        if(tanggal=='' || tanggal == null) {
+            swal({
+                title   : "Tanggal Awal",
+                html    : "Wajib di Pilih",
+                type    : "error",
+                confirmButtonText   : "OK"
+            });
+            return;
+        }
+        
+        if(tanggal2=='' || tanggal2 == null) {
+            swal({
+                title   : "Tanggal Awal",
+                html    : "Wajib di Pilih",
+                type    : "error",
+                confirmButtonText   : "OK"
+            });
+            return;
+        }
+
+        $.ajax({
+            url         : "<?php echo site_url('pembelian_retur/get_bapb?vendor=')?>"+supp+"&startdate="+tanggal+"&enddate="+tanggal2,
+            type        : "GET",
+            dataType    : "JSON",
+            success: function(data)
+            {                           
+                $('#daftar_bapb').empty();
+                $.each(data, function( key, value ) {
+                    $('#daftar_bapb').append(
+                        "<tr>\
+                            <td style='text-align: center'>"+value.terima_no+"</td>\
+                            <td style='text-align: center'><button type='button' onclick='getpoheader("+'"'+value.terima_no+'"'+''+");getpo("+'"'+value.terima_no+'"'+''+");' class='btn btn-success btn-xs'>Pilih</button></td>\
+                            </tr>");
+                });
+                
+                $('#list_bapb').modal('show');
+            },
+            error: function (jqXHR, textStatus, errorThrown)
+            {
+                alert('Data dari Ajax Error, Hubungi Konsultan');
+            }
+        });
+
+    }
+
 
     function separateComma(val) {
         var sign = 1;
@@ -1012,9 +1120,9 @@ $this->load->view('template/footer');
         return sign < 0 ? '-' + result : result;
     }
 
-    function getpo() {
+    function getpo(str) {
         var xhttp;
-        var str = $('[name=kodepu]').val();
+        // var str = $('[name=kodepu]').val();
         if (str == "") {
             hapus();
             $('[id=kode1]').val('');
@@ -1064,11 +1172,12 @@ $this->load->view('template/footer');
                 }
             });
         }
+        $('#list_bapb').modal('hide');
     }
 
-    function getpoheader() {
+    function getpoheader(str) {
         var xhttp;
-        var str = $('[name=kodepu]').val();
+        // var str = $('[name=kodepu]').val();
         if (str == "") {} else {
             $.ajax({
                 url: "<?php echo base_url(); ?>pembelian_retur/getpoheader/" + str,
@@ -1077,6 +1186,7 @@ $this->load->view('template/footer');
 
                 success: function(data) {
                     // alert(data.terima_date1);      
+                    $('[name="kodepu"]').val(str);
                     $('[name="sppn"]').val(data.sppn);
                     $('#gudang').val(data.nm_gud);
                     $('#gudang1').val(data.gudang);
