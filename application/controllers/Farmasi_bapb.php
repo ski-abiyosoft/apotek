@@ -141,17 +141,17 @@ class Farmasi_bapb extends CI_Controller
 	{
 		$kode = $this->input->get('kode');
 		$harga = $this->input->get('harga');
-		$cek = $this->db->query('select * from tbl_barang where kodebarang = "' . $kode . '"')->row_array();
-		if ($harga < (int)$cek['hargabeli']) {
+		$cek = $this->db->query('select * from tbl_barang where kodebarang = "' . $kode . '"')->row();
+		if ($harga < $cek->hargabeli) {
 			$data = [
-				'harga' => $cek['hargabeli'],
+				'harga' => $cek->hargabeli,
 				'status' => 1
 			];
 			echo json_encode($data);
 		} else {
 			$data = [
 				'harga' => $harga,
-				'status' => 2
+				'status' => 2,
 			];
 			echo json_encode($data);
 		}
@@ -1166,7 +1166,7 @@ class Farmasi_bapb extends CI_Controller
 			$subtot = 0;
 			$tdisc  = 0;
 			$border = array('LTBR','LTBR', 'LTBR', 'LTBR', 'LTBR', 'LTBR', 'LTBR', 'LTBR', 'LTBR','LTBR', 'LTBR');
-			$align  = array('L','L', 'L', 'L', 'R', 'R', 'R', 'R', 'R', 'L', 'L');
+			$align  = array('C','L', 'L', 'C', 'C', 'R', 'R', 'R', 'R', 'C', 'L');
 			$style = array('','', '', '', '', '', '', '', '', '', '');
 			$size  = array('8','8', '8', '8', '8', '8', '8', '8', '8','8', '8');
 			$max   = array(2,2, 2, 2, 2, 2, 2, 2, 2,2, 2);
@@ -1190,10 +1190,10 @@ class Farmasi_bapb extends CI_Controller
 					$db->namabarang,
 					number_format($db->qty_terima),
 					$db->satuan,
-					number_format($db->vatrp),
-					number_format($db->price),
-					number_format($db->discountrp),
-					number_format($db->totalrp),
+					$db->vatrp,
+					$db->price,
+					$db->discountrp,
+					$db->totalrp,
 					date('d-m-Y', strtotime($db->exp_date)),
 					$db->po_no
 				), $fc,  $border, $align, $style, $size, $max);
@@ -1216,23 +1216,23 @@ class Farmasi_bapb extends CI_Controller
 			$border = array('T', 'T', 'T', 'T', 'T', 'T', 'T');
 			$align  = array('L', 'C', 'C', 'C', 'R', 'R');
 			$style = array('', 'B', '', '', '', '');
-			$judul = array('', '', '', '', 'TOTAL', number_format($tot), '');
+			$judul = array('', '', '', '', 'TOTAL', number_format($tot,2), '');
 			$pdf->FancyRow2(4, $judul, $fc,  $border, $align, $style, $size, $max);
-			$judul = array('', 'Form Rangkap 2', '', '', 'Discount', number_format($discount),);
+			$judul = array('', 'Form Rangkap 2', '', '', 'Discount', number_format($discount,2),);
 			$border = array('', 'LTR', '', '', '', '');
 			$pdf->FancyRow2(4, $judul, $fc,  $border, $align, $style, $size, $max);
 			$border = array('T', 'LTR', 'T', 'T', 'T', 'T');
-			$judul = array('', 'Merah : untuk supplier', '', '', 'DPP', number_format($dpp));
+			$judul = array('', 'Merah : untuk supplier', '', '', 'DPP', number_format($dpp,2));
 			$border = array('', 'LTR', '', '', '', '');
 			$pdf->FancyRow2(4, $judul, $fc,  $border, $align, $style, $size, $max);
 			$border = array('T', 'LTR', 'T', 'T', 'T', 'T');
-			$judul = array('', 'Putih : untuk keuangan', '', '', 'PPN', number_format($ppn),);
+			$judul = array('', 'Putih : untuk keuangan', '', '', 'PPN', number_format($ppn,2),);
 			$border = array('', 'LRB', '', '', '', '', '', '');
 			$pdf->FancyRow2(4, $judul, $fc,  $border, $align, $style, $size, $max);
-			$judul = array('', '', '', '', 'Materai', number_format($materai));
+			$judul = array('', '', '', '', 'Materai', number_format($materai,2));
 			$border = array('', '', '', '', '', '', '');
 			$pdf->FancyRow2(4, $judul, $fc,  $border, $align, $style, $size, $max);
-			$judul = array('', '', '', '', 'Total Net', number_format($totalnet), '');
+			$judul = array('', '', '', '', 'Total Net', number_format($totalnet,2), '');
 			$border = array('', '', '', '', 'B', 'B', 'B');
 			$style = array('', 'B', '', '', 'B', 'B', '');
 			$pdf->FancyRow2(4, $judul, $fc,  $border, $align, $style, $size, $max);
