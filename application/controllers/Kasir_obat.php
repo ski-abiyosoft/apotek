@@ -114,18 +114,33 @@ class Kasir_obat extends CI_Controller
 			$cek2 = $this->db->get_where("tbl_apohresep", ["resepno" => $dataresep->resepno])->row();
 			$cek3    = $this->db->get_where("tbl_apodresep", ["resepno" => $dataresep->resepno])->num_rows();
 			$cek4    = $this->db->get_where("tbl_aporacik", ["resepno" => $dataresep->resepno])->num_rows();
+			$cek5   = $this->db->query("SELECT r.*, h.kodepel FROM tbl_apohreturjual r JOIN tbl_apohresep h ON r.resepno = h.resepno WHERE r.returno = '$dataresep->resepno'")->row();
 			if($cek) {
-				if($cek2->kodepel == "adr") {
-					
-					if($cek4 > 0) {
-						$uangracik = $cek->uang_racik * $cek4;
+				if($cek2) {
+					if($cek2->kodepel == "adr") {
+						
+						if($cek4 > 0) {
+							$uangracik = $cek->uang_racik * $cek4;
+						} else {
+							$uangracik = 0;
+						}
+						
+						$uangr = ($cek->uang_r * $cek3) + $uangracik;
 					} else {
-						$uangracik = 0;
+						$uangr = $cek->uang_r * $cek3;
 					}
-					
-					$uangr = ($cek->uang_r * $cek3) + $uangracik;
 				} else {
-					$uangr = $cek->uang_r * $cek3;
+					if($cek5->kodepel == "adr") {
+						if($cek4 > 0) {
+							$uangracik = $cek->uang_racik * $cek4;
+						} else {
+							$uangracik = 0;
+						}
+						
+						$uangr = ($cek->uang_r * $cek3) + $uangracik;
+					} else {
+						$uangr = $cek->uang_r * $cek3;
+					}
 				}
 			} else {
 				$uangr = 0;
@@ -217,35 +232,52 @@ class Kasir_obat extends CI_Controller
 		if (!empty($cek)) {
 			$data['id'] = $id;
 
-			$qkasir = $this->db->query("SELECT tbl_kasir.*, tbl_pasien.namapas
-				from tbl_kasir left outer join tbl_pasien on tbl_kasir.rekmed=tbl_pasien.rekmed where tbl_kasir.id = '$id'")->row();
-			
+			$qkasir = $this->db->query("SELECT tbl_kasir.*, tbl_pasien.namapas from tbl_kasir left outer join tbl_pasien on tbl_kasir.rekmed=tbl_pasien.rekmed where tbl_kasir.id = '$id'")->row();
 			$data['kasir'] = $qkasir;
-
-			$noreg = $qkasir->noreg;
-			$kwitansi = $qkasir->nokwitansi;
-
-			$qresep = $this->db->query("SELECT * from tbl_apoposting where nokwitansi = '$kwitansi'")->row_array();
-
-			$qhresep = $this->db->query("SELECT * from tbl_apohresep where nokwitansi = '$kwitansi'")->row();
-
+			$noreg       = $qkasir->noreg;
+			$kwitansi    = $qkasir->nokwitansi;
+			$qresep      = $this->db->query("SELECT * from tbl_apoposting where nokwitansi = '$kwitansi'")->row_array();
+			$qhresepx    = $this->db->query("SELECT * from tbl_apohresep where nokwitansi = '$kwitansi'")->row();
+			if($qhresepx) {
+				$qhresep = $qhresepx;
+				$cek6   = "";
+			} else {
+				$qhresep = $this->db->query("SELECT * FROM tbl_apoposting WHERE nokwitansi = '$kwitansi'")->row();
+				$cek5   = $this->db->query("SELECT r.*, h.kodepel FROM tbl_apohreturjual r JOIN tbl_apohresep h ON r.resepno = h.resepno WHERE r.returno = '$qhresep->resepno'")->row();
+				$cek6   = $this->db->get_where("tbl_apodreturjual", ["returno" => $cek5->returno])->num_rows();
+			}
 			// uangr			
-			$cek = $this->db->get_where("tbl_hset_farma", ["koders" => $this->session->userdata("unit")])->row();
-			$cek2 = $this->db->get_where("tbl_apohresep", ["resepno" => $qhresep->resepno])->row();
-			$cek3    = $this->db->get_where("tbl_apodresep", ["resepno" => $qhresep->resepno])->num_rows();
-			$cek4    = $this->db->get_where("tbl_aporacik", ["resepno" => $qhresep->resepno])->num_rows();
+			$cek    = $this->db->get_where("tbl_hset_farma", ["koders" => $this->session->userdata("unit")])->row();
+			$cek2   = $this->db->get_where("tbl_apohresep", ["resepno" => $qhresep->resepno])->row();
+			$cek3   = $this->db->get_where("tbl_apodresep", ["resepno" => $qhresep->resepno])->num_rows();
+			$cek4   = $this->db->get_where("tbl_aporacik", ["resepno" => $qhresep->resepno])->num_rows();
 			if($cek) {
-				if($cek2->kodepel == "adr") {
-					
-					if($cek4 > 0) {
-						$uangracik = $cek->uang_racik * $cek4;
+				if($cek2) {
+					if($cek2->kodepel == "adr") {
+						
+						if($cek4 > 0) {
+							$uangracik = $cek->uang_racik * $cek4;
+						} else {
+							$uangracik = 0;
+						}
+						
+						$uangr = ($cek->uang_r * $cek3) + $uangracik;
 					} else {
-						$uangracik = 0;
+						$uangr = $cek->uang_r * $cek3;
 					}
-					
-					$uangr = ($cek->uang_r * $cek3) + $uangracik;
 				} else {
-					$uangr = $cek->uang_r * $cek3;
+					if($cek5->kodepel == "adr") {
+						
+						if($cek4 > 0) {
+							$uangracik = $cek->uang_racik * $cek4;
+						} else {
+							$uangracik = 0;
+						}
+						
+						$uangr = ($cek->uang_r * $cek6) + $uangracik;
+					} else {
+						$uangr = $cek->uang_r * $cek6;
+					}
 				}
 			} else {
 				$uangr = 0;
@@ -315,44 +347,84 @@ class Kasir_obat extends CI_Controller
 			$ttlresep = 0 - (int)$totalresep;
 		}
 		$rekmed = $this->input->post('rekmed');
-		$data = array(
-			'koders' => $cabang,
-			'nokwitansi' => $kwitansi,
-			'fakturpajak' => $fakturpajak,
-			'rekmed' => $rekmed,
-			'noreg' => $noreg,
-			'tglbayar' => $tanggal,
-			'jambayar' => $jam,
-			'totalpoli' => 0,
-			'totalresep' => $totalresep,
-			'uangmuka' => $uangmukapakai,
-			'adm' => 0,
-			'diskon' => $diskon,
-			'diskonrp' => $diskonrp,
-			'admcredit' => $admcredit,
-			'totalsemua' => $totalresep,
-			'bayarcash' => $bayarcash,
-			'bayarcard' => $bayarcard,
-			'refund' => $refund,
-			// 'voucherrp' => $voucherrp,
-			'voucherrp1'    => $voucherrp1,
-			'voucherrp2'    => $voucherrp2,
-			'voucherrp3'    => $voucherrp3,
-			// 'novoucher' => $this->input->post('vouchercode'), saya ganti
-			'novoucher1'    => $this->input->post('vouchercode1'),
-			'novoucher2'    => $this->input->post('vouchercode2'),
-			'novoucher3'    => $this->input->post('vouchercode3'),
-			'cust_id'       => $this->input->post('vouchersource'),
-			'totalbayar' => $totalbayar,
-			'kembali' => $kembali,
-			'posbayar' => 'FARMASI',
-			'dibayaroleh' => $this->input->post('terimadari'),
-			'jenisbayar' => 1,
-			'username' => $userid,
-			'kembalikeuangmuka'      => $this->input->post('kembaliuang'),
-			'namapasien' => $this->input->post('namapasien'),
-			'shift' => $shift,
-		);
+		if($totalresep > 0) {
+			$data = array(
+				'koders' => $cabang,
+				'nokwitansi' => $kwitansi,
+				'fakturpajak' => $fakturpajak,
+				'rekmed' => $rekmed,
+				'noreg' => $noreg,
+				'tglbayar' => $tanggal,
+				'jambayar' => $jam,
+				'totalpoli' => 0,
+				'totalresep' => $totalresep,
+				'uangmuka' => $uangmukapakai,
+				'adm' => 0,
+				'diskon' => $diskon,
+				'diskonrp' => $diskonrp,
+				'admcredit' => $admcredit,
+				'totalsemua' => $totalresep,
+				'bayarcash' => $bayarcash,
+				'bayarcard' => $bayarcard,
+				'refund' => $refund,
+				// 'voucherrp' => $voucherrp,
+				'voucherrp1'    => $voucherrp1,
+				'voucherrp2'    => $voucherrp2,
+				'voucherrp3'    => $voucherrp3,
+				// 'novoucher' => $this->input->post('vouchercode'), saya ganti
+				'novoucher1'    => $this->input->post('vouchercode1'),
+				'novoucher2'    => $this->input->post('vouchercode2'),
+				'novoucher3'    => $this->input->post('vouchercode3'),
+				'cust_id'       => $this->input->post('vouchersource'),
+				'totalbayar' => $totalbayar,
+				'kembali' => $kembali,
+				'posbayar' => 'FARMASI',
+				'dibayaroleh' => $this->input->post('terimadari'),
+				'jenisbayar' => 1,
+				'username' => $userid,
+				'kembalikeuangmuka'      => $this->input->post('kembaliuang'),
+				'namapasien' => $this->input->post('namapasien'),
+				'shift' => $shift,
+			);
+		} else {
+			$data = array(
+				'koders' => $cabang,
+				'nokwitansi' => $kwitansi,
+				'fakturpajak' => $fakturpajak,
+				'rekmed' => $rekmed,
+				'noreg' => $noreg,
+				'tglbayar' => $tanggal,
+				'jambayar' => $jam,
+				'totalpoli' => 0,
+				'totalresep' => $totalresep,
+				'uangmuka' => $uangmukapakai,
+				'adm' => 0,
+				'diskon' => $diskon,
+				'diskonrp' => $diskonrp,
+				'admcredit' => $admcredit,
+				'totalsemua' => $totalresep,
+				'bayarcash' => $bayarcash,
+				'bayarcard' => $bayarcard,
+				'refund' => $refund,
+				'voucherrp1'    => $voucherrp1,
+				'voucherrp2'    => $voucherrp2,
+				'voucherrp3'    => $voucherrp3,
+				'novoucher1'    => $this->input->post('vouchercode1'),
+				'novoucher2'    => $this->input->post('vouchercode2'),
+				'novoucher3'    => $this->input->post('vouchercode3'),
+				'cust_id'       => $this->input->post('vouchersource'),
+				'totalbayar' => $totalbayar,
+				'kembali' => $kembali,
+				'posbayar' => 'FARMASI',
+				'dibayaroleh' => $this->input->post('terimadari'),
+				'jenisbayar' => 1,
+				'username' => $userid,
+				'kembalikeuangmuka'      => $this->input->post('kembaliuang'),
+				'namapasien' => $this->input->post('namapasien'),
+				'shift' => $shift,
+				'lainket' => 'Returan sesudah bayar kasir',
+			);
+		}
 
 		$insert = $this->db->insert('tbl_kasir', $data);
 
@@ -452,6 +524,15 @@ class Kasir_obat extends CI_Controller
 		$this->db->update('tbl_pasien');
 
 		echo json_encode(array("status" => TRUE, "nomor" => $kwitansi, "total" => $totalnet));
+	}
+
+	public function cekretur($noretur) {
+		$cek = $this->db->query("SELECT * FROM tbl_apohreturjual WHERE returno = '$noretur'")->num_rows();
+		if($cek > 0) {
+			echo json_encode(["status" => 1]);
+		} else {
+			echo json_encode(["status" => 0]);
+		}
 	}
 
 	public function ajax_add()
@@ -1001,22 +1082,38 @@ class Kasir_obat extends CI_Controller
 			$aporacik      = $this->db->get_where('tbl_aporacik', ['resepno' => $noresep])->row();
 
 			// uangr			
-			$cek = $this->db->get_where("tbl_hset_farma", ["koders" => $this->session->userdata("unit")])->row();
-			$cek2 = $this->db->get_where("tbl_apohresep", ["resepno" => $noresep])->row();
-			$cek3    = $this->db->get_where("tbl_apodresep", ["resepno" => $noresep])->num_rows();
-			$cek4    = $this->db->get_where("tbl_aporacik", ["resepno" => $noresep])->num_rows();
+			$cek   = $this->db->get_where("tbl_hset_farma", ["koders" => $this->session->userdata("unit")])->row();
+			$cek2  = $this->db->get_where("tbl_apohresep", ["resepno" => $noresep])->row();
+			$cek3  = $this->db->get_where("tbl_apodresep", ["resepno" => $noresep])->num_rows();
+			$cek4  = $this->db->get_where("tbl_aporacik", ["resepno" => $noresep])->num_rows();
+			$cek5  = $this->db->query("SELECT r.*, h.kodepel FROM tbl_apohreturjual r JOIN tbl_apohresep h ON r.resepno = h.resepno WHERE r.returno = '$noresep'")->row();
+			$cek6  = $this->db->get_where("tbl_apodreturjual", ["returno" => $noresep])->num_rows();
 			if($cek) {
-				if($cek2->kodepel == "adr") {
-					
-					if($cek4 > 0) {
-						$uangracik = $cek->uang_racik * $cek4;
+				if($cek2) {
+					if($cek2->kodepel == "adr") {
+						
+						if($cek4 > 0) {
+							$uangracik = $cek->uang_racik * $cek4;
+						} else {
+							$uangracik = 0;
+						}
+						
+						$uangr = ($cek->uang_r * $cek3) + $uangracik;
 					} else {
-						$uangracik = 0;
+						$uangr = $cek->uang_r * $cek3;
 					}
-					
-					$uangr = ($cek->uang_r * $cek3) + $uangracik;
 				} else {
-					$uangr = $cek->uang_r * $cek3;
+					if($cek5->kodepel == "adr") {
+						if($cek4 > 0) {
+							$uangracik = $cek->uang_racik * $cek4;
+						} else {
+							$uangracik = 0;
+						}
+						
+						$uangr = ($cek->uang_r * $cek6) + $uangracik;
+					} else {
+						$uangr = $cek->uang_r * $cek6;
+					}
 				}
 			} else {
 				$uangr = 0;
@@ -1030,32 +1127,42 @@ class Kasir_obat extends CI_Controller
 			$kasir       = $this->db->query($qkasir)->row();
 			// var_dump($qvoucher);die;
 
-			$header   	= $this->db->query($qheader)->row();
+			$headerx   	= $this->db->query($qheader)->row();
+			if($headerx) {
+				$header = $headerx;
+			} else {
+				$header = $this->db->query("SELECT r.*, h.* FROM tbl_apohreturjual r JOIN tbl_apohresep h ON r.resepno = h.resepno WHERE h.resepno = '$noresep'")->row();
+			}
 			$posting    = $this->db->query($qposting)->row_array();
-			$detil      = $this->db->query($qdetil)->result();
+			$detilx      = $this->db->query($qdetil)->result();
+			if($detilx) {
+				$detil = $detilx;
+			} else {
+				$detil = $this->db->query("SELECT r.*, r.qtyretur as qty, r.discount as discrp, (0 - r.totalrp) as totalrp, b.namabarang FROM tbl_apodreturjual r JOIN tbl_barang b ON r.kodebarang = b.kodebarang WHERE returno = '$noresep'")->result();
+			}
 			$detilr		= $this->db->query($detil_r)->result();
 			$kartu      = $this->db->query($qkartu)->row();
 
 			$query_kartu_card	= $this->db->query("SELECT * FROM tbl_kartukredit WHERE nokwitansi = '$nokwitansi'")->result();
 
-			$pdf = new simkeu_nota();
+			$pdf       = new simkeu_nota();
 			$pdf->setID($nama_usaha, $alamat1, $alamat2);
 			$pdf->setjudul('');
 			$pdf->setsubjudul('');
 			$pdf->addpage("P", "A4");
 			$pdf->setsize("P", "A4");
 			$pdf->SetWidths(array(70, 30, 90));
-			$border = array('T', '', 'BT');
-			$size   = array('', '', '');
+			$border    = array('T', '', 'BT');
+			$size      = array('', '', '');
 			$pdf->setfont('Arial', 'B', 18);
 			$pdf->SetAligns(array('C', 'C', 'C'));
-			$align = array('L', 'C', 'L');
-			$style = array('', '', 'B');
-			$size  = array('12', '', '18');
-			$max   = array(5, 5, 20);
-			$judul = array('Kepada :', '', 'Faktur Penjualan');
-			$fc     = array('0', '0', '0');
-			$hc     = array('20', '20', '20');
+			$align     = array('L', 'C', 'L');
+			$style     = array('', '', 'B');
+			$size      = array('12', '', '18');
+			$max       = array(5, 5, 20);
+			$judul     = array('Kepada :', '', 'Faktur Penjualan');
+			$fc        = array('0', '0', '0');
+			$hc        = array('20', '20', '20');
 			//$pdf->FancyRow2(10,$judul, $fc,  $border, $align, $style, $size, $max);
 			//$pdf->ln(1);
 			if($kasir){
@@ -1136,20 +1243,6 @@ class Kasir_obat extends CI_Controller
 				}
 			}
 			if ($racikan != null && $rck != null) {
-				// foreach ($rck as $rck) {
-
-
-				// 	$diskon = $rck->qty * $rck->price * $racikan['diskon'] / 100;
-				// 	$ttlrp = $rck->qty * $rck->price;
-				// 	$pdf->FancyRow(array(
-				// 		$nomor,
-				// 		("** $rck->namabarang"),
-				// 		number_format($rck->qty, 0, ',', '.'),
-				// 		'-',
-				// 		number_format((!isset($rck->totalrp) ? 0 : $rck->totalrp), 0, ',', '.')
-				// 	), $fc, $border, $align);
-				// 	$nomor++;
-				// }
 				foreach($racik_res as $racik){
 					if ($racik->harga_manual != 0) {
 						$hrgxx = $racik->harga_manual;
@@ -1323,7 +1416,9 @@ class Kasir_obat extends CI_Controller
 			$border = array('', '', '', '', '', '');
 
 			if ($kasir->kembalikeuangmuka == 0) {
-				$pdf->FancyRow(array(($kasir->kembali >= 0 ? 'Kembali ke pasien' : ''), ($kasir->kembali >= 0 ? ':' : ''), number_format($kasir->kembali, 0), '', '', ''), $fc, $border, $align, $style, $size);
+				$pdf->FancyRow([
+					($kasir->kembali >= 0 ? 'Kembali ke pasien' : ''), ($kasir->kembali >= 0 ? ':' : ''), ($kasir->kembali >= 0 ? number_format($kasir->kembali) : ''), '', '', ''
+				], $fc, $border, $align, $style, $size);
 			} else {
 				$pdf->FancyRow(array(($kasir->kembali >= 0 ? 'Kembali ke Uang muka' : ''), ($kasir->kembali >= 0 ? ':' : ''), number_format($kasir->kembali, 0), '', '', ''), $fc, $border, $align, $style, $size);
 			}

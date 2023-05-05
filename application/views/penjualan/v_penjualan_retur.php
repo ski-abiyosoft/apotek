@@ -137,13 +137,16 @@
                                     <a target="_blank" type="button" class="btn btn-sm btn-warning" href="<?php echo base_url()?>penjualan_retur/cetak/?id=<?php echo $row->returno;?>"><i class="glyphicon glyphicon-print"></i></a>
                                     <?php 
                                     $cek =  $this->session->userdata('user_level'); 
+                                    $cek_bayar = $this->db->query("SELECT * FROM tbl_apoposting WHERE resepno = '$row->returno' AND nokwitansi != ''")->row();
+                                    if($cek_bayar == false) :
                                     if($cek==0){?> 
                                         <a type="button" class="btn btn-sm btn-primary" title="Edit"><i class="glyphicon glyphicon-edit"></i></a>
                                         <a type="button" class="btn btn-sm btn-danger" href="javascript:"><i class="glyphicon glyphicon-trash"></i></a>
                                     <?php }else{ ?>
                                         <a type="button" class="btn btn-sm btn-primary" href="<?php echo base_url('penjualan_retur/edit/').$row->returno; ?>" title="Edit"><i  class="glyphicon glyphicon-edit"></i></a>
                                         <a type="button" class="delete btn btn-sm btn-danger" href="javascript:"><i class="glyphicon glyphicon-trash"></i></a>
-                                    <?php } ?>
+                                    <?php } else : ?>
+                                    <?php endif; ?>
                                 <?php endif;?>
                             </td>
                         </tr>

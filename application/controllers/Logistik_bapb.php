@@ -433,6 +433,22 @@ class Logistik_bapb extends CI_Controller
 		}
 	}
 
+	public function getinfobarang_sat($kodebarang) {
+		$data = $this->db->query("SELECT * FROM (
+		SELECT satuan1 AS satuan FROM tbl_logbarang WHERE kodebarang = '$kodebarang'
+		UNION ALL
+		SELECT satuan2 AS satuan FROM tbl_logbarang WHERE kodebarang = '$kodebarang'
+		UNION ALL
+		SELECT satuan3 AS satuan FROM tbl_logbarang WHERE kodebarang = '$kodebarang'
+		) AS b WHERE satuan != ''")->result();
+		echo json_encode($data);
+	}
+
+	public function getinfobarang_sat2($data) {
+		$data = $this->db->query("SELECT * FROM tbl_barangsetup WHERE apogroup = 'SATUAN' AND apocode = '$data'")->row();
+		echo json_encode($data);
+	}
+
 	function getnomorpox($vendor_id)
 	{
 		$cabang = $this->session->userdata("unit");

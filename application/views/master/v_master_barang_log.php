@@ -432,9 +432,8 @@ $this->load->view('template/v_report');
                                     </div>
                                     <div class="col-md-2">
                                         <select type="text" class="form-control" name="faksatuan2" id="satuan3opr">
-                                            <option value="">--- Pilih ---</option>
-                                            <option value="1">x Kali</option>
                                             <option value="2">: Bagi</option>
+                                            <option value="1">x Kali</option>
                                         </select>
                                         <span class="help-block"></span>
                                     </div>
@@ -460,9 +459,8 @@ $this->load->view('template/v_report');
                                     </div>
                                     <div class="col-md-2">
                                         <select type="text" class="form-control" name="faksatuan3" id="satuan3opr">
-                                            <option value="">--- Pilih ---</option>
-                                            <option value="1">x Kali</option>
                                             <option value="2">: Bagi</option>
+                                            <option value="1">x Kali</option>
                                         </select>
                                         <span class="help-block"></span>
                                     </div>

@@ -155,7 +155,7 @@ $this->load->view('template/body');
                                 <div class="col-md-5">
                                     <div class="form-group">
                                         <label class="col-md-3 control-label">Materai</label>
-                                        <div class="col-md-4">
+                                        <div class="col-md-9">
                                             <select name="materai" id="materai" class="form-control select2me" onchange="cekmtr()">
                                                 <option value="0">Tanpa Materai</option>
                                                 <!-- <option value="3000">3000</option>
@@ -327,7 +327,7 @@ $this->load->view('template/body');
                                                     <input name="jumlah[]" id="jumlah1" type="text" class="form-control rightJustified" size="40%" readonly>
                                                 </td>
                                                 <td>
-                                                    <input name="expire[]" onchange="totalline(1);total()" value="" id="expire1" type="date" class="form-control">
+                                                    <input name="expire[]" onchange="totalline(1);total()" value="<?= date('Y-m'); ?>" min="<?= date('Y-m'); ?>" id="expire1" type="month" class="form-control">
                                                 </td>
                                                 <td>
                                                     <input name="po[]" onchange="totalline(1);total()" value="" id="po1" type="text" class="form-control">
@@ -661,7 +661,7 @@ $this->load->view('template/footer');
         td7.innerHTML = "<input name='discrp[]' id=discrp" + idrow + " onchange='totalline(" + idrow + ");changediscrp(" + idrow + ");' value='0'  type='text' class='form-control rightJustified'>";
         td8.innerHTML = "<input type='checkbox' name='tax[]' id='tax" + idrow + "' onchange='totalline(" + idrow + ");total(); cektax(" + idrow + ")' class='form-control'><input type='hidden' name='tax_hide[]' id='tax_hide" + idrow + "' value='0' class='form-control'>";
         td9.innerHTML = "<input name='jumlah[]' id=jumlah" + idrow + " type='text' class='form-control rightJustified' size='40%' readonly>";
-        td10.innerHTML = "<input name='expire[]'  id=expire" + idrow + " onchange='totalline(" + idrow + ") value=''  type='date' class='form-control'>";
+        td10.innerHTML = "<input name='expire[]'  id=expire" + idrow + " onchange='totalline(" + idrow + ")' value='<?= date('Y-m'); ?>' min='<?= date('Y-m'); ?>'  type='month' class='form-control'>";
         td11.innerHTML = "<input name='po[]'  id=po" + idrow + " onchange='totalline(" + idrow + ") value=''  type='text' class='form-control'>";
         initailizeSelect2_log_baranggud(gud);
         idrow++;

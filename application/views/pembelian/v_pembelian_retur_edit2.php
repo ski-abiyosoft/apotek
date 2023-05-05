@@ -158,7 +158,7 @@
                           <input name="sat[]" id="sat<?= $no; ?>" type="text" class="form-control" value="<?= $d->satuan; ?>" readonly>
                         </td>
                         <td width="10%">
-                          <input name="harga[]" onchange="totalline(<?= $no; ?>)" value="<?= number_format($d->price); ?>" id="harga<?= $no; ?>" type="text" class="form-control rightJustified" readonly>
+                          <input name="harga[]" onchange="totalline(<?= $no; ?>)" value="<?= number_format($d->price, 2); ?>" id="harga<?= $no; ?>" type="text" class="form-control rightJustified" readonly>
                         </td>
                         <td width="10%">
                           <?php if($d->tax == 1) { $cektax = 'selected'; } else { $cektax = ''; } ?>
@@ -171,7 +171,7 @@
                           <input name="disc[]" onchange="totalline(<?= $no; ?>);total();cekdisc(<?= $no; ?>)" value="<?= number_format($d->discount); ?>" id="disc<?= $no; ?>" type="text" class="form-control rightJustified">
                         </td>
                         <td width="10%">
-                          <input name="discrp[]" onchange="totalline(<?= $no; ?>);total();cekdiscrp(<?= $no; ?>)" value="<?= number_format($d->discountrp); ?>" id="discrp<?= $no; ?>" type="text" class="form-control rightJustified ">
+                          <input name="discrp[]" onchange="totalline(<?= $no; ?>);total();cekdiscrp(<?= $no; ?>)" value="<?= number_format($d->discountrp, 2); ?>" id="discrp<?= $no; ?>" type="text" class="form-control rightJustified ">
                         </td>
                         <td width="15%">
                           <input name="jumlah[]" id="jumlah<?= $no; ?>" type="text" class="form-control rightJustified" size="40%" onchange="total()" readonly>
@@ -332,14 +332,14 @@ $this->load->view('template/footer');
     var qtyx = $("#qty" + id).val();
     var qty = Number(parseInt(qtyx.replaceAll(',', '')));
     var hargax = $("#harga" + id).val();
-    var harga = Number(parseInt(hargax.replaceAll(',', '')));
+    var harga = Number((hargax.replaceAll(',', '')));
     var discx = $("#disc" + id).val();
     var disc = Number(parseInt(discx.replaceAll(',', '')));
     if (disc < 1) {
-      $("#discrp" + id).val(separateComma(0));
+      $("#discrp" + id).val(separateComma((0).toFixed(2)));
     } else {
       var discrp = qty * harga * disc / 100;
-      $("#discrp" + id).val(separateComma(discrp.toFixed(0)));
+      $("#discrp" + id).val(separateComma(discrp.toFixed(2)));
     }
     totalline(id);
   }
@@ -348,13 +348,13 @@ $this->load->view('template/footer');
     var qtyx = $("#qty" + id).val();
     var qty = Number(parseInt(qtyx.replaceAll(',', '')));
     var hargax = $("#harga" + id).val();
-    var harga = Number(parseInt(hargax.replaceAll(',', '')));
+    var harga = Number((hargax.replaceAll(',', '')));
     var discrpx = $("#discrp" + id).val();
     var discrp = Number(parseInt(discrpx.replaceAll(',', '')));
     $("#disc" + id).val(0);
-    $("#discrp" + id).val(separateComma(discrp));
+    $("#discrp" + id).val(separateComma(discrp.toFixed(2)));
     tot = qty * harga - discrp;
-    $('#jumlah' + id).val(separateComma(tot));
+    $('#jumlah' + id).val(separateComma(tot.toFixed(2)));
     totalline(id);
   }
 
@@ -368,7 +368,7 @@ $this->load->view('template/footer');
       var discrp = Number(row.cells[7].children[0].value.replace(/[^0-9\.]+/g, ""));
       jumlah = qty * harga;
       tot = jumlah - discrp;
-      row.cells[8].children[0].value = separateComma(tot);
+      row.cells[8].children[0].value = separateComma(tot.toFixed(2));
       total();
     }
   }
@@ -404,10 +404,10 @@ $this->load->view('template/footer');
     } else {
       var abc = tjumlah - tdiskon + tppn;
     }
-    document.getElementById("_vsubtotal").innerHTML = separateComma(tjumlah.toFixed(0));
-    document.getElementById("_vdiskon").innerHTML = separateComma(tdiskon.toFixed(0));
-    document.getElementById("_vppn").innerHTML = separateComma(tppn.toFixed(0));
-    document.getElementById("_vtotal").innerHTML = separateComma(abc.toFixed(0));
+    document.getElementById("_vsubtotal").innerHTML = separateComma(tjumlah.toFixed(2));
+    document.getElementById("_vdiskon").innerHTML = separateComma(tdiskon.toFixed(2));
+    document.getElementById("_vppn").innerHTML = separateComma(tppn.toFixed(2));
+    document.getElementById("_vtotal").innerHTML = separateComma(abc.toFixed(2));
     $('[name="_vtotalx"]').val(abc);
   }
 </script>

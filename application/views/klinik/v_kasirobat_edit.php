@@ -553,7 +553,11 @@
 												<tr>
 													<td>No. Hp</td>
 													<td>
-														<input type="text" class="form-control total leftJustified" name="hpno" id="hpno" value="<?= $hresep->nohp?>" readonly>
+														<?php
+														$pasien = $this->db->query("SELECT * FROM tbl_pasien WHERE rekmed = '$kasir->rekmed'")->row();
+														if($pasien) { $nohp = $pasien->handphone; } else { $nohp = "-"; }
+														?>
+														<input type="text" class="form-control total leftJustified" name="hpno" id="hpno" value="<?= $nohp; ?>" readonly>
 													</td>
 													<td>&nbsp;</td>
 													<td>&nbsp;</td>

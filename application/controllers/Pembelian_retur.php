@@ -151,7 +151,7 @@ class Pembelian_retur extends CI_Controller
       'retur_no'   => $nobukti,
       'vendor_id'  => $this->input->post('supp'),
       'terima_no'  => $this->input->post('kodepu'),
-      'retur_date' => date('Y-m-d', strtotime($this->input->post('tanggal'))),
+      'retur_date' => date('Y-m-d'),
       'invoice_no' => '',
       'gudang'     => $gudang,
       'alasan'     => $alasan,
@@ -161,7 +161,7 @@ class Pembelian_retur extends CI_Controller
     $hbapb  = $this->db->query("SELECT*FROM tbl_apoap where terima_no='$bapb_no'")->row();
     $data_ap = array(
       'koders'            => $cabang,
-      'ref'               => $this->input->post('kodepu'),
+      'ref'               => $bapb_no,
       'terima_no'         => $nobukti,
       'invoice_no'        => $invoice_no         = $hbapb->invoice_no,
       'vendor_id'         => $vendor_id          = $hbapb->vendor_id,
@@ -617,9 +617,9 @@ class Pembelian_retur extends CI_Controller
 																<td style=\"text-align:left; border-bottom: none; border-top: none; \">$db->namabarang</td>
 																<td style=\"text-align:right; border-bottom: none; border-top: none; \">" . number_format($db->qty_retur) . "</td>
 																<td style=\"text-align:right; border-bottom: none; border-top: none; \">" . $db->satuan . "</td>
-																<td style=\"text-align:right; border-bottom: none; border-top: none; \">" . number_format($db->price) . "</td>
-																<td style=\"text-align:right; border-bottom: none; border-top: none; \">" . number_format($db->discountrp) . "</td>
-																<td style=\"text-align:right; border-bottom: none; border-top: none; \">" . number_format($db->totalrp) . "</td>
+																<td style=\"text-align:right; border-bottom: none; border-top: none; \">" . number_format($db->price, 2) . "</td>
+																<td style=\"text-align:right; border-bottom: none; border-top: none; \">" . number_format($db->discountrp, 2) . "</td>
+																<td style=\"text-align:right; border-bottom: none; border-top: none; \">" . number_format($db->totalrp, 2) . "</td>
 													 </tr></tbody>";
         $subtotal += ($db->qty_retur * $db->price);
         $diskon += ($db->discountrp);
@@ -643,23 +643,23 @@ class Pembelian_retur extends CI_Controller
                          <table style=\"border-collapse:collapse;font-family: tahoma; font-size:12px\" width=\"100%\" align=\"center\" border=\"1\">
                               <tr>
                                    <td colspan=\"7\" style=\"text-align:right; border-right: none; border-bottom: none;  border-left: none;\"><b>Subtotal</b> : </td>
-                                   <td width=\"15%\" style=\"text-align:right; border-right: none; border-bottom: none;  border-left: none;\">" . number_format($subtotal) . "</td>
+                                   <td width=\"15%\" style=\"text-align:right; border-right: none; border-bottom: none;  border-left: none;\">" . number_format($subtotal, 2) . "</td>
                               </tr> 
                               <tr>
                                    <td colspan=\"7\" style=\"text-align:right; border-right: none; border-bottom: none;  border-left: none; border-top: none;\"><b>Diskon</b> : </td>
-                                   <td width=\"15%\" style=\"text-align:right; border-right: none; border-bottom: none;  border-left: none; border-top: none;\">" . number_format($diskon) . "</td>
+                                   <td width=\"15%\" style=\"text-align:right; border-right: none; border-bottom: none;  border-left: none; border-top: none;\">" . number_format($diskon, 2) . "</td>
                               </tr> 
                               <tr>
                                    <td colspan=\"7\" style=\"text-align:right; border-right: none; border-bottom: none;  border-left: none; border-top: none;\"><b>DPP</b> : </td>
-                                   <td width=\"15%\" style=\"text-align:right; border-right: none; border-bottom: none;  border-left: none; border-top: none;\">" . number_format($dpp) . "</td>
+                                   <td width=\"15%\" style=\"text-align:right; border-right: none; border-bottom: none;  border-left: none; border-top: none;\">" . number_format($dpp, 2) . "</td>
                               </tr> 
                               <tr>
                                    <td colspan=\"7\" style=\"text-align:right; border-right: none; border-bottom: none;  border-left: none; border-top: none;\"><b>PPN</b> : </td>
-                                   <td width=\"15%\" style=\"text-align:right; border-right: none; border-bottom: none;  border-left: none; border-top: none;\">" . number_format($ppn) . "</td>
+                                   <td width=\"15%\" style=\"text-align:right; border-right: none; border-bottom: none;  border-left: none; border-top: none;\">" . number_format($ppn, 2) . "</td>
                               </tr> 
                               <tr>
                                    <td colspan=\"7\" style=\"text-align:right; border-right: none; border-bottom: none;  border-left: none; border-top: none;\"><b>Total</b> : </td>
-                                   <td width=\"15%\" style=\"text-align:right; border-right: none; border-bottom: none;  border-left: none; border-top: none;\">" . number_format($tot) . "</td>
+                                   <td width=\"15%\" style=\"text-align:right; border-right: none; border-bottom: none;  border-left: none; border-top: none;\">" . number_format($tot, 2) . "</td>
                               </tr> 
                          </table>";
       $chari .= "
