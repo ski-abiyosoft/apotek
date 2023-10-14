@@ -349,7 +349,7 @@ class Logistik_bapb extends CI_Controller
 			$pdf->FancyRow2(20, $judul, $fc,  $border, $align, $style, $size, $max);
 			$judul = array('', '', '');
 			$pdf->FancyRow2(5, $judul, $fc,  $border, $align, $style, $size, $max);
-			$judul = array('KEPALA APOTEKTER', $header->vendor_name, 'PENANGGUNG JAWAB ADM');
+			$judul = array('KEPALA LOGISTIK', $header->vendor_name, 'PENANGGUNG JAWAB ADM');
 			$pdf->FancyRow2(5, $judul, $fc,  $border, $align, $style, $size, $max);
 
 			$pdf->setTitle($param);
@@ -431,6 +431,22 @@ class Logistik_bapb extends CI_Controller
 
 			header('location:' . base_url());
 		}
+	}
+
+	public function getinfobarang_sat($kodebarang) {
+		$data = $this->db->query("SELECT * FROM (
+		SELECT satuan1 AS satuan FROM tbl_logbarang WHERE kodebarang = '$kodebarang'
+		UNION ALL
+		SELECT satuan2 AS satuan FROM tbl_logbarang WHERE kodebarang = '$kodebarang'
+		UNION ALL
+		SELECT satuan3 AS satuan FROM tbl_logbarang WHERE kodebarang = '$kodebarang'
+		) AS b WHERE satuan != ''")->result();
+		echo json_encode($data);
+	}
+
+	public function getinfobarang_sat2($data) {
+		$data = $this->db->query("SELECT * FROM tbl_barangsetup WHERE apogroup = 'SATUAN' AND apocode = '$data'")->row();
+		echo json_encode($data);
 	}
 
 	function getnomorpox($vendor_id)

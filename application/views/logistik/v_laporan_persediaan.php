@@ -119,9 +119,21 @@ $this->load->view('template/body');
                               &nbsp;
                               <div class="row">
                                    <div class="col-md-offset-3 col-md-9">
-                                        <a class=" btn btn-sm red print_laporan" id="cetak" data-toggle="modal">Cetak PDF</a>
+                                        <!-- <a class=" btn btn-sm red print_laporan" id="cetak" data-toggle="modal">Cetak PDF</a>
                                         <a class="btn btn-sm green" onclick="exp()"><i title=" CETAK PDF" class="fa fa-download"></i><b> EXCEL </b></a>
                                         <br />
+                                        <h4>
+                                             <div class="err" id="resultss"></div>
+                                        </h4>
+                                        <div>
+                                             <img id="proses" src="<?php echo base_url(); ?>assets/img/loading-spinner-blue.gif" class="img-responsive" style="visibility:hidden" />
+                                        </div> -->
+                                        <button type="button" class="btn btn-sm red" onclick="cetakx()">
+                                             <i title=" CETAK PDF" class="fa fa-print"></i><b> CETAK </b>
+                                        </button>
+                                        <button type="button" class="btn btn-sm green " onclick="exp()">
+                                             <i title="EXPORT PDF" class="fa fa-download"></i><b> EXCEL </b>
+                                        </button>
                                         <h4>
                                              <div class="err" id="resultss"></div>
                                         </h4>
@@ -170,6 +182,30 @@ $this->load->view('template/v_report');
                });
           }
      });
+
+     function cetakx() {
+          var laporan = document.getElementById('laporan').value;
+          if (laporan != '') {
+               var dari = document.getElementById('dari').value;
+               var sampai = document.getElementById('sampai').value;
+               var da = 0;
+               var depo = document.getElementById('depo').value;
+               var baseurl = "<?php echo base_url() ?>";
+               if(laporan == 4) {
+                    var urlnya = baseurl + 'Laporan_log/laporan4?dari=' + dari + '&sampai=' + sampai + '&da=' + da + '&depo=' + depo + '&laporan=' + laporan + "&pdf=1";
+               } else {
+                    var urlnya = baseurl + 'Laporan_log/cetak?dari=' + dari + '&sampai=' + sampai + '&da=' + da + '&depo=' + depo + '&laporan=' + laporan + "&pdf=1";
+               }
+               window.open(urlnya, '_blank');
+          } else {
+               swal({
+                    title: "LAPORAN",
+                    html: " Tidak Boleh Kosong .!!!",
+                    type: "error",
+                    confirmButtonText: "OK"
+               });
+          }
+     };
 
      function exp() {
           var laporan = document.getElementById('laporan').value;

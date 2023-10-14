@@ -87,9 +87,11 @@ $this->load->view('template/body');
                                         <label class="col-md-3 control-label">Nama Pemasok
                                             <font color="red">*</font>
                                         </label>
-                                        <div class="col-md-9">
-                                            <select id="supp" name="supp" class="form-control select2_el_vendor" data-placeholder="Pilih..." onkeypress="return tabE(this,event)">
-                                            </select>
+                                        <div class="col-md-6">
+                                            <select id="supp" name="supp" class="form-control select2_el_vendor" data-placeholder="Pilih..."></select>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <button type="button" class="btn green" onclick="pareto()">Ambil Pareto</button>
                                         </div>
                                     </div>
 
@@ -99,8 +101,8 @@ $this->load->view('template/body');
                                         <label class="col-md-3 control-label">Gudang / Depo
                                         </label>
                                         <div class="col-md-9">
-                                            <!-- <select id="gudang" name="gudang" class="form-control select2_el_farmasi_depo" data-placeholder="Pilih..." onkeypress="return tabE(this,event)" onchange="cekbarang(1)"> -->
-                                            <select id="gudang" name="gudang" class="form-control select2_el_farmasi_depo" data-placeholder="Pilih..." onkeypress="return tabE(this,event)">
+                                            <!-- <select id="gudang" name="gudang" class="form-control select2_el_farmasi_depo" data-placeholder="Pilih..." onchange="cekbarang(1)"> -->
+                                            <select id="gudang" name="gudang" class="form-control select2_el_farmasi_depo" data-placeholder="Pilih...">
                                             </select>
                                         </div>
 
@@ -128,10 +130,12 @@ $this->load->view('template/body');
                                         <div class="col-md-4">
                                             <input type="text" class="form-control" placeholder="" name="noref" id="noref" value="">
                                         </div>
-                                        <label class="col-md-2 control-label">Inter PO</label>
-                                        <div class="col-md-3">
-                                            <input type="checkbox" name="ipo" class="form-control" id="ipo">
-                                        </div>
+                                        <?php  if($interpo) : ?>
+                                            <label class="col-md-2 control-label">Inter PO</label>
+                                            <div class="col-md-3">
+                                                <input type="checkbox" name="ipo" class="form-control" id="ipo">
+                                            </div>
+                                        <?php endif; ?>
                                     </div>
                                 </div>
 
@@ -241,8 +245,7 @@ $this->load->view('template/body');
                                                     <input name="qty[]" onchange="totalline(1);total()" value="1" id="qty1" type="text" class="form-control rightJustified">
                                                 </td>
                                                 <td>
-                                                    <!-- <input name="sat[]" id="sat1" type="text" class="form-control " onkeypress="return tabE(this,event)" readonly> -->
-                                                    <select name="sat[]" id="sat1" class="form-control"></select>
+                                                    <input name="sat[]" id="sat1" type="text" class="form-control " readonly>
                                                 </td>
                                                 <td>
                                                     <input name="harga[]" onchange="totalline(1);total();cekharga(1)" value="0" id="harga1" type="text" class="form-control rightJustified">
@@ -361,6 +364,39 @@ $this->load->view('template/footer');
 $this->load->view('template/currency');
 ?>
 
+<script>
+  function pareto() {
+    var vendor = $("#supp").val();
+    $.ajax({
+      url: "<?= site_url('Pareto/get_data/'); ?>"+vendor,
+      type: "POST",
+      dataType: "JSON",
+      success: function(data) {
+        if(data.status == 0) {
+          swal({
+            title: "PARETO",
+            html: "Tidak ditemukan",
+            type: "warning",
+            confirmButtonText: "OK"
+          });
+        } else {
+          // console.log(data)
+          hapus();
+          if (data.length > 0) {
+            tambah();
+          }
+          var harga = separateComma(Number(data.harga));
+          var option = $("<option selected></option>").val(data.kodebarang).text("[ " + data.kodebarang + " ] - [ " +data.namabarang + " ] - [ " +data.satuan + " ] - [ " + harga + " ]");
+          $('#kode1').append(option).trigger('change');
+          $("#qty1").val(Number(data.qty));
+          $("#sat1").val(Number(data.satuan));
+          $("#harga1").val(harga);
+        }
+      }
+    });
+  }
+</script>
+
 <!-- -- Tambahan easyui -- -->
 <script type="text/javascript">
     var idrow = 2;
@@ -392,8 +428,7 @@ $this->load->view('template/currency');
 
         td3.innerHTML = "<input name='qty[]' id=qty" + idrow + " onchange='totalline(" + idrow + ")' value='1'  type='text' class='form-control rightJustified' >";
 
-        // td4.innerHTML = "<input name='sat[]' id=sat" + idrow + " type='text' class='form-control'  readonly>";
-        td4.innerHTML = "<select name='sat[]' id='sat" + idrow + "' class='form-control'></select>";
+        td4.innerHTML = "<input name='sat[]' id=sat" + idrow + " type='text' class='form-control'  readonly>";
 
         td5.innerHTML = "<input name='harga[]' id=harga" + idrow + " onchange='totalline(" + idrow + ");cekharga("+idrow+")' value='0'  type='text' class='form-control rightJustified'>";
 
@@ -456,31 +491,8 @@ $this->load->view('template/currency');
             dataType: "JSON",
             success: function(data) {
                 $('#kode' + id).val(data.kodebarang);
-                // $('#sat' + id).val(data.satuan1);
+                $('#sat' + id).val(data.satuan1);
                 $('#harga' + id).val(formatCurrency1(data.hargabeli));
-                $.ajax({
-                    url: "<?php echo base_url(); ?>farmasi_bapb/getinfobarang_sat/" + str,
-                    type: "GET",
-                    dataType: "JSON",
-                    success: function(data) {
-                        var opt = data;
-                        var satuan = $("#sat"+vid);
-                        satuan.empty();
-                        $(opt).each(function() {
-                            $.ajax({
-                                url: "<?php echo base_url(); ?>farmasi_bapb/getinfobarang_sat2/" + this.satuan,
-                                type: "GET",
-                                dataType: "JSON",
-                                success: function(data) {
-                                    var option = $("<option/>");
-                                    option.html(data.aponame);
-                                    option.val(data.apocode);
-                                    satuan.append(option);
-                                }
-                            })
-                        });
-                    }
-                });
                 totalline(id);
             }
         });
@@ -496,7 +508,7 @@ $this->load->view('template/currency');
         var nomor = $('[name="nomorbukti"]').val();
         var total = $('#_vtotal').text();
         var gud = $('#gudang').val();
-        if (document.getElementById('ipo').checked == true) {
+        if (document.getElementById('ipo')?.checked == true) {
             ipo = 1;
         } else {
             ipo = 0;
@@ -537,27 +549,26 @@ $this->load->view('template/currency');
             swal('PURCHASE ORDER', 'Data Belum Lengkap/Belum ada transaksi ...', '');
         } else {
             swal({
-                title: 'QUANTITY',
-                html: "Apakah Quantity yang di ajukan Sudah Sesuai ?",
+                title: 'QTY',
+                html: "Apakah Qty Sudah Sesuai ?",
                 type: 'question',
                 showCancelButton: true,
                 confirmButtonClass: 'btn btn-success',
                 cancelButtonClass: 'btn btn-success',
                 cancelButtonColor: '#d33',
                 confirmButtonText: 'Ya',
-                cancelButtonText: 'Belum'
+                cancelButtonText: 'Tidak'
             }).then(function() {
                 $.ajax({
-                    url         : "<?php echo site_url('farmasi_po/ajax_add/1?ipo=') ?>" + ipo,
-                    data        : $('#frmpembelian').serialize(),
-                    type        : "POST",
-                    dataType    : "JSON",
+                    url: "<?php echo site_url('farmasi_po/ajax_add/1?ipo=') ?>" + ipo,
+                    data: $('#frmpembelian').serialize(),
+                    type: 'POST',
                     success: function(data) {
-                        console.log(data)
-                        // data1 = JSON.parse(data);
+                        // console.log(data)
+                        data1 = JSON.parse(data);
                         swal({
                             title: "PURCHASE ORDER",
-                            html: "<p> No. Bukti   : <b>" + data.nomor + "</b> </p>" + "Tanggal :  " + tanggal + "<br><br>Biaya Terbentuk <br><b>" + total + "</b>",
+                            html: "<p> No. Bukti   : <b>" + data1.nomor + "</b> </p>" + "Tanggal :  " + tanggal + "<br><br>Biaya Terbentuk <br><b>" + total + "</b>",
                             type: "info",
                             confirmButtonText: "OK"
                         }).then((value) => {
@@ -565,11 +576,8 @@ $this->load->view('template/currency');
                         });
     
                     },
-                    error: function(jqXHR, textStatus, errorThrown) {
-                        alert(textStatus);
-                        $('#btnSave').text('save'); //change button text
-                        $('#btnSave').attr('disabled', false); //set button enable 
-
+                    error: function(data) {
+                        swal('PESANAN PEMBELIAN', 'Data gagal disimpan ...', '');
                     }
                 });
             });
@@ -656,10 +664,10 @@ $this->load->view('template/currency');
         }
         // document.getElementById("_vdiskon").innerHTML = formatCurrency1(tdiskon);
         //tppn = 0;
-        document.getElementById("_vsubtotal").innerHTML = separateComma(tjumlah);
-        document.getElementById("_vdiskon").innerHTML = separateComma(tdiskon);
-        document.getElementById("_vppn").innerHTML = separateComma(tppn);
-        document.getElementById("_vtotal").innerHTML = separateComma(tjumlah - tdiskon + tppn);
+        document.getElementById("_vsubtotal").innerHTML = separateComma(tjumlah.toFixed(2));
+        document.getElementById("_vdiskon").innerHTML = separateComma(tdiskon.toFixed(2));
+        document.getElementById("_vppn").innerHTML = separateComma(tppn.toFixed(2));
+        document.getElementById("_vtotal").innerHTML = separateComma((tjumlah - tdiskon + tppn).toFixed(2));
 
 
     }

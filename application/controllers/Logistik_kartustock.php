@@ -825,28 +825,28 @@ class Logistik_kartustock extends CI_Controller
 	// husain chnage
 	public function cetak2()
 	{
-		$cek  = $this->session->userdata('level');
+		$cek    = $this->session->userdata('level');
 		$cabang = $this->session->userdata('unit');
 		$barang = $this->input->get('barang');
 		$gudang = $this->input->get('gudang');
-		$dari = $this->input->get('tgl1');
+		$dari   = $this->input->get('tgl1');
 		$sampai = $this->input->get('tgl2');
 		$avatar = $this->session->userdata('avatar_cabang');
 		if (!empty($cek)) {
-			$kop       = $this->M_cetak->kop($cabang);
-			$profile = data_master('tbl_namers', array('koders' => $cabang));
-			$datagudang = $this->db->get_where("tbl_depo", ['depocode' => $gudang])->row();
-			$databarang = $this->db->get_where("tbl_logbarang", ['kodebarang' => $barang])->row();
-			$datars = $this->db->get_where("tbl_namers", ['koders' => $cabang])->row();
-			$namars    = $kop['namars'];
-			$alamat    = $kop['alamat'];
-			$alamat2   = $kop['alamat2'];
-			$alamat3  = $profile->kota;
-			$kota      = $kop['kota'];
-			$phone     = $kop['phone'];
-			$whatsapp  = $kop['whatsapp'];
-			$npwp      = $kop['npwp'];
-			$chari  = '';
+			$kop           = $this->M_cetak->kop($cabang);
+			$profile       = data_master('tbl_namers', array('koders' => $cabang));
+			$datagudang    = $this->db->get_where("tbl_depo", ['depocode' => $gudang])->row();
+			$databarang    = $this->db->get_where("tbl_logbarang", ['kodebarang' => $barang])->row();
+			$datars        = $this->db->get_where("tbl_namers", ['koders' => $cabang])->row();
+			$namars        = $kop['namars'];
+			$alamat        = $kop['alamat'];
+			$alamat2       = $kop['alamat2'];
+			$alamat3       = $profile->kota;
+			$kota          = $kop['kota'];
+			$phone         = $kop['phone'];
+			$whatsapp      = $kop['whatsapp'];
+			$npwp          = $kop['npwp'];
+			$chari         = '';
 			$chari .= "
 					<table style=\"border-collapse:collapse;font-family: Century Gothic; font-size:12px; color:#000;\" width=\"100%\"  border=\"0\" cellspacing=\"0\" cellpadding=\"0\">
 							<thead>
@@ -983,7 +983,7 @@ class Logistik_kartustock extends CI_Controller
 			}
 			$chari .= "<tr>
 					<td width=\"20%\">SALDO</td>
-					<td width=\"10%\">" . date("d-m-Y", strtotime($_tanggalawal)) . "</td>
+					<td width=\"10%\" style=\"text-align: center;\">" . date("d-m-Y", strtotime($_tanggalawal)) ."</td>
 					<td width=\"10%\">SALDO AWAL</td>
 					<td width=\"15%\">SALDO AWAL</td>
 					<td width=\"10%\"></td>
@@ -1008,7 +1008,7 @@ class Logistik_kartustock extends CI_Controller
 				$saldo = $saldo + $db->terima - $db->keluar;
 				$chari .= "<tr>
 						<td width=\"20%\">$db->nomor</td>
-						<td width=\"10%\">" . date("d-m-Y", strtotime($db->tanggal)) . "</td>
+						<td width=\"10%\" style=\"text-align: center;\">" . date("d-m-Y", strtotime($db->tanggal)) . "</td>
 						<td width=\"10%\">$db->keterangan</td>
 						<td width=\"15%\">$db->rekanan</td>
 						<td width=\"10%\" style=\"text-align:right;\">" . number_format($nilai) . "</td>

@@ -8,7 +8,7 @@ $this->load->view('template/body');
             <span class="title-unit">
                 &nbsp;<?php echo $this->session->userdata('unit'); ?>
             </span>
-            -
+            &nbsp;-
             <span class="title-web">APOTEK <small>Retur Pembelian</small>
         </h3>
         <ul class="page-breadcrumb breadcrumb">
@@ -38,12 +38,6 @@ $this->load->view('template/body');
         <div class="caption">
             <i class="fa fa-reorder"></i>*Data Baru
         </div>
-        <!--div class="tools">
-						 <span class="label label-sm label-danger">										
-						  REGISTER : 
-						</span>
-
-					</div-->
     </div>
     <div class="portlet-body form">
         <form id="frmpembelian" class="form-horizontal" method="post">
@@ -68,8 +62,7 @@ $this->load->view('template/body');
                                     <div class="form-group">
                                         <label class="col-md-3 control-label">Pemasok</label>
                                         <div class="col-md-6">
-                                            <select id="supp" name="supp" class="form-control select2_el_vendor" onchange="showpo()">
-                                            </select>
+                                            <select id="supp" name="supp" class="form-control select2_el_vendor"></select>
                                         </div>
                                     </div>
                                 </div>
@@ -85,13 +78,18 @@ $this->load->view('template/body');
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label class="col-md-3 control-label">No. BAPB</label>
-                                        <div class="col-md-5">
-                                            <div class="input-group">
-                                                <select name="kodepu" id="kodepu" class="form-control input-medium select2me" onchange="getpoheader();getpo()"></select>
-                                            </div>
+                                        <label class="col-md-3 control-label">Tanggal</label>
+                                        <div class="col-md-3">
+                                            <input id="tanggal" name="tanggal" class="form-control" type="date" value="<?php echo date('Y-m-d'); ?>" />
                                         </div>
-
+                                        <div class="col-md-1">
+                                            <span class="input-group-btn">
+                                                <label class="control-label"> <b> s/d </b></label>
+                                            </span>                                    
+                                        </div>
+                                        <div class="col-md-3">
+                                            <input id="tanggal2" name="tanggal2" class="form-control" type="date" value="<?php echo date('Y-m-d'); ?>" />
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="col-md-6">
@@ -105,27 +103,34 @@ $this->load->view('template/body');
                                     </div>
                                 </div>
                             </div>
-
-
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label class="col-md-3 control-label">Tanggal</label>
-                                        <div class="col-md-4">
-                                            <input id="tanggal" name="tanggal" class="form-control input-medium" type="date" value="<?php echo date('Y-m-d'); ?>" />
-
+                                        <label class="col-md-3 control-label">No. BAPB</label>
+                                        <div class="col-md-5">
+                                            <div class="input-group">
+                                                <button type="button" class="btn btn-sm blue" onclick="search_bapb()" ><i class="fa fa-search"></i><b> Ambil BAPB</b></button>
+                                            </div>
                                         </div>
-
-
-
                                     </div>
                                 </div>
-
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label class="col-md-3 control-label">Alasan <span class="text-danger">*</span></label>
                                         <div class="col-md-6">
                                             <input class="form-control" type="text" id="alasan" name="alasan">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="col-md-3 control-label"></label>
+                                        <div class="col-md-5">
+                                            <div class="">
+                                               <input class="form-control" type="text" name="kodepu" id="kodepu" readonly>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -165,7 +170,6 @@ $this->load->view('template/body');
                                                     </td>
                                                     <td width="10%">
                                                         <select name="sat[]" id="sat1" class="form-control"></select>
-                                                        <!-- <input name="sat[]" id="sat1" type="text" class="form-control" onkeypress="return tabE(this,event)" readonly> -->
                                                     </td>
                                                     <td width="10%">
                                                         <input name="harga[]" onchange="totalline(1)" value="0" id="harga1" type="text" class="form-control rightJustified" readonly>
@@ -238,19 +242,6 @@ $this->load->view('template/body');
                                             </div>
                                         </div>
                                     </div>
-                                    <!-- <div class="row">
-                                        <div class="col-md-6">
-                                            <div class="form-group">
-                                                <label class="col-md-3 control-label">Keterangan</label>
-                                                <div class="col-md-4">
-                                                    <textarea row="3" class="form-control input-xlarge" placeholder="" name="keterangan" id="keterangan" maxlength="100"></textarea>
-                                                </div>
-
-                                            </div>
-                                        </div>
-                                    </div> -->
-
-
                                 </div>
                             </div>
 
@@ -331,6 +322,33 @@ $this->load->view('template/body');
 </div>
 </div>
 
+<!-- Modal bapb -->
+<div class="modal fade" role="dialog" id="list_bapb" aria-hidden="true">
+    <div class="modal-dialog modal-small">
+        <div class="modal-content">
+            <div class="modal-header" style="background-color:#c50c0c;color:#fff">
+                <h4><b>Daftar No BAPB</b></h4>
+            </div>
+            <div class="modal-body">
+                <table class="table table-bordered table-striped" id="tbl2" style="margin:auto !important">
+                    <thead>
+                        <tr class="page-breadcrumb breadcrumb">                            
+                            <th style="text-align: center">No BPAB/No Transaksi</th>
+                            <th style="text-align: center">Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody id="daftar_bapb"></tbody>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn red" data-dismiss="modal">Tutup</button>
+            </div>
+        </div>
+
+    </div>
+</div>
+<!-- Modal bapb -->
+
 <?php
 $this->load->view('template/footer');
 ?>
@@ -370,47 +388,10 @@ $this->load->view('template/footer');
         return sign < 0 ? '-' + result : result;
     }
 
-    // function tambah() {
-    //     var x = document.getElementById('datatable').insertRow(idrow);
-    //     var td1 = x.insertCell(0);
-    //     var td2 = x.insertCell(1);
-    //     var td3 = x.insertCell(2);
-    //     var td4 = x.insertCell(3);
-    //     var td5 = x.insertCell(4);
-    //     var td6 = x.insertCell(5);
-    //     var td7 = x.insertCell(6);
-    //     var td8 = x.insertCell(7);
-    //     var td9 = x.insertCell(8);
-    //     var td10 = x.insertCell(9);
-    //     td1.innerHTML = "<button type='button' onclick=hapusBarisIni(1) class='btn red'><i class='fa fa-trash-o'>";
-    //     td2.innerHTML = "<select name='kode[]' id=kode" + idrow + " onchange='showbarangname(this.value," + idrow + ")' class='select2_el_farmasi_barang form-control' ><option value=''>--- Pilih Barang ---</option></select>";
-    //     td3.innerHTML = "<input name='qty[]'    id=qty" + idrow + " onchange='totalline(" + idrow + ");total();cekqty(" + idrow + ")' value='1'  type='text' class='form-control rightJustified'  >";
-    //     td4.innerHTML = "<input name='sat[]'    id=sat" + idrow + " type='text' class='form-control' readonly >";
-    //     td5.innerHTML = "<input name='harga[]'  id=harga" + idrow + " onchange='totalline(" + idrow + ")' value='0'  type='text' class='form-control rightJustified' readonly>";
-    //     td6.innerHTML = "<input name='tax[]'  id=tax" + idrow + " onchange='totalline(" + idrow + ");total()' value='0' type='checkbox' class='form-control rightJustified'>";
-    //     td7.innerHTML = "<a class='btn default' id=lupharga" + idrow + " data-toggle='modal' href='#lupharga' onclick='getidharga(this.id)'><i class='fa fa-search'></i></a> ";
-    //     td8.innerHTML = "<input name='disc[]'   id=disc" + idrow + " onchange='totalline(" + idrow + ");total();cekdisc(" + idrow + ")' value='0'  type='text' class='form-control rightJustified'  >";
-    //     td9.innerHTML = "<input name='discrp[]'   id=discrp" + idrow + " onchange='totalline(" + idrow + ");cekdiscrp(" + idrow + ");total()' value='0'  type='text' class='form-control rightJustified'  >";
-    //     td10.innerHTML = "<input name='jumlah[]' id=jumlah" + idrow + " type='text' class='form-control rightJustified'>";
-    //     initailizeSelect2_farmasi_barang();
-    //     idrow++;
-    // }
-
     function tambah() {
         var table = $("#datatable");
 
         if('<?= $pkp ?>' == '1') {
-            // table.append("<tr id='retur_tr" + idrow + "'>" +
-            //     "<td><button id='btnhapus" + idrow + "' type='button' onclick=hapusBarisIni(" + idrow + ") class='btn red'><i class='fa fa-trash-o'></i> </button></td>" +
-            //     "<td><select name='kode[]' id=kode" + idrow + " onchange='showbarangname(this.value," + idrow + ")' class='select2_el_farmasi_barang form-control' ><option value=''>--- Pilih Barang ---</option></select></td>" +
-            //     "<td><input name='qty[]'    id=qty" + idrow + " onchange='totalline(" + idrow + ");total();cekqty(" + idrow + ")' value='1'  type='text' class='form-control rightJustified'></td>" +
-            //     "<td><input name='sat[]'    id=sat" + idrow + " type='text' class='form-control' readonly></td>" +
-            //     "<td><input name='harga[]'  id=harga" + idrow + " onchange='totalline(" + idrow + ")' value='0'  type='text' class='form-control rightJustified' readonly></td>" +
-            //     "<td><select name='tax[]' id='tax" + idrow + "' class='form-control' onchange='totalline(" + idrow + "); total()'><option value='1'>Ya</option><option value='0'>Tidak</option></select></td>" +
-            //     "<td><input name='disc[]'   id=disc" + idrow + " onchange='totalline(" + idrow + ");total();cekdisc(" + idrow + ")' value='0'  type='text' class='form-control rightJustified'  ></td>" +
-            //     "<td><input name='discrp[]'   id=discrp" + idrow + " onchange='totalline(" + idrow + ");cekdiscrp(" + idrow + ")' value='0'  type='text' class='form-control rightJustified'  ></td>" +
-            //     "<td><input name='jumlah[]' id=jumlah" + idrow + " type='text' class='form-control rightJustified' readonly></td>" +
-            //     "</tr>");
             table.append("<tr id='retur_tr" + idrow + "'>" +
                 "<td><button id='btnhapus" + idrow + "' type='button' onclick=hapusBarisIni(" + idrow + ") class='btn red'><i class='fa fa-trash-o'></i> </button></td>" +
                 "<td><select name='kode[]' id=kode" + idrow + " onchange='showbarangname(this.value," + idrow + ")' class='select2_el_farmasi_barang form-control' ><option value=''>--- Pilih Barang ---</option></select></td>" +
@@ -423,17 +404,6 @@ $this->load->view('template/footer');
                 "<td><input name='jumlah[]' id=jumlah" + idrow + " type='text' class='form-control rightJustified' readonly></td>" +
                 "</tr>");
         } else {
-            // table.append("<tr id='retur_tr" + idrow + "'>" +
-            //     "<td><button id='btnhapus" + idrow + "' type='button' onclick=hapusBarisIni(" + idrow + ") class='btn red'><i class='fa fa-trash-o'></i> </button></td>" +
-            //     "<td><select name='kode[]' id=kode" + idrow + " onchange='showbarangname(this.value," + idrow + ")' class='select2_el_farmasi_barang form-control' ><option value=''>--- Pilih Barang ---</option></select></td>" +
-            //     "<td><input name='qty[]'    id=qty" + idrow + " onchange='totalline(" + idrow + ");total();cekqty(" + idrow + ")' value='1'  type='text' class='form-control rightJustified'></td>" +
-            //     "<td><input name='sat[]'    id=sat" + idrow + " type='text' class='form-control' readonly></td>" +
-            //     "<td><input name='harga[]'  id=harga" + idrow + " onchange='totalline(" + idrow + ")' value='0'  type='text' class='form-control rightJustified' readonly></td>" +
-            //     "<td><select name='tax[]' id='tax" + idrow + "' class='form-control' onchange='totalline(" + idrow + "); total()'><option value='0'>Tidak</option><option value='1'>Ya</option></select></td>" +
-            //     "<td><input name='disc[]'   id=disc" + idrow + " onchange='totalline(" + idrow + ");total();cekdisc(" + idrow + ")' value='0'  type='text' class='form-control rightJustified'  ></td>" +
-            //     "<td><input name='discrp[]'   id=discrp" + idrow + " onchange='totalline(" + idrow + ");cekdiscrp(" + idrow + ")' value='0'  type='text' class='form-control rightJustified'  ></td>" +
-            //     "<td><input name='jumlah[]' id=jumlah" + idrow + " type='text' class='form-control rightJustified' readonly></td>" +
-            //     "</tr>");
             table.append("<tr id='retur_tr" + idrow + "'>" +
                 "<td><button id='btnhapus" + idrow + "' type='button' onclick=hapusBarisIni(" + idrow + ") class='btn red'><i class='fa fa-trash-o'></i> </button></td>" +
                 "<td><select name='kode[]' id=kode" + idrow + " onchange='showbarangname(this.value," + idrow + ")' class='select2_el_farmasi_barang form-control' ><option value=''>--- Pilih Barang ---</option></select></td>" +
@@ -448,23 +418,22 @@ $this->load->view('template/footer');
         }
         initailizeSelect2_farmasi_barang();
         idrow++;
-        // "<td><a class='btn default' id=lupharga" + idrow + " data-toggle='modal' href='#lupharga' onclick='getidharga(this.id)'><i class='fa fa-search'></i></a></td>" +
     }
 
     function cekqty(id) {
         var qtyx = $('#qty' + id).val();
         var qty = Number(parseInt(qtyx.replaceAll(',', '')));
         var hargax = $("#harga" + id).val();
-        var harga = Number(parseInt(hargax.replaceAll(',', '')));
+        var harga = Number((hargax.replaceAll(',', '')));
         var discx = $("#disc" + id).val();
         var disc = Number(parseInt(discx.replaceAll(',', '')));
         var discrp = qty * harga * disc / 100;
         var jumlah = qty * harga - discrp;
-        $('#discrp' + id).val(separateComma(discrp));
+        $('#discrp' + id).val(separateComma(discrp.toFixed(2)));
         $('#qty').val(qty.toFixed(0));
         // separateComma(diskon.toFixed(0))
         $('#qty' + id).val(separateComma(qty.toFixed(0)));
-        $('#jumlah' + id).val(separateComma(jumlah));
+        $('#jumlah' + id).val(separateComma(jumlah.toFixed(2)));
         total();
     }
 
@@ -472,14 +441,14 @@ $this->load->view('template/footer');
         var qtyx = $("#qty" + id).val();
         var qty = Number(parseInt(qtyx.replaceAll(',', '')));
         var hargax = $("#harga" + id).val();
-        var harga = Number(parseInt(hargax.replaceAll(',', '')));
+        var harga = Number((hargax.replaceAll(',', '')));
         var discx = $("#disc" + id).val();
         var disc = Number(parseInt(discx.replaceAll(',', '')));
         if (disc < 1) {
-            $("#discrp" + id).val(separateComma(0));
+            $("#discrp" + id).val(separateComma((0).toFixed(2)));
         } else {
             var discrp = qty * harga * disc / 100;
-            $("#discrp" + id).val(separateComma(discrp.toFixed(0)));
+            $("#discrp" + id).val(separateComma(discrp.toFixed(2)));
         }
         totalline(id);
     }
@@ -489,13 +458,14 @@ $this->load->view('template/footer');
         var qtyx = $("#qty" + id).val();
         var qty = Number(parseInt(qtyx.replaceAll(',', '')));
         var hargax = $("#harga" + id).val();
-        var harga = Number(parseInt(hargax.replaceAll(',', '')));
+        var harga = Number((hargax.replaceAll(',', '')));
         var discrpx = $("#discrp" + id).val();
-        var discrp = Number(parseInt(discrpx.replaceAll(',', '')));
+        var discrp = Number((discrpx.replaceAll(',', '')));
         $("#disc" + id).val(0);
-        $("#discrp" + id).val(separateComma(discrp));
-        tot = qty * harga - discrp;
-        $('#jumlah' + id).val(separateComma(tot));
+        $("#discrp" + id).val(separateComma(discrp.toFixed(2)));
+        subtotal = qty * harga;
+        tot = subtotal - discrp;
+        $('#jumlah' + id).val(separateComma(tot.toFixed(2)));
         total();
     }
 
@@ -926,11 +896,11 @@ $this->load->view('template/footer');
         } else {
             var tmattotal = abc;
         }
-        document.getElementById("_vsubtotal").innerHTML = separateComma(tjumlah.toFixed(0));
+        document.getElementById("_vsubtotal").innerHTML = separateComma(tjumlah.toFixed(2));
         // document.getElementById("_vmaterai").innerHTML = separateComma(tmaterai);
-        document.getElementById("_vdiskon").innerHTML = separateComma(tdiskon.toFixed(0));
-        document.getElementById("_vppn").innerHTML = separateComma(tppn.toFixed(0));
-        document.getElementById("_vtotal").innerHTML = separateComma(tmattotal.toFixed(0));
+        document.getElementById("_vdiskon").innerHTML = separateComma(tdiskon.toFixed(2));
+        document.getElementById("_vppn").innerHTML = separateComma(tppn.toFixed(2));
+        document.getElementById("_vtotal").innerHTML = separateComma(tmattotal.toFixed(2));
 
         $('[name="_vtotalx"]').val(tjumlah - tdiskon + tppn);
         $('[name="_vppn"]').val(tppn);
@@ -961,7 +931,7 @@ $this->load->view('template/footer');
             var discrp = Number(row.cells[7].children[0].value.replace(/[^0-9\.]+/g, ""));
             jumlah = qty * harga;
             tot = jumlah - discrp;
-            row.cells[8].children[0].value = separateComma(tot);
+            row.cells[8].children[0].value = separateComma(tot.toFixed(2));
             total();
         }
 
@@ -985,6 +955,68 @@ $this->load->view('template/footer');
         };
         xhttp.open("GET", "<?php echo base_url(); ?>pembelian_retur/getlistpo/" + str, true);
         xhttp.send();
+    }
+
+    function search_bapb()
+    {
+        
+        var supp        = $('#supp').val();
+        var tanggal     = $('#tanggal').val();
+        var tanggal2    = $('#tanggal2').val();
+        
+        if(supp=='' || supp == null) {
+            swal({
+                title   : "Pemasok",
+                html    : "Wajib di Pilih",
+                type    : "error",
+                confirmButtonText   : "OK"
+            });
+            return;
+        }
+
+        if(tanggal=='' || tanggal == null) {
+            swal({
+                title   : "Tanggal Awal",
+                html    : "Wajib di Pilih",
+                type    : "error",
+                confirmButtonText   : "OK"
+            });
+            return;
+        }
+        
+        if(tanggal2=='' || tanggal2 == null) {
+            swal({
+                title   : "Tanggal Awal",
+                html    : "Wajib di Pilih",
+                type    : "error",
+                confirmButtonText   : "OK"
+            });
+            return;
+        }
+
+        $.ajax({
+            url         : "<?php echo site_url('pembelian_retur/get_bapb?vendor=')?>"+supp+"&startdate="+tanggal+"&enddate="+tanggal2,
+            type        : "GET",
+            dataType    : "JSON",
+            success: function(data)
+            {                           
+                $('#daftar_bapb').empty();
+                $.each(data, function( key, value ) {
+                    $('#daftar_bapb').append(
+                        "<tr>\
+                            <td style='text-align: center'>"+value.terima_no+"</td>\
+                            <td style='text-align: center'><button type='button' onclick='getpoheader("+'"'+value.terima_no+'"'+''+");getpo("+'"'+value.terima_no+'"'+''+");' class='btn btn-success btn-xs'>Pilih</button></td>\
+                            </tr>");
+                });
+                
+                $('#list_bapb').modal('show');
+            },
+            error: function (jqXHR, textStatus, errorThrown)
+            {
+                alert('Data dari Ajax Error, Hubungi Konsultan');
+            }
+        });
+
     }
 
 
@@ -1012,9 +1044,9 @@ $this->load->view('template/footer');
         return sign < 0 ? '-' + result : result;
     }
 
-    function getpo() {
+    function getpo(str) {
         var xhttp;
-        var str = $('[name=kodepu]').val();
+        // var str = $('[name=kodepu]').val();
         if (str == "") {
             hapus();
             $('[id=kode1]').val('');
@@ -1064,11 +1096,12 @@ $this->load->view('template/footer');
                 }
             });
         }
+        $('#list_bapb').modal('hide');
     }
 
-    function getpoheader() {
+    function getpoheader(str) {
         var xhttp;
-        var str = $('[name=kodepu]').val();
+        // var str = $('[name=kodepu]').val();
         if (str == "") {} else {
             $.ajax({
                 url: "<?php echo base_url(); ?>pembelian_retur/getpoheader/" + str,
@@ -1077,6 +1110,7 @@ $this->load->view('template/footer');
 
                 success: function(data) {
                     // alert(data.terima_date1);      
+                    $('[name="kodepu"]').val(str);
                     $('[name="sppn"]').val(data.sppn);
                     $('#gudang').val(data.nm_gud);
                     $('#gudang1').val(data.gudang);

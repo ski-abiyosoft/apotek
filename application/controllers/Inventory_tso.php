@@ -72,17 +72,17 @@ class Inventory_tso extends CI_Controller
 		foreach ($list as $item) {
 			if ($tampilsaldo != 0) {
 				if ($item->saldo != 0) {
-					$namagud	= $this->db->query("SELECT * FROM tbl_depo WHERE depocode = '$item->gudang'")->row();
+					$namagud   = $this->db->query("SELECT * FROM tbl_depo WHERE depocode = '$item->gudang'")->row();
+					$kode      = $item->kodebarang;
+					$nama      = $this->M_global->_data_barang($item->kodebarang)->namabarang;
+					$satuanbrg = $this->M_global->_data_barang($item->kodebarang)->satuan1;
 					$no++;
-					$row = array();
+					$row   = [];
 					$row[] = $item->koders;
 					$row[] = $item->username;
 					$row[] = $namagud->keterangan;
 					$row[] = date('d/m/Y', strtotime($item->tglso));
 
-					$kode  		= $item->kodebarang;
-					$nama  		= $this->M_global->_data_barang($item->kodebarang)->namabarang;
-					$satuanbrg  = $this->M_global->_data_barang($item->kodebarang)->satuan1;
 
 					$row[] = $item->kodebarang;
 					$row[] = $nama;
@@ -604,29 +604,47 @@ class Inventory_tso extends CI_Controller
 	}	
 
 	public function validkan($kode_barang, $gudang){
-		$cabang = $this->session->userdata('unit');
-		$seting = $this->M_KartuStock->update_stok($kode_barang, $gudang, $cabang);
-		$cek = $this->db->get_where("tbl_barangstock", ["kodebarang"=>$kode_barang, "gudang"=>$gudang, "koders"=>$cabang])->row();
-		$saldoawal = $cek->saldoawal;
-		if($seting){
-			$terima = 0;
-			$keluar = 0;
-			$saldo = 0;
-			foreach($seting as $c){
-				$terima += $c->terima;
-				$keluar += $c->keluar;
-				$saldo += $c->terima - $c->keluar;
+		$cabang   = $this->session->userdata('unit');
+		$cek      = $this->db->get_where("tbl_barangstock", ["kodebarang" => $kode_barang, "gudang" => $gudang, "koders" => $cabang])->row();
+		if($cek) {
+			$seting = $this->M_KartuStock->update_stok($kode_barang, $gudang, $cabang);
+			if($seting){
+				$terima       = 0;
+				$keluar       = 0;
+				$saldo        = 0;
+				$saldoawal    = $cek->saldoawal;
+				foreach($seting as $c){
+					$terima    += $c->terima;
+					$keluar    += $c->keluar;
+					$saldo     += $c->terima - $c->keluar;
+				}
+				$data = [
+					'saldoawal' 	=> $saldoawal,
+					'terima' 			=> $terima,
+					'keluar' 			=> $keluar,
+					'saldoakhir' 	=> $saldo + $saldoawal,
+				];
+				$this->db->update("tbl_barangstock", $data, ["kodebarang" => $kode_barang, "gudang" => $gudang, "koders" => $cabang]);
+			} else {
+				$saldoawal = 0;
+				$data = [
+					'saldoawal' => $saldoawal,
+				];
+				$this->db->update("tbl_barangstock", $data, ["kodebarang" => $kode_barang, "gudang" => $gudang, "koders" => $cabang]);
 			}
-			$data = [
-				'terima' => $terima,
-				'keluar' => $keluar,
-				'saldoakhir' => $saldo + $saldoawal,
-			];
-			$this->db->update("tbl_barangstock", $data, ["kodebarang"=>$kode_barang, "gudang"=>$gudang, "koders"=>$cabang]);
-			echo json_encode(['status'=>1]);
 		} else {
-			echo json_encode(['status'=>0]);
+			$data = [
+				'saldoawal' 	=> 0,
+				'terima' 			=> 0,
+				'keluar' 			=> 0,
+				'saldoakhir' 	=> 0,
+				'kodebarang' 	=> $kode_barang,
+				'gudang' 			=> $gudang,
+				'koders' 			=> $cabang,
+			];
+			$this->db->insert("tbl_barangstock", $data);
 		}
+		echo json_encode(['status'=>1]);
 	}
 
 	public function entri()
@@ -1073,10 +1091,11 @@ class Inventory_tso extends CI_Controller
 		}
 	}
 
-	public function getinfobarang($param)
+	public function getinfobarang()
 	{
 		$cabang = $this->session->userdata('unit');
-		$prm = urldecode($param); //remove spaci
+		// $prm = urldecode($param); //remove spaci
+		$prm = $this->input->get('kodebarang');
 		$gudang = $this->input->get('gudang');
 		$qry = "SELECT tbl_barang.*, (select saldoakhir from tbl_barangstock where gudang = '$gudang' and koders= '$cabang' and kodebarang = tbl_barang.`kodebarang`) as salakhir FROM tbl_barang WHERE kodebarang = '$prm'";
 		echo json_encode($this->db->query($qry)->row());

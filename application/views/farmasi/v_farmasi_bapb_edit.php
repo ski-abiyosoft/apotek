@@ -345,13 +345,13 @@ $this->load->view('template/body');
                             <!-- <input name="sat[]" id="sat<?= $no; ?>" value="<?= $row->satuan; ?>" type="text" class="form-control" onkeypress="return tabE(this,event)" readonly> -->
                           </td>
                           <td width="10%">
-                            <input name="harga[]" onchange="totalline(<?= $no; ?>);total();cekharga(<?= $no; ?>);" value="<?= number_format($row->price); ?>" id="harga<?= $no; ?>" type="text" class="form-control rightJustified">
+                            <input name="harga[]" onchange="totalline(<?= $no; ?>);total();cekharga(<?= $no; ?>);" value="<?= ($row->price); ?>" id="harga<?= $no; ?>" type="text" class="form-control rightJustified">
                           </td>
                           <td width="5%">
                             <input name="disc[]" onchange="totalline(<?= $no; ?>);total();" value="<?= $row->discount; ?>" id="disc<?= $no; ?>" type="text" class="form-control rightJustified ">
                           </td>
                           <td width="10%">
-                            <input name="discrp[]" onchange="totalline(<?= $no; ?>);total();" value="<?= number_format($row->discountrp); ?>" id="discrp<?= $no; ?>" type="text" class="form-control rightJustified ">
+                            <input name="discrp[]" onchange="totalline(<?= $no; ?>);total();" value="<?= ($row->discountrp); ?>" id="discrp<?= $no; ?>" type="text" class="form-control rightJustified ">
                           </td>
                           <td>
                             <input type="checkbox" name="tax[]" <?php if ($row->vat == 1) {
@@ -361,10 +361,10 @@ $this->load->view('template/body');
                             } ?> id="tax<?= $no; ?>" class="form-control" onchange="totalline(<?= $no; ?>);total()" value="<?= $row->vat; ?>">
                           </td>
                           <td width="15%">
-                            <input name="jumlah[]" value="<?= number_format($row->totalrp); ?>" id="jumlah<?= $no; ?>" type="text" class="form-control rightJustified" size="40%" readonly>
+                            <input name="jumlah[]" value="<?= ($row->totalrp); ?>" id="jumlah<?= $no; ?>" type="text" class="form-control rightJustified" size="40%" readonly>
                           </td>
                           <td>
-                        <input name="het[]" onchange="totalline(<?= $no; ?>);total();" value="<?= $row->het; ?>" id="het1" type="text" class="form-control rightJustified ">
+                        <input name="het[]" onchange="totalline(<?= $no; ?>);total();" value="<?= $row->het; ?>" id="het<?= $no; ?>" type="text" class="form-control rightJustified ">
                         </td>
                           <td width="10%">
                             <input name="expire[]" onchange="totalline(<?= $no; ?>);total()" value="<?= date('Y-m', strtotime($row->exp_date)); ?>" id="expire<?= $no; ?>" type="month" class="form-control">
@@ -597,7 +597,7 @@ $this->load->view('template/footer');
 
   function cekharga(id) {
     var harga = $('#harga' + id).val();
-    var hargax = parseInt(harga.replaceAll(',', ''));
+    var hargax = (harga.replaceAll(',', ''));
     var qty = $('#qty' + id).val();
     var kode = $('#kode' + id).val();
     var jumlah = harga * qty;
@@ -705,15 +705,15 @@ $this->load->view('template/footer');
     tppn = 0;
     for (var i = 1; i < rowCount; i++) {
       jumlahx = $('#qty' + i).val();
-      jumlah1 = Number(parseInt(jumlahx.replaceAll(',', '')));
+      jumlah1 = Number(jumlahx.replaceAll(',', ''));
       hargax = $('#harga' + i).val();
-      harga1 = Number(parseInt(hargax.replaceAll(',', '')));
+      harga1 = Number(hargax.replaceAll(',', ''));
       diskonx = $('#disc' + i).val();
-      diskon1 = Number(parseInt(diskonx.replaceAll(',', '')));
+      diskon1 = Number(diskonx.replaceAll(',', ''));
       diskonrpx = $('#discrp' + i).val();
-      diskon2 = Number(parseInt(diskonrpx.replaceAll(',', '')));
+      diskon2 = Number(diskonrpx.replaceAll(',', ''));
       subtotalx = $('#jumlah' + i).val();
-      subtotal1 = Number(parseInt(subtotalx.replaceAll(',', '')));
+      subtotal1 = Number(subtotalx.replaceAll(',', ''));
 
       tjumlah = tjumlah + eval(jumlah1 * harga1);
 
@@ -724,14 +724,14 @@ $this->load->view('template/footer');
         tppn = tppn + (eval((jumlah1 * harga1 - diskon2))) * cekppn2;
       }
     }
-    document.getElementById("_vsubtotal").innerHTML = separateComma(tjumlah.toFixed(0));
-    document.getElementById("_vdiskon").innerHTML = separateComma(tdiskon.toFixed(0));
-    document.getElementById("_vppn").innerHTML = separateComma(tppn.toFixed(0));
-    document.getElementById("_vmaterai").innerHTML = separateComma(materai.toFixed(0));
+    document.getElementById("_vsubtotal").innerHTML = separateComma(tjumlah.toFixed(2));
+    document.getElementById("_vdiskon").innerHTML = separateComma(tdiskon.toFixed(2));
+    document.getElementById("_vppn").innerHTML = separateComma(tppn.toFixed(2));
+    document.getElementById("_vmaterai").innerHTML = separateComma(materai.toFixed(2));
     if('<?= $pkp; ?>' == '1') {
-      document.getElementById("_vtotal").innerHTML = separateComma(((tjumlah - tdiskon) + materai).toFixed(0));
+      document.getElementById("_vtotal").innerHTML = separateComma(((tjumlah - tdiskon) + materai).toFixed(2));
     } else {
-      document.getElementById("_vtotal").innerHTML = separateComma(((tjumlah - tdiskon) + tppn + materai).toFixed(0));
+      document.getElementById("_vtotal").innerHTML = separateComma(((tjumlah - tdiskon) + tppn + materai).toFixed(2));
     }
   });
 
@@ -1131,14 +1131,14 @@ $this->load->view('template/footer');
                       '')));
                     var sat = $("#sat" + i).val();
                     var hargax = $("#harga" + i).val();
-                    var harga = Number(parseInt(hargax.replaceAll(
+                    var harga = Number((hargax.replaceAll(
                       ',', '')));
                     var disc = $("#disc" + i).val();
                     var discrpx = $("#discrp" + i).val();
-                    var discrp = Number(parseInt(discrpx.replaceAll(
+                    var discrp = Number((discrpx.replaceAll(
                       ',', '')));
                     var jumlahx = $("#jumlah" + i).val();
-                    var jumlah = Number(parseInt(jumlahx.replaceAll(
+                    var jumlah = Number((jumlahx.replaceAll(
                       ',', '')));
                     var expire = $("#expire" + i).val();
                     var po = $("#po" + i).val();
@@ -1326,11 +1326,11 @@ $this->load->view('template/footer');
     } else {
       var tmattotal = abc;
     }
-    document.getElementById("_vsubtotal").innerHTML = separateComma(tjumlah.toFixed(0));
-    document.getElementById("_vmaterai").innerHTML = separateComma(tmaterai.toFixed(0));
-    document.getElementById("_vdiskon").innerHTML = separateComma(tdiskon.toFixed(0));
-    document.getElementById("_vppn").innerHTML = separateComma(tppn.toFixed(0));
-    document.getElementById("_vtotal").innerHTML = separateComma(tmattotal.toFixed(0));
+    document.getElementById("_vsubtotal").innerHTML = separateComma(tjumlah.toFixed(2));
+    document.getElementById("_vmaterai").innerHTML = separateComma(tmaterai.toFixed(2));
+    document.getElementById("_vdiskon").innerHTML = separateComma(tdiskon.toFixed(2));
+    document.getElementById("_vppn").innerHTML = separateComma(tppn.toFixed(2));
+    document.getElementById("_vtotal").innerHTML = separateComma(tmattotal.toFixed(2));
   }
 
   function totalline(id) {
@@ -1343,11 +1343,11 @@ $this->load->view('template/footer');
     var qtyx    = $('#qty' + id).val();
     var qty     = Number(parseInt(qtyx.replaceAll(',', '')));
     var hargax  = $('#harga' + id).val();
-    var harga   = Number(parseInt(hargax.replaceAll(',', '')));
-    var hetx  = $('#het' + id).val();
-    var het   = Number(parseInt(hetx.replaceAll(',', '')));
+    var harga   = Number(hargax.replaceAll(',', ''));
+    var hetx    = $('#het' + id).val();
+    var het     = Number((hetx.replaceAll(',', '')));
     var discrpx = $('#discrp' + id).val();
-    var discrp  = Number(parseInt(discrpx.replaceAll(',', '')));
+    var discrp  = Number((discrpx.replaceAll(',', '')));
     jumlah      = qty * harga;
     diskon      = ($('#disc' + id).val() / 100) * jumlah;
 
@@ -1357,13 +1357,13 @@ $this->load->view('template/footer');
 
     // }
     if (eval(diskon) > 0) {
-      $('#discrp' + id).val(separateComma(diskon));
+      $('#discrp' + id).val(separateComma(diskon.toFixed(2)));
       tot = jumlah - diskon;
     } else {
-      $('#discrp' + id).val(separateComma(discrp));
+      $('#discrp' + id).val(separateComma(discrp.toFixed(2)));
       tot = jumlah - discrp;
     }
-    $('#jumlah' + id).val(separateComma(tot));
+    $('#jumlah' + id).val(separateComma(tot.toFixed(2)));
     var vtotal = $('#_vtotal').text();
     var xtotal = parseInt(vtotal.replaceAll(',', ''));
     onkeyup;

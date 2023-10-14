@@ -80,7 +80,7 @@ $this->load->view('template/body');
                     </label>
                     <div class="col-md-9">
                       <select id="supp" name="supp" class="form-control select2_el_vendor" data-placeholder="Pilih..."
-                        onkeypress="return tabE(this,event)" onchange="getpo()">
+                        onchange="getpo()">
 
                       </select>
                     </div>
@@ -121,8 +121,8 @@ $this->load->view('template/body');
                     <label class="col-md-3 control-label">Nomor PO#</label>
                     <div id="nopo" class="col-md-9">
                       <select id="nomorpo" name="nomorpo" class="form-control select2_el_farmasi_po"
-                        data-placeholder="Pilih..." onkeypress="return tabE(this,event)"
-                        onchange="getdatapo(this.value);gethpo(this.value);">
+                        data-placeholder="Pilih..."
+                        onchange="gethpo(this.value);">
                       </select>
                     </div>
                   </div>
@@ -149,7 +149,7 @@ $this->load->view('template/body');
                     <label class="col-md-3 control-label">Gudang <font color="red">*</font></label>
                     <div class="col-md-4">
                       <select id="gudang" name="gudang" class="form-control select2_el_farmasi_depo"
-                        data-placeholder="Pilih..." onkeypress="return tabE(this,event)">
+                        data-placeholder="Pilih...">
                       </select>
                     </div>
 
@@ -844,7 +844,7 @@ function cekpo2() {
     $('[name="supp"]').val('');
     document.getElementById("supp").innerHTML = ("");
     $('#nopo').html(
-      '<select id="nomorpo" name="nomorpo" class="form-control select2_el_farmasi_po" data-placeholder="Pilih..." onkeypress="return tabE(this,event)" onchange="getdatapo(this.value);gethpo(this.value);"></select>'
+      '<select id="nomorpo" name="nomorpo" class="form-control select2_el_farmasi_po" data-placeholder="Pilih..." onchange="getdatapo(this.value);gethpo(this.value);"></select>'
     );
 
   }
@@ -1619,7 +1619,9 @@ function gethpo(str) {
         $('#ref').val(data.ref_no);
         $('#kurs').val(data.kurs);
         $('#rate').val(data.kursrate);
-        $('#loading').modal('hide');
+        // $('#loading').modal('hide');
+
+        getdatapo(str);
 
 
       }
@@ -1631,7 +1633,7 @@ $("#btnsave").attr("disabled", true);
 
 function getdatapo(str) {
 
-  $('#loading').modal('show');
+  // $('#loading').modal('show');
 
   var vtotal = $('#_vtotal').text();
   var xtotal = parseInt(vtotal.replaceAll(',', ''));

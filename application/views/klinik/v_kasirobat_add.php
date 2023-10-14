@@ -144,20 +144,37 @@ $this->load->view('template/body');
                         
                           <?php if ($row->keluar == 0) : ?>
                             <?php
-                              $cek = $this->db->get_where("tbl_hset_farma", ["koders" => $this->session->userdata("unit")])->row();
-                              $cek2 = $this->db->get_where("tbl_apohresep", ["resepno" => $row->resepno])->row();
+                              // uangr			
+                              $cek    = $this->db->get_where("tbl_hset_farma", ["koders" => $this->session->userdata("unit")])->row();
+                              $cek2   = $this->db->get_where("tbl_apohresep", ["resepno" => $row->resepno])->row();
+                              $cek3   = $this->db->get_where("tbl_apodresep", ["resepno" => $row->resepno])->num_rows();
+                              $cek4   = $this->db->get_where("tbl_aporacik", ["resepno" => $row->resepno])->num_rows();
+                              $cek5   = $this->db->query("SELECT r.*, h.kodepel FROM tbl_apohreturjual r JOIN tbl_apohresep h ON r.resepno = h.resepno WHERE r.returno = '$row->resepno'")->row();
                               if($cek) {
-                                if($cek2->kodepel == "adr") {
-                                  $cek3 = $this->db->get_where("tbl_apodresep", ["resepno" => $row->resepno])->num_rows();
-                                  $cek4 = $this->db->get_where("tbl_aporacik", ["resepno" => $row->resepno])->num_rows();
-                                  if($cek4 > 0) {
-                                    $uangracik = $cek->uang_racik * $cek4;
+                                if($cek2) {
+                                  if($cek2->kodepel == "adr") {
+                                    if($cek4 > 0) {
+                                      $uangracik = $cek->uang_racik * $cek4;
+                                    } else {
+                                      $uangracik = 0;
+                                    }
+                                    
+                                    $uangr = ($cek->uang_r * $cek3) + $uangracik;
                                   } else {
-                                    $uangracik = 0;
+                                    $uangr = $cek->uang_r * $cek3;
                                   }
-                                  $uangr = ($cek->uang_r * $cek3) + $uangracik;
                                 } else {
-                                  $uangr = $cek->uang_r;
+                                  if($cek5->kodepel == "adr") {
+                                    if($cek4 > 0) {
+                                      $uangracik = $cek->uang_racik * $cek4;
+                                    } else {
+                                      $uangracik = 0;
+                                    }
+                                    
+                                    $uangr = ($cek->uang_r * $cek3) + $uangracik;
+                                  } else {
+                                    $uangr = $cek->uang_r * $cek3;
+                                  }
                                 }
                               } else {
                                 $uangr = 0;
@@ -256,7 +273,6 @@ $this->load->view('template/body');
                             <td>
                               <input type="text" class="form-control rightJustified" name="uangr" id="uangr" value="0" readonly>
                             </td>
-
                           </tr>
 
                         </table>
@@ -418,7 +434,7 @@ $this->load->view('template/body');
               </div>
               <div class="row">
                 <div class="col-md-12">
-                  <div class="portlet box blue">
+                  <div class="portlet box red">
                     <div class="portlet-title">
                       <div class="caption">
                         <i class="fa fa-reorder"></i><b>PENGURANGAN</b>
@@ -573,18 +589,16 @@ $this->load->view('template/body');
                 </div>
 
                 <div class="col-md-12">
-                  <div class="portlet ">
+                  <div class="portlet box yellow">
                     <div class="portlet-title">
                       <div class="caption">
-                        <i class="fa fa-reorder"></i>
-                        <span class="label label-warning title-white"><b>PEMBAYARAN</b></span>
+                        <i class="fa fa-reorder"></i><b>PEMBAYARAN</b>
                       </div>
                     </div>
 
-                    <span class="label label-info title-white"><b>ELECTRONIC (DEBET/CREDIT/TRANFER/EMONEY)</b></span>
-                    <div class="portlet-body form">
-
+                    <div class="portlet-body form">                      
                       <div class="form-body">
+                        <span class="label label-info title-white"><b>ELECTRONIC (DEBET/CREDIT/TRANFER/EMONEY)</b></span>
                         <div class="row">
                           <div class="col-md-12">
                             <table width="100%" id="datatable_pembayaran"
@@ -1552,11 +1566,23 @@ function cekbutton() {
   var ttl = angka(ttlrp);
   var kembalirp = $("#kembalirp").val();
   var kembali = angka(kembalirp);
-  if (kembali >= 0 && ttl >= 0) {
-    $("#btnsimpan_bayar").attr("disabled", false);
-  } else {
-    $("#btnsimpan_bayar").attr("disabled", true);
-  }
+  var noresep = $("#noresep").val();
+  $.ajax({
+    url: "<?= site_url('Kasir_obat/cekretur/'); ?>"+noresep,
+    type: "POST",
+    dataType: "JSON",
+    success: function(data) {
+      if(data.status == 1) {
+        $("#btnsimpan_bayar").attr("disabled", false);
+      } else {
+        if (kembali >= 0 && ttl >= 0) {
+          $("#btnsimpan_bayar").attr("disabled", false);
+        } else {
+          $("#btnsimpan_bayar").attr("disabled", true);
+        }
+      }
+    }
+  });
 }
 
 function _urlcetak() {

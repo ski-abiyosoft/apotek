@@ -78,11 +78,16 @@ foreach ($header as $rowh) {
                                                     <option value="Non Member">Non Member</option>
                                                     <?php } else { 
                                                         $datapasien = data_master('tbl_pasien', array('rekmed' => $rowh->rekmed));
+                                                        if($datapasien) {
                                                         ?>
                                                         <option value=" <?= $rowh->rekmed; ?>">
                                                             <?= $rowh->rekmed . ' | ' . $datapasien->namapas; ?>
                                                         </option>
-                                                    <?php } ?>
+                                                    <?php 
+                                                    } else {
+                                                        echo '<option value="Non Member">Non Member</option>';
+                                                    }
+                                                        } ?>
                                                 </select>
                                                 </select>
 

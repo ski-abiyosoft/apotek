@@ -76,40 +76,39 @@
 									<input type="hidden" name="noreg" id="noreg" value="<?= $kasir->noreg;?>">
 									<div class="portlet-body">
 										<table class="table" >
-											<div class="col-md-12">
-												<div class="form-group ">
-												<tr >
-														<td>&nbsp;</td>											  
-														<td>NO. KWITANSI</td>												  
-														<td><input type="text" class="form-control" name="nokwitansi" id="nokwitansi" value="<?= $kasir->nokwitansi;?>" readonly></td>
-														
-														<td>FAKTUR PAJAK</td>	  
-														<td><input type="text" class="form-control" name="fakturpajak" id="fakturpajak" value="<?= $kasir->pajak;?>"></td>
-														<td>&nbsp;</td>		
-													</tr>
-													<tr style="border-top:none;">
-														<td>&nbsp;</td>
-														<td>NO. RESEP</td>												  
-														<td><input type="text" class="form-control" name="noresep" id="noresep" value="<?= $resep['resepno'];?>" readonly></td>
-														
-														<td>PRO</td>												  
-														<td><input type="text" class="form-control" name="namapasien" id="namapasien" value="<?= $kasir->namapasien;?>" ></td>
-														<td>&nbsp;</td>
-														
-													</tr>
-													<tr style="border-top:none;">
-														<td>&nbsp;</td>
-														<td>TGL & JAM BAYAR</td>												  
-														<td><input type="datetime-local" class="form-control" name="tglbayar" id="tglbayar" value="<?= date('Y-m-d\TH:i', strtotime(substr($kasir->tglbayar, 0, 10).''.$kasir->jambayar ));?>"></td>
-														
-														<td>TOTAL RESEP RP</td>												  
-														<td><input type="text" class="form-control rightJustified" name="reseprp" id="reseprp" value="<?= $kasir->totalresep;?>" readonly></td>
-														<td>&nbsp;</td>
-														
-													</tr>	
-													
-												</div>
-											</div>
+											<tr>
+																						  
+												<td>NO. KWITANSI</td>												  
+												<td><input type="text" class="form-control" name="nokwitansi" id="nokwitansi" value="<?= $kasir->nokwitansi;?>" readonly></td>
+											</tr>
+											<tr style="border-top:none;">
+												<td>NO. RESEP</td>												  
+												<td><input type="text" class="form-control" name="noresep" id="noresep" value="<?= $resep['resepno'];?>" readonly></td>
+											</tr>
+											<tr>
+												<td>FAKTUR PAJAK</td>	  
+												<td><input type="text" class="form-control" name="fakturpajak" id="fakturpajak" value="<?= $kasir->pajak;?>"></td>
+											</tr>
+											<tr style="border-top:none;">
+												<td>TGL & JAM BAYAR</td>												  
+												<td><input type="datetime-local" class="form-control" name="tglbayar" id="tglbayar" value="<?= date('Y-m-d\TH:i', strtotime(substr($kasir->tglbayar, 0, 10).''.$kasir->jambayar ));?>"></td>
+											</tr>
+											<tr>	
+												<td>PRO</td>												  
+												<td><input type="text" class="form-control" name="namapasien" id="namapasien" value="<?= $kasir->namapasien;?>" ></td>
+																								
+											</tr>
+											<tr>	
+												<td>TOTAL RESEP RP</td>												  
+												<td><input type="text" class="form-control rightJustified" name="reseprp" id="reseprp" value="<?= $kasir->totalresep;?>" readonly></td>
+											</tr>
+											<tr>
+												<td>UANG RESEP RP</td>
+												<td>
+												<input type="text" class="form-control rightJustified" name="uangr" id="uangr" value="<?= $uangr ?>" readonly>
+												</td>
+											</tr>											
+											
 										</table>
 									</div>
 								</div>
@@ -384,7 +383,7 @@
 												</tr>
 												<tr>
 												  <td>TOTAL NET RP</td>												  
-												  <td><input type="text" class="form-control rightJustified" name="totalnet" id="totalnet" value="<?= $kasir->totalsemua;?>" readonly></td>
+												  <td><input type="text" class="form-control rightJustified" name="totalnet" id="totalnet" value="<?= $kasir->totalsemua + $uangr;?>" readonly></td>
 												  
 												</tr>
 												
@@ -401,15 +400,13 @@
 
                                 <div class="row">								
 									<div class="col-md-12">
-									   <div class="portlet box blue">
+									   <div class="portlet box yellow">
 										<div class="portlet-title">
-										<div class="caption">
+											<div class="caption">
                                                 <div class="caption">
                                                     <i class="fa fa-reorder"></i><b> PEMBAYARAN</b>
                                                 </div>
 											</div>
-											
-											
 										</div>
 										<div class="portlet-body form">
                                             										
@@ -529,7 +526,7 @@
 												</tr>
 												<tr>
 												  <td>UANG PASIEN RP</td>												  
-												  <td><input type="text" class="form-control rightJustified" name="uangpasienrp" id="uangpasienrp" value="0" onchange="total_net()" ></td>
+												  <td><input type="text" class="form-control rightJustified" name="uangpasienrp" id="uangpasienrp" value="0" onchange="total_net()" readonly></td>
 												  
 												</tr>
 												<tr>
@@ -544,6 +541,27 @@
 														<input type="checkbox" id="uangmukakembalitidak" name="kembaliuang" <?= ($kasir->kembalikeuangmuka == 0 ? 'checked' : '') ?> value="0"><span id="texttidak">Kembali ke pasien</span>
 													</td>
 												  
+												</tr>
+												<tr>
+													<td>SUDAH TERIMA DARI</td>
+													<td><input type="text" class="form-control total rightJustified" name="terimadari" id="terimadari"
+														value="<?= $kasir->dibayaroleh ?>" readonly></td>
+													<td>&nbsp;</td>
+													<td>&nbsp;</td>
+												</tr>
+
+												<tr>
+													<td>No. Hp</td>
+													<td>
+														<?php
+														$pasien = $this->db->query("SELECT * FROM tbl_pasien WHERE rekmed = '$kasir->rekmed'")->row();
+														if($pasien) { $nohp = $pasien->handphone; } else { $nohp = "-"; }
+														?>
+														<input type="text" class="form-control total leftJustified" name="hpno" id="hpno" value="<?= $nohp; ?>" readonly>
+													</td>
+													<td>&nbsp;</td>
+													<td>&nbsp;</td>
+
 												</tr>
 											  </table>
 										  </div>	  
@@ -963,7 +981,7 @@ function getuangmuka() {
 }
 
 
-function pembayaran( nomor, namapas, reseprp, rekmed, noreg ){	
+function pembayaran( nomor, namapas, reseprp, rekmed, noreg, hp, uangr){	
 	$('#noresep').val(nomor);
 	$('#namapasien').val(namapas);
 	$('#reseprp').val(reseprp);

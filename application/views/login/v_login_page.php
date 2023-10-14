@@ -110,7 +110,7 @@
 				<label class="control-label visible-ie8 visible-ie9">Nama</label>
 				<div class="input-icon">
 					<i class="fa fa-user"></i>
-					<input class="form-control placeholder-no-fix" type="text" autocomplete="off" placeholder="Nama" id="username" name="username" onchange="getcabang(); getshift();"" required /><!-- onclick="getcabang()" onchange="getcabang()"/> -->
+					<input class="form-control placeholder-no-fix" type="text" autocomplete="off" placeholder="Nama" id="username" name="username" onchange="getcabang(); getshift();" required /><!-- onclick="getcabang()" onchange="getcabang()"/> -->
 				</div>
 			</div>
 			<div class="form-group">

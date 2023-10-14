@@ -731,6 +731,7 @@ $(document).ready(function() {
                                     </div>
                                 </div> -->
 
+                                <?php if ($this->session->userdata('user_level') <= 2) : ?>
                                 <div class="form-group">
                                     <label class="control-label col-md-3">Status Barang&nbsp;<small style="color:red">*</small></label>
                                     <div class="col-md-9">
@@ -741,6 +742,7 @@ $(document).ready(function() {
                                         </select>
                                     </div>
                                 </div>
+                                <?php endif; ?>
 
 
                             </div>
@@ -969,6 +971,15 @@ function cek_hj(){
     }
 }
 
+function getMargin(isi, id) {
+    var hna_ppn_  = $("#hnappn").val();
+    var hna_ppn   = Number(parseInt(hna_ppn_.replaceAll(",","")));
+    var hj        = Number(parseInt(isi.replaceAll(",","")));
+    var hitung    = ((isi - hna_ppn) / hna_ppn) * 100;
+    console.log(isi)
+    $("#td_data_"+id+"_3").val((hitung.toFixed(2)));
+}
+
 initailizeSelect2_vendor();
 //initailizeSelect2_kasbank();
 function tampil_tab(kolom) {
@@ -1005,7 +1016,7 @@ function gettarif() {
 function calculate(id, margin) {
     var hna = eval($('#hnappn').val());
     var hjual = hna + (hna * (margin / 100));
-    $('#td_data_' + id + '_3').val(hjual);
+    $('#td_data_' + id + '_4').val(hjual);
 }
 
 $("#hna").on("keyup focus click", function() {

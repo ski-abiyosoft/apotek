@@ -29,7 +29,7 @@
             </li>
             <li>
                 <a href="">
-                    Entri Mutasi Antar Gudang
+                    Update Mutasi Antar Gudang
                 </a>
             </li>
         </ul>
@@ -38,7 +38,7 @@
 <div class="portlet box blue">
     <div class="portlet-title">
         <div class="caption">
-            <i class="fa fa-reorder"></i>*Data Baru
+            <i class="fa fa-reorder"></i>*Data Update
         </div>
 
 
@@ -384,6 +384,21 @@ function savey() {
     var gudang_tujuan = $('[name="gudang_tujuan"]').val();
     var ttl = $('#vtotal').val();
     var tanggal = $('[name="tanggal"]').val();
+    var table = document.getElementById('datatable');
+    rowCount = table.rows.length;
+
+    for(x = 1; x < (rowCount - 1); x++) {
+        expire = $('#expire' + x).val();
+        if(expire == "" || expire == null) {
+            swal({
+                title: "EXPIRE",
+                html: "Tidak boleh kosong",
+                type: "error",
+                confirmButtonText: "OK"
+            })
+            return
+        }
+    }
     $.ajax({
         url: "<?= site_url('inventory_mutasi_gudang/update_one') ?>",
         data: $('#frmpenjualan').serialize(),
@@ -391,8 +406,6 @@ function savey() {
         dataType: 'JSON',
         success: function(data) {
             if (data.status == 1) {
-                var table = document.getElementById('datatable');
-                rowCount = table.rows.length;
                 for (i = 1; i < rowCount - 1; i++) {
                     var kode = $('#kode' + i).val();
                     var qty = $('#qty' + i).val();

@@ -82,7 +82,7 @@ $this->load->view('template/body');
                                         <label class="col-md-3 control-label">No. Resep</label>
                                         <div class="col-md-6">
                                             <div class="input-group">
-                                                <select id="kwiobat" name="kwiobat" class="form-control select2_el_resep input-large" data-placeholder="Pilih..." onchange="getinfopasien(); getinfopasienresep()"></select>
+                                                <select id="kwiobat" name="kwiobat" class="form-control select2_el_resep input-large" data-placeholder="Pilih..." onchange="getinfopasienresep();"></select>
                                             </div>
                                         </div>
                                     </div>
@@ -912,6 +912,7 @@ $this->load->view('template/footer');
                 type: "GET",
                 dataType: "JSON",
                 success: function(data) {
+                    getinfopasien()
                     $('#nmgudang').val(data.nm_gud); 
                     $('#gudang').val(data.gudang); 
                     $('#rekmed').val(data.rekmed);

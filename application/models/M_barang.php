@@ -201,7 +201,7 @@ class M_barang extends CI_Model {
 			</td>			   
 			<td id="td_<?=$rowcount;?>_2">
 				<!-- item name  -->
-				<input type="text" style="font-weight: bold-;text-align:right" name="td_data_3[]" id="td_data_<?=$rowcount;?>_3" class="form-control no-padding" onchange="calculate(<?=$rowcount;?>, this.value)" value='<?=number_format($item_margin,0,'.',',');?>' readonly>
+				<input type="text" style="font-weight: bold-;text-align:right" name="td_data_3[]" id="td_data_<?=$rowcount;?>_3" class="form-control no-padding" onchange="calculate(<?=$rowcount;?>, this.value)" value='<?=number_format($item_margin,0,'.',',');?>'>
 			</td>			   
 			<td id="td_<?=$rowcount;?>_3">
 				<!-- item name  -->

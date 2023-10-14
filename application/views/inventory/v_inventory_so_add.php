@@ -214,7 +214,6 @@ $this->load->view('template/footer');
 
     function changegud(param) {
         initailizeSelect2_farmasi_baranggudso(param);
-        console.log(param);
     }
 
     function totalline(id) {
@@ -235,10 +234,11 @@ $this->load->view('template/footer');
             success: function(data){
                 if(data.status == 1){
                     $.ajax({
-                        url: "<?php echo base_url(); ?>inventory_tso/getinfobarang/" + str + "/?gudang=" + gudang,
+                        url: "<?php echo base_url(); ?>inventory_tso/getinfobarang/?kodebarang=" + str + "&gudang=" + gudang,
                         type: "GET",
                         dataType: "JSON",
                         success: function(data) {
+                            console.log(data)
                             $('#sat' + vid).val(data.satuan1);
                             var qty = $('#qty' + vid).val();
                             $('#saldoakhir' + id).val(Math.round(data.salakhir));

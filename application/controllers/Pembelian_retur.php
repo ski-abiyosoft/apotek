@@ -53,9 +53,11 @@ class Pembelian_retur extends CI_Controller
       $row[]  = $unit->terima_no;
       $row[]  = '<div style="text-align: center;">' . date("d-m-Y", strtotime($unit->retur_date)) . '</div>';
       $row[]  = $vendor->vendor_name;
-      $row[]  = '<div style="text-align: center;"><a class="btn btn-sm btn-primary" href="' . base_url("Pembelian_retur/edit/" . $unit->retur_no . "") . '" title="Edit" ><i class="glyphicon glyphicon-edit"></i></a>
-      <a class="btn btn-sm btn-warning" href="' . base_url("Pembelian_retur/cetak/?id=" . $unit->retur_no . "") . '" target="_blank" title="Cetak" ><i class="glyphicon glyphicon-print"></i></a>
-      <a class="btn btn-sm btn-danger" href="javascript:void(0)" title="Hapus" onclick="Batalkan(' . "'" . $unit->retur_no . "'" . ')"><i class="glyphicon glyphicon-remove"></i></a></div>';
+      $row[]  = '<div style="text-align: center;">
+        <a style="margin-bottom: 5px;" class="btn btn-sm btn-primary" href="' . base_url("Pembelian_retur/edit/" . $unit->retur_no . "") . '" title="Edit" ><i class="glyphicon glyphicon-edit"></i></a>
+        <a style="margin-bottom: 5px;" class="btn btn-sm btn-warning" href="' . base_url("Pembelian_retur/cetak/?id=" . $unit->retur_no . "") . '" target="_blank" title="Cetak" ><i class="glyphicon glyphicon-print"></i></a>
+        <a style="margin-bottom: 5px;" class="btn btn-sm btn-danger" href="javascript:void(0)" title="Hapus" onclick="Batalkan(' . "'" . $unit->retur_no . "'" . ')"><i class="glyphicon glyphicon-remove"></i></a>
+      </div>';
       $data[] = $row;
     }
     $output = array(
@@ -106,6 +108,17 @@ class Pembelian_retur extends CI_Controller
     $data = $this->db->query("SELECT left(terima_date,10)terima_date1,(select keterangan from tbl_depo b where a.gudang=b.depocode)nm_gud,a.* from tbl_baranghterima a where terima_no='$kodepo'")->row();
     echo json_encode($data);
   }
+  
+  public function get_bapb() {
+    
+    $vendor       = $this->input->get('vendor');
+    $startdate    = $this->input->get('startdate');
+    $enddate      = $this->input->get('enddate');
+    $cabang       = $this->session->userdata('unit');
+
+    $data = $this->db->query("SELECT * from tbl_baranghterima where vendor_id = '$vendor' and koders='$cabang' and terima_date between '$startdate' and  '$enddate' and terima_no in (select terima_no from tbl_apoap where tukarfaktur=0) and terima_no not in (select terima_no from tbl_baranghreturbeli)")->result();
+    echo json_encode($data);
+  }
 
   public function getpo($po) {
     $data = $this->db->query("SELECT tbl_barangdterima.*, tbl_barang.namabarang FROM tbl_barangdterima LEFT JOIN tbl_barang ON tbl_barang.kodebarang=tbl_barangdterima.kodebarang WHERE terima_no = '$po'")->result();
@@ -128,19 +141,19 @@ class Pembelian_retur extends CI_Controller
   public function save_one()
   {
     $userid   = $this->session->userdata('username');
-    $_vtotalx   = $this->input->post('_vtotalx');
+    $_vtotalx = $this->input->post('_vtotalx');
     $gudang   = $this->input->post('gudang1');
     $bapb_no  = $this->input->post('kodepu');
-    $alasan  = $this->input->post('alasan');
+    $alasan   = $this->input->post('alasan');
     $cabang   = $this->session->userdata('unit');
     $cek      = $this->session->userdata('level');
     $nobukti  = urut_transaksi('URUT_RETURBELI', 19);
-    $data = array(
+    $data     = array(
       'koders'     => $cabang,
       'retur_no'   => $nobukti,
       'vendor_id'  => $this->input->post('supp'),
       'terima_no'  => $this->input->post('kodepu'),
-      'retur_date' => date('Y-m-d', strtotime($this->input->post('tanggal'))),
+      'retur_date' => date('Y-m-d'),
       'invoice_no' => '',
       'gudang'     => $gudang,
       'alasan'     => $alasan,
@@ -150,7 +163,7 @@ class Pembelian_retur extends CI_Controller
     $hbapb  = $this->db->query("SELECT*FROM tbl_apoap where terima_no='$bapb_no'")->row();
     $data_ap = array(
       'koders'            => $cabang,
-      'ref'               => $this->input->post('kodepu'),
+      'ref'               => $bapb_no,
       'terima_no'         => $nobukti,
       'invoice_no'        => $invoice_no         = $hbapb->invoice_no,
       'vendor_id'         => $vendor_id          = $hbapb->vendor_id,
@@ -606,9 +619,9 @@ class Pembelian_retur extends CI_Controller
 																<td style=\"text-align:left; border-bottom: none; border-top: none; \">$db->namabarang</td>
 																<td style=\"text-align:right; border-bottom: none; border-top: none; \">" . number_format($db->qty_retur) . "</td>
 																<td style=\"text-align:right; border-bottom: none; border-top: none; \">" . $db->satuan . "</td>
-																<td style=\"text-align:right; border-bottom: none; border-top: none; \">" . number_format($db->price) . "</td>
-																<td style=\"text-align:right; border-bottom: none; border-top: none; \">" . number_format($db->discountrp) . "</td>
-																<td style=\"text-align:right; border-bottom: none; border-top: none; \">" . number_format($db->totalrp) . "</td>
+																<td style=\"text-align:right; border-bottom: none; border-top: none; \">" . number_format($db->price, 2) . "</td>
+																<td style=\"text-align:right; border-bottom: none; border-top: none; \">" . number_format($db->discountrp, 2) . "</td>
+																<td style=\"text-align:right; border-bottom: none; border-top: none; \">" . number_format($db->totalrp, 2) . "</td>
 													 </tr></tbody>";
         $subtotal += ($db->qty_retur * $db->price);
         $diskon += ($db->discountrp);
@@ -632,23 +645,23 @@ class Pembelian_retur extends CI_Controller
                          <table style=\"border-collapse:collapse;font-family: tahoma; font-size:12px\" width=\"100%\" align=\"center\" border=\"1\">
                               <tr>
                                    <td colspan=\"7\" style=\"text-align:right; border-right: none; border-bottom: none;  border-left: none;\"><b>Subtotal</b> : </td>
-                                   <td width=\"15%\" style=\"text-align:right; border-right: none; border-bottom: none;  border-left: none;\">" . number_format($subtotal) . "</td>
+                                   <td width=\"15%\" style=\"text-align:right; border-right: none; border-bottom: none;  border-left: none;\">" . number_format($subtotal, 2) . "</td>
                               </tr> 
                               <tr>
                                    <td colspan=\"7\" style=\"text-align:right; border-right: none; border-bottom: none;  border-left: none; border-top: none;\"><b>Diskon</b> : </td>
-                                   <td width=\"15%\" style=\"text-align:right; border-right: none; border-bottom: none;  border-left: none; border-top: none;\">" . number_format($diskon) . "</td>
+                                   <td width=\"15%\" style=\"text-align:right; border-right: none; border-bottom: none;  border-left: none; border-top: none;\">" . number_format($diskon, 2) . "</td>
                               </tr> 
                               <tr>
                                    <td colspan=\"7\" style=\"text-align:right; border-right: none; border-bottom: none;  border-left: none; border-top: none;\"><b>DPP</b> : </td>
-                                   <td width=\"15%\" style=\"text-align:right; border-right: none; border-bottom: none;  border-left: none; border-top: none;\">" . number_format($dpp) . "</td>
+                                   <td width=\"15%\" style=\"text-align:right; border-right: none; border-bottom: none;  border-left: none; border-top: none;\">" . number_format($dpp, 2) . "</td>
                               </tr> 
                               <tr>
                                    <td colspan=\"7\" style=\"text-align:right; border-right: none; border-bottom: none;  border-left: none; border-top: none;\"><b>PPN</b> : </td>
-                                   <td width=\"15%\" style=\"text-align:right; border-right: none; border-bottom: none;  border-left: none; border-top: none;\">" . number_format($ppn) . "</td>
+                                   <td width=\"15%\" style=\"text-align:right; border-right: none; border-bottom: none;  border-left: none; border-top: none;\">" . number_format($ppn, 2) . "</td>
                               </tr> 
                               <tr>
                                    <td colspan=\"7\" style=\"text-align:right; border-right: none; border-bottom: none;  border-left: none; border-top: none;\"><b>Total</b> : </td>
-                                   <td width=\"15%\" style=\"text-align:right; border-right: none; border-bottom: none;  border-left: none; border-top: none;\">" . number_format($tot) . "</td>
+                                   <td width=\"15%\" style=\"text-align:right; border-right: none; border-bottom: none;  border-left: none; border-top: none;\">" . number_format($tot, 2) . "</td>
                               </tr> 
                          </table>";
       $chari .= "

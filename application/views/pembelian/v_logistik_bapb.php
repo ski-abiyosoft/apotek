@@ -165,11 +165,11 @@ $(document).ready(function() {
 		"oLanguage": {
 					"sEmptyTable": "Tidak ada data",
 					"sInfoEmpty": "",
-					"sInfoFiltered": " - Dipilih dari _MAX_ data",
+					"sInfoFiltered": " - Dipilih dari _TOTAL_ data",
 					"sSearch": "Pencarian Data : ",
 					"sInfo": " Jumlah _TOTAL_ Data (_START_ - _END_)",
 					"sLengthMenu": "_MENU_ Baris",
-					"sZeroRecords": "-",
+					"sZeroRecords": "Tidak ada data",
 					"oPaginate": {
 						"sPrevious": "Sebelumnya",
 						"sNext": "Berikutnya"

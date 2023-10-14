@@ -248,13 +248,13 @@
                                             <?php
                                                if ($row->keluar=='0')
                                                  { ?>
-											 <a class="btn btn-sm btn-primary" href="<?= base_url()?>penjualan_faktur/edit/<?= $row->resepno;?>" style="margin-bottom: 10px;">
+											 <a class="btn btn-sm btn-primary" href="<?= base_url()?>penjualan_faktur/edit2/<?= $row->resepno;?>" style="margin-bottom: 10px;">
                                              <i class="glyphicon glyphicon-edit" title="Edit"></i></a>
                                             <?php }?>
                                             <?php
                                             if ($row->keluar=='1')
                                                 { ?>
-											 <a class="btn btn-sm btn-info" href="<?= base_url()?>penjualan_faktur/edit/<?= $row->resepno;?>/1" style="margin-bottom: 10px;"><i class="glyphicon glyphicon-eye-open"></i></a>
+											 <a class="btn btn-sm btn-info" href="<?= base_url()?>penjualan_faktur/edit2/<?= $row->resepno;?>/1" style="margin-bottom: 10px;"><i class="glyphicon glyphicon-eye-open"></i></a>
 
                                              <a class="btn btn-sm btn-warning" onclick="_urlcetak('<?= $row->resepno;?>')" title="Cetak" style="margin-bottom: 10px;">
                                                 <i class="glyphicon glyphicon-print"></i></a>

@@ -20,12 +20,13 @@ class Penjualan_retur extends CI_Controller
 
 		if (!empty($cek)) {
 
+			$date = date("Y-m-d");
 			$q1 = "SELECT c.returno, a.*, b.namapas, a.totalnet AS totalrp 
 			FROM tbl_apohreturjual a 
 			-- LEFT OUTER JOIN tbl_pasien b ON a.rekmed=b.rekmed 
 			LEFT OUTER JOIN tbl_apoposting b ON a.resepno=b.resepno 
 			JOIN tbl_apodreturjual AS c ON c.returno = a.returno 
-			WHERE a.koders = '$unit' 
+			WHERE a.koders = '$unit' AND a.tglretur = '$date'
 			GROUP BY a.returno 
 			ORDER BY a.returno DESC";
 			//    $total ="";
@@ -736,8 +737,9 @@ class Penjualan_retur extends CI_Controller
 						if($rekmed=='Non Member'){
 							$noreg='';
 						}else{
-							$data_regist = $this->db->get_where('tbl_regist', ['rekmed' => $rekmed])->row_array();
-							$noreg = $data_regist['noreg'];
+							// $data_regist = $this->db->get_where('tbl_regist', ['rekmed' => $rekmed])->row_array();
+							// $noreg = $data_regist['noreg'];
+							$noreg='';
 						}
 						if ($noresep != '' && $cabang != '' && $nobukti != '') {
 							$data = [
@@ -869,7 +871,11 @@ class Penjualan_retur extends CI_Controller
 					$alasan = $this->input->post('alasan');
 					$total = $this->input->get('total');
 					$data_regist = $this->db->get_where('tbl_regist', ['rekmed' => $rekmed])->row_array();
-					$noreg = $data_regist['noreg'];
+					if($data_regist) {
+						$noreg = $data_regist['noreg'];
+					} else {
+						$noreg = "";
+					}
 					$data = [
 						'username' => $userid,
 						'resepno' => $resepno,
@@ -891,13 +897,11 @@ class Penjualan_retur extends CI_Controller
 						'koders' => $cabang,
 						'resepno' => $nobukti,
 					];
-
-					$psn = $this->db->get_where('tbl_pasien', ['rekmed' => $rekmed])->row_array();
+					
 					$data_apoposting = [
 						'tglresep' => date('Y-m-d', strtotime($tanggal)),
 						'noreg' => $noreg,
 						'rekmed' => $rekmed,
-						'namapas' => $psn['namapas'],
 						'gudang' => $gudang,
 						'poscredit' => (-$total),
 						'username' => $userid,
