@@ -1,19 +1,26 @@
 <?php
   $this->load->view('template/header');
   $this->load->view('template/body');
-  $pasrsp       = $this->db->query("SELECT * FROM pasien_rajal WHERE noreg = '-'")->row();
-  if ($pasrsp) {
-    $age_date     = new DateTime($pasrsp->tgllahir);
-    $age_now      = new DateTime();
-    $age_interval = $age_now->diff($age_date);
+  $datpas   = $this->db->query("SELECT * FROM tbl_pasien WHERE rekmed = '$header->rekmed'")->row();
+  if ($datpas) {
+    $age_date       = new DateTime($datpas->tgllahir);
+    $age_now        = new DateTime();
+    $age_interval   = $age_now->diff($age_date);
   } else {
-    $age_interval = (object) array(
+    $age_interval = (object) [
       "y"  => 0,
       "m"  => 0,
       "d"  => 0,
-    );
+    ];
   }
   $umur = $age_interval->y . ' Tahun ' . $age_interval->m . ' Bulan ' . $age_interval->d . ' Hari';
+  if($noedit == "") {
+    $edited   = "";
+    $edited2  = "";
+  } else {
+    $edited   = "disabled";
+    $edited2  = "readonly";
+  }
 ?>
 
 <div class="row">
@@ -28,15 +35,15 @@
     <ul class="page-breadcrumb breadcrumb">
       <li>
         <i style="color:white;" class="fa fa-home"></i>
-        <a class="title-white" href="<?= base_url(); ?>dashboard">Awal</a>
+        <a class="title-white" href="<?= site_url('dashboard'); ?>">Awal</a>
         <i style="color:white;" class="fa fa-angle-right"></i>
       </li>
       <li>
-        <a class="title-white" href="<?= base_url(); ?>penjualan_faktur">Daftar Faktur Penjualan</a>
+        <a class="title-white" href="<?= site_url('penjualan_faktur'); ?>">Daftar Faktur Penjualan</a>
         <i style="color:white;" class="fa fa-angle-right"></i>
       </li>
       <li>
-        <a class="title-white" href="">Entri Faktur</a>
+        <a class="title-white" href="">Update Faktur</a>
       </li>
     </ul>
   </div>
@@ -45,7 +52,7 @@
 <div class="portlet box blue">
   <div class="portlet-title">
     <div class="caption">
-      <i class="fa fa-reorder"></i><b>*Data Baru</b>
+      <i class="fa fa-reorder"></i><b>*Data Update</b>
     </div>
   </div>
   <div class="portlet-body form">
@@ -58,18 +65,18 @@
                 <div class="form-group">
                   <label class="col-md-3 control-label">Pembeli <font color="red">*</font></label>
                   <div class="col-md-9">
-                    <select id="pembeli" name="pembeli" class="form-control select2_pembeli select2_all" onchange="getdataklinik()">
-                      <option value="adr">Apotik Dengan Resep</option>
-                      <option value="atr">Apotik Tanpa Resep</option>
+                    <select id="pembeli" name="pembeli" class="form-control select2_pembeli select2_all" onchange="getdataklinik()" <?= $edited; ?>>
+                      <option value="adr" <?php if($header->kodepel == "adr") { echo "selected"; } else { echo ""; } ?>>Apotik Dengan Resep</option>
+                      <option value="atr" <?php if($header->kodepel == "atr") { echo "selected"; } else { echo ""; } ?>>Apotik Tanpa Resep</option>
                     </select>
                   </div>
                 </div>
               </div>
               <div class="col-md-6">
                 <div class="form-group">
-                  <label class="col-md-3 control-label">Resep Dari <font color="red" class="hideProtek">*</font></label>
+                  <label class="col-md-3 control-label">Resep Dari <font color="red">*</font></label>
                   <div class="col-md-9">
-                    <input type="text" id="dokter" name="dokter" class="form-control" placeholder="dr ..">
+                    <input type="text" id="dokter" name="dokter" class="form-control" placeholder="dr .." value="<?= $header->kodokter; ?>" <?= $edited2; ?>>
                   </div>
                 </div>
               </div>
@@ -79,12 +86,12 @@
                 <div class="form-group">
                   <label class="col-md-3 control-label">DEPO <font color="red">*</font></label>
                   <div class="col-md-9">
-                    <select id="gudang" name="gudang" class="form-control select2_all" onchange="getkodebaru(this.value)" style="width: 100%;" data-placeholder="APOTEK">
+                    <select id="gudang" name="gudang" class="form-control select2_all" onchange="getkodebaru(this.value)" style="width: 100%;" data-placeholder="APOTEK" <?= $edited; ?>>
                       <option value="">APOTEK</option>
                       <?php
                       $gudang = $this->db->query("SELECT depocode, keterangan FROM tbl_depo WHERE (konekpos = 'FARMASI' OR konekpos = 'APOTEK')")->result(); 
                       foreach($gudang as $g) :
-                        if($g->depocode == 'APTK') { $sel = "selected"; } else { $sel = ""; }
+                        if($g->depocode == $header->gudang) { $sel = "selected"; } else { $sel = ""; }
                       ?>
                       <option value="<?= $g->depocode; ?>" <?= $sel; ?>><?= $g->keterangan; ?></option>
                       <?php endforeach; ?>
@@ -97,7 +104,7 @@
                   <label class="col-md-3 control-label">No. Pembelian <font color="red">*</font></label>
                   <div class="col-md-9">
                     <input type="hidden" name="eresepstatus" value="1">
-                    <input type="text" id="noresep" name="noresep" class="form-control" readonly placeholder="AUTO">
+                    <input type="text" id="noresep" name="noresep" class="form-control" readonly value="<?= $header->resepno; ?>">
                   </div>
                 </div>
               </div>
@@ -107,10 +114,10 @@
                 <div class="form-group">
                   <label class="col-md-3 control-label">Tanggal <font color="red">*</font></label>
                   <div class="col-md-6">
-                    <input id="tanggal" name="tanggal" class="form-control" type="date" value="<?= date('Y-m-d'); ?>"  readonly/>
+                    <input id="tanggal" name="tanggal" class="form-control" type="date" value="<?= date('Y-m-d', strtotime($header->tglresep)); ?>"  readonly/>
                   </div>
                   <div class="col-md-3">
-                    <input type="time" class="form-control" name="jam" id="jam" value="<?= date('H:i:s'); ?>" readonly />
+                    <input type="time" class="form-control" name="jam" id="jam" value="<?= date('H:i:s', strtotime($header->jam)); ?>" readonly />
                   </div>
                 </div>
               </div>
@@ -118,7 +125,7 @@
                 <div class="form-group">
                   <label class="col-md-3 control-label">Alamat Kirim</label>
                   <div class="col-md-9">
-                    <input type="text" name="alamat" id="alamat" class="form-control">
+                    <input type="text" name="alamat" id="alamat" class="form-control" value="<?= $header->alamat; ?>" <?= $edited2; ?>>
                   </div>
                 </div>
               </div>
@@ -128,13 +135,16 @@
                 <div class="form-group">
                   <label class="col-md-3 control-label">Member</label>
                   <div class="col-md-6">
-                    <select id="pasien" name="pasien" class="form-control select2_el_pasien" onchange="getinfopasien(this.value)" data-placeholder="Pilih..." style="width: 100%;">
-                      <input type="hidden" name="namapasien" id="namapasien" class="form-control">
+                    <select id="pasien" name="pasien" class="form-control select2_el_pasien" onchange="getinfopasien(this.value)" data-placeholder="Pilih..." style="width: 100%;" <?= $edited; ?>>
+                      <?php if($datpas->rekmed == "Non Member") : ?>
+                      <option value="<?= $datpas->rekmed; ?>"><?= $datpas->rekmed." | ".$datpas->namapas; ?></option>
+                      <input type="hidden" name="namapasien" id="namapasien" class="form-control" value="<?= $datpas->namapas; ?>">
+                      <?php endif; ?>
                     </select>
                   </div>
                   <div class="col-md-3">
                     <span class="input-group-btn">
-                      <a class="btn-sm btn green" style="width: 100%; border-radius: 5px;" onclick="add_pasien()"><i class="fa fa-plus"></i> Pasien Baru</a>
+                      <a class="btn-sm btn green" style="width: 100%; border-radius: 5px;" onclick="add_pasien()" <?= $edited; ?>><i class="fa fa-plus"></i> Pasien Baru</a>
                     </span>
                   </div>
                 </div>
@@ -143,9 +153,14 @@
                 <div class="form-group">
                   <label class="col-md-3 control-label">Jenis Kelamin</label>
                   <div class="col-md-9">
-                    <select name="jkel" id="jkel" class="form-control select2_all">
-                      <option value="P">Pria</option>
-                      <option value="W">Wanita</option>
+                    <select name="jkel" id="jkel" class="form-control select2_all" <?= $edited; ?>>
+                      <?php if($datpas) : ?>
+                        <option value="P" <?php if($datpas->jkel == "P") { echo "selected"; } else { echo ""; } ?>>Pria</option>
+                        <option value="W" <?php if($datpas->jkel == "W") { echo "selected"; } else { echo ""; } ?>>Wanita</option>
+                      <?php else : ?>
+                        <option value="P">Pria</option>
+                        <option value="W">Wanita</option>
+                      <?php endif; ?>
                     </select>
                   </div>
                 </div>
@@ -156,7 +171,11 @@
                 <div class="form-group">
                   <label class="col-md-3 control-label">Nama Pembeli</label>
                   <div class="col-md-9">
-                    <input id="nama_pas" name="nama_pas" type="text" class="form-control" style="text-transform: uppercase !important">
+                    <?php if($header) : ?>
+                      <input id="nama_pas" name="nama_pas" type="text" class="form-control" style="text-transform: uppercase !important" value="<?= $header->pro; ?>" <?= $edited2; ?>>
+                    <?php else : ?>
+                      <input id="nama_pas" name="nama_pas" type="text" class="form-control" style="text-transform: uppercase !important">
+                    <?php endif; ?>
                   </div>
                 </div>
               </div>
@@ -164,10 +183,14 @@
                 <div class="form-group">
                   <label class="col-md-3 control-label">Tgl Lahir</label>
                   <div class="col-md-4">
-                    <input id="tgllahir" name="tgllahir" type="date" onchange="tgllahirr()" class="form-control" >
+                    <?php if($datpas) : ?>
+                      <input id="tgllahir" name="tgllahir" type="date" onchange="tgllahirr()" class="form-control" value="<?= date('Y-m-d', strtotime($datpas->tgllahir)); ?>" <?= $edited2; ?>>
+                    <?php else : ?>
+                      <input id="tgllahir" name="tgllahir" type="date" onchange="tgllahirr()" class="form-control" value="<?= date('Y-m-d'); ?>">
+                    <?php endif; ?>
                   </div>
                   <div class="col-md-5">
-                    <input id="lumur" name="lumur" type="text" class="form-control" readonly>
+                    <input id="lumur" name="lumur" type="text" class="form-control" readonly value="<?= $umur; ?>">
                   </div>
                 </div>
               </div>
@@ -177,7 +200,7 @@
                 <div class="form-group">
                   <label class="col-md-3 control-label">Berat Badan</label>
                   <div class="col-md-6">
-                    <input type="number" name="bb" id="bb" class="form-control">
+                    <input type="number" name="bb" id="bb" class="form-control" value="<?= $header->bb; ?>" <?= $edited2; ?>>
                   </div>
                   <div class="col-md-3">
                     <span class="input-group-btn">
@@ -190,10 +213,10 @@
                 <div class="form-group">
                   <label class="col-md-3 control-label">No Handphone</label>
                   <div class="col-md-7">
-                    <input type="text" name="phone" id="phone" class="form-control" value="+62">
+                    <input type="text" name="phone" id="phone" class="form-control" value="<?= $header->nohp; ?>" <?= $edited2; ?>>
                   </div>
                   <div class="col-md-2"> 
-                    <input type="checkbox" id="reg_cekhp" name="reg_cekhp" value="1" class="form-control">
+                    <input type="checkbox" checked id="reg_cekhp" name="reg_cekhp" value="1" class="form-control" <?= $edited; ?>>
                   </div>
                 </div>
               </div>
@@ -205,7 +228,16 @@
               <a href="#tab1" data-toggle="tab">Resep</a>
             </li>
             <li class="">
-              <a href="#tab2" data-toggle="tab">Racikan</a>
+              <?php 
+                if($racikansem > 0) {
+                  $jumr = "<span style='height: 20px; width: 20px; text-align: center; color: white; background-color: #9b1405; border-radius: 50%; display: inline-block;'>$racikansem</span>";
+                }
+              ?>
+              <?php if($racikansem > 0) : ?>
+                <a href="#tab2" data-toggle="tab">Racikan <?= $jumr; ?></a>
+              <?php else : ?>
+                <a href="#tab2" data-toggle="tab">Racikan</a>
+              <?php endif; ?>
             </li>
           </ul>
           <div class="tab-content">
@@ -228,22 +260,83 @@
                       <th class="title-white" width="5%" style="text-align: center">Expired Date</th>
                     </thead>
                     <tbody>
+                      <?php 
+                        if($jumdata > 0) : 
+                          $no = 1;
+                          foreach ($detil as $key => $value) :
+                      ?>
+                      <tr id="resep_tr<?= $no; ?>">
+                        <td>
+                          <?php if($noedit == "") : ?>
+                            <button type='button' id='btnhbi<?= $no; ?>' onclick='hapusBarisIni(<?= $no; ?>)' class='btn red' <?php if($no == 1) { echo "disabled"; } else { echo ""; }?>><i class='fa fa-trash-o'></i></button>
+                          <?php else : ?>
+                            <button type='button' id='btnhbi<?= $no; ?>' onclick='hapusBarisIni(<?= $no; ?>)' class='btn red' disabled><i class='fa fa-trash-o'></i></button>
+                          <?php endif; ?>
+                        </td>
+                        <td>
+                          <select name="kode[]" id="kode<?= $no; ?>" class="select2_el_farmasi_baranggud form-control" onchange="showbarangcek(this.value, <?= $no; ?>)" style="width: 100%;" <?= $edited; ?>>
+                            <option value="<?= $value->kodebarang; ?>"><?= $value->kodebarang." | ".$value->namabarang; ?></option>
+                          </select>
+                          <input name="nama[]" id="nama<?= $no; ?>" type="hidden" class="form-control" value="<?= $value->namabarang; ?>">
+                        </td>
+                        <td>
+                          <input name="qty[]" onchange="totalline(<?= $no; ?>);total(); ceksaldoakhir(<?= $no; ?>)" value="<?= number_format($value->qty); ?>" id="qty<?= $no; ?>" type="text" class="form-control rightJustified" <?= $edited2; ?>>
+                        </td>
+                        <td>
+                          <input name="sat[]" id="sat<?= $no; ?>" type="text" class="form-control" value="<?= $value->satuan; ?>" <?= $edited2; ?>>
+                        </td>
+                        <td>
+                          <input name="harga[]" onchange="totalline(<?= $no; ?>);" value="<?= number_format($value->price); ?>" id="harga<?= $no; ?>" type="text" class="form-control rightJustified" readonly>
+                        </td>
+                        <td>
+                          <input type="checkbox" name="ppn[]" id="ppn<?= $no; ?>" class="form-control" onchange="totalline(<?= $no; ?>); total()" <?= $edited; ?> disabled>
+                        </td>
+                        <td>
+                          <input name="disc[]" onchange="cekdisc(<?= $no; ?>); totalline(<?= $no; ?>)" value="<?= number_format($value->discount); ?>" id="disc<?= $no; ?>" type="text" class="form-control rightJustified " <?= $edited2; ?>>
+                        </td>
+                        <td>
+                          <input name="disc2[]" value="<?= number_format($value->discrp); ?>" id="disc2<?= $no; ?>" type="text" onchange="total(); myFunction(<?= $no; ?>); totalline(<?= $no; ?>)" class="form-control rightJustified" <?= $edited2; ?>>
+                        </td>
+                        <td>
+                          <input name="jumlah[]" id="jumlah<?= $no; ?>" type="text" value="<?= number_format($value->totalrp); ?>" class="form-control rightJustified" size="40%" onchange="total()" readonly>
+                        </td>
+                        <td>
+                          <textarea name="keterangan[]" id="keterangan<?= $no; ?>" type="text" class="form-control" style="resize:none" rows="2" <?= $edited2; ?>><?= $value->ket; ?></textarea>
+                        </td>
+                        <td>
+                          <select name="aturan_pakai[]" id="aturan_pakai<?= $no; ?>" class="form-control select2_all" data-placeholder="Pilih..." style="width: 100%;" <?= $edited; ?>>
+                            <option value="">Pilih...</option>
+                            <?php foreach ($atpakaix as $atpx) : ?>
+                              <?php if($atpx->apocode == $value->atpakai) { $atp = "selected"; } else { $atp = ""; } ?>
+                              <option value="<?= $atpx->apocode; ?>" <?= $atp; ?>><?= $atpx->aponame; ?></option>
+                            <?php endforeach; ?>
+                          </select>
+                        </td>
+                        <td>
+                          <input name="expire[]" id="expire<?= $no; ?>" type="date" style="width:90%;" class="form-control" min="<?= date('Y-m-d'); ?>" value="<?= date('Y-m-d', strtotime($value->exp_date)); ?>" <?= $edited2; ?>>
+                        </td>
+                      </tr>
+                      <?php 
+                            $no++;
+                          endforeach; 
+                        else :
+                      ?>
                       <tr id="resep_tr1">
-                        <td><button type='button' onclick="hapusBarisIni(1)" disabled class='btn red'><i class='fa fa-trash-o'></td>
+                        <td><button type='button' id='btnhbi1' onclick="hapusBarisIni(1)" disabled class='btn red' <?= $edited; ?>><i class='fa fa-trash-o'></i></button></td>
                         <td>
                           <select name="kode[]" id="kode1" class="select2_el_farmasi_baranggud form-control" onchange="showbarangname(this.value, 1)" style="width: 100%;"></select>
-                          <input name="nama[]" id="nama1" type="hidden" class="form-control " onkeypress="return tabE(this,event)">
+                          <input name="nama[]" id="nama1" type="hidden" class="form-control">
                         </td>
-                        <td><input name="qty[]" onchange="totalline(1);total(); ceksaldoakhir(1)" value="1" id="qty1" type="text" class="form-control rightJustified"></td>
-                        <td><input name="sat[]" id="sat1" type="text" class="form-control " onkeypress="return tabE(this,event)"></td>
+                        <td><input name="qty[]" onchange="totalline(1);total(); ceksaldoakhir(1)" value="1" id="qty1" type="text" class="form-control rightJustified" <?= $edited2; ?>></td>
+                        <td><input name="sat[]" id="sat1" type="text" class="form-control" <?= $edited2; ?>></td>
                         <td><input name="harga[]" onchange="totalline(1);" value="0" id="harga1" type="text" class="form-control rightJustified" readonly></td>
-                        <td><input type="checkbox" name="ppn[]" id="ppn1" class="form-control" onchange="totalline(1);total()" disabled></td>
-                        <td><input name="disc[]" onchange="cekdisc(1);totalline(1)" value="0" id="disc1" type="text" class="form-control rightJustified "></td>
-                        <td><input name="disc2[]" value="0" id="disc21" type="text" onchange="total();myFunction(1);totalline(1)" class="form-control rightJustified "></td>
+                        <td><input type="checkbox" name="ppn[]" id="ppn1" class="form-control" onchange="totalline(1);total()" <?= $edited; ?>></td>
+                        <td><input name="disc[]" onchange="cekdisc(1);totalline(1)" value="0" id="disc1" type="text" class="form-control rightJustified" <?= $edited2; ?>></td>
+                        <td><input name="disc2[]" value="0" id="disc21" type="text" onchange="total();myFunction(1);totalline(1)" class="form-control rightJustified" <?= $edited2; ?>></td>
                         <td><input name="jumlah[]" id="jumlah1" type="text" class="form-control rightJustified" size="40%" onchange="total()" readonly></td>
-                        <td><textarea name="keterangan[]" id="keterangan1" type="text" class="form-control" style="resize:none" rows="2"></textarea></td>
+                        <td><textarea name="keterangan[]" id="keterangan1" type="text" class="form-control" style="resize:none" rows="2" <?= $edited2; ?>></textarea></td>
                         <td>
-                          <select name="aturan_pakai[]" id="aturan_pakai1" class="form-control select2_all" data-placeholder="Pilih..." style="width: 100%;">
+                          <select name="aturan_pakai[]" id="aturan_pakai1" class="form-control select2_all" data-placeholder="Pilih..." style="width: 100%;" <?= $edited; ?>>
                             <option value="">Pilih...</option>
                             <?php foreach ($atpakaix as $atpx) : ?>
                               <option value="<?= $atpx->apocode; ?>"><?= $atpx->aponame; ?></option>
@@ -251,15 +344,16 @@
                           </select>
                         </td>
                         <td>
-                          <input name="expire[]" id="expire1" type="date" style="width:90%;" class="form-control" min="<?= date('Y-m-d'); ?>">
+                          <input name="expire[]" id="expire1" type="date" style="width:90%;" class="form-control" min="<?= date('Y-m-d'); ?>" value="<?= date('Y-m-d'); ?>" <?= $edited2; ?>>
                         </td>
                       </tr>
+                      <?php endif; ?>
                     </tbody>
                   </table>
                   <div class="row">
                     <div class="col-xs-9">
                       <div class="wells">
-                        <button type="button" onclick="tambah()" class="btn green"><i class="fa fa-plus"></i> </button>
+                        <button type="button" onclick="tambah()" class="btn green" <?= $edited; ?>><i class="fa fa-plus"></i> </button>
                       </div>
                     </div>
                   </div>
@@ -269,18 +363,30 @@
               <div class="row">
                 <div class="col-xs-7">
                   <div class="wells">
-                    <button id="btnsimpan" type="button" onclick="ceksave()" class="btn blue"><i class="fa fa-save"></i>
-                      <b>Posting Resep</b>
-                    </button>
-                    <div class="btn-group">
-                      <button type="button" class="btn green" onclick="this.form.reset();location.reload();"><i class="fa fa-pencil-square-o"></i> <b>Data Baru</b></button>
-                    </div>
-                    <button id="btncetak" type="button" onclick="javascript:window.open(_urlcetak(),'_blank');" class="btn yellow"><i class="fa fa-print"></i> <b>Cetak</b></button>
-                    <a href="<?= base_url('penjualan_faktur') ?>" class="btn btn red"><i class="fa fa-undo"></i><b> KEMBALI </b></a>
+                    <?php if($noedit == "") : ?>
+                      <button id="btnsimpan" type="button" onclick="ceksave()" class="btn blue" style="width: 20%;">
+                        <i class="fa fa-save"></i> <b>Posting Resep</b>
+                      </button>
+                    <?php endif; ?>
+                    <a href="<?= site_url('Penjualan_faktur/entri'); ?>" type="button" class="btn green" style="width: 20%;"><i class="fa fa-pencil-square-o"></i> <b>Data Baru</b></a>
+                    <a href="<?= site_url('penjualan_faktur') ?>" type="button" class="btn btn red" style="width: 20%;"><i class="fa fa-undo"></i><b> KEMBALI </b></a>
                     <h4>
                       <span id="error" style="display:none; color:#F00">Terjadi Kesalahan... </span>
                       <span id="success" style="display:none; color:#0C0"><b>Data sudah disimpan...</b></span>
                     </h4>
+                  </div>
+                </div>
+                <div class="col-xs-7 invoice-block">
+                  <div class="wells">
+                    <button id="btnsimpan" type="button" onclick="etiket()" class="btn yellow" style="width: 20%;">
+                      <i class="fa fa-print"></i><b> ETiket</b>
+                    </button>
+                    <button type="button" onclick="telaah();" class="btn yellow" style="width: 20%;">
+                      <i class="fa fa-print"></i><b> Telaah</b>
+                    </button>
+                    <button type="button" onclick="urlcetak_cr();" class="btn yellow" style="width: 20%;">
+                      <i class="fa fa-print"></i><b> Copy Resep</b>
+                    </button>
                   </div>
                 </div>
                 <div class="col-xs-5 invoice-block">
@@ -319,7 +425,7 @@
                         <td width="1%"><strong>:</strong></td>
                         <td width="59" align="right"><strong><span id="_vtotal"></span></strong>
                         </td>
-                        <input type="hidden" id="ppn2_" name="ppn2_" value="<?= $ppn['prosentase']; ?>">
+                        <input type="hidden" id="ppn2_" name="ppn2_" value="<?= $ppn->prosentase; ?>">
                       </tr>
                       <input type="hidden" id="tersimpan">
                     </table>
@@ -358,57 +464,102 @@
                           <tr bgcolor="#c7f2ff">
                             <td width="10%" class="control-labelh rightJustified">JENIS</td>
                             <td width="20%" colspan="2">
-                              <select id="jenis_1" name="jenis_1" class="form-control select2_all" style="width: 100%;" data-placeholder="Pilih...">
+                              <select id="jenis_1" name="jenis_1" class="form-control select2_all" style="width: 100%;" data-placeholder="Pilih..." <?= $edited; ?>>
                                 <option value="">Pilih...</option>
                                 <?php
                                   $data = $this->db->query("SELECT * from tbl_barangsetup where apogroup ='JENISRACIK'")->result();
                                   foreach ($data as $row) {
+                                    if($racik1) {
+                                      if($row->apocode == $racik1->jenisracik) {
+                                        $jenisr1 = "selected";
+                                      } else {
+                                        $jenisr1 = "";
+                                      }
+                                    } else {
+                                      $jenisr1 = "";
+                                    }
                                 ?>
-                                  <option value="<?= $row->apocode; ?>"><?= $row->aponame; ?></option>
+                                  <option value="<?= $row->apocode; ?>" <?= $jenisr1; ?>><?= $row->aponame; ?></option>
                                 <?php } ?>
                               </select>
                             </td>
                             <td width="15%" class="control-labelh rightJustified">NAMA RACIKAN</td>
                             <td width="20%">
-                              <input type="text" class="form-control " name="namaracik_1" id="namaracik_1" value="" Placeholder="Nama">
+                              <?php 
+                                if($racik1) {
+                                  $namar1 = $racik1->namaracikan;
+                                } else {
+                                  $namar1 = "";
+                                }
+                              ?>
+                              <input type="text" class="form-control" name="namaracik_1" id="namaracik_1" value="<?= $namar1; ?>" Placeholder="Nama" <?= $edited2; ?>>
                             </td>
                             <td> &nbsp; </td>
                             <td width="15%" class="control-labelh rightJustified">CARA PAKAI</td>
                             <td>
-                              <select name="carapakai_1" id="carapakai_1" class="form-control select2_all" style="width: 100%;" data-placeholder="Pilih...">
+                              <select name="carapakai_1" id="carapakai_1" class="form-control select2_all" style="width: 100%;" data-placeholder="Pilih..." <?= $edited; ?>>
                                 <option value="">Pilih...</option>
-                                <option value="DIMINUM"> DIMINUM </option>
-                                <option value="DIOLES"> DIOLES </option>
-                                <option value="DITETES"> DITETES </option>
+                                <option value="DIMINUM" <?php if($racik1) { if($racik1->carapakai == "DIMINUM") { echo "selected"; } else { echo ""; } } else { echo ""; } ?>> DIMINUM </option>
+                                <option value="DIOLES" <?php if($racik1) { if($racik1->carapakai == "DIOLES") { echo "selected"; } else { echo ""; } } else { echo ""; } ?>> DIOLES </option>
+                                <option value="DITETES" <?php if($racik1) { if($racik1->carapakai == "DITETES") { echo "selected"; } else { echo ""; } } else { echo ""; } ?>> DITETES </option>
                               </select>
                             </td>
                           </tr>
                           <tr bgcolor="#c7f2ff">
                             <td class="control-labelh rightJustified">JUMLAH</td>
                             <td width="8%">
-                              <input type="number" class="form-control " name="jumracik_1" id="jumracik_1">
+                              <?php 
+                                if($racik1) {
+                                  if($racik1->jumlahracik) {
+                                    $jumr1 = $racik1->jumlahracik;
+                                  } else {
+                                    $jumr1 = "";
+                                  }
+                                } else {
+                                  $jumr1 = "";
+                                }
+                              ?>
+                              <input type="number" class="form-control " name="jumracik_1" id="jumracik_1" value="<?= $jumr1; ?>" <?= $edited2; ?>>
                             </td>
                             <td width="12%">
-                              <select name="stajum_1" id="stajum_1" class="form-control select2_all" style="width: 100%;" data-placeholder="Pilih...">
+                              <select name="stajum_1" id="stajum_1" class="form-control select2_all" style="width: 100%;" data-placeholder="Pilih..." <?= $edited; ?>>
                                 <option value="">Pilih...</option>
                                 <?php
                                 $data = $this->db->query("SELECT * from tbl_barangsetup where  apogroup='KEMASANRACIK' ")->result();
                                 foreach ($data as $row) {
+                                  if($racik1) {
+                                    if($row->apocode == $racik1->kemasanracik) {
+                                      $satr1 = "selected";
+                                    } else {
+                                      $satr1 = "";
+                                    }
+                                  } else {
+                                    $satr1 = "";
+                                  }
                                 ?>
-                                  <option value="<?= $row->apocode; ?>">
+                                  <option value="<?= $row->apocode; ?>" <?= $satr1; ?>>
                                     <?= $row->aponame; ?></option>
                                 <?php } ?>
                               </select>
                             </td>
                             <td class="control-labelh rightJustified">ATURAN PAKAI</td>
                             <td>
-                              <select name="atpakai_1" id="atpakai_1" class="form-control select2_all" style="width: 100%;" data-placeholder="Pilih...">
+                              <select name="atpakai_1" id="atpakai_1" class="form-control select2_all" style="width: 100%;" data-placeholder="Pilih..." <?= $edited; ?>>
                                 <option value="">Pilih...</option>
                                 <?php
                                 $data = $this->db->query("SELECT * from tbl_barangsetup where  apogroup='ATURANPAKAI' ")->result();
                                 foreach ($data as $row) {
+                                  if($racik1) {
+                                    if($row->apocode == $racik1->aturanpakai) {
+                                      $atpr1 = "selected";
+                                    } else {
+                                      $atpr1 = "";
+                                    }
+                                  } else {
+                                    $atpr1 = "";
+                                  }
                                 ?>
-                                  <option value="<?= $row->apocode; ?>">
+                                  <option value="<?= $row->apocode; ?>" <?= $atpr1; ?>>
                                     <?= $row->aponame; ?></option>
                                 <?php } ?>
                               </select>
@@ -433,40 +584,85 @@
                             <th class="title-white" width="15%" style="text-align: center">Expired</th>
                           </thead>
                           <tbody>
-                            <tr id="racik_no1">
-                              <td>
-                                <button type='button' onclick=hapusBarisIni_racik1(1) disabled class='btn purple'><i class='fa fa-trash-o'>
-                              </td>
-                              <td>
-                                <select name="koderacik_1[]" id="koderacik_11" class="select2_el_farmasi_baranggud form-control" onchange="showbarangname_racik_1(this.value, 1)" style="width: 100%;"></select>
-                                <input name="nama_racik_1[]" id="nama_racik_11" type="hidden" class="form-control">
-                              </td>
-                              <td>
-                                <input name="satracik_1[]" id="satracik_11" type="text" class="form-control" readonly>
-                              </td>
-                              <td>
-                                <input name="qty_jualracik_1[]" id="qty_jualracik_11" onchange="totalline_racik_1(1); total_racik_1(); cekqty_racik_1(1); cekstok_racik_1(1)" value="1" type="text" class="form-control rightJustified">
-                              </td>
-                              <td>
-                                <input name="qty_racik_racik_1[]" id="qty_racik_racik_11" onchange="totalline_racik_1(1); total_racik_1(); cekqty_racik_1(1)" value="1" type="text" class="form-control rightJustified">
-                              </td>
-                              <td>
-                                <input name="hargajualracik_1[]" onchange="totalline_racik_1(1);" value="0" id="hargajualracik_11" type="text" class="form-control rightJustified" readonly>
-                              </td>
-                              <td>
-                                <input name="total_hrg_racik_1[]" onchange="totalline_racik_1(1);" value="0" id="total_hrg_racik_11" type="text" class="form-control rightJustified" readonly>
-                              </td>
-                              <td>
-                                <input name='exp_racik_1[]' id='exp_racik_11' type='date' class='form-control rightJustified' min="<?= date('Y-m-d'); ?>" value="<?= date('Y-m-d'); ?>">
-                              </td>
-                            </tr>
+                            <?php 
+                              if($racik1) : 
+                                $nor1 = 1;
+                                foreach($detil_r1x as $r1) :
+                            ?>
+                              <tr id="racik_no<?= $nor1; ?>">
+                                <td>
+                                  <?php if($noedit == "") : ?>
+                                    <button type='button' id='btnhbi1<?= $nor1; ?>' onclick='hapusBarisIni_racik1(<?= $nor1; ?>)' class='btn purple' <?php if($detil_r1 < 2) { echo "disabled"; } else { echo ""; } ?>><i class='fa fa-trash-o'></i></button>
+                                  <?php else : ?>
+                                    <button type='button' id='btnhbi1<?= $nor1; ?>' onclick='hapusBarisIni_racik1(<?= $nor1; ?>)' class='btn purple' disabled><i class='fa fa-trash-o'></i></button>
+                                  <?php endif; ?>
+                                </td>
+                                <td>
+                                  <select name="koderacik_1[]" id="koderacik_1<?= $nor1; ?>" class="select2_el_farmasi_baranggud form-control" onchange="showbarangname_racik_1(this.value, <?= $nor1; ?>)" style="width: 100%;" <?= $edited; ?>>
+                                    <?php $barangr1 = $this->db->get_where("tbl_barang", ["kodebarang" => $r1->kodebarang])->row(); ?>
+                                    <option value="<?= $barangr1->kodebarang; ?>"><?= $barangr1->kodebarang." | ".$barangr1->namabarang; ?></option>
+                                  </select>
+                                  <input name="nama_racik_1[]" id="nama_racik_1<?= $nor1; ?>" type="hidden" class="form-control" value="<?= $barangr1->namabarang; ?>">
+                                </td>
+                                <td>
+                                  <input name="satracik_1[]" id="satracik_1<?= $nor1; ?>" type="text" class="form-control" readonly value="<?= $r1->satuan; ?>" <?= $edited2; ?>>
+                                </td>
+                                <td>
+                                  <input name="qty_jualracik_1[]" id="qty_jualracik_1<?= $nor1; ?>" onchange="totalline_racik_1(<?= $nor1; ?>); total_racik_1(); cekqty_racik_1(<?= $nor1; ?>); cekstok_racik_1(<?= $nor1; ?>)" value="<?= number_format($r1->qty); ?>" type="text" class="form-control rightJustified" <?= $edited2; ?>>
+                                </td>
+                                <td>
+                                  <input name="qty_racik_racik_1[]" id="qty_racik_racik_1<?= $nor1; ?>" onchange="totalline_racik_1(<?= $nor1; ?>); total_racik_1(); cekqty_racik_1(<?= $nor1; ?>)" value="<?= number_format($r1->qtyr); ?>" type="text" class="form-control rightJustified" <?= $edited2; ?>>
+                                </td>
+                                <td>
+                                  <input name="hargajualracik_1[]" onchange="totalline_racik_1(<?= $nor1; ?>);" value="<?= number_format($r1->price); ?>" id="hargajualracik_1<?= $nor1; ?>" type="text" class="form-control rightJustified" readonly>
+                                </td>
+                                <td>
+                                  <input name="total_hrg_racik_1[]" onchange="totalline_racik_1(<?= $nor1; ?>);" value="<?= number_format($r1->totalrp); ?>" id="total_hrg_racik_1<?= $nor1; ?>" type="text" class="form-control rightJustified" readonly>
+                                </td>
+                                <td>
+                                  <input name='exp_racik_1[]' id='exp_racik_1<?= $nor1; ?>' type='date' class='form-control rightJustified' min="<?= date('Y-m-d'); ?>" value="<?= date('Y-m-d', strtotime($r1->exp_date)); ?>" <?= $edited2; ?>>
+                                </td>
+                              </tr>
+                            <?php
+                                  $nor1++;
+                                endforeach;
+                              else : 
+                            ?>
+                              <tr id="racik_no1">
+                                <td>
+                                  <button type='button' id='btnhbi11' onclick='hapusBarisIni_racik1(1)' disabled class='btn purple'><i class='fa fa-trash-o'></i></button>
+                                </td>
+                                <td>
+                                  <select name="koderacik_1[]" id="koderacik_11" class="select2_el_farmasi_baranggud form-control" onchange="showbarangname_racik_1(this.value, 1)" style="width: 100%;" <?= $edited; ?>></select>
+                                  <input name="nama_racik_1[]" id="nama_racik_11" type="hidden" class="form-control">
+                                </td>
+                                <td>
+                                  <input name="satracik_1[]" id="satracik_11" type="text" class="form-control" readonly>
+                                </td>
+                                <td>
+                                  <input name="qty_jualracik_1[]" id="qty_jualracik_11" onchange="totalline_racik_1(1); total_racik_1(); cekqty_racik_1(1); cekstok_racik_1(1)" value="1" type="text" class="form-control rightJustified" <?= $edited2; ?>>
+                                </td>
+                                <td>
+                                  <input name="qty_racik_racik_1[]" id="qty_racik_racik_11" onchange="totalline_racik_1(1); total_racik_1(); cekqty_racik_1(1)" value="1" type="text" class="form-control rightJustified" <?= $edited2; ?>>
+                                </td>
+                                <td>
+                                  <input name="hargajualracik_1[]" onchange="totalline_racik_1(1);" value="0" id="hargajualracik_11" type="text" class="form-control rightJustified" readonly>
+                                </td>
+                                <td>
+                                  <input name="total_hrg_racik_1[]" onchange="totalline_racik_1(1);" value="0" id="total_hrg_racik_11" type="text" class="form-control rightJustified" readonly>
+                                </td>
+                                <td>
+                                  <input name='exp_racik_1[]' id='exp_racik_11' type='date' class='form-control rightJustified' min="<?= date('Y-m-d'); ?>" value="<?= date('Y-m-d'); ?>" <?= $edited2; ?>>
+                                </td>
+                              </tr>
+                            <?php endif; ?>
                           </tbody>
                         </table>
                         <table class="table" border="0" width="100%">
                           <tr class="wells">
                             <td colspan="2">
                               <input type="hidden" name='jml_racikan_1' id='jml_racikan_1'>
-                              <button type="button" onclick="tambah_racikan_1()" class="btn green"><i class="fa fa-plus"></i></button>
+                              <button type="button" onclick="tambah_racikan_1()" class="btn green" <?= $edited; ?>><i class="fa fa-plus"></i></button>
                             </td>
                             <td class="control-labelh leftJustified">TOTAL</td>
                             <td width="6%">&nbsp;</td>
@@ -477,14 +673,24 @@
                           </tr>
                           <tr>
                             <td width="30%" rowspan="6" class="control-labelh leftJustified">Resep Manual Dari Dokter
-                              <textarea type="text" class="form-control " name="resman_racik_1" id="resman_racik_1" value=""></textarea>
+                              <?php 
+                                if($racik1) {
+                                  $rdr1 = $racik1->resep_manual;
+                                } else {
+                                  $rdr1 = "";
+                                }
+                              ?>
+                              <textarea type="text" class="form-control " name="resman_racik_1" id="resman_racik_1" value="<?= $rdr1; ?>" <?= $edited; ?>><?= $rdr1; ?></textarea>
                             </td>
                             <td rowspan="6" width="30%">&nbsp;</td>
                           </tr>
                           <tr>
                             <td class="control-labelh leftJustified">DISKON</td>
                             <td>
-                              <input type="text" class="form-control rightJustified" name="disknom_racik_1" id="disknom_racik_1" value="0" onchange="total_racik_1()">
+                              <?php
+                                if($racik1) { $diskonr1 = $racik1->diskon; } else { $diskonr1 = 0; }
+                              ?>
+                              <input type="text" class="form-control rightJustified" name="disknom_racik_1" id="disknom_racik_1" value="<?= number_format($diskonr1); ?>" onchange="total_racik_1()" <?= $edited2; ?>>
                             </td>
                             <td class="control-labelh leftJustified"><b>%</b></td>
                             <td>
@@ -495,12 +701,18 @@
                             <td class="control-labelh leftJustified">
                               <label for="ppn">PPN</label>
                             </td>
+                            <?php
+                              if($racik1) { $ppnrpr1 = $racik1->ppnrp; } else { $ppnrpr1 = 0; }
+                            ?>
                             <td>
-                              <input class='form-control' type="checkbox" name="cek_ppn_racik_1" id="cek_ppn_racik_1" onchange="cek_ppn2()" disabled>
+                              <?php
+                                if($ppnrpr1 > 0) { $cekppnr1 = "checked"; } else { $cekppnr1 = ""; }
+                              ?>
+                              <input class='form-control' type="checkbox" name="cek_ppn_racik_1" id="cek_ppn_racik_1" onchange="cek_ppn2()" disabled <?= $cekppnr1; ?>>
                             </td>
                             <td>&nbsp;</td>
                             <td>
-                              <input type="text" class="form-control rightJustified" name="ppn_racik_1" id="ppn_racik_1" value="0" readonly>
+                              <input type="text" class="form-control rightJustified" name="ppn_racik_1" id="ppn_racik_1" value="<?= number_format($ppnrpr1); ?>" readonly>
                             </td>
                           </tr>
                           <tr>
@@ -508,7 +720,14 @@
                             <td>&nbsp;</td>
                             <td>&nbsp;</td>
                             <td>
-                              <input type="text" class="form-control rightJustified" name="ongra_racik_1" id="ongra_racik_1" value="0" onchange="total_racik_1()">
+                              <?php 
+                                if($racik1) {
+                                  $ongkirr1 = $racik1->ongkosracik;
+                                } else {
+                                  $ongkirr1 = 0;
+                                }
+                              ?>
+                              <input type="text" class="form-control rightJustified" name="ongra_racik_1" id="ongra_racik_1" value="<?= number_format($ongkirr1); ?>" <?= $edited2; ?> onchange="total_racik_1()">
                             </td>
                           </tr>
                           <tr>
@@ -517,19 +736,31 @@
                             <td>&nbsp;</td>
                             <td>
                               <input type="text" class="form-control rightJustified" name="totp_racik_1" id="totp_racik_1" value=0 readonly>
-                              <input type="hidden" id="ppn_pajak_racik_1" name="ppn_pajak_racik_1" value="<?= $ppn['prosentase']; ?>">
+                              <input type="hidden" id="ppn_pajak_racik_1" name="ppn_pajak_racik_1" value="<?= $ppn->prosentase; ?>">
                             </td>
                           </tr>
                           <tr>
                             <td width="10%" class="control-labelh leftJustified">TOTAL JUAL PASIEN</td>
                             <td width="6%">
-                              <input type="checkbox" class="form-control" name="t_manual_racik_1" id="t_manual_racik_1" onclick="cekmanual_racik_1()">
+                              <?php 
+                                if($racik1) {
+                                  $hargamr1 = $racik1->harga_manual;
+                                } else {
+                                  $hargamr1 = 0;
+                                }
+                                if($hargamr1 > 0) {
+                                  $cekhmr1 = "checked";
+                                } else {
+                                  $cekhmr1 = "";
+                                }
+                              ?>
+                              <input type="checkbox" class="form-control" name="t_manual_racik_1" id="t_manual_racik_1" onclick="cekmanual_racik_1()" <?= $cekhmr1; ?> <?= $edited; ?>>
                             </td>
                             <td width="2%">
                               &nbsp;
                             </td>
                             <td width="15%">
-                              <input type="text" class="form-control rightJustified" name="toto_racik_1" id="toto_racik_1" value="0" readonly onchange="t_jual_manual_racik_1()">
+                              <input type="text" class="form-control rightJustified" name="toto_racik_1" id="toto_racik_1" value="<?= number_format($hargamr1); ?>" readonly onchange="t_jual_manual_racik_1()">
                             </td>
                           </tr>
                           </tr>
@@ -549,57 +780,102 @@
                           <tr bgcolor="#c7f2ff">
                             <td width="10%" class="control-labelh rightJustified">JENIS</td>
                             <td width="20%" colspan="2">
-                              <select id="jenis_2" name="jenis_2" class="form-control select2_all" style="width: 100%;" data-placeholder="Pilih...">
+                              <select id="jenis_2" name="jenis_2" class="form-control select2_all" style="width: 100%;" data-placeholder="Pilih..." <?= $edited; ?>>
                                 <option value="">Pilih...</option>
                                 <?php
                                   $data = $this->db->query("SELECT * from tbl_barangsetup where apogroup ='JENISRACIK'")->result();
                                   foreach ($data as $row) {
+                                    if($racik2) {
+                                      if($row->apocode == $racik2->jenisracik) {
+                                        $jenisr2 = "selected";
+                                      } else {
+                                        $jenisr2 = "";
+                                      }
+                                    } else {
+                                      $jenisr2 = "";
+                                    }
                                 ?>
-                                  <option value="<?= $row->apocode; ?>"><?= $row->aponame; ?></option>
+                                  <option value="<?= $row->apocode; ?>" <?= $jenisr2; ?>><?= $row->aponame; ?></option>
                                 <?php } ?>
                               </select>
                             </td>
                             <td width="15%" class="control-labelh rightJustified">NAMA RACIKAN</td>
                             <td width="20%">
-                              <input type="text" class="form-control " name="namaracik_2" id="namaracik_2" value="" Placeholder="Nama">
+                              <?php 
+                                if($racik2) {
+                                  $namar2 = $racik2->namaracikan;
+                                } else {
+                                  $namar2 = "";
+                                }
+                              ?>
+                              <input type="text" class="form-control " name="namaracik_2" id="namaracik_2" value="<?= $namar2; ?>" Placeholder="Nama" <?= $edited2; ?>>
                             </td>
                             <td> &nbsp; </td>
                             <td width="15%" class="control-labelh rightJustified">CARA PAKAI</td>
                             <td>
-                              <select name="carapakai_2" id="carapakai_2" class="form-control select2_all" style="width: 100%;" data-placeholder="Pilih...">
+                              <select name="carapakai_2" id="carapakai_2" class="form-control select2_all" style="width: 100%;" data-placeholder="Pilih..." <?= $edited; ?>>
                                 <option value="">Pilih...</option>
-                                <option value="DIMINUM"> DIMINUM </option>
-                                <option value="DIOLES"> DIOLES </option>
-                                <option value="DITETES"> DITETES </option>
+                                <option value="DIMINUM" <?php if($racik2) { if($racik2->carapakai == "DIMINUM") { echo "selected"; } else { echo ""; } } else { echo ""; } ?>> DIMINUM </option>
+                                <option value="DIOLES" <?php if($racik2) { if($racik2->carapakai == "DIOLES") { echo "selected"; } else { echo ""; } } else { echo ""; } ?>> DIOLES </option>
+                                <option value="DITETES" <?php if($racik2) { if($racik2->carapakai == "DITETES") { echo "selected"; } else { echo ""; } } else { echo ""; } ?>> DITETES </option>
                               </select>
                             </td>
                           </tr>
                           <tr bgcolor="#c7f2ff">
                             <td class="control-labelh rightJustified">JUMLAH</td>
                             <td width="8%">
-                              <input type="number" class="form-control " name="jumracik_2" id="jumracik_2">
+                              <?php 
+                                if($racik2) {
+                                  if($racik2->jumlahracik) {
+                                    $jumr2 = $racik2->jumlahracik;
+                                  } else {
+                                    $jumr2 = "";
+                                  }
+                                } else {
+                                  $jumr2 = "";
+                                }
+                              ?>
+                              <input type="number" class="form-control " name="jumracik_2" id="jumracik_2" value="<?= $jumr2; ?>" <?= $edited2; ?>>
                             </td>
                             <td width="12%">
-                              <select name="stajum_2" id="stajum_2" class="form-control select2_all" style="width: 100%;" data-placeholder="Pilih...">
+                              <select name="stajum_2" id="stajum_2" class="form-control select2_all" style="width: 100%;" data-placeholder="Pilih..." <?= $edited; ?>>
                                 <option value="">Pilih...</option>
                                 <?php
                                 $data = $this->db->query("SELECT * from tbl_barangsetup where  apogroup='KEMASANRACIK' ")->result();
                                 foreach ($data as $row) {
+                                  if($racik2) {
+                                    if($row->apocode == $racik2->kemasanracik) {
+                                      $satr2 = "selected";
+                                    } else {
+                                      $satr2 = "";
+                                    }
+                                  } else {
+                                    $satr1 = "";
+                                  }
                                 ?>
-                                  <option value="<?= $row->apocode; ?>">
+                                  <option value="<?= $row->apocode; ?>" <?= $satr2; ?>>
                                     <?= $row->aponame; ?></option>
                                 <?php } ?>
                               </select>
                             </td>
                             <td class="control-labelh rightJustified">ATURAN PAKAI</td>
                             <td>
-                              <select name="atpakai_2" id="atpakai_2" class="form-control select2_all" style="width: 100%;" data-placeholder="Pilih...">
+                              <select name="atpakai_2" id="atpakai_2" class="form-control select2_all" style="width: 100%;" data-placeholder="Pilih..." <?= $edited; ?>>
                                 <option value="">Pilih...</option>
                                 <?php
                                 $data = $this->db->query("SELECT * from tbl_barangsetup where  apogroup='ATURANPAKAI' ")->result();
                                 foreach ($data as $row) {
+                                  if($racik2) {
+                                    if($row->apocode == $racik2->aturanpakai) {
+                                      $atpr2 = "selected";
+                                    } else {
+                                      $atpr2 = "";
+                                    }
+                                  } else {
+                                    $atpr2 = "";
+                                  }
                                 ?>
-                                  <option value="<?= $row->apocode; ?>">
+                                  <option value="<?= $row->apocode; ?>" <?= $atpr2; ?>>
                                     <?= $row->aponame; ?></option>
                                 <?php } ?>
                               </select>
@@ -624,40 +900,85 @@
                             <th class="title-white" width="15%" style="text-align: center">Expired</th>
                           </thead>
                           <tbody>
-                            <tr id="racik2_no1">
-                              <td>
-                                <button type='button' onclick=hapusBarisIni_racik2(1) disabled class='btn red'><i class='fa fa-trash-o'>
-                              </td>
-                              <td>
-                                <select name="koderacik_2[]" id="koderacik_21" class="select2_el_farmasi_baranggud form-control" onchange="showbarangname_racik_2(this.value, 1)" style="width: 100%;"></select>
-                                <input name="nama_racik_2[]" id="nama_racik_21" type="hidden" class="form-control">
-                              </td>
-                              <td>
-                                <input name="satracik_2[]" id="satracik_21" type="text" class="form-control" readonly>
-                              </td>
-                              <td>
-                                <input name="qty_jualracik_2[]" id="qty_jualracik_21" onchange="totalline_racik_2(1); total_racik_2(); cekqty_racik_2(1); cekstok_racik_2(1)" value="1" type="text" class="form-control rightJustified">
-                              </td>
-                              <td>
-                                <input name="qty_racik_racik_2[]" id="qty_racik_racik_21" onchange="totalline_racik_2(1); total_racik_2(); cekqty_racik_2(1)" value="1" type="text" class="form-control rightJustified">
-                              </td>
-                              <td>
-                                <input name="hargajualracik_2[]" onchange="totalline_racik_2(1);" value="0" id="hargajualracik_21" type="text" class="form-control rightJustified" readonly>
-                              </td>
-                              <td>
-                                <input name="total_hrg_racik_2[]" onchange="totalline_racik_2(1);" value="0" id="total_hrg_racik_21" type="text" class="form-control rightJustified" readonly>
-                              </td>
-                              <td>
-                                <input name='exp_racik_2[]' id='exp_racik_21' type='date' class='form-control rightJustified' min="<?= date('Y-m-d'); ?>" value="<?= date('Y-m-d'); ?>">
-                              </td>
-                            </tr>
+                            <?php 
+                              if($racik2) : 
+                                $nor2 = 1; 
+                                foreach ($detil_r2x as $r2) :
+                            ?>
+                                  <tr id="racik2_no<?= $nor2; ?>">
+                                    <td>
+                                      <?php if($noedit == "") : ?>
+                                        <button type='button' id='btnhbi2<?= $nor2; ?>' onclick='hapusBarisIni_racik2(<?= $nor2; ?>)' class='btn red' <?php if($detil_r2 < 2) { echo "disabled"; } else { echo ""; } ?>><i class='fa fa-trash-o'></i></button>
+                                      <?php else : ?>
+                                        <button type='button' id='btnhbi2<?= $nor2; ?>' onclick='hapusBarisIni_racik2(<?= $nor2; ?>)' class='btn red' disabled><i class='fa fa-trash-o'></i></button>
+                                      <?php endif; ?>
+                                    </td>
+                                    <td>
+                                      <select name="koderacik_2[]" id="koderacik_2<?= $nor2; ?>" class="select2_el_farmasi_baranggud form-control" onchange="showbarangname_racik_2(this.value, <?= $nor2; ?>)" style="width: 100%;" <?= $edited; ?>>
+                                        <?php $barangr2 = $this->db->get_where("tbl_barang", ["kodebarang" => $r2->kodebarang])->row(); ?>
+                                        <option value="<?= $barangr2->kodebarang; ?>"><?= $barangr2->kodebarang." | ".$barangr2->namabarang; ?></option>
+                                      </select>
+                                      <input name="nama_racik_2[]" id="nama_racik_2<?= $nor2; ?>" type="hidden" class="form-control" value="<?= $barangr2->namabarang; ?>">
+                                    </td>
+                                    <td>
+                                      <input name="satracik_2[]" id="satracik_2<?= $nor2; ?>" type="text" class="form-control" readonly value="<?= $r2->satuan; ?>">
+                                    </td>
+                                    <td>
+                                      <input name="qty_jualracik_2[]" id="qty_jualracik_2<?= $nor2; ?>" onchange="totalline_racik_2(<?= $nor2; ?>); total_racik_2(); cekqty_racik_2(<?= $nor2; ?>); cekstok_racik_2(<?= $nor2; ?>)" value="<?= number_format($r2->qty); ?>" type="text" class="form-control rightJustified" <?= $edited2; ?>>
+                                    </td>
+                                    <td>
+                                      <input name="qty_racik_racik_2[]" id="qty_racik_racik_2<?= $nor2; ?>" onchange="totalline_racik_2(<?= $nor2; ?>); total_racik_2(); cekqty_racik_2(<?= $nor2; ?>)" value="<?= number_format($r2->qtyr); ?>" type="text" class="form-control rightJustified" <?= $edited2; ?>>
+                                    </td>
+                                    <td>
+                                      <input name="hargajualracik_2[]" onchange="totalline_racik_2(<?= $nor2; ?>);" value="<?= number_format($r2->price); ?>" id="hargajualracik_2<?= $nor2; ?>" type="text" class="form-control rightJustified" readonly>
+                                    </td>
+                                    <td>
+                                      <input name="total_hrg_racik_2[]" onchange="totalline_racik_2(<?= $nor2; ?>);" value="<?= number_format($r2->totalrp); ?>" id="total_hrg_racik_2<?= $nor2; ?>" type="text" class="form-control rightJustified" readonly>
+                                    </td>
+                                    <td>
+                                      <input name='exp_racik_2[]' id='exp_racik_2<?= $nor2; ?>' type='date' class='form-control rightJustified' min="<?= date('Y-m-d'); ?>" value="<?= date('Y-m-d', strtotime($r2->exp_date)); ?>" <?= $edited2; ?>>
+                                    </td>
+                                  </tr>
+                            <?php 
+                                  $nor2++;
+                                endforeach;
+                            ?>
+                            <?php else : ?>
+                              <tr id="racik2_no1">
+                                <td>
+                                  <button type='button' id='btnhbi51' onclick='hapusBarisIni_racik2(1)' disabled class='btn red'><i class='fa fa-trash-o'></i></button>
+                                </td>
+                                <td>
+                                  <select name="koderacik_2[]" id="koderacik_21" class="select2_el_farmasi_baranggud form-control" onchange="showbarangname_racik_2(this.value, 1)" style="width: 100%;" <?= $edited; ?>></select>
+                                  <input name="nama_racik_2[]" id="nama_racik_21" type="hidden" class="form-control">
+                                </td>
+                                <td>
+                                  <input name="satracik_2[]" id="satracik_21" type="text" class="form-control" readonly>
+                                </td>
+                                <td>
+                                  <input name="qty_jualracik_2[]" id="qty_jualracik_21" onchange="totalline_racik_2(1); total_racik_2(); cekqty_racik_2(1); cekstok_racik_2(1)" value="1" type="text" class="form-control rightJustified" <?= $edited2; ?>>
+                                </td>
+                                <td>
+                                  <input name="qty_racik_racik_2[]" id="qty_racik_racik_21" onchange="totalline_racik_2(1); total_racik_2(); cekqty_racik_2(1)" value="1" type="text" class="form-control rightJustified" <?= $edited2; ?>>
+                                </td>
+                                <td>
+                                  <input name="hargajualracik_2[]" onchange="totalline_racik_2(1);" value="0" id="hargajualracik_21" type="text" class="form-control rightJustified" readonly>
+                                </td>
+                                <td>
+                                  <input name="total_hrg_racik_2[]" onchange="totalline_racik_2(1);" value="0" id="total_hrg_racik_21" type="text" class="form-control rightJustified" readonly>
+                                </td>
+                                <td>
+                                  <input name='exp_racik_2[]' id='exp_racik_21' type='date' class='form-control rightJustified' min="<?= date('Y-m-d'); ?>" value="<?= date('Y-m-d'); ?>" <?= $edited2; ?>>
+                                </td>
+                              </tr>
+                            <?php endif; ?>
                           </tbody>
                         </table>
                         <table class="table" border="0" width="100%">
                           <tr class="wells">
                             <td colspan="2">
                               <input type="hidden" name='jml_racikan_2' id='jml_racikan_2'>
-                              <button type="button" onclick="tambah_racikan_2()" class="btn green"><i class="fa fa-plus"></i></button>
+                              <button type="button" onclick="tambah_racikan_2()" class="btn green" <?= $edited; ?>><i class="fa fa-plus"></i></button>
                             </td>
                             <td class="control-labelh leftJustified">TOTAL</td>
                             <td width="6%">&nbsp;</td>
@@ -668,30 +989,58 @@
                           </tr>
                           <tr>
                             <td width="30%" rowspan="6" class="control-labelh leftJustified">Resep Manual Dari Dokter
-                              <textarea type="text" class="form-control " name="resman_racik_2" id="resman_racik_2" value=""></textarea>
+                              <?php 
+                                if($racik2) {
+                                  $rdr2 = $racik2->resep_manual;
+                                } else {
+                                  $rdr2 = "";
+                                }
+                              ?>
+                              <textarea type="text" class="form-control " name="resman_racik_2" id="resman_racik_2" value="<?= $rdr2; ?>" <?= $edited; ?>><?= $rdr2; ?></textarea>
                             </td>
                             <td rowspan="6" width="30%">&nbsp;</td>
                           </tr>
                           <tr>
                             <td class="control-labelh leftJustified">DISKON</td>
                             <td>
-                              <input type="text" class="form-control rightJustified" name="disknom_racik_2" id="disknom_racik_2" value="0" onchange="total_racik_2()">
+                              <?php 
+                                if($racik2) {
+                                  $diskonr2 = $racik2->diskon;
+                                  $diskonrpr2 = $racik2->diskonrp;
+                                } else {
+                                  $diskonr2 = 0;
+                                  $diskonrpr2 = 0;
+                                }
+                              ?>
+                              <input type="text" class="form-control rightJustified" name="disknom_racik_2" id="disknom_racik_2" value="<?= number_format($diskonr2); ?>" onchange="total_racik_2()" <?= $edited; ?>>
                             </td>
                             <td class="control-labelh leftJustified"><b>%</b></td>
                             <td>
-                              <input type="text" class="form-control rightJustified" name="disk_racik_2" id="disk_racik_2" value="0" readonly>
+                              <input type="text" class="form-control rightJustified" name="disk_racik_2" id="disk_racik_2" value="<?= number_format($diskonrpr2); ?>" readonly>
                             </td>
                           </tr>
                           <tr>
                             <td class="control-labelh leftJustified">
                               <label for="ppn">PPN</label>
                             </td>
+                            <?php 
+                              if($racik2) {
+                                $ppnrpr2 = $racik2->ppnrp;
+                              } else {
+                                $ppnrpr2 = 0;
+                              }
+                              if($ppnrpr2 > 0) {
+                                $cekppnr2 = "checked";
+                              } else {
+                                $cekppnr2 = "";
+                              }
+                            ?>
                             <td>
-                              <input class='form-control' type="checkbox" name="cek_ppn_racik_2" id="cek_ppn_racik_2" onchange="cek_ppn2()" disabled>
+                              <input class='form-control' type="checkbox" name="cek_ppn_racik_2" id="cek_ppn_racik_2" onchange="cek_ppn2()" <?= $cekppnr2; ?> disabled>
                             </td>
                             <td>&nbsp;</td>
                             <td>
-                              <input type="text" class="form-control rightJustified" name="ppn_racik_2" id="ppn_racik_2" value="0" readonly>
+                              <input type="text" class="form-control rightJustified" name="ppn_racik_2" id="ppn_racik_2" value="<?= number_format($ppnrpr2); ?>" readonly>
                             </td>
                           </tr>
                           <tr>
@@ -699,7 +1048,14 @@
                             <td>&nbsp;</td>
                             <td>&nbsp;</td>
                             <td>
-                              <input type="text" class="form-control rightJustified" name="ongra_racik_2" id="ongra_racik_2" value="0" onchange="total_racik_2()">
+                              <?php 
+                                if($racik2) {
+                                  $ongkirr2 = $racik2->ongkosracik;
+                                } else {
+                                  $ongkirr2 = 0;
+                                }
+                              ?>
+                              <input type="text" class="form-control rightJustified" name="ongra_racik_2" id="ongra_racik_2" value="<?= number_format($ongkirr2); ?>" onchange="total_racik_2()" <?= $edited2; ?>>
                             </td>
                           </tr>
                           <tr>
@@ -708,19 +1064,31 @@
                             <td>&nbsp;</td>
                             <td>
                               <input type="text" class="form-control rightJustified" name="totp_racik_2" id="totp_racik_2" value=0 readonly>
-                              <input type="hidden" id="ppn_pajak_racik_2" name="ppn_pajak_racik_2" value="<?= $ppn['prosentase']; ?>">
+                              <input type="hidden" id="ppn_pajak_racik_2" name="ppn_pajak_racik_2" value="<?= $ppn->prosentase; ?>">
                             </td>
                           </tr>
                           <tr>
                             <td width="10%" class="control-labelh leftJustified">TOTAL JUAL PASIEN</td>
                             <td width="6%">
-                              <input type="checkbox" class="form-control" name="t_manual_racik_2" id="t_manual_racik_2" onclick="cekmanual_racik_2()">
+                              <?php 
+                                if($racik2) {
+                                  $hargamr2 = $racik2->harga_manual;
+                                } else {
+                                  $hargamr2 = 0;
+                                }
+                                if($hargamr2 > 0) {
+                                  $cekhmr2 = "checked";
+                                } else {
+                                  $cekhmr2 = "";
+                                }
+                              ?>
+                              <input type="checkbox" class="form-control" name="t_manual_racik_2" id="t_manual_racik_2" onclick="cekmanual_racik_2()" <?= $cekhmr2; ?> <?= $edited; ?>>
                             </td>
                             <td width="2%">
                               &nbsp;
                             </td>
                             <td width="15%">
-                              <input type="text" class="form-control rightJustified" name="toto_racik_2" id="toto_racik_2" value="0" readonly onchange="t_jual_manual_racik_2()">
+                              <input type="text" class="form-control rightJustified" name="toto_racik_2" id="toto_racik_2" value="<?= number_format($hargamr2); ?>" readonly onchange="t_jual_manual_racik_2()">
                             </td>
                           </tr>
                           </tr>
@@ -740,57 +1108,102 @@
                           <tr bgcolor="#c7f2ff">
                             <td width="10%" class="control-labelh rightJustified">JENIS</td>
                             <td width="20%" colspan="2">
-                              <select id="jenis_3" name="jenis_3" class="form-control select2_all" style="width: 100%;" data-placeholder="Pilih...">
+                              <select id="jenis_3" name="jenis_3" class="form-control select2_all" style="width: 100%;" data-placeholder="Pilih..." <?= $edited; ?>>
                                 <option value="">Pilih...</option>
                                 <?php
                                   $data = $this->db->query("SELECT * from tbl_barangsetup where apogroup ='JENISRACIK'")->result();
                                   foreach ($data as $row) {
+                                    if($racik3) {
+                                      if($row->apocode == $racik3->jenisracik) {
+                                        $jenisr3 = "selected";
+                                      } else {
+                                        $jenisr3 = "";
+                                      }
+                                    } else {
+                                      $jenisr3 = "";
+                                    }
                                 ?>
-                                  <option value="<?= $row->apocode; ?>"><?= $row->aponame; ?></option>
+                                  <option value="<?= $row->apocode; ?>" <?= $jenisr3; ?>><?= $row->aponame; ?></option>
                                 <?php } ?>
                               </select>
                             </td>
                             <td width="15%" class="control-labelh rightJustified">NAMA RACIKAN</td>
                             <td width="20%">
-                              <input type="text" class="form-control " name="namaracik_3" id="namaracik_3" value="" Placeholder="Nama">
+                              <?php 
+                                if($racik3) {
+                                  $namar3 = $racik3->namaracikan;
+                                } else {
+                                  $namar3 = "";
+                                }
+                              ?>
+                              <input type="text" class="form-control " name="namaracik_3" id="namaracik_3" value="<?= $namar3; ?>" Placeholder="Nama" <?= $edited; ?>>
                             </td>
                             <td> &nbsp; </td>
                             <td width="15%" class="control-labelh rightJustified">CARA PAKAI</td>
                             <td>
-                              <select name="carapakai_3" id="carapakai_3" class="form-control select2_all" style="width: 100%;" data-placeholder="Pilih...">
+                              <select name="carapakai_3" id="carapakai_3" class="form-control select2_all" style="width: 100%;" data-placeholder="Pilih..." <?= $edited; ?>>
                                 <option value="">Pilih...</option>
-                                <option value="DIMINUM"> DIMINUM </option>
-                                <option value="DIOLES"> DIOLES </option>
-                                <option value="DITETES"> DITETES </option>
+                                <option value="DIMINUM" <?php if($racik3) { if($racik3->carapakai == "DIMINUM") { echo "selected"; } else { echo ""; } } else { echo ""; } ?>> DIMINUM </option>
+                                <option value="DIOLES" <?php if($racik3) { if($racik3->carapakai == "DIOLES") { echo "selected"; } else { echo ""; } } else { echo ""; } ?>> DIOLES </option>
+                                <option value="DITETES" <?php if($racik3) { if($racik3->carapakai == "DITETES") { echo "selected"; } else { echo ""; } } else { echo ""; } ?>> DITETES </option>
                               </select>
                             </td>
                           </tr>
                           <tr bgcolor="#c7f2ff">
                             <td class="control-labelh rightJustified">JUMLAH</td>
                             <td width="8%">
-                              <input type="number" class="form-control " name="jumracik_3" id="jumracik_3">
+                              <?php 
+                                if($racik3) {
+                                  if($racik3->jumlahracik) {
+                                    $jumr3 = $racik3->jumlahracik;
+                                  } else {
+                                    $jumr3 = "";
+                                  }
+                                } else {
+                                  $jumr3 = "";
+                                }
+                              ?>
+                              <input type="number" class="form-control " name="jumracik_3" id="jumracik_3" value="<?= $jumr3; ?>" <?= $edited2; ?>>
                             </td>
                             <td width="12%">
-                              <select name="stajum_3" id="stajum_3" class="form-control select2_all" style="width: 100%;" data-placeholder="Pilih...">
+                              <select name="stajum_3" id="stajum_3" class="form-control select2_all" style="width: 100%;" data-placeholder="Pilih..." <?= $edited; ?>>
                                 <option value="">Pilih...</option>
                                 <?php
                                 $data = $this->db->query("SELECT * from tbl_barangsetup where  apogroup='KEMASANRACIK' ")->result();
                                 foreach ($data as $row) {
+                                  if($racik3) {
+                                    if($row->apocode == $racik3->kemasanracik) {
+                                      $satr3 = "selected";
+                                    } else {
+                                      $satr3 = "";
+                                    }
+                                  } else {
+                                    $satr3 = "";
+                                  }
                                 ?>
-                                  <option value="<?= $row->apocode; ?>">
+                                  <option value="<?= $row->apocode; ?>" <?= $satr3; ?>>
                                     <?= $row->aponame; ?></option>
                                 <?php } ?>
                               </select>
                             </td>
                             <td class="control-labelh rightJustified">ATURAN PAKAI</td>
                             <td>
-                              <select name="atpakai_3" id="atpakai_3" class="form-control select2_all" style="width: 100%;" data-placeholder="Pilih...">
+                              <select name="atpakai_3" id="atpakai_3" class="form-control select2_all" style="width: 100%;" data-placeholder="Pilih..." <?= $edited; ?>>
                                 <option value="">Pilih...</option>
                                 <?php
                                 $data = $this->db->query("SELECT * from tbl_barangsetup where  apogroup='ATURANPAKAI' ")->result();
                                 foreach ($data as $row) {
+                                  if($racik3) {
+                                    if($row->apocode == $racik3->aturanpakai) {
+                                      $atpr3 = "selected";
+                                    } else {
+                                      $atpr3 = "";
+                                    }
+                                  } else {
+                                    $atpr3 = "";
+                                  }
                                 ?>
-                                  <option value="<?= $row->apocode; ?>">
+                                  <option value="<?= $row->apocode; ?>" <?= $atpr3; ?>>
                                     <?= $row->aponame; ?></option>
                                 <?php } ?>
                               </select>
@@ -815,40 +1228,85 @@
                             <th class="title-white" width="15%" style="text-align: center">Expired</th>
                           </thead>
                           <tbody>
-                            <tr id="racik3_no1">
-                              <td>
-                                <button type='button' onclick=hapusBarisIni_racik3(1) disabled class='btn yellow'><i class='fa fa-trash-o'>
-                              </td>
-                              <td>
-                                <select name="koderacik_3[]" id="koderacik_31" class="select2_el_farmasi_baranggud form-control" onchange="showbarangname_racik_3(this.value, 1)" style="width: 100%;"></select>
-                                <input name="nama_racik_3[]" id="nama_racik_31" type="hidden" class="form-control">
-                              </td>
-                              <td>
-                                <input name="satracik_3[]" id="satracik_31" type="text" class="form-control" readonly>
-                              </td>
-                              <td>
-                                <input name="qty_jualracik_3[]" id="qty_jualracik_31" onchange="totalline_racik_3(1); total_racik_3(); cekqty_racik_3(1); cekstok_racik_3(1)" value="1" type="text" class="form-control rightJustified">
-                              </td>
-                              <td>
-                                <input name="qty_racik_racik_3[]" id="qty_racik_racik_31" onchange="totalline_racik_3(1); total_racik_3(); cekqty_racik_3(1)" value="1" type="text" class="form-control rightJustified">
-                              </td>
-                              <td>
-                                <input name="hargajualracik_3[]" onchange="totalline_racik_3(1);" value="0" id="hargajualracik_31" type="text" class="form-control rightJustified" readonly>
-                              </td>
-                              <td>
-                                <input name="total_hrg_racik_3[]" onchange="totalline_racik_3(1);" value="0" id="total_hrg_racik_31" type="text" class="form-control rightJustified" readonly>
-                              </td>
-                              <td>
-                                <input name='exp_racik_3[]' id='exp_racik_31' type='date' class='form-control rightJustified' min="<?= date('Y-m-d'); ?>" value="<?= date('Y-m-d'); ?>">
-                              </td>
-                            </tr>
+                            <?php 
+                              if($racik3) : 
+                                $nor3 = 1;
+                                foreach($detil_r3x as $r3) :
+                            ?>
+                              <tr id="racik3_no<?= $nor3; ?>">
+                                <td>
+                                  <?php if($noedit == "") : ?>
+                                    <button type='button' id='btnhbi3<?= $nor3; ?>' onclick='hapusBarisIni_racik3(<?= $nor3; ?>)' class='btn yellow' <?php if($detil_r3 < 3) { echo "disabled"; } else { echo ""; } ?>><i class='fa fa-trash-o'></i></button>
+                                  <?php else : ?>
+                                    <button type='button' id='btnhbi3<?= $nor3; ?>' onclick='hapusBarisIni_racik3(<?= $nor3; ?>)' class='btn yellow' disabled><i class='fa fa-trash-o'></i></button>
+                                  <?php endif; ?>
+                                </td>
+                                <td>
+                                  <select name="koderacik_3[]" id="koderacik_3<?= $nor3; ?>" class="select2_el_farmasi_baranggud form-control" onchange="showbarangname_racik_3(this.value, <?= $nor3; ?>)" style="width: 100%;" <?= $edited; ?>>
+                                    <?php $barangr3 = $this->db->get_where("tbl_barang", ["kodebarang" => $r3->kodebarang])->row(); ?>
+                                    <option value="<?= $barangr3->kodebarang; ?>"><?= $barangr3->kodebarang." | ".$barangr3->namabarang; ?></option>
+                                  </select>
+                                  <input name="nama_racik_3[]" id="nama_racik_3<?= $nor3; ?>" type="hidden" class="form-control" value="<?= $barangr3->namabarang; ?>">
+                                </td>
+                                <td>
+                                  <input name="satracik_3[]" id="satracik_3<?= $nor3; ?>" type="text" class="form-control" readonly value="<?= $r3->satuan; ?>">
+                                </td>
+                                <td>
+                                  <input name="qty_jualracik_3[]" id="qty_jualracik_3<?= $nor3; ?>" onchange="totalline_racik_3(<?= $nor3; ?>); total_racik_3(); cekqty_racik_3(<?= $nor3; ?>); cekstok_racik_3(<?= $nor3; ?>)" value="<?= number_format($r3->qty); ?>" type="text" class="form-control rightJustified" <?= $edited2; ?>>
+                                </td>
+                                <td>
+                                  <input name="qty_racik_racik_3[]" id="qty_racik_racik_3<?= $nor3; ?>" onchange="totalline_racik_3(<?= $nor3; ?>); total_racik_3(); cekqty_racik_3(<?= $nor3; ?>)" value="<?= number_format($r3->qtyr); ?>" type="text" class="form-control rightJustified" <?= $edited2; ?>>
+                                </td>
+                                <td>
+                                  <input name="hargajualracik_3[]" onchange="totalline_racik_3(<?= $nor3; ?>);" value="<?= number_format($r3->price); ?>" id="hargajualracik_3<?= $nor3; ?>" type="text" class="form-control rightJustified" readonly>
+                                </td>
+                                <td>
+                                  <input name="total_hrg_racik_3[]" onchange="totalline_racik_3(<?= $nor3; ?>);" value="<?= number_format($r3->totalrp); ?>" id="total_hrg_racik_3<?= $nor3; ?>" type="text" class="form-control rightJustified" readonly>
+                                </td>
+                                <td>
+                                  <input name='exp_racik_3[]' id='exp_racik_3<?= $nor3; ?>' type='date' class='form-control rightJustified' min="<?= date('Y-m-d'); ?>" value="<?= date('Y-m-d', strtotime($r3->exp_date)); ?>" <?= $edited2; ?>>
+                                </td>
+                              </tr>
+                            <?php 
+                                  $nor3++;
+                                endforeach;
+                              else : 
+                            ?>
+                              <tr id="racik3_no1">
+                                <td>
+                                  <button type='button' id='btnhbi31' onclick="hapusBarisIni_racik3(1)" disabled class='btn yellow'><i class='fa fa-trash-o'></i></button>
+                                </td>
+                                <td>
+                                  <select name="koderacik_3[]" id="koderacik_31" class="select2_el_farmasi_baranggud form-control" onchange="showbarangname_racik_3(this.value, 1)" style="width: 100%;" <?= $edited; ?>></select>
+                                  <input name="nama_racik_3[]" id="nama_racik_31" type="hidden" class="form-control">
+                                </td>
+                                <td>
+                                  <input name="satracik_3[]" id="satracik_31" type="text" class="form-control" readonly>
+                                </td>
+                                <td>
+                                  <input name="qty_jualracik_3[]" id="qty_jualracik_31" onchange="totalline_racik_3(1); total_racik_3(); cekqty_racik_3(1); cekstok_racik_3(1)" value="1" type="text" class="form-control rightJustified" <?= $edited2; ?>>
+                                </td>
+                                <td>
+                                  <input name="qty_racik_racik_3[]" id="qty_racik_racik_31" onchange="totalline_racik_3(1); total_racik_3(); cekqty_racik_3(1)" value="1" type="text" class="form-control rightJustified" <?= $edited2; ?>>
+                                </td>
+                                <td>
+                                  <input name="hargajualracik_3[]" onchange="totalline_racik_3(1);" value="0" id="hargajualracik_31" type="text" class="form-control rightJustified" readonly>
+                                </td>
+                                <td>
+                                  <input name="total_hrg_racik_3[]" onchange="totalline_racik_3(1);" value="0" id="total_hrg_racik_31" type="text" class="form-control rightJustified" readonly>
+                                </td>
+                                <td>
+                                  <input name='exp_racik_3[]' id='exp_racik_31' type='date' class='form-control rightJustified' min="<?= date('Y-m-d'); ?>" value="<?= date('Y-m-d'); ?>" <?= $edited2; ?>>
+                                </td>
+                              </tr>
+                            <?php endif; ?>
                           </tbody>
                         </table>
                         <table class="table" border="0" width="100%">
                           <tr class="wells">
                             <td colspan="2">
                               <input type="hidden" name='jml_racikan_3' id='jml_racikan_3'>
-                              <button type="button" onclick="tambah_racikan_3()" class="btn green"><i class="fa fa-plus"></i></button>
+                              <button type="button" onclick="tambah_racikan_3()" class="btn green" <?= $edited; ?>><i class="fa fa-plus"></i></button>
                             </td>
                             <td class="control-labelh leftJustified">TOTAL</td>
                             <td width="6%">&nbsp;</td>
@@ -859,18 +1317,34 @@
                           </tr>
                           <tr>
                             <td width="30%" rowspan="6" class="control-labelh leftJustified">Resep Manual Dari Dokter
-                              <textarea type="text" class="form-control " name="resman_racik_3" id="resman_racik_3" value=""></textarea>
+                              <?php 
+                                if($racik3) {
+                                  $rdr3 = $racik3->resep_manual;
+                                } else {
+                                  $rdr3 = "";
+                                }
+                              ?>
+                              <textarea type="text" class="form-control " name="resman_racik_3" id="resman_racik_3" value="<?= $rdr3; ?>" <?= $edited; ?>><?= $rdr3; ?></textarea>
                             </td>
                             <td rowspan="6" width="30%">&nbsp;</td>
                           </tr>
                           <tr>
                             <td class="control-labelh leftJustified">DISKON</td>
                             <td>
-                              <input type="text" class="form-control rightJustified" name="disknom_racik_3" id="disknom_racik_3" value="0" onchange="total_racik_3()">
+                              <?php 
+                                if($racik3) {
+                                  $diskonr3 = $racik3->diskon;
+                                  $diskonrpr3 = $racik3->diskonrp;
+                                } else {
+                                  $diskonr3 = 0;
+                                  $diskonrpr3 = 0;
+                                }
+                              ?>
+                              <input type="text" class="form-control rightJustified" name="disknom_racik_3" id="disknom_racik_3" value="<?= number_format($diskonr3); ?>" onchange="total_racik_3()" <?= $edited2; ?>>
                             </td>
                             <td class="control-labelh leftJustified"><b>%</b></td>
                             <td>
-                              <input type="text" class="form-control rightJustified" name="disk_racik_3" id="disk_racik_3" value="0" readonly>
+                              <input type="text" class="form-control rightJustified" name="disk_racik_3" id="disk_racik_3" value="<?= number_format($diskonrpr3); ?>" readonly>
                             </td>
                           </tr>
                           <tr>
@@ -878,11 +1352,23 @@
                               <label for="ppn">PPN</label>
                             </td>
                             <td>
-                              <input class='form-control' type="checkbox" name="cek_ppn_racik_3" id="cek_ppn_racik_3" onchange="cek_ppn3()" disabled>
+                              <?php 
+                              if($racik3) {
+                                $ppnrpr3 = $racik3->ppnrp;
+                              } else {
+                                $ppnrpr3 = 0;
+                              }
+                              if($ppnrpr3 > 0) {
+                                $cekppnr3 = "checked";
+                              } else {
+                                $cekppnr3 = "";
+                              }
+                              ?>
+                              <input class='form-control' type="checkbox" name="cek_ppn_racik_3" id="cek_ppn_racik_3" onchange="cek_ppn3()" disabled <?= $cekppnr3; ?>>
                             </td>
                             <td>&nbsp;</td>
                             <td>
-                              <input type="text" class="form-control rightJustified" name="ppn_racik_3" id="ppn_racik_3" value="0" readonly>
+                              <input type="text" class="form-control rightJustified" name="ppn_racik_3" id="ppn_racik_3" value="<?= number_format($ppnrpr3); ?>" readonly >
                             </td>
                           </tr>
                           <tr>
@@ -890,7 +1376,14 @@
                             <td>&nbsp;</td>
                             <td>&nbsp;</td>
                             <td>
-                              <input type="text" class="form-control rightJustified" name="ongra_racik_3" id="ongra_racik_3" value="0" onchange="total_racik_3()">
+                              <?php 
+                                if($racik3) {
+                                  $ongkirr3 = $racik3->ongkosracik;
+                                } else {
+                                  $ongkirr3 = 0;
+                                }
+                              ?>
+                              <input type="text" class="form-control rightJustified" name="ongra_racik_3" id="ongra_racik_3" value="<?= number_format($ongkirr3); ?>" <?= $edited2; ?> onchange="total_racik_3()">
                             </td>
                           </tr>
                           <tr>
@@ -899,19 +1392,31 @@
                             <td>&nbsp;</td>
                             <td>
                               <input type="text" class="form-control rightJustified" name="totp_racik_3" id="totp_racik_3" value=0 readonly>
-                              <input type="hidden" id="ppn_pajak_racik_3" name="ppn_pajak_racik_3" value="<?= $ppn['prosentase']; ?>">
+                              <input type="hidden" id="ppn_pajak_racik_3" name="ppn_pajak_racik_3" value="<?= $ppn->prosentase; ?>">
                             </td>
                           </tr>
                           <tr>
                             <td width="10%" class="control-labelh leftJustified">TOTAL JUAL PASIEN</td>
+                            <?php 
+                              if($racik3) {
+                                $hargamr3 = $racik3->harga_manual;
+                              } else {
+                                $hargamr3 = 0;
+                              }
+                              if($hargamr3 > 0) {
+                                $cekhmr3 = "checked";
+                              } else {
+                                $cekhmr3 = "";
+                              }
+                            ?>
                             <td width="6%">
-                              <input type="checkbox" class="form-control" name="t_manual_racik_3" id="t_manual_racik_3" onclick="cekmanual_racik_3()">
+                              <input type="checkbox" class="form-control" name="t_manual_racik_3" id="t_manual_racik_3" onclick="cekmanual_racik_3()" <?= $cekhmr3; ?> <?= $edited; ?>>
                             </td>
                             <td width="2%">
                               &nbsp;
                             </td>
                             <td width="15%">
-                              <input type="text" class="form-control rightJustified" name="toto_racik_3" id="toto_racik_3" value="0" readonly onchange="t_jual_manual_racik_3()">
+                              <input type="text" class="form-control rightJustified" name="toto_racik_3" id="toto_racik_3" value="<?= number_format($hargamr3); ?>" readonly onchange="t_jual_manual_racik_3()">
                             </td>
                           </tr>
                           </tr>
@@ -931,57 +1436,102 @@
                           <tr bgcolor="#c7f2ff">
                             <td width="10%" class="control-labelh rightJustified">JENIS</td>
                             <td width="20%" colspan="2">
-                              <select id="jenis_4" name="jenis_4" class="form-control select2_all" style="width: 100%;" data-placeholder="Pilih...">
+                              <select id="jenis_4" name="jenis_4" class="form-control select2_all" style="width: 100%;" data-placeholder="Pilih..." <?= $edited; ?>>
                                 <option value="">Pilih...</option>
                                 <?php
                                   $data = $this->db->query("SELECT * from tbl_barangsetup where apogroup ='JENISRACIK'")->result();
                                   foreach ($data as $row) {
+                                    if($racik4) {
+                                      if($row->apocode == $racik4->jenisracik) {
+                                        $jenisr4 = "selected";
+                                      } else {
+                                        $jenisr4 = "";
+                                      }
+                                    } else {
+                                      $jenisr4 = "";
+                                    }
                                 ?>
-                                  <option value="<?= $row->apocode; ?>"><?= $row->aponame; ?></option>
+                                  <option value="<?= $row->apocode; ?>" <?= $jenisr4; ?>><?= $row->aponame; ?></option>
                                 <?php } ?>
                               </select>
                             </td>
                             <td width="15%" class="control-labelh rightJustified">NAMA RACIKAN</td>
                             <td width="20%">
-                              <input type="text" class="form-control " name="namaracik_4" id="namaracik_4" value="" Placeholder="Nama">
+                              <?php 
+                                if($racik4) {
+                                  $namar4 = $racik4->namaracikan;
+                                } else {
+                                  $namar4 = "";
+                                }
+                              ?>
+                              <input type="text" class="form-control " name="namaracik_4" id="namaracik_4" value="<?= $namar4; ?>" Placeholder="Nama" <?= $edited2; ?>>
                             </td>
                             <td> &nbsp; </td>
                             <td width="15%" class="control-labelh rightJustified">CARA PAKAI</td>
                             <td>
-                              <select name="carapakai_4" id="carapakai_4" class="form-control select2_all" style="width: 100%;" data-placeholder="Pilih...">
+                              <select name="carapakai_4" id="carapakai_4" class="form-control select2_all" style="width: 100%;" data-placeholder="Pilih..." <?= $edited; ?>>
                                 <option value="">Pilih...</option>
-                                <option value="DIMINUM"> DIMINUM </option>
-                                <option value="DIOLES"> DIOLES </option>
-                                <option value="DITETES"> DITETES </option>
+                                <option value="DIMINUM" <?php if($racik4) { if($racik4->carapakai == "DIMINUM") { echo "selected"; } else { echo ""; } } else { echo ""; } ?>> DIMINUM </option>
+                                <option value="DIOLES" <?php if($racik4) { if($racik4->carapakai == "DIOLES") { echo "selected"; } else { echo ""; } } else { echo ""; } ?>> DIOLES </option>
+                                <option value="DITETES" <?php if($racik4) { if($racik4->carapakai == "DITETES") { echo "selected"; } else { echo ""; } } else { echo ""; } ?>> DITETES </option>
                               </select>
                             </td>
                           </tr>
                           <tr bgcolor="#c7f2ff">
                             <td class="control-labelh rightJustified">JUMLAH</td>
                             <td width="8%">
-                              <input type="number" class="form-control " name="jumracik_4" id="jumracik_4">
+                              <?php 
+                                if($racik4) {
+                                  if($racik4->jumlahracik) {
+                                    $jumr4 = $racik4->jumlahracik;
+                                  } else {
+                                    $jumr4 = "";
+                                  }
+                                } else {
+                                  $jumr4 = "";
+                                }
+                              ?>
+                              <input type="number" class="form-control " name="jumracik_4" id="jumracik_4" value="<?= $jumr4; ?>" <?= $edited2; ?>>
                             </td>
                             <td width="12%">
-                              <select name="stajum_4" id="stajum_4" class="form-control select2_all" style="width: 100%;" data-placeholder="Pilih...">
+                              <select name="stajum_4" id="stajum_4" class="form-control select2_all" style="width: 100%;" data-placeholder="Pilih..." <?= $edited; ?>>
                                 <option value="">Pilih...</option>
                                 <?php
                                 $data = $this->db->query("SELECT * from tbl_barangsetup where  apogroup='KEMASANRACIK' ")->result();
                                 foreach ($data as $row) {
+                                  if($racik4) {
+                                    if($row->apocode == $racik4->kemasanracik) {
+                                      $satr4 = "selected";
+                                    } else {
+                                      $satr4 = "";
+                                    }
+                                  } else {
+                                    $satr4 = "";
+                                  }
                                 ?>
-                                  <option value="<?= $row->apocode; ?>">
+                                  <option value="<?= $row->apocode; ?>" <?= $satr4; ?>>
                                     <?= $row->aponame; ?></option>
                                 <?php } ?>
                               </select>
                             </td>
                             <td class="control-labelh rightJustified">ATURAN PAKAI</td>
                             <td>
-                              <select name="atpakai_4" id="atpakai_4" class="form-control select2_all" style="width: 100%;" data-placeholder="Pilih...">
+                              <select name="atpakai_4" id="atpakai_4" class="form-control select2_all" style="width: 100%;" data-placeholder="Pilih..." <?= $edited; ?>>
                                 <option value="">Pilih...</option>
                                 <?php
                                 $data = $this->db->query("SELECT * from tbl_barangsetup where  apogroup='ATURANPAKAI' ")->result();
                                 foreach ($data as $row) {
+                                  if($racik4) {
+                                    if($row->apocode == $racik4->aturanpakai) {
+                                      $atpr4 = "selected";
+                                    } else {
+                                      $atpr4 = "";
+                                    }
+                                  } else {
+                                    $atpr4 = "";
+                                  }
                                 ?>
-                                  <option value="<?= $row->apocode; ?>">
+                                  <option value="<?= $row->apocode; ?>" <?= $atpr4; ?>>
                                     <?= $row->aponame; ?></option>
                                 <?php } ?>
                               </select>
@@ -1006,40 +1556,85 @@
                             <th class="title-white" width="15%" style="text-align: center">Expired</th>
                           </thead>
                           <tbody>
-                            <tr id="racik4_no1">
-                              <td>
-                                <button type='button' onclick=hapusBarisIni_racik4(1) disabled class='btn btn-primary'><i class='fa fa-trash-o'>
-                              </td>
-                              <td>
-                                <select name="koderacik_4[]" id="koderacik_41" class="select2_el_farmasi_baranggud form-control" onchange="showbarangname_racik_4(this.value, 1)" style="width: 100%;"></select>
-                                <input name="nama_racik_4[]" id="nama_racik_41" type="hidden" class="form-control">
-                              </td>
-                              <td>
-                                <input name="satracik_4[]" id="satracik_41" type="text" class="form-control" readonly>
-                              </td>
-                              <td>
-                                <input name="qty_jualracik_4[]" id="qty_jualracik_41" onchange="totalline_racik_4(1); total_racik_4(); cekqty_racik_4(1); cekstok_racik_4(1)" value="1" type="text" class="form-control rightJustified">
-                              </td>
-                              <td>
-                                <input name="qty_racik_racik_4[]" id="qty_racik_racik_41" onchange="totalline_racik_4(1); total_racik_4(); cekqty_racik_4(1)" value="1" type="text" class="form-control rightJustified">
-                              </td>
-                              <td>
-                                <input name="hargajualracik_4[]" onchange="totalline_racik_4(1);" value="0" id="hargajualracik_41" type="text" class="form-control rightJustified" readonly>
-                              </td>
-                              <td>
-                                <input name="total_hrg_racik_4[]" onchange="totalline_racik_4(1);" value="0" id="total_hrg_racik_41" type="text" class="form-control rightJustified" readonly>
-                              </td>
-                              <td>
-                                <input name='exp_racik_4[]' id='exp_racik_41' type='date' class='form-control rightJustified' min="<?= date('Y-m-d'); ?>" value="<?= date('Y-m-d'); ?>">
-                              </td>
-                            </tr>
+                            <?php
+                              if($racik4) :
+                                $nor4 = 1;
+                                foreach($detil_r4x as $r4) :
+                            ?>
+                              <tr id="racik4_no<?= $nor4; ?>">
+                                <td>
+                                  <?php if($noedit == "") : ?>
+                                    <button type='button' id='btnhbi4<?= $nor4; ?>' onclick='hapusBarisIni_racik4(<?= $nor4; ?>)' class='btn btn-primary' <?php if($detil_r4 < 4) { echo "disabled"; } else { echo ""; } ?>><i class='fa fa-trash-o'></i></button>
+                                  <?php else : ?>
+                                    <button type='button' id='btnhbi4<?= $nor4; ?>' onclick='hapusBarisIni_racik4(<?= $nor4; ?>)' class='btn btn-primary' disabled><i class='fa fa-trash-o'></i></button>
+                                  <?php endif; ?>
+                                </td>
+                                <td>
+                                  <select name="koderacik_4[]" id="koderacik_4<?= $nor4; ?>" class="select2_el_farmasi_baranggud form-control" onchange="showbarangname_racik_4(this.value, <?= $nor4; ?>)" style="width: 100%;" <?= $edited; ?>>
+                                    <?php $barangr4 = $this->db->get_where("tbl_barang", ["kodebarang" => $r4->kodebarang])->row(); ?>
+                                    <option value="<?= $barangr4->kodebarang; ?>"><?= $barangr4->kodebarang." | ".$barangr4->namabarang; ?></option>
+                                  </select>
+                                  <input name="nama_racik_4[]" id="nama_racik_4<?= $nor4; ?>" type="hidden" class="form-control" value="<?= $barangr4->namabarang; ?>">
+                                </td>
+                                <td>
+                                  <input name="satracik_4[]" id="satracik_4<?= $nor4; ?>" type="text" class="form-control" readonly value="<?= $r4->satuan; ?>">
+                                </td>
+                                <td>
+                                  <input name="qty_jualracik_4[]" id="qty_jualracik_4<?= $nor4; ?>" onchange="totalline_racik_4(<?= $nor4; ?>); total_racik_4(); cekqty_racik_4(<?= $nor4; ?>); cekstok_racik_4(<?= $nor4; ?>)" value="<?= number_format($r4->qty); ?>" type="text" class="form-control rightJustified" <?= $edited2; ?>>
+                                </td>
+                                <td>
+                                  <input name="qty_racik_racik_4[]" id="qty_racik_racik_4<?= $nor4; ?>" onchange="totalline_racik_4(<?= $nor4; ?>); total_racik_4(); cekqty_racik_4(<?= $nor4; ?>)" value="<?= number_format($r4->qtyr); ?>" type="text" class="form-control rightJustified" <?= $edited2; ?>>
+                                </td>
+                                <td>
+                                  <input name="hargajualracik_4[]" onchange="totalline_racik_4(<?= $nor4; ?>);" value="<?= number_format($r4->price); ?>" id="hargajualracik_4<?= $nor4; ?>" type="text" class="form-control rightJustified" readonly>
+                                </td>
+                                <td>
+                                  <input name="total_hrg_racik_4[]" onchange="totalline_racik_4(<?= $nor4; ?>);" value="<?= number_format($r4->totalrp); ?>" id="total_hrg_racik_4<?= $nor4; ?>" type="text" class="form-control rightJustified" readonly>
+                                </td>
+                                <td>
+                                  <input name='exp_racik_4[]' id='exp_racik_4<?= $nor4; ?>' type='date' class='form-control rightJustified' min="<?= date('Y-m-d'); ?>" value="<?= date('Y-m-d', strtotime($r4->exp_date)); ?>" <?= $edited2; ?>>
+                                </td>
+                              </tr>
+                            <?php
+                                  $nor4++;
+                                endforeach;
+                              else :
+                            ?>
+                              <tr id="racik4_no1">
+                                <td>
+                                  <button type='button' id='btnhbi41' onclick="hapusBarisIni_racik4(1)" disabled class='btn btn-primary'><i class='fa fa-trash-o'></i></button>
+                                </td>
+                                <td>
+                                  <select name="koderacik_4[]" id="koderacik_41" class="select2_el_farmasi_baranggud form-control" onchange="showbarangname_racik_4(this.value, 1)" style="width: 100%;" <?= $edited; ?>></select>
+                                  <input name="nama_racik_4[]" id="nama_racik_41" type="hidden" class="form-control">
+                                </td>
+                                <td>
+                                  <input name="satracik_4[]" id="satracik_41" type="text" class="form-control" readonly>
+                                </td>
+                                <td>
+                                  <input name="qty_jualracik_4[]" id="qty_jualracik_41" onchange="totalline_racik_4(1); total_racik_4(); cekqty_racik_4(1); cekstok_racik_4(1)" value="1" type="text" class="form-control rightJustified" <?= $edited2; ?>>
+                                </td>
+                                <td>
+                                  <input name="qty_racik_racik_4[]" id="qty_racik_racik_41" onchange="totalline_racik_4(1); total_racik_4(); cekqty_racik_4(1)" value="1" type="text" class="form-control rightJustified" <?= $edited2; ?>>
+                                </td>
+                                <td>
+                                  <input name="hargajualracik_4[]" onchange="totalline_racik_4(1);" value="0" id="hargajualracik_41" type="text" class="form-control rightJustified" readonly>
+                                </td>
+                                <td>
+                                  <input name="total_hrg_racik_4[]" onchange="totalline_racik_4(1);" value="0" id="total_hrg_racik_41" type="text" class="form-control rightJustified" readonly>
+                                </td>
+                                <td>
+                                  <input name='exp_racik_4[]' id='exp_racik_41' type='date' class='form-control rightJustified' min="<?= date('Y-m-d'); ?>" value="<?= date('Y-m-d'); ?>" <?= $edited; ?>>
+                                </td>
+                              </tr>
+                            <?php endif; ?>
                           </tbody>
                         </table>
                         <table class="table" border="0" width="100%">
                           <tr class="wells">
                             <td colspan="2">
                               <input type="hidden" name='jml_racikan_4' id='jml_racikan_4'>
-                              <button type="button" onclick="tambah_racikan_4()" class="btn green"><i class="fa fa-plus"></i></button>
+                              <button type="button" onclick="tambah_racikan_4()" <?= $edited; ?> class="btn green"><i class="fa fa-plus"></i></button>
                             </td>
                             <td class="control-labelh leftJustified">TOTAL</td>
                             <td width="6%">&nbsp;</td>
@@ -1050,30 +1645,58 @@
                           </tr>
                           <tr>
                             <td width="30%" rowspan="6" class="control-labelh leftJustified">Resep Manual Dari Dokter
-                              <textarea type="text" class="form-control " name="resman_racik_4" id="resman_racik_4" value=""></textarea>
+                              <?php 
+                                if($racik4) {
+                                  $rdr4 = $racik4->resep_manual;
+                                } else {
+                                  $rdr4 = "";
+                                }
+                              ?>
+                              <textarea type="text" class="form-control " name="resman_racik_4" id="resman_racik_4" <?= $edited2; ?> value="<?= $rdr4; ?>"><?= $rdr4; ?></textarea>
                             </td>
                             <td rowspan="6" width="30%">&nbsp;</td>
                           </tr>
                           <tr>
                             <td class="control-labelh leftJustified">DISKON</td>
+                            <?php 
+                              if($racik4) {
+                                $diskonr4 = $racik4->diskon;
+                                $diskonrpr4 = $racik4->diskonrp;
+                              } else {
+                                $diskonr4 = 0;
+                                $diskonrpr4 = 0;
+                              }
+                            ?>
                             <td>
-                              <input type="text" class="form-control rightJustified" name="disknom_racik_4" id="disknom_racik_4" value="0" onchange="total_racik_4()">
+                              <input type="text" class="form-control rightJustified" name="disknom_racik_4" id="disknom_racik_4" value="<?= number_format($diskonr4); ?>" <?= $edited2; ?> onchange="total_racik_4()">
                             </td>
                             <td class="control-labelh leftJustified"><b>%</b></td>
                             <td>
-                              <input type="text" class="form-control rightJustified" name="disk_racik_4" id="disk_racik_4" value="0" readonly>
+                              <input type="text" class="form-control rightJustified" name="disk_racik_4" id="disk_racik_4" value="<?= number_format($diskonrpr4); ?>" readonly>
                             </td>
                           </tr>
                           <tr>
                             <td class="control-labelh leftJustified">
                               <label for="ppn">PPN</label>
                             </td>
+                            <?php 
+                              if($racik4) {
+                                $ppnrpr4 = $racik4->ppnrp;
+                              } else {
+                                $ppnrpr4 = 0;
+                              }
+                              if($ppnrpr4 > 0) {
+                                $cekppnr4 = "checked";
+                              } else {
+                                $cekppnr4 = "";
+                              }
+                            ?>
                             <td>
-                              <input class='form-control' type="checkbox" name="cek_ppn_racik_4" id="cek_ppn_racik_4" onchange="cek_ppn4()" disabled>
+                              <input class='form-control' type="checkbox" name="cek_ppn_racik_4" id="cek_ppn_racik_4" onchange="cek_ppn4()" <?= $cekppnr4; ?> disabled>
                             </td>
                             <td>&nbsp;</td>
                             <td>
-                              <input type="text" class="form-control rightJustified" name="ppn_racik_4" id="ppn_racik_4" value="0" readonly>
+                              <input type="text" class="form-control rightJustified" name="ppn_racik_4" id="ppn_racik_4" value="<?= number_format($ppnrpr4); ?>" readonly>
                             </td>
                           </tr>
                           <tr>
@@ -1081,7 +1704,14 @@
                             <td>&nbsp;</td>
                             <td>&nbsp;</td>
                             <td>
-                              <input type="text" class="form-control rightJustified" name="ongra_racik_4" id="ongra_racik_4" value="0" onchange="total_racik_4()">
+                              <?php 
+                                if($racik4) {
+                                  $ongkirr4 = $racik4->ongkosracik;
+                                } else {
+                                  $ongkirr4 = 0;
+                                }
+                              ?>
+                              <input type="text" class="form-control rightJustified" name="ongra_racik_4" id="ongra_racik_4" value="<?= number_format($ongkirr4); ?>" onchange="total_racik_4()" <?= $edited2; ?>>
                             </td>
                           </tr>
                           <tr>
@@ -1090,19 +1720,31 @@
                             <td>&nbsp;</td>
                             <td>
                               <input type="text" class="form-control rightJustified" name="totp_racik_4" id="totp_racik_4" value=0 readonly>
-                              <input type="hidden" id="ppn_pajak_racik_4" name="ppn_pajak_racik_4" value="<?= $ppn['prosentase']; ?>">
+                              <input type="hidden" id="ppn_pajak_racik_4" name="ppn_pajak_racik_4" value="<?= $ppn->prosentase; ?>">
                             </td>
                           </tr>
                           <tr>
                             <td width="10%" class="control-labelh leftJustified">TOTAL JUAL PASIEN</td>
+                            <?php 
+                              if($racik4) {
+                                $hargamr4 = $racik4->harga_manual;
+                              } else {
+                                $hargamr4 = 0;
+                              }
+                              if($hargamr4 > 0) {
+                                $cekhmr4 = "checked";
+                              } else {
+                                $cekhmr4 = "";
+                              }
+                            ?>
                             <td width="6%">
-                              <input type="checkbox" class="form-control" name="t_manual_racik_4" id="t_manual_racik_4" onclick="cekmanual_racik_4()">
+                              <input type="checkbox" class="form-control" name="t_manual_racik_4" id="t_manual_racik_4" onclick="cekmanual_racik_4()" <?= $cekhmr4; ?> <?= $edited; ?>>
                             </td>
                             <td width="2%">
                               &nbsp;
                             </td>
                             <td width="15%">
-                              <input type="text" class="form-control rightJustified" name="toto_racik_4" id="toto_racik_4" value="0" readonly onchange="t_jual_manual_racik_4()">
+                              <input type="text" class="form-control rightJustified" name="toto_racik_4" id="toto_racik_4" value="<?= number_format($hargamr4); ?>" readonly onchange="t_jual_manual_racik_4()">
                             </td>
                           </tr>
                           </tr>
@@ -1122,57 +1764,102 @@
                           <tr bgcolor="#c7f2ff">
                             <td width="10%" class="control-labelh rightJustified">JENIS</td>
                             <td width="20%" colspan="2">
-                              <select id="jenis_5" name="jenis_5" class="form-control select2_all" style="width: 100%;" data-placeholder="Pilih...">
+                              <select id="jenis_5" name="jenis_5" class="form-control select2_all" style="width: 100%;" data-placeholder="Pilih..." <?= $edited; ?>>
                                 <option value="">Pilih...</option>
                                 <?php
                                   $data = $this->db->query("SELECT * from tbl_barangsetup where apogroup ='JENISRACIK'")->result();
                                   foreach ($data as $row) {
+                                    if($racik5) {
+                                      if($row->apocode == $racik5->jenisracik) {
+                                        $jenisr5 = "selected";
+                                      } else {
+                                        $jenisr5 = "";
+                                      }
+                                    } else {
+                                      $jenisr5 = "";
+                                    }
                                 ?>
-                                  <option value="<?= $row->apocode; ?>"><?= $row->aponame; ?></option>
+                                  <option value="<?= $row->apocode; ?>" <?= $jenisr5; ?>><?= $row->aponame; ?></option>
                                 <?php } ?>
                               </select>
                             </td>
                             <td width="15%" class="control-labelh rightJustified">NAMA RACIKAN</td>
                             <td width="20%">
-                              <input type="text" class="form-control " name="namaracik_5" id="namaracik_5" value="" Placeholder="Nama">
+                              <?php 
+                                if($racik5) {
+                                  $namar5 = $racik5->namaracikan;
+                                } else {
+                                  $namar5 = "";
+                                }
+                              ?>
+                              <input type="text" class="form-control " name="namaracik_5" id="namaracik_5" value="<?= $namar5; ?>" Placeholder="Nama" <?= $edited2; ?>>
                             </td>
                             <td> &nbsp; </td>
                             <td width="15%" class="control-labelh rightJustified">CARA PAKAI</td>
                             <td>
-                              <select name="carapakai_5" id="carapakai_5" class="form-control select2_all" style="width: 100%;" data-placeholder="Pilih...">
+                              <select name="carapakai_5" id="carapakai_5" class="form-control select2_all" style="width: 100%;" data-placeholder="Pilih..." <?= $edited; ?>>
                                 <option value="">Pilih...</option>
-                                <option value="DIMINUM"> DIMINUM </option>
-                                <option value="DIOLES"> DIOLES </option>
-                                <option value="DITETES"> DITETES </option>
+                                <option value="DIMINUM" <?php if($racik5) { if($racik5->carapakai == "DIMINUM") { echo "selected"; } else { echo ""; } } else { echo ""; } ?>> DIMINUM </option>
+                                <option value="DIOLES" <?php if($racik5) { if($racik5->carapakai == "DIOLES") { echo "selected"; } else { echo ""; } } else { echo ""; } ?>> DIOLES </option>
+                                <option value="DITETES" <?php if($racik5) { if($racik5->carapakai == "DITETES") { echo "selected"; } else { echo ""; } } else { echo ""; } ?>> DITETES </option>
                               </select>
                             </td>
                           </tr>
                           <tr bgcolor="#c7f2ff">
                             <td class="control-labelh rightJustified">JUMLAH</td>
                             <td width="8%">
-                              <input type="number" class="form-control " name="jumracik_5" id="jumracik_5">
+                              <?php 
+                                if($racik5) {
+                                  if($racik5->jumlahracik) {
+                                    $jumr5 = $racik5->jumlahracik;
+                                  } else {
+                                    $jumr5 = "";
+                                  }
+                                } else {
+                                  $jumr5 = "";
+                                }
+                              ?>
+                              <input type="number" class="form-control " name="jumracik_5" id="jumracik_5" value="<?= $jumr5; ?>" <?= $edited2; ?>>
                             </td>
                             <td width="12%">
-                              <select name="stajum_5" id="stajum_5" class="form-control select2_all" style="width: 100%;" data-placeholder="Pilih...">
+                              <select name="stajum_5" id="stajum_5" class="form-control select2_all" style="width: 100%;" data-placeholder="Pilih..." <?= $edited; ?>>
                                 <option value="">Pilih...</option>
                                 <?php
                                 $data = $this->db->query("SELECT * from tbl_barangsetup where  apogroup='KEMASANRACIK' ")->result();
                                 foreach ($data as $row) {
+                                  if($racik5) {
+                                    if($row->apocode == $racik5->kemasanracik) {
+                                      $satr5 = "selected";
+                                    } else {
+                                      $satr5 = "";
+                                    }
+                                  } else {
+                                    $satr5 = "";
+                                  }
                                 ?>
-                                  <option value="<?= $row->apocode; ?>">
+                                  <option value="<?= $row->apocode; ?>" <?= $satr5; ?>>
                                     <?= $row->aponame; ?></option>
                                 <?php } ?>
                               </select>
                             </td>
                             <td class="control-labelh rightJustified">ATURAN PAKAI</td>
                             <td>
-                              <select name="atpakai_5" id="atpakai_5" class="form-control select2_all" style="width: 100%;" data-placeholder="Pilih...">
+                              <select name="atpakai_5" id="atpakai_5" class="form-control select2_all" style="width: 100%;" data-placeholder="Pilih..." <?= $edited; ?>>
                                 <option value="">Pilih...</option>
                                 <?php
                                 $data = $this->db->query("SELECT * from tbl_barangsetup where  apogroup='ATURANPAKAI' ")->result();
                                 foreach ($data as $row) {
+                                  if($racik5) {
+                                    if($row->apocode == $racik5->aturanpakai) {
+                                      $atpr5 = "selected";
+                                    } else {
+                                      $atpr5 = "";
+                                    }
+                                  } else {
+                                    $atpr5 = "";
+                                  }
                                 ?>
-                                  <option value="<?= $row->apocode; ?>">
+                                  <option value="<?= $row->apocode; ?>" <?= $atpr5; ?>>
                                     <?= $row->aponame; ?></option>
                                 <?php } ?>
                               </select>
@@ -1197,40 +1884,85 @@
                             <th class="title-white" width="15%" style="text-align: center">Expired</th>
                           </thead>
                           <tbody>
-                            <tr id="racik5_no1">
-                              <td>
-                                <button type='button' onclick=hapusBarisIni_racik5(1) disabled class='btn green'><i class='fa fa-trash-o'>
-                              </td>
-                              <td>
-                                <select name="koderacik_5[]" id="koderacik_51" class="select2_el_farmasi_baranggud form-control" onchange="showbarangname_racik_5(this.value, 1)" style="width: 100%;"></select>
-                                <input name="nama_racik_5[]" id="nama_racik_51" type="hidden" class="form-control">
-                              </td>
-                              <td>
-                                <input name="satracik_5[]" id="satracik_51" type="text" class="form-control" readonly>
-                              </td>
-                              <td>
-                                <input name="qty_jualracik_5[]" id="qty_jualracik_51" onchange="totalline_racik_5(1); total_racik_5(); cekqty_racik_5(1); cekstok_racik_5(1)" value="1" type="text" class="form-control rightJustified">
-                              </td>
-                              <td>
-                                <input name="qty_racik_racik_5[]" id="qty_racik_racik_51" onchange="totalline_racik_5(1); total_racik_5(); cekqty_racik_5(1)" value="1" type="text" class="form-control rightJustified">
-                              </td>
-                              <td>
-                                <input name="hargajualracik_5[]" onchange="totalline_racik_5(1);" value="0" id="hargajualracik_51" type="text" class="form-control rightJustified" readonly>
-                              </td>
-                              <td>
-                                <input name="total_hrg_racik_5[]" onchange="totalline_racik_5(1);" value="0" id="total_hrg_racik_51" type="text" class="form-control rightJustified" readonly>
-                              </td>
-                              <td>
-                                <input name='exp_racik_5[]' id='exp_racik_51' type='date' class='form-control rightJustified' min="<?= date('Y-m-d'); ?>" value="<?= date('Y-m-d'); ?>">
-                              </td>
-                            </tr>
+                            <?php
+                              if($racik5) :
+                                $nor5 = 1;
+                                foreach($detil_r5x as $r5) :
+                            ?>
+                              <tr id="racik5_no<?= $nor5; ?>">
+                                <td>
+                                  <?php if($noedit == "") : ?>
+                                    <button type='button' id='btnhbi5<?= $nor5; ?>' onclick='hapusBarisIni_racik5(<?= $nor5; ?>)' class='btn green' <?php if($detil_r5 < 5) { echo "disabled"; } else { echo ""; } ?>><i class='fa fa-trash-o'></i></button>
+                                  <?php else : ?>
+                                    <button type='button' id='btnhbi5<?= $nor5; ?>' onclick='hapusBarisIni_racik5(<?= $nor5; ?>)' class='btn green' disabled><i class='fa fa-trash-o'></i></button>
+                                  <?php endif; ?>
+                                </td>
+                                <td>
+                                  <select name="koderacik_5[]" id="koderacik_5<?= $nor5; ?>" class="select2_el_farmasi_baranggud form-control" onchange="showbarangname_racik_5(this.value, <?= $nor5; ?>)" style="width: 100%;" <?= $edited; ?>>
+                                    <?php $barangr5 = $this->db->get_where("tbl_barang", ["kodebarang" => $r5->kodebarang])->row(); ?>
+                                    <option value="<?= $barangr5->kodebarang; ?>"><?= $barangr5->kodebarang; ?></option>
+                                  </select>
+                                  <input name="nama_racik_5[]" id="nama_racik_5<?= $nor5; ?>" type="hidden" class="form-control" value="<?= $barangr5->namabarang; ?>">
+                                </td>
+                                <td>
+                                  <input name="satracik_5[]" id="satracik_5<?= $nor5; ?>" type="text" class="form-control" readonly value="<?= $r5->satuan; ?>">
+                                </td>
+                                <td>
+                                  <input name="qty_jualracik_5[]" id="qty_jualracik_5<?= $nor5; ?>" onchange="totalline_racik_5(<?= $nor5; ?>); total_racik_5(); cekqty_racik_5(<?= $nor5; ?>); cekstok_racik_5(<?= $nor5; ?>)" value="<?= number_format($r5->qty); ?>" type="text" class="form-control rightJustified" <?= $edited2; ?>>
+                                </td>
+                                <td>
+                                  <input name="qty_racik_racik_5[]" id="qty_racik_racik_5<?= $nor5; ?>" onchange="totalline_racik_5(<?= $nor5; ?>); total_racik_5(); cekqty_racik_5(<?= $nor5; ?>)" value="<?= number_format($r5->qtyr); ?>" type="text" class="form-control rightJustified" <?= $edited2; ?>>
+                                </td>
+                                <td>
+                                  <input name="hargajualracik_5[]" onchange="totalline_racik_5(<?= $nor5; ?>);" value="<?= number_format($r5->price); ?>" id="hargajualracik_5<?= $nor5; ?>" type="text" class="form-control rightJustified" readonly>
+                                </td>
+                                <td>
+                                  <input name="total_hrg_racik_5[]" onchange="totalline_racik_5(<?= $nor5; ?>);" value="<?= number_format($r5->totalrp); ?>" id="total_hrg_racik_5<?= $nor5; ?>" type="text" class="form-control rightJustified" readonly>
+                                </td>
+                                <td>
+                                  <input name='exp_racik_5[]' id='exp_racik_5<?= $nor5; ?>' type='date' class='form-control rightJustified' min="<?= date('Y-m-d'); ?>" value="<?= date('Y-m-d', strtotime($r5->exp_date)); ?>" <?= $edited2; ?>>
+                                </td>
+                              </tr>
+                            <?php
+                                  $nor5++;
+                                endforeach;
+                              else :
+                            ?>
+                              <tr id="racik5_no1">
+                                <td>
+                                  <button type='button' id='btnhbi51' onclick="hapusBarisIni_racik5(1)" disabled class='btn green'><i class='fa fa-trash-o'></i></button>
+                                </td>
+                                <td>
+                                  <select name="koderacik_5[]" id="koderacik_51" class="select2_el_farmasi_baranggud form-control" onchange="showbarangname_racik_5(this.value, 1)" style="width: 100%;" <?= $edited; ?>></select>
+                                  <input name="nama_racik_5[]" id="nama_racik_51" type="hidden" class="form-control">
+                                </td>
+                                <td>
+                                  <input name="satracik_5[]" id="satracik_51" type="text" class="form-control" readonly>
+                                </td>
+                                <td>
+                                  <input name="qty_jualracik_5[]" id="qty_jualracik_51" onchange="totalline_racik_5(1); total_racik_5(); cekqty_racik_5(1); cekstok_racik_5(1)" value="1" type="text" class="form-control rightJustified" <?= $edited2; ?>>
+                                </td>
+                                <td>
+                                  <input name="qty_racik_racik_5[]" id="qty_racik_racik_51" onchange="totalline_racik_5(1); total_racik_5(); cekqty_racik_5(1)" value="1" type="text" class="form-control rightJustified" <?= $edited2; ?>>
+                                </td>
+                                <td>
+                                  <input name="hargajualracik_5[]" onchange="totalline_racik_5(1);" value="0" id="hargajualracik_51" type="text" class="form-control rightJustified" readonly>
+                                </td>
+                                <td>
+                                  <input name="total_hrg_racik_5[]" onchange="totalline_racik_5(1);" value="0" id="total_hrg_racik_51" type="text" class="form-control rightJustified" readonly>
+                                </td>
+                                <td>
+                                  <input name='exp_racik_5[]' id='exp_racik_51' type='date' class='form-control rightJustified' min="<?= date('Y-m-d'); ?>" value="<?= date('Y-m-d'); ?>" <?= $edited2; ?>>
+                                </td>
+                              </tr>
+                            <?php endif; ?>
                           </tbody>
                         </table>
                         <table class="table" border="0" width="100%">
                           <tr class="wells">
                             <td colspan="2">
                               <input type="hidden" name='jml_racikan_5' id='jml_racikan_5'>
-                              <button type="button" onclick="tambah_racikan_5()" class="btn green"><i class="fa fa-plus"></i></button>
+                              <button type="button" onclick="tambah_racikan_5()" <?= $edited; ?> class="btn green"><i class="fa fa-plus"></i></button>
                             </td>
                             <td class="control-labelh leftJustified">TOTAL</td>
                             <td width="6%">&nbsp;</td>
@@ -1241,30 +1973,58 @@
                           </tr>
                           <tr>
                             <td width="30%" rowspan="6" class="control-labelh leftJustified">Resep Manual Dari Dokter
-                              <textarea type="text" class="form-control " name="resman_racik_5" id="resman_racik_5" value=""></textarea>
+                              <?php 
+                                if($racik5) {
+                                  $rdr5 = $racik5->resep_manual;
+                                } else {
+                                  $rdr5 = "";
+                                }
+                              ?>
+                              <textarea type="text" class="form-control " name="resman_racik_5" id="resman_racik_5" value="<?= $rdr5; ?>" <?= $edited2; ?>><?= $rdr5; ?></textarea>
                             </td>
                             <td rowspan="6" width="30%">&nbsp;</td>
                           </tr>
                           <tr>
                             <td class="control-labelh leftJustified">DISKON</td>
+                            <?php 
+                              if($racik5) {
+                                $diskonr5 = $racik5->diskon;
+                                $diskonrpr5 = $racik5->diskonrp;
+                              } else {
+                                $diskonr5 = 0;
+                                $diskonrpr5 = 0;
+                              }
+                            ?>
                             <td>
-                              <input type="text" class="form-control rightJustified" name="disknom_racik_5" id="disknom_racik_5" value="0" onchange="total_racik_5()">
+                              <input type="text" class="form-control rightJustified" name="disknom_racik_5" id="disknom_racik_5" value="<?= number_format($diskonr5); ?>" onchange="total_racik_5()" <?= $edited2; ?>>
                             </td>
                             <td class="control-labelh leftJustified"><b>%</b></td>
                             <td>
-                              <input type="text" class="form-control rightJustified" name="disk_racik_5" id="disk_racik_5" value="0" readonly>
+                              <input type="text" class="form-control rightJustified" name="disk_racik_5" id="disk_racik_5" value="<?= number_format($diskonrpr5); ?>" readonly>
                             </td>
                           </tr>
                           <tr>
                             <td class="control-labelh leftJustified">
                               <label for="ppn">PPN</label>
                             </td>
+                            <?php 
+                              if($racik5) {
+                                $ppnrpr5 = $racik5->ppnrp;
+                              } else {
+                                $ppnrpr5 = 0;
+                              }
+                              if($ppnrpr5 > 0) {
+                                $cekppnr5 = "checked";
+                              } else {
+                                $cekppnr5 = "";
+                              }
+                            ?>
                             <td>
-                              <input class='form-control' type="checkbox" name="cek_ppn_racik_5" id="cek_ppn_racik_5" onchange="cek_ppn5()" disabled>
+                              <input class='form-control' type="checkbox" name="cek_ppn_racik_5" id="cek_ppn_racik_5" onchange="cek_ppn5()" <?= $cekppnr5; ?> disabled>
                             </td>
                             <td>&nbsp;</td>
                             <td>
-                              <input type="text" class="form-control rightJustified" name="ppn_racik_5" id="ppn_racik_5" value="0" readonly>
+                              <input type="text" class="form-control rightJustified" name="ppn_racik_5" id="ppn_racik_5" value="<?= number_format($ppnrpr5); ?>" readonly>
                             </td>
                           </tr>
                           <tr>
@@ -1272,7 +2032,14 @@
                             <td>&nbsp;</td>
                             <td>&nbsp;</td>
                             <td>
-                              <input type="text" class="form-control rightJustified" name="ongra_racik_5" id="ongra_racik_5" value="0" onchange="total_racik_5()">
+                              <?php 
+                                if($racik5) {
+                                  $ongkirr5 = $racik5->ongkosracik;
+                                } else {
+                                  $ongkirr5 = 0;
+                                }
+                              ?>
+                              <input type="text" class="form-control rightJustified" name="ongra_racik_5" id="ongra_racik_5" value="<?= number_format($ongkirr5); ?>" onchange="total_racik_5()" <?= $edited2; ?>>
                             </td>
                           </tr>
                           <tr>
@@ -1281,19 +2048,31 @@
                             <td>&nbsp;</td>
                             <td>
                               <input type="text" class="form-control rightJustified" name="totp_racik_5" id="totp_racik_5" value=0 readonly>
-                              <input type="hidden" id="ppn_pajak_racik_5" name="ppn_pajak_racik_5" value="<?= $ppn['prosentase']; ?>">
+                              <input type="hidden" id="ppn_pajak_racik_5" name="ppn_pajak_racik_5" value="<?= $ppn->prosentase; ?>">
                             </td>
                           </tr>
                           <tr>
                             <td width="10%" class="control-labelh leftJustified">TOTAL JUAL PASIEN</td>
+                            <?php 
+                              if($racik5) {
+                                $hargamr5 = $racik5->harga_manual;
+                              } else {
+                                $hargamr5 = 0;
+                              }
+                              if($hargamr5 > 0) {
+                                $cekhmr5 = "checked";
+                              } else {
+                                $cekhmr5 = "";
+                              }
+                            ?>
                             <td width="6%">
-                              <input type="checkbox" class="form-control" name="t_manual_racik_5" id="t_manual_racik_5" onclick="cekmanual_racik_5()">
+                              <input type="checkbox" class="form-control" name="t_manual_racik_5" id="t_manual_racik_5" onclick="cekmanual_racik_5()" <?= $cekhmr5; ?> <?= $edited; ?>>
                             </td>
                             <td width="2%">
                               &nbsp;
                             </td>
                             <td width="15%">
-                              <input type="text" class="form-control rightJustified" name="toto_racik_5" id="toto_racik_5" value="0" readonly onchange="t_jual_manual_racik_5()">
+                              <input type="text" class="form-control rightJustified" name="toto_racik_5" id="toto_racik_5" value="<?= number_format($hargamr5); ?>" readonly onchange="t_jual_manual_racik_5()">
                             </td>
                           </tr>
                           </tr>
@@ -1305,8 +2084,10 @@
                 <div class="col-md-12">
                   <div class="row">
                     <div class="col-md-12">
-                      <button id="btnsimpan_racik1" type="button" onclick="save_racik_1()" class="btn blue"><i class="fa fa-save"></i> <b>Posting Racik</b></button>
-                      <a href="<?= base_url('penjualan_faktur') ?>" class="btn btn red"><i class="fa fa-undo"></i><b> KEMBALI </b></a>
+                      <?php if($noedit == "") : ?>
+                        <button id="btnsimpan_racik1" type="button" onclick="save_racik_1()" class="btn blue"><i class="fa fa-save"></i> <b>Posting Racik</b></button>
+                      <?php endif; ?>
+                      <a href="<?= site_url('penjualan_faktur') ?>" class="btn btn red"><i class="fa fa-undo"></i><b> KEMBALI </b></a>
                       <h4>
                         <span id="error" style="display:none; color:#F00">Terjadi Kesalahan... </span>
                         <span id="success" style="display:none; color:#0C0"><b>Data sudah disimpan...</b></span>
@@ -1466,7 +2247,7 @@
 </div>
 
 <?php
-  $this->load->view('template/footer');
+  $this->load->view('template/footer_tb');
 ?>
 
 <!-- MASTER -->
@@ -1512,7 +2293,7 @@
   }
 
   function _urlcetak() {
-    var baseurl = "<?= base_url() ?>";
+    var baseurl = "<?= site_url() ?>";
     var nobukti = $('#noresep').val();
     return baseurl + 'penjualan_faktur/cetak/?nobukti=' + nobukti;
   }
@@ -1557,8 +2338,8 @@
   $('#luppreposition').on('change', function() {
     var prep = this.value;
     $.ajax({
-      url: "<?php echo base_url();?>app/getvaluesetinghms/?kode=" + prep,
-      type: "GET",
+      url: "<?= site_url();?>app/getvaluesetinghms/?kode=" + prep,
+      type: "POST",
       dataType: 'json',
       success: function(data) {
         var hasil = eval(data.data.valuerp);
@@ -1569,6 +2350,7 @@
         }
       }
     });
+    total();
   });
 
   function tgllahirr() {
@@ -1811,62 +2593,40 @@
   }
 </script>
 
-<!-- RESEP -->
 <script>
+  $( document ).ready(function() {
+    var cekppn2     = $('#ppn2_').val();
+    total();
+    if("<?= $detil_r5; ?>" > 0) {
+      total_racik_5();
+    } else if("<?= $detil_r4; ?>" > 0) {
+      total_racik_4();
+    } else if("<?= $detil_r3; ?>" > 0) {
+      total_racik_3();
+    } else if("<?= $detil_r2; ?>" > 0) {
+      total_racik_2();
+    } else if("<?= $detil_r1; ?>" > 0) {
+      total_racik_1();
+    } else {}
+    var totalsemuax = $("#_vtotal").text();
+    var totalsemua = Number(parseInt(totalsemuax.replaceAll(",","")));
+    if(totalsemua > 0) {
+      $("#btnsimpan").attr("disabled", false);
+    } else {
+      $("#btnsimpan").attr("disabled", true);
+    }
+  });
+
   var rowCount;
   var rowCount2;
   var rowCount3;
   var rowCount4;
   var rowCount5;
   var arr = [1];
-  var idrow = 2;
-  
-  function getdataklinik() {
-    var xhttp;
-    var str = $('[name=pembeli]').val();
-    if (str == "") {} else {
-      initailizeSelect2_register(str);
-    }
-    if (str == 'atr') {
-      $(".hideProtek").hide()
-      $('#dokter').prop('disabled', true);
-    } else {
-      $(".hideProtek").show()
-      $('#dokter').prop('disabled', false);
-    }
-  }
-
-  function getkodebaru(gudang) {
-    initailizeSelect2_farmasi_baranggud(gudang);
-  }
-
-  function getinfopasien(rekmed) {
-    if(rekmed != '' || rekmed != null) {
-      $.ajax({
-        url: "<?= base_url(); ?>pasien/getinfopasien/?id=" + rekmed,
-        type: "GET",
-        dataType: "JSON",
-        success: function(data) {
-          $('#namapasien').val(data.namapas);
-          $('#nama_pas').val(data.namapas);
-          $('#alamat').val(data.alamat);
-          $('#phone').val(data.handphone);
-          $('#alamat').val(data.alamat);
-          $('#phone').val(data.handphone);
-          $('#jkel').val(data.jkel).change();
-          $('#tgllahir').val(data.tanggallahir);
-          $("#tgllahir").attr("disabled", true);
-          $('#lumur').val(hitung_usia(data.tanggallahir));
-        }
-      });
-    } else {
-      swal({
-        title : "NOMOR REKMED",
-        html : "Tidak ditemukan",
-        type : "error",
-        confirmButtonText : "OK"
-      });
-    }
+  if("<?= $jumdata; ?>" > 0){
+    var idrow = "<?= $jumdata; ?>" + 1;
+  } else {
+    var idrow = 2;
   }
 
   function tambah() {
@@ -1879,7 +2639,7 @@
     var table = $("#datatable");
 
     table.append(`<tr id="resep_tr`+idrow+`">
-      <td><button id='btnhapus` + idrow + `' type='button' onclick='hapusBarisIni(` + idrow + `)' class='btn red'><i class='fa fa-trash-o'></i> </button></td>
+      <td><button id='btnhbi` + idrow + `' type='button' onclick='hapusBarisIni(` + idrow + `)' class='btn red'><i class='fa fa-trash-o'></i> </button></td>
       <td>
         <select name="kode[]" id="kode`+idrow+`" class="select2_el_farmasi_baranggud form-control" onchange="showbarangcek(this.value, `+idrow+`)" style="width: 100%;"></select>
         <input name="nama[]" id="nama`+idrow+`" type="hidden" class="form-control">
@@ -1910,8 +2670,24 @@
   }
 
   function hapusBarisIni(param) {
-    $("#resep_tr" + param).remove();
-    total();
+    // var table = document.getElementById('datatable');
+    // var rowCount = table.rows.length;
+    // jumr = 0;
+    // for (var i = 1; i < (rowCount - 1); i++) {
+    //   jumr += i;
+    // }
+    // if(jumr < 2){
+    //   swal({
+    //     title: "BARANG",
+    //     html: "Harus Tersisa min 1",
+    //     type: "info",
+    //     confirmButtonText: "OK"
+    //   });
+    //   $("#btnhbi"+param).attr("disabled", true);
+    // } else {
+      $("#resep_tr" + param).remove();
+      total();
+    // }
   }
 
   function showbarangcek(str, id) {
@@ -1920,7 +2696,7 @@
     for (var i = 1; i < (rowCount - 1); i++) {
       var row = table.rows[i];
       kode = row.cells[1].children[0].value;
-      if (kode == str) {
+      if (str == kode) {
         $("#kode" + id).empty();
         $("#qty" + id).val(1);
         $("#sat" + id).val("");
@@ -1957,8 +2733,8 @@
     $('#harga' + vid).val(0);
     var customer  = $('#cust').val();
     $.ajax({
-      url: "<?= base_url(); ?>penjualan_faktur/getinfobarang/?kode=" + str + "&gudang=" + gudang,
-      type: "GET",
+      url: "<?= site_url(); ?>penjualan_faktur/getinfobarang/?kode=" + str + "&gudang=" + gudang,
+      type: "POST",
       dataType: "JSON",
       success: function(data) {
         var saldo = Number(data.saldoakhir);
@@ -1991,8 +2767,8 @@
     var vid = id;
     var customer = $('#cust').val();
     $.ajax({
-      url: "<?= base_url(); ?>penjualan_faktur/cekharga/?kode=" + str,
-      type: "GET",
+      url: "<?= site_url(); ?>penjualan_faktur/cekharga/?kode=" + str,
+      type: "POST",
       dataType: "JSON",
       success: function(data) {
       }
@@ -2060,27 +2836,6 @@
   }
 
   function totalline(id) {
-    // var table = document.getElementById('datatable');
-    // var row = table.rows[id];
-    // var harga = Number(row.cells[4].children[0].value.replace(/[^0-9\.]+/g, ""));
-    // jumlah = row.cells[2].children[0].value * harga;
-    // vdiskon = (row.cells[6].children[0].value / 100) * jumlah;
-    // if (eval(vdiskon) > 0) {
-    //   diskon = (row.cells[6].children[0].value / 100) * harga * row.cells[2].children[0].value;
-    //   row.cells[7].children[0].value = separateComma(diskon);
-    //   tot = harga - diskon;
-    // } else {
-    //   var diskon = Number(row.cells[6].children[0].value.replace(/[^0-9\.]+/g, ""));
-    //   row.cells[7].children[0].value = separateComma(diskon);
-    //   tot = harga - diskon;
-    // }
-    // tot = jumlah - diskon;
-    // kode = row.cells[1].children[0].value;
-    // cekhargajual(kode, harga, id);
-    // if (document.getElementById('ppn' + id).checked == true) {
-    //   tot = tot * 1.1;
-    // }
-    // row.cells[8].children[0].value = separateComma(tot);
     var hargax    = $("#harga"+id).val();
     var harga     = Number(parseInt(hargax.replaceAll(',','')));
     var qtyx      = $("#qty"+id).val();
@@ -2100,14 +2855,13 @@
     var kode    = $("#kode"+id).val();
     cekhargajual(kode, harga, id);
     if($("ppn"+id).checked == true) {
-      var tot = tot * "<?= $ppn['prosentase'] / 100; ?>";
+      var tot = tot * "<?= $ppn->prosentase / 100; ?>";
     }
     $("#jumlah"+id).val(separateComma(tot));
     total();
   }
 
   function total() {
-    var cekppn2 = $('#ppn2_').val();
     var table       = document.getElementById('datatable');
     var rowCount    = table.rows.length;
     var subtotal    = 0;
@@ -2126,7 +2880,7 @@
     }
     var total         = subtotal - diskon;
     var dpp           = total / (111 / 100);
-    var ppn           = dpp * cekppn2 / 100;
+    var ppn           = dpp * cekppn2;
     if(document.getElementById("t_manual_racik_1").checked == true) {
       var toto1x = $("#toto_racik_1").val();
       var toto1 = Number(toto1x.replaceAll(',',''));     
@@ -2174,6 +2928,11 @@
     document.getElementById("_vtotal").innerHTML = separateComma((total+toto1+toto2+toto3+toto4+toto5).toFixed(0));
     document.getElementById("_vdpp").innerHTML = separateComma(dpp.toFixed(0));
     document.getElementById("_vracik").innerHTML = separateComma((toto1+toto2+toto3+toto4+toto5).toFixed(0));
+    if((total+toto1+toto2+toto3+toto4+toto5) > 0) {
+      $("#btnsimpan").attr("disabled", false);
+    } else {
+      $("#btnsimpan").attr("disabled", true);
+    }
   }
 
   function ceksaldoakhir(id) {
@@ -2205,24 +2964,41 @@
   }
 
   function ceksave() {
-    swal({
-      title: 'Apakah Menggunakan Racikan ?',
-      text: "",
-      type: 'info',
-      showCancelButton: true,
-      confirmButtonClass: 'btn btn-success',
-      cancelButtonClass: 'btn btn-success',
-      confirmButtonColor: '#227dff',
-      cancelButtonColor: '#d33',
-      confirmButtonText: 'PAKAI RACIKAN',
-      cancelButtonText: 'TIDAK',
-    }).then(function() {
+    if("<?= $racikansem; ?>" > 0) {
       bayar();
-    }, function(dismiss) {
-      if (dismiss === 'cancel') {
-        save();
-      }
-    })
+    } else {
+      swal({
+        title: 'Apakah Menggunakan Racikan ?',
+        text: "",
+        type: 'info',
+        showCancelButton: true,
+        confirmButtonClass: 'btn btn-success',
+        cancelButtonClass: 'btn btn-success',
+        confirmButtonColor: '#227dff',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'PAKAI RACIKAN',
+        cancelButtonText: 'TIDAK',
+      }).then(function() {
+        bayar();
+      }, function(dismiss) {
+        if (dismiss === 'cancel') {
+          save();
+        }
+      })
+    }
+  }
+
+  function getdataklinik() {
+    var xhttp;
+    var str = $('[name=pembeli]').val();
+    if (str == "") {} else {
+      initailizeSelect2_register(str);
+    }
+    if (str == 'atr') {
+      $('#dokter').prop('disabled', true);
+    } else {
+      $('#dokter').prop('disabled', false);
+    }
   }
 
   function bayar() {
@@ -2244,7 +3020,7 @@
 
     var totalxx = Number(parseInt(($('#_vtotal').text()).replaceAll(',','')));
     var total = totalxx;
-    console.log(total)
+    
 
     var cekhp = $('#reg_cekhp').is(':checked');
     if (pembeli == 'atr' && dokter == '') {
@@ -2277,8 +3053,8 @@
       }
     } else {
       swal({
-        title: "RESEP TERBENTUK ",
-        html: "DENGAN NOMINAL <b>" + total + "</b> <br><br><p> Lanjut Ke Proses Racik...</p>",
+        title: "RESEP & RACIKAN TERBENTUK ",
+        html: "DENGAN NOMINAL <b>" + separateComma(total) + "</b> <br><br><p> Lanjut Ke Proses Racik...</p>",
         type: "info",
         confirmButtonText: "OK"
       }).then((value) => {
@@ -2321,6 +3097,8 @@
       var totalx = $('#totp_racik_1').val();
       var h_manual = 0;
     }
+
+    
     for (var i = 1; i < rowCount; i++) {
       var row       = table.rows[i];
       var kode      = row.cells[1].children[0].value;
@@ -2381,7 +3159,7 @@
     } else {
       var params = '?vtotal=' + jumlahtot + "&racikan=" + total;
       $.ajax({
-        url: '<?php echo site_url('penjualan_faktur/save/1') ?>' + params,
+        url: '<?= site_url('penjualan_faktur/save/2/') ?>' + params,
         data: $('#frmpenjualan').serialize(),
         dataType: "JSON",
         type: 'POST',
@@ -2441,16 +3219,37 @@
 
 <!-- RACIKAN -->
 <script>
-  var idrow2 = 2;
-  var idrowobat_1 = 2;
-  var idrowobat_2 = 2;
-  var idrowobat_3 = 2;
-  var idrowobat_4 = 2;
-  var idrowobat_5 = 2;
-  var cekppn2 = '<?= $ppn["prosentase"] / 100; ?>';
-  var cekppn3 = '<?= $ppn["prosentase"] / 100; ?>';
-  var cekppn4 = '<?= $ppn["prosentase"] / 100; ?>';
-  var cekppn5 = '<?= $ppn["prosentase"] / 100; ?>';
+  if(<?= $detil_r1; ?> > 0) {
+    var idrowobat_1 = <?= $detil_r1; ?> + 1;
+  } else {
+    var idrowobat_1 = 2;
+  }
+  if(<?= $detil_r2; ?> > 0) {
+    var idrowobat_2 = <?= $detil_r2; ?> + 1;
+  } else {
+    var idrowobat_2 = 2;
+  }
+  if(<?= $detil_r3; ?> > 0) {
+    var idrowobat_3 = <?= $detil_r3; ?> + 1;
+  } else {
+    var idrowobat_3 = 2;
+  }
+  if(<?= $detil_r4; ?> > 0) {
+    var idrowobat_4 = <?= $detil_r4; ?> + 1;
+  } else {
+    var idrowobat_4 = 2;
+  }
+  if(<?= $detil_r5; ?> > 0) {
+    var idrowobat_5 = <?= $detil_r5; ?> + 1;
+  } else {
+    var idrowobat_5 = 2;
+  }
+
+  var cekppn  = '<?= $ppn->prosentase / 100; ?>';
+  var cekppn2 = '<?= $ppn->prosentase / 100; ?>';
+  var cekppn3 = '<?= $ppn->prosentase / 100; ?>';
+  var cekppn4 = '<?= $ppn->prosentase / 100; ?>';
+  var cekppn5 = '<?= $ppn->prosentase / 100; ?>';
 
   // RACIKAN 1
 
@@ -2465,7 +3264,7 @@
 
     table.append(`<tr id="racik_no`+idrowobat_1+`">
       <td>
-        <button type='button' onclick="hapusBarisIni_racik1(`+idrowobat_1+`)" class='btn purple'><i class='fa fa-trash-o'></i></button>
+        <button type='button' id='btnhbi1`+idrowobat_1+`' onclick="hapusBarisIni_racik1(`+idrowobat_1+`)" class='btn purple'><i class='fa fa-trash-o'></i></button>
       </td>
       <td>
         <select name="koderacik_1[]" id="koderacik_1`+idrowobat_1+`" class="select2_el_farmasi_baranggud form-control" onchange="showbarangcek_racik1(this.value, `+idrowobat_1+`)" style="width: 100%;"></select>
@@ -2496,8 +3295,24 @@
   }
 
   function hapusBarisIni_racik1(param) {
-    $("#racik_no" + param).remove();
-    total_racik_1();
+    var table = document.getElementById('datatble_racikan1');
+    var rowCount = table.rows.length;
+    jumr1 = 0;
+    for (var i = 1; i < (rowCount - 1); i++) {
+      jumr1 += i;
+    }
+    if(jumr1 > 0){
+      $("#racik_no" + param).remove();
+      total_racik_1();
+    } else {
+      swal({
+        title: "BARANG",
+        html: "Harus Tersisa min 1",
+        type: "info",
+        confirmButtonText: "OK"
+      });
+      $("#btnhbi1"+param).attr("disabled", true);
+    }
   }
 
   function showbarangcek_racik1(str, id) {
@@ -2528,7 +3343,6 @@
   }
 
   function showbarangname_racik_1(str, id) {
-    var xhttp;
     var vid = id;
     $('#satracik_1' + vid).val('');
     var qty = $('#qty_jualracik_1' + vid).val();
@@ -2541,8 +3355,8 @@
     $('#hargajualracik_1' + vid).val(0);
     var customer  = $('#cust').val();
     $.ajax({
-      url: "<?= base_url(); ?>penjualan_faktur/getinfobarang/?kode=" + str + "&gudang=" + gudang,
-      type: "GET",
+      url: "<?= site_url(); ?>penjualan_faktur/getinfobarang/?kode=" + str + "&gudang=" + gudang,
+      type: "POST",
       dataType: "JSON",
       success: function(data) {
         var saldo = Number(data.saldoakhir);
@@ -2616,13 +3430,12 @@
   }
 
   function totalline_racik_1(id) {
-    var table = document.getElementById('datatble_racikan1');
-    var row = table.rows[id];
-    var kode = row.cells[1].children[0].value;
-    var harga = Number(row.cells[5].children[0].value.replace(/[^0-9\.]+/g, ""));
-    var qtyjual = Number(row.cells[3].children[0].value.replace(/[^0-9\.]+/g, ""));
-    jumlah = qtyjual * harga;
-    row.cells[6].children[0].value = separateComma(jumlah);
+    var harga       = $("#hargajualracik_1"+id).val();
+    var harga1      = Number(parseInt(harga.replaceAll(",","")));
+    var qtyjual     = $("#qty_jualracik_1"+id).val();
+    var qtyjual1    = Number(parseInt(qtyjual.replaceAll(",","")));
+    jumlah1         = qtyjual1 * harga1;
+    $("#total_hrg_racik_1"+id).val(separateComma(jumlah1));
     total_racik_3();
     t_jual_manual_racik_1();
   }
@@ -2663,7 +3476,7 @@
   }
 
   function total_racik_1() {
-    total_racik_3();
+    total_racik_2();
   }
 
   // RACIKAN 2
@@ -2679,7 +3492,7 @@
 
     table.append(`<tr id="racik2_no`+idrowobat_2+`">
       <td>
-        <button type='button' onclick="hapusBarisIni_racik2(`+idrowobat_2+`)" class='btn red'><i class='fa fa-trash-o'></i></button>
+        <button type='button' id='btnhbi2`+idrowobat_2+`' onclick="hapusBarisIni_racik2(`+idrowobat_2+`)" class='btn red'><i class='fa fa-trash-o'></i></button>
       </td>
       <td>
         <select name="koderacik_2[]" id="koderacik_2`+idrowobat_2+`" class="select2_el_farmasi_baranggud form-control" onchange="showbarangcek_racik2(this.value, `+idrowobat_2+`)" style="width: 100%;"></select>
@@ -2710,8 +3523,24 @@
   }
 
   function hapusBarisIni_racik2(param) {
-    $("#racik2_no" + param).remove();
-    total_racik_2();
+    var table = document.getElementById('datatble_racikan2');
+    var rowCount = table.rows.length;
+    jumr2 = 0;
+    for (var i = 1; i < (rowCount - 1); i++) {
+      jumr2 += i;
+    }
+    if(jumr2 > 0){
+      $("#racik2_no" + param).remove();
+      total_racik_2();
+    } else {
+      swal({
+        title: "BARANG",
+        html: "Harus Tersisa min 1",
+        type: "info",
+        confirmButtonText: "OK"
+      });
+      $("#btnhbi2"+param).attr("disabled", true);
+    }
   }
 
   function showbarangcek_racik2(str, id) {
@@ -2755,8 +3584,8 @@
     $('#hargajualracik_2' + vid).val(0);
     var customer  = $('#cust').val();
     $.ajax({
-      url: "<?= base_url(); ?>penjualan_faktur/getinfobarang/?kode=" + str + "&gudang=" + gudang,
-      type: "GET",
+      url: "<?= site_url(); ?>penjualan_faktur/getinfobarang/?kode=" + str + "&gudang=" + gudang,
+      type: "POST",
       dataType: "JSON",
       success: function(data) {
         var saldo = Number(data.saldoakhir);
@@ -2828,13 +3657,12 @@
   }
 
   function totalline_racik_2(id) {
-    var table2 = document.getElementById('datatble_racikan2');
-    var row2 = table2.rows[id];
-    var kode2 = row2.cells[1].children[0].value;
-    var harga2 = Number(row2.cells[5].children[0].value.replace(/[^0-9\.]+/g, ""));
-    var qtyjual2 = Number(row2.cells[3].children[0].value.replace(/[^0-9\.]+/g, ""));
-    jumlah2 = qtyjual2 * harga2;
-    row2.cells[6].children[0].value = separateComma(jumlah2);
+    var harga       = $("#hargajualracik_2"+id).val();
+    var harga2      = Number(parseInt(harga.replaceAll(",","")));
+    var qtyjual     = $("#qty_jualracik_2"+id).val();
+    var qtyjual2    = Number(parseInt(qtyjual.replaceAll(",","")));
+    jumlah2         = qtyjual2 * harga2;
+    $("#total_hrg_racik_2"+id).val(separateComma(jumlah2));
     total_racik_3();
     t_jual_manual_racik_2();
   }
@@ -2891,7 +3719,7 @@
 
     table.append(`<tr id="racik3_no`+idrowobat_3+`">
       <td>
-        <button type='button' onclick="hapusBarisIni_racik3(`+idrowobat_3+`)" class='btn yellow'><i class='fa fa-trash-o'></i></button>
+        <button type='button' id='btnhbi3`+idrowobat_3+`' onclick="hapusBarisIni_racik3(`+idrowobat_3+`)" class='btn yellow'><i class='fa fa-trash-o'></i></button>
       </td>
       <td>
         <select name="koderacik_3[]" id="koderacik_3`+idrowobat_3+`" class="select2_el_farmasi_baranggud form-control" onchange="showbarangcek_racik3(this.value, `+idrowobat_3+`)" style="width: 100%;"></select>
@@ -2922,8 +3750,24 @@
   }
 
   function hapusBarisIni_racik3(param) {
-    $("#racik3_no" + param).remove();
-    total_racik_3();
+    var table = document.getElementById('datatble_racikan3');
+    var rowCount = table.rows.length;
+    jumr3 = 0;
+    for (var i = 1; i < (rowCount - 1); i++) {
+      jumr3 += i;
+    }
+    if(jumr3 > 0){
+      $("#racik3_no" + param).remove();
+      total_racik_3();
+    } else {
+      swal({
+        title: "BARANG",
+        html: "Harus Tersisa min 1",
+        type: "info",
+        confirmButtonText: "OK"
+      });
+      $("#btnhbi3"+param).attr("disabled", true);
+    }
   }
 
   function showbarangcek_racik3(str, id) {
@@ -2967,8 +3811,8 @@
     $('#hargajualracik_3' + vid).val(0);
     var customer  = $('#cust').val();
     $.ajax({
-      url: "<?= base_url(); ?>penjualan_faktur/getinfobarang/?kode=" + str + "&gudang=" + gudang,
-      type: "GET",
+      url: "<?= site_url(); ?>penjualan_faktur/getinfobarang/?kode=" + str + "&gudang=" + gudang,
+      type: "POST",
       dataType: "JSON",
       success: function(data) {
         var saldo = Number(data.saldoakhir);
@@ -3040,13 +3884,12 @@
   }
 
   function totalline_racik_3(id) {
-    var table3 = document.getElementById('datatble_racikan3');
-    var row3 = table3.rows[id];
-    var kode3 = row3.cells[1].children[0].value;
-    var harga3 = Number(row3.cells[5].children[0].value.replace(/[^0-9\.]+/g, ""));
-    var qtyjual3 = Number(row3.cells[3].children[0].value.replace(/[^0-9\.]+/g, ""));
-    jumlah3 = qtyjual3 * harga3;
-    row3.cells[6].children[0].value = separateComma(jumlah3);
+    var harga       = $("#hargajualracik_3"+id).val();
+    var harga3      = Number(parseInt(harga.replaceAll(",","")));
+    var qtyjual     = $("#qty_jualracik_3"+id).val();
+    var qtyjual3    = Number(parseInt(qtyjual.replaceAll(",","")));
+    jumlah3         = qtyjual3 * harga3;
+    $("#total_hrg_racik_3"+id).val(separateComma(jumlah3));
     total_racik_3();
     t_jual_manual_racik_3();
   }
@@ -3103,7 +3946,7 @@
 
     table.append(`<tr id="racik4_no`+idrowobat_4+`">
       <td>
-        <button type='button' onclick="hapusBarisIni_racik4(`+idrowobat_4+`)" class='btn blue'><i class='fa fa-trash-o'></i></button>
+        <button type='button' id='btnhbi4`+idrowobat_4+`' onclick="hapusBarisIni_racik4(`+idrowobat_4+`)" class='btn blue'><i class='fa fa-trash-o'></i></button>
       </td>
       <td>
         <select name="koderacik_4[]" id="koderacik_4`+idrowobat_4+`" class="select2_el_farmasi_baranggud form-control" onchange="showbarangcek_racik4(this.value, `+idrowobat_4+`)" style="width: 100%;"></select>
@@ -3134,8 +3977,24 @@
   }
 
   function hapusBarisIni_racik4(param) {
-    $("#racik4_no" + param).remove();
-    total_racik_4();
+    var table = document.getElementById('datatble_racikan4');
+    var rowCount = table.rows.length;
+    jumr4 = 0;
+    for (var i = 1; i < (rowCount - 1); i++) {
+      jumr4 += i;
+    }
+    if(jumr4 > 0){
+      $("#racik4_no" + param).remove();
+      total_racik_4();
+    } else {
+      swal({
+        title: "BARANG",
+        html: "Harus Tersisa min 1",
+        type: "info",
+        confirmButtonText: "OK"
+      });
+      $("#btnhbi4"+param).attr("disabled", true);
+    }
   }
 
   function showbarangcek_racik4(str, id) {
@@ -3179,8 +4038,8 @@
     $('#hargajualracik_4' + vid).val(0);
     var customer  = $('#cust').val();
     $.ajax({
-      url: "<?= base_url(); ?>penjualan_faktur/getinfobarang/?kode=" + str + "&gudang=" + gudang,
-      type: "GET",
+      url: "<?= site_url(); ?>penjualan_faktur/getinfobarang/?kode=" + str + "&gudang=" + gudang,
+      type: "POST",
       dataType: "JSON",
       success: function(data) {
         var saldo = Number(data.saldoakhir);
@@ -3252,13 +4111,12 @@
   }
 
   function totalline_racik_4(id) {
-    var table4 = document.getElementById('datatble_racikan4');
-    var row4 = table4.rows[id];
-    var kode4 = row4.cells[1].children[0].value;
-    var harga4 = Number(row4.cells[5].children[0].value.replace(/[^0-9\.]+/g, ""));
-    var qtyjual4 = Number(row4.cells[3].children[0].value.replace(/[^0-9\.]+/g, ""));
-    jumlah4 = qtyjual4 * harga4;
-    row4.cells[6].children[0].value = separateComma(jumlah4);
+    var harga       = $("#hargajualracik_4"+id).val();
+    var harga4      = Number(parseInt(harga.replaceAll(",","")));
+    var qtyjual     = $("#qty_jualracik_4"+id).val();
+    var qtyjual4    = Number(parseInt(qtyjual.replaceAll(",","")));
+    jumlah4         = qtyjual4 * harga4;
+    $("#total_hrg_racik_4"+id).val(separateComma(jumlah4));
     total_racik_4();
     t_jual_manual_racik_4();
   }
@@ -3315,7 +4173,7 @@
 
     table.append(`<tr id="racik5_no`+idrowobat_5+`">
       <td>
-        <button type='button' onclick="hapusBarisIni_racik5(`+idrowobat_5+`)" class='btn green'><i class='fa fa-trash-o'></i></button>
+        <button type='button' id='btnhbi5`+idrowobat_5+`' onclick="hapusBarisIni_racik5(`+idrowobat_5+`)" class='btn green'><i class='fa fa-trash-o'></i></button>
       </td>
       <td>
         <select name="koderacik_5[]" id="koderacik_5`+idrowobat_5+`" class="select2_el_farmasi_baranggud form-control" onchange="showbarangcek_racik5(this.value, `+idrowobat_5+`)" style="width: 100%;"></select>
@@ -3346,8 +4204,24 @@
   }
 
   function hapusBarisIni_racik5(param) {
-    $("#racik5_no" + param).remove();
-    total_racik_5();
+    var table = document.getElementById('datatble_racikan5');
+    var rowCount = table.rows.length;
+    jumr5 = 0;
+    for (var i = 1; i < (rowCount - 1); i++) {
+      jumr5 += i;
+    }
+    if(jumr5 > 0){
+      $("#racik5_no" + param).remove();
+      total_racik_5();
+    } else {
+      swal({
+        title: "BARANG",
+        html: "Harus Tersisa min 1",
+        type: "info",
+        confirmButtonText: "OK"
+      });
+      $("#btnhbi5"+param).attr("disabled", true);
+    }
   }
 
   function showbarangcek_racik5(str, id) {
@@ -3391,8 +4265,8 @@
     $('#hargajualracik_5' + vid).val(0);
     var customer  = $('#cust').val();
     $.ajax({
-      url: "<?= base_url(); ?>penjualan_faktur/getinfobarang/?kode=" + str + "&gudang=" + gudang,
-      type: "GET",
+      url: "<?= site_url(); ?>penjualan_faktur/getinfobarang/?kode=" + str + "&gudang=" + gudang,
+      type: "POST",
       dataType: "JSON",
       success: function(data) {
         var saldo = Number(data.saldoakhir);
@@ -3464,13 +4338,12 @@
   }
 
   function totalline_racik_5(id) {
-    var table5 = document.getElementById('datatble_racikan5');
-    var row5 = table5.rows[id];
-    var kode5 = row5.cells[1].children[0].value;
-    var harga5 = Number(row5.cells[5].children[0].value.replace(/[^0-9\.]+/g, ""));
-    var qtyjual5 = Number(row5.cells[3].children[0].value.replace(/[^0-9\.]+/g, ""));
-    jumlah5 = qtyjual5 * harga5;
-    row5.cells[6].children[0].value = separateComma(jumlah5);
+    var harga       = $("#hargajualracik_5"+id).val();
+    var harga5      = Number(parseInt(harga.replaceAll(",","")));
+    var qtyjual     = $("#qty_jualracik_5"+id).val();
+    var qtyjual5    = Number(parseInt(qtyjual.replaceAll(",","")));
+    jumlah5         = qtyjual5 * harga5;
+    $("#total_hrg_racik_5"+id).val(separateComma(jumlah5));
     total_racik_5();
     t_jual_manual_racik_5();
   }
@@ -3785,15 +4658,12 @@
     $("#_vtotal").text(separateComma((vracik + st).toFixed(0)));
 
     if (tjumlah > 0) {
-      document.getElementById("btnsimpan_racik1").disabled = false;
+      $("#btnsimpan_racik1").attr("disabled", false);
     } else {
-      document.getElementById("btnsimpan_racik1").disabled = true;
+      $("#btnsimpan_racik1").attr("disabled", true);
     }
   }
-</script>
 
-<!-- SIMPAN RESEP -->
-<script>
   function save_racik_1() {
     var bb            = $('[name="bb"]').val();
     var tgllahir      = $('[name="tgllahir"]').val();
@@ -4379,7 +5249,7 @@
       var param           = "?toto_racikan_1=" + toto_racikan_1 + "&disk_racik_1=" + disk_racik_1 + "&totp_racik_1=" + totp_racik_1 + "&resman_racik_1=" + resman_1 + "&cek_rm1=" + h_manual + "&jml1=" + jmlx1 + "&harga_manual1=" + totalxx;
     }
     $.ajax({
-      url: '<?php echo site_url() ?>penjualan_faktur/saveracik/1/' + param,
+      url: '<?= site_url() ?>penjualan_faktur/saveracik/2/' + param,
       data: $('#frmpenjualan').serialize(),
       type: "POST",
       dataType: "JSON",
@@ -4400,6 +5270,167 @@
   }
 </script>
 
-</body>
+<div class="modal fade" id="modal-detail"  tabindex="-1"role="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-md" >
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5><b>Daftar Resep</b></h5>
+      </div>
+      <div class="modal-body">
+        <table class="table table-bordered table-striped" id="tbl2" style="margin:auto !important">
+          <thead>
+            <tr class="page-breadcrumb breadcrumb">
+              <th class="text-center title-white">Nama</th>
+              <th class="text-center title-white">Aturan Pakai</th>
+              <th class="text-center title-white">Check</th>
+            </tr>
+          </thead>
+          <tbody id="daftar_resep"> </tbody>
+        </table>
+      </div>
+      <div class="modal-footer">
+        <button type="button" id="cetak_etiket" onclick="urlcetak_etiket()" class="btn btn-success"><b>
+          <i class="fa fa-print"></i> CETAK</b>
+        </button>
+        <button type="button" class="btn red" data-dismiss="modal"><i class="fa fa-close"></i> Tutup</b></button>
+      </div>
+    </div>
+  </div>
+</div>
 
-</html>
+<div class="modal fade" id="modal-telaah"  tabindex="-1" role="dialog" aria-hidden="false">
+  <div class="modal-dialog modal-md" >
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5><b>Daftar Telaah</b></h5>
+      </div>
+      <div class="modal-body">
+        <table class="table table-bordered table-striped" id="tbl2" style="margin:auto !important">
+          <thead>
+            <tr class="page-breadcrumb breadcrumb">
+              <th class="text-center title-white">No</th>
+              <th class="text-center title-white">Aspek Telaah</th>
+              <th class="text-center title-white">Check</th>
+            </tr>
+          </thead>
+          <tbody id="daftar_telaah"> </tbody>
+        </table>
+      </div>
+      <div class="modal-footer">
+        <button type="button" id="cetak_etiket" onclick="urlcetak_telaah()" class="btn btn-success"><b>
+          <i class="fa fa-print"></i> CETAK</b>
+        </button>
+        <button type="button" class="btn red" data-dismiss="modal"><i class="fa fa-close"></i> Tutup</b></button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CETAK -->
+<script>
+  function etiket() {
+    var noresep = $('[name="noresep"]').val();
+    $.ajax({
+      url        : "<?= site_url('Penjualan_faktur/getctk/?noresep='); ?>" + noresep,
+      type       : "POST",
+      dataType   : "JSON",
+      success: function(data) {
+        $('#daftar_resep').empty();
+        $.each(data, function(key, value) {    
+          if(value.cetak==1){ 
+            checked = 'checked';   
+          }else{
+            checked = ''; 
+          }                
+          $('#daftar_resep').append("<tr>\
+            <td>"+value.namabarang1+"</td>\
+            <td class='text-center'>"+value.nm_atpakai+"</td>\
+            <td style='text-align: center'><input class='form-control' type='checkbox' id='kd_barang["+value.kodebarang+"]' name='kd_barang["+value.kodebarang+"]' onclick=updt_ctk('"+value.kodebarang+"'); "+checked+"></td>\
+          </tr>");
+        });
+      }
+    });
+    $('#modal-detail').modal('show');
+  }
+     
+  function updt_ctk(kd) {
+    var baseurl   = "<?= site_url(); ?>";
+    var noresep   = $('[name="noresep"]').val();
+    if (document.getElementById('kd_barang['+kd+']').checked == true) {
+      stat = 1;
+    }else{
+      stat = 0;
+    }
+    $.ajax({
+      url        : "<?= site_url('Penjualan_faktur/updt_ctk/?kd='); ?>" + kd+ "&resep=" + noresep+ "&stat=" + stat,
+      type       : "POST",
+      dataType   : "JSON",
+    });
+  }
+
+  function urlcetak_etiket() {
+    var baseurl       = "<?= site_url() ?>";
+    var noresep       = $('[name="noresep"]').val();
+    $('#modal-detail').modal('hide');
+    var ctk           = baseurl + 'penjualan_faktur/ctk_etiket/?resep=' + noresep;
+    window.open(ctk,'_blank');
+  }
+
+  function telaah() {
+    var noresep = $('[name="noresep"]').val();
+    $.ajax({
+      url        : "<?= site_url(); ?>Penjualan_faktur/get_telaah/?noresep=" + noresep,
+      type       : "POST",
+      dataType   : "JSON",
+      success: function(data) {
+        $('#daftar_telaah').empty();
+        $no = 1;
+        $.each(data, function(key, value) {    
+          if(value.cek==1){ 
+            checked = 'checked';   
+          }else{
+            checked = ''; 
+          }                
+          $('#daftar_telaah').append("<tr>\
+            <td class='text-center'>"+$no+"</td>\
+            <td>"+value.aspek+"</td>\
+            <td style='text-align: center'><input class='form-control' type='checkbox' id='kd_barang["+value.kode+"]' name='kd_barang["+value.kode+"]' onclick=updt_telaah('"+value.kode+"'); "+checked+"></td>\
+          </tr>");
+          $no++;
+        });
+      }
+    });
+    $('#modal-telaah').modal('show');
+  }
+
+  function updt_telaah(kd) {
+    var baseurl   = "<?= site_url() ?>";
+    var noresep   = $('[name="noresep"]').val();
+    if (document.getElementById('kd_barang['+kd+']').checked == true) {
+      stat = 1;
+    }else{
+      stat = 0;
+    }
+    $.ajax({
+      url        : "<?= site_url(); ?>Penjualan_faktur/updt_telaah/?kd=" + kd+ "&resep=" + noresep+ "&stat=" + stat,
+      type       : "POST",
+      dataType   : "JSON",
+    });
+  }
+
+  function urlcetak_telaah() {
+    var baseurl       = "<?= site_url() ?>";
+    var noresep       = $('[name="noresep"]').val();
+    $('#modal-detail').modal('hide');
+    var ctk           = baseurl + 'penjualan_faktur/ctk_telaah/?resep=' + noresep;
+    window.open(ctk,'_blank');
+  }
+
+  function urlcetak_cr() {
+    var baseurl       = "<?= site_url() ?>";
+    var noresep       = $('[name="noresep"]').val();
+    $('#modal-detail').modal('hide');
+    var ctk           = baseurl + 'penjualan_faktur/ctk_cr/?resep=' + noresep;
+    window.open(ctk,'_blank');
+  }
+</script>

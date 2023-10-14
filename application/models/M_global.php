@@ -2065,29 +2065,33 @@ class M_global extends CI_Model
 			$limm = "";
 		}
 		if ($unit != "") {
-			$query = $this->db->query("
-			SELECT tbl_barang.kodebarang AS id, 
-			CONCAT(' 
-				[ ', tbl_barang.kodebarang ,' ] ',' - ',' 
-				[ ', tbl_barang.namabarang ,' ] ',' - ',' 
-				[ ', tbl_barang.satuan1 ,' ] ',' - ',' 
-				[ ', tbl_barang.hargajual ,' ]
-			') AS text 
-			FROM tbl_barang
-			WHERE (tbl_barang.kodebarang like '%$str%' OR tbl_barang.namabarang like '%$str%' OR tbl_barang.satuan1 like '%$str%' OR tbl_barang.hargajual like '%$str%') order by tbl_barang.id,tbl_barang.kodebarang $limm
-			");
+			$query = $this->db->query(
+				"SELECT tbl_barang.kodebarang AS id, 
+				CONCAT(' 
+					[ ', tbl_barang.kodebarang ,' ] ',' - ',' 
+					[ ', tbl_barang.namabarang ,' ] ',' - ',' 
+					[ ', tbl_barang.satuan1 ,' ] ',' - ',' 
+					[ ', tbl_barang.hargajual ,' ]
+				') AS text 
+				FROM tbl_barang JOIN tbl_status_barang ON tbl_status_barang.kodebarang = tbl_barang.kodebarang
+				WHERE (tbl_barang.kodebarang like '%$str%' OR tbl_barang.namabarang like '%$str%' OR tbl_barang.satuan1 like '%$str%' OR tbl_barang.hargajual like '%$str%') 
+				AND tbl_status_barang.koders = '$unit' AND tbl_status_barang.status = 1
+				order by tbl_barang.id,tbl_barang.kodebarang $limm"
+			);
 		} else {
-			$query = $this->db->query("
-			SELECT kodebarang AS id, 
-			CONCAT(' 
-				[ ', kodebarang ,' ] ',' - ',' 
-				[ ', namabarang ,' ] ',' - ',' 
-				[ ', satuan1 ,' ] ',' - ',' 
-				[ ', hargajual ,' ] 
-			') AS TEXT 
-			FROM tbl_barang 
-			WHERE (kodebarang like '%$str%' OR namabarang like '%$str%' OR satuan1 like '%$str%' OR hargajual like '%$str%') order by kodebarang LIMIT 1
-			");
+			$query = $this->db->query(
+				"SELECT kodebarang AS id, 
+				CONCAT(' 
+					[ ', kodebarang ,' ] ',' - ',' 
+					[ ', namabarang ,' ] ',' - ',' 
+					[ ', satuan1 ,' ] ',' - ',' 
+					[ ', hargajual ,' ] 
+				') AS text 
+				FROM tbl_barang JOIN tbl_status_barang ON tbl_status_barang.kodebarang = tbl_barang.kodebarang
+				WHERE (kodebarang like '%$str%' OR namabarang like '%$str%' OR satuan1 like '%$str%' OR hargajual like '%$str%') 
+				AND tbl_status_barang.koders = '$unit' AND tbl_status_barang.status = 1
+				order by kodebarang LIMIT 1"
+			);
 		}
 		return $query->result();
 	}

@@ -135,7 +135,7 @@ $this->load->view('template/v_report');
                 "sEmptyTable": "Tidak ada data",
                 "sInfoEmpty": "Tidak ada data",
                 "sInfoFiltered": " - Dipilih dari _MAX_ data",
-                "sSearch": "Pencarian Data:",
+                "sSearch": "Pencarian Data : ",
                 "sInfo": " Jumlah _TOTAL_ Data (_START_ - _END_)",
                 "sLengthMenu": "_MENU_ Baris",
                 "sZeroRecords": "Tida ada data",
@@ -161,14 +161,14 @@ $this->load->view('template/v_report');
         });
 
         //datepicker
-        $('.datepicker').datepicker({
-            autoclose: true,
-            format: "yyyy-mm-dd",
-            todayHighlight: true,
-            orientation: "top auto",
-            todayBtn: true,
-            todayHighlight: true,
-        });
+        // $('.datepicker').datepicker({
+        //     autoclose: true,
+        //     format: "yyyy-mm-dd",
+        //     todayHighlight: true,
+        //     orientation: "top auto",
+        //     todayBtn: true,
+        //     todayHighlight: true,
+        // });
 
         //set input/textarea/select event when change value, remove class error and remove text help block 
         $("input").change(function() {
@@ -271,6 +271,58 @@ $this->load->view('template/v_report');
         }
 
         // ajax adding data to database
+        var kode            = $("#kode").val();
+        var nama            = $("#nama").val();
+        var inventorycat    = $("#inventorycat").val();
+        var satuan          = $("#satuan").val();
+        var kemasan         = $("#kemasan").val();
+        var hargabeli       = $("#hargabeli").val();
+        var hargabelippn    = $("#hargabelippn").val();
+        var hpp             = $("#hpp").val();
+        var het             = $("#het").val();
+        var jenisharga      = $("#jenisharga").val();
+        var hargajual       = $("#hargajual").val();
+        var minstock        = $("#minstock").val();
+        var maxstock        = $("#maxstock").val();
+        if(kode == "" || nama == "" || inventorycat == "" || satuan == "" || kemasan == "" || hargabeli == "" || hargabelippn == "" || hpp == "" || het == "" || hargajual == "" || minstock == "" || maxstock == "" || kode == null || nama == null || inventorycat == null || satuan == null || kemasan == null || hargabeli == null || hargabelippn == null || hpp == null || het == null || hargajual == null || minstock == null || maxstock == null) {
+            $('#btnSave').text('Simpan');
+            $('#btnSave').attr('disabled', false);
+            $('#modal_form').modal('hide');
+            swal({
+                title: judul + " Gagal",
+                html: "Data Belum Lengkap",
+                type: "error",
+                confirmButtonText: "OK"
+            }).then((value) => {
+                $('#modal_form').modal('show');
+            });
+            return;
+        } else {
+            if(Number(jenisharga) < 2) {
+                var persen = $("#persen").val();
+                if(persen == "") {
+                    $('#btnSave').text('Simpan');
+                    $('#btnSave').attr('disabled', false);
+                    $('#modal_form').modal('hide');
+                    swal({
+                        title: judul,
+                        html: "Data Persen Harus Diisi",
+                        type: "error",
+                        confirmButtonText: "OK"
+                    }).then((value) => {
+                        $('#modal_form').modal('show');
+                    });
+                    return;
+                } else {
+                    simpan_aksi(judul, url);
+                }
+            } else {
+                simpan_aksi(judul, url);
+            }
+        }
+    }
+
+    function simpan_aksi(judul, url) {
         $.ajax({
             url: url,
             type: "POST",
@@ -368,7 +420,7 @@ $this->load->view('template/v_report');
                                 <div class="form-group">
                                     <label class="control-label col-md-3">Kode&nbsp;<small style="color:red">*</small></label>
                                     <div class="col-md-9">
-                                        <input name="kode" id="kode" placeholder="Kode" class="form-control" maxlength="20" type="text" onkeyup="ubah_kode(this.value)">
+                                        <input name="kode" id="kode" class="form-control" maxlength="10" type="text" onkeyup="ubah_kode(this.value)" placeholder="max 10 digit">
                                         <span class="help-block"></span>
                                     </div>
                                 </div>
@@ -376,7 +428,7 @@ $this->load->view('template/v_report');
                                 <div class="form-group">
                                     <label class="control-label col-md-3">Nama Barang&nbsp;<small style="color:red">*</small></label>
                                     <div class="col-md-9">
-                                        <input name="nama" placeholder="Uraian" class="form-control" maxlength="100" type="text">
+                                        <input name="nama" id="nama" placeholder="Uraian" class="form-control" maxlength="100" type="text">
                                         <span class="help-block"></span>
                                     </div>
                                 </div>
@@ -403,7 +455,7 @@ $this->load->view('template/v_report');
                                     <div class="col-md-9">
                                         <!-- <input name="satuan" placeholder="" class="form-control" maxlength="100" type="text"> -->
                                         
-                                        <select name="satuan" id="satuan" class="form-control">
+                                        <select name="satuan" id="satuan" class="form-control" onchange="tampil_tab(1)">
                                             <option value="">--- Pilih ---</option>
                                             <?php 
                                         $data = $this->db->query("SELECT * from tbl_barangsetup where apogroup='SATUAN' AND apocode<>''")->result();
@@ -416,38 +468,12 @@ $this->load->view('template/v_report');
                                 </div>
 
                                 <div class="form-group">
-                                    <label class="control-label col-md-3">Satuan2&nbsp;<small style="color:red">*</small></label>
-                                    <div class="col-md-3">
-                                        <!-- <input name="satuan2" placeholder="" class="form-control" maxlength="100" type="text"> -->
-                                        
-                                        <select name="satuan2" id="satuan2" class="form-control">
-                                            <option value="">--- Pilih ---</option>
-                                            <?php 
-                                        $data = $this->db->query("SELECT * from tbl_barangsetup where apogroup='SATUAN' AND apocode<>''")->result();
-                                        foreach($data as $row){ ?>
-                                        <option value="<?= $row->apocode;?>"><?= $row->aponame.' - [ '.$row->apocode.' ] ';?></option>
-                                        <?php } ?>
-                                        </select>
-                                        <span class="help-block"></span>
-                                    </div>
-                                    <div class="col-md-2">
-                                        <select type="text" class="form-control" name="faksatuan2" id="satuan3opr">
-                                            <option value="2">: Bagi</option>
-                                            <option value="1">x Kali</option>
-                                        </select>
-                                        <span class="help-block"></span>
-                                    </div>
-                                    <div class="col-md-2">
-                                        <input name="qtysatuan2" placeholder="" class="form-control" maxlength="100" type="text">
-                                        <span class="help-block"></span>
-                                    </div>
-                                </div>
+                                    <label class="control-label col-md-3">Satuan2</label>
+                                    <div class="col-md-4">
+                                        <!-- <input name="satuan2" placeholder="" class="form-control" maxlength="100"
+                                            type="text"> -->
 
-                                <div class="form-group">
-                                    <label class="control-label col-md-3">Satuan3&nbsp;<small style="color:red">*</small></label>
-                                    <div class="col-md-3">
-                                        <!-- <input name="satuan3" placeholder="" class="form-control" maxlength="100" type="text"> -->
-                                        <select name="satuan3" id="satuan3" class="form-control">
+                                        <select name="satuan2" id="satuan2" class="form-control" onchange="tampil_tab(2)">
                                             <option value="">--- Pilih ---</option>
                                         <?php 
                                         $data = $this->db->query("SELECT * from tbl_barangsetup where apogroup='SATUAN' AND apocode<>''")->result();
@@ -455,20 +481,61 @@ $this->load->view('template/v_report');
                                         <option value="<?= $row->apocode;?>"><?= $row->aponame.' - [ '.$row->apocode.' ] ';?></option>
                                         <?php } ?>
                                         </select>
+
+
                                         <span class="help-block"></span>
                                     </div>
                                     <div class="col-md-2">
-                                        <select type="text" class="form-control" name="faksatuan3" id="satuan3opr">
+                                        <select type="text" class="form-control" name="satuan2opr" id="satuan2opr">
+                                            <!-- <option value="">--- Pilih ---</option> -->
                                             <option value="2">: Bagi</option>
                                             <option value="1">x Kali</option>
                                         </select>
                                         <span class="help-block"></span>
                                     </div>
                                     <div class="col-md-2">
-                                        <input name="qtysatuan3" placeholder="" class="form-control" maxlength="100" type="text">
+                                        <input name="qtysatuan2" value="0" class="form-control" maxlength="100" type="number">
                                         <span class="help-block"></span>
                                     </div>
+                                    <div class="col-md-1">
+                                        <label id="label2" class="control-label col-md-3">&nbsp;</label>
+                                    </div>
                                 </div>
+
+                                <div class="form-group">
+                                    <label class="control-label col-md-3">Satuan3</label>
+                                    <div class="col-md-4">
+                                        <!-- <input name="satuan3" placeholder="" class="form-control" maxlength="100"
+                                            type="text"> -->
+
+                                        <select name="satuan3" id="satuan3" class="form-control" onchange="tampil_tab(3)">
+                                            <option value="">--- Pilih ---</option>
+                                        <?php 
+                                        $data = $this->db->query("SELECT * from tbl_barangsetup where apogroup='SATUAN' AND apocode<>''")->result();
+                                        foreach($data as $row){ ?>
+                                        <option value="<?= $row->apocode;?>"><?= $row->aponame.' - [ '.$row->apocode.' ] ';?></option>
+                                        <?php } ?>
+                                        </select>
+
+                                        <span class="help-block"></span>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <select type="text" class="form-control" name="satuan3opr" id="satuan3opr">
+                                            <!-- <option value="">--- Pilih ---</option> -->
+                                            <option value="2">: Bagi</option>
+                                            <option value="1">x Kali</option>
+                                        </select>
+                                        <span class="help-block"></span>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <input name="qtysatuan3" value="0" class="form-control" maxlength="100" text="number">
+                                        <span class="help-block" ></span>
+                                    </div>
+                                    <div class="col-md-1">
+                                        <label id="label3" class="control-label col-md-3">&nbsp;</label>
+                                    </div>
+                                </div>
+
                                 <div class="form-group">
                                     <label class="control-label col-md-3">Kemasan&nbsp;<small style="color:red">*</small></label>
                                     <div class="col-md-9">
@@ -520,7 +587,7 @@ $this->load->view('template/v_report');
                                 <div class="form-group">
                                     <label class="control-label col-md-3">Minimum Stock&nbsp;<small style="color:red">*</small></label>
                                     <div class="col-md-9">
-                                        <input name="minstock" placeholder="" class="form-control" maxlength="100" type="text">
+                                        <input name="minstock" id="minstock" placeholder="" class="form-control" maxlength="100" type="text">
                                         <span class="help-block"></span>
                                     </div>
                                 </div>
@@ -528,7 +595,7 @@ $this->load->view('template/v_report');
                                 <div class="form-group">
                                     <label class="control-label col-md-3">Maksimum Stock&nbsp;<small style="color:red">*</small></label>
                                     <div class="col-md-9">
-                                        <input name="maxstock" placeholder="" class="form-control" maxlength="100" type="text">
+                                        <input name="maxstock" id="maxstock" placeholder="" class="form-control" maxlength="100" type="text">
                                         <span class="help-block"></span>
                                     </div>
                                 </div>
@@ -551,7 +618,7 @@ $this->load->view('template/v_report');
                                 <div class="form-group">
                                     <label class="control-label col-md-3">Jenis Harga&nbsp;<small style="color:red">*</small></label>
                                     <div class="col-md-6">
-                                        <select name="jenisharga" class="form-control" onchange="cek(this.value)">
+                                        <select name="jenisharga" id="jenisharga" class="form-control" onchange="cek(this.value)">
                                             <option value="1">Prosentase</option>
                                             <option value="2" selected>Manual</option>
                                         </select>
@@ -616,6 +683,18 @@ $this->load->view('template/v_report');
 </script>
 
 <script>
+    function tampil_tab(kolom) {   
+        var satuan        = $('[name="satuan"]').val();
+        if(kolom==1){
+            document.getElementById("label2").innerHTML= satuan;
+        }else if(kolom==2){
+            document.getElementById("label3").innerHTML= satuan;
+        }else{
+            document.getElementById("label2").innerHTML= satuan;
+            document.getElementById("label3").innerHTML= satuan;
+        }
+    }
+
     $("#cek_persen").hide();
     
     function cek(param) {

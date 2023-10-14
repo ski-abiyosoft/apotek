@@ -973,17 +973,17 @@ class Laporan_pembelian_log extends CI_Controller
 
 	public function cetak2()
 	{
-		$cek = $this->session->userdata('level');
-		$idlap = $this->input->get('idlap');
-		$cabang = $this->input->get('cabang');
-		$tanggal1 = $this->input->get('tgl1');
-		$tanggal2 = $this->input->get('tgl2');
-		$vendor = $this->input->get('vendor');
-		$cekpdf = $this->input->get('pdf');
-		$body = '';
-		$date = "Dari Tgl : " . date("d-m-Y", strtotime($tanggal1)) . " S/D " . date("d-m-Y", strtotime($tanggal2));
-		$profile  = data_master('tbl_namers', array('koders' => $cabang));
-		$kota = $profile->kota;
+		$cek        = $this->session->userdata('level');
+		$idlap      = $this->input->get('idlap');
+		$cabang     = $this->input->get('cabang');
+		$tanggal1   = $this->input->get('tgl1');
+		$tanggal2   = $this->input->get('tgl2');
+		$vendor     = $this->input->get('vendor');
+		$cekpdf     = $this->input->get('pdf');
+		$body       = '';
+		$date       = "Dari Tgl : " . date("d-m-Y", strtotime($tanggal1)) . " S/D " . date("d-m-Y", strtotime($tanggal2));
+		$profile    = data_master('tbl_namers', array('koders' => $cabang));
+		$kota       = $profile->kota;
 		if (!empty($cek)) {
 			if ($idlap == 101) {
 				$position = 'L';
@@ -993,14 +993,14 @@ class Laporan_pembelian_log extends CI_Controller
 				} else {
 					$vendorx = "";
 				}
-				$vdr = $this->db->query("SELECT vendor_name, vendor_id FROM tbl_vendor d WHERE d.vendor_id IN (SELECT a.vendor_id FROM tbl_apohterimalog a WHERE $vendorx a.koders='$cabang' AND a.terima_date BETWEEN '$tanggal1' AND '$tanggal2')")->result();
-				$no = 1;
-				$tqty2 = 0;
-				$thargaset2 = 0;
-				$ttotal2 = 0;
-				$tdiskon2 = 0;
-				$tvatrp2 = 0;
-				$ttotalnet2 = 0;
+				$vdr          = $this->db->query("SELECT vendor_name, vendor_id FROM tbl_vendor d WHERE d.vendor_id IN (SELECT a.vendor_id FROM tbl_apohterimalog a WHERE $vendorx a.koders='$cabang' AND a.terima_date BETWEEN '$tanggal1' AND '$tanggal2')")->result();
+				$no           = 1;
+				$tqty2        = 0;
+				$thargaset2   = 0;
+				$ttotal2      = 0;
+				$tdiskon2     = 0;
+				$tvatrp2      = 0;
+				$ttotalnet2   = 0;
 				$body .= "<table style=\"border-collapse:collapse;font-family: tahoma; font-size:12px\" width=\"100%\" align=\"center\" border=\"1\" cellspacing=\"10\" cellpadding=\"10\">";
 				$body .= "<tr>
 										<td style=\"text-align: center; font-weight: bold; padding: 10px;\" width=\"5%\">No</td>
@@ -1019,13 +1019,13 @@ class Laporan_pembelian_log extends CI_Controller
 										<td style=\"text-align: center; font-weight: bold; padding: 10px;\" width=\"7%\">Total Net</td>
 									</tr>";
 				foreach($vdr as $v){
-					$query = $this->db->query("SELECT a.terima_no,a.terima_date,a.invoice_no,a.sj_no,b.kodebarang, a.materai, b.discountrp, c.namabarang, b.qty_terima, b.satuan, b.price, (b.totalrp + b.vatrp + a.materai) as totalnet, (b.qty_terima * b.price) as totalrp, b.discount, b.vat, b.vatrp As vatrp1, b.po_no FROM tbl_apohterimalog a JOIN tbl_apodterimalog b ON b.terima_no = a.terima_no JOIN tbl_logbarang c ON c.kodebarang = b.kodebarang JOIN tbl_vendor d ON d.vendor_id = a.vendor_id WHERE a.vendor_id = '$v->vendor_id' and a.koders='$cabang' AND a.terima_date BETWEEN '$tanggal1' AND '$tanggal2' ORDER BY a.terima_date, a.terima_no")->result();
-					$tqty = 0;
-					$thargaset = 0;
-					$ttotal = 0;
-					$tdiskon = 0;
-					$tvatrp = 0;
-					$ttotalnet = 0;
+					$query       = $this->db->query("SELECT a.terima_no,a.terima_date,a.invoice_no,a.sj_no,b.kodebarang, a.materai, b.discountrp, c.namabarang, b.qty_terima, b.satuan, b.price, (b.totalrp + b.vatrp + a.materai) as totalnet, (b.qty_terima * b.price) as totalrp, b.discount, b.vat, b.vatrp As vatrp1, b.po_no FROM tbl_apohterimalog a JOIN tbl_apodterimalog b ON b.terima_no = a.terima_no JOIN tbl_logbarang c ON c.kodebarang = b.kodebarang JOIN tbl_vendor d ON d.vendor_id = a.vendor_id WHERE a.vendor_id = '$v->vendor_id' and a.koders='$cabang' AND a.terima_date BETWEEN '$tanggal1' AND '$tanggal2' ORDER BY a.terima_date, a.terima_no")->result();
+					$tqty        = 0;
+					$thargaset   = 0;
+					$ttotal      = 0;
+					$tdiskon     = 0;
+					$tvatrp      = 0;
+					$ttotalnet   = 0;
 					foreach ($query as $q) {
 						if ($q->po_no == '') {
 							$po_no = '-';
@@ -1033,19 +1033,19 @@ class Laporan_pembelian_log extends CI_Controller
 							$po_no = $q->po_no;
 						}
 						if($cekpdf == 1){
-							$qty_terima = number_format($q->qty_terima);
-							$price = number_format($q->price);
-							$totalrp = number_format($q->totalrp);
-							$discountrp = number_format($q->discountrp);
-							$vatrp1 = number_format($q->vatrp1);
-							$totalnet = number_format($q->totalnet);
+							$qty_terima    = number_format($q->qty_terima);
+							$price         = number_format($q->price);
+							$totalrp       = number_format($q->totalrp);
+							$discountrp    = number_format($q->discountrp);
+							$vatrp1        = number_format($q->vatrp1);
+							$totalnet      = number_format($q->totalnet);
 						} else {
-							$qty_terima = round($q->qty_terima);
-							$price = round($q->price);
-							$totalrp = round($q->totalrp);
-							$discountrp = round($q->discountrp);
-							$vatrp1 = round($q->vatrp1);
-							$totalnet = round($q->totalnet);
+							$qty_terima    = ceil($q->qty_terima);
+							$price         = ceil($q->price);
+							$totalrp       = ceil($q->totalrp);
+							$discountrp    = ceil($q->discountrp);
+							$vatrp1        = ceil($q->vatrp1);
+							$totalnet      = ceil($q->totalnet);
 						}
 						$body .= "<tr>
 												<td width=\"5%\" style=\"text-align: right;\">" . $no++ . "</td>
@@ -1063,34 +1063,34 @@ class Laporan_pembelian_log extends CI_Controller
 												<td width=\"7%\" style=\"text-align: right;\">" . $vatrp1 . "</td>
 												<td width=\"7%\" style=\"text-align: right;\">" . $totalnet . "</td>
 											</tr>";
-						$tqty += $q->qty_terima;
-						$thargaset += $q->price;
-						$ttotal += $q->totalrp;
-						$tdiskon += $q->discountrp;
-						$tvatrp += $q->vatrp1;
-						$ttotalnet += $q->totalnet;
+						$tqty         += $q->qty_terima;
+						$thargaset    += $q->price;
+						$ttotal       += $q->totalrp;
+						$tdiskon      += $q->discountrp;
+						$tvatrp       += $q->vatrp1;
+						$ttotalnet    += $q->totalnet;
 					};
-					$tqty2 += $tqty;
-					$thargaset2 += $thargaset;
-					$ttotal2 += $ttotal;
-					$tdiskon2 += $tdiskon;
-					$tvatrp2 += $tvatrp;
-					$ttotalnet2 += $ttotalnet;
+					$tqty2         += $tqty;
+					$thargaset2    += $thargaset;
+					$ttotal2       += $ttotal;
+					$tdiskon2      += $tdiskon;
+					$tvatrp2       += $tvatrp;
+					$ttotalnet2    += $ttotalnet;
 				}
 				if($cekpdf == 1){
-					$tqtyx = number_format($tqty2);
-					$thargasetx = number_format($thargaset2);
-					$ttotalx = number_format($ttotal2);
-					$tdiskonx = number_format($tdiskon2);
-					$tvatrpx = number_format($tvatrp2);
-					$ttotalnetx = number_format($ttotalnet2);
+					$tqtyx         = number_format($tqty2);
+					$thargasetx    = number_format($thargaset2);
+					$ttotalx       = number_format($ttotal2);
+					$tdiskonx      = number_format($tdiskon2);
+					$tvatrpx       = number_format($tvatrp2);
+					$ttotalnetx    = number_format($ttotalnet2);
 				} else {
-					$tqtyx = round($tqty);
-					$thargasetx = round($thargaset);
-					$ttotalx = round($ttotal);
-					$tdiskonx = round($tdiskon);
-					$tvatrpx = round($tvatrp);
-					$ttotalnetx = round($ttotalnet);
+					$tqtyx         = ceil($tqty);
+					$thargasetx    = ceil($thargaset);
+					$ttotalx       = ceil($ttotal);
+					$tdiskonx      = ceil($tdiskon);
+					$tvatrpx       = ceil($tvatrp);
+					$ttotalnetx    = ceil($ttotalnet);
 				}
 				$body .= 	"<tr>
 										<td style=\"text-align: center;\" colspan=\"8\">TOTAL</td>
@@ -1109,12 +1109,13 @@ class Laporan_pembelian_log extends CI_Controller
 					$vdr = $this->db->query("SELECT vendor_name, vendor_id FROM tbl_vendor d WHERE d.vendor_id IN (SELECT a.vendor_id FROM tbl_apohterimalog a WHERE a.vendor_id ='$vendor' AND  a.koders='$cabang' AND a.terima_date BETWEEN '$tanggal1' AND '$tanggal2')")->row();
 					$query = $this->db->query("SELECT a.terima_date , a.sj_no, a.vatrp , a.materai , a.koders, a.gudang, a.terima_no, (sum(c.discountrp)) as diskontotal, b.vendor_name, b.vendor_id, (sum(c.qty_terima * c.price)) as totalrp, c.vat, a.vatrp, (sum(c.totalrp) + a.vatrp + a.materai) as totalnet FROM tbl_apohterimalog AS a JOIN tbl_vendor AS b ON a.vendor_id = b.vendor_id JOIN tbl_apodterimalog AS c ON a.terima_no = c.terima_no WHERE a.vendor_id = '$vdr->vendor_id' and a.koders = '$cabang' AND a.terima_date BETWEEN '$tanggal1' AND '$tanggal2' group by a.terima_no")->result();
 					$body .= "<table style=\"border-collapse:collapse;font-family: tahoma; font-size:12px\" width=\"100%\" align=\"center\" border=\"1\" cellspacing=\"5\" cellpadding=\"5\">";
-					foreach($query as $q) {
-						$gudangx = $this->db->get_where("tbl_depo", ["konekpos" => "LOGISTIK", "depocode" => $q->gudang])->row();
-						$body .= "<tr>
-													<td width=\"40%\" style=\"text-align: center; border-top: none; border-left: none; border-right: none;\" colspan=\"10\">GUDANG : <b style=\"color: red;\">$gudangx->keterangan</b></td>
-												</tr>";
-					}
+					// foreach($query as $q) {
+						// $gudangx = $this->db->get_where("tbl_depo", ["depocode" => $vendor])->row();
+					// 	if($queryh )
+						// $body .= "<tr>
+						// 							<td width=\"40%\" style=\"text-align: center; border-top: none; border-left: none; border-right: none;\" colspan=\"10\">GUDANG : <b style=\"color: red;\">$gudangx->keterangan</b></td>
+						// 						</tr>";
+					// }
 					$body .= "<tr>
 												<td style=\"text-align: center; font-weight: bold; padding: 10px;\" width=\"5%\">No</td>
 												<td style=\"text-align: center; font-weight: bold; padding: 10px;\" width=\"10%\">Supplier</td>
@@ -1127,25 +1128,25 @@ class Laporan_pembelian_log extends CI_Controller
 												<td style=\"text-align: center; font-weight: bold; padding: 10px;\" width=\"10%\">Materai</td>
 												<td style=\"text-align: center; font-weight: bold; padding: 10px;\" width=\"10%\">Total Net</td>
 											</tr>";
-					$no = 1;
-					$ttotalrp = 0;
-					$tdiskontotal = 0;
-					$tvatrp = 0;
-					$tmaterai = 0;
-					$ttotalnet = 0;
+					$no              = 1;
+					$ttotalrp        = 0;
+					$tdiskontotal    = 0;
+					$tvatrp          = 0;
+					$tmaterai        = 0;
+					$ttotalnet       = 0;
 					foreach ($query as $q) {
 						if($cekpdf == 1){
-							$totalrp = number_format($q->totalrp);
-							$diskontotal = number_format($q->diskontotal);
-							$vatrp = number_format($q->vatrp);
-							$materai = number_format($q->materai);
-							$totalnet = number_format($q->totalnet);
+							$totalrp       = number_format($q->totalrp);
+							$diskontotal   = number_format($q->diskontotal);
+							$vatrp         = number_format($q->vatrp);
+							$materai       = number_format($q->materai);
+							$totalnet      = number_format($q->totalnet);
 						} else {
-							$totalrp = round($q->totalrp);
-							$diskontotal = round($q->diskontotal);
-							$vatrp = round($q->vatrp);
-							$materai = round($q->materai);
-							$totalnet = round($q->totalnet);
+							$totalrp       = ceil($q->totalrp);
+							$diskontotal   = ceil($q->diskontotal);
+							$vatrp         = ceil($q->vatrp);
+							$materai       = ceil($q->materai);
+							$totalnet      = ceil($q->totalnet);
 						}
 						$body .= 	"<tr>
 													<td width=\"5%\" style=\"text-align: right;\">" . $no++ . "</td>
@@ -1159,24 +1160,24 @@ class Laporan_pembelian_log extends CI_Controller
 													<td width=\"10%\" style=\"text-align: right;\">" . $materai . "</td>
 													<td width=\"10%\" style=\"text-align: right;\">" . $totalnet . "</td>
 												</tr>";
-						$ttotalrp += $q->totalrp;
-						$tdiskontotal += $q->diskontotal;
-						$tvatrp += $q->vatrp;
-						$tmaterai += $q->materai;
-						$ttotalnet += $q->totalnet;
+						$ttotalrp       += $q->totalrp;
+						$tdiskontotal   += $q->diskontotal;
+						$tvatrp         += $q->vatrp;
+						$tmaterai       += $q->materai;
+						$ttotalnet      += $q->totalnet;
 					};
 					if ($cekpdf == 1) {
-						$xtotalrp = number_format($ttotalrp);
-						$xdiskontotal = number_format($tdiskontotal);
-						$xvatrp = number_format($tvatrp);
-						$xmaterai = number_format($tmaterai);
-						$xtotalnet = number_format($ttotalnet);
+						$xtotalrp       = number_format($ttotalrp);
+						$xdiskontotal   = number_format($tdiskontotal);
+						$xvatrp         = number_format($tvatrp);
+						$xmaterai       = number_format($tmaterai);
+						$xtotalnet      = number_format($ttotalnet);
 					} else {
-						$xtotalrp = round($ttotalrp);
-						$xdiskontotal = round($tdiskontotal);
-						$xvatrp = round($tvatrp);
-						$xmaterai = round($tmaterai);
-						$xtotalnet = round($ttotalnet);
+						$xtotalrp       = ceil($ttotalrp);
+						$xdiskontotal   = ceil($tdiskontotal);
+						$xvatrp         = ceil($tvatrp);
+						$xmaterai       = ceil($tmaterai);
+						$xtotalnet      = ceil($ttotalnet);
 					}
 					$body .= 	"<tr>
 											<td width=\"40%\" style=\"text-align: center;\" colspan=\"5\">TOTAL</td>
@@ -1231,11 +1232,11 @@ class Laporan_pembelian_log extends CI_Controller
 									$materai = number_format($q->materai);
 									$totalnet = number_format($q->totalnet);
 								} else {
-									$totalrp = round($q->totalrp);
-									$diskontotal = round($q->diskontotal);
-									$vatrp = round($q->vatrp);
-									$materai = round($q->materai);
-									$totalnet = round($q->totalnet);
+									$totalrp = ceil($q->totalrp);
+									$diskontotal = ceil($q->diskontotal);
+									$vatrp = ceil($q->vatrp);
+									$materai = ceil($q->materai);
+									$totalnet = ceil($q->totalnet);
 								}
 								$body .= "<tr>
 														<td width=\"5%\" style=\"text-align: center;\">" . $no++ . "</td>
@@ -1268,11 +1269,11 @@ class Laporan_pembelian_log extends CI_Controller
 							$xtmaterai1 = number_format($tmaterai1);
 							$xttotalnet1 = number_format($ttotalnet1);
 						} else {
-							$xttotalrp1 = round($ttotalrp1);
-							$xtdiskontotal1 = round($tdiskontotal1);
-							$xtvatrp1 = round($tvatrp1);
-							$xtmaterai1 = round($tmaterai1);
-							$xttotalnet1 = round($ttotalnet1);
+							$xttotalrp1 = ceil($ttotalrp1);
+							$xtdiskontotal1 = ceil($tdiskontotal1);
+							$xtvatrp1 = ceil($tvatrp1);
+							$xtmaterai1 = ceil($tmaterai1);
+							$xttotalnet1 = ceil($ttotalnet1);
 						}
 						$body .= 	"<tr>
 												<td width=\"40%\" style=\"text-align: center; font-weight: bold;\" colspan=\"5\">TOTAL</td>
@@ -1335,7 +1336,7 @@ class Laporan_pembelian_log extends CI_Controller
 											<td width=\"33%\" style=\"text-align:center;\">HARYANTO</td>
 										</tr> 
 										<tr>
-											<td width=\"33%\" style=\"text-align:center;\">Kepala Apoteker</td>
+											<td width=\"33%\" style=\"text-align:center;\">Kepala Logistik</td>
 											<td width=\"33%\" style=\"text-align:center;\">&nbsp;</td>
 											<td width=\"33%\" style=\"text-align:center;\">PENANGGUNG JAWAB ADMINISTRASI</td>
 										</tr> 
@@ -1363,20 +1364,20 @@ class Laporan_pembelian_log extends CI_Controller
 					$body .= "<tr>
 											<td colspan=\"7\">SUPPLIER : $v->vendor_name</td>
 										</tr>";
-					$no = 1;
-					$tqty_terima = 0;
-					$tratarata = 0;
-					$ttotal = 0;
+					$no            = 1;
+					$tqty_terima   = 0;
+					$tratarata     = 0;
+					$ttotal        = 0;
 					foreach ($query as $q) {
 						$total = $q->ratarata * $q->qty_terima;
 						if($cekpdf == 1){
-							$qty_terima = number_format($q->qty_terima);
-							$ratarata = number_format($q->ratarata);
-							$totalx = number_format($total);
+							$qty_terima    = number_format($q->qty_terima);
+							$ratarata      = number_format($q->ratarata);
+							$totalx        = number_format($total);
 						} else {
-							$qty_terima = round($q->qty_terima);
-							$ratarata = round($q->ratarata);
-							$totalx = round($total);
+							$qty_terima    = ceil($q->qty_terima);
+							$ratarata      = ceil($q->ratarata);
+							$totalx        = ceil($total);
 						}
 						$body .= 			"<tr>
 														<td style=\"text-align: right;\">" . $no++ . "</td>
@@ -1387,18 +1388,18 @@ class Laporan_pembelian_log extends CI_Controller
 														<td style=\"text-align: right;\">" . $ratarata . "</td>
 														<td width=\"15%\" style=\"text-align: right;\">" . $totalx . "</td>
 													</tr>";
-						$tqty_terima += $q->qty_terima;
-						$tratarata += $q->ratarata;
-						$ttotal += $total;
+						$tqty_terima    += $q->qty_terima;
+						$tratarata      += $q->ratarata;
+						$ttotal         += $total;
 					}
 					if($cekpdf == 1){
-						$xtqty_terima = number_format($tqty_terima);
-						$xtratarata = number_format($tratarata);
-						$xttotal = number_format($ttotal);
+						$xtqty_terima   = number_format($tqty_terima);
+						$xtratarata     = number_format($tratarata);
+						$xttotal        = number_format($ttotal);
 					} else {
-						$xtqty_terima = round($tqty_terima);
-						$xtratarata = round($tratarata);
-						$xttotal = round($ttotal);
+						$xtqty_terima   = ceil($tqty_terima);
+						$xtratarata     = ceil($tratarata);
+						$xttotal        = ceil($ttotal);
 					}
 					$body .= "<tr>
 											<td colspan=\"4\">SUBTOTAL PERSUPLIER</td>
@@ -1411,7 +1412,7 @@ class Laporan_pembelian_log extends CI_Controller
 				if($cekpdf == 1){
 					$xtotalsemua = number_format($totalsemua);
 				} else {
-					$xtotalsemua = round($totalsemua);
+					$xtotalsemua = ceil($totalsemua);
 				}
 				$body .= "<tr>
 										<td colspan=\"7\" style=\"border-left: none; border-right: none;\">&nbsp;</td>
@@ -1424,13 +1425,129 @@ class Laporan_pembelian_log extends CI_Controller
 			} else if($idlap == 104){
 				$position = 'L';
 				$judul = '04 REKAP PEMBELIAN BARANG PER SUPPLIER TOTAL';
-				if ($vendor != '') {
+				if ($vendor == '') {
+					$vdr = $this->db->query("SELECT vendor_name, vendor_id FROM tbl_vendor d WHERE d.vendor_id IN (SELECT a.vendor_id FROM tbl_apohterimalog a WHERE a.koders='$cabang' AND a.terima_date BETWEEN '$tanggal1' AND '$tanggal2')")->result();
+					$getgud = $this->db->query("SELECT a.gudang, d.keterangan FROM tbl_apohterimalog AS a JOIN tbl_depo d ON d.depocode=a.gudang WHERE a.koders = '$cabang' AND a.terima_date BETWEEN '$tanggal1' AND '$tanggal2' GROUP BY a.gudang")->result();
+					foreach($getgud as $gg){
+						$body .= "<table style=\"border-collapse:collapse;font-family: tahoma; font-size:12px\" width=\"100%\" align=\"center\" border=\"1\" cellspacing=\"5\" cellpadding=\"5\">";
+						$body .= "<tr>
+														<td style=\"text-align: center; border-top: none; border-bottom: none; border-left: none; border-right: none;\" colspan=\"9\">&nbsp;</td>
+													</tr>
+													<tr>
+														<td style=\"text-align: center; border-top: none; border-left: none; border-bottom: none; border-right: none;\" colspan=\"9\">GUDANG : <b style=\"color: red;\">$gg->keterangan</b></td>
+													</tr>";
+						$body .= "<tr>
+												<td style=\"text-align: center; font-weight: bold; padding: 10px;\" width=\"5%\">No</td>
+												<td style=\"text-align: center; font-weight: bold; padding: 10px;\" width=\"10%\">Supplier</td>
+												<td style=\"text-align: center; font-weight: bold; padding: 10px;\" width=\"5%\">Tanggal</td>
+												<td style=\"text-align: center; font-weight: bold; padding: 10px;\" width=\"10%\">Qty</td>
+												<td style=\"text-align: center; font-weight: bold; padding: 10px;\" width=\"10%\">Total</td>
+												<td style=\"text-align: center; font-weight: bold; padding: 10px;\" width=\"10%\">Diskon</td>
+												<td style=\"text-align: center; font-weight: bold; padding: 10px;\" width=\"10%\">Vat Rp</td>
+												<td style=\"text-align: center; font-weight: bold; padding: 10px;\" width=\"10%\">Materai</td>
+												<td style=\"text-align: center; font-weight: bold; padding: 10px;\" width=\"10%\">Total Net</td>
+											</tr>";
+						$no             = 1;
+						$tqty_terima1   = 0;
+						$ttotalrp1      = 0;
+						$ttotalrp21     = 0;
+						$tdiscountrp1   = 0;
+						$tvatrp1        = 0;
+						$tmaterai1      = 0;
+						$ttotalrp1      = 0;
+						foreach($vdr as $v){
+							$query         = $this->db->query("SELECT a.terima_no, d.keterangan, a.terima_date, a.vatrp, a.materai, b.vat, b.discountrp, b.qty_terima , b.discountrp, b.totalrp, (b.totalrp / b.qty_terima ) AS ratarata, c.vendor_name , c.vendor_id FROM tbl_apohterimalog as a JOIN tbl_depo as d ON a.gudang=d.depocode JOIN tbl_apodterimalog AS b ON a.terima_no = b.terima_no JOIN tbl_vendor AS c ON a.vendor_id = c.vendor_id WHERE a.vendor_id = '$v->vendor_id' and a.koders = '$cabang' and a.terima_date between '$tanggal1' and '$tanggal2'")->result();
+							$tqty_terima   = 0;
+							$ttotalrp      = 0;
+							$ttotalrp2     = 0;
+							$tdiscountrp   = 0;
+							$tvatrp        = 0;
+							$tmaterai      = 0;
+							$ttotalrp      = 0;
+							$sql           = $this->db->get_where("tbl_pajak", ["kodetax" => "PPN"])->row();
+							$pajak         = $sql->prosentase / 100;
+							foreach ($query as $q) {
+								if ($q->vat == 1) {
+									$vatrp = ($q->totalrp * $pajak);
+								} else {
+									$vatrp = 0;
+								}
+								$totalrp    = ($q->totalrp + $q->discountrp);
+								$totall     = $q->totalrp + $q->vatrp + $q->materai;
+								if($cekpdf == 1){
+									$qty_terima    = number_format($q->qty_terima);
+									$discountrp    = number_format($q->discountrp);
+									$materai       = number_format($q->materai);
+									$xtotalrp      = number_format($totalrp);
+									$xvatrp        = number_format($vatrp);
+									$xtotall       = number_format($totall);
+								} else {
+									$qty_terima    = ceil($q->qty_terima);
+									$discountrp    = ceil($q->discountrp);
+									$materai       = ceil($q->materai);
+									$xtotalrp      = ceil($totalrp);
+									$xvatrp        = ceil($vatrp);
+									$xtotall       = ceil($totall);
+								}
+								$body .= "<tr>
+															<td width=\"5%\" style=\"text-align: center;\">" . $no++ . "</td>
+															<td width=\"10%\" style=\"text-align: left;\">" . $v->vendor_name . "</td>
+															<td width=\"5%\" style=\"text-align: center;\">" . date("d-m-Y", strtotime($q->terima_date)) . "</td>
+															<td width=\"10%\" style=\"text-align: right;\">" . $qty_terima . "</td>
+															<td width=\"10%\" style=\"text-align: right;\">" . $xtotalrp . "</td>
+															<td width=\"10%\" style=\"text-align: right;\">" . $discountrp . "</td>
+															<td width=\"10%\" style=\"text-align: right;\">" . $xvatrp . "</td>
+															<td width=\"10%\" style=\"text-align: right;\">" . $materai . "</td>
+															<td width=\"10%\" style=\"text-align: right;\">" . $xtotall . "</td>
+														</tr>";
+								$tqty_terima    += $q->qty_terima;
+								$ttotalrp       += $totalrp;
+								$tdiscountrp    += $q->discountrp;
+								$tvatrp         += $vatrp;
+								$tmaterai       += $q->materai;
+								$ttotalrp2      += ($q->totalrp + $q->vatrp + $q->materai);
+							}
+							$tqty_terima1    += $tqty_terima;
+							$ttotalrp1       += $ttotalrp;
+							$tdiscountrp1    += $tdiscountrp;
+							$tvatrp1         += $tvatrp;
+							$tmaterai1       += $tmaterai;
+							$ttotalrp21      += $ttotalrp2;
+						}
+						if($cekpdf == 1){
+							$xtqty_terima1   = number_format($tqty_terima1);
+							$xtdiscountrp1   = number_format($tdiscountrp1);
+							$xttotalrp1      = number_format($ttotalrp1);
+							$xtvatrp1        = number_format($tvatrp1);
+							$xtmaterai1      = number_format($tmaterai1);
+							$xttotalrp21     = number_format($ttotalrp21);
+						} else {
+							$xtqty_terima1   = ceil($tqty_terima1);
+							$xtdiscountrp1   = ceil($tdiscountrp1);
+							$xttotalrp1      = ceil($ttotalrp1);
+							$xtvatrp1        = ceil($tvatrp1);
+							$xtmaterai1      = ceil($tmaterai1);
+							$xttotalrp21     = ceil($ttotalrp21);
+						}
+						$body .= 	"<tr>
+													<td style=\"text-align: center;\" colspan=\"3\">TOTAL</td>
+													<td style=\"text-align: right;\">" . $xtqty_terima1 . "</td>
+													<td style=\"text-align: right;\">" . $xttotalrp1 . "</td>
+													<td style=\"text-align: right;\">" . $xtdiscountrp1 . "</td>
+													<td style=\"text-align: right;\">" . $xtvatrp1 . "</td>
+													<td style=\"text-align: right;\">" . $xtmaterai1 . "</td>
+													<td style=\"text-align: right;\">" . $xttotalrp21 . "</td>
+												</tr>";
+						$body .= "</table>";
+					}
+				} else {
 					$vdr = $this->db->query("SELECT vendor_name, vendor_id FROM tbl_vendor d WHERE d.vendor_id IN (SELECT a.vendor_id FROM tbl_apohterimalog a WHERE a.vendor_id ='$vendor' AND a.koders='$cabang' AND a.terima_date BETWEEN '$tanggal1' AND '$tanggal2')")->row();
 					$query = $this->db->query("SELECT a.terima_no, d.keterangan, a.terima_date, a.vatrp, a.materai, b.vat, b.discountrp, b.qty_terima , b.discountrp, b.totalrp, (b.totalrp / b.qty_terima ) AS ratarata, c.vendor_name , c.vendor_id FROM tbl_apohterimalog as a JOIN tbl_depo as d ON a.gudang=d.depocode JOIN tbl_apodterimalog AS b ON a.terima_no = b.terima_no JOIN tbl_vendor AS c ON a.vendor_id = c.vendor_id WHERE a.vendor_id = '$vdr->vendor_id' and a.koders = '$cabang' and a.terima_date between '$tanggal1' and '$tanggal2' AND konekpos = 'LOGISTIK'")->result();
+					$queryh = $this->db->query("SELECT a.terima_no, d.keterangan, a.terima_date, a.vatrp, a.materai, b.vat, b.discountrp, b.qty_terima , b.discountrp, b.totalrp, (b.totalrp / b.qty_terima ) AS ratarata, c.vendor_name , c.vendor_id FROM tbl_apohterimalog as a JOIN tbl_depo as d ON a.gudang=d.depocode JOIN tbl_apodterimalog AS b ON a.terima_no = b.terima_no JOIN tbl_vendor AS c ON a.vendor_id = c.vendor_id WHERE a.vendor_id = '$vdr->vendor_id' and a.koders = '$cabang' and a.terima_date between '$tanggal1' and '$tanggal2' AND konekpos = 'LOGISTIK' GROUP BY c.vendor_name")->result();
 					$body .= "<table style=\"border-collapse:collapse;font-family: tahoma; font-size:12px\" width=\"100%\" align=\"center\" border=\"1\" cellspacing=\"5\" cellpadding=\"5\">";
-					foreach($query as $q) {
+					foreach($queryh as $qh) {
 						$body .= "<tr>
-												<td width=\"40%\" style=\"text-align: center; border-top: none; border-left: none; border-right: none;\" colspan=\"9\">GUDANG : <b style=\"color: red;\">$q->keterangan</b></td>
+												<td width=\"40%\" style=\"text-align: center; border-top: none; border-left: none; border-right: none;\" colspan=\"9\">GUDANG : <b style=\"color: red;\">$qh->keterangan</b></td>
 											</tr>";
 					}
 					$body .= "<tr>
@@ -1470,12 +1587,12 @@ class Laporan_pembelian_log extends CI_Controller
 								$materai = number_format($q->materai);
 								$xtotall = number_format($totall);
 							} else {
-								$qty_terima = round($q->qty_terima);
-								$xtotalrp = round($totalrp);
-								$discountrp = round($q->discountrp);
-								$xvatrp = round($vatrp);
-								$materai = round($q->materai);
-								$xtotall = round($totall);
+								$qty_terima = ceil($q->qty_terima);
+								$xtotalrp = ceil($totalrp);
+								$discountrp = ceil($q->discountrp);
+								$xvatrp = ceil($vatrp);
+								$materai = ceil($q->materai);
+								$xtotall = ceil($totall);
 							}
 							$body .= "<tr>
 													<td width=\"5%\" style=\"text-align: center;\">" . $no++ . "</td>
@@ -1503,12 +1620,12 @@ class Laporan_pembelian_log extends CI_Controller
 							$xtmaterai = number_format($tmaterai);
 							$xttotalrp2 = number_format($ttotalrp2);
 						} else {
-							$xtqty_terima = round($tqty_terima);
-							$xttotalrp = round($ttotalrp);
-							$xtdiscountrp = round($tdiscountrp);
-							$xtvatrp = round($tvatrp);
-							$xtmaterai = round($tmaterai);
-							$xttotalrp2 = round($ttotalrp2);
+							$xtqty_terima = ceil($tqty_terima);
+							$xttotalrp = ceil($ttotalrp);
+							$xtdiscountrp = ceil($tdiscountrp);
+							$xtvatrp = ceil($tvatrp);
+							$xtmaterai = ceil($tmaterai);
+							$xttotalrp2 = ceil($ttotalrp2);
 						}
 						$body .= 	"<tr>
 												<td style=\"text-align: center;\" colspan=\"3\">TOTAL</td>
@@ -1520,121 +1637,6 @@ class Laporan_pembelian_log extends CI_Controller
 												<td style=\"text-align: right;\">" . $xttotalrp2 . "</td>
 											</tr>";
 					$body .= "</table>";
-				} else {
-					$vdr = $this->db->query("SELECT vendor_name, vendor_id FROM tbl_vendor d WHERE d.vendor_id IN (SELECT a.vendor_id FROM tbl_apohterimalog a WHERE a.koders='$cabang' AND a.terima_date BETWEEN '$tanggal1' AND '$tanggal2')")->result();
-					$getgud = $this->db->query("SELECT a.gudang, d.keterangan FROM tbl_apohterimalog AS a JOIN tbl_depo d ON d.depocode=a.gudang WHERE a.koders = 'KBJ' AND a.terima_date BETWEEN '$tanggal1' AND '$tanggal2' AND konekpos = 'LOGISTIK' GROUP BY a.gudang")->result();
-					foreach($getgud as $gg){
-						$body .= "<table style=\"border-collapse:collapse;font-family: tahoma; font-size:12px\" width=\"100%\" align=\"center\" border=\"1\" cellspacing=\"5\" cellpadding=\"5\">";
-						$body .= "<tr>
-														<td style=\"text-align: center; border-top: none; border-bottom: none; border-left: none; border-right: none;\" colspan=\"9\">&nbsp;</td>
-													</tr>
-													<tr>
-														<td style=\"text-align: center; border-top: none; border-left: none; border-bottom: none; border-right: none;\" colspan=\"9\">GUDANG : <b style=\"color: red;\">$gg->keterangan</b></td>
-													</tr>";
-						$body .= "<tr>
-												<td style=\"text-align: center; font-weight: bold; padding: 10px;\" width=\"5%\">No</td>
-												<td style=\"text-align: center; font-weight: bold; padding: 10px;\" width=\"10%\">Supplier</td>
-												<td style=\"text-align: center; font-weight: bold; padding: 10px;\" width=\"5%\">Tanggal</td>
-												<td style=\"text-align: center; font-weight: bold; padding: 10px;\" width=\"10%\">Qty</td>
-												<td style=\"text-align: center; font-weight: bold; padding: 10px;\" width=\"10%\">Total</td>
-												<td style=\"text-align: center; font-weight: bold; padding: 10px;\" width=\"10%\">Diskon</td>
-												<td style=\"text-align: center; font-weight: bold; padding: 10px;\" width=\"10%\">Vat Rp</td>
-												<td style=\"text-align: center; font-weight: bold; padding: 10px;\" width=\"10%\">Materai</td>
-												<td style=\"text-align: center; font-weight: bold; padding: 10px;\" width=\"10%\">Total Net</td>
-											</tr>";
-						$no = 1;
-						$tqty_terima1 = 0;
-						$ttotalrp1 = 0;
-						$ttotalrp21 = 0;
-						$tdiscountrp1 = 0;
-						$tvatrp1 = 0;
-						$tmaterai1 = 0;
-						$ttotalrp1 = 0;
-						foreach($vdr as $v){
-							$query = $this->db->query("SELECT a.terima_no, a.terima_date, a.vatrp, a.materai, b.vat, b.discountrp, b.qty_terima , b.discountrp, b.totalrp, (b.totalrp / b.qty_terima ) AS ratarata, c.vendor_name , c.vendor_id FROM tbl_apohterimalog as a JOIN tbl_apodterimalog AS b ON a.terima_no = b.terima_no JOIN tbl_vendor AS c ON a.vendor_id = c.vendor_id WHERE a.vendor_id = '$v->vendor_id' and a.koders = '$cabang' and a.terima_date between '$tanggal1' and '$tanggal2'")->result();
-							$tqty_terima = 0;
-							$ttotalrp = 0;
-							$ttotalrp2 = 0;
-							$tdiscountrp = 0;
-							$tvatrp = 0;
-							$tmaterai = 0;
-							$ttotalrp = 0;
-							$sql = $this->db->get_where("tbl_pajak", ["kodetax" => "PPN"])->row();
-							$pajak = $sql->prosentase / 100;
-							foreach ($query as $q) {
-								if ($q->vat == 1) {
-									$vatrp = ($q->totalrp * $pajak);
-								} else {
-									$vatrp = 0;
-								}
-								$totalrp = ($q->totalrp + $q->discountrp);
-								$totall = $q->totalrp + $q->vatrp + $q->materai;
-								if($cekpdf == 1){
-									$qty_terima = number_format($q->qty_terima);
-									$discountrp = number_format($q->discountrp);
-									$materai = number_format($q->materai);
-									$xtotalrp = number_format($totalrp);
-									$xvatrp = number_format($vatrp);
-									$xtotall = number_format($totall);
-								} else {
-									$qty_terima = round($q->qty_terima);
-									$discountrp = round($q->discountrp);
-									$materai = round($q->materai);
-									$xtotalrp = round($totalrp);
-									$xvatrp = round($vatrp);
-									$xtotall = round($totall);
-								}
-								$body .= "<tr>
-															<td width=\"5%\" style=\"text-align: center;\">" . $no++ . "</td>
-															<td width=\"10%\" style=\"text-align: left;\">" . $v->vendor_name . "</td>
-															<td width=\"5%\" style=\"text-align: center;\">" . date("d-m-Y", strtotime($q->terima_date)) . "</td>
-															<td width=\"10%\" style=\"text-align: right;\">" . $qty_terima . "</td>
-															<td width=\"10%\" style=\"text-align: right;\">" . $xtotalrp . "</td>
-															<td width=\"10%\" style=\"text-align: right;\">" . $discountrp . "</td>
-															<td width=\"10%\" style=\"text-align: right;\">" . $xvatrp . "</td>
-															<td width=\"10%\" style=\"text-align: right;\">" . $materai . "</td>
-															<td width=\"10%\" style=\"text-align: right;\">" . $xtotall . "</td>
-														</tr>";
-								$tqty_terima += $q->qty_terima;
-								$ttotalrp += $totalrp;
-								$tdiscountrp += $q->discountrp;
-								$tvatrp += $vatrp;
-								$tmaterai += $q->materai;
-								$ttotalrp2 += ($q->totalrp + $q->vatrp + $q->materai);
-							}
-							$tqty_terima1 += $tqty_terima;
-							$ttotalrp1 += $ttotalrp;
-							$tdiscountrp1 += $tdiscountrp;
-							$tvatrp1 += $tvatrp;
-							$tmaterai1 += $tmaterai;
-							$ttotalrp21 += $ttotalrp2;
-						}
-						if($cekpdf == 1){
-							$xtqty_terima1 = number_format($tqty_terima1);
-							$xtdiscountrp1 = number_format($tdiscountrp1);
-							$xttotalrp1 = number_format($ttotalrp1);
-							$xtvatrp1 = number_format($tvatrp1);
-							$xtmaterai1 = number_format($tmaterai1);
-							$xttotalrp21 = number_format($ttotalrp21);
-						} else {
-							$xtqty_terima1 = round($tqty_terima1);
-							$xtdiscountrp1 = round($tdiscountrp1);
-							$xttotalrp1 = round($ttotalrp1);
-							$xtvatrp1 = round($tvatrp1);
-							$xtmaterai1 = round($tmaterai1);
-							$xttotalrp21 = round($ttotalrp21);
-						}
-						$body .= 	"<tr>
-													<td style=\"text-align: center;\" colspan=\"3\">TOTAL</td>
-													<td style=\"text-align: right;\">" . $xtqty_terima1 . "</td>
-													<td style=\"text-align: right;\">" . $xttotalrp1 . "</td>
-													<td style=\"text-align: right;\">" . $xtdiscountrp1 . "</td>
-													<td style=\"text-align: right;\">" . $xtvatrp1 . "</td>
-													<td style=\"text-align: right;\">" . $xtmaterai1 . "</td>
-													<td style=\"text-align: right;\">" . $xttotalrp21 . "</td>
-												</tr>";
-						$body .= "</table><br><br>";
-					}
 				}
 				$body .= "<table style=\"border-collapse:collapse;font-family: tahoma; font-size:12px\" width=\"100%\" align=\"center\" border=\"0\">
 										<tr>
@@ -1679,7 +1681,7 @@ class Laporan_pembelian_log extends CI_Controller
 											<td width=\"33%\" style=\"text-align:center;\">HARYANTO</td>
 										</tr> 
 										<tr>
-											<td width=\"33%\" style=\"text-align:center;\">Kepala Apoteker</td>
+											<td width=\"33%\" style=\"text-align:center;\">Kepala Logistik</td>
 											<td width=\"33%\" style=\"text-align:center;\">&nbsp;</td>
 											<td width=\"33%\" style=\"text-align:center;\">PENANGGUNG JAWAB ADMINISTRASI</td>
 										</tr> 
@@ -1705,20 +1707,20 @@ class Laporan_pembelian_log extends CI_Controller
 												<td style=\"text-align: center; font-weight: bold; padding: 10px;\">Harga rata-rata</td>
 												<td style=\"text-align: center; font-weight: bold; padding: 10px;\">Total</td>
 											</tr>";
-					$no = 1;
-					$tqty_terima = 0;
-					$tratarata = 0;
-					$ttotal = 0;
+					$no            = 1;
+					$tqty_terima   = 0;
+					$tratarata     = 0;
+					$ttotal        = 0;
 					foreach ($query as $q) {
 						$total = $q->qty_terima * $q->ratarata;
 						if($cekpdf == 1){
-							$qty_terima = number_format($q->qty_terima);
-							$ratarata = number_format($q->ratarata);
-							$xtotal = number_format($total);
+							$qty_terima    = number_format($q->qty_terima);
+							$ratarata      = number_format($q->ratarata);
+							$xtotal        = number_format($total);
 						} else {
-							$qty_terima = round($q->qty_terima);
-							$ratarata = round($q->ratarata);
-							$xtotal = round($total);
+							$qty_terima    = ceil($q->qty_terima);
+							$ratarata      = ceil($q->ratarata);
+							$xtotal        = ceil($total);
 						}
 						$body .= 	"<tr>
 												<td style=\"text-align: right;\">" . $no++ . "</td>
@@ -1729,18 +1731,18 @@ class Laporan_pembelian_log extends CI_Controller
 												<td style=\"text-align: right;\">" . $ratarata . "</td>
 												<td style=\"text-align: right;\">" . $xtotal . "</td>
 											</tr>";
-						$tqty_terima += $q->qty_terima;
-						$tratarata += $q->ratarata;
-						$ttotal += $total;
+						$tqty_terima    += $q->qty_terima;
+						$tratarata      += $q->ratarata;
+						$ttotal         += $total;
 					}
 					if($cekpdf == 1){
-						$xtqty_terima = number_format($tqty_terima);
-						$xtratarata = number_format($tratarata);
-						$xttotal = number_format($ttotal);
+						$xtqty_terima   = number_format($tqty_terima);
+						$xtratarata     = number_format($tratarata);
+						$xttotal        = number_format($ttotal);
 					} else {
-						$xtqty_terima = round($tqty_terima);
-						$xtratarata = round($tratarata);
-						$xttotal = round($ttotal);
+						$xtqty_terima   = ceil($tqty_terima);
+						$xtratarata     = ceil($tratarata);
+						$xttotal        = ceil($ttotal);
 					}
 					$body .= 	"<tr>
 											<td style=\"text-align: center;\" colspan=\"4\">TOTAL</td>
@@ -1767,20 +1769,20 @@ class Laporan_pembelian_log extends CI_Controller
 												<td style=\"text-align: center; font-weight: bold; padding: 10px;\">Harga rata-rata</td>
 												<td style=\"text-align: center; font-weight: bold; padding: 10px;\">Total</td>
 											</tr>";
-						$no = 1;
-						$tqty_terima = 0;
-						$tratarata = 0;
-						$ttotal = 0;
+						$no             = 1;
+						$tqty_terima    = 0;
+						$tratarata      = 0;
+						$ttotal         = 0;
 						foreach ($query as $q) {
 							$total = $q->qty_terima * $q->ratarata;
 							if($cekpdf == 1){
-								$qty_terima = number_format($q->qty_terima);
-								$ratarata = number_format($q->ratarata);
-								$xtotal = number_format($total);
+								$qty_terima   = number_format($q->qty_terima);
+								$ratarata     = number_format($q->ratarata);
+								$xtotal       = number_format($total);
 							} else {
-								$qty_terima = round($q->qty_terima);
-								$ratarata = round($q->ratarata);
-								$xtotal = round($total);
+								$qty_terima   = ceil($q->qty_terima);
+								$ratarata     = ceil($q->ratarata);
+								$xtotal       = ceil($total);
 							}
 							$body .= 	"<tr>
 												<td style=\"text-align: right;\">" . $no++ . "</td>
@@ -1791,18 +1793,18 @@ class Laporan_pembelian_log extends CI_Controller
 												<td style=\"text-align: right;\">" . $ratarata . "</td>
 												<td style=\"text-align: right;\">" . $xtotal . "</td>
 											</tr>";
-							$tqty_terima += $q->qty_terima;
-							$tratarata += $q->ratarata;
-							$ttotal += $total;
+							$tqty_terima   += $q->qty_terima;
+							$tratarata     += $q->ratarata;
+							$ttotal        += $total;
 						}
 						if($cekpdf == 1){
-							$xtqty_terima = number_format($tqty_terima);
-							$xtratarata = number_format($tratarata);
-							$xttotal = number_format($ttotal);
+							$xtqty_terima    = number_format($tqty_terima);
+							$xtratarata      = number_format($tratarata);
+							$xttotal         = number_format($ttotal);
 						} else {
-							$xtqty_terima = round($tqty_terima);
-							$xtratarata = round($tratarata);
-							$xttotal = round($ttotal);
+							$xtqty_terima    = ceil($tqty_terima);
+							$xtratarata      = ceil($tratarata);
+							$xttotal         = ceil($ttotal);
 						}
 						$body .= 	"<tr>
 											<td style=\"text-align: center;\" colspan=\"4\">TOTAL</td>
@@ -1849,13 +1851,13 @@ class Laporan_pembelian_log extends CI_Controller
 							$po_no = $q->po_no;
 						}
 						if($cekpdf == 1){
-							$qty_terima = number_format($q->qty_terima);
-							$price = number_format($q->price);
-							$xtotal = number_format($total);
+							$qty_terima    = number_format($q->qty_terima);
+							$price         = number_format($q->price);
+							$xtotal        = number_format($total);
 						} else {
-							$qty_terima = round($q->qty_terima);
-							$price = round($q->price);
-							$xtotal = round($total);
+							$qty_terima    = ceil($q->qty_terima);
+							$price         = ceil($q->price);
+							$xtotal        = ceil($total);
 						}
 						$body .= 		"<tbody>
 											<tr>
@@ -1870,18 +1872,18 @@ class Laporan_pembelian_log extends CI_Controller
 												<td style=\"text-align: right;\">" . $xtotal . "</td>
 											</tr>
 										</tbody>";
-						$tqty_terima += $q->qty_terima;
-						$tprice += $q->price;
-						$ttotal += $total;
+						$tqty_terima    += $q->qty_terima;
+						$tprice         += $q->price;
+						$ttotal         += $total;
 					}
 					if($cekpdf == 1){
-						$xtqty_terima = number_format($tqty_terima);
-						$xtprice = number_format($tprice);
-						$xttotal = number_format($ttotal);
+						$xtqty_terima   = number_format($tqty_terima);
+						$xtprice        = number_format($tprice);
+						$xttotal        = number_format($ttotal);
 					} else {
-						$xtqty_terima = round($tqty_terima);
-						$xtprice = round($tprice);
-						$xttotal = round($ttotal);
+						$xtqty_terima   = ceil($tqty_terima);
+						$xtprice        = ceil($tprice);
+						$xttotal        = ceil($ttotal);
 					}
 					$body .= 	"<tfoot>
 										<tr>
@@ -1914,10 +1916,10 @@ class Laporan_pembelian_log extends CI_Controller
 												<td style=\"text-align: center; font-weight: bold; padding: 10px;\" width=\"10%\">Harga sat</td>
 												<td style=\"text-align: center; font-weight: bold; padding: 10px;\" width=\"10%\">Total</td>
 											</tr>";
-						$no = 1;
-						$tqty_terima = 0;
-						$tprice = 0;
-						$ttotal = 0;
+						$no             = 1;
+						$tqty_terima    = 0;
+						$tprice         = 0;
+						$ttotal         = 0;
 						foreach ($query as $q) {
 							$total = $q->price * $q->qty_terima;
 							if ($q->po_no == '') {
@@ -1926,13 +1928,13 @@ class Laporan_pembelian_log extends CI_Controller
 								$po_no = $q->po_no;
 							}
 							if ($cekpdf == 1) {
-								$qty_terima = number_format($q->qty_terima);
-								$price = number_format($q->price);
-								$xtotal = number_format($total);
+								$qty_terima   = number_format($q->qty_terima);
+								$price        = number_format($q->price);
+								$xtotal       = number_format($total);
 							} else {
-								$qty_terima = round($q->qty_terima);
-								$price = round($q->price);
-								$xtotal = round($total);
+								$qty_terima   = ceil($q->qty_terima);
+								$price        = ceil($q->price);
+								$xtotal       = ceil($total);
 							}
 							$body .= 		"<tbody>
 											<tr>
@@ -1952,13 +1954,13 @@ class Laporan_pembelian_log extends CI_Controller
 							$ttotal += $total;
 						}
 						if ($cekpdf == 1) {
-							$xtqty_terima = number_format($tqty_terima);
-							$xtprice = number_format($tprice);
-							$xttotal = number_format($ttotal);
+							$xtqty_terima    = number_format($tqty_terima);
+							$xtprice         = number_format($tprice);
+							$xttotal         = number_format($ttotal);
 						} else {
-							$xtqty_terima = round($tqty_terima);
-							$xtprice = round($tprice);
-							$xttotal = round($ttotal);
+							$xtqty_terima    = ceil($tqty_terima);
+							$xtprice         = ceil($tprice);
+							$xttotal         = ceil($ttotal);
 						}
 						$body .= 	"<tfoot>
 										<tr>
@@ -1994,11 +1996,11 @@ class Laporan_pembelian_log extends CI_Controller
 										<tr>
 											<td style=\"text-align: left;\" colspan=\"11\">SUPPLIER : <b style=\"color: red;\">$vdr->vendor_name</b></td>
 										</tr>";
-					$no = 1;
-					$tqty_retur = 0;
-					$tprice = 0;
-					$ttotalrp = 0;
-					$totalsemua = 0;
+					$no            = 1;
+					$tqty_retur    = 0;
+					$tprice        = 0;
+					$ttotalrp      = 0;
+					$totalsemua    = 0;
 					foreach ($query as $q) {
 						if ($q->po_no == '') {
 							$po_no = '-';
@@ -2006,13 +2008,13 @@ class Laporan_pembelian_log extends CI_Controller
 							$po_no = $q->po_no;
 						}
 						if($cekpdf == 1){
-							$qty_retur = number_format($q->qty_retur);
-							$price = number_format($q->price);
-							$totalrp = number_format($q->totalrp);
+							$qty_retur   = number_format($q->qty_retur);
+							$price       = number_format($q->price);
+							$totalrp     = number_format($q->totalrp);
 						} else {
-							$qty_retur = round($q->qty_retur);
-							$price = round($q->price);
-							$totalrp = round($q->totalrp);
+							$qty_retur   = ceil($q->qty_retur);
+							$price       = ceil($q->price);
+							$totalrp     = ceil($q->totalrp);
 						}
 						$body .= "<tr>
 												<td style=\"text-align: right;\">" . $no++ . "</td>
@@ -2027,18 +2029,18 @@ class Laporan_pembelian_log extends CI_Controller
 												<td style=\"text-align: right;\">" . $price . "</td>
 												<td width=\"15%\" style=\"text-align: right;\">" . $totalrp . "</td>
 											</tr>";
-						$tqty_retur += $q->qty_retur;
-						$tprice += $q->price;
-						$ttotalrp += $q->totalrp;
+						$tqty_retur   += $q->qty_retur;
+						$tprice       += $q->price;
+						$ttotalrp     += $q->totalrp;
 					}
 					if($cekpdf == 1){
-						$xtqty_retur = number_format($tqty_retur);
-						$xtprice = number_format($tprice);
-						$xttotalrp = number_format($ttotalrp);
+						$xtqty_retur    = number_format($tqty_retur);
+						$xtprice        = number_format($tprice);
+						$xttotalrp      = number_format($ttotalrp);
 					} else {
-						$xtqty_retur = round($tqty_retur);
-						$xtprice = round($tprice);
-						$xttotalrp = round($ttotalrp);
+						$xtqty_retur    = ceil($tqty_retur);
+						$xtprice        = ceil($tprice);
+						$xttotalrp      = ceil($ttotalrp);
 					}
 					$body .= "<tr>
 											<td colspan=\"8\">SUBTOTAL</td>
@@ -2050,7 +2052,7 @@ class Laporan_pembelian_log extends CI_Controller
 					if($cekpdf == 1){
 						$xtotalsemua = number_format($totalsemua);
 					} else {
-						$xtotalsemua = round($totalsemua);
+						$xtotalsemua = ceil($totalsemua);
 					}
 					$body .= "<tr>
 											<td style=\"text-align: center; border-top: none; border-bottom: none; border-left: none; border-right: none;\" colspan=\"11\">&nbsp;</td>
@@ -2082,27 +2084,27 @@ class Laporan_pembelian_log extends CI_Controller
 						$body .= "<tr>
 											<td style=\"text-align: left;\" colspan=\"11\">SUPPLIER : <b style=\"color: red;\">$v->vendor_name</b></td>
 										</tr>";
-						$no = 1;
-						$tqty_retur = 0;
-						$tprice = 0;
-						$ttotalrp = 0;
+						$no           = 1;
+						$tqty_retur   = 0;
+						$tprice       = 0;
+						$ttotalrp     = 0;
 						foreach ($query as $q) {
 							if ($q->po_no == '') {
 								$po_no = '-';
 							} else {
 								$po_no = $q->po_no;
 							}
-							$tqty_retur += $q->qty_retur;
-							$tprice += $q->price;
-							$ttotalrp += $q->totalrp;
+							$tqty_retur    += $q->qty_retur;
+							$tprice        += $q->price;
+							$ttotalrp      += $q->totalrp;
 							if($cekpdf == 1){
-								$qty_retur = number_format($q->qty_retur);
-								$price = number_format($q->price);
-								$totalrp = number_format($q->totalrp);
+								$qty_retur    = number_format($q->qty_retur);
+								$price        = number_format($q->price);
+								$totalrp      = number_format($q->totalrp);
 							} else {
-								$qty_retur = round($q->qty_retur);
-								$price = round($q->price);
-								$totalrp = round($q->totalrp);
+								$qty_retur    = ceil($q->qty_retur);
+								$price        = ceil($q->price);
+								$totalrp      = ceil($q->totalrp);
 							}
 							$body .= "<tr>
 												<td width=\"5%\" style=\"text-align: right;\">" . $no++ . "</td>
@@ -2119,13 +2121,13 @@ class Laporan_pembelian_log extends CI_Controller
 											</tr>";
 						}
 						if($cekpdf == 1){
-							$xtqty_retur = number_format($tqty_retur);
-							$xtprice = number_format($tprice);
-							$xttotalrp = number_format($ttotalrp);
+							$xtqty_retur   = number_format($tqty_retur);
+							$xtprice       = number_format($tprice);
+							$xttotalrp     = number_format($ttotalrp);
 						} else {
-							$xtqty_retur = round($tqty_retur);
-							$xtprice = round($tprice);
-							$xttotalrp = round($ttotalrp);
+							$xtqty_retur   = ceil($tqty_retur);
+							$xtprice       = ceil($tprice);
+							$xttotalrp     = ceil($ttotalrp);
 						}
 						$body .= "<tr>
 											<td colspan=\"8\">SUBTOTAL</td>
@@ -2138,7 +2140,7 @@ class Laporan_pembelian_log extends CI_Controller
 					if($cekpdf == 1){
 						$xtotalsemua = number_format($totalsemua);
 					} else {
-						$xtotalsemua = round($totalsemua);
+						$xtotalsemua = ceil($totalsemua);
 					}
 					$body .= "<tr>
 											<td style=\"text-align: center; border-top: none; border-bottom: none; border-left: none; border-right: none;\" colspan=\"11\">&nbsp;</td>
@@ -2209,43 +2211,43 @@ class Laporan_pembelian_log extends CI_Controller
 											<td style=\"text-align: center; font-weight: bold; padding: 10px;\">Materai</td>
 											<td style=\"text-align: center; font-weight: bold; padding: 10px;\">Jumlah</td>
 										</tr>";
-					$no = 1;
-					$tobat = 0;
-					$talkes_rutin = 0;
-					$talk_investasi = 0;
-					$tbahan_kimia = 0;
-					$tgas_medik = 0;
-					$tpemeliharaan = 0;
-					$tsewa = 0;
-					$tpelengkapan = 0;
-					$tlain2 = 0;
-					$tmaterai = 0;
-					$tjumlah = 0;
+					$no              = 1;
+					$tobat           = 0;
+					$talkes_rutin    = 0;
+					$talk_investasi  = 0;
+					$tbahan_kimia    = 0;
+					$tgas_medik      = 0;
+					$tpemeliharaan   = 0;
+					$tsewa           = 0;
+					$tpelengkapan    = 0;
+					$tlain2          = 0;
+					$tmaterai        = 0;
+					$tjumlah         = 0;
 					foreach ($query as $q) {
 						if($cekpdf == 1){
-							$obat = number_format($q->obat);
-							$alkes_rutin = number_format($q->alkes_rutin);
+							$obat          = number_format($q->obat);
+							$alkes_rutin   = number_format($q->alkes_rutin);
 							$alk_investasi = number_format($q->alk_investasi);
-							$bahan_kimia = number_format($q->bahan_kimia);
-							$gas_medik = number_format($q->gas_medik);
-							$pemeliharaan = number_format($q->pemeliharaan);
-							$sewa = number_format($q->sewa);
-							$pelengkapan = number_format($q->pelengkapan);
-							$lain2 = number_format($q->lain2);
-							$materai = number_format($q->materai);
-							$jumlah = number_format($q->jumlah);
+							$bahan_kimia   = number_format($q->bahan_kimia);
+							$gas_medik     = number_format($q->gas_medik);
+							$pemeliharaan  = number_format($q->pemeliharaan);
+							$sewa          = number_format($q->sewa);
+							$pelengkapan   = number_format($q->pelengkapan);
+							$lain2         = number_format($q->lain2);
+							$materai       = number_format($q->materai);
+							$jumlah        = number_format($q->jumlah);
 						} else {
-							$obat = round($q->obat);
-							$alkes_rutin = round($q->alkes_rutin);
-							$alk_investasi = round($q->alk_investasi);
-							$bahan_kimia = round($q->bahan_kimia);
-							$gas_medik = round($q->gas_medik);
-							$pemeliharaan = round($q->pemeliharaan);
-							$sewa = round($q->sewa);
-							$pelengkapan = round($q->pelengkapan);
-							$lain2 = round($q->lain2);
-							$materai = round($q->materai);
-							$jumlah = round($q->jumlah);
+							$obat          = ceil($q->obat);
+							$alkes_rutin   = ceil($q->alkes_rutin);
+							$alk_investasi = ceil($q->alk_investasi);
+							$bahan_kimia   = ceil($q->bahan_kimia);
+							$gas_medik     = ceil($q->gas_medik);
+							$pemeliharaan  = ceil($q->pemeliharaan);
+							$sewa          = ceil($q->sewa);
+							$pelengkapan   = ceil($q->pelengkapan);
+							$lain2         = ceil($q->lain2);
+							$materai       = ceil($q->materai);
+							$jumlah        = ceil($q->jumlah);
 						}
 						$body .= "<tr>
 												<td style=\"text-align: right;\">" . $no++ . "</td>
@@ -2263,42 +2265,42 @@ class Laporan_pembelian_log extends CI_Controller
 												<td style=\"text-align: right;\">" . $materai . "</td>
 												<td style=\"text-align: right;\">" . $jumlah . "</td>
 											</tr>";
-						$tobat += $q->obat;
-						$talkes_rutin += $q->alkes_rutin;
+						$tobat          += $q->obat;
+						$talkes_rutin   += $q->alkes_rutin;
 						$talk_investasi += $q->alk_investasi;
-						$tbahan_kimia += $q->bahan_kimia;
-						$tgas_medik += $q->gas_medik;
-						$tpemeliharaan += $q->pemeliharaan;
-						$tsewa += $q->sewa;
-						$tpelengkapan += $q->pelengkapan;
-						$tlain2 += $q->lain2;
-						$tmaterai += $q->materai;
-						$tjumlah += $q->jumlah;
+						$tbahan_kimia   += $q->bahan_kimia;
+						$tgas_medik     += $q->gas_medik;
+						$tpemeliharaan  += $q->pemeliharaan;
+						$tsewa          += $q->sewa;
+						$tpelengkapan   += $q->pelengkapan;
+						$tlain2         += $q->lain2;
+						$tmaterai       += $q->materai;
+						$tjumlah        += $q->jumlah;
 					}
 					if($cekpdf == 1){
-						$xtobat = number_format($tobat);
-						$xtalkes_rutin = number_format($talkes_rutin);
-						$xtalk_investasi = number_format($talk_investasi);
-						$xtbahan_kimia = number_format($tbahan_kimia);
-						$xtgas_medik = number_format($tgas_medik);
-						$xtpemeliharaan = number_format($tpemeliharaan);
-						$xtsewa = number_format($tsewa);
-						$xtpelengkapan = number_format($tpelengkapan);
-						$xtlain2 = number_format($tlain2);
-						$xtmaterai = number_format($tmaterai);
-						$xtjumlah = number_format($tjumlah);
+						$xtobat           = number_format($tobat);
+						$xtalkes_rutin    = number_format($talkes_rutin);
+						$xtalk_investasi  = number_format($talk_investasi);
+						$xtbahan_kimia    = number_format($tbahan_kimia);
+						$xtgas_medik      = number_format($tgas_medik);
+						$xtpemeliharaan   = number_format($tpemeliharaan);
+						$xtsewa           = number_format($tsewa);
+						$xtpelengkapan    = number_format($tpelengkapan);
+						$xtlain2          = number_format($tlain2);
+						$xtmaterai        = number_format($tmaterai);
+						$xtjumlah         = number_format($tjumlah);
 					} else {
-						$xtobat = round($tobat);
-						$xtalkes_rutin = round($talkes_rutin);
-						$xtalk_investasi = round($talk_investasi);
-						$xtbahan_kimia = round($tbahan_kimia);
-						$xtgas_medik = round($tgas_medik);
-						$xtpemeliharaan = round($tpemeliharaan);
-						$xtsewa = round($tsewa);
-						$xtpelengkapan = round($tpelengkapan);
-						$xtlain2 = round($tlain2);
-						$xtmaterai = round($tmaterai);
-						$xtjumlah = round($tjumlah);
+						$xtobat           = ceil($tobat);
+						$xtalkes_rutin    = ceil($talkes_rutin);
+						$xtalk_investasi  = ceil($talk_investasi);
+						$xtbahan_kimia    = ceil($tbahan_kimia);
+						$xtgas_medik      = ceil($tgas_medik);
+						$xtpemeliharaan   = ceil($tpemeliharaan);
+						$xtsewa           = ceil($tsewa);
+						$xtpelengkapan    = ceil($tpelengkapan);
+						$xtlain2          = ceil($tlain2);
+						$xtmaterai        = ceil($tmaterai);
+						$xtjumlah         = ceil($tjumlah);
 					}
 					$body .= 	"<tr>
 											<td style=\"text-align: center;\" colspan=\"3\">TOTAL</td>
@@ -2334,18 +2336,18 @@ class Laporan_pembelian_log extends CI_Controller
 											<td style=\"text-align: center; font-weight: bold; padding: 10px;\">Materai</td>
 											<td style=\"text-align: center; font-weight: bold; padding: 10px;\">Jumlah</td>
 										</tr>";
-					$no = 1;
-					$tobat1 = 0;
-					$talkes_rutin1 = 0;
+					$no              = 1;
+					$tobat1          = 0;
+					$talkes_rutin1   = 0;
 					$talk_investasi1 = 0;
-					$tbahan_kimia1 = 0;
-					$tgas_medik1 = 0;
-					$tpemeliharaan1 = 0;
-					$tsewa1 = 0;
-					$tpelengkapan1 = 0;
-					$tlain21 = 0;
-					$tmaterai1 = 0;
-					$tjumlah1 = 0;
+					$tbahan_kimia1   = 0;
+					$tgas_medik1     = 0;
+					$tpemeliharaan1  = 0;
+					$tsewa1          = 0;
+					$tpelengkapan1   = 0;
+					$tlain21         = 0;
+					$tmaterai1       = 0;
+					$tjumlah1        = 0;
 					foreach($vdr as $v){
 						$query = $this->db->query("SELECT 
 								(SELECT vendor_name FROM tbl_vendor WHERE vendor_id = tbl_apohpolog.vendor_id) AS rekanan,
@@ -2385,42 +2387,42 @@ class Laporan_pembelian_log extends CI_Controller
 							JOIN tbl_apodterimalog ON tbl_apohterimalog.terima_no=tbl_apodterimalog.terima_no
 							WHERE tbl_apohterimalog.vendor_id = '$v->vendor_id' and terima_date BETWEEN '$tanggal1' AND '$tanggal2'
 						")->result();
-						$tobat = 0;
-						$talkes_rutin = 0;
+						$tobat          = 0;
+						$talkes_rutin   = 0;
 						$talk_investasi = 0;
-						$tbahan_kimia = 0;
-						$tgas_medik = 0;
-						$tpemeliharaan = 0;
-						$tsewa = 0;
-						$tpelengkapan = 0;
-						$tlain2 = 0;
-						$tmaterai = 0;
-						$tjumlah = 0;
+						$tbahan_kimia   = 0;
+						$tgas_medik     = 0;
+						$tpemeliharaan  = 0;
+						$tsewa          = 0;
+						$tpelengkapan   = 0;
+						$tlain2         = 0;
+						$tmaterai       = 0;
+						$tjumlah        = 0;
 						foreach ($query as $q) {
 							if ($cekpdf == 1) {
-								$obat = number_format($q->obat);
-								$alkes_rutin = number_format($q->alkes_rutin);
-								$alk_investasi = number_format($q->alk_investasi);
-								$bahan_kimia = number_format($q->bahan_kimia);
-								$gas_medik = number_format($q->gas_medik);
-								$pemeliharaan = number_format($q->pemeliharaan);
-								$sewa = number_format($q->sewa);
-								$pelengkapan = number_format($q->pelengkapan);
-								$lain2 = number_format($q->lain2);
-								$materai = number_format($q->materai);
-								$jumlah = number_format($q->jumlah);
+								$obat           = number_format($q->obat);
+								$alkes_rutin    = number_format($q->alkes_rutin);
+								$alk_investasi  = number_format($q->alk_investasi);
+								$bahan_kimia    = number_format($q->bahan_kimia);
+								$gas_medik      = number_format($q->gas_medik);
+								$pemeliharaan   = number_format($q->pemeliharaan);
+								$sewa           = number_format($q->sewa);
+								$pelengkapan    = number_format($q->pelengkapan);
+								$lain2          = number_format($q->lain2);
+								$materai        = number_format($q->materai);
+								$jumlah         = number_format($q->jumlah);
 							} else {
-								$obat = round($q->obat);
-								$alkes_rutin = round($q->alkes_rutin);
-								$alk_investasi = round($q->alk_investasi);
-								$bahan_kimia = round($q->bahan_kimia);
-								$gas_medik = round($q->gas_medik);
-								$pemeliharaan = round($q->pemeliharaan);
-								$sewa = round($q->sewa);
-								$pelengkapan = round($q->pelengkapan);
-								$lain2 = round($q->lain2);
-								$materai = round($q->materai);
-								$jumlah = round($q->jumlah);
+								$obat           = ceil($q->obat);
+								$alkes_rutin    = ceil($q->alkes_rutin);
+								$alk_investasi  = ceil($q->alk_investasi);
+								$bahan_kimia    = ceil($q->bahan_kimia);
+								$gas_medik      = ceil($q->gas_medik);
+								$pemeliharaan   = ceil($q->pemeliharaan);
+								$sewa           = ceil($q->sewa);
+								$pelengkapan    = ceil($q->pelengkapan);
+								$lain2          = ceil($q->lain2);
+								$materai        = ceil($q->materai);
+								$jumlah         = ceil($q->jumlah);
 							}
 							$body .= "<tr>
 												<td style=\"text-align: right;\">" . $no++ . "</td>
@@ -2438,55 +2440,55 @@ class Laporan_pembelian_log extends CI_Controller
 												<td style=\"text-align: right;\">" . $materai . "</td>
 												<td style=\"text-align: right;\">" . $jumlah . "</td>
 											</tr>";
-							$tobat += $q->obat;
-							$talkes_rutin += $q->alkes_rutin;
-							$talk_investasi += $q->alk_investasi;
-							$tbahan_kimia += $q->bahan_kimia;
-							$tgas_medik += $q->gas_medik;
-							$tpemeliharaan += $q->pemeliharaan;
-							$tsewa += $q->sewa;
-							$tpelengkapan += $q->pelengkapan;
-							$tlain2 += $q->lain2;
-							$tmaterai += $q->materai;
-							$tjumlah += $q->jumlah;
+							$tobat           += $q->obat;
+							$talkes_rutin    += $q->alkes_rutin;
+							$talk_investasi  += $q->alk_investasi;
+							$tbahan_kimia    += $q->bahan_kimia;
+							$tgas_medik      += $q->gas_medik;
+							$tpemeliharaan   += $q->pemeliharaan;
+							$tsewa           += $q->sewa;
+							$tpelengkapan    += $q->pelengkapan;
+							$tlain2          += $q->lain2;
+							$tmaterai        += $q->materai;
+							$tjumlah         += $q->jumlah;
 						}
-						$tobat1 += $tobat;
-						$talkes_rutin1 += $talkes_rutin;
-						$talk_investasi1 += $talk_investasi;
-						$tbahan_kimia1 += $tbahan_kimia;
-						$tgas_medik1 += $tgas_medik;
-						$tpemeliharaan1 += $tpemeliharaan;
-						$tsewa1 += $tsewa;
-						$tpelengkapan1 += $tpelengkapan;
-						$tlain21 += $tlain2;
-						$tmaterai1 += $tmaterai;
-						$tjumlah1 += $tjumlah;
+						$tobat1           += $tobat;
+						$talkes_rutin1    += $talkes_rutin;
+						$talk_investasi1  += $talk_investasi;
+						$tbahan_kimia1    += $tbahan_kimia;
+						$tgas_medik1      += $tgas_medik;
+						$tpemeliharaan1   += $tpemeliharaan;
+						$tsewa1           += $tsewa;
+						$tpelengkapan1    += $tpelengkapan;
+						$tlain21          += $tlain2;
+						$tmaterai1        += $tmaterai;
+						$tjumlah1         += $tjumlah;
 					}
 
 					if ($cekpdf == 1) {
-						$xtobat = number_format($tobat);
-						$xtalkes_rutin = number_format($talkes_rutin);
-						$xtalk_investasi = number_format($talk_investasi);
-						$xtbahan_kimia = number_format($tbahan_kimia);
-						$xtgas_medik = number_format($tgas_medik);
-						$xtpemeliharaan = number_format($tpemeliharaan);
-						$xtsewa = number_format($tsewa);
-						$xtpelengkapan = number_format($tpelengkapan);
-						$xtlain2 = number_format($tlain2);
-						$xtmaterai = number_format($tmaterai);
-						$xtjumlah = number_format($tjumlah);
+						$xtobat           = number_format($tobat);
+						$xtalkes_rutin    = number_format($talkes_rutin);
+						$xtalk_investasi  = number_format($talk_investasi);
+						$xtbahan_kimia    = number_format($tbahan_kimia);
+						$xtgas_medik      = number_format($tgas_medik);
+						$xtpemeliharaan   = number_format($tpemeliharaan);
+						$xtsewa           = number_format($tsewa);
+						$xtpelengkapan    = number_format($tpelengkapan);
+						$xtlain2          = number_format($tlain2);
+						$xtmaterai        = number_format($tmaterai);
+						$xtjumlah         = number_format($tjumlah);
 					} else {
-						$xtobat = round($tobat);
-						$xtalkes_rutin = round($talkes_rutin);
-						$xtalk_investasi = round($talk_investasi);
-						$xtbahan_kimia = round($tbahan_kimia);
-						$xtgas_medik = round($tgas_medik);
-						$xtpemeliharaan = round($tpemeliharaan);
-						$xtsewa = round($tsewa);
-						$xtpelengkapan = round($tpelengkapan);
-						$xtlain2 = round($tlain2);
-						$xtmaterai = round($tmaterai);
-						$xtjumlah = round($tjumlah);
+						$xtobat           = ceil($tobat);
+						$xtalkes_rutin    = ceil($talkes_rutin);
+						$xtalk_investasi  = ceil($talk_investasi);
+						$xtbahan_kimia    = ceil($tbahan_kimia);
+						$xtgas_medik      = ceil($tgas_medik);
+						$xtpemeliharaan   = ceil($tpemeliharaan);
+						$xtsewa           = ceil($tsewa);
+						$xtpelengkapan    = ceil($tpelengkapan);
+						$xtlain2          = ceil($tlain2);
+						$xtmaterai        = ceil($tmaterai);
+						$xtjumlah         = ceil($tjumlah);
 					}
 					$body .= 	"<tr>
 											<td style=\"text-align: center;\" colspan=\"3\">TOTAL</td>
@@ -2547,8 +2549,8 @@ class Laporan_pembelian_log extends CI_Controller
 										</tr> 
 										<tr>
 											<td style=\"text-align:center; border-top:none; border-bottom:none; border-left:none; border-right:none;\">HARYANTO</td>
-											<td style=\"text-align:center; border-top:none; border-bottom:none; border-left:none; border-right:none;\">(Sie Farmasi)</td>
-											<td style=\"text-align:center; border-top:none; border-bottom:none; border-left:none; border-right:none;\">(Ka. Bid. Farmasi)</td>
+											<td style=\"text-align:center; border-top:none; border-bottom:none; border-left:none; border-right:none;\">(Sie Logistik)</td>
+											<td style=\"text-align:center; border-top:none; border-bottom:none; border-left:none; border-right:none;\">(Ka. Bid. Logistik)</td>
 											<td style=\"text-align:center; border-top:none; border-bottom:none; border-left:none; border-right:none;\">(Keuangan)</td>
 										</tr> 
 									</table>";

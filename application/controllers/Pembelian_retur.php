@@ -53,9 +53,11 @@ class Pembelian_retur extends CI_Controller
       $row[]  = $unit->terima_no;
       $row[]  = '<div style="text-align: center;">' . date("d-m-Y", strtotime($unit->retur_date)) . '</div>';
       $row[]  = $vendor->vendor_name;
-      $row[]  = '<div style="text-align: center;"><a class="btn btn-sm btn-primary" href="' . base_url("Pembelian_retur/edit/" . $unit->retur_no . "") . '" title="Edit" ><i class="glyphicon glyphicon-edit"></i></a>
-      <a class="btn btn-sm btn-warning" href="' . base_url("Pembelian_retur/cetak/?id=" . $unit->retur_no . "") . '" target="_blank" title="Cetak" ><i class="glyphicon glyphicon-print"></i></a>
-      <a class="btn btn-sm btn-danger" href="javascript:void(0)" title="Hapus" onclick="Batalkan(' . "'" . $unit->retur_no . "'" . ')"><i class="glyphicon glyphicon-remove"></i></a></div>';
+      $row[]  = '<div style="text-align: center;">
+        <a style="margin-bottom: 5px;" class="btn btn-sm btn-primary" href="' . base_url("Pembelian_retur/edit/" . $unit->retur_no . "") . '" title="Edit" ><i class="glyphicon glyphicon-edit"></i></a>
+        <a style="margin-bottom: 5px;" class="btn btn-sm btn-warning" href="' . base_url("Pembelian_retur/cetak/?id=" . $unit->retur_no . "") . '" target="_blank" title="Cetak" ><i class="glyphicon glyphicon-print"></i></a>
+        <a style="margin-bottom: 5px;" class="btn btn-sm btn-danger" href="javascript:void(0)" title="Hapus" onclick="Batalkan(' . "'" . $unit->retur_no . "'" . ')"><i class="glyphicon glyphicon-remove"></i></a>
+      </div>';
       $data[] = $row;
     }
     $output = array(

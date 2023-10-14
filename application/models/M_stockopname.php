@@ -5,8 +5,8 @@ class M_stockopname extends CI_Model
 {
 
 	var $table = 'tbl_aposesuai';
-	var $column_order = array('koders', 'kodebarang', 'gudang', 'tglso', 'saldo', 'hasilso', 'sesuai', 'yangubah', 'approve', 'username', 'tglentry', 'jamentry', null);
-	var $column_search = array('nm','koders', 'kodebarang', 'gudang', 'tglso', 'saldo', 'hasilso', 'sesuai', 'yangubah', 'approve', 'username', 'tglentry', 'jamentry');
+	var $column_order = array('tbl_aposesuai.id', 'namabarang','tbl_aposesuai.koders', 'tbl_aposesuai.kodebarang', 'gudang', 'tglso', 'saldo', 'hasilso', 'sesuai', 'yangubah', 'approve', 'username', 'tglentry', 'jamentry');
+	var $column_search = array('tbl_aposesuai.id', 'namabarang','tbl_aposesuai.koders', 'tbl_aposesuai.kodebarang', 'gudang', 'tglso', 'saldo', 'hasilso', 'sesuai', 'yangubah', 'approve', 'username', 'tglentry', 'jamentry');
 	var $order = array('kodebarang' => 'desc');
 
 	public function __construct()
@@ -46,17 +46,19 @@ class M_stockopname extends CI_Model
 		$cabang = $this->session->userdata("unit");
 		// $dt = $this->db->from("SELECT (SELECT tbl_barang.namabarang from tbl_barang where tbl_barang.kodebarang=tbl_aposesuai.kodebarang)nm, tbl_aposesuai.* 
 		// FROM tbl_aposesuai)tbl_aposesuai WHERE kodebarang IN (SELECT kodebarang FROM tbl_barang");
-		$this->db->select("(SELECT tbl_barang.namabarang from tbl_barang where tbl_barang.kodebarang=tbl_aposesuai.kodebarang)nm, tbl_aposesuai.*");
+		$this->db->select($this->column_order);
 		$this->db->from("tbl_aposesuai");
+		$this->db->join("tbl_barang", "tbl_barang.kodebarang = tbl_aposesuai.kodebarang");
 		$this->db->where("koders", $cabang);
-		$this->db->where("kodebarang IN (SELECT kodebarang FROM tbl_barang)");
 		// $saldo = $this->db->query("SELECT saldo FROM tbl_aposesuai WHERE koders='$cabang' AND gudang ='$gudang'");
 		// echo json_encode($saldo);
 		if ($gudang != "") {
 			$this->db->where('gudang', $gudang);
 		}
 
-		$this->db->order_by('id', 'desc');
+		$this->db->where('koders', $cabang);
+
+		$this->db->order_by('tbl_aposesuai.id', 'desc');
 
 		$i = 0;
 
@@ -75,7 +77,6 @@ class M_stockopname extends CI_Model
 			}
 			$i++;
 		}
-		$this->db->where('koders', $cabang);
 
 		if (isset($_POST['order'])) {
 			$this->db->order_by($this->column_order[$_POST['order']['0']['column']], $_POST['order']['0']['dir']);

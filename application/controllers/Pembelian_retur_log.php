@@ -206,7 +206,7 @@ class Pembelian_retur_log extends CI_Controller
         'invoice_no' => '',
         'gudang' => $gudang,
         'alasan' => $alasan,
-        'jamretur'   => date('h:i:s'),
+        'jamretur'   => date('H:i:s'),
       ];
       $this->db->insert('tbl_apohreturbelilog', $data);
 

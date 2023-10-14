@@ -545,10 +545,13 @@ class Inventory_mutasi_gudang extends CI_Controller
 		$cabang = $this->session->userdata('unit');
 		$cek = $this->db->query('select * from tbl_barangstock where kodebarang = "' . $kode . '" and koders = "' . $cabang . '" and gudang = "' . $gudang . '"')->row_array();
 		// $cek = $this->db->get_where('tbl_barangstock', ['kodebarang' => $kode, 'koders' => $cabang, 'gudang' => $cabang])->row_array();
+		$barang = $this->db->get_where("tbl_barang", ["kodebarang" => $kode])->row();
 		$data = [
 			'kodebarang' => $cek['kodebarang'],
 			'gudang' => $cek['gudang'],
 			'saldoakhir' => $cek['saldoakhir'],
+			'satuan1' => $barang->satuan1,
+			'hargajual' => $barang->hargajual
 		];
 		echo json_encode($data);
 	}

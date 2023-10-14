@@ -23,7 +23,7 @@ if ($datpas) {
                     &nbsp;<?php echo $this->session->userdata('unit'); ?>
                </span>
                -
-               <span class="title-web">APOTEK <small>Penjualan Resep</small>
+               <span class="title-web">APOTEK <small>Penjualan Resep sdsd</small>
           </h3>
           <ul class="page-breadcrumb breadcrumb">
                <li>
@@ -136,8 +136,8 @@ if ($datpas) {
                               <div class="col-md-6">
                                    <div class="form-group"> 
                                         <label class="col-md-3 control-label">Member</label>
-                                        <div class="col-md-9 input-medium">
-                                             <?php if ($header->rekmed=='Non Member') :?>
+                                        <div class="col-md-9">
+                                             <?php if ($header->rekmed == 'Non Member') :?>
                                                   <input type="text" name="pasien" id="pasien" class="form-control" value="Non Member" readonly>
                                              <?php else : ?>
                                                   <select id="pasien" name="pasien" class="form-control select2_el_pasien" onchange="getinfopasien()" data-placeholder="Pilih..." onkeypress="return tabE(this,event)">

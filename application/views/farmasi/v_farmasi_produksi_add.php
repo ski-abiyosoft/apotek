@@ -384,6 +384,20 @@ $("#save").on("click", function() {
     var total = $('#vtotal').val();
     var tanggal = $('[name="tanggal"]').val();
     var barang = $('[name="kodebarang"]').val();
+
+    var table = document.getElementById("datatable")
+    rowCount = table.rows.length
+
+    for(i = 1; i < (rowCount - 1); i++) {
+        // var row = table.rows[i];
+        // expire = row.cells[6].children[0].value;
+        // alert(expire)
+        expire = $("#expire"+i).val();
+        if(expire == '' || expire == null) {
+            swal('EXPIRED', 'Tidak boleh kosong', ''); 
+            return
+        }
+    }
     if (gudang_asal == "" || total == "" || total == "0.00" || gudang_asal == null || barang == null) {
         swal('PRODUKSI BARANG', 'data belum lengkap ...', '');
     } else {

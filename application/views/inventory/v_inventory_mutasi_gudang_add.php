@@ -151,7 +151,7 @@ $this->load->view('template/body');
                                 <tbody>
                                     <tr>
                                         <td width="30%">
-                                            <select name="kode[]" id="kode1" class="select2_el_farmasi_baranggud form-control kodeb" onchange="showbarangname(this.value, 1); cekqty(1)"></select>
+                                            <select name="kode[]" id="kode1" class="select2_el_farmasi_baranggud form-control kodeb" onchange="showbarangname(this.value, 1)"></select>
                                             <input type='hidden' name='hidekode[]' id='hidekode1' onchange='showbarangname(this.value,"1"); cekqty(1)' value=''>
                                         </td>
                                         <td width="10%"><input name="qty[]" onchange="totalline(1); cekqty(1)" value="1" id="qty1" type="text" class="form-control rightJustified"></td>
@@ -254,8 +254,8 @@ $this->load->view('template/footer');
         idrow++;
     }
 
-    function cekqty(id) {
-        var kode = $('#kode' + id).val();
+    function cekqty(str, id) {
+        var kode = str;
         var qty = $('#qty' + id).val();
         var gudang = $('[name="gudang_asal"]').val();
         $.ajax({
@@ -263,7 +263,7 @@ $this->load->view('template/footer');
             type: 'GET',
             dataType: 'JSON',
             success: function(data) {
-                console.log(data);
+                console.log(data)
                 if (qty > Number(parseInt(data.saldoakhir.replaceAll(',', '')))) {
                     swal({
                         title: "KUANTITAS",
@@ -282,6 +282,10 @@ $this->load->view('template/footer');
                         $('#vtotal').val(newtotal);
                         $('#total' + id).val('');
                     });
+                } else {
+                    $('#sat' + id).val(data.satuan1);
+                    $('#harga' + id).val(formatCurrency1(data.hargajual));
+                    totalline(id);
                 }
             }
         });
@@ -295,9 +299,7 @@ $this->load->view('template/footer');
             type: "GET",
             dataType: "JSON",
             success: function(data) {
-                $('#sat' + vid).val(data.satuan1);
-                $('#harga' + vid).val(formatCurrency1(data.hargajual));
-                totalline(vid);
+                cekqty(str, id)
             }
         });
     }
@@ -374,6 +376,18 @@ $this->load->view('template/footer');
         var tanggal = $('[name="tanggal"]').val();
         var kodeb = $(".kodeb").length;
         var ttl = $('#vtotal').val();
+
+        var table = document.getElementById('datatable');
+        rowCount = table.rows.length;
+
+        for(x = 1; x < (rowCount - 1); x++) {
+            var expire = $('#expire' + x).val();
+            if(expire == "" || expire == null) {
+                swal('EXPIRE', 'Tidak boleh kosong', '');
+                return
+            }
+        }
+
         if (gudang_asal == "" || gudang_tujuan == "" || total == "" || total == "0.00") {
             swal('MUTASI GUDANG', 'gudang belum diisi ...', '');
         } else {
@@ -384,8 +398,6 @@ $this->load->view('template/footer');
                 dataType: 'JSON',
                 success: function(data) {
                     if (data.status == 1) {
-                        var table = document.getElementById('datatable');
-                        rowCount = table.rows.length;
                         for (i = 1; i < rowCount - 1; i++) {
                             var kode = $('#kode' + i).val();
                             var qty = $('#qty' + i).val();

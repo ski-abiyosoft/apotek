@@ -88,8 +88,7 @@ $this->load->view('template/body');
                                             <font color="red">*</font>
                                         </label>
                                         <div class="col-md-6">
-                                            <select id="supp" name="supp" class="form-control select2_el_vendor" data-placeholder="Pilih..." onkeypress="return tabE(this,event)">
-                                            </select>
+                                            <select id="supp" name="supp" class="form-control select2_el_vendor" data-placeholder="Pilih..."></select>
                                         </div>
                                         <div class="col-md-3">
                                             <button type="button" class="btn green" onclick="pareto()">Ambil Pareto</button>
@@ -102,8 +101,8 @@ $this->load->view('template/body');
                                         <label class="col-md-3 control-label">Gudang / Depo
                                         </label>
                                         <div class="col-md-9">
-                                            <!-- <select id="gudang" name="gudang" class="form-control select2_el_farmasi_depo" data-placeholder="Pilih..." onkeypress="return tabE(this,event)" onchange="cekbarang(1)"> -->
-                                            <select id="gudang" name="gudang" class="form-control select2_el_farmasi_depo" data-placeholder="Pilih..." onkeypress="return tabE(this,event)">
+                                            <!-- <select id="gudang" name="gudang" class="form-control select2_el_farmasi_depo" data-placeholder="Pilih..." onchange="cekbarang(1)"> -->
+                                            <select id="gudang" name="gudang" class="form-control select2_el_farmasi_depo" data-placeholder="Pilih...">
                                             </select>
                                         </div>
 
@@ -246,7 +245,7 @@ $this->load->view('template/body');
                                                     <input name="qty[]" onchange="totalline(1);total()" value="1" id="qty1" type="text" class="form-control rightJustified">
                                                 </td>
                                                 <td>
-                                                    <input name="sat[]" id="sat1" type="text" class="form-control " onkeypress="return tabE(this,event)" readonly>
+                                                    <input name="sat[]" id="sat1" type="text" class="form-control " readonly>
                                                 </td>
                                                 <td>
                                                     <input name="harga[]" onchange="totalline(1);total();cekharga(1)" value="0" id="harga1" type="text" class="form-control rightJustified">
@@ -665,10 +664,10 @@ $this->load->view('template/currency');
         }
         // document.getElementById("_vdiskon").innerHTML = formatCurrency1(tdiskon);
         //tppn = 0;
-        document.getElementById("_vsubtotal").innerHTML = separateComma(tjumlah);
-        document.getElementById("_vdiskon").innerHTML = separateComma(tdiskon);
-        document.getElementById("_vppn").innerHTML = separateComma(tppn);
-        document.getElementById("_vtotal").innerHTML = separateComma(tjumlah - tdiskon + tppn);
+        document.getElementById("_vsubtotal").innerHTML = separateComma(tjumlah.toFixed(2));
+        document.getElementById("_vdiskon").innerHTML = separateComma(tdiskon.toFixed(2));
+        document.getElementById("_vppn").innerHTML = separateComma(tppn.toFixed(2));
+        document.getElementById("_vtotal").innerHTML = separateComma((tjumlah - tdiskon + tppn).toFixed(2));
 
 
     }

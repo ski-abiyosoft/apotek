@@ -7,12 +7,12 @@ class M_farmasi_stock extends CI_Model
 	var $table = 'tbl_barangstock';
 	var $column_order = array(
 		'tbl_barangstock.koders', 'tbl_barangstock.id', 'tbl_barang.satuan1', 'tbl_barangstock.kodebarang', 'tbl_barangstock.gudang',
-		'tbl_barang.namabarang', 'tbl_barangstock.tglso', 'tbl_barangstock.lasttr',
+		'tbl_barang.namabarang', 'tbl_barangstock.tglso', 'tbl_barangstock.lasttr', 'tbl_barangstock.saldoawal', 'tbl_barangstock.terima', 'tbl_barangstock.keluar',
 		'tbl_barangstock.saldoakhir', null
 	);
 	var $column_search = array(
 		'tbl_barangstock.koders', 'tbl_barangstock.id', 'tbl_barang.satuan1', 'tbl_barangstock.kodebarang', 'tbl_barangstock.gudang',
-		'tbl_barang.namabarang', 'tbl_barangstock.tglso', 'tbl_barangstock.lasttr',
+		'tbl_barang.namabarang', 'tbl_barangstock.tglso', 'tbl_barangstock.lasttr', 'tbl_barangstock.saldoawal', 'tbl_barangstock.terima', 'tbl_barangstock.keluar',
 		'tbl_barangstock.saldoakhir'
 	);
 	var $order = array('tbl_barangstock.id' => 'asc');

@@ -349,7 +349,7 @@ class Logistik_bapb extends CI_Controller
 			$pdf->FancyRow2(20, $judul, $fc,  $border, $align, $style, $size, $max);
 			$judul = array('', '', '');
 			$pdf->FancyRow2(5, $judul, $fc,  $border, $align, $style, $size, $max);
-			$judul = array('KEPALA APOTEKTER', $header->vendor_name, 'PENANGGUNG JAWAB ADM');
+			$judul = array('KEPALA LOGISTIK', $header->vendor_name, 'PENANGGUNG JAWAB ADM');
 			$pdf->FancyRow2(5, $judul, $fc,  $border, $align, $style, $size, $max);
 
 			$pdf->setTitle($param);
