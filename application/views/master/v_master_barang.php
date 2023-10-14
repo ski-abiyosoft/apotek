@@ -9,7 +9,22 @@
 }
 </style>
 
-
+<?php 
+// $cabang = $this->session->userdata("unit");
+// $barang = $this->db->get("tbl_barang")->result();
+// foreach($barang as $b) {
+//     $data = [
+//         'koders' => $cabang,
+//         'kodebarang' => $b->kodebarang,
+//         'margin' => 0,
+//         'hargajual' => 0,
+//     ];
+//     $cek = $this->db->get_where("tbl_barangcabang", ["kodebarang" => $b->kodebarang, "koders" => $cabang])->num_rows();
+//     if($cek < 1) {
+//         $this->db->insert("tbl_barangcabang", $data);
+//     }
+// }
+?>
 
 <div class="row">
     <div class="col-md-12">
@@ -209,6 +224,14 @@ function add_bank() {
     $('#modal_form').modal('show'); // show bootstrap modal
     $('.modal-title').text('Tambah Data'); // Set Title to Bootstrap modal title
 }
+
+function getpersen(hargajual, id) {
+    var hna_ppn_  = $("#hnappn").val();
+    var hna_ppn   = Number(parseInt(hna_ppn_.replaceAll(",","")));
+    var hj        = Number(parseInt(hargajual.replaceAll(",","")));
+    var hitung    = ((hj - hna_ppn) / hna_ppn) * 100;
+    $("#td_data_"+id+"_2").val((hitung.toFixed(2)));
+  }
 
 function edit_data(id) {
     save_method = 'update';

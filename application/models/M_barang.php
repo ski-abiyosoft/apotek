@@ -205,7 +205,7 @@ class M_barang extends CI_Model {
 			</td>			   
 			<td id="td_<?=$rowcount;?>_3">
 				<!-- item name  -->
-				<input type="text" style="font-weight: bold-;text-align:right" name="td_data_4[]" id="td_data_<?=$rowcount;?>_4" class="form-control no-padding" value='<?=number_format($item_harga,0,'.',',');?>' readonly>
+				<input type="text" style="font-weight: bold-;text-align:right" name="td_data_4[]" id="td_data_<?=$rowcount;?>_4" class="form-control no-padding" value='<?=number_format($item_harga,0,'.',',');?>' onchange="getpersen(this.value, '<?=$rowcount;?>')">
 			</td>			   
 			
 			</tr>

@@ -1,7 +1,7 @@
 {
     "driver": "mysql",
     "host": "localhost",
-    "username": "admin_apt",
-    "password": "NonaManis@1441",
-    "database": "ski_pharma"
+    "username": "bmf_admin",
+    "password": "y#2#kcH5sLAbm8wA",
+    "database": "bmf_data"
 }
